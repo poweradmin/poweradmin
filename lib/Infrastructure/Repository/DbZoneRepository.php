@@ -128,7 +128,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
     ) {
 
         // Validate sort parameters
-        $allowedSortColumns = ['name', 'owner', 'count_records', 'type'];
+        $allowedSortColumns = ['name', 'owner', 'count_records', 'type', 'group'];
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -188,10 +188,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
             return (int)$stmt->fetchColumn();
         } else {
+            $sortByGroup = $sortBy === 'group';
+            // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
+            $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+
             $selectFields = "$domains_table.id,
                            $domains_table.name,
                            $domains_table.type,
-                           COUNT($records_table.id) AS count_records,
+                           $recordCountExpr AS count_records,
                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
@@ -206,8 +210,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
                  LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
                  LEFT JOIN users ON users.id = zones.owner
                  LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-                 LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
-                 WHERE 1=1";
+                 LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'"
+                 . ($sortByGroup ? "
+                 LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
+                 LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id" : "")
+                 . " WHERE 1=1";
 
         // Add permission filter
         $params = [];
@@ -246,6 +253,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $sortBy = 'users.username';
         } elseif ($sortBy == 'count_records') {
             $sortBy = "COUNT($records_table.id)";
+        } elseif ($sortBy == 'group') {
+            $sortBy = "MIN(user_groups.name)";
         } else {
             $sortBy = "$domains_table.$sortBy";
         }

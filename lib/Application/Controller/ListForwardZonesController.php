@@ -41,6 +41,7 @@ use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -150,7 +151,22 @@ class ListForwardZonesController extends BaseController
 
         $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
-        list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
+        $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
+        $isUserOwnerAllowed = $ownershipMode->isUserOwnerAllowed();
+        // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
+        $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
+
+        $allowedSort = ['name', 'type', 'count_records'];
+        if ($isUserOwnerAllowed) {
+            $allowedSort[] = 'owner';
+        }
+        if ($isGroupSortSupported) {
+            $allowedSort[] = 'group';
+        }
+
+        list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', $allowedSort);
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(
@@ -226,6 +242,9 @@ class ListForwardZonesController extends BaseController
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
+            'is_user_owner_allowed' => $isUserOwnerAllowed,
+            'is_group_owner_allowed' => $isGroupOwnerAllowed,
+            'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
             'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION['userid']),
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
