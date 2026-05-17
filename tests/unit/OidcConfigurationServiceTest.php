@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -29,8 +30,8 @@ use Poweradmin\Infrastructure\Logger\Logger;
 
 class OidcConfigurationServiceTest extends TestCase
 {
-    private ConfigurationManager $configManager;
-    private Logger $logger;
+    private ConfigurationManager|MockObject $configManager;
+    private Logger|MockObject $logger;
     private OidcConfigurationService $service;
 
     protected function setUp(): void
