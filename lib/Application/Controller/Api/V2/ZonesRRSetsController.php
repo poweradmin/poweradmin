@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -61,12 +62,14 @@ class ZonesRRSetsController extends PublicApiController
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
     private RecordChangeLogger $changeLogger;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
@@ -440,17 +443,11 @@ class ZonesRRSetsController extends PublicApiController
 
             $nameRaw = $this->inputString($input, 'name', '');
             $typeRaw = $this->inputString($input, 'type', '');
-            $ttl = $this->inputInt($input, 'ttl', 3600);
-            if ($nameRaw === null || $typeRaw === null || $ttl === null) {
+            if ($nameRaw === null || $typeRaw === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
             $name = trim($nameRaw);
             $type = strtoupper(trim($typeRaw));
-
-            // Validate TTL
-            if ($ttl < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
-            }
 
             // Get zone name
             $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
@@ -458,6 +455,17 @@ class ZonesRRSetsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+            $isReverseZone = DnsHelper::isReverseZone($zoneName);
+
+            $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
+            if ($ttl === null) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+
+            // Validate TTL
+            if ($ttl < 1) {
+                return $this->returnApiError('TTL must be greater than 0', 400);
             }
 
             // Convert name to FQDN

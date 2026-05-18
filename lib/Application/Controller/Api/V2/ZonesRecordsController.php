@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -68,12 +69,14 @@ class ZonesRecordsController extends PublicApiController
     private LegacyLogger $auditLogger;
     private RecordChangeLogger $changeLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
@@ -455,7 +458,14 @@ class ZonesRecordsController extends PublicApiController
             $type = strtoupper(trim($this->inputString($input, 'type', '')));
             $originalContent = trim($this->inputString($input, 'content', ''));
             $content = $originalContent;
-            $ttl = $this->inputInt($input, 'ttl', 3600);
+            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
+            $domainRepository = $repositoryFactory->createDomainRepository();
+            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            if ($zoneName === null) {
+                return $this->returnApiError(_('Zone not found.'), 404);
+            }
+            $isReverseZone = DnsHelper::isReverseZone($zoneName);
+            $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
             $priority = $this->inputInt($input, 'priority', 0);
             $disabled = $this->inputIntFromBool($input, 'disabled', 0);
             $createPtr = $this->inputBool($input, 'create_ptr', false);
@@ -476,14 +486,6 @@ class ZonesRecordsController extends PublicApiController
 
             // Validate the record using the validation service
             $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-
-            // Get zone name for validation
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
-            if ($zoneName === null) {
-                return $this->returnApiError(_('Zone not found.'), 404);
-            }
 
             // Normalize record name to full FQDN (always, regardless of display setting)
             // This converts @ to zone apex and ensures proper zone suffix

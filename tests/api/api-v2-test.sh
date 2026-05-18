@@ -434,6 +434,59 @@ test_ptr_autocreation() {
 }
 
 ##############################################################################
+# Test: Server-side TTL defaults (issue #1032, 4.5.0)
+##############################################################################
+
+test_ttl_defaults() {
+    print_section "TTL Default Resolution Tests"
+
+    if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
+        print_info "Skipping TTL default tests - PTR auto-creation didn't run"
+        return 0
+    fi
+
+    # Create an A record on the forward zone without a ttl field.
+    # Without dns.ttl_reverse configured the server should fall back to dns.ttl.
+    local record_no_ttl='{
+        "name": "ttl-default-a",
+        "type": "A",
+        "content": "192.0.2.50"
+    }'
+
+    if api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$record_no_ttl" 201 "Create A record without ttl (forward zone)"; then
+        local returned_ttl
+        returned_ttl=$(extract_json_field "$LAST_RESPONSE_BODY" "ttl")
+        increment_test
+        if [[ "$returned_ttl" =~ ^[0-9]+$ && "$returned_ttl" -gt 0 ]]; then
+            print_pass "Forward A record default ttl is numeric: $returned_ttl"
+        else
+            print_fail "Forward A record default ttl unexpected: $returned_ttl"
+        fi
+    fi
+
+    # Create a PTR record on the reverse zone without a ttl field.
+    # The server resolves dns.ttl_reverse (when set) or dns.ttl otherwise.
+    local ptr_no_ttl='{
+        "name": "51.2.0.192.in-addr.arpa",
+        "type": "PTR",
+        "content": "ttl-default.example.com"
+    }'
+
+    if api_request_v2 "POST" "/zones/$TEST_REVERSE_ZONE_ID/records" "$ptr_no_ttl" 201 "Create PTR record without ttl (reverse zone)"; then
+        local returned_ttl
+        returned_ttl=$(extract_json_field "$LAST_RESPONSE_BODY" "ttl")
+        increment_test
+        if [[ "$returned_ttl" =~ ^[0-9]+$ && "$returned_ttl" -gt 0 ]]; then
+            print_pass "Reverse PTR record default ttl is numeric: $returned_ttl"
+        else
+            print_fail "Reverse PTR record default ttl unexpected: $returned_ttl"
+        fi
+    fi
+
+    print_info "TTL default tests completed"
+}
+
+##############################################################################
 # Test: Bulk Operations
 ##############################################################################
 
@@ -1881,6 +1934,7 @@ main() {
     # Run test suites
     test_rrsets
     test_ptr_autocreation
+    test_ttl_defaults
     test_bulk_operations
     test_disabled_records
     test_master_port_syntax

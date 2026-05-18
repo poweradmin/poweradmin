@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -338,7 +339,6 @@ class DnsWizardApiController extends InternalApiController
         $name = $data['name'];
         $type = $data['type'];
         $content = $data['content'];
-        $ttl = isset($data['ttl']) && $data['ttl'] !== '' ? (int)$data['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $prio = isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0;
         $comment = $data['comment'] ?? '';
 
@@ -350,6 +350,12 @@ class DnsWizardApiController extends InternalApiController
             if ($zone_name === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
+
+            $reverseTtlResolver = new ReverseTtlResolver($this->config);
+            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $ttl = isset($data['ttl']) && $data['ttl'] !== ''
+                ? (int)$data['ttl']
+                : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
             // Check user has permission to edit this zone
             $dnsRecord = new DnsRecord($this->db, $this->config);

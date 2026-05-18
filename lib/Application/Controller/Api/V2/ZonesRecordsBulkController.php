@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -65,12 +66,14 @@ class ZonesRecordsBulkController extends PublicApiController
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private RecordChangeLogger $changeLogger;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
@@ -346,7 +349,17 @@ class ZonesRecordsBulkController extends PublicApiController
         $name = trim($this->inputString($operation, 'name', ''));
         $type = strtoupper(trim($this->inputString($operation, 'type', '')));
         $content = trim($this->inputString($operation, 'content', ''));
-        $ttl = $this->inputInt($operation, 'ttl', 3600);
+
+        // Get zone name (needed up-front so the TTL fallback can be type-aware).
+        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
+        $zoneName = $domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
+            throw new ApiErrorException('Zone not found', 404);
+        }
+        $isReverseZone = DnsHelper::isReverseZone($zoneName);
+
+        $ttl = $this->inputInt($operation, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
         $priority = $this->inputInt($operation, 'priority', 0);
         $disabled = $this->inputIntFromBool($operation, 'disabled', 0);
 
@@ -362,14 +375,6 @@ class ZonesRecordsBulkController extends PublicApiController
         // Validate TTL
         if ($ttl < 1) {
             throw new ApiErrorException('TTL must be greater than 0', 400);
-        }
-
-        // Get zone name
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $zoneName = $domainRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            throw new ApiErrorException('Zone not found', 404);
         }
 
         // Convert name to FQDN
