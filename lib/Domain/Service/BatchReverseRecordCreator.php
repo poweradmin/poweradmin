@@ -72,12 +72,14 @@ class BatchReverseRecordCreator
      * @param string $hostPrefix The hostname prefix to use for records (e.g., "host")
      * @param string $domain The domain suffix for PTR records (e.g., "example.com")
      * @param string $zone_id The ID of the reverse zone
-     * @param int $ttl TTL for the records
+     * @param int $ttl TTL for the PTR records
      * @param int $prio Priority for the records
      * @param string $comment Optional comment for the records
      * @param string $account Optional account name
      * @param bool $createForwardRecords Whether to create corresponding A/AAAA records in forward zone
      * @param bool $onlyMatchingRecords Whether to create PTRs only for existing A records
+     * @param int|null $forwardTtl Optional separate TTL for the auto-created forward A records; falls back to $ttl when null
+     * @param int|null $matchingPtrTtl Optional override for the PTR TTL in matching-records mode; when null, the matched A record's TTL is used (historical behavior)
      *
      * @return array Result of the operation
      */
@@ -91,7 +93,9 @@ class BatchReverseRecordCreator
         string $comment = '',
         string $account = '',
         bool $createForwardRecords = false,
-        bool $onlyMatchingRecords = false
+        bool $onlyMatchingRecords = false,
+        ?int $forwardTtl = null,
+        ?int $matchingPtrTtl = null
     ): array {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -212,7 +216,8 @@ class BatchReverseRecordCreator
                     }
 
                     try {
-                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $record['ttl'], $record['prio'], $comment, $account);
+                        $ptrTtl = $matchingPtrTtl ?? $record['ttl'];
+                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ptrTtl, $record['prio'], $comment, $account);
 
                         if ($result) {
                             $successCount++;
@@ -298,7 +303,7 @@ class BatchReverseRecordCreator
                                 if (!$this->dnsRecord->recordExists($forward_domain_id, $hostname, RecordType::A, $ip)) {
                                     try {
                                         // Add the A record
-                                        $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::A, $ip, $ttl, $prio);
+                                        $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::A, $ip, $forwardTtl ?? $ttl, $prio);
                                     } catch (Exception $e) {
                                         // Don't stop execution for forward record failures
                                         $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
@@ -374,7 +379,8 @@ class BatchReverseRecordCreator
         string $comment = '',
         string $account = '',
         int $count = 256,
-        bool $createForwardRecords = false
+        bool $createForwardRecords = false,
+        ?int $forwardTtl = null
     ): array {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -466,7 +472,7 @@ class BatchReverseRecordCreator
                             if (!$this->dnsRecord->recordExists($forward_domain_id, $hostname, RecordType::AAAA, $ip)) {
                                 try {
                                     // Add the AAAA record
-                                    $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::AAAA, $ip, $ttl, $prio);
+                                    $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::AAAA, $ip, $forwardTtl ?? $ttl, $prio);
                                 } catch (Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();

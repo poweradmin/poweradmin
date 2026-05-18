@@ -94,7 +94,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop');" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -134,7 +134,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}" 
+                        <input class="form-control form-control-sm ttl-input {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}"
                                type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
                         {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}
                         <div class="invalid-feedback">{% trans %}Invalid TTL value{% endtrans %}</div>
@@ -513,7 +513,7 @@
                 </table>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     {{ pagination | raw }}
                 </div>
@@ -674,7 +674,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom');" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -714,7 +714,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}" 
+                        <input class="form-control form-control-sm ttl-input {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}"
                                type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
                         {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}
                         <div class="invalid-feedback">{% trans %}Invalid TTL value{% endtrans %}</div>
@@ -956,10 +956,34 @@
             });
         }
     }
+
+    // TTL_DEFAULTS.ptr is null when dns.ttl_reverse is unset or this is a forward
+    // zone (so forward-zone PTR records, e.g. RFC 2317, keep dns.ttl).
+    const TTL_DEFAULTS = {
+        plain: {{ default_ttl|json_encode|raw }},
+        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }}
+    };
+
+    let suppressTtlSwap = false;
+
+    function updateTtlForType(typeSelect, ttlInput) {
+        if (suppressTtlSwap || !ttlInput || ttlInput.dataset.userEdited === 'true') {
+            return;
+        }
+        const isPtr = typeSelect.value === 'PTR';
+        const target = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
+        ttlInput.value = target;
+    }
 </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.ttl-input').forEach(function(input) {
+            input.addEventListener('input', function() {
+                input.dataset.userEdited = 'true';
+            });
+        });
+
         // Handle pre-selected record types for form data restoration
         function setPreselectedType(selectId) {
             const typeSelect = document.getElementById(selectId);
@@ -968,9 +992,12 @@
                 for (let i = 0; i < typeSelect.options.length; i++) {
                     if (typeSelect.options[i].value === preselectedType) {
                         typeSelect.selectedIndex = i;
-                        // Trigger the change event to update the content input
+                        // The initial dispatch must not clobber form_data.ttl when the
+                        // form is being rehydrated after a validation error.
+                        suppressTtlSwap = true;
                         const event = new Event('change');
                         typeSelect.dispatchEvent(event);
+                        suppressTtlSwap = false;
                         break;
                     }
                 }
@@ -986,11 +1013,24 @@
         if (topTypeSelect) {
             updatePriorityFieldState(topTypeSelect, 'priorityFieldTop');
         }
-        
+
         const bottomTypeSelect = document.getElementById('recordTypeSelectBottom');
         if (bottomTypeSelect) {
             updatePriorityFieldState(bottomTypeSelect, 'priorityFieldBottom');
         }
+
+        // Sync the TTL fields with the auto-selected type so the displayed value
+        // matches what the backend will persist for the initial type.
+        {% if not (form_data.ttl is defined) %}
+        [topTypeSelect, bottomTypeSelect].forEach(function(typeSelect) {
+            if (!typeSelect) return;
+            const form = typeSelect.closest('form');
+            const ttlInput = form ? form.querySelector('input[name=ttl]') : null;
+            if (ttlInput) {
+                updateTtlForType(typeSelect, ttlInput);
+            }
+        });
+        {% endif %}
         
         // Initialize priority field states for existing records
         document.querySelectorAll('.record-priority-field').forEach(priorityField => {
@@ -1106,7 +1146,7 @@
     function updateDeleteButtonState(buttonId, checkboxes) {
         const button = document.getElementById(buttonId);
         if (!button) return;
-        
+
         let hasChecked = false;
         for (let i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
@@ -1114,10 +1154,10 @@
                 break;
             }
         }
-        
+
         button.disabled = !hasChecked;
     }
-    
+
     function updateEditButtonState(checkboxes) {
         const editButton = document.getElementById('edit-selected-record');
         if (!editButton) return;

@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -62,6 +63,7 @@ class AddRecordController extends BaseController
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private UserContextService $userContextService;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request)
     {
@@ -107,6 +109,7 @@ class AddRecordController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
     }
 
     public function run(): void
@@ -159,9 +162,16 @@ class AddRecordController extends BaseController
         $content = $_POST['content'];
         $type = $_POST['type'];
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
+
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
         // Convert IDN record name and content to punycode
         $name = DnsIdnService::toPunycode($name);
@@ -169,11 +179,6 @@ class AddRecordController extends BaseController
 
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        if ($zone_name === null) {
-            $this->showError(_('Zone not found.'));
-            return;
-        }
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         try {
@@ -233,7 +238,10 @@ class AddRecordController extends BaseController
         }
 
         if (isset($_POST['reverse'])) {
-            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+            // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
+            // when unset, the PTR inherits the forward record's TTL (historical behavior).
+            $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
+            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
 
             if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
                 // Check if this is a warning (duplicate PTR exists for different hostname)
@@ -270,7 +278,10 @@ class AddRecordController extends BaseController
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
-        $ttl = $this->config->get('dns', 'ttl', 3600);
+        // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
+        // when the user selects PTR on a reverse zone, keeping the form consistent with
+        // what the backend will actually persist.
+        $ttl = $this->reverseTtlResolver->getForwardTtl();
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
         if ($zone_name !== null && str_starts_with($zone_name, "xn--")) {
@@ -300,6 +311,8 @@ class AddRecordController extends BaseController
             'type' => $formData['type'] ?? $_POST['type'] ?? '',
             'content' => $formData['content'] ?? $_POST['content'] ?? '',
             'ttl' => $formData['ttl'] ?? $_POST['ttl'] ?? $ttl,
+            'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
+            'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'prio' => $formData['prio'] ?? $_POST['prio'] ?? 0,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -442,6 +455,7 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
         foreach ($records as $record) {
             // Skip non-array or incomplete records
@@ -453,7 +467,7 @@ class AddRecordController extends BaseController
             $content = $record['content'];
             $type = $record['type'];
             $prio = isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0;
-            $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->config->get('dns', 'ttl', 3600);
+            $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
             $comment = $record['comment'] ?? '';
 
             if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
@@ -461,7 +475,8 @@ class AddRecordController extends BaseController
 
                 // Handle reverse or domain record creation for individual records
                 if (isset($record['reverse']) && $record['reverse']) {
-                    $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                    $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
+                    $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
                     if (!empty($reverseResult['success'])) {
                         $matchingRecordCount++;
                     }
