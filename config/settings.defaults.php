@@ -189,6 +189,7 @@ return [
         'ns3' => '',
         'ns4' => '',
         'ttl' => 86400,                            // Default TTL for new records (86400 = 24 hours)
+        'ttl_reverse' => null,                     // Default TTL for PTR records in reverse zones; null falls back to dns.ttl (added in 4.4.0)
 
         // SOA Record Settings
         'soa_refresh' => 28800,                    // 8 hours

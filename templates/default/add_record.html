@@ -83,7 +83,7 @@
                                 <input class="form-control form-control-sm name-field" type="text" name="records[0][name]" value="{{ name }}">
                             </td>
                             <td>
-                                <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']'));">
+                                <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']')); updateTtlForType(this, this.closest('tr').querySelector('input[name*=\'[ttl]\']'));">
                                     {% for record_type in types %}
                                     {% set add = '' %}
                                     {% if type == record_type %}
@@ -111,7 +111,7 @@
                                 <input class="form-control form-control-sm" type="number" name="records[0][prio]" value="{{ prio }}" min="0" max="65535" pattern="[0-9]*">
                             </td>
                             <td>
-                                <input class="form-control form-control-sm" type="number" name="records[0][ttl]" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" required>
+                                <input class="form-control form-control-sm ttl-input" type="number" name="records[0][ttl]" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" required>
                             </td>
                             {% if iface_record_comments %}
                                 <td>
@@ -141,7 +141,7 @@
                                 <input class="form-control form-control-sm name-field" type="text" name="records[{{ loop.index }}][name]" value="{{ rec.name | default('') }}">
                             </td>
                             <td>
-                                <select class="form-select form-select-sm record-type-select" name="records[{{ loop.index }}][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']'));">
+                                <select class="form-select form-select-sm record-type-select" name="records[{{ loop.index }}][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']')); updateTtlForType(this, this.closest('tr').querySelector('input[name*=\'[ttl]\']'));">
                                     {% for record_type in types %}
                                     <option {% if rec.type | default('') == record_type %}selected{% endif %} value="{{ record_type }}">{{ record_type }}{% if record_type in deprecated_types %} ({% trans %}deprecated{% endtrans %}){% endif %}</option>
                                     {% endfor %}
@@ -163,7 +163,7 @@
                                 <input class="form-control form-control-sm" type="number" name="records[{{ loop.index }}][prio]" value="{{ rec.prio | default(0) }}" min="0" max="65535" pattern="[0-9]*">
                             </td>
                             <td>
-                                <input class="form-control form-control-sm" type="number" name="records[{{ loop.index }}][ttl]" value="{{ rec.ttl | default(ttl) }}" min="0" max="2147483647" pattern="[0-9]*" required>
+                                <input class="form-control form-control-sm ttl-input" type="number" name="records[{{ loop.index }}][ttl]" value="{{ rec.ttl | default(ttl) }}" min="0" max="2147483647" pattern="[0-9]*" required>
                             </td>
                             {% if iface_record_comments %}
                                 <td>
@@ -245,6 +245,24 @@
         }
     }
 
+    // TTL_DEFAULTS.ptr is null when dns.ttl_reverse is unset or this is a forward
+    // zone (so forward-zone PTR records, e.g. RFC 2317, keep dns.ttl).
+    const TTL_DEFAULTS = {
+        plain: {{ default_ttl|json_encode|raw }},
+        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }}
+    };
+
+    let suppressTtlSwap = false;
+
+    function updateTtlForType(typeSelect, ttlInput) {
+        if (suppressTtlSwap || !ttlInput || ttlInput.dataset.userEdited === 'true') {
+            return;
+        }
+        const isPtr = typeSelect.value === 'PTR';
+        const target = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
+        ttlInput.value = target;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         updateDeleteButtons();
         document.querySelectorAll('.record-type-select').forEach(function(select) {
@@ -253,6 +271,18 @@
             const row = select.closest('tr');
             const priorityInput = row.querySelector('input[name*="[prio]"]');
             updatePriorityFieldState(select, priorityInput);
+            // Sync TTL to whatever the browser auto-selected so display matches backend.
+            {% if not (form_data is defined and form_data.ttl is defined) %}
+            const ttlInput = row.querySelector('.ttl-input');
+            if (ttlInput) {
+                updateTtlForType(select, ttlInput);
+            }
+            {% endif %}
+        });
+        document.querySelectorAll('.ttl-input').forEach(function(input) {
+            input.addEventListener('input', function() {
+                input.dataset.userEdited = 'true';
+            });
         });
     });
 
@@ -294,6 +324,18 @@
             // Initialize priority field state for the new row
             const priorityInput = newRow.querySelector('input[name*="[prio]"]');
             updatePriorityFieldState(typeSelect, priorityInput);
+        }
+
+        // Reset the user-edited flag on the cloned TTL so it tracks type changes again
+        const ttlInput = newRow.querySelector('.ttl-input');
+        if (ttlInput) {
+            delete ttlInput.dataset.userEdited;
+            ttlInput.addEventListener('input', function() {
+                ttlInput.dataset.userEdited = 'true';
+            });
+            if (typeSelect) {
+                updateTtlForType(typeSelect, ttlInput);
+            }
         }
         
         // Setup warnings for the new row

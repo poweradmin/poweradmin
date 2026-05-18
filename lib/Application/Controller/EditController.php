@@ -53,6 +53,7 @@ use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
@@ -78,6 +79,7 @@ class EditController extends BaseController
     private DnsRecord $dnsRecord;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
+    private ReverseTtlResolver $reverseTtlResolver;
     private RecordManagerService $recordManager;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
@@ -129,6 +131,7 @@ class EditController extends BaseController
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->zoneRepository = $this->createZoneRepository();
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
@@ -209,6 +212,10 @@ class EditController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        // Form pre-fill stays on dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
+        // for PTR selections so display tracks what's persisted.
+        $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
         // Process form submissions
         if ($this->isPost() && isset($_POST['commit'])) {
@@ -222,7 +229,7 @@ class EditController extends BaseController
                     'content' => $_POST['content'] ?? '',
                     'type' => $_POST['type'] ?? '',
                     'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
-                    'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600),
+                    'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($_POST['type'] ?? '', $isReverseZone),
                     'comment' => $_POST['comment'] ?? ''
                 ];
 
@@ -429,8 +436,6 @@ class EditController extends BaseController
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-        $isReverseZone = $zone_name !== null && DnsHelper::isReverseZone($zone_name);
-
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
@@ -473,7 +478,9 @@ class EditController extends BaseController
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $this->userContextService->getLoggedInUserId(),
-            'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
+            'dns_ttl' => $defaultTtl,
+            'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
+            'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'is_reverse_zone' => $isReverseZone,
             'record_types' => $isReverseZone
                 ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities())
@@ -792,7 +799,6 @@ class EditController extends BaseController
         $content = $_POST['content'];
         $type = $_POST['type'];
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
 
         // Normalize record name to full FQDN (always, regardless of display setting)
@@ -806,6 +812,8 @@ class EditController extends BaseController
             ];
             return false;
         }
+        $isReverseZone = DnsHelper::isReverseZone($zone_name_for_record);
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);
 
         try {
@@ -850,7 +858,10 @@ class EditController extends BaseController
         }
 
         if (isset($_POST['reverse'])) {
-            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+            // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
+            // when unset, the PTR inherits the forward record's TTL (historical behavior).
+            $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
+            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
 
             if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
                 $message = _('Record successfully added. A matching PTR record was also created.');

@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -42,6 +43,7 @@ class BatchPtrRecordController extends BaseController
     private DnsRecord $dnsRecord;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request)
     {
@@ -63,6 +65,7 @@ class BatchPtrRecordController extends BaseController
             $recordRepository
         );
         $this->userContextService = new UserContextService();
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
     }
 
     public function run(): void
@@ -153,7 +156,12 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
         $domain = $_POST['domain'] ?? '';
-        $ttl = $this->config->get('dns', 'ttl', 86400);
+        $ttl = $this->reverseTtlResolver->getDefaultTtl(true);
+        // Auto-created forward A/AAAA records use the regular dns.ttl, never dns.ttl_reverse.
+        $forwardTtl = $this->reverseTtlResolver->getDefaultTtl(false);
+        // When dns.ttl_reverse is configured, matching-records mode overrides each A record's TTL with it;
+        // when unset, null preserves the historical behavior of inheriting the matched A's TTL.
+        $matchingPtrTtl = $this->reverseTtlResolver->getConfiguredReverseTtl();
         $prio = 0;
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
@@ -173,7 +181,9 @@ class BatchPtrRecordController extends BaseController
                     $comment,
                     $this->userContextService->getLoggedInUsername(),
                     $createForwardRecords,
-                    $onlyMatchingRecords
+                    $onlyMatchingRecords,
+                    $forwardTtl,
+                    $matchingPtrTtl
                 );
             } else { // IPv6
                 $result = $this->batchReverseRecordCreator->createIPv6Network(
@@ -186,7 +196,8 @@ class BatchPtrRecordController extends BaseController
                     $comment,
                     $this->userContextService->getLoggedInUsername(),
                     $ipv6_count,
-                    $createForwardRecords
+                    $createForwardRecords,
+                    $forwardTtl
                 );
             }
 
@@ -234,7 +245,7 @@ class BatchPtrRecordController extends BaseController
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? '',
             'domain' => $formData['domain'] ?? $preFillDomain,
-            'ttl' => $this->config->get('dns', 'ttl', 86400),
+            'ttl' => $this->reverseTtlResolver->getDefaultTtl(true),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
             'create_forward_records' => $formData['create_forward_records'] ?? '',
