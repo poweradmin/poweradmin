@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListLogZonesController extends BaseController
 {
@@ -171,9 +172,9 @@ class ListLogZonesController extends BaseController
             header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.csv"');
             $output = fopen('php://output', 'w');
             if (!empty($parsed)) {
-                fputcsv($output, array_keys($parsed[0]));
+                fputcsv($output, CsvFormulaEscaper::escapeRow(array_keys($parsed[0])));
                 foreach ($parsed as $row) {
-                    fputcsv($output, $row);
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($row));
                 }
             }
             fclose($output);
