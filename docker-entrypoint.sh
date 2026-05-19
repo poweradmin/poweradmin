@@ -203,6 +203,10 @@ validate_api_config() {
             exit 1
         fi
     fi
+
+    if [ -n "${PA_PDNS_BACKEND:-}" ]; then
+        log "WARNING: PA_PDNS_BACKEND is not a recognized variable - did you mean PA_DNS_BACKEND?"
+    fi
 }
 
 # Validate LDAP configuration if enabled
@@ -1241,6 +1245,7 @@ print_config_summary() {
         log "Default Language: ${PA_DEFAULT_LANGUAGE:-en_EN}"
         log "Mail Enabled: ${PA_MAIL_ENABLED:-true}"
         log "API Enabled: ${PA_API_ENABLED:-false}"
+        log "DNS Backend: ${PA_DNS_BACKEND:-sql}"
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"
         log "Logging Type: ${PA_LOGGING_TYPE:-null}"
