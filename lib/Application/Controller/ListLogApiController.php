@@ -29,6 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListLogApiController extends BaseController
 {
@@ -175,13 +176,13 @@ class ListLogApiController extends BaseController
                     $allKeys = array_merge($allKeys, array_keys($row));
                 }
                 $allKeys = array_unique($allKeys);
-                fputcsv($output, $allKeys);
+                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
                 foreach ($parsed as $row) {
                     $csvRow = [];
                     foreach ($allKeys as $key) {
                         $csvRow[] = $row[$key] ?? '';
                     }
-                    fputcsv($output, $csvRow);
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
                 }
             }
             fclose($output);

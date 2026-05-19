@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class CsvExportController extends BaseController
 {
@@ -108,7 +109,7 @@ class CsvExportController extends BaseController
                 $row[] = $record['comment'] ?? '';
             }
 
-            fputcsv($output, $row, ',', '"', '');
+            fputcsv($output, CsvFormulaEscaper::escapeRow($row), ',', '"', '');
         }
 
         fclose($output);
