@@ -296,7 +296,7 @@ class DomainManager implements DomainManagerInterface
                             if (!empty($templ_records)) {
                                 // Process the template records
                                 foreach ($templ_records as $r) {
-                                    if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
+                                    if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
@@ -862,8 +862,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Process each template record
                     foreach ($templ_records as $r) {
-                        // Check if this is a reverse zone and handle NS or SOA records appropriately
-                        if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
+                        if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                             $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                             $recordType = $r["type"];
 
@@ -1082,5 +1081,29 @@ class DomainManager implements DomainManagerInterface
             $cleanup->bindValue($i + 1, $id, PDO::PARAM_INT);
         }
         $cleanup->execute();
+    }
+
+    /**
+     * Decide whether a template record should be inserted into the target zone.
+     *
+     * Historically IPv4 reverse zones (in-addr.arpa) were limited to NS/SOA because
+     * early templates auto-populated A records for webip/mailip. The allowlist now
+     * also covers PTR, LUA, CNAME and TXT so legitimate reverse-zone records (e.g.
+     * LUA-driven dynamic PTR generation, RFC 2317 classless delegations) are no
+     * longer silently dropped. IPv6 reverse zones (ip6.arpa) carry no restriction.
+     */
+    private const IPV4_REVERSE_TEMPLATE_TYPES = ['NS', 'SOA', 'PTR', 'LUA', 'CNAME', 'TXT'];
+
+    private static function shouldApplyTemplateRecord(string $domain, string $type): bool
+    {
+        if (!self::isIpv4ReverseZone($domain)) {
+            return true;
+        }
+        return in_array($type, self::IPV4_REVERSE_TEMPLATE_TYPES, true);
+    }
+
+    private static function isIpv4ReverseZone(string $domain): bool
+    {
+        return stripos($domain, 'in-addr.arpa') !== false;
     }
 }
