@@ -182,5 +182,4 @@ class DbAppSettingRepository implements AppSettingRepositoryInterface
             || str_contains($message, 'does not exist')
             || str_contains($message, 'undefined table');
     }
-
 }
