@@ -32,6 +32,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListRecordChangesController extends BaseController
 {
@@ -255,7 +256,7 @@ class ListRecordChangesController extends BaseController
                     break;
                 }
                 foreach ($logs as $log) {
-                    fputcsv($output, $this->buildExportRow($log));
+                    fputcsv($output, CsvFormulaEscaper::escapeRow($this->buildExportRow($log)));
                 }
                 if (count($logs) < $pageSize) {
                     break;
