@@ -1330,6 +1330,7 @@ return array(
     'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => $baseDir . '/lib/Infrastructure/Service/SessionAuthenticator.php',
     'Poweradmin\\Infrastructure\\Service\\SqlDnsBackendProvider' => $baseDir . '/lib/Infrastructure/Service/SqlDnsBackendProvider.php',
     'Poweradmin\\Infrastructure\\Service\\StyleManager' => $baseDir . '/lib/Infrastructure/Service/StyleManager.php',
+    'Poweradmin\\Infrastructure\\Utility\\CsvFormulaEscaper' => $baseDir . '/lib/Infrastructure/Utility/CsvFormulaEscaper.php',
     'Poweradmin\\Infrastructure\\Utility\\DependencyCheck' => $baseDir . '/lib/Infrastructure/Utility/DependencyCheck.php',
     'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',

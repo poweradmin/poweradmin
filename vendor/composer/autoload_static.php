@@ -1720,6 +1720,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/SessionAuthenticator.php',
         'Poweradmin\\Infrastructure\\Service\\SqlDnsBackendProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/SqlDnsBackendProvider.php',
         'Poweradmin\\Infrastructure\\Service\\StyleManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/StyleManager.php',
+        'Poweradmin\\Infrastructure\\Utility\\CsvFormulaEscaper' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/CsvFormulaEscaper.php',
         'Poweradmin\\Infrastructure\\Utility\\DependencyCheck' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/DependencyCheck.php',
         'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
         'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/LanguageCode.php',
