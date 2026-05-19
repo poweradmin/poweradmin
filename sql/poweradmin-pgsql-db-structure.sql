@@ -525,3 +525,12 @@ CREATE TABLE record_type_defaults (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (record_type)
 );
+
+CREATE TABLE app_settings (
+    setting_key varchar(128) NOT NULL,
+    setting_value text NOT NULL,
+    value_type varchar(16) NOT NULL DEFAULT 'string',
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (setting_key)
+);

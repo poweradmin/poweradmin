@@ -44,3 +44,15 @@ CREATE TABLE IF NOT EXISTS `record_type_defaults` (
     `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (`record_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Generic admin-managed settings, layered above config/settings.php.
+-- AppSettingsService reads this table first and falls back to ConfigurationManager.
+-- No setting is migrated automatically; this is plumbing for future features.
+CREATE TABLE IF NOT EXISTS `app_settings` (
+    `setting_key` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+    `setting_value` text NOT NULL,
+    `value_type` varchar(16) NOT NULL DEFAULT 'string',
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

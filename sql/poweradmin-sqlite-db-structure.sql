@@ -381,3 +381,11 @@ CREATE TABLE record_type_defaults (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE app_settings (
+    setting_key text NOT NULL PRIMARY KEY,
+    setting_value text NOT NULL,
+    value_type text NOT NULL DEFAULT 'string',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

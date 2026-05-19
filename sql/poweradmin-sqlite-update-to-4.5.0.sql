@@ -43,3 +43,14 @@ CREATE TABLE IF NOT EXISTS record_type_defaults (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Generic admin-managed settings, layered above config/settings.php.
+-- AppSettingsService reads this table first and falls back to ConfigurationManager.
+-- No setting is migrated automatically; this is plumbing for future features.
+CREATE TABLE IF NOT EXISTS app_settings (
+    setting_key text NOT NULL PRIMARY KEY,
+    setting_value text NOT NULL,
+    value_type text NOT NULL DEFAULT 'string',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

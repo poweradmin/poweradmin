@@ -50,3 +50,15 @@ CREATE TABLE IF NOT EXISTS "public"."record_type_defaults" (
     "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "record_type_defaults_pkey" PRIMARY KEY ("record_type")
 );
+
+-- Generic admin-managed settings, layered above config/settings.php.
+-- AppSettingsService reads this table first and falls back to ConfigurationManager.
+-- No setting is migrated automatically; this is plumbing for future features.
+CREATE TABLE IF NOT EXISTS "public"."app_settings" (
+    "setting_key" character varying(128) NOT NULL,
+    "setting_value" text NOT NULL,
+    "value_type" character varying(16) NOT NULL DEFAULT 'string',
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "app_settings_pkey" PRIMARY KEY ("setting_key")
+);
