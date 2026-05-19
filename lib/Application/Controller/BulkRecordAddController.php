@@ -128,11 +128,14 @@ class BulkRecordAddController extends BaseController
         $zone_id = (int)$this->getSafeRequestValue('id');
         $records_text = $_POST['records'];
         $lines = explode("\n", trim($records_text));
-        $default_ttl = $this->config->get('dns', 'ttl', 3600);
 
         $success_count = 0;
         $failed_records = [];
         $parser = new BulkRecordParser();
+        $reverseTtlResolver = new \Poweradmin\Domain\Service\ReverseTtlResolver(
+            $this->config,
+            new \Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository($this->db)
+        );
 
         foreach ($lines as $line) {
             $line = trim($line);
@@ -140,7 +143,7 @@ class BulkRecordAddController extends BaseController
                 continue;
             }
 
-            $result = $parser->parseLine($line, $default_ttl);
+            $result = $parser->parseLine($line);
             if (is_string($result)) {
                 $failed_records[] = $line . " - " . $result;
                 continue;
@@ -180,6 +183,11 @@ class BulkRecordAddController extends BaseController
             if (!in_array($type, $valid_types)) {
                 $failed_records[] = $line . " - " . _('Invalid record type.');
                 continue;
+            }
+
+            // Apply the type-aware default when the bulk line omitted an explicit TTL.
+            if ($ttl === null) {
+                $ttl = $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
             }
 
             try {

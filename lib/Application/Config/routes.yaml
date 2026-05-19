@@ -476,6 +476,10 @@ database_consistency:
   path: /tools/database-consistency
   controller: Poweradmin\Application\Controller\DatabaseConsistencyController::run
 
+record_type_defaults:
+  path: /tools/record-type-defaults
+  controller: Poweradmin\Application\Controller\RecordTypeDefaultsController::run
+
 
 pdns_status:
   path: /tools/pdns-status

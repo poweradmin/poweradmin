@@ -454,3 +454,11 @@ CREATE TABLE `record_comment_links` (
     PRIMARY KEY (`record_id`),
     UNIQUE KEY `idx_record_comment_links_comment` (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `record_type_defaults` (
+    `record_type` varchar(20) NOT NULL,
+    `ttl` int(11) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`record_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -73,7 +74,7 @@ class ZonesRecordsBulkController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();

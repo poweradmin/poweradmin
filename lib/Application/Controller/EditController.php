@@ -54,6 +54,7 @@ use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
@@ -113,10 +114,14 @@ class EditController extends BaseController
             $backendProvider
         );
 
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->auditLogger,
             $this->dnsRecord,
+            null,
+            $this->reverseTtlResolver,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
@@ -131,7 +136,6 @@ class EditController extends BaseController
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
@@ -481,6 +485,7 @@ class EditController extends BaseController
             'dns_ttl' => $defaultTtl,
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
+            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
             'is_reverse_zone' => $isReverseZone,
             'record_types' => $isReverseZone
                 ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities())

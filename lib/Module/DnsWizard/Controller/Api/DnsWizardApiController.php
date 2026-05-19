@@ -32,6 +32,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -351,7 +352,7 @@ class DnsWizardApiController extends InternalApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $reverseTtlResolver = new ReverseTtlResolver($this->config);
+            $reverseTtlResolver = new ReverseTtlResolver($this->config, new DbRecordTypeDefaultRepository($this->db));
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $ttl = isset($data['ttl']) && $data['ttl'] !== ''
                 ? (int)$data['ttl']

@@ -38,3 +38,15 @@ CREATE TABLE IF NOT EXISTS "public"."records_zone_templ_api" (
 
 CREATE INDEX IF NOT EXISTS "idx_records_zone_templ_api_domain_id" ON "public"."records_zone_templ_api" USING btree ("domain_id");
 CREATE INDEX IF NOT EXISTS "idx_records_zone_templ_api_zone_templ_id" ON "public"."records_zone_templ_api" USING btree ("zone_templ_id");
+
+-- Per-record-type default TTLs managed via the admin UI (closes #1032).
+-- When a record is created without an explicit TTL, the server first looks
+-- up the type in this table; if no row exists the legacy fallback chain
+-- (dns.ttl_reverse for PTR, then dns.ttl) applies.
+CREATE TABLE IF NOT EXISTS "public"."record_type_defaults" (
+    "record_type" character varying(20) NOT NULL,
+    "ttl" integer NOT NULL,
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "record_type_defaults_pkey" PRIMARY KEY ("record_type")
+);

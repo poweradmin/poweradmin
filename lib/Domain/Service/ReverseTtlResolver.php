@@ -23,27 +23,41 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * Resolves the default TTL for new records, preferring dns.ttl_reverse when
- * applicable and falling back to dns.ttl when the reverse default is unset.
+ * Resolves the default TTL for new records.
+ *
+ * Fallback chain (first non-null wins):
+ *   1. record_type_defaults row for the submitted type (admin-managed via UI)
+ *   2. dns.ttl_reverse (legacy config, only when the record is a PTR in a reverse zone)
+ *   3. dns.ttl (universal fallback)
  */
 class ReverseTtlResolver
 {
-    public function __construct(private ConfigurationManager $config)
-    {
+    public function __construct(
+        private ConfigurationManager $config,
+        private RecordTypeDefaultRepositoryInterface $recordTypeDefaults,
+    ) {
     }
 
     /**
-     * Default TTL for a new record on the add/edit form.
-     * Returns dns.ttl_reverse for reverse zones when configured, otherwise dns.ttl.
+     * Default TTL for a new record on the add/edit form when the record type
+     * is not yet known (only the zone is). Reverse-zone forms default to PTR,
+     * so we consult the same fallback chain as resolveTtlForType('PTR', true).
      */
     public function getDefaultTtl(bool $isReverseZone): int
     {
-        $reverseTtl = $this->getConfiguredReverseTtl();
-        if ($isReverseZone && $reverseTtl !== null) {
-            return $reverseTtl;
+        if ($isReverseZone) {
+            $typeDefault = $this->recordTypeDefaults->find(RecordType::PTR);
+            if ($typeDefault !== null) {
+                return $typeDefault;
+            }
+            $reverseTtl = $this->getConfiguredReverseTtl();
+            if ($reverseTtl !== null) {
+                return $reverseTtl;
+            }
         }
         return $this->getForwardTtl();
     }
@@ -59,23 +73,33 @@ class ReverseTtlResolver
 
     /**
      * TTL for a PTR that is auto-created alongside a forward record.
-     * When dns.ttl_reverse is configured it always wins; otherwise the PTR
-     * inherits the forward record's TTL (historical behavior).
+     * Same fallback chain as resolveTtlForType('PTR', true), with the
+     * forward record's TTL serving as the historical last-resort default.
      */
     public function resolvePtrTtl(int $forwardTtl): int
     {
+        $typeDefault = $this->recordTypeDefaults->find(RecordType::PTR);
+        if ($typeDefault !== null) {
+            return $typeDefault;
+        }
         return $this->getConfiguredReverseTtl() ?? $forwardTtl;
     }
 
     /**
-     * TTL for a record about to be persisted. PTR records in reverse zones prefer
-     * dns.ttl_reverse (falling back to dns.ttl); every other case uses dns.ttl.
-     * The zone-type gate is required so PTRs that legitimately live in forward
-     * zones (RFC 2317 setups, custom dns.domain_record_types) keep dns.ttl.
+     * TTL for a record about to be persisted. Checks the admin-managed
+     * record_type_defaults table first, then the legacy PTR/reverse-zone
+     * config fallback, then dns.ttl. The zone-type gate prevents PTRs that
+     * legitimately live in forward zones (RFC 2317, custom dns.domain_record_types)
+     * from picking up the reverse-zone-only legacy default.
      */
     public function resolveTtlForType(string $recordType, bool $isInReverseZone): int
     {
-        if ($isInReverseZone && strtoupper($recordType) === RecordType::PTR) {
+        $typeKey = strtoupper($recordType);
+        $typeDefault = $this->recordTypeDefaults->find($typeKey);
+        if ($typeDefault !== null) {
+            return $typeDefault;
+        }
+        if ($isInReverseZone && $typeKey === RecordType::PTR) {
             return $this->getConfiguredReverseTtl() ?? $this->getForwardTtl();
         }
         return $this->getForwardTtl();
@@ -92,5 +116,16 @@ class ReverseTtlResolver
             return null;
         }
         return (int)$reverseTtl;
+    }
+
+    /**
+     * Admin-configured per-type defaults keyed by uppercase record type.
+     * Templates pass this to JS so type-change swaps pick the right value.
+     *
+     * @return array<string, int>
+     */
+    public function getTypeDefaults(): array
+    {
+        return $this->recordTypeDefaults->findAll();
     }
 }

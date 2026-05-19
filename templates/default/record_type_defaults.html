@@ -1,0 +1,66 @@
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Default TTLs by record type{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-clock-history me-2"></i>{% trans %}Default TTLs by record type{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-3">
+            {% trans %}Current global defaults{% endtrans %}: <code>dns.ttl = {{ dns_ttl }}</code>{% if ttl_reverse is not null and ttl_reverse != '' %}, <code>dns.ttl_reverse = {{ ttl_reverse }}</code>{% endif %}.
+        </p>
+
+        <form method="post" action="{{ base_url_prefix }}/tools/record-type-defaults">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+            <div class="table-responsive">
+                <table class="table table-sm table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>{% trans %}Record type{% endtrans %}</th>
+                            <th>{% trans %}Default TTL (seconds){% endtrans %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td><code>{{ row.type }}</code></td>
+                            <td>
+                                <input type="number"
+                                       class="form-control form-control-sm"
+                                       style="max-width: 200px;"
+                                       name="ttls[{{ row.type }}]"
+                                       value="{{ row.ttl is not null ? row.ttl : '' }}"
+                                       min="0"
+                                       max="2147483647"
+                                       placeholder="{% trans %}empty = use global default{% endtrans %}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save defaults{% endtrans %}
+                </button>
+                <a href="{{ base_url_prefix }}/" class="btn btn-secondary btn-sm">
+                    {% trans %}Cancel{% endtrans %}
+                </a>
+            </div>
+        </form>
+
+        <div class="text-muted small mt-4">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans %}When a record is created without an explicit TTL, Poweradmin looks up the record type here first. Leave a field empty to fall back to{% endtrans %}
+            <code>dns.ttl_reverse</code> {% trans %}(for PTRs in reverse zones) or{% endtrans %} <code>dns.ttl</code>.
+        </div>
+    </div>
+</div>
+{% endblock %}

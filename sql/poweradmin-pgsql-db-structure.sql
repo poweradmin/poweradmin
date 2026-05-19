@@ -517,3 +517,11 @@ CREATE TABLE record_comment_links (
 );
 
 CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);
+
+CREATE TABLE record_type_defaults (
+    record_type varchar(20) NOT NULL,
+    ttl integer NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (record_type)
+);

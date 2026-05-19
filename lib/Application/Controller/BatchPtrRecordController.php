@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -65,7 +66,7 @@ class BatchPtrRecordController extends BaseController
             $recordRepository
         );
         $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
     }
 
     public function run(): void
@@ -156,12 +157,15 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
         $domain = $_POST['domain'] ?? '';
-        $ttl = $this->reverseTtlResolver->getDefaultTtl(true);
-        // Auto-created forward A/AAAA records use the regular dns.ttl, never dns.ttl_reverse.
-        $forwardTtl = $this->reverseTtlResolver->getDefaultTtl(false);
-        // When dns.ttl_reverse is configured, matching-records mode overrides each A record's TTL with it;
-        // when unset, null preserves the historical behavior of inheriting the matched A's TTL.
-        $matchingPtrTtl = $this->reverseTtlResolver->getConfiguredReverseTtl();
+        $ttl = $this->reverseTtlResolver->resolveTtlForType('PTR', true);
+        // Forward A/AAAA records get their own per-type default (or dns.ttl).
+        $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
+        $forwardTtl = $this->reverseTtlResolver->resolveTtlForType($forwardType, false);
+        // Matching-records mode: override each A's TTL with the configured PTR
+        // default (per-type table or legacy dns.ttl_reverse); null preserves
+        // historical behavior of inheriting the matched A's TTL.
+        $matchingPtrTtl = $this->reverseTtlResolver->getTypeDefaults()['PTR']
+            ?? $this->reverseTtlResolver->getConfiguredReverseTtl();
         $prio = 0;
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided

@@ -31,7 +31,9 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -239,7 +241,11 @@ class DnsWizardFormController extends BaseController
         $name = DnsHelper::restoreZoneSuffix($recordData['name'] ?? '', $zone_name);
         $type = $recordData['type'] ?? '';
         $content = $recordData['content'] ?? '';
-        $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== '' ? (int)$recordData['ttl'] : $this->getConfig()->get('dns', 'ttl', 3600);
+        $reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== ''
+            ? (int)$recordData['ttl']
+            : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $prio = isset($recordData['prio']) && $recordData['prio'] !== '' ? (int)$recordData['prio'] : 0;
 
         // Create the record

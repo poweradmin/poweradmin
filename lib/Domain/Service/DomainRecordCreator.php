@@ -35,6 +35,7 @@ class DomainRecordCreator
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private IPAddressValidator $ipValidator;
+    private ?ReverseTtlResolver $reverseTtlResolver;
 
     private const IPV4_SUFFIX = '.in-addr.arpa';
     private const IPV6_SUFFIX = '.ip6.arpa';
@@ -44,11 +45,13 @@ class DomainRecordCreator
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
         ?IPAddressValidator $ipValidator = null,
+        ?ReverseTtlResolver $reverseTtlResolver = null,
     ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
+        $this->reverseTtlResolver = $reverseTtlResolver;
     }
 
     /**
@@ -116,7 +119,10 @@ class DomainRecordCreator
         // Get the actual zone name so we can derive the correct hostname
         $zoneName = $this->dnsRecord->getDomainNameById($domainId);
         $domainName = DnsHelper::stripZoneSuffix(rtrim($content, '.'), $zoneName);
-        $result = $this->dnsRecord->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $this->config->get('dns', 'ttl'), 0);
+        $ttl = $this->reverseTtlResolver !== null
+            ? $this->reverseTtlResolver->resolveTtlForType(RecordType::A, false)
+            : $this->config->get('dns', 'ttl');
+        $result = $this->dnsRecord->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
 
         if ($result) {
             return [

@@ -32,3 +32,15 @@ CREATE TABLE IF NOT EXISTS `records_zone_templ_api` (
     KEY `idx_records_zone_templ_api_domain_id` (`domain_id`),
     KEY `idx_records_zone_templ_api_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Per-record-type default TTLs managed via the admin UI (closes #1032).
+-- When a record is created without an explicit TTL, the server first looks
+-- up the type in this table; if no row exists the legacy fallback chain
+-- (dns.ttl_reverse for PTR, then dns.ttl) applies.
+CREATE TABLE IF NOT EXISTS `record_type_defaults` (
+    `record_type` varchar(20) NOT NULL,
+    `ttl` int(11) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`record_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

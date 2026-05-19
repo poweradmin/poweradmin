@@ -49,6 +49,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -92,11 +93,14 @@ class AddRecordController extends BaseController
         );
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->auditLogger,
             $this->dnsRecord,
+            null,
+            $this->reverseTtlResolver,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
@@ -109,7 +113,6 @@ class AddRecordController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
     }
 
     public function run(): void
@@ -313,6 +316,7 @@ class AddRecordController extends BaseController
             'ttl' => $formData['ttl'] ?? $_POST['ttl'] ?? $ttl,
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
+            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
             'prio' => $formData['prio'] ?? $_POST['prio'] ?? 0,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
