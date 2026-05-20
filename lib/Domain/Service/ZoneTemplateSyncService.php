@@ -170,14 +170,31 @@ class ZoneTemplateSyncService
      */
     public function removeSyncRecord(int $zoneId, int $templateId): void
     {
-        $query = "DELETE FROM zone_template_sync 
-                  WHERE zone_id = :zone_id 
+        $query = "DELETE FROM zone_template_sync
+                  WHERE zone_id = :zone_id
                     AND zone_templ_id = :template_id";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'zone_id' => $zoneId,
             'template_id' => $templateId
+        ]);
+    }
+
+    /**
+     * Drop sync rows for prior templates so the table reflects the zone's current template.
+     * Pass 0 as $keepTemplateId to clear every sync row for the zone.
+     */
+    public function removeStaleSyncRecords(int $zoneId, int $keepTemplateId): void
+    {
+        $query = "DELETE FROM zone_template_sync
+                  WHERE zone_id = :zone_id
+                    AND zone_templ_id <> :keep_id";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            'zone_id' => $zoneId,
+            'keep_id' => $keepTemplateId
         ]);
     }
 

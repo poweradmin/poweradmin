@@ -1001,6 +1001,21 @@ class DomainManager implements DomainManagerInterface
                 ':zone_template_id' => $zone_template_id,
                 ':zone_id' => $zone_id
             ]);
+
+            // Reconcile zone_template_sync so stale rows for a previous template don't
+            // keep showing the zone as out-of-sync after it has been reassigned.
+            $zonesIdStmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id");
+            $zonesIdStmt->execute([':domain_id' => $zone_id]);
+            $zonesId = $zonesIdStmt->fetchColumn();
+            if ($zonesId !== false) {
+                $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
+                $syncService->removeStaleSyncRecords((int)$zonesId, $zone_template_id);
+                if ($zone_template_id !== 0) {
+                    $syncService->createSyncRecord((int)$zonesId, $zone_template_id);
+                    $syncService->markZoneAsSynced((int)$zonesId, $zone_template_id);
+                }
+            }
+
             if (!$isApiBackend || $this->db->inTransaction()) {
                 $this->db->commit();
             }
