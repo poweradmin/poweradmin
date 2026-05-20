@@ -3,7 +3,7 @@
 /**
  * WHOIS servers list
  *
- * Updated on 2026-04-09 - 1262 entries
+ * Updated on 2026-05-20 - 1264 entries
  * Source: IANA WHOIS database
  *
  * Do not edit manually - use scripts/update_whois_servers.php to regenerate
@@ -205,7 +205,6 @@ return array (
   'cn' => 'whois.cnnic.cn',
   'co' => 'whois.registry.co',
   'co.uk' => 'whois.nic.uk',
-  'co.za' => 'whois.registry.net.za',
   'coach' => 'whois.nic.coach',
   'codes' => 'whois.nic.codes',
   'coffee' => 'whois.nic.coffee',
@@ -595,6 +594,7 @@ return array (
   'memorial' => 'whois.nic.memorial',
   'men' => 'whois.nic.men',
   'menu' => 'whois.nic.menu',
+  'merck' => 'whois.nic.merck',
   'merckmsd' => 'whois.nic.merckmsd',
   'mg' => 'whois.nic.mg',
   'miami' => 'whois.nic.miami',
@@ -629,7 +629,7 @@ return array (
   'mtr' => 'whois.nic.mtr',
   'mu' => 'whois.tld.mu',
   'museum' => 'whois.nic.museum',
-  'music' => 'whois.nic.music',
+  'music' => 'whois.registryservices.music',
   'mw' => 'whois.nic.mw',
   'mx' => 'whois.mx',
   'my' => 'whois.mynic.my',
@@ -1102,6 +1102,7 @@ return array (
   'xn--mgbbh1a' => 'whois.nixiregistry.in',
   'xn--mgbbh1a71e' => 'whois.nixiregistry.in',
   'xn--mgbca7dzdo' => 'whois.nic.xn--mgbca7dzdo',
+  'xn--mgberp4a5d4ar' => 'whois.nic.net.sa',
   'xn--mgbgu82a' => 'whois.nixiregistry.in',
   'xn--mgbi4ecexp' => 'whois.nic.xn--mgbi4ecexp',
   'xn--mgbx4cd0ab' => 'whois.mynic.my',

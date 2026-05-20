@@ -3,7 +3,7 @@
 /**
  * RDAP servers list
  *
- * Updated on 2026-04-09 - 1198 entries
+ * Updated on 2026-05-20 - 1199 entries
  * Source: IANA RDAP Bootstrap (https://data.iana.org/rdap/dns.json)
  *
  * Do not edit manually - use scripts/update_rdap_servers.php to regenerate
@@ -41,7 +41,7 @@ return array (
   'airforce' => 'https://rdap.identitydigital.services/rdap/',
   'airtel' => 'https://rdap.nic.airtel/',
   'akdn' => 'https://rdap.identitydigital.services/rdap/',
-  'alibaba' => 'https://rdap.identitydigital.services/rdap/',
+  'alibaba' => 'https://rdap.aliregistry.cn/rdap/',
   'alipay' => 'https://rdap.identitydigital.services/rdap/',
   'allfinanz' => 'https://rdap.centralnic.com/allfinanz/',
   'allstate' => 'https://rdap.identitydigital.services/rdap/',
@@ -644,6 +644,7 @@ return array (
   'memorial' => 'https://rdap.identitydigital.services/rdap/',
   'men' => 'https://rdap.nic.men/',
   'menu' => 'https://rdap.nic.menu/',
+  'merck' => 'https://rdap-merck.dns.business/rdap/',
   'merckmsd' => 'https://rdap.nic.merckmsd/',
   'mg' => 'https://rdap.nic.mg/',
   'miami' => 'https://rdap.nic.miami/',
