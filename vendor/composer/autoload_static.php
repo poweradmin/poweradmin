@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
+class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -3832,6 +3832,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Symfony\\Component\\Yaml\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/yaml/Exception/RuntimeException.php',
         'Symfony\\Component\\Yaml\\Inline' => __DIR__ . '/..' . '/symfony/yaml/Inline.php',
         'Symfony\\Component\\Yaml\\Parser' => __DIR__ . '/..' . '/symfony/yaml/Parser.php',
+        'Symfony\\Component\\Yaml\\ParserState' => __DIR__ . '/..' . '/symfony/yaml/ParserState.php',
         'Symfony\\Component\\Yaml\\Tag\\TaggedValue' => __DIR__ . '/..' . '/symfony/yaml/Tag/TaggedValue.php',
         'Symfony\\Component\\Yaml\\Unescaper' => __DIR__ . '/..' . '/symfony/yaml/Unescaper.php',
         'Symfony\\Component\\Yaml\\Yaml' => __DIR__ . '/..' . '/symfony/yaml/Yaml.php',
@@ -3944,6 +3945,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Twig\\Node\\CheckSecurityCallNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckSecurityCallNode.php',
         'Twig\\Node\\CheckSecurityNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckSecurityNode.php',
         'Twig\\Node\\CheckToStringNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckToStringNode.php',
+        'Twig\\Node\\CoercesChildrenToStringInterface' => __DIR__ . '/..' . '/twig/twig/src/Node/CoercesChildrenToStringInterface.php',
         'Twig\\Node\\DeprecatedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DeprecatedNode.php',
         'Twig\\Node\\DoNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DoNode.php',
         'Twig\\Node\\EmbedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/EmbedNode.php',
@@ -4127,9 +4129,9 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit69e2902df91bc724db96bb81f54b17f4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit69e2902df91bc724db96bb81f54b17f4::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit69e2902df91bc724db96bb81f54b17f4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0ad1039ae44b47b344e495959a2ee847::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0ad1039ae44b47b344e495959a2ee847::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit0ad1039ae44b47b344e495959a2ee847::$classMap;
 
         }, null, ClassLoader::class);
     }
