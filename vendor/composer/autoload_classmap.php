@@ -3571,6 +3571,7 @@ return array(
     'Twig\\Node\\CheckSecurityCallNode' => $vendorDir . '/twig/twig/src/Node/CheckSecurityCallNode.php',
     'Twig\\Node\\CheckSecurityNode' => $vendorDir . '/twig/twig/src/Node/CheckSecurityNode.php',
     'Twig\\Node\\CheckToStringNode' => $vendorDir . '/twig/twig/src/Node/CheckToStringNode.php',
+    'Twig\\Node\\CoercesChildrenToStringInterface' => $vendorDir . '/twig/twig/src/Node/CoercesChildrenToStringInterface.php',
     'Twig\\Node\\DeprecatedNode' => $vendorDir . '/twig/twig/src/Node/DeprecatedNode.php',
     'Twig\\Node\\DoNode' => $vendorDir . '/twig/twig/src/Node/DoNode.php',
     'Twig\\Node\\EmbedNode' => $vendorDir . '/twig/twig/src/Node/EmbedNode.php',
