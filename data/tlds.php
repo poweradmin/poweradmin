@@ -3,7 +3,7 @@
 /**
  * Top Level Domains list from IANA
  *
- * Updated on 2026-04-01 - 1436 TLDs
+ * Updated on 2026-05-20 - 1437 TLDs
  * Source: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
  *
  * Do not edit manually - use scripts/update_tlds.sh to regenerate
@@ -105,9 +105,9 @@ return [
         'man', 'management', 'mango', 'map', 'market', 'marketing', 'markets', 
         'marriott', 'marshalls', 'mattel', 'mba', 'mc', 'mckinsey', 'md', 'me', 
         'med', 'media', 'meet', 'melbourne', 'meme', 'memorial', 'men', 'menu', 
-        'merckmsd', 'mg', 'mh', 'miami', 'microsoft', 'mil', 'mini', 'mint', 
-        'mit', 'mitsubishi', 'mk', 'ml', 'mlb', 'mls', 'mm', 'mma', 'mn', 'mo', 
-        'mobi', 'mobile', 'moda', 'moe', 'moi', 'mom', 'monash', 'money', 
+        'merck', 'merckmsd', 'mg', 'mh', 'miami', 'microsoft', 'mil', 'mini', 
+        'mint', 'mit', 'mitsubishi', 'mk', 'ml', 'mlb', 'mls', 'mm', 'mma', 'mn', 
+        'mo', 'mobi', 'mobile', 'moda', 'moe', 'moi', 'mom', 'monash', 'money', 
         'monster', 'mormon', 'mortgage', 'moscow', 'moto', 'motorcycles', 'mov', 
         'movie', 'mp', 'mq', 'mr', 'ms', 'msd', 'mt', 'mtn', 'mtr', 'mu', 
         'museum', 'music', 'mv', 'mw', 'mx', 'my', 'mz', 'na', 'nab', 'nagoya', 
