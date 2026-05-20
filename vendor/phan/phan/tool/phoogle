@@ -1,0 +1,109 @@
+#!/usr/bin/env php
+<?php
+/**
+ * phoogle is a tool to locate functions based on their signatures.
+ *
+ * @phan-file-suppress PhanPluginRemoveDebugAny
+ */
+
+use Phan\CLIBuilder;
+use Phan\Phan;
+
+/**
+ * Print usage for phoogle and exit.
+ * @return never
+ */
+function phoogle_usage(int $status) : void {
+    global $argv;
+    $program = $argv[0];
+    fwrite($status !== 0 ? STDERR : STDOUT, <<<EOT
+Usage: $program [options] 'paramType1 -> paramType2 -> returnType'
+
+Options:
+  -h, --help: Print this help message to stdout.
+  -p, --progress-bar: Show a progress bar.
+  -l, --limit <count>: Number of search results to show (defaults to 10)
+                       Set this to -1 for all results.
+
+Examples:
+
+  Look for user-defined or internal functions returning an array of reflection methods
+    $program 'ReflectionMethod[]'
+
+  Look for functions that return a string, given a string and an array
+
+    $program 'string -> array -> string'
+
+  Look for all functions that can be used to get a method (\\Phan\\Language\\Element\\Method) from a CodeBase (\\Phan\\CodeBase)
+  (Assumes Phan is in the parsed file list)
+
+    $program --limit -1 'CodeBase->Method'
+
+Notes:
+
+  The order of the parameters is deliberately ignored.
+
+  More CLI options will be added in the future.
+
+EOT
+    );
+    exit($status);
+}
+call_user_func(static function () : void {
+    global $argv;
+    $options = getopt(
+        "hpl:",
+        [
+            'help',
+            'progress-bar',
+            'limit:',
+        ],
+        $optind
+    );
+    $has_any_option = static function (string ...$arg_names) use ($options) : bool {
+        foreach ($arg_names as $arg) {
+            if (array_key_exists($arg, $options)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    if ($has_any_option('h', 'help')) {
+        phoogle_usage(0);
+        return;
+    }
+    $remaining_argv = array_slice($argv, $optind);
+    if (count($remaining_argv) !== 1) {
+        fwrite(STDERR, "ERROR: Expected 1 argument with the function/method signature to search for, got " . count($remaining_argv) . "\n");
+        phoogle_usage(1);
+    }
+
+    require_once(__DIR__ . '/../src/Phan/Bootstrap.php');
+
+    $cli_builder = new CLIBuilder();
+    if ($has_any_option('p', 'progress-bar')) {
+        $cli_builder->setOption('progress-bar');
+    }
+    $limit_raw = $options['limit'] ?? $options['l'] ?? '10';
+    if (is_string($limit_raw)) {
+        $limit = filter_var($limit_raw, FILTER_VALIDATE_INT);
+        if ($limit === -1) {
+            $limit = PHP_INT_MAX;
+        } elseif ($limit <= 0) {
+            echo "ERROR: limit must be a positive integer, got $limit_raw\n";
+            phoogle_usage(1);
+        }
+        $_ENV['PHOOGLE_LIMIT'] = $limit;
+    }
+    $cli_builder->setOption('find-signature', $remaining_argv[0]);
+    // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+    $cli = $cli_builder->build();
+    // Generate codebase info after parsing configs (e.g. included_extension_subset)
+    $code_base = require(__DIR__ . '/../src/codebase.php');
+
+    // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+    Phan::analyzeFileList($code_base, /** @return string[] */ static function () use($cli) : array {
+        return $cli->getFileList();
+    });
+});
