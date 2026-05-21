@@ -96,6 +96,9 @@ class LdapAuthenticator extends LoggingService
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
+            if (isset($_POST["authenticate"])) {
+                $this->ldapUserEventLogger->logLockout();
+            }
             $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;

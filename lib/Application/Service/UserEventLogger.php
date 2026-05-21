@@ -49,6 +49,16 @@ class UserEventLogger
         ));
     }
 
+    public function logLockout(AuthMethod $authMethod = AuthMethod::SQL): void
+    {
+        $this->logger->logWarn(sprintf(
+            'client_ip:%s user:%s operation:login_locked auth_method:%s',
+            $this->ipRetriever->getClientIp(),
+            $_SESSION["userlogin"] ?? '',
+            $authMethod->value
+        ));
+    }
+
     public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?LoginFailureReason $reason = null): void
     {
         $message = sprintf(

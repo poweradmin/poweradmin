@@ -98,6 +98,31 @@ class UserEventLoggerTest extends TestCase
         );
     }
 
+    public function testLockoutEmitsStructuredLine(): void
+    {
+        $captured = $this->captureUserEventLog(static function (UserEventLogger $logger): void {
+            $logger->logLockout();
+        });
+
+        $this->assertSame(
+            'client_ip:1.2.3.4 user:alice operation:login_locked auth_method:sql',
+            $captured['message']
+        );
+        $this->assertSame(LOG_WARNING, $captured['priority']);
+    }
+
+    public function testLdapLockoutCarriesLdapAuthMethod(): void
+    {
+        $captured = $this->captureLdapUserEventLog(static function (LdapUserEventLogger $logger): void {
+            $logger->logLockout();
+        });
+
+        $this->assertSame(
+            'client_ip:1.2.3.4 user:alice operation:login_locked auth_method:ldap',
+            $captured['message']
+        );
+    }
+
     public function testLdapFailedAuthMatchesUnifiedShape(): void
     {
         $captured = $this->captureLdapUserEventLog(static function (LdapUserEventLogger $logger): void {
@@ -134,14 +159,15 @@ class UserEventLoggerTest extends TestCase
         /** @var UserEventLogger $logger */
         $logger = $reflection->newInstanceWithoutConstructor();
 
-        $captor = $this->makeLoggerCaptor();
+        $captured = [];
+        $captor = $this->makeLoggerCaptor($captured);
 
         $reflection->getProperty('logger')->setValue($logger, $captor);
         $reflection->getProperty('ipRetriever')->setValue($logger, $this->makeIpRetriever());
 
         $action($logger);
 
-        return $captor->captured;
+        return $captured;
     }
 
     private function captureLdapUserEventLog(callable $action): array
@@ -150,44 +176,53 @@ class UserEventLoggerTest extends TestCase
         /** @var LdapUserEventLogger $logger */
         $logger = $reflection->newInstanceWithoutConstructor();
 
-        $captor = $this->makeLoggerCaptor();
+        $captured = [];
+        $captor = $this->makeLoggerCaptor($captured);
 
         $reflection->getProperty('logger')->setValue($logger, $captor);
         $reflection->getProperty('ipRetriever')->setValue($logger, $this->makeIpRetriever());
 
         $action($logger);
 
-        return $captor->captured;
+        return $captured;
     }
 
-    private function makeLoggerCaptor(): LegacyLogger
+    /**
+     * @param array<string, mixed> $captured
+     */
+    private function makeLoggerCaptor(array &$captured): LegacyLogger
     {
-        return new class extends LegacyLogger {
-            public array $captured = [];
+        return new class($captured) extends LegacyLogger {
+            /** @var array<string, mixed> */
+            private array $sink;
 
-            public function __construct()
+            /**
+             * @param array<string, mixed> $sink
+             */
+            public function __construct(array &$sink)
             {
                 // bypass parent constructor — captor never touches DB or config
+                $this->sink = &$sink;
             }
 
             public function logError(string $message, ?int $zone_id = null): void
             {
-                $this->captured = ['message' => $message, 'priority' => LOG_ERR];
+                $this->sink = ['message' => $message, 'priority' => LOG_ERR];
             }
 
             public function logWarn(string $message, ?int $zone_id = null): void
             {
-                $this->captured = ['message' => $message, 'priority' => LOG_WARNING];
+                $this->sink = ['message' => $message, 'priority' => LOG_WARNING];
             }
 
             public function logNotice(string $message): void
             {
-                $this->captured = ['message' => $message, 'priority' => LOG_NOTICE];
+                $this->sink = ['message' => $message, 'priority' => LOG_NOTICE];
             }
 
             public function logInfo(string $message, ?int $zone_id = null): void
             {
-                $this->captured = ['message' => $message, 'priority' => LOG_INFO];
+                $this->sink = ['message' => $message, 'priority' => LOG_INFO];
             }
         };
     }

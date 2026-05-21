@@ -53,6 +53,16 @@ class LdapUserEventLogger
         ));
     }
 
+    public function logLockout(): void
+    {
+        $this->logger->logWarn(sprintf(
+            'client_ip:%s user:%s operation:login_locked auth_method:%s',
+            $this->ipRetriever->getClientIp(),
+            $_SESSION["userlogin"] ?? '',
+            AuthMethod::LDAP->value
+        ));
+    }
+
     public function logSuccessAuth(): void
     {
         $this->logger->logNotice(sprintf(

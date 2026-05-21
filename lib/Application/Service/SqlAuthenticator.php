@@ -92,6 +92,9 @@ class SqlAuthenticator extends LoggingService
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for user {username}', ['username' => $username]);
+            if (isset($_POST['authenticate'])) {
+                $this->userEventLogger->logLockout();
+            }
             $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
