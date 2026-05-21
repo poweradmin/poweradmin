@@ -852,7 +852,7 @@ class ZonesRecordsController extends PublicApiController
                         $oldName,
                         $recordData['type'],
                         (string)$newContent,
-                        (string)$newName,
+                        $newName,
                         $zoneId,
                         (int)($updatedRecord['ttl'] ?? $recordData['ttl']),
                         (int)($updatedRecord['prio'] ?? $recordData['prio'])
