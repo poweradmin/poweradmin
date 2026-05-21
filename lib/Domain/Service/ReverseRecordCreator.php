@@ -210,6 +210,45 @@ class ReverseRecordCreator
     }
 
     /**
+     * Sync the PTR record after an A/AAAA forward record was edited.
+     * Removes the stale PTR (best-effort; user may not have created one
+     * originally) and creates a new PTR for the updated IP and hostname.
+     * Returns success when no PTR-relevant fields changed.
+     */
+    public function updateReverseRecord(
+        string $oldType,
+        string $oldContent,
+        string $oldName,
+        string $newType,
+        string $newContent,
+        string $newName,
+        int $zone_id,
+        int $ttl,
+        int $prio,
+        string $comment = '',
+        string $account = ''
+    ): array {
+        $oldIsAddress = $oldType === RecordType::A || $oldType === RecordType::AAAA;
+        $newIsAddress = $newType === RecordType::A || $newType === RecordType::AAAA;
+
+        if (!$oldIsAddress && !$newIsAddress) {
+            return $this->createSuccessResponse(_('PTR update skipped: record type is not A or AAAA.'));
+        }
+
+        // Always delete-then-recreate when sync is requested; this also propagates TTL/priority
+        // changes to the PTR even when the address and hostname are unchanged.
+        if ($oldIsAddress) {
+            $this->deleteReverseRecord($oldType, $oldContent, $oldName);
+        }
+
+        if ($newIsAddress) {
+            return $this->createReverseRecord($newName, $newType, $newContent, $zone_id, $ttl, $prio, $comment, $account);
+        }
+
+        return $this->createSuccessResponse(_('Stale PTR record removed.'));
+    }
+
+    /**
      * Find and delete the corresponding A or AAAA record for a given PTR record
      *
      * @param string $ptrName PTR record name (e.g., 1.0.168.192.in-addr.arpa)

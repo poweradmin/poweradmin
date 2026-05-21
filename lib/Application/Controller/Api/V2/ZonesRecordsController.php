@@ -683,7 +683,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                 new OA\Property(property: 'priority', type: 'integer', example: 10),
-                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)')
+                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
+                new OA\Property(property: 'update_ptr', type: 'boolean', example: false, description: 'Sync PTR record with new value (A/AAAA only). Default: false')
             ]
         )
     )]
@@ -782,9 +783,15 @@ class ZonesRecordsController extends PublicApiController
             $ttl = $this->inputInt($input, 'ttl', (int)$existingRecord['ttl']);
             $prio = $this->inputInt($input, 'priority', (int)($existingRecord['prio'] ?? 0));
             $disabled = $this->inputIntFromBool($input, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
+            $updatePtr = $this->inputBool($input, 'update_ptr', false);
             if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+
+            $oldType = strtoupper((string)$existingRecord['type']);
+            $oldContent = (string)$existingRecord['content'];
+            $oldName = (string)$existingRecord['name'];
+
             $recordData = [
                 'rid' => $recordId,
                 'zid' => $zoneId,
@@ -828,6 +835,41 @@ class ZonesRecordsController extends PublicApiController
             $domainRepository = $repositoryFactory->createDomainRepository();
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
+            $ptrUpdated = false;
+            $ptrMessage = '';
+            if ($updatePtr && ($oldType === 'A' || $oldType === 'AAAA' || $recordData['type'] === 'A' || $recordData['type'] === 'AAAA')) {
+                try {
+                    $newName = $updatedRecord['name'] ?? $recordData['name'];
+                    $newName = DnsHelper::restoreZoneSuffix($newName, $zoneName ?: '');
+                    $newContent = $updatedRecord['content'] ?? $recordData['content'];
+
+                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService, $this->createDnsBackendProvider());
+
+                    $ptrResult = $reverseRecordCreator->updateReverseRecord(
+                        $oldType,
+                        $oldContent,
+                        $oldName,
+                        $recordData['type'],
+                        (string)$newContent,
+                        (string)$newName,
+                        $zoneId,
+                        (int)($updatedRecord['ttl'] ?? $recordData['ttl']),
+                        (int)($updatedRecord['prio'] ?? $recordData['prio'])
+                    );
+
+                    if ($ptrResult['success']) {
+                        $ptrUpdated = true;
+                        $ptrMessage = ' ' . $ptrResult['message'];
+                    } else {
+                        $ptrMessage = ' PTR record update failed: ' . $ptrResult['message'];
+                    }
+                } catch (Exception $e) {
+                    $ptrMessage = ' PTR record update failed: ' . $e->getMessage();
+                    $this->logger->error('PTR record update failed: {error}', ['error' => $e->getMessage()]);
+                }
+            }
+
             if ($updatedRecord !== null) {
                 $formattedRecord = [
                     'id' => $this->formatRecordId($updatedRecord['id']),
@@ -838,7 +880,8 @@ class ZonesRecordsController extends PublicApiController
                     'ttl' => (int)$updatedRecord['ttl'],
                     'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
                     'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
-                    'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true
+                    'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true,
+                    'ptr_updated' => $ptrUpdated
                 ];
             } else {
                 $formattedRecord = [
@@ -850,7 +893,8 @@ class ZonesRecordsController extends PublicApiController
                     'ttl' => $recordData['ttl'],
                     'priority' => $recordData['prio'],
                     'disabled' => (bool)$recordData['disabled'],
-                    'auth' => true
+                    'auth' => true,
+                    'ptr_updated' => $ptrUpdated
                 ];
             }
 
@@ -863,7 +907,7 @@ class ZonesRecordsController extends PublicApiController
                 $formattedRecord['content']
             ), $zoneId);
 
-            return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
+            return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully' . $ptrMessage, 200);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesRecordsController::updateRecord', 'Failed to update record');
         }

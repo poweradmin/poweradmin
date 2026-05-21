@@ -434,6 +434,88 @@ test_ptr_autocreation() {
 }
 
 ##############################################################################
+# Test: PTR sync on record update (issue #1255)
+##############################################################################
+
+test_ptr_update() {
+    print_section "PTR Update Tests"
+
+    if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
+        print_info "Skipping PTR update tests - PTR auto-creation didn't run"
+        return 0
+    fi
+
+    # Seed an A record with PTR so we have something to update.
+    local seed='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.200",
+        "ttl": 3600,
+        "create_ptr": true
+    }'
+    if ! api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$seed" 201 "Seed A record (192.0.2.200) with PTR"; then
+        print_info "Failed to seed record - skipping PTR update tests"
+        return 1
+    fi
+    local PTR_UPD_RECORD_ID
+    PTR_UPD_RECORD_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+
+    # Test 1: change IP with update_ptr=true - old PTR should go, new PTR should appear.
+    local update_change_ip='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.201",
+        "ttl": 3600,
+        "update_ptr": true
+    }'
+    api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/records/$PTR_UPD_RECORD_ID" "$update_change_ip" 200 "Update A record IP with update_ptr=true"
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_updated\":true" ]]; then
+        print_pass "ptr_updated flag is true in response"
+    else
+        print_fail "ptr_updated flag missing or false in response"
+    fi
+
+    # Verify new PTR exists and old PTR is gone.
+    api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List reverse zone after PTR update"
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "201.2.0.192.in-addr.arpa" ]]; then
+        print_pass "New PTR (201.2.0.192.in-addr.arpa) found in reverse zone"
+    else
+        print_fail "New PTR not found in reverse zone"
+    fi
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "200.2.0.192.in-addr.arpa" ]]; then
+        print_fail "Old PTR (200.2.0.192.in-addr.arpa) still present in reverse zone"
+    else
+        print_pass "Old PTR removed from reverse zone"
+    fi
+
+    # Test 2: update without update_ptr should not touch PTRs.
+    local update_no_ptr='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.202",
+        "ttl": 3600
+    }'
+    api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/records/$PTR_UPD_RECORD_ID" "$update_no_ptr" 200 "Update A record IP without update_ptr"
+
+    api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List reverse zone after silent update"
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "201.2.0.192.in-addr.arpa" ]]; then
+        print_pass "PTR for previous IP (201) still present (update_ptr default off)"
+    else
+        print_fail "PTR for previous IP unexpectedly removed"
+    fi
+
+    print_info "PTR update tests completed"
+}
+
+##############################################################################
 # Test: Server-side TTL defaults (issue #1032, 4.5.0)
 ##############################################################################
 
@@ -1934,6 +2016,7 @@ main() {
     # Run test suites
     test_rrsets
     test_ptr_autocreation
+    test_ptr_update
     test_ttl_defaults
     test_bulk_operations
     test_disabled_records
