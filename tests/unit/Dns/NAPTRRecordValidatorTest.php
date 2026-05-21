@@ -462,4 +462,75 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         }
         $this->assertTrue($foundEnumDomainWarning);
     }
+
+    /**
+     * Regression: user-reported malformed NAPTR content where the preference
+     * field is missing and flags/service/regexp quoting is broken. The content
+     * splits into six tokens, so length validation passes, but the second token
+     * ("S") is not numeric and must be rejected as an invalid preference.
+     *
+     * Reported example:
+     *   content: 0 S SIP+D2U" " " _sip._udp.sip.testcustomer.example.com
+     */
+    public function testValidateRejectsUserReportedMalformedContent()
+    {
+        $content = '0 S SIP+D2U" " " _sip._udp.sip.testcustomer.example.com';
+        $name = 'sip.testcustomer.example.com';
+        $prio = 0;
+        $ttl = 86400;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString(
+            'preference must be a number between 0 and 65535',
+            $result->getFirstError()
+        );
+    }
+
+    /**
+     * NAPTR encodes order and preference in the content field, so the row's
+     * prio column must be 0. The add/edit form currently lets users type a
+     * non-zero priority, and this guards against accidentally relaxing the
+     * server-side check that catches it.
+     */
+    public function testValidateRejectsNonZeroPriority()
+    {
+        $content = '100 10 "S" "SIP+D2U" "" _sip._udp.example.com.';
+        $name = 'sip.example.com';
+        $prio = 10;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString(
+            'priority value of 0',
+            $result->getFirstError()
+        );
+    }
+
+    /**
+     * Happy path mirroring the Playwright check: a well-formed non-terminal
+     * NAPTR (empty regexp, domain replacement) used for SIP service discovery
+     * must validate and round-trip the content/prio/ttl unchanged.
+     */
+    public function testValidateAcceptsNonTerminalSipNaptr()
+    {
+        $content = '100 10 "S" "SIP+D2U" "" _sip._udp.sip.example.com.';
+        $name = 'sip.example.com';
+        $prio = 0;
+        $ttl = 86400;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertSame($content, $data['content']);
+        $this->assertSame(0, $data['prio']);
+        $this->assertSame(86400, $data['ttl']);
+    }
 }
