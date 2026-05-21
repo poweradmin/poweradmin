@@ -102,24 +102,26 @@ class RecordRepositoryApexSortingTest extends TestCase
         $this->assertEquals($domainId, $expectedParams[':domain_id_apex']);
     }
 
-    public function testNoApexSortingWhenSortingByOtherColumns(): void
+    public function testApexSortingAppliedWhenSortingByOtherColumns(): void
     {
         $domainId = 1;
         $expectedQuery = null;
+        $expectedParams = null;
 
-        // Create mock statement
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
+        $stmt->method('execute')
+            ->willReturnCallback(function ($params) use (&$expectedParams) {
+                $expectedParams = $params;
+                return true;
+            });
         $stmt->method('fetchAll')->willReturn([]);
 
-        // Capture the prepared query
         $this->db->method('prepare')
             ->willReturnCallback(function ($query) use (&$expectedQuery, $stmt) {
                 $expectedQuery = $query;
                 return $stmt;
             });
 
-        // Call the method with type sorting
         $this->repository->getRecordsFromDomainId(
             'mysql',
             $domainId,
@@ -130,17 +132,20 @@ class RecordRepositoryApexSortingTest extends TestCase
             false
         );
 
-        // Verify the query does NOT contain apex record sorting
-        $this->assertStringNotContainsString("records.name = (SELECT name FROM domains WHERE id = :domain_id_apex)", $expectedQuery);
+        // Apex pinning should apply regardless of sort column (issue #1250)
+        $this->assertStringContainsString("records.type = 'SOA' DESC", $expectedQuery);
+        $this->assertStringContainsString("records.type = 'NS' DESC", $expectedQuery);
+        $this->assertStringContainsString("records.name = (SELECT name FROM domains WHERE id = :domain_id_apex) DESC", $expectedQuery);
+        $this->assertArrayHasKey(':domain_id_apex', $expectedParams);
+        $this->assertEquals($domainId, $expectedParams[':domain_id_apex']);
     }
 
-    public function testNoApexSortingWhenSortingNameDescending(): void
+    public function testApexSortingAppliedWhenSortingNameDescending(): void
     {
         $domainId = 1;
         $expectedQuery = null;
         $expectedParams = null;
 
-        // Create mock statement
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')
             ->willReturnCallback(function ($params) use (&$expectedParams) {
@@ -149,14 +154,12 @@ class RecordRepositoryApexSortingTest extends TestCase
             });
         $stmt->method('fetchAll')->willReturn([]);
 
-        // Capture the prepared query
         $this->db->method('prepare')
             ->willReturnCallback(function ($query) use (&$expectedQuery, $stmt) {
                 $expectedQuery = $query;
                 return $stmt;
             });
 
-        // Call the method with name sorting DESC
         $this->repository->getRecordsFromDomainId(
             'mysql',
             $domainId,
@@ -167,11 +170,11 @@ class RecordRepositoryApexSortingTest extends TestCase
             false
         );
 
-        // Verify the query does NOT contain apex record sorting for DESC
-        $this->assertStringNotContainsString("records.name = (SELECT name FROM domains WHERE id = :domain_id_apex)", $expectedQuery);
-
-        // Verify only domain_id parameter is set
+        // Apex pinning should apply for DESC too (issue #1250)
+        $this->assertStringContainsString("records.type = 'SOA' DESC", $expectedQuery);
+        $this->assertStringContainsString("records.name = (SELECT name FROM domains WHERE id = :domain_id_apex) DESC", $expectedQuery);
         $this->assertArrayHasKey(':domain_id', $expectedParams);
-        $this->assertArrayNotHasKey(':domain_id_apex', $expectedParams);
+        $this->assertArrayHasKey(':domain_id_apex', $expectedParams);
+        $this->assertEquals($domainId, $expectedParams[':domain_id_apex']);
     }
 }

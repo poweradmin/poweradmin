@@ -184,12 +184,11 @@ class RecordRepository implements RecordRepositoryInterface
             $sortby = "$records_table.name";
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
-        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
-            // Order: SOA first, then NS, then apex records (@), then everything else
-            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
-                         "$records_table.name = (SELECT name FROM $domains_table WHERE id = :domain_id_apex) DESC, " .
-                         $sql_sortby;
-        }
+        // Pin SOA, NS, and apex records to the top regardless of column or direction so
+        // zone-level metadata stays grouped above the body the user is sorting through.
+        $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
+                     "$records_table.name = (SELECT name FROM $domains_table WHERE id = :domain_id_apex) DESC, " .
+                     $sql_sortby;
 
         // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
         // Uses COALESCE with two subqueries: first checks for per-record linked comment,
@@ -236,10 +235,7 @@ class RecordRepository implements RecordRepositoryInterface
         }
 
         $stmt = $this->db->prepare($query);
-        $params = [':domain_id' => $id];
-        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
-            $params[':domain_id_apex'] = $id;
-        }
+        $params = [':domain_id' => $id, ':domain_id_apex' => $id];
         $stmt->execute($params);
         $records = $stmt;
 
