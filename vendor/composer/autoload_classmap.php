@@ -1290,6 +1290,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\LoggerHandlerFactory' => $baseDir . '/lib/Infrastructure/Logger/LoggerHandlerFactory.php',
     'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => $baseDir . '/lib/Infrastructure/Logger/NativeLogHandler.php',
     'Poweradmin\\Infrastructure\\Logger\\NullLogHandler' => $baseDir . '/lib/Infrastructure/Logger/NullLogHandler.php',
+    'Poweradmin\\Infrastructure\\Logger\\PhpErrorLogPsrLogger' => $baseDir . '/lib/Infrastructure/Logger/PhpErrorLogPsrLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger' => $baseDir . '/lib/Infrastructure/Logger/RecordChangeLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
     'Poweradmin\\Infrastructure\\Network\\ProxyContext' => $baseDir . '/lib/Infrastructure/Network/ProxyContext.php',

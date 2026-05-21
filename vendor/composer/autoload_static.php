@@ -1680,6 +1680,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Logger\\LoggerHandlerFactory' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LoggerHandlerFactory.php',
         'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/NativeLogHandler.php',
         'Poweradmin\\Infrastructure\\Logger\\NullLogHandler' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/NullLogHandler.php',
+        'Poweradmin\\Infrastructure\\Logger\\PhpErrorLogPsrLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/PhpErrorLogPsrLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/RecordChangeLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
         'Poweradmin\\Infrastructure\\Network\\ProxyContext' => __DIR__ . '/../..' . '/lib/Infrastructure/Network/ProxyContext.php',
