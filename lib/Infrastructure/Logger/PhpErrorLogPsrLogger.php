@@ -36,18 +36,6 @@ class PhpErrorLogPsrLogger extends AbstractLogger
 {
     public function log($level, Stringable|string $message, array $context = []): void
     {
-        $rendered = $this->interpolate((string) $message, $context);
-        error_log($rendered);
-    }
-
-    private function interpolate(string $message, array $context): string
-    {
-        $replace = [];
-        foreach ($context as $key => $val) {
-            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace['{' . $key . '}'] = (string) $val;
-            }
-        }
-        return strtr($message, $replace);
+        error_log(Logger::interpolatePlaceholders((string) $message, $context));
     }
 }

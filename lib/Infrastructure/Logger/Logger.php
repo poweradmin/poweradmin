@@ -85,10 +85,25 @@ class Logger extends AbstractLogger
 
     private function interpolateMessage(string $message, array $context = []): string
     {
-        $replace = array();
+        return self::interpolatePlaceholders($message, $context);
+    }
+
+    /**
+     * Substitute PSR-3 `{key}` placeholders in a log message with values from the context array.
+     *
+     * Shared by Logger and the lightweight PhpErrorLogPsrLogger fallback so the
+     * substitution rules stay in one place.
+     */
+    public static function interpolatePlaceholders(string $message, array $context): string
+    {
+        if ($context === []) {
+            return $message;
+        }
+
+        $replace = [];
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace['{' . $key . '}'] = $val;
+                $replace['{' . $key . '}'] = (string) $val;
             }
         }
 

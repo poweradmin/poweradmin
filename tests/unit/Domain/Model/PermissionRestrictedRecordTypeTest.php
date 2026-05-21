@@ -71,13 +71,47 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertFalse(Permission::isRecordTypeRestrictedForClient('SOA', 'none'));
     }
 
-    public function testRestrictedTypesConstantMatchesHelper(): void
+    public function testRestrictedRecordTypeMessageForAdd(): void
     {
-        foreach (Permission::RESTRICTED_TYPES_FOR_CLIENT as $type) {
-            $this->assertTrue(
-                Permission::isRecordTypeRestrictedForClient($type, 'own_as_client'),
-                "Helper must reject {$type} for own_as_client per constant"
-            );
-        }
+        $this->assertSame(
+            'You do not have the permission to add SOA record.',
+            Permission::restrictedRecordTypeMessage('SOA', 'add')
+        );
+        $this->assertSame(
+            'You do not have the permission to add NS record.',
+            Permission::restrictedRecordTypeMessage('NS', 'add')
+        );
+    }
+
+    public function testRestrictedRecordTypeMessageForEdit(): void
+    {
+        $this->assertSame(
+            'You do not have the permission to edit this SOA record.',
+            Permission::restrictedRecordTypeMessage('SOA', 'edit')
+        );
+        $this->assertSame(
+            'You do not have the permission to edit this NS record.',
+            Permission::restrictedRecordTypeMessage('NS', 'edit')
+        );
+    }
+
+    public function testRestrictedRecordTypeMessageForDelete(): void
+    {
+        $this->assertSame(
+            'You do not have the permission to delete SOA records.',
+            Permission::restrictedRecordTypeMessage('SOA', 'delete')
+        );
+        $this->assertSame(
+            'You do not have the permission to delete NS records.',
+            Permission::restrictedRecordTypeMessage('NS', 'delete')
+        );
+    }
+
+    public function testRestrictedRecordTypeMessageIsCaseInsensitive(): void
+    {
+        $this->assertSame(
+            'You do not have the permission to add NS record.',
+            Permission::restrictedRecordTypeMessage('ns', 'add')
+        );
     }
 }

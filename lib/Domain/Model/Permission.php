@@ -55,6 +55,32 @@ class Permission
     }
 
     /**
+     * Localized error message for a restricted-record-type denial.
+     *
+     * Each branch keeps its gettext string literal so xgettext can extract it
+     * into the translation catalog unchanged.
+     *
+     * @param string $type DNS record type (case-insensitive; only NS and SOA are meaningful)
+     * @param 'add'|'edit'|'delete' $action Operation that was denied
+     */
+    public static function restrictedRecordTypeMessage(string $type, string $action): string
+    {
+        $isNs = strtoupper($type) === 'NS';
+
+        return match ($action) {
+            'add' => $isNs
+                ? _('You do not have the permission to add NS record.')
+                : _('You do not have the permission to add SOA record.'),
+            'edit' => $isNs
+                ? _('You do not have the permission to edit this NS record.')
+                : _('You do not have the permission to edit this SOA record.'),
+            'delete' => $isNs
+                ? _('You do not have the permission to delete NS records.')
+                : _('You do not have the permission to delete SOA records.'),
+        };
+    }
+
+    /**
      * Get view permission.
      *
      * This method determines the user's permission to view content.

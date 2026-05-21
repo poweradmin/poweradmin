@@ -121,9 +121,7 @@ class RecordManager implements RecordManagerInterface
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
-            throw new Exception(strtoupper($type) === 'NS'
-                ? _("You do not have the permission to add NS record.")
-                : _("You do not have the permission to add SOA record."));
+            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -229,9 +227,7 @@ class RecordManager implements RecordManagerInterface
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
-            throw new Exception(strtoupper($type) === 'NS'
-                ? _("You do not have the permission to add NS record.")
-                : _("You do not have the permission to add SOA record."));
+            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -334,9 +330,7 @@ class RecordManager implements RecordManagerInterface
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
         if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
-            $this->messageService->addSystemError(strtoupper($record['type']) === 'NS'
-                ? _("You do not have the permission to edit this NS record.")
-                : _("You do not have the permission to edit this SOA record."));
+            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'edit'));
 
             return false;
         }
@@ -442,9 +436,7 @@ class RecordManager implements RecordManagerInterface
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
-                $this->messageService->addSystemError(strtoupper($record['type']) === 'NS'
-                    ? _('You do not have the permission to delete NS records.')
-                    : _('You do not have the permission to delete SOA records.'));
+                $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
                 return false;
             }
 
