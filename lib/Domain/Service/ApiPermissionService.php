@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use PDO;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Stateless permission service for API requests
@@ -271,8 +272,7 @@ class ApiPermissionService
             return false;
         }
 
-        $restrictedTypes = ['SOA', 'NS'];
-        if (!in_array(strtoupper($recordType), $restrictedTypes, true)) {
+        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
             return true;
         }
 

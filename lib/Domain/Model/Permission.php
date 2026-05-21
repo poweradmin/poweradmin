@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,29 @@ use PDO;
  */
 class Permission
 {
+    /**
+     * Record types that holders of zone_content_edit_own_as_client may not modify.
+     */
+    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS'];
+
+    /**
+     * Check whether the given record type is off-limits for a client-level editor.
+     *
+     * Returns true only when the user is limited to zone_content_edit_own_as_client
+     * and the record type is one that requires a stronger edit permission.
+     *
+     * @param string $type DNS record type (e.g. "A", "SOA", "NS")
+     * @param string $permEdit Edit permission level returned by getEditPermission()
+     */
+    public static function isRecordTypeRestrictedForClient(string $type, string $permEdit): bool
+    {
+        if ($permEdit !== 'own_as_client') {
+            return false;
+        }
+
+        return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+    }
+
     /**
      * Get view permission.
      *

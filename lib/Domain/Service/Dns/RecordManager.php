@@ -120,12 +120,10 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add SOA record."));
-        }
-
-        if ($type == 'NS' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add NS record."));
+        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+            throw new Exception(strtoupper($type) === 'NS'
+                ? _("You do not have the permission to add NS record.")
+                : _("You do not have the permission to add SOA record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -230,12 +228,10 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add SOA record."));
-        }
-
-        if ($type == 'NS' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add NS record."));
+        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+            throw new Exception(strtoupper($type) === 'NS'
+                ? _("You do not have the permission to add NS record.")
+                : _("You do not have the permission to add SOA record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -337,13 +333,10 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
-        if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this SOA record."));
-
-            return false;
-        }
-        if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this NS record."));
+        if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
+            $this->messageService->addSystemError(strtoupper($record['type']) === 'NS'
+                ? _("You do not have the permission to edit this NS record.")
+                : _("You do not have the permission to edit this SOA record."));
 
             return false;
         }
@@ -448,13 +441,10 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
-            if ($record['type'] == "SOA" && $perm_edit == "own_as_client") {
-                $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
-                return false;
-            }
-
-            if ($record['type'] == "NS" && $perm_edit == "own_as_client") {
-                $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
+            if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
+                $this->messageService->addSystemError(strtoupper($record['type']) === 'NS'
+                    ? _('You do not have the permission to delete NS records.')
+                    : _('You do not have the permission to delete SOA records.'));
                 return false;
             }
 
