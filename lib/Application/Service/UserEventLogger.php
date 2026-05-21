@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -48,13 +49,19 @@ class UserEventLogger
         ));
     }
 
-    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
+    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?LoginFailureReason $reason = null): void
     {
-        $this->logger->logWarn(sprintf(
+        $message = sprintf(
             'client_ip:%s user:%s operation:login_failed auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"],
+            $_SESSION["userlogin"] ?? '',
             $authMethod->value
-        ));
+        );
+
+        if ($reason !== null) {
+            $message .= ' reason:' . $reason->value;
+        }
+
+        $this->logger->logWarn($message);
     }
 }

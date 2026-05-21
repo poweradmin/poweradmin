@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaService;
@@ -117,7 +119,7 @@ class SqlAuthenticator extends LoggingService
 
         if (!$rowObj) {
             $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
-            $this->handleFailedAuthentication();
+            $this->handleFailedAuthentication(LoginFailureReason::NO_SUCH_USER);
 
             $this->logInfo('Authentication process ended due to no user found.');
             return;
@@ -131,7 +133,7 @@ class SqlAuthenticator extends LoggingService
         if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
-            $this->handleFailedAuthentication();
+            $this->handleFailedAuthentication(LoginFailureReason::WRONG_PASSWORD);
 
             $this->logInfo('Authentication process ended due to password verification failure.');
             return;
@@ -140,7 +142,7 @@ class SqlAuthenticator extends LoggingService
         if ($rowObj['active'] != 1) {
             $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
             if (isset($_POST['authenticate'])) {
-                $this->userEventLogger->logFailedAuth();
+                $this->userEventLogger->logFailedAuth(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             }
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
             $this->authService->auth($sessionEntity);
@@ -217,12 +219,12 @@ class SqlAuthenticator extends LoggingService
         $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
     }
 
-    private function handleFailedAuthentication(): void
+    private function handleFailedAuthentication(?LoginFailureReason $reason = null): void
     {
         $this->logInfo('Handling failed authentication.');
 
         if (isset($_POST['authenticate'])) {
-            $this->userEventLogger->logFailedAuth();
+            $this->userEventLogger->logFailedAuth(AuthMethod::SQL, $reason);
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
         } else {
             unset($_SESSION["userpwd"]);

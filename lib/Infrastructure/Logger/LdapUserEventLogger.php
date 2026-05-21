@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use PDO;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class LdapUserEventLogger
@@ -29,7 +32,7 @@ class LdapUserEventLogger
     private LegacyLogger $logger;
     private IpAddressRetriever $ipRetriever;
 
-    public function __construct($db)
+    public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
@@ -37,31 +40,57 @@ class LdapUserEventLogger
 
     public function logFailedReason($reason): void
     {
-        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] Reason: %s failed', $this->ipRetriever->getClientIp(), $reason));
+        // Backend infrastructure failure (e.g. LDAP unreachable, service-bind failed,
+        // search error) — emit operation:login_error so fail2ban filters anchored on
+        // operation:login_failed do not punish clients for server-side outages.
+        $normalized = $reason === 'ldap_search' ? LoginFailureReason::LDAP_SEARCH_FAILED->value : (string) $reason;
+        $this->logger->logError(sprintf(
+            'client_ip:%s user:%s operation:login_error auth_method:%s reason:%s',
+            $this->ipRetriever->getClientIp(),
+            $_SESSION["userlogin"] ?? '',
+            AuthMethod::LDAP->value,
+            $normalized
+        ));
     }
 
     public function logSuccessAuth(): void
     {
-        $this->logger->logNotice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logNotice(sprintf(
+            'client_ip:%s user:%s operation:login_success auth_method:%s',
+            $this->ipRetriever->getClientIp(),
+            $_SESSION["userlogin"] ?? '',
+            AuthMethod::LDAP->value
+        ));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn($this->formatFailure(LoginFailureReason::NO_SUCH_USER));
     }
 
     public function logFailedDuplicateAuth(): void
     {
-        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logError($this->formatFailure(LoginFailureReason::DUPLICATE_USERS));
     }
 
     public function logFailedIncorrectPass(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn($this->formatFailure(LoginFailureReason::WRONG_PASSWORD));
     }
 
     public function logFailedUserInactive(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn($this->formatFailure(LoginFailureReason::ACCOUNT_DISABLED));
+    }
+
+    private function formatFailure(LoginFailureReason $reason): string
+    {
+        return sprintf(
+            'client_ip:%s user:%s operation:login_failed auth_method:%s reason:%s',
+            $this->ipRetriever->getClientIp(),
+            $_SESSION["userlogin"] ?? '',
+            AuthMethod::LDAP->value,
+            $reason->value
+        );
     }
 }
