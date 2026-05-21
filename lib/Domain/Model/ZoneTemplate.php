@@ -32,14 +32,16 @@ use PDO;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Psr\Log\LoggerInterface;
 
 /**
  * Template functions
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneTemplate
@@ -52,8 +54,9 @@ class ZoneTemplate
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
+    private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -63,6 +66,7 @@ class ZoneTemplate
         $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+        $this->logger = $logger ?? new PhpErrorLogPsrLogger();
     }
 
     private function isApiBackend(): bool
@@ -206,10 +210,10 @@ class ZoneTemplate
             $check = $this->db->prepare("SELECT 1 FROM zone_templ WHERE id = :id AND owner = 0");
             $check->execute([':id' => $id]);
             if ($check->fetchColumn() === false) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = %d does not match any global zone template; falling back to "none".',
-                    $id
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = {id} does not match any global zone template; falling back to "none".',
+                    ['id' => $id]
+                );
                 return null;
             }
             return $id;
@@ -220,18 +224,17 @@ class ZoneTemplate
             $check->execute([':name' => $configured]);
             $matches = $check->fetchAll(PDO::FETCH_COLUMN);
             if (count($matches) === 0) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = "%s" does not match any global zone template; falling back to "none".',
-                    $configured
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = "{name}" does not match any global zone template; falling back to "none".',
+                    ['name' => $configured]
+                );
                 return null;
             }
             if (count($matches) > 1) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = "%s" matches %d global zone templates; ignoring the setting. Use the template id or rename one of the duplicates.',
-                    $configured,
-                    count($matches)
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = "{name}" matches {count} global zone templates; ignoring the setting. Use the template id or rename one of the duplicates.',
+                    ['name' => $configured, 'count' => count($matches)]
+                );
                 return null;
             }
             return (int) $matches[0];

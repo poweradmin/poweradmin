@@ -28,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Coverage for the default-template resolver and writers.
@@ -131,7 +132,11 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
             ['sql' => 'WHERE name = :name AND owner = 0', 'fetchAllColumn' => [9, 10]],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('warning')
+            ->with($this->stringContains('matches {count} global zone templates'));
+        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'), null, $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -142,7 +147,11 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
             ['sql' => 'WHERE name = :name AND owner = 0', 'fetchAllColumn' => []],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('warning')
+            ->with($this->stringContains('does not match any global zone template'));
+        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 'Standard'), null, $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
@@ -153,7 +162,11 @@ class ZoneTemplateDefaultTest extends TestCase
             ['sql' => 'WHERE is_default', 'fetchColumn' => false],
             ['sql' => 'WHERE id = :id AND owner = 0', 'fetchColumn' => false],
         ]);
-        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 999));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('warning')
+            ->with($this->stringContains('does not match any global zone template'));
+        $template = new ZoneTemplate($db, $this->makeConfig('mysql', 999), null, $logger);
 
         $this->assertNull($template->getDefaultTemplateId());
     }
