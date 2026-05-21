@@ -87,8 +87,8 @@ jobs:
             type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
             type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
-            type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.x') }}
-            type=raw,value=next,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.1.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.1.x') }}
+            type=raw,value=4.2.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.2.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.2.x') }}
+            type=raw,value=4.3.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.3.x') }}
 
       - name: Build local image for smoke test
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7
