@@ -139,6 +139,9 @@ class SqlAuthenticator extends LoggingService
 
         if ($rowObj['active'] != 1) {
             $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
+            if (isset($_POST['authenticate'])) {
+                $this->userEventLogger->logFailedAuth();
+            }
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
             $this->authService->auth($sessionEntity);
 
