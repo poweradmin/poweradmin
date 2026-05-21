@@ -3,13 +3,13 @@ name: Twig Linting
 on:
   workflow_dispatch:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "release/4.2.x", "release/4.3.x" ]
     paths:
       - 'templates/**/*.twig'
       - 'templates/**/*.html'
       - '.github/workflows/twig-lint.yml'
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "release/4.2.x", "release/4.3.x" ]
     paths:
       - 'templates/**/*.twig'
       - 'templates/**/*.html'
