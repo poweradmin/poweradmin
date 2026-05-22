@@ -40,67 +40,52 @@ class LdapUserEventLogger
 
     public function logFailedReason($reason): void
     {
-        // Backend infrastructure failure (e.g. LDAP unreachable, service-bind failed,
-        // search error) — emit operation:login_error so fail2ban filters anchored on
-        // operation:login_failed do not punish clients for server-side outages.
+        // operation:login_error (not login_failed) — backend/infra failures must
+        // not feed fail2ban brute-force counters during an LDAP outage.
         $normalized = $reason === 'ldap_search' ? LoginFailureReason::LDAP_SEARCH_FAILED->value : (string) $reason;
-        $this->logger->logError(sprintf(
-            'client_ip:%s user:%s operation:login_error auth_method:%s reason:%s',
-            $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"] ?? '',
-            AuthMethod::LDAP->value,
-            $normalized
-        ));
+        $this->logger->logError($this->format('login_error', $normalized));
     }
 
     public function logLockout(): void
     {
-        $this->logger->logWarn(sprintf(
-            'client_ip:%s user:%s operation:login_locked auth_method:%s',
-            $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"] ?? '',
-            AuthMethod::LDAP->value
-        ));
+        $this->logger->logWarn($this->format('login_locked'));
     }
 
     public function logSuccessAuth(): void
     {
-        $this->logger->logNotice(sprintf(
-            'client_ip:%s user:%s operation:login_success auth_method:%s',
-            $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"] ?? '',
-            AuthMethod::LDAP->value
-        ));
+        $this->logger->logNotice($this->format('login_success'));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn($this->formatFailure(LoginFailureReason::NO_SUCH_USER));
+        $this->logger->logWarn($this->format('login_failed', LoginFailureReason::NO_SUCH_USER->value));
     }
 
     public function logFailedDuplicateAuth(): void
     {
-        $this->logger->logError($this->formatFailure(LoginFailureReason::DUPLICATE_USERS));
+        $this->logger->logError($this->format('login_failed', LoginFailureReason::DUPLICATE_USERS->value));
     }
 
     public function logFailedIncorrectPass(): void
     {
-        $this->logger->logWarn($this->formatFailure(LoginFailureReason::WRONG_PASSWORD));
+        $this->logger->logWarn($this->format('login_failed', LoginFailureReason::WRONG_PASSWORD->value));
     }
 
     public function logFailedUserInactive(): void
     {
-        $this->logger->logWarn($this->formatFailure(LoginFailureReason::ACCOUNT_DISABLED));
+        $this->logger->logWarn($this->format('login_failed', LoginFailureReason::ACCOUNT_DISABLED->value));
     }
 
-    private function formatFailure(LoginFailureReason $reason): string
+    private function format(string $operation, ?string $reason = null): string
     {
-        return sprintf(
-            'client_ip:%s user:%s operation:login_failed auth_method:%s reason:%s',
+        $base = sprintf(
+            'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
             $_SESSION["userlogin"] ?? '',
-            AuthMethod::LDAP->value,
-            $reason->value
+            $operation,
+            AuthMethod::LDAP->value
         );
+
+        return $reason !== null ? $base . ' reason:' . $reason : $base;
     }
 }
