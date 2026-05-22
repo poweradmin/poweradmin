@@ -192,7 +192,7 @@ class UserEventLoggerTest extends TestCase
      */
     private function makeLoggerCaptor(array &$captured): LegacyLogger
     {
-        return new class($captured) extends LegacyLogger {
+        return new class ($captured) extends LegacyLogger {
             /** @var array<string, mixed> */
             private array $sink;
 
