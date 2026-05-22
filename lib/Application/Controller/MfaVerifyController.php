@@ -152,6 +152,13 @@ class MfaVerifyController extends BaseController
             $this->logger->info('[MfaVerifyController] Verification successful for user ID: {user_id}', ['user_id' => $userId]);
         } else {
             $this->logger->warning('[MfaVerifyController] Verification failed for user ID: {user_id}', ['user_id' => $userId]);
+            // Structured audit entry so fail2ban can react to wrong-code brute force.
+            $this->auditLogger->logWarn(sprintf(
+                'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                $userMfa->getType()
+            ));
         }
 
         if ($isValid) {
