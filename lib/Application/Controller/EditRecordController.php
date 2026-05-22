@@ -42,11 +42,13 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class EditRecordController extends BaseController
@@ -59,6 +61,7 @@ class EditRecordController extends BaseController
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
     private RecordRepositoryInterface $recordRepository;
+    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
@@ -74,6 +77,7 @@ class EditRecordController extends BaseController
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
+        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
     }
 
     public function run(): void
@@ -118,24 +122,10 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // Check zone-specific edit permission (includes group permissions)
-        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own');
-        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own_as_client');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
-
-        if (!$canEditOthers && !$canEdit && !$canEditAsClient) {
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zid);
+        if ($perm_edit === 'none') {
             $this->showError(_("You do not have permission to edit this record."));
             return;
-        }
-
-        // Determine permission level for UI (for backward compatibility with templates)
-        $perm_edit = 'none';
-        if ($canEditOthers) {
-            $perm_edit = 'all';
-        } elseif ($canEdit) {
-            $perm_edit = 'own';
-        } elseif ($canEditAsClient) {
-            $perm_edit = 'own_as_client';
         }
 
         $validationFailed = false;

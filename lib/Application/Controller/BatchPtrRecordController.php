@@ -29,8 +29,10 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -45,6 +47,7 @@ class BatchPtrRecordController extends BaseController
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
+    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
@@ -67,6 +70,7 @@ class BatchPtrRecordController extends BaseController
         );
         $this->userContextService = new UserContextService();
         $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
     }
 
     public function run(): void
@@ -96,19 +100,15 @@ class BatchPtrRecordController extends BaseController
             $zone_type = $this->dnsRecord->getDomainType($zone_id);
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $userId = $this->userContextService->getLoggedInUserId();
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
             // Check if this is a reverse zone
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
-            // Check zone-specific edit permission (includes group permissions)
-            $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own');
-            $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own_as_client');
-            $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+            $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
 
             $this->checkCondition(
-                $zone_type == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient),
+                $zone_type == "SLAVE" || $perm_edit === 'none',
                 _("You do not have the permission to add records to this zone.")
             );
         }

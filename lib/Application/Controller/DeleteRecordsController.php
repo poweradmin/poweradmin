@@ -36,11 +36,12 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordsController extends BaseController
@@ -50,6 +51,7 @@ class DeleteRecordsController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
@@ -72,6 +74,7 @@ class DeleteRecordsController extends BaseController
             $this->createDnsBackendProvider()
         );
         $this->userContextService = new UserContextService();
+        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
     }
 
     public function run(): void
@@ -226,15 +229,11 @@ class DeleteRecordsController extends BaseController
                 $domain_id = $dnsRecord->recidToDomid($record_id);
 
                 $zone_info = $dnsRecord->getZoneInfoFromId($zid);
-                $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
 
-                // Check zone-specific edit permission (includes group permissions)
                 $userId = $this->userContextService->getLoggedInUserId();
-                $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own');
-                $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own_as_client');
-                $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+                $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $domain_id);
 
-                if ($zone_info['type'] == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
+                if ($zone_info['type'] == "SLAVE" || $perm_edit === 'none') {
                     continue;
                 }
 

@@ -263,6 +263,44 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testGetEditPermissionLevelForZoneReturnsAllForAdmin(): void
+    {
+        $userId = 10;
+        $domainId = 100;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $this->userRepository->method('getUserPermissions')
+            ->with($userId)
+            ->willReturn([]);
+
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+    }
+
+    #[Test]
+    public function testGetEditPermissionLevelForZoneReturnsAllForEditOthers(): void
+    {
+        $userId = 11;
+        $domainId = 101;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserPermissions')
+            ->with($userId)
+            ->willReturn(['zone_content_edit_others']);
+
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+    }
+
+    #[Test]
     public function testGetZoneMetaEditPermissionLevel(): void
     {
         $this->userRepository->method('hasAdminPermission')

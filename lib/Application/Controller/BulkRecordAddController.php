@@ -38,12 +38,13 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -55,6 +56,7 @@ class BulkRecordAddController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
@@ -82,6 +84,7 @@ class BulkRecordAddController extends BaseController
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
+        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
     }
 
     public function run(): void
@@ -91,15 +94,11 @@ class BulkRecordAddController extends BaseController
         $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
         $userId = $this->userContextService->getLoggedInUserId();
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        // Check zone-specific edit permission (includes group permissions)
-        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own');
-        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own_as_client');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
 
         $this->checkCondition(
-            $zone_type == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient),
+            $zone_type == "SLAVE" || $perm_edit === 'none',
             _('You do not have the permission to add records to this zone.')
         );
 
