@@ -131,6 +131,8 @@ Poweradmin maintains multiple release branches:
 
 **Important:** Starting with version 4.2.x, the minimum required PHP version is **8.2**. PHP 8.1 is no longer supported.
 
+Poweradmin tracks the [official PHP release lifecycle](https://www.php.net/supported-versions.php). PHP versions that have reached end-of-life are dropped from the next Poweradmin release; security-only versions remain supported until then. See [docs.poweradmin.org → Requirements](https://docs.poweradmin.org/getting-started/requirements/) for the current supported range.
+
 ### Long-Term Support (LTS)
 
 The **3.9.x branch** is designated as Long-Term Support (LTS), starting with version 3.9.8. This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades.
