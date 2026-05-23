@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 11:02+0300\n"
+"POT-Creation-Date: 2026-05-23 03:19+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Estonian\n"
@@ -20,8 +20,9 @@ msgstr ""
 #: lib/AppInitializer.php:82
 #, php-format
 msgid ""
-"No configuration file found at %s. Please use the <a href=\"install/"
-"\">installer</a> to create one, or create the configuration file manually."
+"No configuration file found at %s. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create the configuration "
+"file manually."
 msgstr ""
 "Seadistusfaili %s ei leitud. Kasutage <a href=\"install/\">paigaldajat</a>."
 
@@ -41,30 +42,30 @@ msgstr "Tsooni ei leitud."
 msgid "You do not have permission to add records to this zone."
 msgstr "Teil pole õigust sellesse tsooni kirjeid lisada."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:118
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:120
 msgid "Invalid wizard type."
 msgstr "Vigane viisardi tüüp."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:206
 msgid "Validation failed:"
 msgstr "Valideerimine ebaõnnestus:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:230
 msgid "Failed to generate record:"
 msgstr "Kirje loomine ebaõnnestus:"
 
-#: lib/Application/Controller/AddRecordController.php:184
+#: lib/Application/Controller/AddRecordController.php:192
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr ""
 "See kirje polnud kehtiv ja seda ei saanud lisada. Võib juba eksisteerida."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:271
 msgid "The record was successfully added."
 msgstr "Kirje edukalt lisatud."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:414
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:421
 msgid "Record created successfully"
 msgstr "Kirje edukalt loodud"
 
@@ -121,7 +122,7 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Transpordiprotokoll TLS-ühenduse jaoks"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:140
 msgid "Hostname"
 msgstr "Hostinimi"
 
@@ -292,8 +293,8 @@ msgstr "Sertifikaadi andmed peavad olema kuueteistkümnendsüsteemis (0-9, a-f)"
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:259
 #, php-format
 msgid ""
-"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
-"correct."
+"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is"
+" correct."
 msgstr "SHA-256 räsi peab olema 64 heksamärki, on %d."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
@@ -363,8 +364,7 @@ msgstr "Blokeeri täielikult kahtlased e-kirjad"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
-msgstr ""
-"Alustage \"none\"-iga andmete kogumiseks enne rangema reegli jõustamist."
+msgstr "Alustage \"none\"-iga andmete kogumiseks enne rangema reegli jõustamist."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:76
 msgid "Subdomain Policy"
@@ -655,8 +655,8 @@ msgstr "Tõrge (lükka volitamata e-kirjad tagasi)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:152
 msgid ""
-"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
-"testing."
+"Policy for emails not matching any mechanism. Start with ~all (softfail) for"
+" testing."
 msgstr ""
 "Reegel mitteühtivate e-kirjade jaoks. Alustage ~all (softfail) testimiseks."
 
@@ -692,7 +692,8 @@ msgstr "Vigane kaasatud domeen: %s"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
-"No mechanisms selected. This SPF record will only contain the default action."
+"No mechanisms selected. This SPF record will only contain the default "
+"action."
 msgstr "Mehhanisme pole valitud. SPF-kirje sisaldab ainult vaiketoimingut."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
@@ -733,8 +734,7 @@ msgid "CA Domain (Custom)"
 msgstr "CA domeen (kohandatud)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:92
-msgid ""
-"Enter the CA domain name manually (only shown when \"Custom\" is selected)"
+msgid "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
 msgstr "Sisestage CA domeen käsitsi (näha ainult \"Kohandatud\" puhul)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:97
@@ -875,8 +875,8 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM tõestab e-kirja päritolu. Looge paar meiliserveris - ainult AVALIK DNS-"
-"i."
+"DKIM tõestab e-kirja päritolu. Looge paar meiliserveris - ainult AVALIK "
+"DNS-i."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
@@ -921,8 +921,8 @@ msgstr "Testimisrežiim"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:112
 msgid ""
-"Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
-"Use during initial deployment."
+"Enable testing mode (t=y). DKIM signatures will be present but not enforced."
+" Use during initial deployment."
 msgstr "Luba testimisrežiim (t=y). DKIM ei ole sunnitud."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
@@ -969,12 +969,13 @@ msgstr "Liimisite PRIVAATSE võtme. DNS-is peab olema ainult AVALIK võti!"
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "Avalik võti tundub sisaldavat PEM päiseid. Vaja on ainult base64 sisu."
+msgstr ""
+"Avalik võti tundub sisaldavat PEM päiseid. Vaja on ainult base64 sisu."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
-"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
-"this once testing is complete."
+"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable"
+" this once testing is complete."
 msgstr "Testimisrežiim on lubatud (t=y). DKIM ei pakota."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
@@ -1038,8 +1039,8 @@ msgstr "Siht-hostinimi"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:144
 msgid ""
-"Hostname of the server providing this service (must be a hostname with an A/"
-"AAAA record, not an IP address)"
+"Hostname of the server providing this service (must be a hostname with an "
+"A/AAAA record, not an IP address)"
 msgstr "Teenust pakkuva serveri hostinimi (A/AAAA kirjega, mitte IP)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:154
@@ -1095,8 +1096,8 @@ msgstr "Vigane sihthostinime vorming"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:282
 msgid ""
-"Target must be a hostname, not an IP address. Create an A or AAAA record for "
-"the hostname first."
+"Target must be a hostname, not an IP address. Create an A or AAAA record for"
+" the hostname first."
 msgstr ""
 "Sihtmärk peab olema hostinimi, mitte IP. Looge esmalt A või AAAA kirje."
 
@@ -1152,13 +1153,13 @@ msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
 msgstr ""
-"Uut tsooni ei saa importida: zone_ownership_mode on groups_only, kuid gruppe "
-"pole. Looge esmalt grupp."
+"Uut tsooni ei saa importida: zone_ownership_mode on groups_only, kuid gruppe"
+" pole. Looge esmalt grupp."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
 msgid ""
-"Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
-"a member of any group. Ask an administrator to add you to a group first."
+"Cannot import a new zone: zone_ownership_mode is groups_only and you are not"
+" a member of any group. Ask an administrator to add you to a group first."
 msgstr ""
 "Uut tsooni ei saa importida: zone_ownership_mode on groups_only ja te pole "
 "ühegi grupi liige. Paluge administraatorit teid esmalt gruppi lisada."
@@ -1213,11 +1214,11 @@ msgstr "Tsooni loomine ebaõnnestus."
 msgid "Failed to retrieve created zone."
 msgstr "Loodud tsooni hankimine ebaõnnestus."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "Tsooni andmete eksportimiseks peate olema sisse logitud."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "Teil pole õigust seda tsooni eksportida."
 
@@ -1225,7 +1226,7 @@ msgstr "Teil pole õigust seda tsooni eksportida."
 msgid "There is no zone with this ID."
 msgstr "Selle ID-ga tsooni pole."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "Sellel tsoonil pole eksporditavaid kirjeid."
 
@@ -1255,11 +1256,11 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "RDAP teabe hankimine serverist %s ebaõnnestus"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:135
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "Vigane CSRF-märk."
 
-#: lib/BaseController.php:654
+#: lib/BaseController.php:660
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1267,19 +1268,19 @@ msgstr ""
 "<a href=\"install/\">install/</a> kataloog eksisteerib, eemaldage see enne "
 "jätkamist."
 
-#: lib/BaseController.php:711
+#: lib/BaseController.php:717
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Kasutatakse vaikimisi sessiooni krüpteerimise võtit, palun seadistage see."
 
-#: lib/BaseController.php:855
+#: lib/BaseController.php:861
 #, php-format
 msgid "The %s field is required."
 msgstr "Väli %s on kohustuslik."
 
-#: lib/BaseController.php:863
+#: lib/BaseController.php:869
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Väli %s peab olema number."
@@ -1300,37 +1301,38 @@ msgstr "Näita tsoone, mis algavad"
 msgid "Show all"
 msgstr "Näita kõiki"
 
-#: lib/Application/Controller/DeleteRecordsController.php:81
+#: lib/Application/Controller/DeleteRecordsController.php:84
 msgid "No records selected for deletion."
 msgstr "Kustutamiseks pole kirjeid valitud."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:205
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
 msgstr "Kirje edukalt kustutatud. Kõik vastavad PTR-kirjed eemaldati."
 
-#: lib/Application/Controller/DeleteRecordsController.php:204
+#: lib/Application/Controller/DeleteRecordsController.php:207
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "%d kirjet edukalt kustutatud. Kõik vastavad PTR-kirjed eemaldati."
 
-#: lib/Application/Controller/DeleteRecordsController.php:207
+#: lib/Application/Controller/DeleteRecordsController.php:210
 msgid "No records could be deleted. Please check permissions."
 msgstr "Ühtki kirjet ei saanud kustutada. Kontrollige õigusi."
 
-#: lib/Application/Controller/DeleteRecordsController.php:276
+#: lib/Application/Controller/DeleteRecordsController.php:275
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr "Kehtivaid kirjeid pole valitud või teil pole õigust neid kustutada."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:75
 msgid "Invalid or unexpected input given."
 msgstr "Vigane või ootamatu sisend."
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:340
 msgid "You do not have the permission to delete this user."
 msgstr "Teil pole õigust seda kasutajat kustutada."
 
@@ -1354,7 +1356,7 @@ msgstr "Tsooni kommentaaride funktsioon on seadistustes keelatud."
 msgid "You do not have the permission to view this comment."
 msgstr "Teil pole õigust seda kommentaari vaadata."
 
-#: lib/Domain/Service/Dns/RecordManager.php:543
+#: lib/Domain/Service/Dns/RecordManager.php:525
 msgid "You do not have the permission to edit this comment."
 msgstr "Teil pole õigust seda kommentaari muuta."
 
@@ -1362,7 +1364,7 @@ msgstr "Teil pole õigust seda kommentaari muuta."
 msgid "The comment has been updated successfully."
 msgstr "Kommentaar edukalt uuendatud."
 
-#: lib/Application/Controller/EditRecordController.php:95
+#: lib/Application/Controller/EditRecordController.php:99
 msgid "Invalid record ID."
 msgstr "Vigane kirje ID."
 
@@ -1370,20 +1372,20 @@ msgstr "Vigane kirje ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Teil pole õigust selles tsoonis kirjeid kustutada."
 
-#: lib/Application/Controller/EditRecordController.php:206
+#: lib/Application/Controller/EditRecordController.php:196
 msgid "Record not found."
 msgstr "Kirjet ei leitud."
 
 #: lib/Application/Controller/DeleteRecordController.php:215
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr "Kirje ja PTR ning A/AAAA kustutati, kommentaar säilitati."
 
 #: lib/Application/Controller/DeleteRecordController.php:217
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr "Kirje ja PTR kustutati, kuid kommentaar säilitati."
 
 #: lib/Application/Controller/DeleteRecordController.php:219
@@ -1394,8 +1396,8 @@ msgstr "Kirje ja A/AAAA kustutati, kuid kommentaar säilitati."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr ""
 "Kirje kustutati, aga kommentaar säilitati, kuna sarnaseid kirjeid on olemas."
 
@@ -1448,7 +1450,8 @@ msgid "Invalid group ID."
 msgstr "Vigane grupi ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:93
-#: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
+#: templates/default/delete_group.html:11
+#: templates/modern/delete_group.html:11
 msgid "Delete Group"
 msgstr "Kustuta grupp"
 
@@ -1469,19 +1472,19 @@ msgstr "Gruppi ei leitud."
 msgid "User Preferences"
 msgstr "Kasutaja eelistused"
 
-#: lib/Application/Controller/UserPreferencesController.php:101
+#: lib/Application/Controller/UserPreferencesController.php:117
 msgid "Preferences saved successfully."
 msgstr "Eelistused edukalt salvestatud."
 
-#: lib/Application/Controller/UserPreferencesController.php:109
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Failed to update preferences. Please try again."
 msgstr "Eelistuste uuendamine ebaõnnestus. Palun proovige uuesti."
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:140
 msgid "Top"
 msgstr "Üleval"
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:141
 msgid "Bottom"
 msgstr "All"
 
@@ -1553,7 +1556,7 @@ msgstr "Kontrollkood on kohustuslik."
 msgid "MFA has been enabled successfully."
 msgstr "MFA on edukalt lubatud."
 
-#: lib/Application/Controller/MfaVerifyController.php:274
+#: lib/Application/Controller/MfaVerifyController.php:281
 msgid "Invalid verification code. Please try again."
 msgstr "Vigane kontrollkood. Palun proovige uuesti."
 
@@ -1605,23 +1608,24 @@ msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA peab olema lubatud taastekoodide uuesti loomiseks."
 
 #: lib/Application/Controller/MfaSetupController.php:352
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Taastekoodid on uuesti loodud. Hoidke neid turvalises kohas."
 
-#: lib/Application/Controller/ListLogApiController.php:51
+#: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:328
 msgid "API Logs"
 msgstr "API logid"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "Vigane lehekülje number."
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "Lehekülje number peab olema vähemalt 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "Lehekülje number ületab saadaolevaid lehti."
 
@@ -1658,9 +1662,11 @@ msgstr "Tsooni metaandmed"
 #: lib/Application/Controller/EditZoneMetadataController.php:396
 #, php-format
 msgid ""
-"Metadata kind %s accepts only a single value. Add only one row for this kind."
+"Metadata kind %s accepts only a single value. Add only one row for this "
+"kind."
 msgstr ""
-"Metaandmete liik %s aktsepteerib ainult üht väärtust. Lisage ainult üks rida."
+"Metaandmete liik %s aktsepteerib ainult üht väärtust. Lisage ainult üks "
+"rida."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:490
 #: templates/modern/edit_zone_metadata.html:155
@@ -1738,32 +1744,32 @@ msgstr "lubatud"
 msgid "API key %s successfully."
 msgstr "API võti %s edukalt."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:112
 msgid "You do not have the permission to add records to this zone."
 msgstr "Teil pole õigust sellesse tsooni kirjeid lisada."
 
-#: lib/Application/Controller/BulkRecordAddController.php:118
+#: lib/Application/Controller/BulkRecordAddController.php:117
 msgid "Please provide at least one record."
 msgstr "Palun andke vähemalt üks kirje."
 
-#: lib/Application/Controller/BulkRecordAddController.php:181
+#: lib/Application/Controller/BulkRecordAddController.php:183
 msgid "Invalid record type."
 msgstr "Vigane kirje tüüp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:219
+#: lib/Application/Controller/BulkRecordAddController.php:226
 msgid "Record could not be added."
 msgstr "Kirjet ei saanud lisada."
 
-#: lib/Application/Controller/BulkRecordAddController.php:227
+#: lib/Application/Controller/BulkRecordAddController.php:234
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kirje on edukalt lisatud."
 
-#: lib/Application/Controller/BulkRecordAddController.php:230
+#: lib/Application/Controller/BulkRecordAddController.php:237
 msgid "Some record(s) could not be added."
 msgstr "Mõnda kirjet ei saanud lisada."
 
-#: lib/Application/Controller/BulkRecordAddController.php:265
+#: lib/Application/Controller/BulkRecordAddController.php:272
 msgid "Zone ID is required."
 msgstr "Tsooni ID on kohustuslik."
 
@@ -1784,16 +1790,16 @@ msgstr "Õiguste mall on edukalt uuendatud."
 msgid "Groups"
 msgstr "Grupid"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:49
 msgid "You do not have the permission to perform searches."
 msgstr "Teil pole õigust otsinguid teha."
 
-#: lib/Application/Controller/SearchController.php:49
+#: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Otsing"
 
-#: lib/Application/Controller/ListRecordChangesController.php:62
+#: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:11
 msgid "Record Change Log"
 msgstr "Record Change Log"
@@ -1814,7 +1820,7 @@ msgstr "Liige edukalt grupist eemaldatud."
 msgid "User was not a member of this group."
 msgstr "Kasutaja polnud selle grupi liige."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1050
 msgid "You do not have the permission to add a new user."
 msgstr "Teil pole õigust uut kasutajat lisada."
 
@@ -1852,7 +1858,7 @@ msgstr "Parool genereeriti, kuid turvakaalutlustel seda ei kuvata."
 msgid "Please fill in all required fields correctly."
 msgstr "Palun täitke kõik kohustuslikud väljad korrektselt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:480
+#: lib/Domain/Service/Dns/RecordManager.php:462
 msgid "You do not have the permission to delete this record."
 msgstr "Teil pole õigust seda kirjet kustutada."
 
@@ -1860,7 +1866,7 @@ msgstr "Teil pole õigust seda kirjet kustutada."
 msgid "The record could not be deleted."
 msgstr "Kirjet ei saanud kustutada."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Tsooni logid"
@@ -1906,8 +1912,10 @@ msgstr "Tsoonid on edukalt uuendatud."
 msgid "You do not have permission to create new zone templates."
 msgstr "Teil pole õigust uusi tsooni malle luua."
 
-#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1065
-msgid "Zone template with this name already exists, please choose another one."
+#: lib/Domain/Model/ZoneTemplate.php:320
+#: lib/Domain/Model/ZoneTemplate.php:1068
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "Selle nimega tsooni mall on juba olemas, valige teine."
 
 #: lib/Application/Controller/EditZoneTemplController.php:277
@@ -1938,7 +1946,7 @@ msgstr "Malli ei eksisteeri."
 msgid "You do not have permission to view this zone."
 msgstr "Teil pole õigust seda tsooni vaadata."
 
-#: lib/Application/Controller/ListLogUsersController.php:61
+#: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Kasutaja logid"
@@ -1989,47 +1997,47 @@ msgstr "Muuda tsooni"
 msgid "You do not have permission to access this zone."
 msgstr "Teil pole õigust sellele tsoonile juurde pääseda."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
 msgstr "Teil pole õigust seda tsooni vaadata."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:287
 msgid "Zone type has been changed successfully."
 msgstr "Tsooni tüüp on edukalt muudetud."
 
-#: lib/Application/Controller/EditController.php:284
+#: lib/Application/Controller/EditController.php:295
 msgid "Slave master has been changed successfully."
 msgstr "Teisese tsooni põhi on edukalt muudetud."
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:316
 msgid "Zone template has been changed successfully."
 msgstr "Tsooni mall on edukalt muudetud."
 
-#: lib/Application/Controller/EditController.php:317
+#: lib/Application/Controller/EditController.php:328
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC pole serveris lubatud."
 
-#: lib/Application/Controller/EditController.php:320
+#: lib/Application/Controller/EditController.php:331
 msgid "Zone is already signed with DNSSEC."
 msgstr "Tsoon on juba DNSSEC-iga allkirjastatud."
 
-#: lib/Application/Controller/EditController.php:342
+#: lib/Application/Controller/EditController.php:353
 msgid "Zone has been signed successfully."
 msgstr "Tsoon on edukalt allkirjastatud."
 
-#: lib/Application/Controller/EditController.php:347
+#: lib/Application/Controller/EditController.php:358
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "Tsooni allkirjastamise taotlus õnnestus, aga kontroll ebaõnnestus."
 
-#: lib/Application/Controller/EditController.php:351
+#: lib/Application/Controller/EditController.php:362
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga API tagastas "
-"vea."
+"Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga API tagastas"
+" vea."
 
 #: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
@@ -2047,42 +2055,43 @@ msgstr "Allkirja eemaldamise taotlus õnnestus, aga kontroll ebaõnnestus."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Tsooni allkirja eemaldamine ebaõnnestus. Kontrollige logisid."
 
-#: lib/Application/Controller/EditController.php:738
+#: lib/Application/Controller/EditController.php:750
 msgid "Request has expired, please try again."
 msgstr "Päring aegus, palun proovige uuesti."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:755
 msgid "Zone has been updated successfully."
 msgstr "Tsoon on edukalt uuendatud."
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:757
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr ""
-"Tsoon edukalt salvestatud. Muudatusi polnud, aga SOA seerianumber suurendati."
+"Tsoon edukalt salvestatud. Muudatusi polnud, aga SOA seerianumber "
+"suurendati."
 
-#: lib/Application/Controller/EditController.php:754
+#: lib/Application/Controller/EditController.php:766
 msgid "Zone has not been updated successfully."
 msgstr "Tsooni ei uuendatud edukalt."
 
-#: lib/Application/Controller/EditController.php:782
+#: lib/Application/Controller/EditController.php:794
 msgid "Please provide all required fields."
 msgstr "Palun täitke kõik kohustuslikud väljad."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:255
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Kirje edukalt lisatud. Loodud on ka vastav PTR-kirje."
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:260
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Kirje edukalt lisatud, aga PTR-kirje loomine ebaõnnestus: "
 
-#: lib/Application/Controller/AddRecordController.php:253
+#: lib/Application/Controller/AddRecordController.php:264
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Kirje edukalt lisatud, aga PTR-kirje loomine ebaõnnestus."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:268
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Kirje edukalt lisatud. Loodud on ka vastav A-kirje."
 
@@ -2098,54 +2107,54 @@ msgstr "MFA-kirjet ei leitud. Palun võtke ühendust administraatoriga."
 msgid "An error occurred. Please try again."
 msgstr "Tekkis viga. Palun proovige uuesti."
 
-#: lib/Application/Controller/MfaVerifyController.php:297
+#: lib/Application/Controller/MfaVerifyController.php:304
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr "E-posti kontroll pole saadaval - post keelatud. Kasutage taastekoodi."
 
-#: lib/Application/Controller/MfaVerifyController.php:307
+#: lib/Application/Controller/MfaVerifyController.php:314
 msgid "A new verification code has been sent to your email."
 msgstr "Uus kontrollkood saadeti teie e-posti aadressile."
 
-#: lib/Application/Controller/MfaVerifyController.php:313
+#: lib/Application/Controller/MfaVerifyController.php:320
 msgid "Please use a recovery code instead."
 msgstr "Palun kasutage taastekoodi."
 
-#: lib/Application/Controller/MfaVerifyController.php:318
+#: lib/Application/Controller/MfaVerifyController.php:325
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr "Kontrollkoodi ei saanud e-postile saata. Palun kasutage taastekoodi."
 
-#: lib/Domain/Service/Dns/RecordManager.php:242
+#: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Teil pole õigust sellesse tsooni kirjet lisada."
 
-#: lib/Application/Controller/AddRecordController.php:241
+#: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added."
 msgstr "Kirje on edukalt lisatud."
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:450
 msgid "No records were provided."
 msgstr "Kirjeid ei esitatud."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:506
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d kirje edukalt lisatud."
 
-#: lib/Application/Controller/AddRecordController.php:489
+#: lib/Application/Controller/AddRecordController.php:508
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Loodud on ka %d sobivat kirjet."
 
-#: lib/Application/Controller/AddRecordController.php:492
+#: lib/Application/Controller/AddRecordController.php:511
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kirje lisamine ebaõnnestus."
 
-#: lib/Application/Controller/AddRecordController.php:497
+#: lib/Application/Controller/AddRecordController.php:516
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2153,9 +2162,10 @@ msgstr ""
 "Mõnda kirjet ei saanud lisada. Nad võivad juba eksisteerida või sisaldada "
 "vigaseid andmeid."
 
-#: lib/Application/Controller/AddRecordController.php:523
+#: lib/Application/Controller/AddRecordController.php:542
 msgid "Failed to add any records. They may contain invalid data."
-msgstr "Ühtki kirjet ei saanud lisada. Need võivad sisaldada vigaseid andmeid."
+msgstr ""
+"Ühtki kirjet ei saanud lisada. Need võivad sisaldada vigaseid andmeid."
 
 #: lib/Application/Controller/DeleteDomainsController.php:79
 msgid "No zone selected for deletion."
@@ -2181,7 +2191,7 @@ msgstr "Teil pole õigust tsooni malli kirjeid muuta."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC autentimine pole lubatud"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:417
 msgid "Authentication failed: "
 msgstr "Autentimine ebaõnnestus: "
 
@@ -2205,7 +2215,7 @@ msgstr "OIDC pakkujaid pole seadistatud"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC autentimise algatamine ebaõnnestus: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
+#: lib/Application/Controller/ListLogGroupsController.php:67
 #: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Grupi logid"
@@ -2234,7 +2244,7 @@ msgstr ""
 msgid "You do not have the permission to add a master zone."
 msgstr "Teil pole õigust põhitsooni lisada."
 
-#: lib/Application/Controller/AddZoneMasterController.php:73
+#: lib/Application/Controller/AddZoneMasterController.php:76
 msgid "Add Primary Zone"
 msgstr "Lisa esmane tsoon"
 
@@ -2266,7 +2276,7 @@ msgstr "Teil pole õigust luua tsoone teiste kasutajate jaoks."
 msgid "There is already a zone with this name."
 msgstr "Selle nimega tsoon on juba olemas."
 
-#: lib/Application/Controller/AddZoneMasterController.php:221
+#: lib/Application/Controller/AddZoneMasterController.php:227
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2274,42 +2284,77 @@ msgstr ""
 "Tsoon edukalt loodud, aga DNSSEC allkirjastamine jäeti vahele valideerimise "
 "tõttu:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:233
+#: lib/Application/Controller/AddZoneMasterController.php:239
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr "Tsoon loodi, kuid DNSSEC ebaõnnestus. Kontrollige PowerDNS logisid."
 
-#: lib/Application/Controller/AddZoneMasterController.php:239
+#: lib/Application/Controller/AddZoneMasterController.php:245
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Tsoon on edukalt loodud ja DNSSEC-iga allkirjastatud."
 
-#: lib/Application/Controller/AddZoneMasterController.php:243
+#: lib/Application/Controller/AddZoneMasterController.php:249
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr "Tsoon loodi ja allkirjastamine tellitud, aga kontroll ebaõnnestus."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:208
+#: lib/Application/Controller/AddZoneSlaveController.php:214
 msgid "Zone has been added successfully."
 msgstr "Tsoon on edukalt lisatud."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:72
+#: lib/Application/Controller/BatchPtrRecordController.php:80
 msgid "Batch PTR record creation is not enabled."
 msgstr "Hulgi PTR-kirje loomine pole lubatud."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:79
+#: lib/Application/Controller/BatchPtrRecordController.php:87
 msgid "You do not have permission to edit DNS records."
 msgstr "Teil pole õigust DNS-kirjeid muuta."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:84
+#: lib/Application/Controller/BatchPtrRecordController.php:92
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
 msgstr "Hulgi PTR kirjed"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:99
+#: lib/Application/Controller/BatchPtrRecordController.php:106
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Hulgi PTR loomine pole pöördtsoonide jaoks saadaval."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:34
+msgid "Not available for anonymous users."
+msgstr "Pole saadaval anonüümsetele kasutajatele."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:38
+msgid "You do not have the permission to view this page."
+msgstr "Teil pole õigust seda lehte vaadata."
+
+#: lib/Application/Controller/RecordTypeDefaultsController.php:51
+#: templates/modern/record_type_defaults.html:11
+#, auto-english-fallback
+msgid "Default TTLs by record type"
+msgstr "Default TTLs by record type"
+
+#: lib/Application/Controller/RecordTypeDefaultsController.php:82
+#, auto-english-fallback
+msgid "Invalid form submission."
+msgstr "Invalid form submission."
+
+#: lib/Application/Controller/RecordTypeDefaultsController.php:90
+msgid ""
+"The record_type_defaults table is missing. Apply the 4.5.0 schema update "
+"before saving defaults."
+msgstr ""
+
+#: lib/Application/Controller/RecordTypeDefaultsController.php:134
+#, auto-english-fallback, php-format
+msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+
+#: lib/Application/Controller/RecordTypeDefaultsController.php:143
+#, auto-english-fallback, php-format
+msgid "Saved %d default(s); cleared %d."
+msgstr "Saved %d default(s); cleared %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:58
 msgid "You do not have the permission to view zone templates."
@@ -2413,20 +2458,20 @@ msgstr "SAML pakkujaid pole seadistatud"
 msgid "Invalid SAML provider"
 msgstr "Vigane SAML-pakkuja"
 
-#: lib/Application/Controller/SamlCallbackController.php:126
+#: lib/Application/Controller/SamlCallbackController.php:128
 msgid "SAML authentication failed: "
 msgstr "SAML autentimine ebaõnnestus: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:60
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Teil pole piisavaid õigusi selle lehe vaatamiseks."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Pöördtsoonid"
 
-#: lib/Application/Controller/ListForwardZonesController.php:213
+#: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
 msgstr "Teil pole õigust ühtegi tsooni näha."
 
@@ -2481,14 +2526,6 @@ msgstr "Lisa õiguste mall"
 #: lib/Application/Controller/AddPermTemplController.php:90
 msgid "The permission template has been added successfully."
 msgstr "Õiguste mall on edukalt lisatud."
-
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
-msgid "Not available for anonymous users."
-msgstr "Pole saadaval anonüümsetele kasutajatele."
-
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
-msgid "You do not have the permission to view this page."
-msgstr "Teil pole õigust seda lehte vaadata."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
 #: templates/default/header.html:235 templates/modern/header.html:342
@@ -2552,7 +2589,7 @@ msgstr "Vigane kontrolli tüüp"
 msgid "You have logged out."
 msgstr "Olete välja logitud."
 
-#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:757
+#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:760
 msgid "You do not have the permission to add a zone template."
 msgstr "Teil pole õigust tsooni malli lisada."
 
@@ -2580,11 +2617,11 @@ msgstr "Vigane kasutaja või grupi ID."
 msgid "User removed from group successfully."
 msgstr "Kasutaja edukalt grupist eemaldatud."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:66
+#: lib/Application/Controller/AddZoneSlaveController.php:69
 msgid "You do not have the permission to add a slave zone."
 msgstr "Teil pole õigust teisest tsooni lisada."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:70
+#: lib/Application/Controller/AddZoneSlaveController.php:73
 msgid "Add Secondary Zone"
 msgstr "Lisa teisene tsoon"
 
@@ -2596,7 +2633,7 @@ msgstr "Vigane hostinimi."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "See pole kehtiv IPv4 ega IPv6 aadress."
 
-#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:455
+#: lib/Domain/Model/ZoneTemplate.php:417 lib/Domain/Model/ZoneTemplate.php:458
 msgid "You do not have the permission to delete zone templates."
 msgstr "Teil pole õigust tsooni malle kustutada."
 
@@ -2632,21 +2669,21 @@ msgstr "Tsoon edukalt grupist eemaldatud."
 msgid "Zone was not owned by this group."
 msgstr "Tsoon ei kuulunud sellele grupile."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Edastustsoonid"
 
-#: lib/Application/Controller/ListForwardZonesController.php:82
+#: lib/Application/Controller/ListForwardZonesController.php:83
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:93
+#: lib/Application/Controller/ListForwardZonesController.php:94
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
-#: lib/Application/Controller/ListForwardZonesController.php:101
+#: lib/Application/Controller/ListForwardZonesController.php:102
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2704,7 +2741,7 @@ msgstr "Kasutaja on edukalt uuendatud."
 msgid "The user could not be updated."
 msgstr "Kasutajat ei saanud uuendada."
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
 msgid "You do not have the permission to edit this user."
 msgstr "Teil pole õigust seda kasutajat muuta."
 
@@ -2770,7 +2807,8 @@ msgid "Failed to remove network mapping."
 msgstr "Võrguseose eemaldamine ebaõnnestus."
 
 #: lib/Application/Controller/ListNetworksController.php:93
-#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+#: templates/modern/list_networks.html:4
+#: templates/modern/list_networks.html:10
 msgid "Network views"
 msgstr "Võrguvaated"
 
@@ -2822,19 +2860,19 @@ msgstr "Tekkis ootamatu viga. Palun võtke ühendust administraatoriga."
 msgid "Unknown SAML endpoint"
 msgstr "Tundmatu SAML lõpp-punkt"
 
-#: lib/Application/Controller/SamlCallbackController.php:148
+#: lib/Application/Controller/SamlCallbackController.php:150
 msgid "You have been logged out"
 msgstr "Olete välja logitud"
 
-#: lib/Application/Controller/SamlCallbackController.php:153
+#: lib/Application/Controller/SamlCallbackController.php:155
 msgid "Logout completed (with warnings): "
 msgstr "Väljalogimine lõpetatud (hoiatustega): "
 
-#: lib/Application/Controller/EditRecordController.php:108
+#: lib/Application/Controller/EditRecordController.php:112
 msgid "You do not have permission to view this record."
 msgstr "Teil pole õigust seda kirjet vaadata."
 
-#: lib/Application/Controller/EditRecordController.php:117
+#: lib/Application/Controller/EditRecordController.php:121
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "SLAVE-tsoonis ei saa kirjeid muuta."
 
@@ -2842,7 +2880,7 @@ msgstr "SLAVE-tsoonis ei saa kirjeid muuta."
 msgid "You do not have permission to edit this record."
 msgstr "Teil pole õigust seda kirjet muuta."
 
-#: lib/Application/Controller/EditRecordController.php:331
+#: lib/Application/Controller/EditRecordController.php:321
 msgid "The record has been updated successfully."
 msgstr "Kirje edukalt uuendatud."
 
@@ -3053,7 +3091,8 @@ msgstr "Lisage kõigepealt teine omanik või grupp."
 #: lib/Application/Controller/ZoneOwnershipController.php:334
 msgid "Add another user owner first (zone ownership mode is users_only)."
 msgstr ""
-"Lisage kõigepealt teine kasutaja-omanik (tsooni omandi režiim on users_only)."
+"Lisage kõigepealt teine kasutaja-omanik (tsooni omandi režiim on "
+"users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add a group first (zone ownership mode is groups_only)."
@@ -3101,19 +3140,19 @@ msgstr "Jah"
 msgid "No"
 msgstr "Ei"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:102
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Konto on ajutiselt lukustatud. Palun proovige hiljem."
 
-#: lib/Application/Service/SqlAuthenticator.php:135
+#: lib/Application/Service/SqlAuthenticator.php:150
 msgid "The user account is disabled."
 msgstr "Kasutajakonto on keelatud."
 
-#: lib/Application/Service/SqlAuthenticator.php:216
+#: lib/Application/Service/SqlAuthenticator.php:231
 msgid "Authentication failed!"
 msgstr "Autentimine ebaõnnestus!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:192
+#: lib/Infrastructure/Service/SessionAuthenticator.php:193
 msgid "Session expired, please login again."
 msgstr "Sessioon aegus, palun logi uuesti sisse."
 
@@ -3121,43 +3160,43 @@ msgstr "Sessioon aegus, palun logi uuesti sisse."
 msgid "Failed to update password"
 msgstr "Parooli uuendamine ebaõnnestus"
 
-#: lib/Application/Service/OidcService.php:184
+#: lib/Application/Service/OidcService.php:214
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentimine ebaõnnestus: Vigane state parameeter"
 
-#: lib/Application/Service/OidcService.php:205
+#: lib/Application/Service/OidcService.php:235
 msgid "Authentication failed: No authorization code"
 msgstr "Autentimine ebaõnnestus: Volituse kood puudub"
 
-#: lib/Application/Service/SamlService.php:188
+#: lib/Application/Service/SamlService.php:218
 msgid "Authentication failed: Invalid session"
 msgstr "Autentimine ebaõnnestus: Vigane sessioon"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:377
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentimine ebaõnnestus: kasutajakontot ei saa luua ega uuendada"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:246
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentimine ebaõnnestus!"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:151
 msgid "Failed to connect to LDAP server!"
 msgstr "LDAP-serveriga ühendumine ebaõnnestus!"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:167
 msgid "Failed to bind to LDAP server!"
 msgstr "LDAP-serveriga ühendumine ebaõnnestus!"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:195
 msgid "Failed to search LDAP."
 msgstr "LDAP-otsing ebaõnnestus."
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP-i vastu autentimine ebaõnnestus."
 
-#: lib/Application/Service/SamlService.php:246
+#: lib/Application/Service/SamlService.php:276
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentimine ebaõnnestus: Vigane SAML vastus"
 
@@ -3169,7 +3208,7 @@ msgstr "See on vigane tsooni nimi."
 msgid "This template is assigned to at least one user and one group."
 msgstr "See mall on määratud vähemalt ühele kasutajale ja ühele grupile."
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:385
 msgid "This template is assigned to at least one user."
 msgstr "See mall on määratud vähemalt ühele kasutajale."
 
@@ -3361,20 +3400,20 @@ msgstr ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:154
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA kontroll ebaõnnestus. Palun proovige uuesti."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:177
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "Tühi parool pole lubatud"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:220
+#: lib/Infrastructure/Service/SessionAuthenticator.php:221
 msgid "LDAP authentication is disabled"
 msgstr "LDAP autentimine on keelatud"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:406
+#: lib/Infrastructure/Service/SessionAuthenticator.php:409
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -3382,51 +3421,51 @@ msgstr ""
 "Andmebaasi viga: kasutaja autentimist ei saa kontrollida. Kontrollige "
 "seadistust."
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1062
 msgid "Enter a valid email address."
 msgstr "Sisestage kehtiv e-posti aadress."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1054
 msgid "Username exist already, please choose another one."
 msgstr "Kasutajanimi juba eksisteerib, palun valige teine."
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1058
 msgid "Enter a valid user name."
 msgstr "Sisestage kehtiv kasutajanimi."
 
-#: lib/Domain/Model/ZoneTemplate.php:257
+#: lib/Domain/Model/ZoneTemplate.php:260
 msgid "Zone template not found."
 msgstr "Tsoonimalli ei leitud."
 
-#: lib/Domain/Model/ZoneTemplate.php:261
+#: lib/Domain/Model/ZoneTemplate.php:264
 msgid "Only global zone templates can be set as the default."
 msgstr "Vaikimisi saab määrata ainult globaalseid tsoonimalle."
 
-#: lib/Domain/Model/ZoneTemplate.php:277
+#: lib/Domain/Model/ZoneTemplate.php:280
 msgid "Error setting default zone template: "
 msgstr "Viga vaikimisi tsoonimalli määramisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:296
+#: lib/Domain/Model/ZoneTemplate.php:299
 msgid "Error clearing default zone template: "
 msgstr "Viga vaikimisi tsoonimalli eemaldamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:816
 msgid "Error creating zone template: "
 msgstr "Viga tsooni malli loomisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:377
+#: lib/Domain/Model/ZoneTemplate.php:380
 msgid "Error adding default SOA record to template: "
 msgstr "Viga vaikimisi SOA-kirje lisamisel mallile: "
 
-#: lib/Domain/Model/ZoneTemplate.php:439
+#: lib/Domain/Model/ZoneTemplate.php:442
 msgid "Error deleting zone template: "
 msgstr "Viga tsooni malli kustutamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:463
+#: lib/Domain/Model/ZoneTemplate.php:466
 msgid "Error deleting user zone templates: "
 msgstr "Viga kasutaja tsooni mallide kustutamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:580
+#: lib/Domain/Model/ZoneTemplate.php:583
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Teil pole õigust sellesse tsooni malli kirjet lisada."
 
@@ -3438,53 +3477,77 @@ msgstr "Sisu väljal pole kehtivat väärtust."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV prioriteet peab olema number 0 kuni 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:357
+#: lib/Domain/Service/Dns/RecordManager.php:344
 msgid "You do not have the permission to edit this record."
 msgstr "Teil pole õigust seda kirjet muuta."
 
-#: lib/Domain/Model/ZoneTemplate.php:672
+#: lib/Domain/Model/ZoneTemplate.php:675
 msgid "Error updating zone template record: "
 msgstr "Viga tsooni malli kirje uuendamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:695
+#: lib/Domain/Model/ZoneTemplate.php:698
 msgid "Error deleting zone template record: "
 msgstr "Viga tsooni malli kirje kustutamisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:718
+#: lib/Domain/Model/ZoneTemplate.php:721
 msgid "Error checking template ownership: "
 msgstr "Viga malli omandi kontrollimisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:944
+#: lib/Domain/Model/ZoneTemplate.php:947
 msgid "Error retrieving zones using template: "
 msgstr "Viga tsoonide hankimisel, mis kasutavad malli: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1044
+#: lib/Domain/Model/ZoneTemplate.php:1047
 msgid "Failed to get list of zones using template: "
 msgstr "Mallit kasutavate tsoonide loendi saamine ebaõnnestus: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1062
+#: lib/Domain/Model/ZoneTemplate.php:1065
 msgid "You do not have the permission to edit a zone template."
 msgstr "Teil pole õigust tsooni malli muuta."
 
-#: lib/Domain/Model/ZoneTemplate.php:1110
+#: lib/Domain/Model/ZoneTemplate.php:1113
 msgid "Error unlinking zone from template: "
 msgstr "Viga tsooni eemaldamisel mallist: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1159
+#: lib/Domain/Model/ZoneTemplate.php:1162
 msgid "Error retrieving zones: "
 msgstr "Viga tsoonide hankimisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1178
+#: lib/Domain/Model/ZoneTemplate.php:1181
 msgid "Error checking template name existence: "
 msgstr "Viga malli nime olemasolu kontrollimisel: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1199
+#: lib/Domain/Model/ZoneTemplate.php:1202
 msgid "Error looking up template by name: "
 msgstr "Viga malli otsimisel nime järgi: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1222
+#: lib/Domain/Model/ZoneTemplate.php:1225
 msgid "Error checking template existence: "
 msgstr "Viga malli olemasolu kontrollimisel: "
+
+#: lib/Domain/Model/Permission.php:72
+msgid "You do not have the permission to add NS record."
+msgstr "Teil pole õigust NS-kirjet lisada."
+
+#: lib/Domain/Model/Permission.php:73
+msgid "You do not have the permission to add SOA record."
+msgstr "Teil pole õigust SOA-kirjet lisada."
+
+#: lib/Domain/Model/Permission.php:75
+msgid "You do not have the permission to edit this NS record."
+msgstr "Teil pole õigust seda NS-kirjet muuta."
+
+#: lib/Domain/Model/Permission.php:76
+msgid "You do not have the permission to edit this SOA record."
+msgstr "Teil pole õigust seda SOA-kirjet muuta."
+
+#: lib/Domain/Model/Permission.php:78
+msgid "You do not have the permission to delete NS records."
+msgstr "Teil pole õigust NS-kirjeid kustutada."
+
+#: lib/Domain/Model/Permission.php:79
+msgid "You do not have the permission to delete SOA records."
+msgstr "Teil pole õigust SOA-kirjeid kustutada."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:122
 msgid "All zones have owners"
@@ -3537,8 +3600,8 @@ msgstr "IPSECKEY kirjete prioriteedi väli peab olema 0 või tühi"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr "IPSECKEY kasutage koos DNSSEC-iga (RFC 4025 §4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
@@ -3550,8 +3613,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr "Domeeninime lüüsidel tagage mõlemad DNS kirjed DNSSEC-iga."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
@@ -3647,20 +3710,19 @@ msgid ""
 msgstr "TLSA: _port._protocol.hostname."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr "3. Nii SRV kui TLSA kirjetel peab olema DNSSEC olek \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr "TLSA nimi järgib tavaliselt _port._protocol.hostname vormingut."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr ""
 "TLSA-kirje kasutab mittestandardset protokolli. Tavalised on tcp, udp, sctp."
 
@@ -3678,8 +3740,8 @@ msgstr "See tundub TLSA kirjeks HTTPS jaoks. Tagage sertifikaadi sobivus."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr "See tundub TLSA kirjeks DoT jaoks. Tagage DoT seadistus."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
@@ -3695,21 +3757,25 @@ msgid ""
 msgstr "CNAME puhul peab kogu ahel olema DNSSEC-allkirjastatud (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr "See tundub SMIMEA-kirje (RFC 8162) olevat S/MIME sertifikaatide jaoks."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgstr ""
+"See tundub SMIMEA-kirje (RFC 8162) olevat S/MIME sertifikaatide jaoks."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
-msgstr "SMIMEA kasutab TLSA vormingut, aga seob S/MIME sertifikaate e-postiga."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
+msgstr ""
+"SMIMEA kasutab TLSA vormingut, aga seob S/MIME sertifikaate e-postiga."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
 msgstr ""
-"E-posti kohalik osa räsitakse SHA-256-ga ja pannakse enne _smimecert.<domain>"
+"E-posti kohalik osa räsitakse SHA-256-ga ja pannakse enne "
+"_smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -3719,7 +3785,8 @@ msgstr "TLSA kirjed tavaliselt \"_port._protocol.hostname\"."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr "TLSA-kirjetel peab olema prioriteet 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
@@ -3727,7 +3794,8 @@ msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
 msgstr ""
-"TLSA kirje peab sisaldama usage, selector, matching-type ja certificate-data."
+"TLSA kirje peab sisaldama usage, selector, matching-type ja certificate-"
+"data."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -3747,8 +3815,8 @@ msgstr "Kasutus 1 (PKIX-EE) sõltub DANE ja PKIX valideerimisest."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr ""
 "Kasutus 2 (DANE-TA) nõuab ankru haldust, võib lõheneda sertifikaadi aegudes."
 
@@ -3766,7 +3834,8 @@ msgstr "RFC 7671 soovitab 3/1/1 robustseimaks seadistuseks."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr "TLSA selektori väli peab olema 0 või 1."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
@@ -3831,20 +3900,20 @@ msgstr "NSEC3PARAM on DNSSEC osa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr "NSEC3PARAM kirjed luuakse automaatselt."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr "NSEC3PARAM näitab serveritele NSEC3 parameetreid."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr "NSEC3 parameetrite uuendamisel tuleb mõlemad kirjed uuesti luua."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
@@ -3864,8 +3933,8 @@ msgstr "NSEC3PARAM lipud peavad olema vahemikus 0 kuni 255."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr "Lipp 1 näitab Opt-Out kasutamist."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
@@ -3923,8 +3992,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr "MÄRKUS: LP on määratletud RFC 6742-s kui eksperimentaalne protokoll."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
@@ -3935,8 +4004,8 @@ msgstr "LP kirjeid kasutatakse ainult ILNP protokolliga."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr "LP kirjed EI TOHI olla mitte-ILNP sõlmedes (RFC 6742 §3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
@@ -4028,8 +4097,8 @@ msgstr "Null laiuskraad (ekvaator). Kontrollige koordinaate."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr "Vaikimisi täpsus. Kaaluge täpsemaid väärtusi."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
@@ -4086,8 +4155,8 @@ msgstr "RKEY kirjete prioriteedi väli peab olema 0 või tühi."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr "RKEY kirjeid tuleks kasutada ettevaatusega - pole laialt toetatud."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
@@ -4106,8 +4175,8 @@ msgstr "RKEY lippude väli peab olema arvuline."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr "Ebatavaline lippude väärtus. Tavalised on 0, 256 või 257."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
@@ -4152,8 +4221,8 @@ msgstr "Algoritm 3 (DSA/SHA1) pole turvaline, asendage."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr "Algoritm 5 (RSA/SHA-1) pole turvaline, asendage."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
@@ -4200,8 +4269,8 @@ msgstr "Algoritm 16 (Ed448) moodne, aga ühilduvus."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr ""
 "KRIITILINE: See algoritm pole turvaline. Kasutage algoritmi 8 või uuemat."
 
@@ -4226,7 +4295,8 @@ msgstr "RKEY-kirjeid kasutatakse moodsas DNS-is harva."
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
 msgstr ""
-"Kaaluge standardsete kirje tüüpide kasutamist krüptograafilistel eesmärkidel."
+"Kaaluge standardsete kirje tüüpide kasutamist krüptograafilistel "
+"eesmärkidel."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
@@ -4286,8 +4356,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr "Märkus: NID kirjeid kasutatakse ILNP jaoks (eksperimentaalne)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
@@ -4389,8 +4459,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
 msgstr "NSEC kirjed võimaldavad \"zone walking\" - kõigi nimede loetlemist."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
@@ -4404,7 +4474,8 @@ msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
-"NSEC kirjed on DNSSEC osa ja neid tuleb hallata koos teiste DNSSEC kirjetega."
+"NSEC kirjed on DNSSEC osa ja neid tuleb hallata koos teiste DNSSEC "
+"kirjetega."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
@@ -4424,9 +4495,9 @@ msgstr "NSEC-kirje peab sisaldama kehtivat järgmist domeeninime."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr "Järgmine nimi peab olema kanoonilises järjekorras."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
@@ -4437,8 +4508,8 @@ msgstr "Kui see on viimane NSEC, siis järgmine on tipp."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr "Type bit maps peavad näitama RR tüüpe. Tühi on ebatavaline."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
@@ -4539,8 +4610,8 @@ msgstr "OPENPGPKEY NÕUAB DNSSEC-i."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr "OPENPGPKEY on EKSPERIMENTAALSED (RFC 7929)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
@@ -4551,8 +4622,8 @@ msgstr "OPENPGPKEY pole OpenPGP Web of Trust asendus."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr "OPENPGPKEY loomiseks kasutage GnuPG."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:137
@@ -4593,8 +4664,8 @@ msgstr "Vigased jutumärgid HINFO"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr "CPU tüüp pole standardne. Kasutage standardset."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
@@ -4685,8 +4756,8 @@ msgstr "TSIG viga 17 (BADKEY) - vigane võti."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr "TSIG viga 18 (BADTIME) - ajatempel vale."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
@@ -4722,7 +4793,8 @@ msgstr "TSIG-algoritmi nimi peab lõppema punktiga."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
-msgstr "TSIG-algoritmi nimi peab olema kehtiv domeeninimi, mis lõpeb punktiga."
+msgstr ""
+"TSIG-algoritmi nimi peab olema kehtiv domeeninimi, mis lõpeb punktiga."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
@@ -4774,7 +4846,8 @@ msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
 msgstr ""
-"SHA-512 (algoritm 2) pakub tugevamat turvalisust, aga vajab rohkem ressursse."
+"SHA-512 (algoritm 2) pakub tugevamat turvalisust, aga vajab rohkem "
+"ressursse."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -4972,8 +5045,8 @@ msgstr "Vigane võtme silt. Peab olema number 1 kuni 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr "Key tag väli pole DNSKEY jaoks unikaalne."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
@@ -4995,11 +5068,13 @@ msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
 msgstr "Vigane SHA-1 kokkuvõtte pikkus. 40 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr "Vigane SHA-256 pikkus. 64 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr "Vigane SHA-384 pikkus. 96 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
@@ -5114,8 +5189,8 @@ msgstr "Parameeter \"%s\" on kohustuslik, aga kirjes pole."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr "RFC 2930 nõuab TKEY TTL=0."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
@@ -5151,7 +5226,8 @@ msgstr "TKEY algus peab olema Unix ajatempel või YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr "TKEY aegumine peab olema Unix ajatempel või YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
@@ -5210,8 +5286,8 @@ msgstr "HMAC-MD5 on nõrk. Soovitatav HMAC-SHA256 või tugevam."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr "Tuvastati aegunud algoritm. Soovitatud on HMAC-SHA256 või tugevam."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
@@ -5236,9 +5312,10 @@ msgstr "TTL väärtus ei saa olla negatiivne. Peab olema 0 või suurem."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
-msgstr "TTL ületab maksimumi (%d). RFC 2181 piirab selle 32-bitise täisarvuga."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
+msgstr ""
+"TTL ületab maksimumi (%d). RFC 2181 piirab selle 32-bitise täisarvuga."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -5250,8 +5327,8 @@ msgstr "TTL (%d) alla soovitatud miinimumi %d sekundit (5 min)."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr "TTL (%d) üle soovitatud maksimumi %d sekundit (1 nädal)."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
@@ -5276,7 +5353,8 @@ msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
 msgstr "FTP-d peetakse vähem turvaliseks kui SFTP või HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr "Kaaluge LDAPS (LDAP over SSL/TLS) LDAP ühenduste turvamiseks."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
@@ -5288,8 +5366,8 @@ msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
 msgstr ""
-"\"file\" URI skeem võib põhjustada turvariske, pole soovitatud avalikule DNS-"
-"ile."
+"\"file\" URI skeem võib põhjustada turvariske, pole soovitatud avalikule "
+"DNS-ile."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -5384,8 +5462,8 @@ msgstr "Tagage, et exchanger hostil on õiged edastus- ja pöörd-DNS kirjed."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr "Exchanger hostil peavad olema A/AAAA kirjed."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
@@ -5460,8 +5538,7 @@ msgid ""
 msgstr "SPF ületab 255 märki. Jagage mitmeks TXT-kirjeks."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr "Leitud mitu \"all\" mehhanismi. Kehtib ainult esimene."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
@@ -5594,14 +5671,14 @@ msgstr "RFC 4703 DHCID kokkupõrked."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr "DHCID tohib sisaldada ainult kehtivaid base64 märke."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr "DHCID vigane base64 täide. \"=\" ainult lõpus."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
@@ -5624,15 +5701,15 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr "DHCID identifikaatori tüüp 0x%04X pole standardne (RFC 4701)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr "DHCID kokkuvõtte tüüp %d pole standardne (RFC 4701)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
@@ -5663,8 +5740,8 @@ msgstr "RRSIG kirjete prioriteedi väli peab olema 0 või tühi"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr "RRSIG peaks looma DNS server, mitte käsitsi."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
@@ -5700,8 +5777,8 @@ msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
 msgstr ""
-"Algoritm 1 (RSA/MD5) on aegunud ja EI TOHI kasutada krüptograafilise nõrkuse "
-"tõttu."
+"Algoritm 1 (RSA/MD5) on aegunud ja EI TOHI kasutada krüptograafilise nõrkuse"
+" tõttu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -5774,8 +5851,8 @@ msgstr "RRSIG algne TTL peab olema kehtiv positiivne täisarv."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr "Original TTL > 1 päev. DNSSEC eelistab lühemat."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
@@ -5798,7 +5875,8 @@ msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
 msgstr ""
-"KRIITILINE: See allkiri on juba aegunud. DNSSEC lahendajad seda ei valideeri."
+"KRIITILINE: See allkiri on juba aegunud. DNSSEC lahendajad seda ei "
+"valideeri."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
@@ -5812,8 +5890,8 @@ msgstr "See allkiri aegub 30 päeva jooksul. Planeerige uuendamist."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr "HOIATUS: Allkiri pole veel kehtiv."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
@@ -5862,8 +5940,8 @@ msgstr "RRSIG on DNSSEC osa, haldab DNS server."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr "RRSIG kirjed tuleb enne aegumist uuesti luua."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
@@ -5872,8 +5950,8 @@ msgstr "RP kirjete prioriteedi väli peab olema 0 või tühi"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr "RP on määratletud RFC 1183-s (1990), kasutatakse harva."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
@@ -5946,8 +6024,8 @@ msgstr "Postkasti domeen esindab e-posti aadressi: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr ""
 "RP postkasti osa sisaldab alakriipse, mida domeeninimedes pole lubatud."
 
@@ -6030,8 +6108,8 @@ msgstr "See tundub EUI-64 aadress EUI-48-st (FF-FE keskel)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr "See tundub IPv6 liidese identifikaator."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
@@ -6159,7 +6237,8 @@ msgstr "DS kirjete prioriteedi väli peab olema 0 või tühi."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr "DS-kirje vormingus: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
@@ -6189,14 +6268,15 @@ msgstr "%s (algoritm %d) on kasutuses, kuid 13/15 eelistatud."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr "%s (algoritm %d) on valikuline vastavalt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr "%s (algoritm %d) POLE SOOVITATUD (RFC 8624). Kasutage 13 või 15."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
@@ -6211,15 +6291,15 @@ msgstr "SHA-1 (1) POLE SOOVITATUD. SHA-256 (2) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr "SHA-256 (kokkuvõtte tüüp 2) on SOOVITATUD algoritm RFC 8624 järgi."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr "SHA-384 suurema turvalisuse jaoks, SHA-256 piisab enamikule."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
@@ -6228,35 +6308,37 @@ msgstr "SHA-1 kokkuvõte peab olema täpselt 40 kuueteistkümnendsüsteemi märk
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
-msgstr "SHA-256 kokkuvõte peab olema täpselt 64 kuueteistkümnendsüsteemi märki"
+msgstr ""
+"SHA-256 kokkuvõte peab olema täpselt 64 kuueteistkümnendsüsteemi märki"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:260
 msgid "SHA-384 digest must be exactly 96 hexadecimal characters"
-msgstr "SHA-384 kokkuvõte peab olema täpselt 96 kuueteistkümnendsüsteemi märki"
+msgstr ""
+"SHA-384 kokkuvõte peab olema täpselt 96 kuueteistkümnendsüsteemi märki"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr "DS kirjed loovad usaldusahela."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr "CSYNC kirjed ainult tsooni tipus (RFC 7477)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr "CSYNC nõuab DNSSEC (RFC 7477)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr "Ainult üks CSYNC kirje tsoonis (RFC 7477)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
@@ -6269,8 +6351,7 @@ msgstr "Sellel CSYNC kirjel pole lippe."
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr ""
-"\"immediate\" lipp (0x0001) pole seatud. Vanemagendid võivad viivitada."
+msgstr "\"immediate\" lipp (0x0001) pole seatud. Vanemagendid võivad viivitada."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
@@ -6300,13 +6381,14 @@ msgstr "Vigased CSYNC lipud. Peavad olema 0-65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr "Vigased CSYNC lipud. Väärtused 0, 1, 2 või 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr "CSYNC-kirje peab määrama vähemalt ühe tüübi Type Bit Map väljas."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
@@ -6324,7 +6406,8 @@ msgstr "Topelt tüüp \""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr "NS sünkroonimine nõuab ettevaatust. Vanematsoonid võivad keelata."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
@@ -6336,8 +6419,8 @@ msgstr "Märkus: CSYNC Type Bit Map järgib RFC 4034."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr "RFC 7477 nõuab \"kõik või mitte midagi\" CSYNC."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
@@ -6364,14 +6447,16 @@ msgstr "EUI48 eraldajad puuduvad. Vorming: xx-xx-xx-xx-xx-xx sidekriipsudega."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
+"xx."
 msgstr "EUI48 tundub Cisco vormingus. Vorming: xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 kirje peab olema kehtiv MAC-aadress vormingus xx-xx-xx-xx-xx-xx."
+msgstr ""
+"EUI48 kirje peab olema kehtiv MAC-aadress vormingus xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -6579,7 +6664,8 @@ msgstr "Vigane alamvõrgu number RFC 2317-s. IPv4 puhul 0-255."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
-"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
+"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for "
+"IPv6."
 msgstr "Vigane alamvõrk RFC 2317-s. IPv6 - hex."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
@@ -6619,8 +6705,8 @@ msgstr "Kasutate vigast tipptaseme domeeni."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr ""
 "SOA valideerimise parameetrid pole määratud. Kutsuge setSOAParams() esmalt."
 
@@ -6652,8 +6738,8 @@ msgstr "Seerianumber peab olema 32-bitine unsigned täisarv (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr "Seerianumber YYYYMMDDnn vormingus, kuid vigane kuupäev."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
@@ -6741,8 +6827,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr "Mitu CNAME sama nimega pole lubatud - DNS rikkumine."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
@@ -6779,8 +6865,8 @@ msgstr "Mittestandardne SMIMEA vorming."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr "SMIMEA-kirjetel peab olema prioriteet 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
@@ -6818,7 +6904,8 @@ msgstr "PKIX-TA (0) nõuab CA valideerimise rajal."
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr "PKIX-EE nõuab PKIX valideerimist."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
@@ -6830,8 +6917,8 @@ msgstr "DANE-TA (2) on usalduse ankur."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr "DANE-EE (3) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
@@ -6842,8 +6929,8 @@ msgstr "SMIMEA selektori väli peab olema 0 või 1."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr "Selektor 0 on kogu sertifikaat, 1 (SPKI) on soovitatud."
 
@@ -6862,16 +6949,17 @@ msgstr "SMIMEA sobitamise tüüp peab olema 0, 1 või 2."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr "Matching-type 0 kasutab toormeid andmeid. SHA-256 (1) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr ""
-"Sobitamise tüüp 1 (SHA-256) pakub head tasakaalu turvalisuse ja efektiivsuse "
-"vahel."
+"Sobitamise tüüp 1 (SHA-256) pakub head tasakaalu turvalisuse ja efektiivsuse"
+" vahel."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
 msgid ""
@@ -6899,14 +6987,14 @@ msgstr "Soovitatav SMIMEA: 3/1/1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr "HOIATUS: SMIMEA (RFC 8162) on EKSPERIMENTAALNE."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr "KRIITILINE: SMIMEA NÕUAB DNSSEC-i. Ilma DNSSEC-ita pole turvalisust."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
@@ -6917,8 +7005,8 @@ msgstr "MÄRKUS: L64 on määratletud RFC 6742-s kui eksperimentaalne."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr "L64 kirjeid kasutatakse ainult ILNP protokolliga."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
@@ -7103,8 +7191,8 @@ msgstr "LUA implicit return: function/end võtmesõnad."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr "LUA sisaldab potentsiaalselt ohtlikke süsteemifunktsioone."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
@@ -7139,8 +7227,8 @@ msgstr "SSHFP algoritm peab olema 1, 2, 3, 4 või 6."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr "DSA võtmed on nõrgad, kasutage RSA, Ed25519 või Ed448."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
@@ -7168,8 +7256,8 @@ msgstr "SHA-1 sõrmejäljed on aegunud. RFC 6594 soovitab SHA-256 (tüüp 2)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr "SHA-256 sõrmejäljed on soovitatud (RFC 6594), turvalisemad kui SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
@@ -7187,14 +7275,14 @@ msgstr "SSHFP SHA-256 sõrmejälg peab olema 64 märki pikk."
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr "KRIITILINE: SSHFP NÕUAB DNSSEC-i."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr ""
 "Seadistage SSH kliendid \"VerifyHostKeyDNS yes\" SSHFP kirjete kasutamiseks."
 
@@ -7216,8 +7304,8 @@ msgstr "MR-kirje sisu peab olema kehtiv domeeninimi."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr "MR sisu (uus postkast) peab olema FQDN (punktiga)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
@@ -7243,8 +7331,8 @@ msgstr "Kaaluge standardseid meili edasisaatmise mehhanisme MR asemel."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr "MR kirje näitab, et postikasutaja on liikunud vanast uude postkasti."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
@@ -7263,8 +7351,8 @@ msgstr "Kõik DNS-serverid ja lahendajad ei pruugi KEY-kirjeid toetada."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr "Algoritm 1 (RSA/MD5) on krüptograafiliselt nõrk, ära kasuta."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
@@ -7474,7 +7562,8 @@ msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
 msgstr ""
-"CDS kirjed peavad olema ainult tsooni tipus, mitte alamdomeenides (RFC 7344)."
+"CDS kirjed peavad olema ainult tsooni tipus, mitte alamdomeenides (RFC "
+"7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -7498,8 +7587,8 @@ msgstr "See on CDS kustutamise kirje (RFC 8078)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr ""
 "CDS kirje peab sisaldama key-tag, algorithm, digest-type ja digest "
 "tühikutega eraldatuna."
@@ -7536,7 +7625,8 @@ msgid ""
 msgstr "CDS kirjetega peavad kaasnema sobivad CDNSKEY kirjed (RFC 7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr "CDS-kirjed peavad olema ainult tsooni tipus (mitte alamdomeenides)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
@@ -7547,14 +7637,14 @@ msgstr "MÄRKUS: L32 on määratletud RFC 6742-s kui eksperimentaalne."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr "L32 kirjeid kasutatakse ainult ILNP protokolliga."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr ""
 "Privaat IP-d (RFC 1918) L32 lokaatoritena võivad piirata kättesaadavust."
 
@@ -7590,7 +7680,8 @@ msgstr "L32 lokaator ei saa kasutada broadcast või määramata aadresse."
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr "Prioriteet 0 on kehtiv, aga ebatavaline. SRV tavaliselt algavad 10-st."
+msgstr ""
+"Prioriteet 0 on kehtiv, aga ebatavaline. SRV tavaliselt algavad 10-st."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
@@ -7604,8 +7695,8 @@ msgstr "Vigane SRV teenuse väärtus. Peab algama _ ja alfanum."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr "Vigane SRV protokoll. Peab algama _ ja alfanum."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
@@ -7619,8 +7710,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr "Protokoll \"%s\" pole tuntud. Tavalised on _tcp ja _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
@@ -7668,8 +7759,8 @@ msgstr "Vigane SRV-kirje prioriteedi välja väärtus."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr ""
 "Määramata (::) või loopback (::1) IPv6 aadresse ei tohiks kasutada AAAA "
 "kirjetes."
@@ -7681,7 +7772,8 @@ msgstr "Site-local IPv6 (fec0::/10) on aegunud, ära kasuta."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr "AAAA-kirjetel peab olema prioriteet 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
@@ -7772,14 +7864,14 @@ msgstr "RRSIG tüüp peaks olema NSEC3 bitikaardis DNSSEC tsoonide jaoks."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr "NSEC3 kirje sisaldab SOA ja NS, tõenäoliselt tsooni tipus."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr "NSEC3 tsooni tipule peaks NSEC3PARAM tüüp olema koos DNSKEY-ga."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
@@ -7802,7 +7894,8 @@ msgstr "Vigane domeeninime vorming."
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "See tundub ENUM domeen. NAPTR kirjed peaksid kasutama E2U ja RFC 6116."
+msgstr ""
+"See tundub ENUM domeen. NAPTR kirjed peaksid kasutama E2U ja RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
@@ -7869,17 +7962,14 @@ msgstr "NAPTR regexp-iga kirjel peab asendus olema \".\""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr "NAPTR teenuse vorming."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
-msgstr ""
-"Terminalilippe \"S\", \"A\", \"U\", \"P\" ei tohi kombineerida teistega."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
+msgstr "Terminalilippe \"S\", \"A\", \"U\", \"P\" ei tohi kombineerida teistega."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
@@ -7889,7 +7979,8 @@ msgstr "NAPTR regexp peab algama eraldusmärgiga."
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "NAPTR regexp vorming: eraldaja+muster+eraldaja+asendus+eraldaja+lipud."
+msgstr ""
+"NAPTR regexp vorming: eraldaja+muster+eraldaja+asendus+eraldaja+lipud."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
@@ -8018,20 +8109,20 @@ msgstr "Tuvastati vigased base64 märgid."
 msgid "Invalid base64 encoding."
 msgstr "Vigane base64 kodeering."
 
-#: lib/Domain/Service/DomainRecordCreator.php:71
+#: lib/Domain/Service/DomainRecordCreator.php:74
 #, php-format
 msgid "There is no managed zone for domain: %s."
 msgstr "Puudub hallatav tsoon domeeni jaoks: %s."
 
-#: lib/Domain/Service/DomainRecordCreator.php:89
+#: lib/Domain/Service/DomainRecordCreator.php:92
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
 msgstr "IPv6 domeeni kirjete lisamine pöördtsoonidest pole veel toetatud."
 
-#: lib/Domain/Service/DomainRecordCreator.php:129
+#: lib/Domain/Service/DomainRecordCreator.php:135
 msgid "This domain record was not valid and could not be added."
 msgstr "See domeeni kirje polnud kehtiv ja seda ei saanud lisada."
 
-#: lib/Domain/Service/DomainRecordCreator.php:125
+#: lib/Domain/Service/DomainRecordCreator.php:131
 msgid "The domain record was successfully added."
 msgstr "Domeeni kirje on edukalt lisatud."
 
@@ -8069,7 +8160,8 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Teil pole õigust API võtmeid uuesti luua."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
-msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
+msgid ""
+"No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "Tsoonis pole SOA-kirjet. Vajalik DNSSEC jaoks."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
@@ -8102,7 +8194,8 @@ msgstr "SOA-kirje sisu vorming on vigane."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "SOA vorming: primary-ns hostmaster serial refresh retry expire minimum"
+msgstr ""
+"SOA vorming: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -8130,11 +8223,11 @@ msgstr "Leiti järgmised hoiatused:"
 msgid "Empty line."
 msgstr "Tühi rida."
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Vigane vorming. Oodatakse vähemalt: nimi,tüüp,sisu"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -8161,41 +8254,27 @@ msgid ""
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr "Pöördkirje lisatud. PTR %s juba eksisteerib → %s."
 
-#: lib/Domain/Service/Dns/RecordManager.php:234
-msgid "You do not have the permission to add SOA record."
-msgstr "Teil pole õigust SOA-kirjet lisada."
+#: lib/Domain/Service/ReverseRecordCreator.php:235
+#, auto-english-fallback
+msgid "PTR update skipped: record type is not A or AAAA."
+msgstr "PTR update skipped: record type is not A or AAAA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:238
-msgid "You do not have the permission to add NS record."
-msgstr "Teil pole õigust NS-kirjet lisada."
+#: lib/Domain/Service/ReverseRecordCreator.php:248
+#, auto-english-fallback
+msgid "Stale PTR record removed."
+msgstr "Stale PTR record removed."
 
-#: lib/Domain/Service/Dns/RecordManager.php:283
+#: lib/Domain/Service/Dns/RecordManager.php:275
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Selle hostinime, tüübi ja sisuga kirje on juba olemas."
 
-#: lib/Domain/Service/Dns/RecordManager.php:178
+#: lib/Domain/Service/Dns/RecordManager.php:174
 msgid "Failed to add record to DNS backend."
 msgstr "Kirje lisamine DNS-taustale ebaõnnestus."
 
-#: lib/Domain/Service/Dns/RecordManager.php:341
-msgid "You do not have the permission to edit this SOA record."
-msgstr "Teil pole õigust seda SOA-kirjet muuta."
-
-#: lib/Domain/Service/Dns/RecordManager.php:346
-msgid "You do not have the permission to edit this NS record."
-msgstr "Teil pole õigust seda NS-kirjet muuta."
-
-#: lib/Domain/Service/Dns/RecordManager.php:403
+#: lib/Domain/Service/Dns/RecordManager.php:390
 msgid "Failed to update record in DNS backend."
 msgstr "Kirje uuendamine DNS-taustal ebaõnnestus."
-
-#: lib/Domain/Service/Dns/RecordManager.php:452
-msgid "You do not have the permission to delete SOA records."
-msgstr "Teil pole õigust SOA-kirjeid kustutada."
-
-#: lib/Domain/Service/Dns/RecordManager.php:457
-msgid "You do not have the permission to delete NS records."
-msgstr "Teil pole õigust NS-kirjeid kustutada."
 
 #: lib/Domain/Service/Dns/DomainManager.php:753
 #, php-format
@@ -8277,8 +8356,8 @@ msgstr "TÄHTIS: Salvestage oma uus API võti nüüd!"
 
 #: templates/modern/api_key_regenerated.html:18
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr "See on ainus kord, mil uut API võtit kuvatakse."
 
 #: templates/modern/api_key_created.html:23
@@ -8373,8 +8452,8 @@ msgstr "Kavatsete aktiveerida DNSSEC võtme (ID"
 
 #: templates/modern/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr "Selle võtme aktiveerimine muudab selle aktiivse DNSSEC ahela osaks."
 
 #: templates/modern/dnssec_delete_key.html:47
@@ -8417,7 +8496,8 @@ msgstr "Muuda API võtit"
 msgid "Name"
 msgstr "Nimi"
 
-#: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
+#: templates/default/api_key_edit.html:22
+#: templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
 msgstr "Andke sellele API võtmele nimi"
 
@@ -8433,15 +8513,18 @@ msgstr "Aegub"
 msgid "Leave empty for a key that never expires"
 msgstr "Jäta tühjaks, et võti ei aeguks kunagi"
 
-#: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
+#: templates/default/api_key_edit.html:35
+#: templates/modern/api_key_edit.html:36
 msgid "Disable this API key"
 msgstr "Keela see API võti"
 
-#: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:38
+#: templates/default/api_key_edit.html:37
+#: templates/modern/api_key_edit.html:38
 msgid "Disabled keys cannot be used for authentication"
 msgstr "Keelatud võtmeid ei saa autentimiseks kasutada"
 
-#: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:44
+#: templates/default/api_key_edit.html:43
+#: templates/modern/api_key_edit.html:44
 msgid "Update API Key"
 msgstr "Uuenda API võtit"
 
@@ -8449,7 +8532,8 @@ msgstr "Uuenda API võtit"
 msgid "* Required fields"
 msgstr "* Kohustuslikud väljad"
 
-#: templates/default/api_key_edit.html:59 templates/modern/api_key_edit.html:60
+#: templates/default/api_key_edit.html:59
+#: templates/modern/api_key_edit.html:60
 msgid "API Key Information"
 msgstr "API võtme teave"
 
@@ -8461,7 +8545,8 @@ msgstr "Loodud"
 msgid "Last used"
 msgstr "Viimati kasutatud"
 
-#: templates/default/api_key_edit.html:93 templates/modern/api_key_edit.html:94
+#: templates/default/api_key_edit.html:93
+#: templates/modern/api_key_edit.html:94
 msgid "Additional Actions"
 msgstr "Täiendavad tegevused"
 
@@ -8514,7 +8599,8 @@ msgstr "Andke oma kirjele nimi"
 #: templates/modern/add_zone_templ_record.html:44
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "Näide: [ZONE] tsooni enda jaoks või subdomain.[ZONE] alamdomeeni jaoks"
+msgstr ""
+"Näide: [ZONE] tsooni enda jaoks või subdomain.[ZONE] alamdomeeni jaoks"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
@@ -8543,8 +8629,8 @@ msgstr "Andke sisu oma tsooni kirjele"
 #: templates/modern/add_record.html:104 templates/modern/add_record.html:156
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr "Hoiatus: CNAME tsooni tipus pole soovitatud."
 
 #: templates/modern/add_zone_templ_record.html:83
@@ -8640,10 +8726,11 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
-"MX Microsoft 365 jaoks: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</"
-"code>"
+"MX Microsoft 365 jaoks: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
@@ -8677,7 +8764,8 @@ msgstr "Sisestage hostinimi nii, nagu see NS-kirjes ilmub"
 msgid "Provide host name"
 msgstr "Andke hostinimi"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:364
+#: templates/modern/delete_supermaster.html:36
+#: templates/modern/header.html:364
 msgid "Account"
 msgstr "Konto"
 
@@ -8815,14 +8903,14 @@ msgstr "Network Mapping:"
 #: templates/modern/list_networks.html:15
 msgid ""
 "Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
+"network receive only the zone variants assigned to the mapped view. PowerDNS"
+" evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
 msgstr ""
 "Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
+"network receive only the zone variants assigned to the mapped view. PowerDNS"
+" evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
 
@@ -8891,7 +8979,7 @@ msgstr "Lisa grupp"
 msgid "No groups found"
 msgstr "Gruppe ei leitud"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Otsi gruppe..."
 
@@ -8941,7 +9029,8 @@ msgstr "Andke sisu"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "See kirje tüüp on aegunud ja seda ei tohiks uutele kirjetele kasutada."
+msgstr ""
+"See kirje tüüp on aegunud ja seda ei tohiks uutele kirjetele kasutada."
 
 #: templates/modern/edit_perm_templ.html:52
 msgid "Update"
@@ -9000,7 +9089,7 @@ msgstr "Eemalda"
 msgid "and"
 msgstr "ja"
 
-#: templates/modern/list_forward_zones.html:180
+#: templates/modern/list_forward_zones.html:197
 msgid "more..."
 msgstr "veel..."
 
@@ -9039,7 +9128,8 @@ msgid ""
 "ownership."
 msgstr "Tsoon jääb süsteemi, aga see grupp ei ole enam omanik."
 
-#: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
+#: templates/default/delete_group.html:16
+#: templates/modern/delete_group.html:16
 msgid "You are about to delete the group"
 msgstr "Kavatsete kustutada grupi"
 
@@ -9047,35 +9137,43 @@ msgstr "Kavatsete kustutada grupi"
 msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Seda tegevust ei saa tagasi võtta. Kas olete kindel?"
 
-#: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
+#: templates/default/delete_group.html:22
+#: templates/modern/delete_group.html:22
 msgid "Deletion Impact"
 msgstr "Kustutamise mõju"
 
-#: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
+#: templates/default/delete_group.html:29
+#: templates/modern/delete_group.html:29
 msgid "member will be removed from this group"
 msgstr "liige eemaldatakse sellest grupist"
 
-#: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
+#: templates/default/delete_group.html:31
+#: templates/modern/delete_group.html:31
 msgid "members will be removed from this group"
 msgstr "liikmed eemaldatakse sellest grupist"
 
-#: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
+#: templates/default/delete_group.html:37
+#: templates/modern/delete_group.html:37
 msgid "zone will lose this group ownership"
 msgstr "tsoon kaotab selle grupi omandi"
 
-#: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
+#: templates/default/delete_group.html:39
+#: templates/modern/delete_group.html:39
 msgid "zones will lose this group ownership"
 msgstr "tsoonid kaotavad selle grupi omandi"
 
-#: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
+#: templates/default/delete_group.html:49
+#: templates/modern/delete_group.html:49
 msgid "Affected Zones"
 msgstr "Mõjutatud tsoonid"
 
-#: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
+#: templates/default/delete_group.html:51
+#: templates/modern/delete_group.html:51
 msgid "showing first 20"
 msgstr "näitab esimest 20"
 
-#: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
+#: templates/default/delete_group.html:68
+#: templates/modern/delete_group.html:68
 msgid "more zones..."
 msgstr "rohkem tsoone..."
 
@@ -9083,17 +9181,21 @@ msgstr "rohkem tsoone..."
 msgid "Important Note"
 msgstr "Oluline märkus"
 
-#: templates/default/delete_group.html:77 templates/modern/delete_group.html:77
+#: templates/default/delete_group.html:77
+#: templates/modern/delete_group.html:77
 msgid ""
-"Members will lose access to all zones owned by this group. Zones without any "
-"remaining owners will still exist but will be inaccessible to regular users."
+"Members will lose access to all zones owned by this group. Zones without any"
+" remaining owners will still exist but will be inaccessible to regular "
+"users."
 msgstr "Liikmed kaotavad juurdepääsu. Tsoonid jäävad omanikuta."
 
-#: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
+#: templates/default/delete_group.html:85
+#: templates/modern/delete_group.html:85
 msgid "Yes, delete this group"
 msgstr "Jah, kustuta see grupp"
 
-#: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
+#: templates/default/delete_group.html:89
+#: templates/modern/delete_group.html:89
 msgid "No, keep this group"
 msgstr "Ei, säilita see grupp"
 
@@ -9186,26 +9288,67 @@ msgid "Tools"
 msgstr "Tööriistad"
 
 #: templates/default/index.html:307 templates/modern/index.html:307
-#: install/templates/step4.html.twig:159
+#: install/templates/step4.html.twig:162
 msgid "Database"
 msgstr "Andmebaas"
 
-#: templates/default/index.html:354 templates/modern/index.html:354
+#: templates/default/index.html:317 templates/modern/index.html:317
+#, auto-english-fallback
+msgid "TTL defaults"
+msgstr "TTL defaults"
+
+#: templates/default/index.html:364 templates/modern/index.html:364
 msgid "My Profile"
 msgstr "Minu profiil"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
+#: install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Parool"
 
-#: templates/modern/index.html:373 templates/modern/header.html:377
+#: templates/modern/index.html:383 templates/modern/header.html:377
 msgid "Preferences"
 msgstr "Eelistused"
 
 #: templates/modern/header.html:441
 msgid "Logout"
 msgstr "Logi välja"
+
+#: templates/modern/record_type_defaults.html:15
+#, auto-english-fallback
+msgid "Current global defaults"
+msgstr "Current global defaults"
+
+#: templates/modern/record_type_defaults.html:25
+#, auto-english-fallback
+msgid "Record type"
+msgstr "Record type"
+
+#: templates/modern/record_type_defaults.html:26
+#, auto-english-fallback
+msgid "Default TTL (seconds)"
+msgstr "Default TTL (seconds)"
+
+#: templates/modern/record_type_defaults.html:41
+#, auto-english-fallback
+msgid "empty = use global default"
+msgstr "empty = use global default"
+
+#: templates/modern/record_type_defaults.html:51
+#, auto-english-fallback
+msgid "Save defaults"
+msgstr "Save defaults"
+
+#: templates/modern/record_type_defaults.html:61
+msgid ""
+"When a record is created without an explicit TTL, Poweradmin looks up the "
+"record type here first. Leave a field empty to fall back to"
+msgstr ""
+
+#: templates/modern/record_type_defaults.html:62
+#, auto-english-fallback
+msgid "(for PTRs in reverse zones) or"
+msgstr "(for PTRs in reverse zones) or"
 
 #: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
 msgid "Edit comment"
@@ -9292,7 +9435,8 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr "Kasutage kirjeldavaid nimesid ja kirjeldusi mallide tuvastamiseks"
 
-#: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
+#: templates/default/list_log_api.html:10
+#: templates/modern/list_log_api.html:10
 msgid "API Activity Logs"
 msgstr "API tegevuste logid"
 
@@ -9300,11 +9444,13 @@ msgstr "API tegevuste logid"
 msgid "Total logs"
 msgstr "Logisid kokku"
 
-#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#: templates/default/list_log_api.html:18
+#: templates/modern/list_log_api.html:18
 msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
-#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+#: templates/default/list_log_api.html:19
+#: templates/modern/list_log_api.html:19
 msgid ""
 "Records API key lifecycle events (creation, regeneration, revocation, "
 "permission changes) and authenticated API requests. Filter by user or "
@@ -9692,8 +9838,8 @@ msgstr "Vastutuse piirang"
 
 #: templates/modern/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr "Süsteem \"nagu on\" ilma garantiita."
 
@@ -9851,7 +9997,7 @@ msgstr "IPv4 pöördtsoonid:"
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 pöördtsoonid:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "Ridu lehekülje kohta:"
 
@@ -9863,15 +10009,19 @@ msgstr "Selles loendis pole pöördtsoone."
 msgid "Owner"
 msgstr "Omanik"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "Grupp"
+
+#: templates/modern/list_forward_zones.html:111
 msgid "Full name"
 msgstr "Täisnimi"
 
-#: templates/modern/list_reverse_zones.html:127
+#: templates/modern/list_reverse_zones.html:141
 msgid "Associated Forward Zones"
 msgstr "Seotud edastustsoonid"
 
-#: templates/modern/list_forward_zones.html:101
+#: templates/modern/list_forward_zones.html:115
 msgid "Serial"
 msgstr "Seeria"
 
@@ -9879,23 +10029,23 @@ msgstr "Seeria"
 msgid "Template"
 msgstr "Mall"
 
-#: templates/modern/list_forward_zones.html:131
+#: templates/modern/list_forward_zones.html:145
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "SOA-kirje on keelatud, tsoon ei ole kasutatav"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "Zone has no SOA record"
 msgstr "Tsoonil pole SOA-kirjet"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "No SOA"
 msgstr "SOA puudub"
 
-#: templates/modern/list_reverse_zones.html:233
+#: templates/modern/list_reverse_zones.html:252
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "Kustuta tsoon(id)"
 
@@ -9913,8 +10063,8 @@ msgstr "Tuvastati vanem PowerDNS"
 
 #: templates/modern/dnssec_add_key.html:45
 msgid ""
-"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
-"by default. Pick KSK or ZSK explicitly to add a key here."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key"
+" by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
 "See server on vanem kui PowerDNS 4.0 ja ei loo vaikimisi Combined Signing "
 "Key'd. Võtme lisamiseks vali sõnaselgelt KSK või ZSK."
@@ -9991,7 +10141,7 @@ msgid "Edit user"
 msgstr "Muuda kasutajat"
 
 #: templates/modern/manage_group_members.html:93
-#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
+#: install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Kasutajanimi"
 
@@ -10078,7 +10228,8 @@ msgstr "Peab sisaldama erimärke"
 msgid "No specific password requirements"
 msgstr "Erilisi parooli nõudeid pole"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:155
+#: templates/modern/add_user.html:160
+#: templates/modern/edit_perm_templ.html:155
 msgid "User Permissions"
 msgstr "Kasutaja õigused"
 
@@ -10130,7 +10281,7 @@ msgstr "Tühjenda otsing"
 msgid "Select All"
 msgstr "Vali kõik"
 
-#: templates/modern/add_zone_slave.html:102
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Tühjenda kõik"
 
@@ -10251,8 +10402,8 @@ msgstr "Mis on juurdepääsu mallid?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in "
-"Poweradmin. They provide a quick way to assign common permission "
+"Access templates define sets of actions that users and groups can perform in"
+" Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr "Juurdepääsu mallid määravad kasutajate ja gruppide tegevused."
 
@@ -10403,7 +10554,7 @@ msgid "Host Prefix"
 msgstr "Hosti eesliide"
 
 #: templates/modern/batch_ptr_record.html:73
-#: install/templates/step4.html.twig:206
+#: install/templates/step4.html.twig:209
 msgid "Optional"
 msgstr "Valikuline"
 
@@ -10467,8 +10618,8 @@ msgstr "Ainult sobitus"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr "Loob PTR-kirjed ainult IP-dele, millel on edastustsoonis A-kirjed"
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10516,13 +10667,12 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
-msgstr ""
-"Kasutage \"Create PTRs only for existing A records\" PTR-ide täitmiseks"
+msgstr "Kasutage \"Create PTRs only for existing A records\" PTR-ide täitmiseks"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr "Kasutage Host Prefix välja eesliite lisamiseks kõigile hostinimedele"
 
 #: templates/modern/batch_ptr_record.html:186
@@ -10535,7 +10685,7 @@ msgstr "Märkige \"Create forward A/AAAA\" automaatseks loomiseks."
 msgid "Ownership"
 msgstr "Omand"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:51
 msgid "User Owner"
 msgstr "Kasutaja-omanik"
 
@@ -10551,7 +10701,7 @@ msgstr "Lisa kasutaja-omanik"
 msgid "Search users..."
 msgstr "Otsi kasutajaid..."
 
-#: templates/modern/add_zone_slave.html:79
+#: templates/modern/add_zone_slave.html:80
 msgid "You"
 msgstr "Sina"
 
@@ -10559,7 +10709,7 @@ msgstr "Sina"
 msgid "Add Owner"
 msgstr "Lisa omanik"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Grupi omand"
 
@@ -10571,7 +10721,8 @@ msgstr "Sellele tsoonile pole gruppe määratud."
 msgid "Add Group Ownership"
 msgstr "Lisa grupi omand"
 
-#: templates/modern/edit_zone_templ.html:96 templates/modern/add_record.html:18
+#: templates/modern/edit_zone_templ.html:96
+#: templates/modern/add_record.html:18
 msgid "Add record"
 msgstr "Lisa kirje"
 
@@ -10652,7 +10803,8 @@ msgstr "Loo API võti"
 #: templates/default/api_key_add.html:52 templates/modern/api_key_add.html:53
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr "Uus API võti kuvatakse ainult ÜHE korra."
 
 #: templates/default/api_key_add.html:53 templates/modern/api_key_add.html:54
@@ -10797,7 +10949,7 @@ msgstr "Viimati muudetud"
 msgid "Edit selected"
 msgstr "Muuda valitut"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "Kustuta kirje(d)"
 
@@ -10813,7 +10965,7 @@ msgstr "Impordi"
 msgid "Generate PTR"
 msgstr "Loo PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Tsooni seadistus"
 
@@ -10821,7 +10973,7 @@ msgstr "Tsooni seadistus"
 msgid "Change"
 msgstr "Muuda"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:36
 msgid "IP address of master NS"
 msgstr "Põhi-NS-i IP-aadress"
 
@@ -10894,7 +11046,7 @@ msgstr "Tsoonide koguarv:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Selles loendis pole edastustsoone."
 
-#: templates/modern/list_forward_zones.html:212
+#: templates/modern/list_forward_zones.html:231
 msgid "PTR"
 msgstr "PTR"
 
@@ -10915,7 +11067,8 @@ msgid "Record Details"
 msgstr "Kirje üksikasjad"
 
 #: templates/modern/delete_record.html:74
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "Proovite kustutada kirjet, mis on selle tsooni tööks vajalik."
 
 #: templates/modern/delete_record.html:85
@@ -11095,7 +11248,7 @@ msgid "Send Username"
 msgstr "Saada kasutajanimi"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
-#: install/templates/step4.html.twig:127
+#: install/templates/step4.html.twig:130
 msgid "Provide user password"
 msgstr "Andke kasutaja parool"
 
@@ -11134,15 +11287,15 @@ msgstr "Valige grupid, kuhu uus kasutaja lisada."
 msgid "Zone name"
 msgstr "tsooni nimi"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Andke tsooni nimi"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:32
 msgid "Example: example.com"
 msgstr "Näide: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:47
 msgid "Zone type (usually NATIVE)"
 msgstr "Tsooni tüüp (tavaliselt NATIVE)"
 
@@ -11150,43 +11303,43 @@ msgstr "Tsooni tüüp (tavaliselt NATIVE)"
 msgid "default"
 msgstr "vaikimisi"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:59
 msgid "Optional: Apply predefined records from a template"
 msgstr "Valikuline: Rakenda eelmääratletud kirjeid mallist"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:67
 msgid "Enable DNSSEC"
 msgstr "Luba DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:69
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Turva see tsoon DNSSEC-allkirjastamisega"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:56
 msgid "Selected:"
 msgstr "Valitud:"
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:62
 msgid "No user owner"
 msgstr "Kasutajaomanik puudub"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:63
 msgid "Zone will be owned only by groups"
 msgstr "Tsoon kuulub ainult gruppidele"
 
-#: templates/modern/add_zone_slave.html:85
+#: templates/modern/add_zone_slave.html:86
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Valikuline: Valige selle tsooni eest vastutav kasutaja"
 
-#: templates/modern/add_zone_slave.html:109
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "liikmed"
 
-#: templates/modern/add_zone_slave.html:115
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "Valikuline: Valige üks või mitu gruppi"
 
-#: templates/modern/add_zone_slave.html:130
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Lisa tsoon"
 
@@ -11210,7 +11363,7 @@ msgstr "Lingitud tsoonid"
 msgid "Sync Status"
 msgstr "Sünkr. olek"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "Tulemusi ei leitud"
 
@@ -11546,12 +11699,10 @@ msgid "Add Zones"
 msgstr "Lisa tsoonid"
 
 #: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
 msgid "After Creation"
 msgstr "Pärast loomist"
 
 #: templates/modern/bulk_registration.html:120
-#, auto-english-fallback
 msgid "Change zone owner"
 msgstr "Muuda tsooni omanikku"
 
@@ -11560,10 +11711,10 @@ msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Tsooni omandiõiguse saate kasutajate loendist igal ajal teisele kasutajale üle kanda."
+"Tsooni omandiõiguse saate kasutajate loendist igal ajal teisele kasutajale "
+"üle kanda."
 
 #: templates/modern/bulk_registration.html:123
-#, auto-english-fallback
 msgid "Manage users"
 msgstr "Halda kasutajaid"
 
@@ -11593,8 +11744,8 @@ msgstr "Delete records"
 
 #: templates/modern/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
 msgstr ""
 "Kas olete kindel, et soovite need kirjed kustutada? Ei saa tagasi võtta."
 
@@ -11616,17 +11767,17 @@ msgstr "Change Log Behavior:"
 
 #: templates/modern/list_record_changes.html:20
 msgid ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a"
+" before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use"
+" the time-window shortcuts to focus on recent activity, or export to "
+"CSV/JSON to feed external audit systems."
 msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a"
+" before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use"
+" the time-window shortcuts to focus on recent activity, or export to "
+"CSV/JSON to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
@@ -11706,8 +11857,8 @@ msgstr "Salvestage taastekoodid"
 
 #: templates/modern/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr "Taastekoode saab kasutada autentimise seadme kaotamisel."
 
 #: templates/modern/mfa_recovery_codes.html:31
@@ -11754,8 +11905,8 @@ msgstr "MFA seadistus vajalik"
 
 #: templates/default/mfa_setup.html:15 templates/modern/mfa_setup.html:15
 msgid ""
-"Your organization requires multi-factor authentication. Please set up MFA to "
-"continue using the system."
+"Your organization requires multi-factor authentication. Please set up MFA to"
+" continue using the system."
 msgstr "Teie organisatsioon nõuab MFA-d. Seadistage MFA jätkamiseks."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
@@ -11789,8 +11940,8 @@ msgstr "Autentimise rakendus"
 
 #: templates/default/mfa_setup.html:75 templates/modern/mfa_setup.html:75
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Kasutage rakendust nagu Google Authenticator, Microsoft Authenticator või "
 "Authy."
@@ -11835,7 +11986,8 @@ msgstr "Tugineb e-posti kohaletoimetamisele"
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr "E-posti kontroll pole saadaval, kuna administraator on selle keelanud."
+msgstr ""
+"E-posti kontroll pole saadaval, kuna administraator on selle keelanud."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -11926,82 +12078,108 @@ msgid "Items per page"
 msgstr "Elemente lehekülje kohta"
 
 #: templates/modern/user_preferences.html:36
+#, auto-english-fallback
+msgid "Timezone"
+msgstr "Timezone"
+
+#: templates/modern/user_preferences.html:46
+#, auto-english-fallback
+msgid "Region"
+msgstr "Region"
+
+#: templates/modern/user_preferences.html:48
+#, auto-english-fallback
+msgid "Inherit global setting"
+msgstr "Inherit global setting"
+
+#: templates/modern/user_preferences.html:55
+#, auto-english-fallback
+msgid "City"
+msgstr "City"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr ""
+
+#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "Tsooni valikud"
 
-#: templates/modern/user_preferences.html:42
+#: templates/modern/user_preferences.html:101
 msgid "Zone serial numbers"
 msgstr "Tsoonide seerianumbrid"
 
-#: templates/modern/user_preferences.html:43
+#: templates/modern/user_preferences.html:102
 msgid "Display serial numbers in zone lists"
 msgstr "Kuva seerianumbrid tsooni loendites"
 
-#: templates/modern/user_preferences.html:51
+#: templates/modern/user_preferences.html:110
 msgid "Display template information in zone lists"
 msgstr "Kuva malli teave tsooni loendites"
 
-#: templates/modern/user_preferences.html:64
+#: templates/modern/user_preferences.html:123
 msgid "Interface Behavior"
 msgstr "Liidese käitumine"
 
-#: templates/modern/user_preferences.html:69
+#: templates/modern/user_preferences.html:128
 msgid "Record form"
 msgstr "Kirje vorm"
 
-#: templates/modern/user_preferences.html:78
+#: templates/modern/user_preferences.html:137
 msgid "Save buttons"
 msgstr "Salvestamise nupud"
 
-#: templates/modern/user_preferences.html:88
+#: templates/modern/user_preferences.html:147
 msgid "Edit Zone View"
 msgstr "Muuda tsooni vaadet"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:152
 msgid "Show record ID"
 msgstr "Näita kirje ID-d"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:153
 msgid "Display record ID column in edit view"
 msgstr "Kuva kirje ID veerg redigeerimise vaates"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:160
 msgid "Show add record form"
 msgstr "Näita lisamise vormi"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:161
 msgid "Display inline add record form in edit view"
 msgstr "Kuva sisestatud kirje lisamise vorm redigeerimise vaates"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:168
 msgid "Show edit buttons"
 msgstr "Näita muutmisnuppe"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:169
 msgid "Display individual edit button per record"
 msgstr "Kuva individuaalne muutmise nupp iga kirje kohta"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:176
 msgid "Show delete buttons"
 msgstr "Näita kustutusnuppe"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:177
 msgid "Display individual delete button per record"
 msgstr "Kuva individuaalne kustutamise nupp iga kirje kohta"
 
-#: templates/modern/user_preferences.html:125
+#: templates/modern/user_preferences.html:184
 msgid "Hostname-only display"
 msgstr "Hostname-only display"
 
-#: templates/modern/user_preferences.html:126
+#: templates/modern/user_preferences.html:185
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Strip zone suffix from record names in edit view"
 
-#: templates/modern/user_preferences.html:141
+#: templates/modern/user_preferences.html:200
 msgid "Save Preferences"
 msgstr "Salvesta eelistused"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:206
 msgid "Changes will be applied after saving"
 msgstr "Muudatused rakendatakse pärast salvestamist"
 
@@ -12013,7 +12191,8 @@ msgstr "DNS-otsing"
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
 msgstr ""
-"Sisestage domeeninimi, hostinimi või IP (nt example.com type:txt content:spf)"
+"Sisestage domeeninimi, hostinimi või IP (nt example.com type:txt "
+"content:spf)"
 
 #: templates/default/search.html:76 templates/modern/search.html:76
 msgid "Wildcards"
@@ -12033,31 +12212,31 @@ msgstr "Filtri süntaks: type:txt content:spf."
 msgid "Zones found"
 msgstr "Leitud tsoonid"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "Leitud kirjed"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "Proovige teisi otsinguterminid või filtreid"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "Kinnita tsooni kustutamine"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "Kas olete kindel, et soovite kustutada"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "valitud tsoon(i)?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "Kinnita kirje kustutamine"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "valitud kirje(d)?"
 
@@ -12113,15 +12292,15 @@ msgstr ""
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Teisese tsooni seadistus"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:38
 msgid "Provide IP address"
 msgstr "Andke IP-aadress"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:39
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12151,15 +12330,15 @@ msgstr "View Behavior:"
 msgid ""
 "Views serve different zone variants to different clients based on the "
 "network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS"
+" before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
 msgstr ""
 "Views serve different zone variants to different clients based on the "
 "network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS"
+" before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
 
@@ -12253,9 +12432,9 @@ msgstr "Kohandatud mallid"
 
 #: templates/modern/email_previews.html:89
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr "Saate luua kohandatud mallid kataloogis templates/emails/custom/."
 
 #: templates/modern/email_previews.html:94
@@ -12333,32 +12512,38 @@ msgstr "Tööaeg"
 msgid "Server information is not available."
 msgstr "Serveri teave pole saadaval."
 
-#: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
+#: templates/default/pdns_status.html:114
+#: templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "Serveri IP"
 
-#: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:117
+#: templates/default/pdns_status.html:116
+#: templates/modern/pdns_status.html:117
 msgid "Last Checked"
 msgstr "Viimati kontrollitud"
 
-#: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
-#: install/templates/step2.html.twig:18
+#: templates/default/pdns_status.html:125
+#: templates/modern/pdns_status.html:126 install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "OK"
 
-#: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:128
+#: templates/default/pdns_status.html:127
+#: templates/modern/pdns_status.html:128
 msgid "Unreachable"
 msgstr "Kättesaamatu"
 
-#: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
+#: templates/default/pdns_status.html:129
+#: templates/modern/pdns_status.html:130
 msgid "Error"
 msgstr "Viga"
 
-#: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
+#: templates/default/pdns_status.html:160
+#: templates/modern/pdns_status.html:161
 msgid "Server Statistics"
 msgstr "Serveri statistika"
 
-#: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
+#: templates/default/pdns_status.html:170
+#: templates/modern/pdns_status.html:171
 msgid "Server Health"
 msgstr "Serveri seisund"
 
@@ -12366,39 +12551,48 @@ msgstr "Serveri seisund"
 msgid "Unknown"
 msgstr "Tundmatu"
 
-#: templates/default/pdns_status.html:198 templates/modern/pdns_status.html:199
+#: templates/default/pdns_status.html:198
+#: templates/modern/pdns_status.html:199
 msgid "Latency"
 msgstr "Latentsus"
 
-#: templates/default/pdns_status.html:208 templates/modern/pdns_status.html:209
+#: templates/default/pdns_status.html:208
+#: templates/modern/pdns_status.html:209
 msgid "CPU Usage"
 msgstr "CPU kasutus"
 
-#: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:224
+#: templates/default/pdns_status.html:223
+#: templates/modern/pdns_status.html:224
 msgid "Query Statistics"
 msgstr "Päringustatistika"
 
-#: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:244
+#: templates/default/pdns_status.html:243
+#: templates/modern/pdns_status.html:244
 msgid "UDP Queries"
 msgstr "UDP päringud"
 
-#: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:261
+#: templates/default/pdns_status.html:260
+#: templates/modern/pdns_status.html:261
 msgid "TCP Queries"
 msgstr "TCP päringud"
 
-#: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:280
+#: templates/default/pdns_status.html:279
+#: templates/modern/pdns_status.html:280
 msgid "Cache Hits"
 msgstr "Vahemälu tabamused"
 
-#: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:297
+#: templates/default/pdns_status.html:296
+#: templates/modern/pdns_status.html:297
 msgid "Cache Misses"
 msgstr "Vahemälu vahelejätmised"
 
-#: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:332
+#: templates/default/pdns_status.html:331
+#: templates/modern/pdns_status.html:332
 msgid "Toggle View"
 msgstr "Vaheta vaadet"
 
-#: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:337
+#: templates/default/pdns_status.html:336
+#: templates/modern/pdns_status.html:337
 msgid "Refresh"
 msgstr "Värskenda"
 
@@ -12406,11 +12600,13 @@ msgstr "Värskenda"
 msgid "Bytes"
 msgstr "Baiti"
 
-#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
+#: templates/default/pdns_status.html:410
+#: templates/modern/pdns_status.html:411
 msgid "Metric"
 msgstr "Mõõdik"
 
-#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
+#: templates/default/pdns_status.html:465
+#: templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Üksikasjalikke mõõdikuid pole saadaval."
 
@@ -12472,12 +12668,12 @@ msgstr ""
 
 #: templates/default/header.html:331 templates/modern/header.html:504
 msgid ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause -"
+" a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause -"
+" a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
@@ -12532,7 +12728,8 @@ msgstr "Lisa kirje tsooni"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Kirjet ei saanud lisada. Palun kontrollige andmeid ja proovige uuesti."
+msgstr ""
+"Kirjet ei saanud lisada. Palun kontrollige andmeid ja proovige uuesti."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -12664,8 +12861,8 @@ msgstr "Kavatsete kustutada API võtme"
 
 #: templates/modern/api_key_delete.html:19
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr "Kui kustutate API võtme, ei saa seda kasutavad rakendused autentida."
 
 #: templates/modern/api_key_delete.html:71
@@ -12807,10 +13004,6 @@ msgstr "Grupi mallid"
 msgid "Add access template"
 msgstr "lisa juurdepääsu mall"
 
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "Grupp"
-
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
 msgstr "Juurdepääsu malle ei leitud"
@@ -12837,13 +13030,13 @@ msgstr "Group Log Behavior:"
 
 #: templates/modern/list_log_groups.html:20
 msgid ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
+"Records group lifecycle events (create, edit, delete) and membership changes"
+" (users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
 msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
+"Records group lifecycle events (create, edit, delete) and membership changes"
+" (users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
 
@@ -13027,7 +13220,8 @@ msgid "Lookup"
 msgstr "Otsi"
 
 #: lib/Module/Whois/templates/whois.html:27
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr "Sisestage domeeninimi (nt example.com) WHOIS teabe hankimiseks"
 
 #: lib/Module/Whois/templates/whois.html:35
@@ -13038,7 +13232,8 @@ msgstr "WHOIS tulemused"
 msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "Sisestage domeeninimi WHOIS otsingu sooritamiseks."
 
-#: lib/Module/Rdap/templates/rdap.html:5 lib/Module/Rdap/templates/rdap.html:11
+#: lib/Module/Rdap/templates/rdap.html:5
+#: lib/Module/Rdap/templates/rdap.html:11
 msgid "RDAP Lookup"
 msgstr "RDAP otsing"
 
@@ -13069,12 +13264,12 @@ msgstr "Limited Database Rights:"
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+"for Poweradmin tables only. PowerDNS table access is not required when using"
+" the API backend."
 msgstr ""
 "Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+"for Poweradmin tables only. PowerDNS table access is not required when using"
+" the API backend."
 
 #: install/templates/step6.html.twig:17
 msgid ""
@@ -13098,7 +13293,7 @@ msgid ""
 msgstr ""
 "After you have added the new user, proceed with this installation procedure."
 
-#: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+#: install/templates/step4.html.twig:173
 msgid "Note:"
 msgstr "Note:"
 
@@ -13236,119 +13431,145 @@ msgstr ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 
-#: install/templates/step4.html.twig:97
+#: install/templates/step4.html.twig:96
+msgid ""
+"These are your database server credentials (MySQL/PostgreSQL), used by "
+"Poweradmin to connect to the database. They are NOT the credentials you will"
+" use to log in to the Poweradmin web interface - that account is configured "
+"below."
+msgstr ""
+"Need on andmebaasiserveri (MySQL/PostgreSQL) sisselogimisandmed, mida "
+"Poweradmin kasutab andmebaasiga ühenduse loomiseks. Need EI OLE andmed, "
+"millega Poweradmini veebiliidesesse sisse logite - see konto seadistatakse "
+"allpool."
+
+#: install/templates/step4.html.twig:100
 msgid "Database type"
 msgstr "Database type"
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:109
 msgid "Database server type."
 msgstr "Database server type."
 
-#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
 msgstr "Provide the user name"
 
-#: install/templates/step4.html.twig:117
+#: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Database username with rights to create tables."
 
-#: install/templates/step4.html.twig:131
+#: install/templates/step4.html.twig:134
 msgid "Password for this database user."
 msgstr "Password for this database user."
 
-#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+#: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Avoid quotes, backslashes, and line breaks."
 
-#: install/templates/step4.html.twig:140
+#: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
-#: install/templates/step4.html.twig:143
+#: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Database server hostname (usually \"localhost\")."
 
-#: install/templates/step4.html.twig:148
+#: install/templates/step4.html.twig:151
 msgid "DB Port"
 msgstr "DB Port"
 
-#: install/templates/step4.html.twig:151
+#: install/templates/step4.html.twig:154
 msgid "Provide database port"
 msgstr "Provide database port"
 
-#: install/templates/step4.html.twig:154
+#: install/templates/step4.html.twig:157
 msgid "Database server port."
 msgstr "Database server port."
 
-#: install/templates/step4.html.twig:162
+#: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
 msgstr "Provide the name of the database"
 
-#: install/templates/step4.html.twig:165
+#: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Database name (will be used for Poweradmin tables)."
 
-#: install/templates/step4.html.twig:167
+#: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
 msgstr "Full path to SQLite database file"
 
-#: install/templates/step4.html.twig:170
+#: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "File must exist with web server read/write access. Use absolute path."
 
-#: install/templates/step4.html.twig:178
+#: install/templates/step4.html.twig:181
 msgid "DB charset"
 msgstr "DB charset"
 
-#: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+#: install/templates/step4.html.twig:290 install/templates/step4.html.twig:298
 msgid "Use default"
 msgstr "Use default"
 
-#: install/templates/step4.html.twig:185
+#: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Charset for new tables. Leave empty for database default."
 
-#: install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:193
 msgid "DB collation"
 msgstr "DB collation"
 
-#: install/templates/step4.html.twig:197
+#: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
 "Collation rules for character comparison. Leave empty for database default."
 
-#: install/templates/step4.html.twig:206
+#: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
 msgstr "PowerDNS Database"
 
-#: install/templates/step4.html.twig:210
+#: install/templates/step4.html.twig:213
 msgid "Database name"
 msgstr "Database name"
 
-#: install/templates/step4.html.twig:213
+#: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
 msgstr "Leave empty for same database"
 
-#: install/templates/step4.html.twig:216
+#: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "MySQL database with PowerDNS tables (if different)."
 
-#: install/templates/step4.html.twig:224
+#: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
 msgstr "Poweradmin Account"
 
-#: install/templates/step4.html.twig:228
-msgid "Administrator password"
-msgstr "Administrator password"
+#: install/templates/step4.html.twig:231
+msgid "Web interface login:"
+msgstr "Veebiliidese sisselogimine:"
 
-#: install/templates/step4.html.twig:233
+#: install/templates/step4.html.twig:231
+msgid ""
+"This is the account you will use to sign in to Poweradmin. The username is "
+"fixed as \"admin\" during installation; you can create additional users from"
+" the web interface after logging in."
+msgstr ""
+"See on konto, millega Poweradmini sisse logite. Kasutajanimi on paigaldamise"
+" ajal fikseeritud kui \"admin\"; täiendavaid kasutajaid saate luua "
+"veebiliideses pärast sisselogimist."
+
+#: install/templates/step4.html.twig:240
+msgid "Hard-coded for the initial administrator account."
+msgstr "Algse administraatorikonto jaoks fikseeritud."
+
+#: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Provide a password"
 
-#: install/templates/step4.html.twig:238
-msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+#: install/templates/step4.html.twig:255
+msgid "Password for the \"admin\" account."
+msgstr "Parool kontole \"admin\"."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -13568,11 +13789,9 @@ msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
 msgid ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
+"Login to <a href=\"../index.php\">Poweradmin</a> using the username "
+"\"admin\" and the password you set in step 4"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -13634,9 +13853,11 @@ msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
@@ -13755,47 +13976,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
-
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Hulgiregistreerimisest"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "See tööriist võimaldab luua mitu DNS tsooni korraga."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Sisestage üks domeeninimi rea kohta Domeenide väljale"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Valige tsooni mall standardsete kirjete rakendamiseks"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Valitud omanikul on täielik juurdepääs kõigile loodud tsoonidele"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Kuidas see töötab"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr "Süsteem üritab luua iga tsooni. Ebaõnnestunud kuvatakse."
-
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Näpunäited ja soovitused"
-
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Kasutage enamike tavasüsteemide jaoks NATIVE tsooni tüüpi"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kõigepealt looge mall, kui vajate kõigile tsoonidele standardseid kirjeid"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Võite kopeerida ja kleepida domeenide loendi tabelarvutusest"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Veenduge, et domeeninimed järgivad kehtivaid DNS-nimetamise reegleid"
-
-
-
