@@ -73,8 +73,6 @@ class DnssecDsDnskeyController extends BaseController
             return;
         }
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
-
         $this->showKeys($zone_id, $pdnssec_use);
     }
 

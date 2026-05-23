@@ -81,6 +81,10 @@
     </div>
 </div>
 
+<style>
+    .copy-line, .copy-block { user-select: none; }
+</style>
+
 <script>
 (function () {
     function flash(button) {
@@ -100,11 +104,31 @@
         }, 1500);
     }
 
+    function fallbackCopy(text, button) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            if (document.execCommand('copy')) {
+                flash(button);
+            }
+        } catch (e) {
+            // Clipboard unavailable; user can still select the visible record manually.
+        }
+        document.body.removeChild(ta);
+    }
+
     function copy(text, button) {
-        if (!navigator.clipboard) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+                .then(function () { flash(button); })
+                .catch(function () { fallbackCopy(text, button); });
             return;
         }
-        navigator.clipboard.writeText(text).then(function () { flash(button); });
+        fallbackCopy(text, button);
     }
 
     document.querySelectorAll('.copy-block').forEach(function (btn) {
