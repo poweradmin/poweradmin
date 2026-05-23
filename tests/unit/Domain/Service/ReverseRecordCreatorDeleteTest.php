@@ -253,17 +253,13 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $this->assertFalse($service->deleteForwardRecord('10.2.0.192.in-addr.arpa', 'host.example.com'));
     }
 
-    /**
-     * Documents a known defect: extractIpFromPtrName builds the IPv6 string with a
-     * loop bounded by < 28 instead of < 32, so the final nibble group is dropped.
-     * As a result the AAAA cascade currently cannot match a real PowerDNS record.
-     * If this test starts failing it means the defect was fixed - swap the
-     * assertion to assertTrue and remove this note.
-     */
-    public function testDeleteForwardRecordIpv6CascadeIsCurrentlyBroken(): void
+    public function testDeleteForwardRecordViaApiBackendHandlesIpv6(): void
     {
         $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('deleteRecord');
+        $dnsRecord->expects($this->once())
+            ->method('deleteRecord')
+            ->with(77)
+            ->willReturn(true);
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('isApiBackend')->willReturn(true);
@@ -276,6 +272,6 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $service = $this->createApiService($dnsRecord, $backend);
 
         $ptrName = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
-        $this->assertFalse($service->deleteForwardRecord($ptrName, 'host6.example.com'));
+        $this->assertTrue($service->deleteForwardRecord($ptrName, 'host6.example.com'));
     }
 }

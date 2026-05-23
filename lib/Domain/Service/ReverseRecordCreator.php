@@ -346,7 +346,7 @@ class ReverseRecordCreator
             if (count($nibbles) === 32) {
                 $reversedNibbles = array_reverse($nibbles);
                 $ipv6 = '';
-                for ($i = 0; $i < 28; $i += 4) {
+                for ($i = 0; $i < 32; $i += 4) {
                     if ($i > 0) {
                         $ipv6 .= ':';
                     }
