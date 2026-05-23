@@ -1488,9 +1488,6 @@ test_zone_owners() {
         print_fail "Expected 201 for batch add, got HTTP $http_code"
     fi
 
-    # Clean up batch-added owners before removal tests
-    api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/1" >/dev/null 2>&1 || true
-
     # Test 9: Remove owner from zone
     increment_test
     print_test "Remove owner from zone"
