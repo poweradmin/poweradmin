@@ -1,73 +1,83 @@
 #!/usr/bin/env python3
 
 import argparse
-import requests
+import ipaddress
 import socket
 from unittest.mock import patch
+
+import requests
 from requests.auth import HTTPBasicAuth
 
-# change these values if not given by arguments to the script
-login = "username"
-password = "password"
-dyndns = "mydynamicdns.example.com"
-url = "http://www.example.com/poweradmin"
-verbose = 1
+# Defaults used when no command-line argument is supplied. Edit for unattended runs.
+DEFAULTS = {
+    "login": "username",
+    "password": "password",
+    "dyndns": "mydynamicdns.example.com",
+    "url": "http://www.example.com/poweradmin",
+}
 
 parser = argparse.ArgumentParser(description='Client for Poweradmin dynamic DNS')
-parser.add_argument('-l', '--login', dest='login', help='Poweradmin user name')
-parser.add_argument('-p', '--password', dest='password', help='Poweradmin user password')
-parser.add_argument('-d', '--dyndns', dest='dyndns', help='Dynamic DNS name')
-parser.add_argument('-u', '--url', dest='url', help='Poweradmin URL')
-parser.add_argument('-v', '--verbose', dest='verbose', help='Output verbosity')
+parser.add_argument('-l', '--login', help='Poweradmin user name')
+parser.add_argument('-p', '--password', help='Poweradmin user password')
+parser.add_argument('-d', '--dyndns', help='Dynamic DNS name (FQDN)')
+parser.add_argument('-u', '--url', help='Poweradmin base URL')
+parser.add_argument('-v', '--verbose', action='store_true', help='Print progress messages')
 args = parser.parse_args()
 
-if hasattr(args, "login"):
-    login = args.login
-if hasattr(args, "password"):
-    password = args.password
-if hasattr(args, "dyndns"):
-    dyndns = args.dyndns
-if hasattr(args, "poweradmin"):
-    url = args.poweradmin
-if hasattr(args, "verbose"):
-    verbose = args.verbose
+login = args.login or DEFAULTS["login"]
+password = args.password or DEFAULTS["password"]
+dyndns = args.dyndns or DEFAULTS["dyndns"]
+url = args.url or DEFAULTS["url"]
+verbose = args.verbose
 
 ip_lookup_url = url + "/addons/clientip.php"
-
-ipv4 = ''
-ipv6 = ''
 
 orig_getaddrinfo = socket.getaddrinfo
 
 
-def get_addr_info_ipv6(host, port, type=0, proto=0, flags=0):
-    return orig_getaddrinfo(host=host, port=port, family=socket.AF_INET6, type=type, proto=proto, flags=flags)
+def _getaddrinfo_family(family):
+    def _resolver(host, port, type=0, proto=0, flags=0):
+        return orig_getaddrinfo(host=host, port=port, family=family, type=type, proto=proto, flags=flags)
+    return _resolver
 
 
-def get_addr_info_ipv4(host, port, type=0, proto=0, flags=0):
-    return orig_getaddrinfo(host=host, port=port, family=socket.AF_INET, type=type, proto=proto, flags=flags)
+def _discover_ip(family):
+    try:
+        with patch('socket.getaddrinfo', side_effect=_getaddrinfo_family(family)):
+            response = requests.get(ip_lookup_url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException:
+        return ''
+    candidate = response.text.strip()
+    try:
+        ipaddress.ip_address(candidate)
+    except ValueError:
+        return ''
+    return candidate
 
 
-with patch('socket.getaddrinfo', side_effect=get_addr_info_ipv6):
-    r = requests.get(ip_lookup_url)
-    ipv6 = r.text
+ipv4 = _discover_ip(socket.AF_INET)
+ipv6 = _discover_ip(socket.AF_INET6)
 
-with patch('socket.getaddrinfo', side_effect=get_addr_info_ipv4):
-    r = requests.get(ip_lookup_url)
-    ipv4 = r.text
+if not ipv4 and not ipv6:
+    print("Error: Could not discover any public IP address via " + ip_lookup_url)
+    raise SystemExit(1)
 
-if verbose:
-    print("Updating the IP address (" + ipv4 + ") now ...")
-response = requests.get(
-    url + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv4 + "&verbose=" + str(verbose),
-    auth=HTTPBasicAuth(login, password))
-if verbose:
-    print("Status: " + response.text)
 
-if verbose:
-    print("Updating the IP address (" + ipv6 + ") now ...")
-response = requests.get(
-    url + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv6 + "&verbose=" + str(verbose),
-    auth=HTTPBasicAuth(login, password))
-if verbose:
-    print("Status: " + response.text)
+def _push_update(ip):
+    if verbose:
+        print("Updating the IP address (" + ip + ") now ...")
+    verbose_flag = "1" if verbose else "0"
+    response = requests.get(
+        url + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ip + "&verbose=" + verbose_flag,
+        auth=HTTPBasicAuth(login, password),
+        timeout=10,
+    )
+    if verbose:
+        print("Status: " + response.text.strip())
+
+
+if ipv4:
+    _push_update(ipv4)
+if ipv6:
+    _push_update(ipv6)
