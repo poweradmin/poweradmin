@@ -649,6 +649,11 @@ api_v2_zone_rrset:
     id: '\d+'
   methods: [GET, DELETE]
 
+api_v2_dynamic_dns:
+  path: /api/v2/dynamic-dns
+  controller: Poweradmin\Application\Controller\Api\V2\DynamicDnsController::run
+  methods: [POST]
+
 api_v2_users:
   path: /api/v2/users
   controller: Poweradmin\Application\Controller\Api\V2\UsersController::run
