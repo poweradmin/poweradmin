@@ -65,6 +65,14 @@ class TopLevelDomainTest extends TestCase
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('example.example'));
     }
 
+    public function testReservedSpecialUseTlds(): void
+    {
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('printer.local'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('service.onion'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('host.alt'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('corp.internal'));
+    }
+
     public function testInvalidTlds(): void
     {
         $this->assertFalse(TopLevelDomain::isValidTopLevelDomain('example.notarealtld'));
