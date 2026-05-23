@@ -15,11 +15,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
-// Main execution code
 $request = Request::createFromGlobals();
 
 $config = ConfigurationManager::getInstance();
@@ -28,9 +29,9 @@ $config->initialize();
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 initializeTimezone($config);
 
-$db_type = $config->get('database', 'type');
 $tableNameService = new TableNameService($config);
 $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+$domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
 
 $credentials = [
     'db_host' => $config->get('database', 'host'),
@@ -40,39 +41,31 @@ $credentials = [
     'db_name' => $config->get('database', 'name'),
     'db_charset' => $config->get('database', 'charset'),
     'db_collation' => $config->get('database', 'collation'),
-    'db_type' => $db_type,
+    'db_type' => $config->get('database', 'type'),
     'db_file' => $config->get('database', 'file'),
     'db_debug' => $config->get('database', 'debug'),
 ];
 
-$databaseConnection = new PDODatabaseConnection();
-$databaseService = new DatabaseService($databaseConnection);
-$db = $databaseService->connect($credentials);
+$db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
-// Initialize services
 $dnsRecord = new DnsRecord($db, $config);
 $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $repository = $backendProvider->isApiBackend()
     ? new ApiDynamicDnsRepository($db, $dnsRecord, $backendProvider)
-    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table);
-
-$validationService = new DynamicDnsValidationService($config);
+    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table, $domains_table);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption', 'bcrypt'),
     $config->get('security', 'password_cost', 12)
 );
-$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService);
 
 $updateService = new DynamicDnsUpdateService(
-    $validationService,
-    $authenticationService,
-    $repository
+    new DynamicDnsValidationService($config),
+    new DynamicDnsAuthenticationService($repository, $userAuthService),
+    $repository,
+    new LegacyLogger($db),
+    new IpAddressRetriever($_SERVER)
 );
 
-// Create request value object and process update
-$dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
-$result = $updateService->processUpdate($dynamicDnsRequest);
-
-// Output result and exit
+$result = $updateService->processUpdate(DynamicDnsRequest::fromHttpRequest($request));
 DynamicDnsHelper::statusExit($result);

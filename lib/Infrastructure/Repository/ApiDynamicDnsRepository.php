@@ -35,20 +35,17 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
  */
 class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
-    private PDO $db;
-    private DnsRecord $dnsRecord;
-    private DnsBackendProvider $backendProvider;
-
-    public function __construct(PDO $db, DnsRecord $dnsRecord, DnsBackendProvider $backendProvider)
-    {
-        $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
-        $this->backendProvider = $backendProvider;
+    public function __construct(
+        private readonly PDO $db,
+        private readonly DnsRecord $dnsRecord,
+        private readonly DnsBackendProvider $backendProvider
+    ) {
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
-        // User/permission queries always go to Poweradmin DB
+        // DDNS auth requires an explicit zone_content_edit_* grant; ueberuser bypass is
+        // deliberately omitted so admin credentials never have to live in ddclient.conf.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
             FROM users, perm_templ, perm_templ_items, perm_items
@@ -80,12 +77,31 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare('SELECT domain_id FROM zones WHERE owner = :user_id');
-        $query->execute([':user_id' => $user->getId()]);
+        // SQL stays inside Poweradmin-native tables; zone names come from the API.
+        $query = $this->db->prepare("
+            SELECT DISTINCT z.domain_id
+            FROM zones z
+            WHERE z.owner = :user_id
+
+            UNION
+
+            SELECT DISTINCT zg.domain_id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            WHERE ugm.user_id = :user_id2
+        ");
+        $query->execute([
+            ':user_id' => $user->getId(),
+            ':user_id2' => $user->getId(),
+        ]);
 
         $zones = [];
-        while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $zoneId = (int)$row['domain_id'];
+            $name = $this->backendProvider->getZoneNameById($zoneId);
+            if ($name !== null) {
+                $zones[$zoneId] = $name;
+            }
         }
 
         return $zones;

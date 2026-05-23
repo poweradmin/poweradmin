@@ -29,13 +29,10 @@ use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 
 class DynamicDnsAuthenticationService
 {
-    private DynamicDnsRepositoryInterface $repository;
-    private UserAuthenticationService $userAuthService;
-
-    public function __construct(DynamicDnsRepositoryInterface $repository, UserAuthenticationService $userAuthService)
-    {
-        $this->repository = $repository;
-        $this->userAuthService = $userAuthService;
+    public function __construct(
+        private readonly DynamicDnsRepositoryInterface $repository,
+        private readonly UserAuthenticationService $userAuthService
+    ) {
     }
 
     public function authenticateUser(DynamicDnsRequest $request): ?User
@@ -56,7 +53,6 @@ class DynamicDnsAuthenticationService
         return $user;
     }
 
-
     public function getUserZones(User $user): array
     {
         return $this->repository->getUserZones($user);
@@ -64,7 +60,6 @@ class DynamicDnsAuthenticationService
 
     public function userCanUpdateZone(User $user, int $zoneId): bool
     {
-        $userZones = $this->getUserZones($user);
-        return in_array($zoneId, $userZones, true);
+        return array_key_exists($zoneId, $this->getUserZones($user));
     }
 }

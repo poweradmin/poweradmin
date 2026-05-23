@@ -108,6 +108,7 @@ class DbUserLogger
             'change_password',
             'delete_user',
             'delete_zone_template',
+            'dynamic_dns_update',
             'edit_user',
             'edit_zone_template',
             'login_error',
@@ -194,42 +195,18 @@ class DbUserLogger
         }
 
         if (!empty($filters['event_type'])) {
-            $typePatterns = [
-                'access_denied' => '%operation:access_denied%',
-                'login_success' => '%operation:login_success%',
-                'login_failed' => '%operation:login_failed%',
-                'login_locked' => '%operation:login_locked%',
-                'add_user' => '%operation:add_user%',
-                'add_zone_template' => '%operation:add_zone_template%',
-                'edit_user' => '%operation:edit_user%',
-                'delete_user' => '%operation:delete_user%',
-                'delete_zone_template' => '%operation:delete_zone_template%',
-                'edit_zone_template' => '%operation:edit_zone_template%',
-                'change_password' => '%operation:change_password%',
-                'logout' => '%operation:logout%',
-                'mfa_enable' => '%operation:mfa_enable%',
-                'mfa_disable' => '%operation:mfa_disable%',
-                'mfa_verify' => '%operation:mfa_verify%',
-                'mfa_failed' => '%operation:mfa_failed%',
-                'mfa_regenerate_codes' => '%operation:mfa_regenerate_codes%',
-                'password_reset_request' => '%operation:password_reset_request%',
-                'password_reset' => '%operation:password_reset%',
-                'perm_template_change' => '%operation:perm_template_change%',
-                'username_recovery' => '%operation:username_recovery%',
-                'login_error' => '%operation:login_error%',
-                'oidc_login_success' => '%operation:oidc_login_success%',
+            $eventType = $filters['event_type'];
+            // Most filters key directly off operation:<name>; the exceptions disambiguate
+            // OIDC/SAML callback errors that share the generic login_error operation, and
+            // retain a legacy oidc_login_failed pattern for rows logged before 4.4.0.
+            $exceptions = [
                 'oidc_login_error' => '%operation:login_error%auth_method:oidc%',
-                // Legacy filter retained so historical rows logged before 4.4.0 remain searchable.
-                'oidc_login_failed' => '%operation:oidc_login_failed%',
-                'saml_login_success' => '%operation:saml_login_success%',
                 'saml_login_error' => '%operation:login_error%auth_method:saml%',
-                'saml_login_failed' => '%operation:saml_login_failed%',
-                'saml_logout' => '%operation:saml_logout%',
-                'session_expired' => '%operation:session_expired%',
             ];
-            if (isset($typePatterns[$filters['event_type']])) {
+            $allowed = array_flip($this->getDistinctEventTypes());
+            if (isset($allowed[$eventType])) {
                 $conditions[] = "log_users.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType%", PDO::PARAM_STR];
             }
         }
 

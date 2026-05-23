@@ -33,19 +33,18 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
  */
 class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
-    private PDO $db;
-    private DnsRecord $dnsRecord;
-    private string $recordsTable;
-
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable)
-    {
-        $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
-        $this->recordsTable = $recordsTable;
+    public function __construct(
+        private readonly PDO $db,
+        private readonly DnsRecord $dnsRecord,
+        private readonly string $recordsTable,
+        private readonly string $domainsTable
+    ) {
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
+        // DDNS auth requires an explicit zone_content_edit_* grant; ueberuser bypass is
+        // deliberately omitted so admin credentials never have to live in ddclient.conf.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
             FROM users, perm_templ, perm_templ_items, perm_items
@@ -77,12 +76,30 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare('SELECT domain_id FROM zones WHERE owner = :user_id');
-        $query->execute([':user_id' => $user->getId()]);
+        // Domain names come from the PowerDNS-owned `domains` table; needed by the service
+        // to longest-suffix-match the supplied hostname against the user's owned zones.
+        $query = $this->db->prepare("
+            SELECT d.id AS domain_id, d.name AS name
+            FROM {$this->domainsTable} d
+            INNER JOIN zones z ON z.domain_id = d.id
+            WHERE z.owner = :user_id
+
+            UNION
+
+            SELECT d.id AS domain_id, d.name AS name
+            FROM {$this->domainsTable} d
+            INNER JOIN zones_groups zg ON zg.domain_id = d.id
+            INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            WHERE ugm.user_id = :user_id2
+        ");
+        $query->execute([
+            ':user_id' => $user->getId(),
+            ':user_id2' => $user->getId(),
+        ]);
 
         $zones = [];
-        while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $zones[(int)$row['domain_id']] = (string)$row['name'];
         }
 
         return $zones;

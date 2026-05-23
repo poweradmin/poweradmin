@@ -74,7 +74,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->once())
             ->method('getDnsRecords')
@@ -91,7 +91,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $result = $this->service->processUpdate($request);
 
-        $this->assertEquals('good', $result);
+        $this->assertEquals('good 192.168.1.1', $result);
     }
 
     public function testProcessUpdateReturnsGoodWhenNoUpdateNeeded(): void
@@ -134,7 +134,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->once())
             ->method('getDnsRecords')
@@ -152,7 +152,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $result = $this->service->processUpdate($request);
 
-        $this->assertEquals('good', $result); // Should return 'good' when IP matches existing record
+        $this->assertEquals('good 192.168.1.1', $result); // Should return 'good <ip>' when records already match
     }
 
     public function testProcessUpdateWithDualstackClearsOppositeRecords(): void
@@ -195,7 +195,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->exactly(2))
             ->method('getDnsRecords')
@@ -228,7 +228,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $result = $this->service->processUpdate($request);
 
-        $this->assertEquals('good', $result);
+        $this->assertEquals('good 192.168.1.1', $result);
     }
 
     public function testProcessUpdateReturnsNotYoursWhenNoValidRecords(): void
@@ -271,7 +271,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->never())
             ->method('getDnsRecords');
@@ -317,6 +317,80 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $result = $this->service->processUpdate($request);
 
         $this->assertEquals('badauth2', $result);
+    }
+
+    public function testProcessUpdateReturnsNohostWhenHostnameDoesntMatchAnyOwnedZone(): void
+    {
+        $request = new DynamicDnsRequest(
+            'user',
+            'pass',
+            'host.other.example.org',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $validationResult = ValidationResult::success(null);
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('host.other.example.org');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->validationService->expects($this->once())
+            ->method('validateRequest')->with($request)->willReturn($validationResult);
+        $this->authService->expects($this->once())
+            ->method('authenticateUser')->with($request)->willReturn($user);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedIpList')->willReturn($ipList);
+        $this->authService->expects($this->once())
+            ->method('getUserZones')->with($user)
+            ->willReturn([1 => 'example.com']);
+
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $this->assertEquals('nohost', $this->service->processUpdate($request));
+    }
+
+    public function testProcessUpdatePicksMostSpecificMatchingZone(): void
+    {
+        $request = new DynamicDnsRequest(
+            'user',
+            'pass',
+            'host.sub.example.com',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $validationResult = ValidationResult::success(null);
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('host.sub.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->validationService->expects($this->once())
+            ->method('validateRequest')->with($request)->willReturn($validationResult);
+        $this->authService->expects($this->once())
+            ->method('authenticateUser')->with($request)->willReturn($user);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedIpList')->willReturn($ipList);
+        $this->authService->expects($this->once())
+            ->method('getUserZones')->with($user)
+            ->willReturn([1 => 'example.com', 2 => 'sub.example.com', 3 => 'other.example.com']);
+
+        $this->repository->expects($this->once())
+            ->method('getDnsRecords')->with(2, $hostname, 'A')->willReturn([]);
+        $this->repository->expects($this->once())
+            ->method('insertDnsRecord')->with(2, $hostname, 'A', '192.168.1.1');
+        $this->repository->expects($this->once())
+            ->method('updateSOASerial')->with(2);
+
+        $this->assertEquals('good 192.168.1.1', $this->service->processUpdate($request));
     }
 
     public function testProcessUpdateReturnsValidationErrorWhenRequestInvalid(): void
