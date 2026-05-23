@@ -29,10 +29,11 @@ class LocaleHandler
     public const DEFAULT_LANGUAGE = 'en_EN';
 
     private const SUPPORTED_LANGUAGES = [
-        'cs_CZ', 'de_DE', 'en_EN', 'es_ES', 'et_EE', 'fi_FI', 'fr_FR', 'hr_HR',
-        'hu_HU', 'id_ID', 'it_IT', 'ja_JP', 'ko_KR', 'lt_LT', 'lv_LV', 'nb_NO',
-        'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'ro_RO', 'ru_RU', 'sk_SK', 'sr_RS',
-        'sv_SE', 'tr_TR', 'uk_UA', 'vi_VN', 'zh_CN', 'zh_TW'
+        'bg_BG', 'cs_CZ', 'da_DK', 'de_DE', 'el_GR', 'en_EN', 'es_ES', 'et_EE',
+        'fi_FI', 'fr_FR', 'ga_IE', 'hr_HR', 'hu_HU', 'id_ID', 'it_IT', 'ja_JP',
+        'ko_KR', 'lt_LT', 'lv_LV', 'ms_MY', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR',
+        'pt_PT', 'ro_RO', 'ru_RU', 'sk_SK', 'sl_SI', 'sr_RS', 'sv_SE', 'tr_TR',
+        'uk_UA', 'vi_VN', 'zh_CN', 'zh_TW'
     ];
 
     public static function getAvailableLanguages(): array
