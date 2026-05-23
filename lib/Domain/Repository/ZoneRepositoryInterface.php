@@ -75,7 +75,8 @@ interface ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     );
 
     /**

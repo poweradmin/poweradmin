@@ -101,7 +101,8 @@ class DnsDataService
         string $sortBy,
         string $sortDirection,
         bool $showSerial = false,
-        bool $showTemplate = false
+        bool $showTemplate = false,
+        bool $includeRecordCount = true
     ): array {
         $domainRepository = $this->repositoryFactory->createDomainRepository();
         return $domainRepository->getZones(
@@ -114,7 +115,9 @@ class DnsDataService
             $sortDirection,
             true,
             $showSerial,
-            $showTemplate
+            $showTemplate,
+            true,
+            $includeRecordCount
         );
     }
 
@@ -148,7 +151,8 @@ class DnsDataService
         string $sortBy,
         string $sortDirection,
         bool $showSerial = false,
-        bool $showTemplate = false
+        bool $showTemplate = false,
+        bool $includeRecordCount = true
     ): array {
         $zoneRepository = $this->repositoryFactory->createZoneRepository();
         return $zoneRepository->getReverseZones(
@@ -161,7 +165,9 @@ class DnsDataService
             $sortDirection,
             false,
             $showSerial,
-            $showTemplate
+            $showTemplate,
+            true,
+            $includeRecordCount
         );
     }
 

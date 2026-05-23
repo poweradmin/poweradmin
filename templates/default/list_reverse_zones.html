@@ -108,12 +108,14 @@
                                 {% trans %}Type{% endtrans %}</a>
                             {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
+                        {% if iface_zonelist_record_count %}
                         <th>
                             <a href="{{ base_url_prefix }}/zones/reverse?zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
+                        {% endif %}
                         {% if is_user_owner_allowed %}
                         <th>
                             <a href="{{ base_url_prefix }}/zones/reverse?zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
@@ -178,7 +180,9 @@
                             {% endif %}
                         </td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
+                        {% if iface_zonelist_record_count %}
                         <td>{{ zone["count_records"] }}</td>
+                        {% endif %}
 
                         {% if is_user_owner_allowed %}
                         <td>

@@ -33,6 +33,7 @@ class UserPreference
     public const KEY_DEFAULT_TTL = 'default_ttl';
     public const KEY_SHOW_ZONE_SERIAL = 'show_zone_serial';
     public const KEY_SHOW_ZONE_TEMPLATE = 'show_zone_template';
+    public const KEY_SHOW_ZONE_RECORD_COUNT = 'show_zone_record_count';
     public const KEY_RECORD_FORM_POSITION = 'record_form_position';
     public const KEY_SAVE_BUTTON_POSITION = 'save_button_position';
     public const KEY_DEFAULT_ZONE_VIEW = 'default_zone_view';
@@ -52,6 +53,7 @@ class UserPreference
         self::KEY_DEFAULT_TTL,
         self::KEY_SHOW_ZONE_SERIAL,
         self::KEY_SHOW_ZONE_TEMPLATE,
+        self::KEY_SHOW_ZONE_RECORD_COUNT,
         self::KEY_RECORD_FORM_POSITION,
         self::KEY_SAVE_BUTTON_POSITION,
         self::KEY_DEFAULT_ZONE_VIEW,

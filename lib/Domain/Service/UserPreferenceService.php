@@ -147,6 +147,11 @@ class UserPreferenceService
         return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_TEMPLATE) === 'true';
     }
 
+    public function getShowZoneRecordCount(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_RECORD_COUNT) === 'true';
+    }
+
     public function getRecordFormPosition(int $userId): string
     {
         return $this->getPreference($userId, UserPreference::KEY_RECORD_FORM_POSITION) ?: 'top';
@@ -194,6 +199,7 @@ class UserPreferenceService
             UserPreference::KEY_DEFAULT_TTL => (string)$this->config->get('dns', 'ttl', 86400),
             UserPreference::KEY_SHOW_ZONE_SERIAL => $this->config->get('interface', 'display_serial_in_zone_list', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_ZONE_TEMPLATE => $this->config->get('interface', 'display_template_in_zone_list', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_ZONE_RECORD_COUNT => $this->config->get('interface', 'show_zone_record_count', true) ? 'true' : 'false',
             UserPreference::KEY_RECORD_FORM_POSITION => $this->config->get('interface', 'position_record_form_top', true) ? 'top' : 'bottom',
             UserPreference::KEY_SAVE_BUTTON_POSITION => $this->config->get('interface', 'position_save_button_top', false) ? 'top' : 'bottom',
             UserPreference::KEY_DEFAULT_ZONE_VIEW => 'standard',

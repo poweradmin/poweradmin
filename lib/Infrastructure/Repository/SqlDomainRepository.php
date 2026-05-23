@@ -160,9 +160,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
         bool $excludeReverse = false,
         ?bool $showSerial = null,
         ?bool $showTemplate = null,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ): array {
-        $allowedSortColumns = ['name', 'type', 'count_records', 'owner', 'group'];
+        $allowedSortColumns = $includeRecordCount
+            ? ['name', 'type', 'count_records', 'owner', 'group']
+            : ['name', 'type', 'owner', 'group'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -326,10 +329,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
 
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
+
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            COUNT(DISTINCT $records_table.id) AS count_records,
+                            " . ($includeRecordCount ? "COUNT(DISTINCT $records_table.id) AS count_records," : "") . "
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -338,7 +343,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                         FROM $domains_table
                         INNER JOIN (" . $id_query . ") AS limited_domains ON $domains_table.id = limited_domains.id
                         LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                        LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
+                        " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                         LEFT JOIN users ON users.id=zones.owner";
 
             if ($sortByGroup) {
@@ -370,11 +375,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
             // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
             $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            $recordCountExpr AS count_records,
+                            " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -382,7 +388,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                             " . ($iface_zone_comments ? ", zones.comment" : "") . "
                             FROM $domains_table
                             LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                            LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
+                            " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                             LEFT JOIN users ON users.id=zones.owner";
 
             if ($sortByGroup) {
@@ -420,7 +426,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["name"] = $domainName;
             $ret[$domainName]["utf8_name"] = $utf8Name;
             $ret[$domainName]["type"] = $r["type"];
-            $ret[$domainName]["count_records"] = $r["count_records"];
+            $ret[$domainName]["count_records"] = $r["count_records"] ?? 0;
             $ret[$domainName]["is_disabled"] = !empty($r["is_disabled"] ?? null);
             $ret[$domainName]["is_missing_soa"] = !empty($r["is_missing_soa"] ?? null);
             $ret[$domainName]["comment"] = $r["comment"] ?? '';

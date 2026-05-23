@@ -114,7 +114,8 @@ interface DomainRepositoryInterface
         bool $excludeReverse = false,
         ?bool $showSerial = null,
         ?bool $showTemplate = null,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ): array;
 
     /**

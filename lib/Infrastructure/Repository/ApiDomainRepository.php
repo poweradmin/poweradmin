@@ -113,9 +113,12 @@ class ApiDomainRepository implements DomainRepositoryInterface
         bool $excludeReverse = false,
         ?bool $showSerial = null,
         ?bool $showTemplate = null,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ): array {
-        $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
+        $allowedSortColumns = $includeRecordCount
+            ? ['name', 'type', 'count_records', 'owner']
+            : ['name', 'type', 'owner'];
         $tableNameService = new TableNameService($this->config);
         $sortby = $tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $tableNameService->validateDirection($sortDirection);
@@ -144,8 +147,10 @@ class ApiDomainRepository implements DomainRepositoryInterface
         // Enrich with ownership from local tables
         $allZones = $this->enrichZonesWithOwnership($allZones);
 
-        // Enrich with record counts from API
-        $this->enrichWithRecordCounts($allZones);
+        // Each record count requires a separate API round-trip, so skip when the column is hidden
+        if ($includeRecordCount) {
+            $this->enrichWithRecordCounts($allZones);
+        }
 
         // Filter by ownership
         if ($perm === 'own') {

@@ -83,7 +83,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ) {
         // Sync local zones table with PowerDNS API before listing so reverse
         // zones are visible on a fresh install without the user having to open
@@ -199,7 +200,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
-                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
+                    'count_records' => $includeRecordCount ? $this->resolveRecordCount($stats, (int)$row['id']) : 0,
                     'is_disabled' => $soaHealth['is_disabled'] ?? false,
                     'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                     'comment' => $row['comment'] ?? '',

@@ -124,11 +124,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ) {
 
         // Validate sort parameters
-        $allowedSortColumns = ['name', 'owner', 'count_records', 'type', 'group'];
+        $allowedSortColumns = $includeRecordCount
+            ? ['name', 'owner', 'count_records', 'type', 'group']
+            : ['name', 'owner', 'type', 'group'];
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -191,11 +194,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $sortByGroup = $sortBy === 'group';
             // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
             $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $selectFields = "$domains_table.id,
                            $domains_table.name,
                            $domains_table.type,
-                           $recordCountExpr AS count_records,
+                           " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
@@ -207,7 +211,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $query = "SELECT $selectFields
                  FROM $domains_table
                  LEFT JOIN zones ON $domains_table.id = zones.domain_id
-                 LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
+                 " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                  LEFT JOIN users ON users.id = zones.owner
                  LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
                  LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'"
@@ -298,7 +302,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $row['count_records'],
+                    'count_records' => $row['count_records'] ?? 0,
                     'is_disabled' => !empty($row['is_disabled'] ?? null),
                     'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
                     'comment' => $row['comment'] ?? '',

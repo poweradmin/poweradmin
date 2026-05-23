@@ -87,6 +87,7 @@ class UserPreferencesController extends BaseController
                 UserPreference::KEY_ROWS_PER_PAGE => $_POST['rows_per_page'] ?? null,
                 UserPreference::KEY_SHOW_ZONE_SERIAL => isset($_POST['show_zone_serial']) ? 'true' : 'false',
                 UserPreference::KEY_SHOW_ZONE_TEMPLATE => isset($_POST['show_zone_template']) ? 'true' : 'false',
+                UserPreference::KEY_SHOW_ZONE_RECORD_COUNT => isset($_POST['show_zone_record_count']) ? 'true' : 'false',
                 UserPreference::KEY_RECORD_FORM_POSITION => $_POST['record_form_position'] ?? null,
                 UserPreference::KEY_SAVE_BUTTON_POSITION => $_POST['save_button_position'] ?? null,
                 UserPreference::KEY_SHOW_RECORD_ID => isset($_POST['show_record_id']) ? 'true' : 'false',

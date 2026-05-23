@@ -157,6 +157,7 @@ return [
         'show_record_comments' => false,      // Show or hide record comments (added in 3.9.0)
         'display_serial_in_zone_list' => false,
         'display_template_in_zone_list' => false,
+        'show_zone_record_count' => true,     // Show record count column in zone lists (added in 4.5.0)
         'display_fullname_in_zone_list' => false,  // Show user's full name instead of username in zone lists (added in 4.0.0)
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)

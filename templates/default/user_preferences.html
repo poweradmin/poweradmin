@@ -103,11 +103,19 @@
                     </label>
                 </div>
 
-                <div class="form-check form-switch">
+                <div class="form-check form-switch mb-3">
                     <input class="form-check-input" type="checkbox" id="show_zone_template" name="show_zone_template" {% if preferences.show_zone_template == 'true' %}checked{% endif %}>
                     <label class="form-check-label" for="show_zone_template">
                         <strong>{% trans %}Zone templates{% endtrans %}</strong>
                         <div class="text-muted small">{% trans %}Display template information in zone lists{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="show_zone_record_count" name="show_zone_record_count" {% if preferences.show_zone_record_count == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_zone_record_count">
+                        <strong>{% trans %}Zone record count{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display the record count column in zone lists{% endtrans %}</div>
                     </label>
                 </div>
             </div>

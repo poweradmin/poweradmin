@@ -117,6 +117,7 @@ class ListForwardZonesController extends BaseController
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
+        $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
@@ -158,7 +159,10 @@ class ListForwardZonesController extends BaseController
         $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
         $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
 
-        $allowedSort = ['name', 'type', 'count_records'];
+        $allowedSort = ['name', 'type'];
+        if ($iface_zonelist_record_count) {
+            $allowedSort[] = 'count_records';
+        }
         if ($isUserOwnerAllowed) {
             $allowedSort[] = 'owner';
         }
@@ -178,7 +182,8 @@ class ListForwardZonesController extends BaseController
             $zone_sort_by,
             $zone_sort_direction,
             $iface_zonelist_serial,
-            $iface_zonelist_template
+            $iface_zonelist_template,
+            $iface_zonelist_record_count
         );
 
         // Augment zones with group information
@@ -241,6 +246,7 @@ class ListForwardZonesController extends BaseController
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
+            'iface_zonelist_record_count' => $iface_zonelist_record_count,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'is_user_owner_allowed' => $isUserOwnerAllowed,
             'is_group_owner_allowed' => $isGroupOwnerAllowed,
