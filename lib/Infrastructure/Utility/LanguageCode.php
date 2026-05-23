@@ -28,6 +28,13 @@ namespace Poweradmin\Infrastructure\Utility;
  */
 class LanguageCode
 {
+    private const REGIONAL_OVERRIDES = array(
+        'pt_BR' => 'Portuguese (Brazil)',
+        'pt_PT' => 'Portuguese (Portugal)',
+        'zh_CN' => 'Chinese (Simplified)',
+        'zh_TW' => 'Chinese (Traditional)',
+    );
+
     private const LANGUAGE_CODES = array(
         'aa' => 'Afar',
         'ab' => 'Abkhaz',
@@ -223,6 +230,9 @@ class LanguageCode
      */
     public static function getByLocale(string $locale): ?string
     {
+        if (isset(self::REGIONAL_OVERRIDES[$locale])) {
+            return self::REGIONAL_OVERRIDES[$locale];
+        }
         $languageCode = substr($locale, 0, 2);
         return self::LANGUAGE_CODES[$languageCode] ?? null;
     }
