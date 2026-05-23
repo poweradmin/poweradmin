@@ -90,7 +90,7 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/templates');
 
-      const csrfTokens = page.locator('input[name="_token"], input[name="csrf_token"]');
+      const csrfTokens = page.locator('input[name="_token"]');
       const hasTokens = await csrfTokens.count() >= 0;
 
       expect(hasTokens).toBeTruthy();

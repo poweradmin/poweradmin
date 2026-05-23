@@ -144,7 +144,7 @@ test.describe('PowerDNS Status Page', () => {
     test('should include CSRF token in refresh form', async ({ adminPage: page }) => {
       await page.goto('/tools/pdns-status', { timeout: 30000 });
 
-      const csrfToken = page.locator('input[name="csrf_token"]');
+      const csrfToken = page.locator('input[name="_token"]');
       const hasToken = await csrfToken.count() > 0;
 
       // CSRF token present if form exists
