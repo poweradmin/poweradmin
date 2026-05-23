@@ -33,6 +33,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
@@ -87,10 +88,12 @@ class EditController extends BaseController
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
@@ -277,45 +280,8 @@ class EditController extends BaseController
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        // Handle zone configuration changes
         if ($this->isPost() && $meta_edit) {
-            // Change zone type
-            $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-            if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
-                $this->validateCsrfToken();
-                if ($this->dnsRecord->changeZoneType($new_type, $zone_id)) {
-                    $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
-                }
-            }
-
-            // Change slave master
-            if (isset($_POST['slave_master_change'])) {
-                $this->validateCsrfToken();
-                if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master'])) {
-                    $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
-                }
-            }
-
-            // Change template
-            if (isset($_POST["template_change"])) {
-                $this->validateCsrfToken();
-                if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
-                    $new_zone_template = 0;
-                } else {
-                    $new_zone_template = $_POST['zone_template'];
-                }
-                $current_zone_template = $_POST['current_zone_template'] ?? 0;
-
-                if ($current_zone_template != $new_zone_template) {
-                    $this->dnsRecord->updateZoneRecords(
-                        $this->config->get('database', 'type', 'mysql'),
-                        $this->config->get('dns', 'ttl', 86400),
-                        $zone_id,
-                        $new_zone_template
-                    );
-                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
-                }
-            }
+            $this->handleZoneMetadataPost($zone_id);
         }
 
         if (isset($_POST['sign_zone'])) {
@@ -514,6 +480,41 @@ class EditController extends BaseController
             'export_formats' => $this->getExportFormats($zone_id),
             'import_enabled' => $this->isImportEnabled(),
         ]);
+    }
+
+    private function handleZoneMetadataPost(int $zone_id): void
+    {
+        $new_type = htmlspecialchars($this->request->getPostParam('newtype', ''));
+        if ($this->request->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
+            $this->validateCsrfToken();
+            if ($this->dnsRecord->changeZoneType($new_type, $zone_id)) {
+                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+            }
+        }
+
+        if ($this->request->getPostParam('slave_master_change') !== null) {
+            $this->validateCsrfToken();
+            if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
+                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+            }
+        }
+
+        if ($this->request->getPostParam('template_change') !== null) {
+            $this->validateCsrfToken();
+            $zone_template = $this->request->getPostParam('zone_template');
+            $new_zone_template = ($zone_template === null || $zone_template === 'none') ? 0 : $zone_template;
+            $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
+
+            if ($current_zone_template != $new_zone_template) {
+                $this->dnsRecord->updateZoneRecords(
+                    $this->config->get('database', 'type', 'mysql'),
+                    $this->config->get('dns', 'ttl', 86400),
+                    $zone_id,
+                    $new_zone_template
+                );
+                $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+            }
+        }
     }
 
     private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id, PaginationService $paginationService): string
