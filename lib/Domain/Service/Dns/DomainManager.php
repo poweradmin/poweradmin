@@ -633,6 +633,20 @@ class DomainManager implements DomainManagerInterface
         }
     }
 
+    private function userCanEditZoneMetadata(int $zoneId): bool
+    {
+        if (UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
+            return true;
+        }
+        if (
+            UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+            && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Change Zone Type
      *
@@ -641,6 +655,11 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneType(string $type, int $id): bool
     {
+        if (!$this->userCanEditZoneMetadata($id)) {
+            $this->messageService->addSystemError(_('You do not have the permission to change zone metadata.'));
+            return false;
+        }
+
         $beforeZone = $this->snapshotZoneMetadataForLog($id);
 
         if (!$this->backendProvider->updateZoneType($id, $type)) {
@@ -666,6 +685,11 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
+        if (!$this->userCanEditZoneMetadata($zone_id)) {
+            $this->messageService->addSystemError(_('You do not have the permission to change zone metadata.'));
+            return false;
+        }
+
         if (!$this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
             return false;
