@@ -176,8 +176,8 @@ class BulkRecordAddController extends BaseController
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
             $caps = $this->getPdnsCapabilities();
             $valid_types = $isReverseZone
-                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps)
-                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps);
+                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
+                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
 
             if (!in_array($type, $valid_types)) {
                 $failed_records[] = $line . " - " . _('Invalid record type.');

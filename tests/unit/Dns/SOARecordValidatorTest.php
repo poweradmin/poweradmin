@@ -101,6 +101,21 @@ class SOARecordValidatorTest extends TestCase
         $this->assertNotEmpty($result->getErrors());
     }
 
+    public function testValidateApexErrorMessageNamesTheZoneAndAtShorthand()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, "www.example.com", 0, 3600, 86400, "hostmaster@example.com", $zone);
+
+        $this->assertFalse($result->isValid());
+        $errors = $result->getErrors();
+        $this->assertNotEmpty($errors);
+        $message = $errors[0];
+        $this->assertStringContainsString($zone, $message);
+        $this->assertStringContainsString('@', $message);
+    }
+
     public function testValidateWithInvalidContent()
     {
         $content = "ns1.example.com hostmaster.example.com"; // Missing required fields

@@ -112,7 +112,10 @@ class SOARecordValidator implements DnsRecordValidatorInterface
 
         // Validate zone name
         if ($name != $this->zone) {
-            return ValidationResult::failure(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
+            return ValidationResult::failure(sprintf(
+                _('SOA record name must match the zone apex "%s". Leave the name field blank or enter "@".'),
+                $this->zone
+            ));
         }
 
         // Validate hostname
