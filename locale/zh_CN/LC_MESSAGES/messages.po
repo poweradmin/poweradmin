@@ -2301,7 +2301,7 @@ msgstr "Invalid form submission."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
+msgstr "record_type_defaults 表缺失。请在保存默认值之前应用 4.5.0 架构更新。"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, auto-english-fallback, php-format
@@ -9170,7 +9170,7 @@ msgstr "Save defaults"
 msgid ""
 "When a record is created without an explicit TTL, Poweradmin looks up the "
 "record type here first. Leave a field empty to fall back to"
-msgstr ""
+msgstr "如果创建记录时未明确指定 TTL，Poweradmin 会首先在此处查找记录类型。将字段留空以回退到"
 
 #: templates/modern/record_type_defaults.html:62
 #, auto-english-fallback
@@ -11896,7 +11896,7 @@ msgstr "City"
 msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
-msgstr ""
+msgstr "用于发送给您的电子邮件中的时间戳（例如 MFA 验证码）。留空将继承全局服务器时区。"
 
 #: templates/modern/user_preferences.html:95
 msgid "Zone Options"
@@ -13550,6 +13550,7 @@ msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
 msgstr ""
+"使用用户名 \"admin\" 和您在第 4 步中设置的密码登录 <a href=\"../index.php\">Poweradmin</a>"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"

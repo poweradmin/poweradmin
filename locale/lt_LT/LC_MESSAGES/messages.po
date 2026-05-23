@@ -2471,6 +2471,7 @@ msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
 msgstr ""
+"Lentelės record_type_defaults nėra. Prieš išsaugodami numatytąsias reikšmes, pritaikykite 4.5.0 schemos atnaujinimą."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, auto-english-fallback, php-format
@@ -10409,6 +10410,7 @@ msgid ""
 "When a record is created without an explicit TTL, Poweradmin looks up the "
 "record type here first. Leave a field empty to fall back to"
 msgstr ""
+"Kai įrašas sukuriamas be aiškios TTL reikšmės, „Poweradmin\" pirmiausia ieško įrašo tipo čia. Palikite lauką tuščią, kad būtų naudojama"
 
 #: templates/modern/record_type_defaults.html:62
 #, auto-english-fallback
@@ -13271,6 +13273,7 @@ msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
 msgstr ""
+"Naudojama jums siunčiamų el. laiškų laiko žymėms (pvz., MFA kodams). Tuščias paveldi globalią serverio laiko juostą."
 
 #: templates/modern/user_preferences.html:95
 msgid "Zone Options"
@@ -15011,6 +15014,7 @@ msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
 msgstr ""
+"Prisijunkite prie <a href=\"../index.php\">Poweradmin</a> naudodami naudotojo vardą \"admin\" ir slaptažodį, kurį nustatėte 4 žingsnyje"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
