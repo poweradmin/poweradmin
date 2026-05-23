@@ -921,6 +921,7 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V1\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V1/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesRecordsController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesRecordsController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\DynamicDnsController' => $baseDir . '/lib/Application/Controller/Api/V2/DynamicDnsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\GroupMembersController' => $baseDir . '/lib/Application/Controller/Api/V2/GroupMembersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\GroupZonesController' => $baseDir . '/lib/Application/Controller/Api/V2/GroupZonesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\GroupsController' => $baseDir . '/lib/Application/Controller/Api/V2/GroupsController.php',
