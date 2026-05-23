@@ -40,7 +40,7 @@ class LdapUserEventLogger
 
     public function logFailedReason($reason): void
     {
-        // operation:login_error (not login_failed) — backend/infra failures must
+        // operation:login_error (not login_failed) - backend/infra failures must
         // not feed fail2ban brute-force counters during an LDAP outage.
         $normalized = $reason === 'ldap_search' ? LoginFailureReason::LDAP_SEARCH_FAILED->value : (string) $reason;
         $this->logger->logError($this->format('login_error', $normalized));

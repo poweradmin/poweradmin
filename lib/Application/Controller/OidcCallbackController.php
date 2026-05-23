@@ -90,7 +90,7 @@ class OidcCallbackController extends BaseController
         if (!empty($error)) {
             $errorDescription = $this->httpRequest->getQueryParam('error_description', 'Unknown error');
 
-            // operation:login_error (not login_failed) — IdP-side handshake error
+            // operation:login_error (not login_failed) - IdP-side handshake error
             // should not feed fail2ban brute-force counters.
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s operation:login_error auth_method:oidc error:%s',

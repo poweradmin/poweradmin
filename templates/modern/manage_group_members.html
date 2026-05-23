@@ -45,7 +45,7 @@
                             <tr>
                                 <td><input type="checkbox" name="user_ids[]" value="{{ member.id }}" class="form-check-input member-checkbox"></td>
                                 <td>{{ member.username }}</td>
-                                <td>{{ member.fullname|default('—') }}</td>
+                                <td>{{ member.fullname|default('-') }}</td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -99,7 +99,7 @@
                             <tr class="user-row" data-username="{{ user['username']|lower }}" data-fullname="{{ user['fullname']|default('')|lower }}">
                                 <td><input type="checkbox" name="user_ids[]" value="{{ user['uid'] }}" class="form-check-input available-checkbox"></td>
                                 <td>{{ user['username'] }}</td>
-                                <td>{{ user['fullname']|default('—') }}</td>
+                                <td>{{ user['fullname']|default('-') }}</td>
                             </tr>
                             {% endfor %}
                             </tbody>

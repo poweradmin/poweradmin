@@ -116,7 +116,7 @@ class SamlCallbackController extends BaseController
                 ));
             }
         } catch (\Exception $e) {
-            // operation:login_error (not login_failed) — SAML assertion-handling
+            // operation:login_error (not login_failed) - SAML assertion-handling
             // failure should not feed fail2ban brute-force counters.
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s operation:login_error auth_method:saml error:%s',

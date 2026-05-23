@@ -176,7 +176,7 @@ class HybridPermissionService
      * Resolve, in two queries, which sources grant the user a given permission.
      *
      * Returned shape lets callers decide per-zone eligibility in PHP without
-     * hitting the database again — direct ownership is granted iff
+     * hitting the database again - direct ownership is granted iff
      * `has_direct` is true and the user is the zone's direct owner; group
      * ownership is granted iff one of `group_ids` also owns the zone.
      *

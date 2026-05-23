@@ -471,7 +471,7 @@ class BindZoneFileParser
             return rtrim($name, '.');
         }
 
-        // Relative name — append origin
+        // Relative name - append origin
         if ($origin !== null) {
             return $name . '.' . $origin;
         }
