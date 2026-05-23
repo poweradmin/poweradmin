@@ -137,7 +137,7 @@ class UserEventLoggerTest extends TestCase
 
     /**
      * Backend errors (LDAP server unreachable, search failure) must NOT use
-     * operation:login_failed — otherwise fail2ban would ban legitimate users
+     * operation:login_failed - otherwise fail2ban would ban legitimate users
      * during an LDAP outage. They use operation:login_error instead.
      */
     public function testLdapBackendErrorUsesDistinctOperation(): void
@@ -201,7 +201,7 @@ class UserEventLoggerTest extends TestCase
              */
             public function __construct(array &$sink)
             {
-                // bypass parent constructor — captor never touches DB or config
+                // bypass parent constructor - captor never touches DB or config
                 $this->sink = &$sink;
             }
 
