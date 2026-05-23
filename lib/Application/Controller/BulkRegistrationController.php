@@ -184,15 +184,17 @@ class BulkRegistrationController extends BaseController
             }
         }
 
+        $added_domains = [];
         $failed_domains = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($domains as $domain) {
             $hostnameValidator = new HostnameValidator($this->config);
             if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {
-                $failed_domains[] = $domain . " - " . _('Invalid hostname.');
+                $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
             } elseif ($dnsRecord->domainExists($domain)) {
-                $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
+                $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
             } elseif ($dnsRecord->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+                $added_domains[] = $domain;
                 $zone_id = $dnsRecord->getZoneIdFromName($domain);
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
@@ -202,6 +204,8 @@ class BulkRegistrationController extends BaseController
                     $dom_type,
                     $zone_template
                 ), $zone_id);
+            } else {
+                $failed_domains[] = ['name' => $domain, 'reason' => _('Failed to add zone.')];
             }
         }
 
@@ -210,11 +214,11 @@ class BulkRegistrationController extends BaseController
             $this->redirect('/zones/forward');
         } else {
             $this->setMessage('bulk_registration', 'warn', _('Some zone(s) could not be added.'));
-            $this->showBulkRegistrationForm(array_unique($failed_domains));
+            $this->showBulkRegistrationForm($failed_domains, $added_domains);
         }
     }
 
-    private function showBulkRegistrationForm(array $failed_domains = []): void
+    private function showBulkRegistrationForm(array $failed_domains = [], array $added_domains = []): void
     {
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $ownershipMode = new ZoneOwnershipModeService($this->config);
@@ -252,6 +256,7 @@ class BulkRegistrationController extends BaseController
             'users' => UserManager::showUsers($this->db),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'failed_domains' => $failed_domains,
+            'added_domains' => $added_domains,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
             'all_groups' => $allGroups,

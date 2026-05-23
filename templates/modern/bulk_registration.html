@@ -16,16 +16,70 @@
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
 {% endif %}
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
-            </div>
-            <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="dom_type" name="dom_type">
+                            {% for type in available_zone_types %}
+                            {% if type == iface_zone_type_default %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ type }}" {{ selected }}>{{ zone_type_label(type) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="zone_template" name="zone_template">
+                            <option value="none">none</option>
+                            {% for zone_template in zone_templates %}
+                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="domains" class="form-label">{% trans %}Domains{% endtrans %}</label>
+                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{% for fail in failed_domains %}{{ fail.name }}
+{% endfor %}{% endif %}</textarea>
+                        <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
+                        <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary" name="submit">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
+                            </button>
+                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user_owner_allowed or (group_owner_allowed and all_groups is not empty) %}
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-person-gear me-2"></i>{% trans %}Ownership{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
                     {% if user_owner_allowed %}
                     <div class="mb-3">
                         <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}{% if not group_owner_allowed %} <span class="text-danger">*</span>{% endif %}</label>
@@ -60,74 +114,38 @@
                         <small class="text-muted">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
                     </div>
                     {% endif %}
-
-                    <div class="mb-3">
-                        <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
-                        <select class="form-select form-select-sm" id="dom_type" name="dom_type">
-                            {% for type in available_zone_types %}
-                            {% if type == iface_zone_type_default %}
-                            {% set selected = 'selected' %}
-                            {% else %}
-                            {% set selected = '' %}
-                            {% endif %}
-                            <option value="{{ type }}" {{ selected }}>{{ zone_type_label(type) }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
-                        <select class="form-select form-select-sm" id="zone_template" name="zone_template">
-                            <option value="none">none</option>
-                            {% for zone_template in zone_templates %}
-                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="domains" class="form-label">{% trans %}Domains{% endtrans %}</label>
-                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
-                        <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
-                        <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <button type="submit" class="btn btn-sm btn-primary" name="submit">
-                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
-                            </button>
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-sm btn-secondary">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                            </a>
-                        </div>
-                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {% if perm_view_others or perm_edit_others %}
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}After Creation{% endtrans %}</strong>
-            </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <h6 class="mb-1"><i class="bi bi-person-gear text-success me-2"></i>{% trans %}Change zone owner{% endtrans %}</h6>
-                        <p class="small mb-2">{% trans %}You can transfer zone ownership to another user from the user list at any time.{% endtrans %}</p>
-                        <a href="{{ base_url_prefix }}/users" class="btn btn-sm btn-outline-success">
-                            <i class="bi bi-person-gear me-1"></i>{% trans %}Manage users{% endtrans %}
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
+</form>
+
+{% if added_domains or failed_domains %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-2 d-flex align-items-center">
+        <strong class="me-3"><i class="bi bi-list-check me-2"></i>{% trans %}Bulk Registration Report{% endtrans %}</strong>
+        {% if added_domains %}<span class="badge bg-success-subtle text-success me-2">{{ added_domains|length }} {% trans %}imported{% endtrans %}</span>{% endif %}
+        {% if failed_domains %}<span class="badge bg-danger-subtle text-danger">{{ failed_domains|length }} {% trans %}failed{% endtrans %}</span>{% endif %}
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush small">
+            {% for domain in added_domains %}
+            <li class="list-group-item py-1 px-3 d-flex align-items-center">
+                <i class="bi bi-check-circle text-success me-2"></i>
+                <span class="text-success">{{ domain }}</span>
+            </li>
+            {% endfor %}
+            {% for fail in failed_domains %}
+            <li class="list-group-item py-1 px-3 d-flex align-items-center">
+                <i class="bi bi-x-circle text-danger me-2"></i>
+                <span class="text-danger me-2">{{ fail.name }}</span>
+                <span class="text-muted">{{ fail.reason }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
+{% endif %}
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
