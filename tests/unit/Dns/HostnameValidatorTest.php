@@ -211,6 +211,24 @@ class HostnameValidatorTest extends TestCase
     }
 
     /**
+     * Regression: hostnames with non-RFC 1035 characters must be rejected.
+     * Original bug (issue #54): "()& 3600 IN A 127.0.0.1" was accepted silently.
+     */
+    public function testRejectsNonRfc1035Characters(): void
+    {
+        $this->assertFalse($this->validator->isValid('()&'));
+        $this->assertFalse($this->validator->isValid('()&.example.com'));
+
+        $illegalChars = ['(', ')', '&', '!', '@', '#', '$', '%', '^', '*', '+', '=', '{', '}', '[', ']', '|', '\\', ':', ';', '"', "'", '<', '>', ',', '?', ' '];
+        foreach ($illegalChars as $char) {
+            $this->assertFalse(
+                $this->validator->isValid('foo' . $char . 'bar.example.com'),
+                sprintf('Hostname containing %s should be rejected', json_encode($char))
+            );
+        }
+    }
+
+    /**
      * Test RFC 2317 classless reverse delegation support
      */
     public function testRFC2317ClasslessReverseDelegation()
