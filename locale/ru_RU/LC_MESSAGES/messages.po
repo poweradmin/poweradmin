@@ -2386,7 +2386,7 @@ msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
 msgstr ""
-"Режим владения зоной — groups_only, но групп нет. Создайте группу перед "
+"Режим владения зоной - groups_only, но групп нет. Создайте группу перед "
 "добавлением зон."
 
 #: lib/Application/Controller/BulkRegistrationController.php:99
@@ -2394,7 +2394,7 @@ msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
 msgstr ""
-"Режим владения зоной — groups_only, но вы не состоите ни в одной группе. "
+"Режим владения зоной - groups_only, но вы не состоите ни в одной группе. "
 "Попросите администратора добавить вас в группу перед созданием зон."
 
 #: lib/Application/Controller/BulkRegistrationController.php:171
@@ -3202,7 +3202,7 @@ msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
 msgstr ""
-"Невозможно удалить последнего владельца-пользователя: режим владения зоной —"
+"Невозможно удалить последнего владельца-пользователя: режим владения зоной -"
 " users_only и требует хотя бы одного владельца-пользователя. Сначала "
 "добавьте другого."
 
@@ -3211,7 +3211,7 @@ msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
 msgstr ""
-"Невозможно удалить владельца-пользователя: режим владения зоной — "
+"Невозможно удалить владельца-пользователя: режим владения зоной - "
 "groups_only, и у зоны нет групп-владельцев. Сначала добавьте группу."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:236
@@ -3236,7 +3236,7 @@ msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
 msgstr ""
-"Невозможно удалить последнюю группу: режим владения зоной — groups_only и "
+"Невозможно удалить последнюю группу: режим владения зоной - groups_only и "
 "требует хотя бы одной группы. Сначала добавьте другую группу."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:303
@@ -3244,7 +3244,7 @@ msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
 msgstr ""
-"Невозможно удалить группу: режим владения зоной — users_only, и у зоны нет "
+"Невозможно удалить группу: режим владения зоной - users_only, и у зоны нет "
 "владельцев-пользователей. Сначала добавьте владельца-пользователя."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
@@ -3258,12 +3258,12 @@ msgstr "Сначала добавьте другого владельца или
 #: lib/Application/Controller/ZoneOwnershipController.php:334
 msgid "Add another user owner first (zone ownership mode is users_only)."
 msgstr ""
-"Сначала добавьте другого владельца-пользователя (режим владения зоной — "
+"Сначала добавьте другого владельца-пользователя (режим владения зоной - "
 "users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Сначала добавьте группу (режим владения зоной — groups_only)."
+msgstr "Сначала добавьте группу (режим владения зоной - groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -11675,7 +11675,7 @@ msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
 msgstr ""
-"Суперсервер — это авторитативный сервер PowerDNS, который автоматически "
+"Суперсервер - это авторитативный сервер PowerDNS, который автоматически "
 "передает новые зоны своим подчиненным серверам."
 
 #: templates/modern/add_supermaster.html:79
@@ -14488,7 +14488,7 @@ msgid "Optional: select one or more groups."
 msgstr "Необязательно: выберите одну или несколько групп."
 
 #: lib/Module/ZoneImportExport/templates/import.html:162
-msgid "No user owner — zone is owned only by the selected groups"
+msgid "No user owner - zone is owned only by the selected groups"
 msgstr ""
 "Нет владельца-пользователя - зона принадлежит только выбранным группам"
 
@@ -14941,12 +14941,12 @@ msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-msgid "Not detected — required for URL routing"
-msgstr "Not detected — required for URL routing"
+msgid "Not detected - required for URL routing"
+msgstr "Not detected - required for URL routing"
 
 #: install/templates/step2.html.twig:124
-msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"

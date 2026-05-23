@@ -13108,7 +13108,7 @@ msgid "Optional: select one or more groups."
 msgstr "선택 사항: 하나 이상의 그룹을 선택하세요."
 
 #: lib/Module/ZoneImportExport/templates/import.html:162
-msgid "No user owner — zone is owned only by the selected groups"
+msgid "No user owner - zone is owned only by the selected groups"
 msgstr "사용자 소유자 없음 - 영역은 선택된 그룹만 소유합니다"
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
@@ -13557,12 +13557,12 @@ msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-msgid "Not detected — required for URL routing"
-msgstr "Not detected — required for URL routing"
+msgid "Not detected - required for URL routing"
+msgstr "Not detected - required for URL routing"
 
 #: install/templates/step2.html.twig:124
-msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
