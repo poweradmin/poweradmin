@@ -1548,6 +1548,37 @@ test_zone_owners() {
         print_fail "Expected 404 for non-existent zone, got HTTP $http_code"
     fi
 
+    # Test 15 (regression for issue #49): orphan prevention refuses last-owner removal.
+    # A freshly-created zone has exactly one owner (the API caller) and no groups,
+    # so deleting that sole owner must fail with HTTP 400.
+    if api_request_v2 "POST" "/zones" '{"name":"orphan-test.example.com","type":"MASTER"}' 201 "Create dedicated zone for orphan-prevention test"; then
+        local orphan_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+        increment_test
+        print_test "Removing the last owner is refused (issue #49)"
+
+        response=$(api_request_groups GET "/zones/${orphan_zone_id}/owners")
+        body=$(echo "$response" | sed '$d')
+        local sole_owner_id=$(echo "$body" | jq -r '.data.owners[0].user_id')
+
+        response=$(api_request_groups DELETE "/zones/${orphan_zone_id}/owners/${sole_owner_id}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "400" ]]; then
+            local message=$(echo "$body" | jq -r '.message // ""')
+            if [[ "$message" == *"last owner"* ]]; then
+                print_pass "Last-owner removal refused with 400: $message"
+            else
+                print_fail "Got 400 but message did not mention 'last owner': $message"
+            fi
+        else
+            print_fail "Expected 400 for last-owner removal, got HTTP $http_code (body: $body)"
+        fi
+
+        api_request_v2 "DELETE" "/zones/${orphan_zone_id}" "" 204 "Cleanup orphan-prevention test zone" || true
+    fi
+
     print_info "Zone Owners API tests completed"
 }
 
