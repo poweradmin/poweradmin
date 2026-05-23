@@ -115,13 +115,13 @@
                             {% else %}
                                 <div class="alert alert-warning py-1 mb-0 small">
                                     <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <strong>mod_rewrite:</strong> {% trans %}Not detected — required for URL routing{% endtrans %}
+                                    <strong>mod_rewrite:</strong> {% trans %}Not detected - required for URL routing{% endtrans %}
                                 </div>
                             {% endif %}
                         {% else %}
                             <div class="check-row small text-muted">
                                 <i class="bi bi-info-circle me-2"></i>
-                                <strong>mod_rewrite:</strong> {% trans %}Cannot detect (PHP-FPM) — ensure it is enabled{% endtrans %}
+                                <strong>mod_rewrite:</strong> {% trans %}Cannot detect (PHP-FPM) - ensure it is enabled{% endtrans %}
                             </div>
                         {% endif %}
                     {% elseif web_server_info.is_nginx %}
