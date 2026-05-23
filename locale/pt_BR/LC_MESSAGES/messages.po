@@ -24,7 +24,7 @@ msgid ""
 "href=\"install/\">installer</a> to create one, or create the configuration "
 "file manually."
 msgstr ""
-"Arquivo de configuração não encontrado. Utilize o <a "
+"Arquivo de configuração não encontrado. Use o <a "
 "href=\"install/\">instalador</a> para criar um ou crie o arquivo %s "
 "manualmente."
 
@@ -42,7 +42,7 @@ msgstr "Zona não encontrada."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:80
 msgid "You do not have permission to add records to this zone."
-msgstr "Não tem permissão para adicionar registros a esta zona."
+msgstr "Você não tem permissão para adicionar registros a esta zona."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:120
 msgid "Invalid wizard type."
@@ -1218,7 +1218,7 @@ msgstr "Pré-visualizações de Email"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
 msgid "You do not have permission to import zones."
-msgstr "Não tem permissão para importar zonas."
+msgstr "Você não tem permissão para importar zonas."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
 msgid "Please select a valid zone file to upload."
@@ -1239,7 +1239,7 @@ msgstr "Nenhum registro válido encontrado no arquivo carregado."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You do not have permission to modify this zone."
-msgstr "Não tem permissão para modificar esta zona."
+msgstr "Você não tem permissão para modificar esta zona."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
 msgid ""
@@ -1274,7 +1274,7 @@ msgstr "A zona selecionada não existe."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
-msgstr "Não tem permissão para adicionar zonas."
+msgstr "Você não tem permissão para adicionar zonas."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
@@ -1316,7 +1316,7 @@ msgstr "Precisa de estar autenticado para exportar dados da zona."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr "Não tem permissão para exportar esta zona."
+msgstr "Você não tem permissão para exportar esta zona."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
@@ -1328,7 +1328,7 @@ msgstr "Esta zona não tem registros para exportar."
 
 #: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
-msgstr "Não tem permissão para efectuar consultas WHOIS."
+msgstr "Você não tem permissão para efectuar consultas WHOIS."
 
 #: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
@@ -1341,7 +1341,7 @@ msgstr "Falha ao obter informação WHOIS usando o servidor %s"
 
 #: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
-msgstr "Não tem permissão para efectuar consultas RDAP."
+msgstr "Você não tem permissão para efectuar consultas RDAP."
 
 #: lib/Module/Rdap/Controller/RdapController.php:59
 msgid "RDAP"
@@ -1437,11 +1437,11 @@ msgstr "Entrada inválida ou inesperada fornecida."
 
 #: lib/Domain/Model/UserManager.php:340
 msgid "You do not have the permission to delete this user."
-msgstr "Não tem permissão para excluir este usuário."
+msgstr "Você não tem permissão para excluir este usuário."
 
 #: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
-msgstr "Não tem permissão para excluir uma conta de superutilizador."
+msgstr "Você não tem permissão para excluir uma conta de superutilizador."
 
 #: lib/Application/Controller/EditUserController.php:473
 msgid "User does not exist."
@@ -1458,11 +1458,11 @@ msgstr ""
 
 #: lib/Application/Controller/EditCommentController.php:64
 msgid "You do not have the permission to view this comment."
-msgstr "Não tem permissão para ver este comentário."
+msgstr "Você não tem permissão para ver este comentário."
 
 #: lib/Domain/Service/Dns/RecordManager.php:525
 msgid "You do not have the permission to edit this comment."
-msgstr "Não tem permissão para editar este comentário."
+msgstr "Você não tem permissão para editar este comentário."
 
 #: lib/Application/Controller/EditCommentController.php:95
 msgid "The comment has been updated successfully."
@@ -1474,7 +1474,7 @@ msgstr "ID de registro inválido."
 
 #: lib/Application/Controller/DeleteRecordController.php:115
 msgid "You do not have permission to delete records in this zone."
-msgstr "Não tem permissão para excluir registros nesta zona."
+msgstr "Você não tem permissão para excluir registros nesta zona."
 
 #: lib/Application/Controller/EditRecordController.php:196
 msgid "Record not found."
@@ -1563,7 +1563,7 @@ msgstr "A gestão de grupos não está ativada."
 
 #: lib/Application/Controller/DeleteGroupController.php:79
 msgid "You do not have permission to delete groups."
-msgstr "Não tem permissão para excluir grupos."
+msgstr "Você não tem permissão para excluir grupos."
 
 #: lib/Application/Controller/EditGroupController.php:95
 msgid "Invalid group ID."
@@ -1610,7 +1610,7 @@ msgstr "Fundo"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:66
 msgid "You do not have permission to manage group members."
-msgstr "Não tem permissão para gerenciar membros do grupo."
+msgstr "Você não tem permissão para gerenciar membros do grupo."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:92
 msgid "Manage Group Members"
@@ -1707,7 +1707,7 @@ msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
-"Falha ao enviar código de verificação. Tente novamente mais tarde ou utilize"
+"Falha ao enviar código de verificação. Tente novamente mais tarde ou use"
 " autenticação baseada em aplicação."
 
 #: lib/Application/Controller/MfaSetupController.php:286
@@ -1760,11 +1760,11 @@ msgstr "Número de página excede as páginas disponíveis."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "Não tem permissão para ver supermasters."
+msgstr "Você não tem permissão para ver supermasters."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:120
 msgid "You do not have the permission to view zone metadata."
-msgstr "Não tem permissão para ver os metadados da zona."
+msgstr "Você não tem permissão para ver os metadados da zona."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:123
 msgid "You do not have the permission to edit zone metadata."
@@ -1829,7 +1829,7 @@ msgstr "A funcionalidade API está desativada na configuração do sistema."
 
 #: lib/Application/Controller/ApiKeysController.php:83
 msgid "You do not have permission to manage API keys."
-msgstr "Não tem permissão para gerenciar chaves API."
+msgstr "Você não tem permissão para gerenciar chaves API."
 
 #: lib/Application/Controller/ApiKeysController.php:89
 #: templates/modern/api_key_delete.html:5
@@ -1875,7 +1875,7 @@ msgstr "Chave API %s com sucesso."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:112
 msgid "You do not have the permission to add records to this zone."
-msgstr "Não tem permissão para adicionar registros a esta zona."
+msgstr "Você não tem permissão para adicionar registros a esta zona."
 
 #: lib/Application/Controller/BulkRecordAddController.php:117
 msgid "Please provide at least one record."
@@ -1904,7 +1904,7 @@ msgstr "O ID da zona é obrigatório."
 
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
-msgstr "Não tem permissão para editar modelos de permissão."
+msgstr "Você não tem permissão para editar modelos de permissão."
 
 #: lib/Application/Controller/EditPermTemplController.php:63
 msgid "Edit Permission Template"
@@ -1921,7 +1921,7 @@ msgstr "Grupos"
 
 #: lib/Application/Controller/SearchController.php:49
 msgid "You do not have the permission to perform searches."
-msgstr "Não tem permissão para realizar pesquisas."
+msgstr "Você não tem permissão para realizar pesquisas."
 
 #: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
@@ -1951,7 +1951,7 @@ msgstr "Usuário não era membro deste grupo."
 
 #: lib/Domain/Model/UserManager.php:1050
 msgid "You do not have the permission to add a new user."
-msgstr "Não tem permissão para adicionar um novo usuário."
+msgstr "Você não tem permissão para adicionar um novo usuário."
 
 #: lib/Application/Controller/AddUserController.php:93
 #: templates/modern/add_user.html:13 templates/modern/add_user.html:112
@@ -1990,7 +1990,7 @@ msgstr "Por favor, preencha todos os campos obrigatórios corretamente."
 
 #: lib/Domain/Service/Dns/RecordManager.php:462
 msgid "You do not have the permission to delete this record."
-msgstr "Não tem permissão para excluir este registro."
+msgstr "Você não tem permissão para excluir este registro."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
 msgid "The record could not be deleted."
@@ -2003,7 +2003,7 @@ msgstr "Registros de Zona"
 
 #: lib/Application/Controller/UsersController.php:51
 msgid "You do not have permission to view the users list."
-msgstr "Não tem permissão para ver a lista de usuários."
+msgstr "Você não tem permissão para ver a lista de usuários."
 
 #: lib/Application/Controller/UsersController.php:58
 #: templates/modern/list_perm_templ.html:4
@@ -2020,7 +2020,7 @@ msgstr "Nenhum ID de modelo fornecido."
 
 #: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
-msgstr "Não tem permissão para editar modelos de zona."
+msgstr "Você não tem permissão para editar modelos de zona."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
@@ -2040,7 +2040,7 @@ msgstr "As zonas foram actualizadas com sucesso."
 
 #: lib/Application/Controller/EditZoneTemplController.php:246
 msgid "You do not have permission to create new zone templates."
-msgstr "Não tem permissão para criar novos modelos de zona."
+msgstr "Você não tem permissão para criar novos modelos de zona."
 
 #: lib/Domain/Model/ZoneTemplate.php:320
 #: lib/Domain/Model/ZoneTemplate.php:1068
@@ -2058,7 +2058,7 @@ msgstr "O modelo de zona foi copiado com sucesso."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
-msgstr "Não tem permissão para ver modelos de zona."
+msgstr "Você não tem permissão para ver modelos de zona."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:43
 msgid "Template Zones"
@@ -2074,7 +2074,7 @@ msgstr "O modelo não existe."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
-msgstr "Não tem permissão para ver esta zona."
+msgstr "Você não tem permissão para ver esta zona."
 
 #: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:258 templates/modern/index.html:258
@@ -2083,7 +2083,7 @@ msgstr "Registros de Usuário"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:39
 msgid "You do not have permission to unlink zones from templates."
-msgstr "Não tem permissão para desassociar zonas de modelos."
+msgstr "Você não tem permissão para desassociar zonas de modelos."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:48
 msgid "No zones selected."
@@ -2125,11 +2125,11 @@ msgstr "Editar Zona"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:88
 msgid "You do not have permission to access this zone."
-msgstr "Não tem permissão para aceder a esta zona."
+msgstr "Você não tem permissão para aceder a esta zona."
 
 #: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
-msgstr "Não tem permissão para ver esta zona."
+msgstr "Você não tem permissão para ver esta zona."
 
 #: lib/Application/Controller/EditController.php:287
 msgid "Zone type has been changed successfully."
@@ -2254,7 +2254,7 @@ msgid ""
 " use a recovery code."
 msgstr ""
 "A verificação por correio eletrónico não está disponível porque o serviço de"
-" correio está desativado. Utilize um código de recuperação."
+" correio está desativado. Use um código de recuperação."
 
 #: lib/Application/Controller/MfaVerifyController.php:314
 msgid "A new verification code has been sent to your email."
@@ -2263,7 +2263,7 @@ msgstr ""
 
 #: lib/Application/Controller/MfaVerifyController.php:320
 msgid "Please use a recovery code instead."
-msgstr "Utilize um código de recuperação em alternativa."
+msgstr "Use um código de recuperação em alternativa."
 
 #: lib/Application/Controller/MfaVerifyController.php:325
 msgid ""
@@ -2271,11 +2271,11 @@ msgid ""
 "instead."
 msgstr ""
 "Não foi possível enviar o código de verificação para o seu correio "
-"eletrónico. Utilize um código de recuperação em alternativa."
+"eletrónico. Use um código de recuperação em alternativa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add a record to this zone."
-msgstr "Não tem permissão para adicionar um registro a esta zona."
+msgstr "Você não tem permissão para adicionar um registro a esta zona."
 
 #: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added."
@@ -2326,11 +2326,11 @@ msgstr "As zonas foram excluídas com sucesso."
 
 #: lib/Domain/Service/Dns/DomainManager.php:847
 msgid "You do not have the permission to delete a zone."
-msgstr "Não tem permissão para excluir uma zona."
+msgstr "Você não tem permissão para excluir uma zona."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
-msgstr "Não tem permissão para editar registros de modelos de zona."
+msgstr "Você não tem permissão para editar registros de modelos de zona."
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
@@ -2342,7 +2342,7 @@ msgstr "Autenticação falhada: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:81
 msgid "You do not have permission to create zone templates."
-msgstr "Não tem permissão para criar modelos de zona."
+msgstr "Você não tem permissão para criar modelos de zona."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:128
 msgid "Template name can't be an empty string."
@@ -2367,7 +2367,7 @@ msgstr "Logs de Grupo"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:65
 msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Não tem permissão para gerenciar DNSSEC para esta zona."
+msgstr "Você não tem permissão para gerenciar DNSSEC para esta zona."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2387,7 +2387,7 @@ msgstr ""
 
 #: lib/Domain/Service/Dns/DomainManager.php:389
 msgid "You do not have the permission to add a master zone."
-msgstr "Não tem permissão para adicionar uma zona mestre."
+msgstr "Você não tem permissão para adicionar uma zona mestre."
 
 #: lib/Application/Controller/AddZoneMasterController.php:76
 msgid "Add Primary Zone"
@@ -2417,7 +2417,7 @@ msgstr ""
 
 #: lib/Application/Controller/BulkRegistrationController.php:181
 msgid "You do not have permission to create zones for other users."
-msgstr "Não tem permissão para criar zonas para outros usuários."
+msgstr "Você não tem permissão para criar zonas para outros usuários."
 
 #: lib/Application/Controller/BulkRegistrationController.php:194
 msgid "There is already a zone with this name."
@@ -2462,7 +2462,7 @@ msgstr "A criação de registros PTR em lote não está ativada."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:87
 msgid "You do not have permission to edit DNS records."
-msgstr "Não tem permissão para editar registros DNS."
+msgstr "Você não tem permissão para editar registros DNS."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:92
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
@@ -2480,7 +2480,7 @@ msgstr "Não disponível para usuários anónimos."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:38
 msgid "You do not have the permission to view this page."
-msgstr "Não tem permissão para ver esta página."
+msgstr "Você não tem permissão para ver esta página."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:11
@@ -2512,7 +2512,7 @@ msgstr "Saved %d default(s); cleared %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:58
 msgid "You do not have the permission to view zone templates."
-msgstr "Não tem permissão para ver modelos de zona."
+msgstr "Você não tem permissão para ver modelos de zona."
 
 #: lib/Application/Controller/ListZoneTemplController.php:62
 msgid "Zone Templates"
@@ -2520,7 +2520,7 @@ msgstr "Modelos de Zona"
 
 #: lib/Application/Controller/AddGroupController.php:76
 msgid "You do not have permission to create groups."
-msgstr "Não tem permissão para criar grupos."
+msgstr "Você não tem permissão para criar grupos."
 
 #: lib/Application/Controller/AddGroupController.php:83
 #: templates/modern/add_group.html:13
@@ -2537,7 +2537,7 @@ msgstr "Grupo criado com sucesso."
 
 #: lib/Application/Controller/ListViewsController.php:39
 msgid "You do not have permission to manage PowerDNS views."
-msgstr "Não tem permissão para gerenciar views de PowerDNS."
+msgstr "Você não tem permissão para gerenciar views de PowerDNS."
 
 #: lib/Application/Controller/ListViewsController.php:44
 msgid "Views require PowerDNS 5.0 or newer."
@@ -2627,11 +2627,11 @@ msgstr "Zonas Reversas"
 
 #: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
-msgstr "Não tem permissão para ver quaisquer zonas."
+msgstr "Você não tem permissão para ver quaisquer zonas."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:82
 msgid "You do not have permission to manage zone ownership."
-msgstr "Não tem permissão para gerenciar propriedade de zona."
+msgstr "Você não tem permissão para gerenciar propriedade de zona."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:96
 msgid "Manage Group Zones"
@@ -2671,7 +2671,7 @@ msgstr[1] "%d zonas não puderam ser removidas."
 
 #: lib/Application/Controller/AddPermTemplController.php:59
 msgid "You do not have the permission to add permission templates."
-msgstr "Não tem permissão para adicionar modelos de permissões."
+msgstr "Você não tem permissão para adicionar modelos de permissões."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "Add Permission Template"
@@ -2745,7 +2745,7 @@ msgstr "Terminou a sessão."
 
 #: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:760
 msgid "You do not have the permission to add a zone template."
-msgstr "Não tem permissão para adicionar um modelo de zona."
+msgstr "Você não tem permissão para adicionar um modelo de zona."
 
 #: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
@@ -2761,7 +2761,7 @@ msgstr "Painel"
 
 #: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
-msgstr "Não tem permissão para gerenciar membros de grupo."
+msgstr "Você não tem permissão para gerenciar membros de grupo."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:86
 msgid "Invalid user or group ID."
@@ -2773,7 +2773,7 @@ msgstr "Usuário removido do grupo com sucesso."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:69
 msgid "You do not have the permission to add a slave zone."
-msgstr "Não tem permissão para adicionar uma zona secundária."
+msgstr "Você não tem permissão para adicionar uma zona secundária."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:73
 msgid "Add Secondary Zone"
@@ -2789,7 +2789,7 @@ msgstr "Este não é um endereço IPv4 ou IPv6 válido."
 
 #: lib/Domain/Model/ZoneTemplate.php:417 lib/Domain/Model/ZoneTemplate.php:458
 msgid "You do not have the permission to delete zone templates."
-msgstr "Não tem permissão para excluir modelos de zona."
+msgstr "Você não tem permissão para excluir modelos de zona."
 
 #: lib/Application/Controller/DeleteZoneTemplController.php:93
 msgid "Zone template has been deleted successfully."
@@ -2797,7 +2797,7 @@ msgstr "O modelo de zona foi excluído com sucesso."
 
 #: lib/Application/Controller/EditSupermasterController.php:43
 msgid "You do not have the permission to edit a supermaster."
-msgstr "Não tem permissão para editar um supermaster."
+msgstr "Você não tem permissão para editar um supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:327
 msgid "The supermaster you are trying to edit does not exist."
@@ -2809,7 +2809,7 @@ msgstr "O supermaster foi actualizado com sucesso."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
-msgstr "Não tem permissão para gerenciar zonas de grupo."
+msgstr "Você não tem permissão para gerenciar zonas de grupo."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
 msgid "Invalid group or zone ID."
@@ -2844,7 +2844,7 @@ msgstr "Zone sync failed: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
-msgstr "Não tem permissão para adicionar um novo supermaster."
+msgstr "Você não tem permissão para adicionar um novo supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:61
 msgid "The supermaster has been added successfully."
@@ -2877,7 +2877,7 @@ msgstr "Ocorreu um erro ao importar a chave PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
-msgstr "Não tem permissão para adicionar registros a modelos de zona."
+msgstr "Você não tem permissão para adicionar registros a modelos de zona."
 
 #: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
@@ -2898,11 +2898,11 @@ msgstr "O usuário não pôde ser actualizado."
 
 #: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
 msgid "You do not have the permission to edit this user."
-msgstr "Não tem permissão para editar este usuário."
+msgstr "Você não tem permissão para editar este usuário."
 
 #: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
-msgstr "Não tem permissão para editar uma conta de superutilizador."
+msgstr "Você não tem permissão para editar uma conta de superutilizador."
 
 #: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
@@ -2929,7 +2929,7 @@ msgstr[1] ""
 
 #: lib/Application/Controller/ListNetworksController.php:39
 msgid "You do not have permission to manage network views."
-msgstr "Não tem permissão para gerenciar views de rede."
+msgstr "Você não tem permissão para gerenciar views de rede."
 
 #: lib/Application/Controller/ListNetworksController.php:44
 msgid "Network views require PowerDNS 5.0 or newer."
@@ -2972,7 +2972,7 @@ msgstr "Views de rede"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
-msgstr "Não tem permissão para excluir modelos de permissões."
+msgstr "Você não tem permissão para excluir modelos de permissões."
 
 #: lib/Application/Controller/DeletePermTemplController.php:88
 msgid "The permission template has been deleted successfully."
@@ -2993,7 +2993,7 @@ msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
 msgstr ""
-"Não tem permissão para ver o estado do servidor PowerDNS. Apenas os "
+"Você não tem permissão para ver o estado do servidor PowerDNS. Apenas os "
 "administradores podem aceder a esta funcionalidade."
 
 #: lib/Application/Controller/PdnsStatusController.php:71
@@ -3006,7 +3006,7 @@ msgstr ""
 
 #: lib/Application/Controller/ExampleController.php:124
 msgid "You do not have the permission to access this feature."
-msgstr "Não tem permissão para aceder a esta funcionalidade."
+msgstr "Você não tem permissão para aceder a esta funcionalidade."
 
 #: lib/Application/Controller/ExampleController.php:207
 msgid "Operation completed successfully."
@@ -3034,7 +3034,7 @@ msgstr "Logout concluído (com avisos): "
 
 #: lib/Application/Controller/EditRecordController.php:112
 msgid "You do not have permission to view this record."
-msgstr "Não tem permissão para ver este registro."
+msgstr "Você não tem permissão para ver este registro."
 
 #: lib/Application/Controller/EditRecordController.php:121
 msgid "You cannot edit records in a SLAVE zone."
@@ -3042,7 +3042,7 @@ msgstr "Não pode editar registros numa zona SLAVE."
 
 #: lib/Application/Controller/EditRecordController.php:127
 msgid "You do not have permission to edit this record."
-msgstr "Não tem permissão para editar este registro."
+msgstr "Você não tem permissão para editar este registro."
 
 #: lib/Application/Controller/EditRecordController.php:321
 msgid "The record has been updated successfully."
@@ -3118,7 +3118,7 @@ msgstr "Selecione tanto o algoritmo como os bits"
 
 #: lib/Application/Controller/EditGroupController.php:88
 msgid "You do not have permission to edit groups."
-msgstr "Não tem permissão para editar grupos."
+msgstr "Você não tem permissão para editar grupos."
 
 #: lib/Application/Controller/EditGroupController.php:102
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
@@ -3131,7 +3131,7 @@ msgstr "Grupo foi atualizado com sucesso."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:47
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Não tem permissão para excluir um supermaster."
+msgstr "Você não tem permissão para excluir um supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Invalid IP address."
@@ -3168,7 +3168,7 @@ msgstr "Algumas zonas não puderam ser adicionadas."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:37
 msgid "You do not have the permission to change the default zone template."
-msgstr "Não tem permissão para alterar o modelo de zona predefinido."
+msgstr "Você não tem permissão para alterar o modelo de zona predefinido."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:51
 msgid ""
@@ -3234,7 +3234,7 @@ msgstr ""
 
 #: lib/Application/Controller/ZoneOwnershipController.php:261
 msgid "You do not have permission to assign this group."
-msgstr "Não tem permissão para atribuir este grupo."
+msgstr "Você não tem permissão para atribuir este grupo."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:269
 msgid "Group has been added successfully."
@@ -3652,7 +3652,7 @@ msgstr "Erro ao excluir modelos de zona do usuário: "
 
 #: lib/Domain/Model/ZoneTemplate.php:583
 msgid "You do not have the permission to add a record to this zone template."
-msgstr "Não tem permissão para adicionar um registro a este modelo de zona."
+msgstr "Você não tem permissão para adicionar um registro a este modelo de zona."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3664,7 +3664,7 @@ msgstr "A prioridade para registros MX/SRV deve ser um número entre 0 e 65535."
 
 #: lib/Domain/Service/Dns/RecordManager.php:344
 msgid "You do not have the permission to edit this record."
-msgstr "Não tem permissão para editar este registro."
+msgstr "Você não tem permissão para editar este registro."
 
 #: lib/Domain/Model/ZoneTemplate.php:675
 msgid "Error updating zone template record: "
@@ -3688,7 +3688,7 @@ msgstr "Falha ao obter lista de zonas usando o modelo: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1065
 msgid "You do not have the permission to edit a zone template."
-msgstr "Não tem permissão para editar um modelo de zona."
+msgstr "Você não tem permissão para editar um modelo de zona."
 
 #: lib/Domain/Model/ZoneTemplate.php:1113
 msgid "Error unlinking zone from template: "
@@ -3712,27 +3712,27 @@ msgstr "Erro ao verificar existência do modelo: "
 
 #: lib/Domain/Model/Permission.php:72
 msgid "You do not have the permission to add NS record."
-msgstr "Não tem permissão para adicionar registro NS."
+msgstr "Você não tem permissão para adicionar registro NS."
 
 #: lib/Domain/Model/Permission.php:73
 msgid "You do not have the permission to add SOA record."
-msgstr "Não tem permissão para adicionar registro SOA."
+msgstr "Você não tem permissão para adicionar registro SOA."
 
 #: lib/Domain/Model/Permission.php:75
 msgid "You do not have the permission to edit this NS record."
-msgstr "Não tem permissão para editar este registro NS."
+msgstr "Você não tem permissão para editar este registro NS."
 
 #: lib/Domain/Model/Permission.php:76
 msgid "You do not have the permission to edit this SOA record."
-msgstr "Não tem permissão para editar este registro SOA."
+msgstr "Você não tem permissão para editar este registro SOA."
 
 #: lib/Domain/Model/Permission.php:78
 msgid "You do not have the permission to delete NS records."
-msgstr "Não tem permissão para excluir registros NS."
+msgstr "Você não tem permissão para excluir registros NS."
 
 #: lib/Domain/Model/Permission.php:79
 msgid "You do not have the permission to delete SOA records."
-msgstr "Não tem permissão para excluir registros SOA."
+msgstr "Você não tem permissão para excluir registros SOA."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:122
 msgid "All zones have owners"
@@ -9277,7 +9277,7 @@ msgstr "A funcionalidade da API está desativada."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
-msgstr "Não tem permissão para criar chaves API."
+msgstr "Você não tem permissão para criar chaves API."
 
 #: lib/Domain/Service/ApiKeyService.php:192 templates/default/api_keys.html:21
 #: templates/modern/api_keys.html:22
@@ -9286,15 +9286,15 @@ msgstr "Atingiu o número máximo de chaves API permitidas."
 
 #: lib/Domain/Service/ApiKeyService.php:323
 msgid "You do not have permission to update API keys."
-msgstr "Não tem permissão para atualizar chaves API."
+msgstr "Você não tem permissão para atualizar chaves API."
 
 #: lib/Domain/Service/ApiKeyService.php:265
 msgid "You do not have permission to delete API keys."
-msgstr "Não tem permissão para excluir chaves API."
+msgstr "Você não tem permissão para excluir chaves API."
 
 #: lib/Domain/Service/ApiKeyService.php:292
 msgid "You do not have permission to regenerate API keys."
-msgstr "Não tem permissão para regenerar chaves API."
+msgstr "Você não tem permissão para regenerar chaves API."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid ""
@@ -11687,7 +11687,7 @@ msgstr "A página foi movida ou excluída"
 
 #: templates/default/404.html:30 templates/modern/404.html:30
 msgid "You do not have permission to access this page"
-msgstr "Não tem permissão para aceder a esta página"
+msgstr "Você não tem permissão para aceder a esta página"
 
 #: templates/default/404.html:40 templates/modern/404.html:40
 msgid "Go to Homepage"
@@ -12705,7 +12705,7 @@ msgid ""
 msgstr ""
 "Alterar o modelo de uma zona substitui os registros baseados no modelo, mas "
 "preserva as adições manuais. As modificações do modelo não atualizam "
-"automaticamente as zonas - utilize o botão \"Atualizar Zonas\" ao editar "
+"automaticamente as zonas - use o botão \"Atualizar Zonas\" ao editar "
 "modelos para aplicar as alterações."
 
 #: templates/modern/change_password.html:49 templates/modern/header.html:383
@@ -14208,7 +14208,7 @@ msgid ""
 "If you delete this API key, any applications using it will no longer be able"
 " to authenticate."
 msgstr ""
-"Se excluir esta chave API, qualquer aplicação que a utilize deixará de "
+"Se excluir esta chave API, qualquer aplicação que a use deixará de "
 "conseguir autenticar-se."
 
 #: templates/modern/api_key_delete.html:71
@@ -15342,7 +15342,7 @@ msgid ""
 "and SQLite, please use the same database."
 msgstr ""
 "Bases de dados PowerDNS separadas só são suportadas com MySQL. Para "
-"PostgreSQL e SQLite, utilize a mesma base de dados."
+"PostgreSQL e SQLite, use a mesma base de dados."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
