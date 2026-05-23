@@ -714,7 +714,7 @@ abstract class BaseController
                 'perm_edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
                 'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
                 'perm_api_manage_keys' => UserManager::verifyPermission($this->db, 'api_manage_keys'),
-                'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
+                'session_key_error' => $perm_is_godlike && in_array($session_key, ['p0w3r4dm1n', 'change_this_key'], true) ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
                 'can_change_password' => !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']),
