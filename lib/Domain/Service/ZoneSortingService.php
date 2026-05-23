@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -36,10 +36,12 @@ use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 class ZoneSortingService
 {
     private ReverseZoneSorting $reverseZoneSorting;
+    private UserContextService $userContextService;
 
-    public function __construct()
+    public function __construct(?UserContextService $userContextService = null)
     {
         $this->reverseZoneSorting = new ReverseZoneSorting();
+        $this->userContextService = $userContextService ?? new UserContextService();
     }
 
     /**
@@ -51,34 +53,43 @@ class ZoneSortingService
      */
     public function getZoneSortOrder(string $name, array $allowedValues): array
     {
-        $zone_sort_by = 'name';
-        $zone_sort_direction = 'ASC';
-
-        if (isset($_GET[$name]) && preg_match("/^[a-z_]+$/", $_GET[$name])) {
-            $zone_sort_by = htmlspecialchars($_GET[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET[$name]);
-        } elseif (isset($_POST[$name]) && preg_match("/^[a-z_]+$/", $_POST[$name])) {
-            $zone_sort_by = htmlspecialchars($_POST[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST[$name]);
-        } elseif (isset($_SESSION['list_zone_sort_by'])) {
-            $zone_sort_by = $_SESSION['list_zone_sort_by'];
-        }
+        $zone_sort_by = $this->resolveSortBy($name)
+            ?? $this->userContextService->getSessionData('list_zone_sort_by')
+            ?? 'name';
 
         if (!in_array($zone_sort_by, $allowedValues)) {
             $zone_sort_by = 'name';
         }
 
-        if (isset($_GET[$name . '_direction']) && in_array(strtoupper($_GET[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_GET[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_GET[$name . '_direction']);
-        } elseif (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_POST[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_POST[$name . '_direction']);
-        } elseif (isset($_SESSION['list_zone_sort_by_direction'])) {
-            $zone_sort_direction = $_SESSION['list_zone_sort_by_direction'];
-        }
+        $zone_sort_direction = $this->resolveSortDirection($name . '_direction')
+            ?? $this->userContextService->getSessionData('list_zone_sort_by_direction')
+            ?? 'ASC';
 
         return [$zone_sort_by, $zone_sort_direction];
+    }
+
+    private function resolveSortBy(string $name): ?string
+    {
+        foreach ([$_GET[$name] ?? null, $_POST[$name] ?? null] as $candidate) {
+            if ($candidate !== null && preg_match("/^[a-z_]+$/", $candidate)) {
+                $value = htmlspecialchars($candidate);
+                $this->userContextService->setSessionData('list_zone_sort_by', $value);
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    private function resolveSortDirection(string $key): ?string
+    {
+        foreach ([$_GET[$key] ?? null, $_POST[$key] ?? null] as $candidate) {
+            if ($candidate !== null && in_array(strtoupper($candidate), ['ASC', 'DESC'])) {
+                $value = strtoupper($candidate);
+                $this->userContextService->setSessionData('list_zone_sort_by_direction', $value);
+                return $value;
+            }
+        }
+        return null;
     }
 
     /**
@@ -124,15 +135,12 @@ class ZoneSortingService
      */
     public function getReverseZoneTypeFilter(): string
     {
-        $reverse_zone_type = 'all';
-
         if (isset($_GET['reverse_type'])) {
             $reverse_zone_type = htmlspecialchars($_GET['reverse_type']);
-            $_SESSION['reverse_zone_type'] = $reverse_zone_type;
-        } elseif (isset($_SESSION['reverse_zone_type'])) {
-            $reverse_zone_type = $_SESSION['reverse_zone_type'];
+            $this->userContextService->setSessionData('reverse_zone_type', $reverse_zone_type);
+            return $reverse_zone_type;
         }
 
-        return $reverse_zone_type;
+        return $this->userContextService->getSessionData('reverse_zone_type') ?? 'all';
     }
 }

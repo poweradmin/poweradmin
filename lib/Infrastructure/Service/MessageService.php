@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Domain\Service\UserContextService;
+
 class MessageService
 {
     private const TYPE_ERROR = 'error';
@@ -29,6 +31,13 @@ class MessageService
     private const TYPE_WARNING = 'warning';
     private const TYPE_SUCCESS = 'success';
     private const TYPE_INFO = 'info';
+
+    private UserContextService $userContextService;
+
+    public function __construct(?UserContextService $userContextService = null)
+    {
+        $this->userContextService = $userContextService ?? new UserContextService();
+    }
 
     /**
      * Add a message to be displayed for a specific script
@@ -41,10 +50,6 @@ class MessageService
      */
     public function addMessage(string $script, string $type, string $content, ?string $recordName = null): void
     {
-        if (!isset($_SESSION['messages'][$script])) {
-            $_SESSION['messages'][$script] = [];
-        }
-
         if ($recordName !== null) {
             $content = sprintf('%s (Record: %s)', $content, $recordName);
         }
@@ -54,19 +59,20 @@ class MessageService
             'content' => $content
         ];
 
+        $messages = $this->userContextService->getSessionData('messages') ?? [];
+        if (!isset($messages[$script])) {
+            $messages[$script] = [];
+        }
+
         // Check if this message already exists to prevent duplicates
-        $isDuplicate = false;
-        foreach ($_SESSION['messages'][$script] as $existingMessage) {
+        foreach ($messages[$script] as $existingMessage) {
             if ($existingMessage['type'] === $type && $existingMessage['content'] === $content) {
-                $isDuplicate = true;
-                break;
+                return;
             }
         }
 
-        // Only add the message if it's not a duplicate
-        if (!$isDuplicate) {
-            $_SESSION['messages'][$script][] = $newMessage;
-        }
+        $messages[$script][] = $newMessage;
+        $this->userContextService->setSessionData('messages', $messages);
     }
 
     /**
@@ -122,12 +128,16 @@ class MessageService
      */
     public function getMessages(string $script): ?array
     {
-        if (isset($_SESSION['messages'][$script])) {
-            $messages = $_SESSION['messages'][$script];
-            unset($_SESSION['messages'][$script]);
-            return $messages;
+        $messages = $this->userContextService->getSessionData('messages') ?? [];
+        if (!isset($messages[$script])) {
+            return null;
         }
-        return null;
+
+        $scriptMessages = $messages[$script];
+        unset($messages[$script]);
+        $this->userContextService->setSessionData('messages', $messages);
+
+        return $scriptMessages;
     }
 
     /**
@@ -336,13 +346,12 @@ EOF;
      */
     public function storeFormData(string $token, array $data): void
     {
-        if (!isset($_SESSION['form_data'])) {
-            $_SESSION['form_data'] = [];
-        }
-        $_SESSION['form_data'][$token] = [
+        $formData = $this->userContextService->getSessionData('form_data') ?? [];
+        $formData[$token] = [
             'data' => $data,
             'expires' => time() + 300 // Expire after 5 minutes
         ];
+        $this->userContextService->setSessionData('form_data', $formData);
     }
 
     /**
@@ -353,20 +362,20 @@ EOF;
      */
     public function getFormData(string $token): ?array
     {
-        if (isset($_SESSION['form_data'][$token])) {
-            $formData = $_SESSION['form_data'][$token];
-
-            // Check if the data has expired
-            if (time() > $formData['expires']) {
-                unset($_SESSION['form_data'][$token]);
-                return null;
-            }
-
-            $data = $formData['data'];
-            unset($_SESSION['form_data'][$token]);
-            return $data;
+        $formData = $this->userContextService->getSessionData('form_data') ?? [];
+        if (!isset($formData[$token])) {
+            return null;
         }
-        return null;
+
+        $entry = $formData[$token];
+        unset($formData[$token]);
+        $this->userContextService->setSessionData('form_data', $formData);
+
+        if (time() > $entry['expires']) {
+            return null;
+        }
+
+        return $entry['data'];
     }
 
     /**
@@ -374,15 +383,22 @@ EOF;
      */
     public function cleanupFormData(): void
     {
-        if (!isset($_SESSION['form_data'])) {
+        $formData = $this->userContextService->getSessionData('form_data');
+        if ($formData === null) {
             return;
         }
 
         $now = time();
-        foreach ($_SESSION['form_data'] as $token => $formData) {
-            if ($now > $formData['expires']) {
-                unset($_SESSION['form_data'][$token]);
+        $changed = false;
+        foreach ($formData as $token => $entry) {
+            if ($now > $entry['expires']) {
+                unset($formData[$token]);
+                $changed = true;
             }
+        }
+
+        if ($changed) {
+            $this->userContextService->setSessionData('form_data', $formData);
         }
     }
 }

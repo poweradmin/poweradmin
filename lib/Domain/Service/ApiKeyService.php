@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ class ApiKeyService
     private ConfigurationManager $config;
     private MessageService $messageService;
     private LoggerInterface $logger;
+    private UserContextService $userContextService;
 
     /**
      * Get the database connection for debugging
@@ -70,13 +71,15 @@ class ApiKeyService
         PDO $db,
         ConfigurationManager $config,
         MessageService $messageService,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?UserContextService $userContextService = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->db = $db;
         $this->config = $config;
         $this->messageService = $messageService;
         $this->logger = $logger ?? new NullLogger();
+        $this->userContextService = $userContextService ?? new UserContextService();
     }
 
     /**
@@ -86,7 +89,7 @@ class ApiKeyService
      */
     public function getAllApiKeys(): array
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Admin users can see all API keys, regular users only see their own
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
@@ -134,7 +137,7 @@ class ApiKeyService
         }
 
         // Check if the current user has access to this API key
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
             // Add creator username and fullname
             if ($apiKey->getCreatedBy() !== null) {
@@ -169,7 +172,7 @@ class ApiKeyService
      */
     public function createApiKey(string $name, ?DateTime $expiresAt = null): ?ApiKey
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
@@ -382,8 +385,8 @@ class ApiKeyService
                 }
 
                 // Set session variables for the authenticated user
-                $_SESSION['userid'] = $keyData['created_by'];
-                $_SESSION['auth_used'] = 'api_key';
+                $this->userContextService->setSessionData('userid', $keyData['created_by']);
+                $this->userContextService->setSessionData('auth_used', 'api_key');
 
                 // Update last used timestamp
                 $this->apiKeyRepository->updateLastUsed($keyData['id']);
@@ -409,8 +412,8 @@ class ApiKeyService
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
 
         // Set session variables for the authenticated user
-        $_SESSION['userid'] = $apiKey->getCreatedBy();
-        $_SESSION['auth_used'] = 'api_key';
+        $this->userContextService->setSessionData('userid', $apiKey->getCreatedBy());
+        $this->userContextService->setSessionData('auth_used', 'api_key');
 
         return true;
     }
