@@ -92,6 +92,9 @@
                         <div class="alert alert-info py-1 mb-2 small" id="db_info_api" style="display: none;">
                             <strong>{% trans %}Database Configuration:{% endtrans %}</strong> {% trans %}Configure database connection for Poweradmin tables (users, permissions, zones). PowerDNS tables are not required.{% endtrans %}
                         </div>
+                        <div class="alert alert-warning py-1 mb-2 small">
+                            <strong>{% trans %}Note:{% endtrans %}</strong> {% trans %}These are your database server credentials (MySQL/PostgreSQL), used by Poweradmin to connect to the database. They are NOT the credentials you will use to log in to the Poweradmin web interface - that account is configured below.{% endtrans %}
+                        </div>
 
                         <div class="row mb-2">
                             <label for="db_type" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database type{% endtrans %}</label>
@@ -224,8 +227,22 @@
                         <strong>{% trans %}Poweradmin Account{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
+                        <div class="alert alert-info py-1 mb-2 small">
+                            <strong>{% trans %}Web interface login:{% endtrans %}</strong> {% trans %}This is the account you will use to sign in to Poweradmin. The username is fixed as "admin" during installation; you can create additional users from the web interface after logging in.{% endtrans %}
+                        </div>
+
                         <div class="row mb-2">
-                            <label for="pa_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Administrator password{% endtrans %}</label>
+                            <label for="pa_user_display" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input class="form-control form-control-sm" type="text" id="pa_user_display" value="admin" readonly disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}Hard-coded for the initial administrator account.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="pa_pass" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Password{% endtrans %}</label>
                             <div class="col-md-4">
                                 <div class="input-group input-group-sm">
                                     <input class="form-control form-control-sm" type="password" id="pa_pass" name="pa_pass" value="{{ pa_pass }}" autocomplete="off" required>
@@ -235,7 +252,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-text small">
-                                    {% trans %}Password for "admin" username.{% endtrans %}
+                                    {% trans %}Password for the "admin" account.{% endtrans %}
                                     <span class="badge bg-info text-dark ms-1">6+ chars</span>
                                     <span class="badge bg-info text-dark">1+ uppercase</span>
                                     <span class="badge bg-info text-dark">1+ lowercase</span>
