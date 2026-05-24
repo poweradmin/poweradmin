@@ -406,6 +406,35 @@ class DatabaseConsistencyService
     }
 
     /**
+     * Assign the current user as owner to every zone returned by
+     * checkZonesHaveOwners().
+     *
+     * @param int $currentUserId The current user ID from UserContextService
+     * @return array{assigned: int, failed: int}
+     */
+    public function fixAllZonesWithoutOwner(int $currentUserId): array
+    {
+        $orphans = $this->checkZonesHaveOwners()['data'] ?? [];
+
+        $assigned = 0;
+        $failed = 0;
+        foreach ($orphans as $zone) {
+            $zoneId = (int)$zone['id'];
+            try {
+                if ($this->fixZoneWithoutOwner($zoneId, $currentUserId)) {
+                    $assigned++;
+                } else {
+                    $failed++;
+                }
+            } catch (Exception $e) {
+                $failed++;
+            }
+        }
+
+        return ['assigned' => $assigned, 'failed' => $failed];
+    }
+
+    /**
      * Delete a slave zone
      *
      * @param int $zoneId The zone ID to delete

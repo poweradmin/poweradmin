@@ -99,6 +99,25 @@ class DatabaseConsistencyController extends BaseController
                         $currentUserId = $this->getUserContextService()->getLoggedInUserId();
                         $result = $service->fixZoneWithoutOwner($itemId, $currentUserId);
                         $message = $result ? _('Zone owner assigned successfully') : _('Failed to assign zone owner');
+                    } elseif ($action === 'fix_all') {
+                        $currentUserId = $this->getUserContextService()->getLoggedInUserId();
+                        $counts = $service->fixAllZonesWithoutOwner($currentUserId);
+                        if ($counts['assigned'] === 0 && $counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', _('No zones without owners to fix'));
+                        } elseif ($counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', sprintf(
+                                _('Assigned ownership of %d zones'),
+                                $counts['assigned']
+                            ));
+                        } else {
+                            $this->setMessage('database_consistency', 'warning', sprintf(
+                                _('Assigned %d zones; %d failed'),
+                                $counts['assigned'],
+                                $counts['failed']
+                            ));
+                        }
+                        $this->redirect('/tools/database-consistency');
+                        return;
                     }
                     break;
 
