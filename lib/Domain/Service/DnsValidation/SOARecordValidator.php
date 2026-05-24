@@ -201,7 +201,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
 
         $validation = new Validator($this->db, $this->config);
         if (!$validation->isValidEmail($addr_to_check)) {
-            $errors[] = _('Invalid email address in SOA record.');
+            $errors[] = _('Invalid email address in SOA record. Use the form "hostmaster.example.net" (the first unescaped dot represents @).');
             return ['isValid' => false, 'errors' => $errors];
         }
 
