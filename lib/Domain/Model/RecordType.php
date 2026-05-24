@@ -70,6 +70,7 @@ class RecordType
     public const NSEC3PARAM = 'NSEC3PARAM';
     public const OPENPGPKEY = 'OPENPGPKEY';
     public const PTR = 'PTR';
+    public const RESINFO = 'RESINFO';
     public const RKEY = 'RKEY';
     public const RP = 'RP';
     public const RRSIG = 'RRSIG';
@@ -160,6 +161,7 @@ class RecordType
         self::NAPTR,
         self::NID,
         self::OPENPGPKEY,
+        self::RESINFO,
         self::RKEY,
         self::RP,
         self::SMIMEA,

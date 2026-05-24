@@ -114,7 +114,7 @@ final class PdnsCapabilities
             'SVCB', 'HTTPS', 'APL' => '4.4.0',
             'CSYNC', 'NID', 'L32', 'L64', 'LP' => '4.5.0',
             'ZONEMD' => '4.8.0',
-            'WALLET' => '5.1.0',
+            'RESINFO', 'WALLET' => '5.1.0',
             default => null,
         };
 
