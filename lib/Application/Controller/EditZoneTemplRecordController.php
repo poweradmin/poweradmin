@@ -147,8 +147,8 @@ class EditZoneTemplRecordController extends BaseController
             $auditService->logZoneTemplateRecordEdit(
                 $zone_templ_id,
                 (int)$this->getSafeRequestValue('rid'),
-                (string)$this->getSafeRequestValue('name'),
-                (string)$this->getSafeRequestValue('type')
+                $this->getSafeRequestValue('name'),
+                $this->getSafeRequestValue('type')
             );
 
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
