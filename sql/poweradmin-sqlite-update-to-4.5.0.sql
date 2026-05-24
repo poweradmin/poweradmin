@@ -54,3 +54,31 @@ CREATE TABLE IF NOT EXISTS app_settings (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add DEFAULT 0 to zones.zone_templ_id so INSERTs that omit the column land
+-- on the "no template" sentinel used by every active write path. SQLite has
+-- no ALTER COLUMN ... SET DEFAULT, so the table is rebuilt; foreign_keys are
+-- toggled off to let DROP TABLE succeed when log_zones / zone_template_sync
+-- still reference it, then re-enabled after the swap.
+PRAGMA foreign_keys = OFF;
+BEGIN TRANSACTION;
+CREATE TABLE zones_new (
+    id integer PRIMARY KEY,
+    domain_id integer NULL DEFAULT NULL,
+    owner integer NULL DEFAULT NULL,
+    comment VARCHAR(1024),
+    zone_templ_id integer NOT NULL DEFAULT 0,
+    zone_name VARCHAR(255) DEFAULT NULL,
+    zone_type VARCHAR(8) DEFAULT NULL,
+    zone_master VARCHAR(255) DEFAULT NULL
+);
+INSERT INTO zones_new (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type, zone_master)
+    SELECT id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type, zone_master FROM zones;
+DROP TABLE zones;
+ALTER TABLE zones_new RENAME TO zones;
+CREATE INDEX IF NOT EXISTS idx_zones_domain_id ON zones(domain_id);
+CREATE INDEX IF NOT EXISTS idx_zones_owner ON zones(owner);
+CREATE INDEX IF NOT EXISTS idx_zones_zone_templ_id ON zones(zone_templ_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_zones_zone_name ON zones(zone_name);
+COMMIT;
+PRAGMA foreign_keys = ON;

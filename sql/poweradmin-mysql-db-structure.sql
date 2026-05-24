@@ -225,7 +225,7 @@ CREATE TABLE `zones` (
                          `domain_id` int(11) NULL DEFAULT NULL,
                          `owner` int(11) NULL DEFAULT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
-                         `zone_templ_id` int(11) NOT NULL,
+                         `zone_templ_id` int(11) NOT NULL DEFAULT 0,
                          `zone_name` varchar(255) DEFAULT NULL,
                          `zone_type` varchar(8) DEFAULT NULL,
                          `zone_master` varchar(255) DEFAULT NULL,

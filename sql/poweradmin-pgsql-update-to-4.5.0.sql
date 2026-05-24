@@ -62,3 +62,9 @@ CREATE TABLE IF NOT EXISTS "public"."app_settings" (
     "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "app_settings_pkey" PRIMARY KEY ("setting_key")
 );
+
+-- Align zones.zone_templ_id with the MySQL/SQLite schemas: NOT NULL DEFAULT 0,
+-- matching the "no template" sentinel used by every active write path.
+UPDATE "zones" SET "zone_templ_id" = 0 WHERE "zone_templ_id" IS NULL;
+ALTER TABLE "zones" ALTER COLUMN "zone_templ_id" SET DEFAULT 0;
+ALTER TABLE "zones" ALTER COLUMN "zone_templ_id" SET NOT NULL;

@@ -724,25 +724,6 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         return $result ? (int)$result : null;
     }
 
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
-    {
-        $domainId = $this->backendProvider->createZone($domain, $type, $slaveMaster);
-        if ($domainId === false) {
-            return false;
-        }
-        // createZone already inserts into zones table in API mode; set the owner
-        // on the canonical row only.
-        $canonical = $this->resolveCanonicalRow($domainId);
-        if ($canonical === null) {
-            return false;
-        }
-        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE id = :id");
-        $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        return true;
-    }
-
     public function deleteZone(int $zoneId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);

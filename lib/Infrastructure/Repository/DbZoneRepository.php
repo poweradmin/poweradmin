@@ -1020,44 +1020,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Create a new domain
-     *
-     * @param string $domain Domain name
-     * @param int $owner Owner user ID
-     * @param string $type Domain type (MASTER, SLAVE, NATIVE)
-     * @param string $slaveMaster Master IP for slave zones
-     * @param string $zoneTemplate Zone template to use
-     * @return bool True if domain was created successfully
-     */
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        // Insert into domains table
-        $query = "INSERT INTO $domains_table (name, type, master) VALUES (:name, :type, :master)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $domain, PDO::PARAM_STR);
-        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-        $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
-
-        if (!$stmt->execute()) {
-            return false;
-        }
-
-        $domainId = $this->db->lastInsertId();
-
-        // Insert into zones table for ownership
-        $query = "INSERT INTO zones (domain_id, owner, comment) VALUES (:domain_id, :owner, :comment)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-        $stmt->bindValue(':comment', '', PDO::PARAM_STR);
-
-        return $stmt->execute();
-    }
-
-    /**
      * Delete a zone by ID
      *
      * @param int $zoneId The zone ID

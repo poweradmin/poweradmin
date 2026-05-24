@@ -333,10 +333,13 @@ class DatabaseStructureHelper
                         'table' => 'zones',
                         'flags' => ''
                     ),
+                    // emit_default forces DEFAULT 0; 0 is the "no template" sentinel used by every INSERT path.
                     'zone_templ_id' => array
                     (
                         'notnull' => 1,
                         'unsigned' => 0,
+                        'default' => 0,
+                        'emit_default' => true,
                         'type' => 'integer',
                         'name' => 'zone_templ_id',
                         'table' => 'zones',

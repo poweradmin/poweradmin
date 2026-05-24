@@ -56,3 +56,8 @@ CREATE TABLE IF NOT EXISTS `app_settings` (
     `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Give zones.zone_templ_id an explicit DEFAULT 0 so inserts that omit the
+-- column land on the same "no template" sentinel used by every active write
+-- path (DomainManager, ZoneSyncService, RecordManager, ApiDnsBackendProvider).
+ALTER TABLE `zones` MODIFY `zone_templ_id` int(11) NOT NULL DEFAULT 0;

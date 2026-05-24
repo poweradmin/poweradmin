@@ -295,7 +295,7 @@ CREATE TABLE "public"."zones" (
                                   "domain_id" integer,
                                   "owner" integer DEFAULT NULL,
                                   "comment" character varying(1024),
-                                  "zone_templ_id" integer,
+                                  "zone_templ_id" integer DEFAULT 0 NOT NULL,
                                   "zone_name" character varying(255) DEFAULT NULL,
                                   "zone_type" character varying(8) DEFAULT NULL,
                                   "zone_master" character varying(255) DEFAULT NULL,

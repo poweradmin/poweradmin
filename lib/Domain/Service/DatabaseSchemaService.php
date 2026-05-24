@@ -121,8 +121,9 @@ class DatabaseSchemaService
                 $line .= ' PRIMARY KEY';
             }
 
-            if (isset($arr['default']) && $arr['default'] != '0') {
-                // Quote string defaults for text/varchar fields
+            $hasDefault = isset($arr['default'])
+                && ($arr['default'] != '0' || !empty($arr['emit_default']));
+            if ($hasDefault) {
                 if (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
                     $line .= ' DEFAULT ' . $this->db->quote($arr['default']);
                 } else {

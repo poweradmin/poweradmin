@@ -168,7 +168,7 @@ CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer N
 CREATE INDEX idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);
 
 
-CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NULL DEFAULT NULL, owner integer NULL DEFAULT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL, zone_name VARCHAR(255) DEFAULT NULL, zone_type VARCHAR(8) DEFAULT NULL, zone_master VARCHAR(255) DEFAULT NULL);
+CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NULL DEFAULT NULL, owner integer NULL DEFAULT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL DEFAULT 0, zone_name VARCHAR(255) DEFAULT NULL, zone_type VARCHAR(8) DEFAULT NULL, zone_master VARCHAR(255) DEFAULT NULL);
 
 CREATE INDEX idx_zones_domain_id ON zones(domain_id);
 CREATE INDEX idx_zones_owner ON zones(owner);

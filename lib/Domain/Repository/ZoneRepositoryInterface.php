@@ -260,18 +260,6 @@ interface ZoneRepositoryInterface
     public function getZoneByName(string $zoneName): ?array;
 
     /**
-     * Create a new domain/zone
-     *
-     * @param string $domain Domain name
-     * @param int $owner Owner user ID
-     * @param string $type Zone type (MASTER, SLAVE, NATIVE)
-     * @param string $slaveMaster Slave master server
-     * @param string $zoneTemplate Zone template name
-     * @return bool True if created successfully
-     */
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool;
-
-    /**
      * Get count of zones with filtering
      *
      * @param int[]|null $zoneIds Optional array of zone IDs to filter
