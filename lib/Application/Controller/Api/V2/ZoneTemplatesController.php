@@ -86,19 +86,19 @@ class ZoneTemplatesController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'array',
                             items: new OA\Items(
                                 type: 'object',
                                 properties: [
-                                    'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    'name' => new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                                    'description' => new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                                    'owner' => new OA\Property(property: 'owner', type: 'integer', example: 1),
-                                    'is_global' => new OA\Property(property: 'is_global', type: 'boolean', example: false),
-                                    'zones_linked' => new OA\Property(property: 'zones_linked', type: 'integer', example: 3)
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                                    new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                                    new OA\Property(property: 'owner', type: 'integer', example: 1),
+                                    new OA\Property(property: 'is_global', type: 'boolean', example: false),
+                                    new OA\Property(property: 'zones_linked', type: 'integer', example: 3)
                                 ]
                             )
                         )
@@ -155,28 +155,28 @@ class ZoneTemplatesController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'object',
                             properties: [
-                                'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                'name' => new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                                'description' => new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                                'owner' => new OA\Property(property: 'owner', type: 'integer', example: 1),
-                                'is_global' => new OA\Property(property: 'is_global', type: 'boolean', example: false),
-                                'records' => new OA\Property(
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                                new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                                new OA\Property(property: 'owner', type: 'integer', example: 1),
+                                new OA\Property(property: 'is_global', type: 'boolean', example: false),
+                                new OA\Property(
                                     property: 'records',
                                     type: 'array',
                                     items: new OA\Items(
                                         type: 'object',
                                         properties: [
-                                            'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            'name' => new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                            'type' => new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                            'content' => new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                            'ttl' => new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                            'priority' => new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                                            new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                            new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                            new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                            new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                            new OA\Property(property: 'priority', type: 'integer', example: 0)
                                         ]
                                     )
                                 )
@@ -246,9 +246,9 @@ class ZoneTemplatesController extends PublicApiController
                 type: 'object',
                 required: ['name', 'description'],
                 properties: [
-                    'name' => new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                    'description' => new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                    'is_global' => new OA\Property(
+                    new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                    new OA\Property(
                         property: 'is_global',
                         type: 'boolean',
                         example: false,
@@ -264,15 +264,15 @@ class ZoneTemplatesController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'object',
                             properties: [
-                                'id' => new OA\Property(property: 'id', type: 'integer', example: 1)
+                                new OA\Property(property: 'id', type: 'integer', example: 1)
                             ]
                         ),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Zone template created successfully')
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template created successfully')
                     ]
                 )
             ),
@@ -350,9 +350,9 @@ class ZoneTemplatesController extends PublicApiController
                 type: 'object',
                 required: ['name', 'description'],
                 properties: [
-                    'name' => new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
-                    'description' => new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
-                    'is_global' => new OA\Property(
+                    new OA\Property(property: 'name', type: 'string', example: 'Default Template'),
+                    new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
+                    new OA\Property(
                         property: 'is_global',
                         type: 'boolean',
                         example: false,
@@ -368,8 +368,8 @@ class ZoneTemplatesController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Zone template updated successfully')
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template updated successfully')
                     ]
                 )
             ),
@@ -478,8 +478,8 @@ class ZoneTemplatesController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Zone template deleted successfully')
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template deleted successfully')
                     ]
                 )
             ),
