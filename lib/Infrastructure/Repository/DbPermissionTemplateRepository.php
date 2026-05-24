@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Throwable;
 
 class DbPermissionTemplateRepository
 {
@@ -47,26 +48,34 @@ class DbPermissionTemplateRepository
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
-        $stmt->execute([
-            ':name' => $details['templ_name'],
-            ':descr' => $details['templ_descr'],
-            ':template_type' => $template_type
-        ]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
+            $stmt->execute([
+                ':name' => $details['templ_name'],
+                ':descr' => $details['templ_descr'],
+                ':template_type' => $template_type
+            ]);
 
-        $perm_templ_id = $this->db->lastInsertId();
+            // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+            $perm_templ_id = $this->db->lastInsertId('perm_templ_id_seq');
 
-        if (isset($details['perm_id'])) {
-            $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
-            foreach ($details['perm_id'] as $perm_id) {
-                $stmt->execute([
-                    ':templ_id' => $perm_templ_id,
-                    ':perm_id' => $perm_id
-                ]);
+            if (isset($details['perm_id'])) {
+                $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
+                foreach ($details['perm_id'] as $perm_id) {
+                    $stmt->execute([
+                        ':templ_id' => $perm_templ_id,
+                        ':perm_id' => $perm_id
+                    ]);
+                }
             }
-        }
 
-        return true;
+            $this->db->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     /**
