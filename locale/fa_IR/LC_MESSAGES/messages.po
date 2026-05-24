@@ -13613,3 +13613,6 @@ msgstr "جداول PowerDNS در پایگاه داده \"%s\": %s گم شده‌
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "نمی‌توان به پایگاه داده PowerDNS \"%s\": %s متصل شد"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "دستیار رکورد"

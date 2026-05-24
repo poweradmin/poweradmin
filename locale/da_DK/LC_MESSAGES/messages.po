@@ -13613,3 +13613,6 @@ msgstr "Manglende PowerDNS tabeller i databasen %s: %s. Sørg for at PowerDNS er
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke forbinde til PowerDNS database %s: %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Postguide"

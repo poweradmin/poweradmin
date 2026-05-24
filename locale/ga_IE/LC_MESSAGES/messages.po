@@ -13649,3 +13649,6 @@ msgstr "TÃ¡blaÃ­ PowerDNS Missing i mbunachar sonraÃ­ \"%s\": %s. Cinntigh
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "NÃ­ fÃ©idir ceangal le bunachar sonraÃ­ PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Treoraí Taifead"

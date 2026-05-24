@@ -13661,3 +13661,6 @@ msgstr "جداول PowerDNS مفقودة في قاعدة البيانات \"%s\"
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "لا يمكن الاتصال بقاعدة بيانات PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "معالج السجلات"

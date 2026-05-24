@@ -13613,3 +13613,6 @@ msgstr "טבלאות PowerDNS חסרות במסד הנתונים \"%s\": %s. א�
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "לא ניתן להתחבר למסד הנתונים PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "אשף רשומות"

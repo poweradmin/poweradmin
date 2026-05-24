@@ -13637,3 +13637,6 @@ msgstr "Manjkajoče tabele PowerDNS v bazi podatkov \"%s\": %s. Poskrbite, da bo
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Ni se moč povezati s podatkovno bazo PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Pomočnik za zapise"

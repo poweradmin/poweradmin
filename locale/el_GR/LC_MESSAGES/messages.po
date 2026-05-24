@@ -13613,3 +13613,6 @@ msgstr "Λείπει PowerDNS πίνακες στη βάση δεδομένων 
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Αδυναμία σύνδεσης με βάση δεδομένων PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Οδηγός εγγραφών"

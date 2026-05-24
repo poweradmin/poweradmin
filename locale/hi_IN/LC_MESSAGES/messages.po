@@ -13613,3 +13613,6 @@ msgstr "डेटाबेस \"%s\" में लापता PowerDNS ता�
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS डेटाबेस \"%s\" से कनेक्ट नहीं कर सकते: %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "रिकॉर्ड सहायक"

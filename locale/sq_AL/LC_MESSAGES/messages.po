@@ -13613,3 +13613,6 @@ msgstr "Mungojnë tabelat PowerDNS në bazën e të dhënave \"%s\": %s. Ju lute
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nuk mund të lidhet me bazën e të dhënave PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Ndihmës i rekordeve"

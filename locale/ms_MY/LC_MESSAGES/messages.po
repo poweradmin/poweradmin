@@ -13601,3 +13601,6 @@ msgstr "Tabel PowerDNS hilang di basis data \"%s\": %s. Coundy Harap pastikan Po
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat menyambung ke pangkalan data PowerDNS \"%s\": %s"
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Pembantu Rekod"
