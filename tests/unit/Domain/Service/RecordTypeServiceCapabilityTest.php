@@ -58,12 +58,14 @@ class RecordTypeServiceCapabilityTest extends TestCase
         $this->assertContains('CNAME', $types);
         $this->assertContains('MX', $types);
 
-        // 4.3 doesn't know SVCB/HTTPS (4.4+) or ZONEMD (4.8+) or WALLET/RESINFO (5.1+).
+        // 4.3 doesn't know SVCB/HTTPS (4.4+) or ZONEMD (4.8+) or WALLET/RESINFO/HHIT/BRID (5.1+).
         $this->assertNotContains('SVCB', $types);
         $this->assertNotContains('HTTPS', $types);
         $this->assertNotContains('ZONEMD', $types);
         $this->assertNotContains('WALLET', $types);
         $this->assertNotContains('RESINFO', $types);
+        $this->assertNotContains('HHIT', $types);
+        $this->assertNotContains('BRID', $types);
         // CSYNC requires 4.5.
         $this->assertNotContains('CSYNC', $types);
     }
@@ -84,6 +86,8 @@ class RecordTypeServiceCapabilityTest extends TestCase
         $types = $this->service->getAllTypes($caps);
         $this->assertContains('WALLET', $types);
         $this->assertContains('RESINFO', $types);
+        $this->assertContains('HHIT', $types);
+        $this->assertContains('BRID', $types);
     }
 
     public function testGetAllTypesUnknownVersionDropsAllGatedTypes(): void
@@ -102,6 +106,8 @@ class RecordTypeServiceCapabilityTest extends TestCase
         $this->assertNotContains('ZONEMD', $types);
         $this->assertNotContains('WALLET', $types);
         $this->assertNotContains('RESINFO', $types);
+        $this->assertNotContains('HHIT', $types);
+        $this->assertNotContains('BRID', $types);
     }
 
     public function testGetDomainZoneTypesFiltersBySupportedRecordTypes(): void

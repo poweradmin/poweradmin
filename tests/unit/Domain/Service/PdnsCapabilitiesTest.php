@@ -99,6 +99,10 @@ class PdnsCapabilitiesTest extends TestCase
             'WALLET unavailable on 5.0' => ['5.0.0', 'WALLET', false],
             'RESINFO available from 5.1' => ['5.1.0', 'RESINFO', true],
             'RESINFO unavailable on 5.0' => ['5.0.0', 'RESINFO', false],
+            'HHIT available from 5.1' => ['5.1.0', 'HHIT', true],
+            'HHIT unavailable on 5.0' => ['5.0.0', 'HHIT', false],
+            'BRID available from 5.1' => ['5.1.0', 'BRID', true],
+            'BRID unavailable on 5.0' => ['5.0.0', 'BRID', false],
             'lowercase input is normalised' => ['4.4.0', 'svcb', true],
         ];
     }
@@ -163,6 +167,8 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertFalse($caps->supportsRecordType('ZONEMD'));
         $this->assertFalse($caps->supportsRecordType('WALLET'));
         $this->assertFalse($caps->supportsRecordType('RESINFO'));
+        $this->assertFalse($caps->supportsRecordType('HHIT'));
+        $this->assertFalse($caps->supportsRecordType('BRID'));
         $this->assertFalse($caps->supportsIndividualRrsetFetch());
         $this->assertFalse($caps->supportsAutoprimariesApi());
         $this->assertFalse($caps->supportsRecordTimestamps());

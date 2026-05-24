@@ -36,6 +36,7 @@ class RecordType
     public const AFSDB = 'AFSDB';
     public const ALIAS = 'ALIAS';
     public const APL = 'APL';
+    public const BRID = 'BRID';
     public const CAA = 'CAA';
     public const CERT = 'CERT';
     public const CDNSKEY = 'CDNSKEY';
@@ -49,6 +50,7 @@ class RecordType
     public const DLV = 'DLV';
     public const EUI48 = 'EUI48';
     public const EUI64 = 'EUI64';
+    public const HHIT = 'HHIT';
     public const HINFO = 'HINFO';
     public const HTTPS = 'HTTPS';
     public const IPSECKEY = 'IPSECKEY';
@@ -138,6 +140,7 @@ class RecordType
         self::AFSDB,
         self::ALIAS,
         self::APL,
+        self::BRID,
         self::CAA,
         self::CERT,
         self::CSYNC,
@@ -146,6 +149,7 @@ class RecordType
         self::DNAME,
         self::EUI48,
         self::EUI64,
+        self::HHIT,
         self::HINFO,
         self::HTTPS,
         self::IPSECKEY,
