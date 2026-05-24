@@ -183,6 +183,7 @@ class DbZoneLogger
             'dnssec_toggle_key',
             'dnssec_unsign_zone',
             'edit_record',
+            'edit_zone_comment',
             'edit_zone_metadata',
             'unlink_zone_template',
             'zone_group_add',

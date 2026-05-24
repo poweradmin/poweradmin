@@ -949,3 +949,87 @@ input[type=number]::-webkit-outer-spin-button {
 @media (min-width: 1400px) {
     .row-cols-xxl-8 > * { flex: 0 0 auto; width: 12.5%; }
 }
+
+/* === RTL overrides === */
+/* When the locale is RTL (Arabic/Hebrew/Farsi/Urdu/Yiddish), the BaseController sets
+   <html dir="rtl">. Bootstrap's bootstrap.rtl.min.css handles framework classes; the
+   rules below cover Poweradmin's custom sidebar layout + directional icons. */
+
+[dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    border-right: none !important;
+    border-left: 1px solid var(--sidebar-border) !important;
+}
+
+[dir="rtl"] .main-content {
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+}
+
+[dir="rtl"] .nav-section-chevron {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+[dir="rtl"] .input-group .form-control:not(:first-child) {
+    border-left-color: var(--input-border);
+    border-right-color: var(--border-dark);
+}
+
+[dir="rtl"] .alert .btn-close {
+    right: auto;
+    left: 10px;
+}
+
+[dir="rtl"] .alert-dismissible {
+    padding-right: 1rem;
+    padding-left: 3rem;
+}
+
+@media (max-width: 767.98px) {
+    [dir="rtl"] .sidebar {
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+    [dir="rtl"] .sidebar.show,
+    [dir="rtl"] .sidebar #sidebarContent.show {
+        transform: translateX(0);
+    }
+    [dir="rtl"] .main-content {
+        margin-right: 0;
+    }
+    [dir="rtl"] .sidebar-overlay {
+        left: auto;
+        right: 0;
+    }
+}
+
+/* Directional icons - mirror Bootstrap Icons that imply direction in LTR. */
+[dir="rtl"] .bi-arrow-left,
+[dir="rtl"] .bi-arrow-right,
+[dir="rtl"] .bi-arrow-left-circle,
+[dir="rtl"] .bi-arrow-right-circle,
+[dir="rtl"] .bi-arrow-left-square,
+[dir="rtl"] .bi-arrow-right-square,
+[dir="rtl"] .bi-arrow-bar-left,
+[dir="rtl"] .bi-arrow-bar-right,
+[dir="rtl"] .bi-arrow-return-left,
+[dir="rtl"] .bi-arrow-return-right,
+[dir="rtl"] .bi-arrow-up-left,
+[dir="rtl"] .bi-arrow-up-right,
+[dir="rtl"] .bi-arrow-down-left,
+[dir="rtl"] .bi-arrow-down-right,
+[dir="rtl"] .bi-chevron-left,
+[dir="rtl"] .bi-chevron-right,
+[dir="rtl"] .bi-chevron-double-left,
+[dir="rtl"] .bi-chevron-double-right,
+[dir="rtl"] .bi-caret-left,
+[dir="rtl"] .bi-caret-right,
+[dir="rtl"] .bi-caret-left-fill,
+[dir="rtl"] .bi-caret-right-fill {
+    display: inline-block;
+    transform: scaleX(-1);
+}

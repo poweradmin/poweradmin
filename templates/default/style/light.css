@@ -291,3 +291,34 @@ input[type=number]::-webkit-outer-spin-button {
 @media (min-width: 1400px) {
     .row-cols-xxl-8 > * { flex: 0 0 auto; width: 12.5%; }
 }
+
+/* === RTL overrides === */
+[dir="rtl"] .alert .btn-close {
+    right: auto;
+    left: 10px;
+}
+
+[dir="rtl"] .alert-dismissible {
+    padding-right: 1rem;
+    padding-left: 3rem;
+}
+
+[dir="rtl"] .bi-arrow-left,
+[dir="rtl"] .bi-arrow-right,
+[dir="rtl"] .bi-arrow-left-circle,
+[dir="rtl"] .bi-arrow-right-circle,
+[dir="rtl"] .bi-arrow-left-square,
+[dir="rtl"] .bi-arrow-right-square,
+[dir="rtl"] .bi-arrow-bar-left,
+[dir="rtl"] .bi-arrow-bar-right,
+[dir="rtl"] .bi-chevron-left,
+[dir="rtl"] .bi-chevron-right,
+[dir="rtl"] .bi-chevron-double-left,
+[dir="rtl"] .bi-chevron-double-right,
+[dir="rtl"] .bi-caret-left,
+[dir="rtl"] .bi-caret-right,
+[dir="rtl"] .bi-caret-left-fill,
+[dir="rtl"] .bi-caret-right-fill {
+    display: inline-block;
+    transform: scaleX(-1);
+}
