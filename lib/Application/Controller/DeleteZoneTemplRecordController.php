@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -71,6 +72,9 @@ class DeleteZoneTemplRecordController extends BaseController
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);
+
+                $auditService = new AuditService($this->db);
+                $auditService->logZoneTemplateRecordDelete($zone_templ_id, $record_id);
 
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
                 $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');

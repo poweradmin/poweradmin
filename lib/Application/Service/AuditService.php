@@ -221,4 +221,84 @@ class AuditService
             $zoneId
         ), $zoneId);
     }
+
+    // Zone template records
+
+    public function logZoneTemplateRecordAdd(int $templateId, string $recordName, string $recordType): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:add_zone_template_record template_id:%d record_name:%s record_type:%s',
+            $this->getContext(),
+            $templateId,
+            str_replace(' ', '_', $recordName),
+            $recordType
+        ));
+    }
+
+    public function logZoneTemplateRecordEdit(int $templateId, int $recordId, string $recordName, string $recordType): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+            $this->getContext(),
+            $templateId,
+            $recordId,
+            str_replace(' ', '_', $recordName),
+            $recordType
+        ));
+    }
+
+    public function logZoneTemplateRecordDelete(int $templateId, int $recordId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:delete_zone_template_record template_id:%d record_id:%d',
+            $this->getContext(),
+            $templateId,
+            $recordId
+        ));
+    }
+
+    // Zone comments
+
+    public function logZoneCommentEdit(int $zoneId, string $zoneName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_comment zone:%s',
+            $this->getContext(),
+            $zoneName
+        ), $zoneId);
+    }
+
+    // Supermasters
+
+    public function logSupermasterAdd(string $masterIp, string $nsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:add_supermaster master_ip:%s ns_name:%s',
+            $this->getContext(),
+            $masterIp,
+            $nsName
+        ));
+    }
+
+    public function logSupermasterEdit(string $oldMasterIp, string $oldNsName, string $newMasterIp, string $newNsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_supermaster old_master_ip:%s old_ns_name:%s new_master_ip:%s new_ns_name:%s',
+            $this->getContext(),
+            $oldMasterIp,
+            $oldNsName,
+            $newMasterIp,
+            $newNsName
+        ));
+    }
+
+    public function logSupermasterDelete(string $masterIp, string $nsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:delete_supermaster master_ip:%s ns_name:%s',
+            $this->getContext(),
+            $masterIp,
+            $nsName
+        ));
+    }
 }

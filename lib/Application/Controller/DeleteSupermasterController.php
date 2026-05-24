@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsRecord;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -92,6 +93,9 @@ class DeleteSupermasterController extends BaseController
             $this->redirect('/supermasters');
         }
         if ($dnsRecord->deleteSupermaster($master_ip, $ns_name)) {
+            $auditService = new AuditService($this->db);
+            $auditService->logSupermasterDelete($master_ip, $ns_name);
+
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
             $this->redirect('/supermasters');
         }

@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
@@ -92,6 +93,11 @@ class EditCommentController extends BaseController
             } else {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->editZoneComment($zone_id, $_POST['comment']);
+
+                $zoneIdInt = (int)$zone_id;
+                $auditService = new AuditService($this->db);
+                $auditService->logZoneCommentEdit($zoneIdInt, $dnsRecord->getDomainNameById($zoneIdInt));
+
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
             }

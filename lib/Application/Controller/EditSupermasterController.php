@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -89,6 +90,9 @@ class EditSupermasterController extends BaseController
         }
 
         if ($dnsRecord->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
+            $auditService = new AuditService($this->db);
+            $auditService->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
+
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been updated successfully.'));
             $this->redirect('/supermasters');
         } else {

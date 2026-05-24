@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -141,6 +142,14 @@ class EditZoneTemplRecordController extends BaseController
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
+
+            $auditService = new AuditService($this->db);
+            $auditService->logZoneTemplateRecordEdit(
+                $zone_templ_id,
+                (int)$this->getSafeRequestValue('rid'),
+                (string)$this->getSafeRequestValue('name'),
+                (string)$this->getSafeRequestValue('type')
+            );
 
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
             $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
