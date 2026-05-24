@@ -91,6 +91,7 @@ class DnsValidatorRegistry
             RecordType::NSEC3PARAM => new NSEC3PARAMRecordValidator($this->config),
             RecordType::OPENPGPKEY => new OPENPGPKEYRecordValidator($this->config),
             RecordType::PTR => new PTRRecordValidator($this->config),
+            RecordType::RESINFO => new RESINFORecordValidator($this->config),
             RecordType::RKEY => new RKEYRecordValidator($this->config),
             RecordType::RP => new RPRecordValidator($this->config),
             RecordType::RRSIG => new RRSIGRecordValidator($this->config),
@@ -105,6 +106,7 @@ class DnsValidatorRegistry
             RecordType::TSIG => new TSIGRecordValidator($this->config),
             RecordType::TXT => new TXTRecordValidator($this->config),
             RecordType::URI => new URIRecordValidator($this->config),
+            RecordType::WALLET => new WALLETRecordValidator($this->config),
             RecordType::ZONEMD => new ZONEMDRecordValidator($this->config),
         ];
 
