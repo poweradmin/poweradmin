@@ -33,7 +33,9 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -41,12 +43,16 @@ class ZoneTemplatesController extends PublicApiController
 {
     private DbZoneTemplateRepository $repository;
     private ApiPermissionService $apiPermissionService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -310,6 +316,14 @@ class ZoneTemplatesController extends PublicApiController
             $owner = $isGlobal ? 0 : $userId;
             $newId = $this->repository->createZoneTemplate($name, $description, $owner, $userId);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_zone_template template_id:%d template_name:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $newId,
+                str_replace(' ', '_', $name)
+            ));
+
             return $this->returnApiResponse(['id' => $newId], true, 'Zone template created successfully', 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::createZoneTemplate', 'Failed to create zone template');
@@ -429,6 +443,14 @@ class ZoneTemplatesController extends PublicApiController
 
             $this->repository->updateZoneTemplate($id, $name, $description, $newOwner);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_edit_zone_template template_id:%d template_name:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $id,
+                str_replace(' ', '_', $name)
+            ));
+
             return $this->returnApiResponse(null, true, 'Zone template updated successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::updateZoneTemplate', 'Failed to update zone template');
@@ -498,6 +520,13 @@ class ZoneTemplatesController extends PublicApiController
             }
 
             $this->repository->deleteZoneTemplate($id);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_delete_zone_template template_id:%d',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $id
+            ));
 
             return $this->returnApiResponse(null, true, 'Zone template deleted successfully');
         } catch (\Throwable $e) {

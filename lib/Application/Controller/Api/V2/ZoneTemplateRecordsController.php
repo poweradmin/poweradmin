@@ -33,7 +33,9 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -41,12 +43,16 @@ class ZoneTemplateRecordsController extends PublicApiController
 {
     private DbZoneTemplateRepository $repository;
     private ApiPermissionService $apiPermissionService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -265,6 +271,16 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId,
+                str_replace(' ', '_', $name),
+                $type
+            ));
+
             return $this->returnApiResponse(['id' => $recordId], true, null, 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::createRecord', 'Failed to create zone template record');
@@ -438,6 +454,16 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_edit_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId,
+                str_replace(' ', '_', $name),
+                $type
+            ));
+
             return $this->returnApiResponse(null, true, 'Zone template record updated successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::updateRecord', 'Failed to update zone template record');
@@ -504,6 +530,14 @@ class ZoneTemplateRecordsController extends PublicApiController
             }
 
             $this->repository->deleteRecord($recordId);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_delete_zone_template_record template_id:%d record_id:%d',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId
+            ));
 
             return $this->returnApiResponse(null, true, 'Zone template record deleted successfully');
         } catch (\Throwable $e) {
