@@ -198,7 +198,8 @@
                     var triggerButton = event.relatedTarget;
                     var raw = triggerButton.getAttribute('data-bs-content');
                     logRawText = raw;
-                    var formatted = raw.replace(/(\w+):/g, '<br>$1:').replace(/^<br>/, '');
+                    var escaped = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    var formatted = escaped.replace(/(\w+):/g, '<br>$1:').replace(/^<br>/, '');
                     userLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
                 });
             }
