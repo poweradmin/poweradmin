@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -53,6 +54,7 @@ class InstallStepHandler
         $data['next_step'] = filter_var($data['current_step'], FILTER_VALIDATE_INT) ?: 0;
         $data['next_step'] += 1;
         $data['file_version'] = time();
+        $data = array_merge($data, LanguageCode::templateVars($this->language));
         try {
             echo $this->twig->render($templateName, $data);
         } catch (LoaderError | RuntimeError | SyntaxError $e) {

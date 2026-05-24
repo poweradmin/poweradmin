@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
+use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -646,7 +647,9 @@ abstract class BaseController
         $customDarkExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_dark.css');
         $customThemeExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
 
-        $vars = [
+        $activeLocale = $this->resolveActiveLocale();
+
+        $vars = array_merge([
             'iface_title' => $this->config->get('interface', 'title'),
             'iface_style' => $styleManager->getSelectedStyle(),
             'theme' => $theme,
@@ -660,31 +663,26 @@ abstract class BaseController
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
             'version' => Version::VERSION,
             'show_style_switcher' => true,
-        ];
+        ], LanguageCode::templateVars($activeLocale));
 
         // Language selector for login page
         $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
         $localeList = explode(',', $enabledLanguages);
         if (count($localeList) > 1) {
-            $interfaceLanguage = $this->config->get('interface', 'language', 'en_EN');
-            // Check for GET lang parameter override
-            if (!empty($_GET['lang']) && in_array($_GET['lang'], $localeList)) {
-                $interfaceLanguage = $_GET['lang'];
-            }
             $preparedLocales = [];
             foreach ($localeList as $locale) {
                 $locale = trim($locale);
-                $language = \Poweradmin\Infrastructure\Utility\LanguageCode::getByLocale($locale);
+                $language = LanguageCode::getByLocale($locale);
                 $preparedLocales[] = [
                     'locale' => $locale,
                     'language' => $language,
-                    'selected' => $locale === $interfaceLanguage,
+                    'selected' => $locale === $activeLocale,
                 ];
             }
             usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
             $vars['locales'] = $preparedLocales;
             $vars['show_language_selector'] = true;
-            $vars['current_language'] = $interfaceLanguage;
+            $vars['current_language'] = $activeLocale;
         }
 
         $dblog_use = $this->config->get('logging', 'database_enabled');
@@ -776,7 +774,27 @@ abstract class BaseController
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'user_logged_in' => $this->userContextService->isAuthenticated(),
+            'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
         ]);
+    }
+
+    /**
+     * Returns the locale active for the current request (GET override > session > config).
+     */
+    private function resolveActiveLocale(): string
+    {
+        $active = $this->userContextService->getUserLanguage()
+            ?? $this->config->get('interface', 'language', 'en_EN')
+            ?? 'en_EN';
+
+        $requested = $_GET['lang'] ?? null;
+        if (is_string($requested) && preg_match('/^[a-zA-Z_]+$/', $requested)) {
+            $enabled = explode(',', $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
+            if (in_array($requested, array_map('trim', $enabled), true)) {
+                $active = $requested;
+            }
+        }
+        return $active;
     }
 
     /**

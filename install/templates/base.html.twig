@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ html_lang|default('en') }}" dir="{{ html_dir|default('ltr') }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Poweradmin</title>
-    <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/twbs/bootstrap/dist/css/{{ bootstrap_css|default('bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="../vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css">
     <link rel=stylesheet href="../style/ignite.css?time={{ file_version }}" type="text/css">

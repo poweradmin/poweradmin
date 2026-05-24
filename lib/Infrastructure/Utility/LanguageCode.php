@@ -35,6 +35,8 @@ class LanguageCode
         'zh_TW' => 'Chinese (Traditional)',
     );
 
+    private const RTL_LANGUAGES = ['ar', 'fa', 'he', 'ur', 'yi'];
+
     private const LANGUAGE_CODES = array(
         'aa' => 'Afar',
         'ab' => 'Abkhaz',
@@ -235,5 +237,25 @@ class LanguageCode
         }
         $languageCode = substr($locale, 0, 2);
         return self::LANGUAGE_CODES[$languageCode] ?? null;
+    }
+
+    public static function isRtl(string $locale): bool
+    {
+        return in_array(substr($locale, 0, 2), self::RTL_LANGUAGES, true);
+    }
+
+    /**
+     * Returns template vars (is_rtl, html_dir, html_lang, bootstrap_css) for a locale.
+     * Used by header/footer renderers and the installer to drive RTL layout.
+     */
+    public static function templateVars(string $locale): array
+    {
+        $isRtl = self::isRtl($locale);
+        return [
+            'is_rtl' => $isRtl,
+            'html_dir' => $isRtl ? 'rtl' : 'ltr',
+            'html_lang' => substr($locale, 0, 2),
+            'bootstrap_css' => $isRtl ? 'bootstrap.rtl.min.css' : 'bootstrap.min.css',
+        ];
     }
 }
