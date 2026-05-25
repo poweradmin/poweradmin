@@ -179,7 +179,7 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
         $hasAll = false;
         $hasRedirect = false;
 
-        foreach ($terms as $term) {
+        foreach ($terms as $termIndex => $term) {
             $type = $term['type'];
             $qualifier = $term['qualifier'] ?? '+'; // Default qualifier is "+"
             $value = $term['value'];
@@ -257,7 +257,7 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
 
                 case 'all':
                     // 'all' mechanism should be last (RFC 7208 section 5.1)
-                    if (count($terms) > array_search($term, $terms) + 1) {
+                    if ($termIndex !== array_key_last($terms)) {
                         $warnings[] = _('The "all" mechanism should be the last mechanism in the record (RFC 7208 Section 5.1).');
                     }
                     break;
