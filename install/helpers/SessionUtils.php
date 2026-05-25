@@ -22,6 +22,8 @@
 
 namespace PoweradminInstall;
 
+use Poweradmin\Domain\Service\SessionKeys;
+
 /**
  * Simple utility class for session operations during installation
  */
@@ -33,8 +35,8 @@ class SessionUtils
      */
     public static function clearMessages(): void
     {
-        if (isset($_SESSION['messages'])) {
-            unset($_SESSION['messages']);
+        if (isset($_SESSION[SessionKeys::MESSAGES])) {
+            unset($_SESSION[SessionKeys::MESSAGES]);
         }
     }
 }

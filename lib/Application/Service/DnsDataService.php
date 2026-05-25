@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Orchestration service for DNS data reads.
@@ -892,7 +893,7 @@ class DnsDataService
 
         // Filter by permission
         if ($permissionView === 'own') {
-            $userId = $_SESSION['userid'] ?? null;
+            $userId = $_SESSION[SessionKeys::USERID] ?? null;
             if ($userId) {
                 $zones = $this->filterZonesByOwnership($zones, (int)$userId);
             } else {
@@ -1014,7 +1015,7 @@ class DnsDataService
 
         // Filter by permission (via zone ownership)
         if ($permissionView === 'own') {
-            $userId = $_SESSION['userid'] ?? null;
+            $userId = $_SESSION[SessionKeys::USERID] ?? null;
             if ($userId) {
                 $records = $this->filterRecordsByZoneOwnership($records, (int)$userId);
             } else {

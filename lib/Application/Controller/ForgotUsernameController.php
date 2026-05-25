@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ForgotUsernameController extends BaseController
 {
@@ -148,7 +149,7 @@ class ForgotUsernameController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION['username_recovery_token']);
+            unset($_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN]);
         }
 
         // Verify reCAPTCHA if enabled
@@ -238,7 +239,7 @@ class ForgotUsernameController extends BaseController
 
         // Generate a new token for username recovery
         $usernameRecoveryToken = $this->csrfTokenService->generateToken();
-        $_SESSION['username_recovery_token'] = $usernameRecoveryToken;
+        $_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
 
         $this->render('forgot_username.html', [
             'error' => $error,

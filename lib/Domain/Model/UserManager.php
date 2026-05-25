@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class UserManager
 {
@@ -72,7 +73,7 @@ class UserManager
             return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
         }
 
-        if ((!isset($_SESSION['userid'])) || (!is_object($db))) {
+        if ((!isset($_SESSION[SessionKeys::USERID])) || (!is_object($db))) {
             return false;
         }
 
@@ -97,7 +98,7 @@ class UserManager
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
             WHERE ugm.user_id = ? AND pi.name IS NOT NULL
         ");
-        $query->execute(array($_SESSION['userid'], $_SESSION['userid']));
+        $query->execute(array($_SESSION[SessionKeys::USERID], $_SESSION[SessionKeys::USERID]));
         $cache = $query->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
         return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
@@ -336,7 +337,7 @@ class UserManager
      */
     public function deleteUser(int $uid, array $zones): bool
     {
-        if (($uid != $_SESSION['userid'] && !self::verifyPermission($this->db, 'user_edit_others')) || ($uid == $_SESSION['userid'] && !self::verifyPermission($this->db, 'user_edit_own'))) {
+        if (($uid != $_SESSION[SessionKeys::USERID] && !self::verifyPermission($this->db, 'user_edit_others')) || ($uid == $_SESSION[SessionKeys::USERID] && !self::verifyPermission($this->db, 'user_edit_own'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this user."));
 
             return false;
@@ -416,7 +417,7 @@ class UserManager
         $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
         $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
 
-        if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
+        if (($id == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($id != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
             if (!$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
@@ -586,7 +587,7 @@ class UserManager
      */
     public static function verifyUserIsOwnerZoneId($db, int $zoneid): bool
     {
-        $userid = $_SESSION["userid"];
+        $userid = $_SESSION[SessionKeys::USERID];
 
         // Check direct ownership
         $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
@@ -622,7 +623,7 @@ class UserManager
      */
     public static function countUsers($db, ?int $specific = null): int
     {
-        $userid = $_SESSION['userid'];
+        $userid = $_SESSION[SessionKeys::USERID];
 
         if ($specific) {
             $sql_add = "AND users.id = :specific";
@@ -666,7 +667,7 @@ class UserManager
      */
     public static function getUserDetailList($db, $ldap_use, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
     {
-        $userid = $_SESSION['userid'];
+        $userid = $_SESSION[SessionKeys::USERID];
 
         if ($specific) {
             $sql_add = "AND users.id = :specific";
@@ -923,7 +924,7 @@ class UserManager
         $perm_templ_perm_edit = self::verifyPermission($this->db, 'templ_perm_edit');
         $perm_is_godlike = self::verifyPermission($this->db, 'user_is_ueberuser');
 
-        if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
+        if (($details['uid'] == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($details['uid'] != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
             if (!$validation->isValidEmail($details['email'])) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
@@ -1095,7 +1096,7 @@ class UserManager
         if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
-            $current_user = self::getUserDetailList($this->db, $ldap_use, $_SESSION['userid']);
+            $current_user = self::getUserDetailList($this->db, $ldap_use, $_SESSION[SessionKeys::USERID]);
             $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
         }
 

@@ -37,6 +37,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class DeleteZoneTemplRecordController extends BaseController
 {
@@ -60,7 +61,7 @@ class DeleteZoneTemplRecordController extends BaseController
             $confirm = $_GET['confirm'];
         }
 
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 

@@ -86,7 +86,7 @@ class ZoneCountService
 
         if ($perm == "own") {
             // Use UserContextService if provided, otherwise fall back to $_SESSION
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
 
             if ($userId) {
                 // Include zones accessible via direct ownership or group membership.
@@ -149,7 +149,7 @@ class ZoneCountService
 
         // Filter by ownership
         if ($perm === 'own') {
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
             if (!$userId) {
                 return 0;
             }

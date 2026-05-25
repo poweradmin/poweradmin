@@ -47,6 +47,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -295,7 +296,7 @@ class AddZoneMasterController extends BaseController
                 // Otherwise, ensure it's a valid integer
                 $template_id = filter_var($zoneTemplateInput, FILTER_VALIDATE_INT);
                 // Get the list of valid template IDs
-                $templates = $zone_templates->getListZoneTempl($_SESSION['userid']);
+                $templates = $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]);
                 $valid_template_ids = array_column($templates, 'id');
                 $zone_template_value = ($template_id !== false && in_array($template_id, $valid_template_ids)) ?
                     $template_id : 'none';
@@ -315,11 +316,11 @@ class AddZoneMasterController extends BaseController
                 // Verify that the owner ID exists among valid users
                 $valid_users = UserManager::showUsers($this->db);
                 $valid_owner_ids = array_column($valid_users, 'id');
-                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
             }
         } else {
             // No POST data, default to current user
-            $owner_value = $_SESSION['userid'];
+            $owner_value = $_SESSION[SessionKeys::USERID];
         }
 
         // Safely handle the domain type value. Catalog zone kinds (Producer/

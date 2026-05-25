@@ -69,6 +69,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditController extends BaseController
@@ -231,7 +232,7 @@ class EditController extends BaseController
             // Check if this is a record addition (has name, content, type fields)
             if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
                 // Store the original form data before processing (in case validation fails)
-                $_SESSION['add_record_last_data'] = [
+                $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = [
                     'name' => $_POST['name'] ?? '',
                     'content' => $_POST['content'] ?? '',
                     'type' => $_POST['type'] ?? '',
@@ -246,11 +247,11 @@ class EditController extends BaseController
 
                     // If the record was added successfully, clear the stored data
                     if ($result) {
-                        unset($_SESSION['add_record_last_data']);
-                        unset($_SESSION['add_record_error']);
-                    } elseif (!$formData && isset($_SESSION['add_record_error'])) {
+                        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+                        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+                    } elseif (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
                         // Create form data from the session error data
-                        $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+                        $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
                     }
                 } else {
                     // This is a zone update operation, handle as before
@@ -263,8 +264,8 @@ class EditController extends BaseController
         }
 
         // If we have stored validation error data from a previous request, use it
-        if (!$formData && isset($_SESSION['add_record_last_data']) && isset($_SESSION['add_record_error'])) {
-            $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+        if (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]) && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
+            $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
         }
 
         // Permission levels - use zone-aware checking for group permission support
@@ -790,7 +791,7 @@ class EditController extends BaseController
 
         if (!$this->doValidateRequest($_POST)) {
             // Store validation error directly in session
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
                 'fieldError' => isset($_POST['content']) && !empty($_POST['content']) ? 'type' : 'content'
@@ -811,7 +812,7 @@ class EditController extends BaseController
         // This converts @ to zone apex and ensures proper zone suffix
         $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
         if ($zone_name_for_record === null) {
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Zone not found.'),
                 'fieldError' => ''
@@ -833,7 +834,7 @@ class EditController extends BaseController
                 $fieldWithError = $this->determineFieldWithError($errorMessage);
 
                 // Store validation error directly in session
-                $_SESSION['add_record_error'] = [
+                $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                     'error' => true,
                     'errorMessage' => $errorMessage,
                     'fieldError' => $fieldWithError
@@ -846,7 +847,7 @@ class EditController extends BaseController
             $fieldWithError = $this->determineFieldWithError($errorMessage);
 
             // Store validation error directly in session
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => $errorMessage,
                 'fieldError' => $fieldWithError
@@ -855,8 +856,8 @@ class EditController extends BaseController
         }
 
         // Clear session data when record is successfully created
-        unset($_SESSION['add_record_last_data']);
-        unset($_SESSION['add_record_error']);
+        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
 
         // Clear form data if it exists in the session
         if (isset($_POST['form_token'])) {
@@ -1022,14 +1023,14 @@ class EditController extends BaseController
     private function clearFormDataOnZoneChange(int $currentZoneId): void
     {
         // Check if we have a previously stored zone ID in session for form data
-        if (isset($_SESSION['add_record_zone_id']) && $_SESSION['add_record_zone_id'] != $currentZoneId) {
+        if (isset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]) && $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] != $currentZoneId) {
             // Zone has changed, clear the form data and error information
-            unset($_SESSION['add_record_last_data']);
-            unset($_SESSION['add_record_error']);
-            unset($_SESSION['add_record_zone_id']);
+            unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+            unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+            unset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
         }
 
         // Store the current zone ID for future comparisons
-        $_SESSION['add_record_zone_id'] = $currentZoneId;
+        $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] = $currentZoneId;
     }
 }

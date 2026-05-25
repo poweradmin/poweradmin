@@ -51,6 +51,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
+use Poweradmin\Domain\Service\SessionKeys;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -346,11 +347,11 @@ abstract class BaseController
         if ($apiUrl === '' || $apiKey === '') {
             return;
         }
-        $last = $_SESSION['pdns_version_last_attempt'] ?? 0;
+        $last = $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] ?? 0;
         if ((time() - (int) $last) < 60) {
             return;
         }
-        $_SESSION['pdns_version_last_attempt'] = time();
+        $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] = time();
         try {
             $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
             if ($apiClient !== null) {

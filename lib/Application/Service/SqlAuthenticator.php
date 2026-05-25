@@ -89,7 +89,7 @@ class SqlAuthenticator extends LoggingService
         // Get the client IP using the IpAddressRetriever
         $ipRetriever = new IpAddressRetriever($this->serverParams);
         $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
-        $username = $_SESSION["userlogin"] ?? '';
+        $username = $_SESSION[SessionKeys::USERLOGIN] ?? '';
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for user {username}', ['username' => $username]);
@@ -103,7 +103,7 @@ class SqlAuthenticator extends LoggingService
 
         $sessionKey = $this->configManager->get('security', 'session_key');
 
-        if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
+        if (!isset($_SESSION[SessionKeys::USERLOGIN]) || !isset($_SESSION[SessionKeys::USERPWD])) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
 
             $sessionEntity = new SessionEntity('', 'danger');
@@ -114,15 +114,15 @@ class SqlAuthenticator extends LoggingService
         }
 
         $encryptionService = new PasswordEncryptionService($sessionKey);
-        $sessionPassword = $encryptionService->decrypt($_SESSION['userpwd']);
+        $sessionPassword = $encryptionService->decrypt($_SESSION[SessionKeys::USERPWD]);
 
         $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
-        $stmt->bindValue(':username', $_SESSION["userlogin"], PDO::PARAM_STR);
+        $stmt->bindValue(':username', $_SESSION[SessionKeys::USERLOGIN], PDO::PARAM_STR);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
-            $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             $this->handleFailedAuthentication(LoginFailureReason::NO_SUCH_USER);
 
             $this->logInfo('Authentication process ended due to no user found.');
@@ -135,7 +135,7 @@ class SqlAuthenticator extends LoggingService
         $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
         if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
-            $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             $this->handleFailedAuthentication(LoginFailureReason::WRONG_PASSWORD);
 
@@ -144,7 +144,7 @@ class SqlAuthenticator extends LoggingService
         }
 
         if ($rowObj['active'] != 1) {
-            $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             if (isset($_POST['authenticate'])) {
                 $this->userEventLogger->logFailedAuth(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             }
@@ -156,15 +156,15 @@ class SqlAuthenticator extends LoggingService
         }
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
-            $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             UserManager::updateUserPassword($this->connection, $rowObj["id"], $sessionPassword);
         }
 
         session_regenerate_id(true);
-        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
 
         $this->csrfTokenService->ensureTokenExists();
-        $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
 
         // Check if MFA is globally enabled
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
@@ -173,13 +173,13 @@ class SqlAuthenticator extends LoggingService
         $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
 
         if ($mfaRequired) {
-            $this->logInfo('MFA is required for user {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logInfo('MFA is required for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
 
             // Store user details temporarily for MFA verification - DO NOT set userid yet!
-            $_SESSION['pending_userid'] = $rowObj['id'];
-            $_SESSION['pending_name'] = $rowObj['fullname'];
-            $_SESSION['pending_email'] = $rowObj['email'];
-            $_SESSION['pending_auth_used'] = 'internal';
+            $_SESSION[SessionKeys::PENDING_USERID] = $rowObj['id'];
+            $_SESSION[SessionKeys::PENDING_NAME] = $rowObj['fullname'];
+            $_SESSION[SessionKeys::PENDING_EMAIL] = $rowObj['email'];
+            $_SESSION[SessionKeys::PENDING_AUTH_USED] = 'internal';
 
             // Use our centralized MFA session manager to set MFA required
             MfaSessionManager::setMfaRequired($rowObj['id']);
@@ -205,11 +205,11 @@ class SqlAuthenticator extends LoggingService
         } else {
             // No MFA required, proceed with full authentication
             // NOW it's safe to set userid since MFA is not required
-            $_SESSION['userid'] = $rowObj['id'];
-            $_SESSION['name'] = $rowObj['fullname'];
-            $_SESSION['email'] = $rowObj['email'];
-            $_SESSION['auth_used'] = 'internal';
-            $_SESSION['authenticated'] = true;
+            $_SESSION[SessionKeys::USERID] = $rowObj['id'];
+            $_SESSION[SessionKeys::NAME] = $rowObj['fullname'];
+            $_SESSION[SessionKeys::EMAIL] = $rowObj['email'];
+            $_SESSION[SessionKeys::AUTH_USED] = 'internal';
+            $_SESSION[SessionKeys::AUTHENTICATED] = true;
             $_SESSION[SessionKeys::MFA_REQUIRED] = false;
 
             if (isset($_POST['authenticate'])) {
@@ -220,7 +220,7 @@ class SqlAuthenticator extends LoggingService
             }
         }
 
-        $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
     }
 
     private function handleFailedAuthentication(?LoginFailureReason $reason = null): void
@@ -231,8 +231,8 @@ class SqlAuthenticator extends LoggingService
             $this->userEventLogger->logFailedAuth(AuthMethod::SQL, $reason);
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
         } else {
-            unset($_SESSION["userpwd"]);
-            unset($_SESSION["userlogin"]);
+            unset($_SESSION[SessionKeys::USERPWD]);
+            unset($_SESSION[SessionKeys::USERLOGIN]);
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
         }
         $this->authService->auth($sessionEntity);

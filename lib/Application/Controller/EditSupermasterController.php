@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditSupermasterController extends BaseController
@@ -133,7 +134,7 @@ class EditSupermasterController extends BaseController
             'old_master_ip' => htmlspecialchars($old_master_ip),
             'old_ns_name' => htmlspecialchars($old_ns_name),
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'session_uid' => $_SESSION['userid']
+            'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }
 }

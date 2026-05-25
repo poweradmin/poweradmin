@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class AddSupermasterController extends BaseController
 {
@@ -77,7 +78,7 @@ class AddSupermasterController extends BaseController
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'session_uid' => $_SESSION['userid']
+            'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }
 }

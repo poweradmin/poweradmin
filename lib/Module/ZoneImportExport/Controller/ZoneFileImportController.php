@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ZoneFileImportController extends BaseController
 {
@@ -186,7 +187,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Store parsed data in session for the execute step
-        $_SESSION['zone_import_data'] = [
+        $_SESSION[SessionKeys::ZONE_IMPORT_DATA] = [
             'origin' => $origin,
             'records' => json_encode(array_map(fn($r) => [
                 'name' => $r->name,
@@ -259,12 +260,12 @@ class ZoneFileImportController extends BaseController
 
     private function handleExecute(): void
     {
-        if (!isset($_SESSION['zone_import_data'])) {
+        if (!isset($_SESSION[SessionKeys::ZONE_IMPORT_DATA])) {
             $this->showError(_('Import session expired. Please upload the file again.'));
             return;
         }
 
-        $importData = $_SESSION['zone_import_data'];
+        $importData = $_SESSION[SessionKeys::ZONE_IMPORT_DATA];
         $records = json_decode($importData['records']);
         if (!is_array($records)) {
             $this->showError(_('Invalid import data. Please upload the file again.'));
@@ -455,7 +456,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Clean up session data
-        unset($_SESSION['zone_import_data']);
+        unset($_SESSION[SessionKeys::ZONE_IMPORT_DATA]);
 
         $this->showForm([
             'result' => true,
@@ -477,6 +478,6 @@ class ZoneFileImportController extends BaseController
 
     private function getCsrfToken(): string
     {
-        return $_SESSION['csrf_token'] ?? '';
+        return $_SESSION[SessionKeys::CSRF_TOKEN] ?? '';
     }
 }

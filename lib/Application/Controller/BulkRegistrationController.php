@@ -42,6 +42,7 @@ use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRegistrationController extends BaseController
@@ -225,7 +226,7 @@ class BulkRegistrationController extends BaseController
 
         $userGroupRepo = new DbUserGroupRepository($this->db);
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION['userid']);
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         $callerId = $this->userContextService->getLoggedInUserId();
         $canViewOthers = UserManager::verifyPermission($this->db, 'user_view_others');
@@ -247,14 +248,14 @@ class BulkRegistrationController extends BaseController
         }
 
         $this->render('bulk_registration.html', [
-            'userid' => $_SESSION['userid'],
+            'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $owner_value,
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => UserManager::showUsers($this->db),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,
             'added_domains' => $added_domains,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),

@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class AuditService
 {
@@ -39,7 +40,7 @@ class AuditService
 
     private function getContext(): string
     {
-        $username = $_SESSION['userlogin'] ?? 'unknown';
+        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
         return sprintf(
             'client_ip:%s user:%s',
             $this->ipRetriever->getClientIp(),

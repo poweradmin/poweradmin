@@ -303,7 +303,7 @@ class SearchController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => $editPermission,
             'delete_permission' => $deletePermission,
-            'user_id' => $_SESSION['userid'],
+            'user_id' => $_SESSION[SessionKeys::USERID],
             'whois_action_patterns' => $this->getModuleActionPatterns('whois_lookup'),
             'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
             'record_types' => $recordTypes,

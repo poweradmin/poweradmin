@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 
 class MfaVerifyController extends BaseController
@@ -156,7 +157,7 @@ class MfaVerifyController extends BaseController
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
                 $userMfa->getType()
             ));
         }
@@ -236,7 +237,7 @@ class MfaVerifyController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
                 $this->mfaService->getMfaType($userId) ?? 'unknown'
             ));
 

@@ -49,6 +49,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ListForwardZonesController extends BaseController
 {
@@ -153,9 +154,9 @@ class ListForwardZonesController extends BaseController
             $letter_start = 'a';
             if (isset($_GET['letter'])) {
                 $letter_start = htmlspecialchars($_GET['letter']);
-                $_SESSION['letter'] = htmlspecialchars($_GET['letter']);
-            } elseif (isset($_SESSION['letter'])) {
-                $letter_start = $_SESSION['letter'];
+                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($_GET['letter']);
+            } elseif (isset($_SESSION[SessionKeys::LETTER])) {
+                $letter_start = $_SESSION[SessionKeys::LETTER];
             }
         }
 
@@ -184,7 +185,7 @@ class ListForwardZonesController extends BaseController
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(
             $perm_view,
-            $_SESSION['userid'],
+            $_SESSION[SessionKeys::USERID],
             $effectiveLetterStart,
             $row_start,
             $iface_rowamount,
@@ -208,7 +209,7 @@ class ListForwardZonesController extends BaseController
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
             : ['has_direct' => false, 'group_ids' => []];
-        $username = $_SESSION['userlogin'];
+        $username = $_SESSION[SessionKeys::USERLOGIN];
 
         foreach ($zones as &$zone) {
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
@@ -261,9 +262,9 @@ class ListForwardZonesController extends BaseController
             'is_group_owner_allowed' => $isGroupOwnerAllowed,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION['userid']),
+            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
-            'session_userlogin' => $_SESSION['userlogin'],
+            'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),

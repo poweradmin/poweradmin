@@ -71,7 +71,7 @@ class LoginController extends BaseController
     public function run(): void
     {
         // If user is already authenticated, redirect to index
-        if (isset($_SESSION['userid'])) {
+        if (isset($_SESSION[SessionKeys::USERID])) {
             $this->redirect('/');
             return;
         }
@@ -105,7 +105,7 @@ class LoginController extends BaseController
         $showLanguageSelector = count($locales) > 1;
 
         $loginToken = $this->csrfTokenService->generateToken();
-        $_SESSION['login_token'] = $loginToken;
+        $_SESSION[SessionKeys::LOGIN_TOKEN] = $loginToken;
 
         // Get available external auth providers
         $oidcProviders = [];

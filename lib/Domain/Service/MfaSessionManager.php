@@ -53,11 +53,11 @@ class MfaSessionManager
      */
     public static function setMfaRequired(int $userId): void
     {
-        $_SESSION['user_id'] = $userId;
-        $_SESSION['mfa_status'] = 'required';
-        $_SESSION['authenticated'] = false;
+        $_SESSION[SessionKeys::USER_ID] = $userId;
+        $_SESSION[SessionKeys::MFA_STATUS] = 'required';
+        $_SESSION[SessionKeys::AUTHENTICATED] = false;
         $_SESSION[SessionKeys::MFA_REQUIRED] = true;
-        $_SESSION['lastmod'] = time();
+        $_SESSION[SessionKeys::LASTMOD] = time();
 
         self::getLogger()->debug('[MfaSessionManager] MFA required set for user: {user_id}', ['user_id' => $userId]);
 
@@ -73,15 +73,15 @@ class MfaSessionManager
      */
     public static function setMfaVerified(): void
     {
-        $_SESSION['mfa_status'] = 'verified';
-        $_SESSION['authenticated'] = true;
+        $_SESSION[SessionKeys::MFA_STATUS] = 'verified';
+        $_SESSION[SessionKeys::AUTHENTICATED] = true;
         $_SESSION[SessionKeys::MFA_REQUIRED] = false;
-        $_SESSION['lastmod'] = time();
+        $_SESSION[SessionKeys::LASTMOD] = time();
 
         // Add a special token to prevent redirect loops
-        $_SESSION['mfa_verification_token'] = hash('sha256', time() . $_SESSION['userid'] . 'verified' . random_bytes(16));
+        $_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN] = hash('sha256', time() . $_SESSION[SessionKeys::USERID] . 'verified' . random_bytes(16));
 
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $_SESSION[SessionKeys::USERID] ?? 0;
         self::getLogger()->debug('[MfaSessionManager] MFA verified set for user: {user_id}', ['user_id' => $userId]);
 
         // Save session immediately
@@ -97,19 +97,19 @@ class MfaSessionManager
     public static function isMfaRequired(): bool
     {
         // Special case: if we have a verification token, MFA is not required
-        if (isset($_SESSION['mfa_verification_token'])) {
+        if (isset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN])) {
             // Verification token indicates MFA is already verified
             return false;
         }
 
         // Check our simplified status flag first
-        if (isset($_SESSION['mfa_status']) && $_SESSION['mfa_status'] === 'verified') {
+        if (isset($_SESSION[SessionKeys::MFA_STATUS]) && $_SESSION[SessionKeys::MFA_STATUS] === 'verified') {
             return false;
         }
 
         // If authenticated explicitly true and mfa_required explicitly false, no need for MFA
         if (
-            isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true &&
+            isset($_SESSION[SessionKeys::AUTHENTICATED]) && $_SESSION[SessionKeys::AUTHENTICATED] === true &&
             isset($_SESSION[SessionKeys::MFA_REQUIRED]) && $_SESSION[SessionKeys::MFA_REQUIRED] === false
         ) {
             return false;
@@ -126,11 +126,11 @@ class MfaSessionManager
      */
     public static function reset(): void
     {
-        unset($_SESSION['mfa_status']);
+        unset($_SESSION[SessionKeys::MFA_STATUS]);
         unset($_SESSION[SessionKeys::MFA_REQUIRED]);
-        unset($_SESSION['mfa_verification_token']);
+        unset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN]);
 
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $_SESSION[SessionKeys::USERID] ?? 0;
         self::getLogger()->debug('[MfaSessionManager] Session variables reset for user: {user_id}', ['user_id' => $userId]);
 
         // Save session immediately

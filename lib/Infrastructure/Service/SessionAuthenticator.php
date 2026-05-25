@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
@@ -162,13 +163,13 @@ class SessionAuthenticator extends LoggingService
 
             if ($_POST['password'] != '') {
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
-                $_SESSION["userpwd"] = $passwordEncryptionService->encrypt($_POST['password']);
+                $_SESSION[SessionKeys::USERPWD] = $passwordEncryptionService->encrypt($_POST['password']);
                 $this->logDebug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
 
-                $_SESSION["userlogin"] = $_POST["username"];
+                $_SESSION[SessionKeys::USERLOGIN] = $_POST["username"];
                 $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
 
-                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
+                $_SESSION[SessionKeys::USERLANG] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
                 $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
 
                 $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);
@@ -184,8 +185,8 @@ class SessionAuthenticator extends LoggingService
         }
 
         // Check if the session hasn't expired yet.
-        if (isset($_SESSION["userid"]) && isset($_SESSION["lastmod"]) && $_SESSION["lastmod"] !== "" && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
-            $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
+        if (isset($_SESSION[SessionKeys::USERID]) && isset($_SESSION[SessionKeys::LASTMOD]) && $_SESSION[SessionKeys::LASTMOD] !== "" && ((time() - $_SESSION[SessionKeys::LASTMOD]) > $iface_expire)) {
+            $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION[SessionKeys::USERID]]);
 
             $auditService = new AuditService($this->db);
             $auditService->logSessionExpired();
@@ -193,39 +194,39 @@ class SessionAuthenticator extends LoggingService
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authService->logout($sessionEntity);
 
-            $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION["userid"]]);
+            $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION[SessionKeys::USERID]]);
             return;
         }
 
         // If the session hasn't expired yet, give our session a fresh new timestamp.
-        $_SESSION["lastmod"] = time();
-        $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+        $_SESSION[SessionKeys::LASTMOD] = time();
+        $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
 
         $authMethod = $this->getUserAuthMethod();
 
         switch ($authMethod) {
             case UserProvisioningService::AUTH_METHOD_OIDC:
-                $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
-                $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // SAML users are already authenticated, no need to verify password
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
-                    $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
+                    $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $this->ldapAuthenticator->authenticate();
                 } else {
-                    $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION["userlogin"]]);
+                    $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
                     $this->authService->logout($sessionEntity);
                 }
                 break;
             case 'sql':
             default:
-                if (isset($_SESSION["userlogin"])) {
-                    $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"]]);
+                if (isset($_SESSION[SessionKeys::USERLOGIN])) {
+                    $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 }
                 $this->sqlAuthenticator->authenticate();
                 break;
@@ -237,7 +238,7 @@ class SessionAuthenticator extends LoggingService
         // Check for MFA enforcement requirements after user agreement
         $this->checkMfaEnforcementRequirements();
 
-        $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+        $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
     }
 
     private function checkUserAgreementRequirements(): void
@@ -310,7 +311,7 @@ class SessionAuthenticator extends LoggingService
             $this->logInfo('MFA setup required for user {userid}', ['userid' => $userId]);
 
             // Set a session flag to indicate this is an enforced setup
-            $_SESSION['mfa_setup_enforced'] = true;
+            $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] = true;
 
             // Redirect to MFA setup page
             $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
@@ -364,16 +365,16 @@ class SessionAuthenticator extends LoggingService
 
     private function getUserAuthMethod(): string
     {
-        if (!isset($_SESSION["userlogin"])) {
+        if (!isset($_SESSION[SessionKeys::USERLOGIN])) {
             $this->logDebug('No user login found in session');
             return 'sql'; // Default to SQL if no user logged in
         }
 
         // First check how the current session was created
-        if (isset($_SESSION["auth_method_used"])) {
-            $sessionAuthMethod = $_SESSION["auth_method_used"];
+        if (isset($_SESSION[SessionKeys::AUTH_METHOD_USED])) {
+            $sessionAuthMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED];
             $this->logDebug('Using session auth method for user {username}: {authMethod}', [
-                'username' => $_SESSION["userlogin"],
+                'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'authMethod' => $sessionAuthMethod
             ]);
             return $sessionAuthMethod;
@@ -383,25 +384,25 @@ class SessionAuthenticator extends LoggingService
         try {
             $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
             $stmt->execute([
-                'username' => $_SESSION["userlogin"]
+                'username' => $_SESSION[SessionKeys::USERLOGIN]
             ]);
             $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($rowObj === false) {
-                $this->logWarning('User {username} not found in database', ['username' => $_SESSION["userlogin"]]);
+                $this->logWarning('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 return 'sql'; // Default to SQL if user not found
             }
 
             $authMethod = $rowObj['auth_method'] ?? 'sql';
             $this->logDebug('Using database auth method for user {username}: {authMethod}', [
-                'username' => $_SESSION["userlogin"],
+                'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'authMethod' => $authMethod
             ]);
 
             return $authMethod;
         } catch (\PDOException $e) {
             $this->logError('Database error while fetching auth method for user {username}: {error}', [
-                'username' => $_SESSION["userlogin"],
+                'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'error' => $e->getMessage()
             ]);
 

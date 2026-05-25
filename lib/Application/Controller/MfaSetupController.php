@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -376,11 +377,11 @@ class MfaSetupController extends BaseController
         $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db);
 
         // Check if this is an enforced setup from login redirect
-        $setupEnforced = isset($_SESSION['mfa_setup_enforced']) && $_SESSION['mfa_setup_enforced'] === true;
+        $setupEnforced = isset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] === true;
 
         // Clear the session flag once we've read it
         if ($setupEnforced) {
-            unset($_SESSION['mfa_setup_enforced']);
+            unset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]);
         }
 
         $this->render('mfa_setup.html', [

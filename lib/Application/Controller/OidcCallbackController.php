@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class OidcCallbackController extends BaseController
 {
@@ -110,11 +111,11 @@ class OidcCallbackController extends BaseController
         $this->oidcService->handleCallback();
 
         // Log successful OIDC login if session was established
-        if (isset($_SESSION['userid'])) {
+        if (isset($_SESSION[SessionKeys::USERID])) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:oidc_login_success',
                 $this->ipAddressRetriever->getClientIp(),
-                $_SESSION['userlogin'] ?? 'unknown'
+                $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown'
             ));
         }
     }

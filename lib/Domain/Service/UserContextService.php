@@ -46,33 +46,33 @@ class UserContextService
 
     public function getLoggedInUsername(): ?string
     {
-        return $_SESSION['userlogin'] ?? self::$apiUsername;
+        return $_SESSION[SessionKeys::USERLOGIN] ?? self::$apiUsername;
     }
 
     public function getLoggedInUserId(): ?int
     {
-        return $_SESSION['userid'] ?? self::$apiUserId;
+        return $_SESSION[SessionKeys::USERID] ?? self::$apiUserId;
     }
 
     public function getDisplayName(): ?string
     {
-        return $_SESSION['name'] ?? $this->getLoggedInUsername();
+        return $_SESSION[SessionKeys::NAME] ?? $this->getLoggedInUsername();
     }
 
     public function getAuthMethod(): ?string
     {
-        return $_SESSION['auth_used'] ?? null;
+        return $_SESSION[SessionKeys::AUTH_USED] ?? null;
     }
 
     public function getUserEmail(): ?string
     {
         // Check both OAuth and regular login email session keys
-        return $_SESSION['useremail'] ?? $_SESSION['email'] ?? null;
+        return $_SESSION[SessionKeys::USEREMAIL] ?? $_SESSION[SessionKeys::EMAIL] ?? null;
     }
 
     public function getOAuthAvatarUrl(): ?string
     {
-        return $_SESSION['oauth_avatar_url'] ?? null;
+        return $_SESSION[SessionKeys::OAUTH_AVATAR_URL] ?? null;
     }
 
     public function isAuthenticated(): bool
@@ -83,12 +83,12 @@ class UserContextService
 
     public function getUserLanguage(): ?string
     {
-        return $_SESSION['userlang'] ?? null;
+        return $_SESSION[SessionKeys::USERLANG] ?? null;
     }
 
     public function setUserLanguage(string $language): void
     {
-        $_SESSION['userlang'] = $language;
+        $_SESSION[SessionKeys::USERLANG] = $language;
     }
 
     public function hasSessionData(string $key): bool

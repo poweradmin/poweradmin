@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ZoneController extends InternalApiController
 {
@@ -107,7 +108,7 @@ class ZoneController extends InternalApiController
         // Check if user can view this zone
         if (!$this->hasPermission('zone_content_view_others')) {
             // Verify that the zone belongs to the current user
-            if (!$this->zoneRepository->zoneExists($zoneId, $_SESSION['userid'])) {
+            if (!$this->zoneRepository->zoneExists($zoneId, $_SESSION[SessionKeys::USERID])) {
                 $this->returnErrorResponse('Zone not found or access denied', 404);
                 return;
             }

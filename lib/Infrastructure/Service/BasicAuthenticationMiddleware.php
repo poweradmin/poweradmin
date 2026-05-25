@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\NullLogHandler;
@@ -195,8 +196,8 @@ class BasicAuthenticationMiddleware
         if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
                 // Set session for compatibility with legacy code (DomainManager)
-                $_SESSION['userid'] = $userModel->getId();
-                $_SESSION['auth_used'] = 'basic_auth';
+                $_SESSION[SessionKeys::USERID] = $userModel->getId();
+                $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
                 return $userModel->getId();
             }
             // LDAP users should not fall back to SQL authentication
@@ -206,8 +207,8 @@ class BasicAuthenticationMiddleware
         // Fall back to SQL authentication for non-LDAP users
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
             // Set session for compatibility with legacy code (DomainManager)
-            $_SESSION['userid'] = $userModel->getId();
-            $_SESSION['auth_used'] = 'basic_auth';
+            $_SESSION[SessionKeys::USERID] = $userModel->getId();
+            $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
             return $userModel->getId();
         }
 

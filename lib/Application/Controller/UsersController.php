@@ -36,6 +36,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class UsersController extends BaseController
 {
@@ -120,7 +121,7 @@ class UsersController extends BaseController
             'permissions' => $permissions,
             'perm_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
             'users' => $users,
-            'session_userid' => $_SESSION["userid"],
+            'session_userid' => $_SESSION[SessionKeys::USERID],
             'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
             'pagination' => $paginationPresenter->present(),
             'total_users' => $totalUsers,

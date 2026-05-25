@@ -23,6 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Service\SessionKeys;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use PoweradminInstall\Validators\CheckRequirementsValidator;
 use PoweradminInstall\Validators\ChooseLanguageValidator;
@@ -108,7 +109,7 @@ class Installer
         }
 
         $installToken = $this->csrfTokenService->generateToken();
-        $_SESSION['install_token'] = $installToken;
+        $_SESSION[SessionKeys::INSTALL_TOKEN] = $installToken;
 
         $currentLanguage = $this->initializeLocaleHandler();
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
@@ -215,7 +216,7 @@ class Installer
         $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
         $environment = $twigEnvironmentInitializer->initialize($currentLanguage);
 
-        $environment->addGlobal('install_token', $_SESSION['install_token'] ?? '');
+        $environment->addGlobal('install_token', $_SESSION[SessionKeys::INSTALL_TOKEN] ?? '');
 
         return $environment;
     }

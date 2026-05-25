@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ResetPasswordController extends BaseController
 {
@@ -189,7 +190,7 @@ class ResetPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION['reset_password_token']);
+            unset($_SESSION[SessionKeys::RESET_PASSWORD_TOKEN]);
         }
 
         $password = $_POST['password'] ?? '';
@@ -277,7 +278,7 @@ class ResetPasswordController extends BaseController
 
         // Generate a new token for password reset
         $resetPasswordToken = $this->csrfTokenService->generateToken();
-        $_SESSION['reset_password_token'] = $resetPasswordToken;
+        $_SESSION[SessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
 
         $this->render('reset_password.html', [
             'token' => $this->token,

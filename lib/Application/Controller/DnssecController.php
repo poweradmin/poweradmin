@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class DnssecController extends BaseController
 {
@@ -146,7 +147,7 @@ class DnssecController extends BaseController
             'record_count' => $dnsRecord->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'perm_edit' => $perm_edit,

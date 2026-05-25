@@ -44,6 +44,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
@@ -168,7 +169,7 @@ class AddZoneSlaveController extends BaseController
 
             $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
             if (!$isAdmin) {
-                $allowedGroups = $userGroupRepo->findByUserId($_SESSION['userid']);
+                $allowedGroups = $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
                 $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
                 $disallowed = array_values(array_diff($selected_groups, $allowedGroupIds));
                 if (!empty($disallowed)) {
@@ -237,11 +238,11 @@ class AddZoneSlaveController extends BaseController
                 // Verify that the owner ID exists among valid users
                 $valid_users = UserManager::showUsers($this->db);
                 $valid_owner_ids = array_column($valid_users, 'id');
-                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
             }
         } else {
             // No POST data, default to current user
-            $owner_value = $_SESSION['userid'];
+            $owner_value = $_SESSION[SessionKeys::USERID];
         }
 
         $is_post_request = !empty($this->request->getPostParams());
@@ -249,7 +250,7 @@ class AddZoneSlaveController extends BaseController
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = new DbUserGroupRepository($this->db);
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION['userid']);
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         // Fetch member counts for all groups in a single query
         $groupIds = array_map(fn($g) => $g->getId(), $allGroups);
@@ -268,7 +269,7 @@ class AddZoneSlaveController extends BaseController
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,
             'users' => UserManager::showUsers($this->db),
-            'session_user_id' => $_SESSION['userid'],
+            'session_user_id' => $_SESSION[SessionKeys::USERID],
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'domain_value' => $domain_value,
             'slave_master_value' => $slave_master_value,

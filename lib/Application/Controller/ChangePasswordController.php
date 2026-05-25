@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ChangePasswordController extends BaseController
@@ -84,7 +85,7 @@ class ChangePasswordController extends BaseController
     public function run(): void
     {
         // Check for external authentication methods that don't allow password changes
-        $authUsed = $_SESSION["auth_used"] ?? null;
+        $authUsed = $_SESSION[SessionKeys::AUTH_USED] ?? null;
 
         // Block external authentication users
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];

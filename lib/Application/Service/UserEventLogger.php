@@ -27,6 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class UserEventLogger
 {
@@ -59,7 +60,7 @@ class UserEventLogger
         $base = sprintf(
             'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"] ?? '',
+            $_SESSION[SessionKeys::USERLOGIN] ?? '',
             $operation,
             $authMethod->value
         );

@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class SamlCallbackController extends BaseController
 {
@@ -108,11 +109,11 @@ class SamlCallbackController extends BaseController
             $this->samlService->handleAssertion();
 
             // Log successful SAML login if session was established
-            if (isset($_SESSION['userid'])) {
+            if (isset($_SESSION[SessionKeys::USERID])) {
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:saml_login_success',
                     $this->ipAddressRetriever->getClientIp(),
-                    $_SESSION['userlogin'] ?? 'unknown'
+                    $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown'
                 ));
             }
         } catch (\Exception $e) {
@@ -134,7 +135,7 @@ class SamlCallbackController extends BaseController
 
     private function handleSingleLogout(): void
     {
-        $username = $_SESSION['userlogin'] ?? 'unknown';
+        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
 
         try {
             // Process SAML Single Logout

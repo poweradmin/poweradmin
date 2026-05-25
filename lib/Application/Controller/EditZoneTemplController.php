@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditZoneTemplController extends BaseController
@@ -291,7 +292,7 @@ class EditZoneTemplController extends BaseController
         $success = $zoneTemplate->addZoneTemplSaveAs(
             $_POST['templ_name'],
             $_POST['templ_descr'],
-            $_SESSION['userid'],
+            $_SESSION[SessionKeys::USERID],
             $records,
             $options,
             '' // Empty domain since we're not doing domain substitution

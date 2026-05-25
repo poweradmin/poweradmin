@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Controller for managing API keys
@@ -159,9 +160,9 @@ class ApiKeysController extends BaseController
         $this->render('api_keys.html', [
             'api_keys' => $apiKeys,
             'max_keys_per_user' => $this->config->get('api', 'max_keys_per_user', 5),
-            'current_keys_count' => $this->apiKeyRepository->countByUser($_SESSION['userid']),
+            'current_keys_count' => $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]),
             'can_add_more' => UserManager::verifyPermission($this->db, 'user_is_ueberuser') ||
-                $this->apiKeyRepository->countByUser($_SESSION['userid']) < $this->config->get('api', 'max_keys_per_user', 5)
+                $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]) < $this->config->get('api', 'max_keys_per_user', 5)
         ]);
     }
 

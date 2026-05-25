@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -394,7 +395,7 @@ class DnsWizardApiController extends InternalApiController
                 $backendProvider
             );
 
-            $userlogin = $_SESSION['userlogin'] ?? 'unknown';
+            $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
             $clientIp = $this->request->getClientIp() ?? '0.0.0.0';
 
             $success = $recordManager->createRecord(

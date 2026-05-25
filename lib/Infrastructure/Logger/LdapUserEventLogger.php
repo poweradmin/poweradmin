@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class LdapUserEventLogger
 {
@@ -81,7 +82,7 @@ class LdapUserEventLogger
         $base = sprintf(
             'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"] ?? '',
+            $_SESSION[SessionKeys::USERLOGIN] ?? '',
             $operation,
             AuthMethod::LDAP->value
         );

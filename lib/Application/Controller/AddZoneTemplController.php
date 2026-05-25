@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneTemplController extends BaseController
@@ -63,7 +64,7 @@ class AddZoneTemplController extends BaseController
     private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
@@ -87,14 +88,14 @@ class AddZoneTemplController extends BaseController
         }
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        if ($zoneTemplate->addZoneTempl($_POST, $_SESSION['userid'])) {
+        if ($zoneTemplate->addZoneTempl($_POST, $_SESSION[SessionKeys::USERID])) {
             $auditService = new AuditService($this->db);
             $auditService->logZoneTemplateAdd($_POST['templ_name'] ?? '');
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('/zones/templates');
         } else {
             $this->render('add_zone_templ.html', [
-                'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+                'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
                 'templ_name' => htmlspecialchars($_POST['templ_name']),
                 'templ_descr' => htmlspecialchars($_POST['templ_descr']),
                 'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser')
