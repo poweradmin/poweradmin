@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 
@@ -112,6 +113,89 @@ class ZoneSortingServiceTest extends TestCase
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $sortDirection);
+    }
+
+    #[Test]
+    public function postSortChoiceTakesPrecedenceOverStaleGetParam(): void
+    {
+        // Regression: SearchController posts a hidden zone_sort_by field on every
+        // header click. If a `?zone_sort_by=...` was ever appended to the URL it
+        // must not mask the new POSTed value, or sort headers stop working.
+        $_GET['zone_sort_by'] = 'name';
+        $_GET['zone_sort_by_direction'] = 'ASC';
+        $_POST['zone_sort_by'] = 'type';
+        $_POST['zone_sort_by_direction'] = 'desc';
+
+        [$sortBy, $direction] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
+
+        $this->assertSame('type', $sortBy);
+        $this->assertSame('DESC', $direction);
+    }
+
+    #[Test]
+    public function getZoneSortOrderHonoursCustomSessionKey(): void
+    {
+        $_GET['zone_sort_by'] = 'type';
+        $_GET['zone_sort_by_direction'] = 'desc';
+
+        [$sortBy, $direction] = $this->service->getZoneSortOrder(
+            'zone_sort_by',
+            ['name', 'type'],
+            SessionKeys::SEARCH_ZONE_SORT_BY
+        );
+
+        $this->assertSame('type', $sortBy);
+        $this->assertSame('DESC', $direction);
+        $this->assertSame('type', $_SESSION[SessionKeys::SEARCH_ZONE_SORT_BY]);
+        $this->assertSame('DESC', $_SESSION[SessionKeys::SEARCH_ZONE_SORT_BY . '_direction']);
+        // Search bucket must not leak into the list-zones bucket - that isolation
+        // is what prevents the historical "ORDER BY domains.owner" crash.
+        $this->assertArrayNotHasKey(SessionKeys::LIST_ZONE_SORT_BY, $_SESSION);
+    }
+
+    #[Test]
+    public function getZoneSortOrderReadsSessionFromCustomKey(): void
+    {
+        $_SESSION[SessionKeys::SEARCH_RECORD_SORT_BY] = 'prio';
+        $_SESSION[SessionKeys::SEARCH_RECORD_SORT_BY . '_direction'] = 'DESC';
+        // Stale list-zones value must be ignored when reading the search bucket.
+        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
+
+        [$sortBy, $direction] = $this->service->getZoneSortOrder(
+            'record_sort_by',
+            ['name', 'type', 'prio'],
+            SessionKeys::SEARCH_RECORD_SORT_BY
+        );
+
+        $this->assertSame('prio', $sortBy);
+        $this->assertSame('DESC', $direction);
+    }
+
+    #[Test]
+    public function getZoneSortOrderFallsBackToDefaultWhenSessionValueDisallowed(): void
+    {
+        // Stored sort column is no longer in allowedValues (e.g. column hidden).
+        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'count_records';
+
+        [$sortBy] = $this->service->getZoneSortOrder(
+            'zone_sort_by',
+            ['name', 'type']
+        );
+
+        $this->assertSame('name', $sortBy);
+    }
+
+    #[Test]
+    public function getZoneSortOrderRespectsCustomDefaultSortBy(): void
+    {
+        [$sortBy] = $this->service->getZoneSortOrder(
+            'zone_sort_by',
+            ['type', 'name'],
+            SessionKeys::LIST_ZONE_SORT_BY,
+            'type'
+        );
+
+        $this->assertSame('type', $sortBy);
     }
 
     #[Test]

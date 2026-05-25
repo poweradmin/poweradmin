@@ -42,6 +42,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -51,6 +52,14 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListForwardZonesController extends BaseController
 {
+    private ZoneSortingService $zoneSortingService;
+
+    public function __construct(array $request, bool $authenticate = true)
+    {
+        parent::__construct($request, $authenticate);
+        $this->zoneSortingService = new ZoneSortingService();
+    }
+
     public function run(): void
     {
         $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
@@ -170,7 +179,7 @@ class ListForwardZonesController extends BaseController
             $allowedSort[] = 'group';
         }
 
-        list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', $allowedSort);
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', $allowedSort);
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(
@@ -293,37 +302,5 @@ class ListForwardZonesController extends BaseController
         $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/forward?start={PageNumber}');
 
         return $presenter->present();
-    }
-
-    public function getZoneSortOrder(string $name, array $allowedValues): array
-    {
-        $zone_sort_by = 'name';
-        $zone_sort_direction = 'ASC';
-
-        if (isset($_GET[$name]) && preg_match("/^[a-z_]+$/", $_GET[$name])) {
-            $zone_sort_by = htmlspecialchars($_GET[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET[$name]);
-        } elseif (isset($_POST[$name]) && preg_match("/^[a-z_]+$/", $_POST[$name])) {
-            $zone_sort_by = htmlspecialchars($_POST[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST[$name]);
-        } elseif (isset($_SESSION['list_zone_sort_by'])) {
-            $zone_sort_by = $_SESSION['list_zone_sort_by'];
-        }
-
-        if (!in_array($zone_sort_by, $allowedValues)) {
-            $zone_sort_by = 'name';
-        }
-
-        if (isset($_GET[$name . '_direction']) && in_array(strtoupper($_GET[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_GET[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_GET[$name . '_direction']);
-        } elseif (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_POST[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_POST[$name . '_direction']);
-        } elseif (isset($_SESSION['list_zone_sort_by_direction'])) {
-            $zone_sort_direction = $_SESSION['list_zone_sort_by_direction'];
-        }
-
-        return [$zone_sort_by, $zone_sort_direction];
     }
 }

@@ -45,47 +45,58 @@ class ZoneSortingService
     }
 
     /**
-     * Get zone sort order from session/request
+     * Get zone sort order from session/request. Callers pass distinct
+     * $sessionKey values (see {@see SessionKeys}) to keep buckets isolated.
      *
-     * @param string $name Parameter name
+     * @param string $name Parameter name read from $_GET/$_POST
      * @param array $allowedValues Allowed sort values
+     * @param string $sessionKey Session bucket (direction stored under $sessionKey . '_direction')
+     * @param string $defaultSortBy Fallback sort column when nothing valid is supplied
      * @return array [sortBy, sortDirection]
      */
-    public function getZoneSortOrder(string $name, array $allowedValues): array
-    {
-        $zone_sort_by = $this->resolveSortBy($name)
-            ?? $this->userContextService->getSessionData('list_zone_sort_by')
-            ?? 'name';
+    public function getZoneSortOrder(
+        string $name,
+        array $allowedValues,
+        string $sessionKey = SessionKeys::LIST_ZONE_SORT_BY,
+        string $defaultSortBy = 'name'
+    ): array {
+        $directionSessionKey = $sessionKey . '_direction';
+
+        $zone_sort_by = $this->resolveSortBy($name, $sessionKey)
+            ?? $this->userContextService->getSessionData($sessionKey)
+            ?? $defaultSortBy;
 
         if (!in_array($zone_sort_by, $allowedValues)) {
-            $zone_sort_by = 'name';
+            $zone_sort_by = $defaultSortBy;
         }
 
-        $zone_sort_direction = $this->resolveSortDirection($name . '_direction')
-            ?? $this->userContextService->getSessionData('list_zone_sort_by_direction')
+        $zone_sort_direction = $this->resolveSortDirection($name . '_direction', $directionSessionKey)
+            ?? $this->userContextService->getSessionData($directionSessionKey)
             ?? 'ASC';
 
         return [$zone_sort_by, $zone_sort_direction];
     }
 
-    private function resolveSortBy(string $name): ?string
+    private function resolveSortBy(string $name, string $sessionKey): ?string
     {
-        foreach ([$_GET[$name] ?? null, $_POST[$name] ?? null] as $candidate) {
+        // POST first so a fresh form submission overrides any stale `?sort=` left
+        // in the URL bar; list views are GET-only so this swap is a no-op for them.
+        foreach ([$_POST[$name] ?? null, $_GET[$name] ?? null] as $candidate) {
             if ($candidate !== null && preg_match("/^[a-z_]+$/", $candidate)) {
                 $value = htmlspecialchars($candidate);
-                $this->userContextService->setSessionData('list_zone_sort_by', $value);
+                $this->userContextService->setSessionData($sessionKey, $value);
                 return $value;
             }
         }
         return null;
     }
 
-    private function resolveSortDirection(string $key): ?string
+    private function resolveSortDirection(string $key, string $sessionKey): ?string
     {
-        foreach ([$_GET[$key] ?? null, $_POST[$key] ?? null] as $candidate) {
+        foreach ([$_POST[$key] ?? null, $_GET[$key] ?? null] as $candidate) {
             if ($candidate !== null && in_array(strtoupper($candidate), ['ASC', 'DESC'])) {
                 $value = strtoupper($candidate);
-                $this->userContextService->setSessionData('list_zone_sort_by_direction', $value);
+                $this->userContextService->setSessionData($sessionKey, $value);
                 return $value;
             }
         }
@@ -137,10 +148,10 @@ class ZoneSortingService
     {
         if (isset($_GET['reverse_type'])) {
             $reverse_zone_type = htmlspecialchars($_GET['reverse_type']);
-            $this->userContextService->setSessionData('reverse_zone_type', $reverse_zone_type);
+            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $reverse_zone_type);
             return $reverse_zone_type;
         }
 
-        return $this->userContextService->getSessionData('reverse_zone_type') ?? 'all';
+        return $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE) ?? 'all';
     }
 }

@@ -37,6 +37,8 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -44,6 +46,14 @@ use Poweradmin\Module\ModuleRegistry;
 
 class SearchController extends BaseController
 {
+    private ZoneSortingService $zoneSortingService;
+
+    public function __construct(array $request, bool $authenticate = true)
+    {
+        parent::__construct($request, $authenticate);
+        $this->zoneSortingService = new ZoneSortingService();
+    }
+
     public function run(): void
     {
         $this->checkPermission('search', _("You do not have the permission to perform searches."));
@@ -70,13 +80,16 @@ class SearchController extends BaseController
         $searchResultRecords = [];
         $records_page = 1;
 
-        list($zone_sort_by, $zone_sort_direction) = $this->getSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'fullname']);
-        list($record_sort_by, $record_sort_direction) = $this->getSortOrder('record_sort_by', ['name', 'type', 'prio', 'content', 'ttl', 'disabled']);
-
-        $_SESSION['zone_sort_by'] = $zone_sort_by;
-        $_SESSION['zone_sort_by_direction'] = $zone_sort_direction;
-        $_SESSION['record_sort_by'] = $record_sort_by;
-        $_SESSION['record_sort_by_direction'] = $record_sort_direction;
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+            'zone_sort_by',
+            ['name', 'type', 'count_records', 'fullname'],
+            SessionKeys::SEARCH_ZONE_SORT_BY
+        );
+        list($record_sort_by, $record_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+            'record_sort_by',
+            ['name', 'type', 'prio', 'content', 'ttl', 'disabled'],
+            SessionKeys::SEARCH_RECORD_SORT_BY
+        );
 
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
@@ -468,26 +481,6 @@ class SearchController extends BaseController
         }
         $zoneGroupIds = $zoneGroupMap[$domainId] ?? [];
         return !empty(array_intersect($permissionSources['group_ids'], $zoneGroupIds));
-    }
-
-    private function getSortOrder(string $name, array $allowedValues): array
-    {
-        $sortOrder = 'name';
-        $sortDirection = 'ASC';
-
-        if (isset($_POST[$name]) && in_array($_POST[$name], $allowedValues)) {
-            $sortOrder = $_POST[$name];
-        } elseif (isset($_SESSION[$name]) && in_array($_SESSION[$name], $allowedValues)) {
-            $sortOrder = $_SESSION[$name];
-        }
-
-        if (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
-            $sortDirection = strtoupper($_POST[$name . '_direction']);
-        } elseif (isset($_SESSION[$name . '_direction']) && in_array(strtoupper($_SESSION[$name . '_direction']), ['ASC', 'DESC'])) {
-            $sortDirection = strtoupper($_SESSION[$name . '_direction']);
-        }
-
-        return [$sortOrder, $sortDirection];
     }
 
     /**
