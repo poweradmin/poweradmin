@@ -379,6 +379,63 @@ class DbApiKeyRepositoryTest extends TestCase
         $this->assertNotNull($result->getExpiresAt());
     }
 
+    // ========== findBySecretKey tests ==========
+
+    #[Test]
+    public function testFindBySecretKeyReturnsApiKeyOnExactMatch(): void
+    {
+        $secret = 'pwa_match_secret_key_abcdef';
+
+        $scanStmt = $this->createMock(PDOStatement::class);
+        $scanStmt->method('fetch')
+            ->willReturnOnConsecutiveCalls(
+                ['id' => 1, 'name' => 'Other', 'secret_key' => 'pwa_other_secret_key_zzz999'],
+                ['id' => 7, 'name' => 'Match', 'secret_key' => $secret],
+                false,
+            );
+
+        $fullStmt = $this->createMock(PDOStatement::class);
+        $fullStmt->method('execute')->willReturn(true);
+        $fullStmt->method('fetch')->willReturn($this->createApiKeyDbRow([
+            'id' => 7,
+            'name' => 'Match',
+            'secret_key' => $secret,
+        ]));
+
+        $this->db->method('query')->willReturn($scanStmt);
+        $this->db->method('prepare')->willReturn($fullStmt);
+
+        $result = $this->repository->findBySecretKey($secret);
+
+        $this->assertInstanceOf(ApiKey::class, $result);
+        $this->assertSame(7, $result->getId());
+    }
+
+    #[Test]
+    public function testFindBySecretKeyRejectsSameLengthWrongSecret(): void
+    {
+        $stored = 'pwa_match_secret_key_abcdef';
+        $submitted = 'pwa_match_secret_key_abcdeg'; // same length, last char differs
+
+        $scanStmt = $this->createMock(PDOStatement::class);
+        $scanStmt->method('fetch')
+            ->willReturnOnConsecutiveCalls(
+                ['id' => 7, 'name' => 'Stored', 'secret_key' => $stored],
+                false,
+            );
+
+        $fallbackStmt = $this->createMock(PDOStatement::class);
+        $fallbackStmt->method('execute')->willReturn(true);
+        // Fallback prepared statement also finds nothing.
+        $fallbackStmt->method('fetch')->willReturn(false);
+        $fallbackStmt->method('fetchColumn')->willReturn(1);
+
+        $this->db->method('query')->willReturn($scanStmt);
+        $this->db->method('prepare')->willReturn($fallbackStmt);
+
+        $this->assertNull($this->repository->findBySecretKey($submitted));
+    }
+
     #[Test]
     public function testFindByIdHandlesNullCreatedBy(): void
     {

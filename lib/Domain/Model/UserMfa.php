@@ -238,14 +238,12 @@ class UserMfa
     {
         $codes = $this->getRecoveryCodesAsArray();
 
-        if (in_array($code, $codes)) {
-            // Remove the used code
-            $key = array_search($code, $codes);
-            unset($codes[$key]);
-
-            // Update the recovery codes
-            $this->setRecoveryCodes(array_values($codes));
-            return true;
+        foreach ($codes as $key => $stored) {
+            if (is_string($stored) && hash_equals($stored, $code)) {
+                unset($codes[$key]);
+                $this->setRecoveryCodes(array_values($codes));
+                return true;
+            }
         }
 
         return false;

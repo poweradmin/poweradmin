@@ -488,6 +488,90 @@ class PasswordResetSecurityTest extends TestCase
     }
 
     /**
+     * Valid SQL-user token must successfully validate.
+     */
+    public function testValidateTokenReturnsUserForMatchingSqlToken(): void
+    {
+        $token = str_repeat('a', 64);
+        $email = 'sql@example.com';
+
+        $this->tokenRepository->method('findActiveTokens')
+            ->willReturn([
+                [
+                    'id' => 10,
+                    'token' => $token,
+                    'email' => $email,
+                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                    'used' => 0,
+                ],
+            ]);
+
+        $this->userRepository->method('getUserByEmail')
+            ->with($email)
+            ->willReturn([
+                'id' => 7,
+                'username' => 'sql',
+                'email' => $email,
+                'auth_method' => 'sql',
+            ]);
+
+        $result = $this->passwordResetService->validateToken($token);
+        $this->assertIsArray($result);
+        $this->assertSame(10, $result['token_id']);
+        $this->assertSame(7, $result['user']['id']);
+    }
+
+    /**
+     * Wrong token of the same length must NOT validate.
+     * Pins the timing-safe comparison contract.
+     */
+    public function testValidateTokenRejectsSameLengthWrongToken(): void
+    {
+        $storedToken = str_repeat('a', 64);
+        $submittedToken = str_repeat('a', 63) . 'b';
+
+        $this->tokenRepository->method('findActiveTokens')
+            ->willReturn([
+                [
+                    'id' => 11,
+                    'token' => $storedToken,
+                    'email' => 'sql@example.com',
+                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                    'used' => 0,
+                ],
+            ]);
+
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+
+        $result = $this->passwordResetService->validateToken($submittedToken);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Wrong token of different length must also be rejected.
+     */
+    public function testValidateTokenRejectsDifferentLengthToken(): void
+    {
+        $storedToken = str_repeat('a', 64);
+
+        $this->tokenRepository->method('findActiveTokens')
+            ->willReturn([
+                [
+                    'id' => 12,
+                    'token' => $storedToken,
+                    'email' => 'sql@example.com',
+                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                    'used' => 0,
+                ],
+            ]);
+
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+
+        $result = $this->passwordResetService->validateToken('short-token');
+        $this->assertNull($result);
+    }
+
+    /**
      * Test canUserResetPassword method returns correct results
      */
     public function testCanUserResetPasswordMethod(): void

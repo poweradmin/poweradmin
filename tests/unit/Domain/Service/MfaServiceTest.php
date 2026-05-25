@@ -572,6 +572,69 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testVerifyCodeRejectsSameLengthWrongEmailCode(): void
+    {
+        $userId = 1;
+        $storedCode = '123456';
+        $wrongCode = '123455';
+        $metadata = json_encode([
+            'expires_at' => time() + 600,
+            'used' => false,
+        ]);
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn($storedCode);
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationData')->willReturn($metadata);
+
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['mail', 'enabled', false, true],
+            ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->userMfaRepository->expects($this->never())->method('save');
+
+        $this->assertFalse($this->service->verifyCode($userId, $wrongCode));
+    }
+
+    #[Test]
+    public function testVerifyCodeAcceptsEmailCodeWithSurroundingWhitespace(): void
+    {
+        $userId = 1;
+        $storedCode = '123456';
+        $metadata = json_encode([
+            'expires_at' => time() + 600,
+            'used' => false,
+        ]);
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn($storedCode);
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationData')->willReturn($metadata);
+
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['mail', 'enabled', false, true],
+            ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->userMfaRepository->expects($this->once())
+            ->method('save')
+            ->willReturn($userMfa);
+
+        $this->assertTrue($this->service->verifyCode($userId, "  $storedCode  "));
+    }
+
+    #[Test]
     public function testVerifyCodeReturnsFalseForInvalidTotpSecretFormat(): void
     {
         $userId = 1;
