@@ -375,7 +375,10 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
-        $sort_by_qualified = $records_table . '.' . $sort_by;
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $sort_by_qualified = $sort_by === 'name'
+            ? SortHelper::getRecordSortOrder($records_table, $driver, $sort_direction)
+            : $records_table . '.' . $sort_by . ' ' . $sort_direction;
 
         $params = [':zone_id' => $zone_id];
 
@@ -405,8 +408,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         }
 
         $links_table = 'record_comment_links';
-        $dbType = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = DbCompat::castToString($dbType, "$records_table.id");
+        $castId = DbCompat::castToString($driver, "$records_table.id");
         $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
                  $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
@@ -439,9 +441,8 @@ class SqlRecordRepository implements RecordRepositoryInterface
         $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;
 
-        $query .= " ORDER BY $sort_by_qualified $sort_direction";
+        $query .= " ORDER BY $sort_by_qualified";
 
-        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
         if ($driver === 'sqlite') {
             $query .= " LIMIT $row_amount OFFSET $row_start";
         } else {
