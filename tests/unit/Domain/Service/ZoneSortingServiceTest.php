@@ -75,15 +75,15 @@ class ZoneSortingServiceTest extends TestCase
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $sortDirection);
-        $this->assertSame('type', $_SESSION['list_zone_sort_by']);
-        $this->assertSame('DESC', $_SESSION['list_zone_sort_by_direction']);
+        $this->assertSame('type', $_SESSION[SessionKeys::LIST_ZONE_SORT_BY]);
+        $this->assertSame('DESC', $_SESSION[SessionKeys::LIST_ZONE_SORT_BY . '_direction']);
     }
 
     #[Test]
     public function getZoneSortOrderFallsBackToSessionWhenNoRequestParam(): void
     {
-        $_SESSION['list_zone_sort_by'] = 'type';
-        $_SESSION['list_zone_sort_by_direction'] = 'DESC';
+        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
+        $_SESSION[SessionKeys::LIST_ZONE_SORT_BY . '_direction'] = 'DESC';
 
         [$sortBy, $sortDirection] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
 
@@ -206,13 +206,13 @@ class ZoneSortingServiceTest extends TestCase
         $filter = $this->service->getReverseZoneTypeFilter();
 
         $this->assertSame('ipv4', $filter);
-        $this->assertSame('ipv4', $_SESSION['reverse_zone_type']);
+        $this->assertSame('ipv4', $_SESSION[SessionKeys::REVERSE_ZONE_TYPE]);
     }
 
     #[Test]
     public function getReverseZoneTypeFilterReadsFromSessionWhenNoRequestParam(): void
     {
-        $_SESSION['reverse_zone_type'] = 'ipv6';
+        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
 
         $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter());
     }
