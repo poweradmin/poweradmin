@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Utility;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 
@@ -47,9 +48,7 @@ class LanguageCodeTest extends TestCase
         $this->assertNull(LanguageCode::getByLocale('xx_YY'));
     }
 
-    /**
-     * @dataProvider rtlLocales
-     */
+    #[DataProvider('rtlLocales')]
     public function testIsRtlReturnsTrueForRtlLocales(string $locale): void
     {
         $this->assertTrue(LanguageCode::isRtl($locale));
@@ -67,9 +66,7 @@ class LanguageCodeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider ltrLocales
-     */
+    #[DataProvider('ltrLocales')]
     public function testIsRtlReturnsFalseForLtrLocales(string $locale): void
     {
         $this->assertFalse(LanguageCode::isRtl($locale));
