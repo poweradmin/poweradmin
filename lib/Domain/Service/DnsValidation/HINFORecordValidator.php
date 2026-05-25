@@ -148,6 +148,20 @@ class HINFORecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
+     * Check whether the value contains any of the standard tokens as a whole word.
+     *
+     * @param string $value Field value (already stripped of quotes)
+     * @param string[] $tokens Standard tokens to look for
+     */
+    private function containsStandardToken(string $value, array $tokens): bool
+    {
+        $escaped = array_map(static fn(string $token): string => preg_quote($token, '/'), $tokens);
+        $pattern = '/\b(?:' . implode('|', $escaped) . ')\b/i';
+
+        return preg_match($pattern, $value) === 1;
+    }
+
+    /**
      * Validate HINFO record content format according to RFC 1035
      *
      * @param string $content HINFO record content
@@ -230,29 +244,13 @@ class HINFORecordValidator implements DnsRecordValidatorInterface
             }
         }
 
-        // Recommend standard values as per RFC 1700 if non-standard values are used
+        // Recommend standard values as per RFC 1700 if non-standard values are used.
+        // Match on word boundaries so 'ARM' in 'ALARMING' or 'IOS' in 'BIOS' don't count as standard.
         $standardCPUs = ['VAX', 'ALPHA', 'PENTIUM', 'INTEL-386', 'INTEL-486', 'INTEL', 'AMD64', 'ARM', 'SPARC', 'MIPS', 'PPC', 'IBM370', 'IBM-PC', 'PC', 'PC/AT', 'CRAY'];
         $standardOSs = ['UNIX', 'LINUX', 'WIN32', 'WINDOWS', 'MACOS', 'IOS', 'ANDROID', 'DOS', 'PLAN9', 'BSD', 'OS/2', 'OSX', 'VMS', 'VM/CMS', 'MVS'];
 
-        $cpuUppercase = strtoupper($cpuValue);
-        $osUppercase = strtoupper($osValue);
-
-        $foundStandardCPU = false;
-        $foundStandardOS = false;
-
-        foreach ($standardCPUs as $stdCPU) {
-            if (strpos($cpuUppercase, $stdCPU) !== false) {
-                $foundStandardCPU = true;
-                break;
-            }
-        }
-
-        foreach ($standardOSs as $stdOS) {
-            if (strpos($osUppercase, $stdOS) !== false) {
-                $foundStandardOS = true;
-                break;
-            }
-        }
+        $foundStandardCPU = $this->containsStandardToken($cpuValue, $standardCPUs);
+        $foundStandardOS = $this->containsStandardToken($osValue, $standardOSs);
 
         if (!$foundStandardCPU) {
             $warnings[] = _('CPU type does not contain any standard values. Consider using a standard CPU type for better interoperability.');

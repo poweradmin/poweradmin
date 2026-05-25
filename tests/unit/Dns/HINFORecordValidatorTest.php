@@ -317,6 +317,26 @@ class HINFORecordValidatorTest extends BaseDnsTest
         $this->assertStringContainsString('OS type', $warningText);
     }
 
+    public function testValidateNonStandardValuesContainingStandardSubstringsStillWarn()
+    {
+        // 'ALARMING' contains 'ARM' as a substring; 'BIOS-CHIP' contains 'IOS'.
+        // Neither value is a standard CPU/OS, so the informational warning must fire.
+        $content = 'ALARMING BIOS-CHIP';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+
+        $warningText = implode(' ', $result->getWarnings());
+        $this->assertStringContainsString('CPU type does not contain any standard values', $warningText);
+        $this->assertStringContainsString('OS type does not contain any standard values', $warningText);
+    }
+
     public function testValidateWithTooLongField()
     {
         // RFC 1035 limits character strings to 255 octets
