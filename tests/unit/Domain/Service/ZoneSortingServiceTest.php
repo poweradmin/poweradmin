@@ -150,7 +150,7 @@ class ZoneSortingServiceTest extends TestCase
         $this->assertSame('DESC', $_SESSION[SessionKeys::SEARCH_ZONE_SORT_BY . '_direction']);
         // Search bucket must not leak into the list-zones bucket - that isolation
         // is what prevents the historical "ORDER BY domains.owner" crash.
-        $this->assertArrayNotHasKey(SessionKeys::LIST_ZONE_SORT_BY, $_SESSION);
+        $this->assertFalse(isset($_SESSION[SessionKeys::LIST_ZONE_SORT_BY]));
     }
 
     #[Test]
