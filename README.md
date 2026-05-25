@@ -7,10 +7,7 @@
 [![docker pulls](https://img.shields.io/docker/pulls/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 [![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
-[Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
-interface supports most of
-the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for
-DNSSEC operations.
+[Poweradmin](https://www.poweradmin.org) is a DNS administration tool for PowerDNS that can be driven through a friendly web UI, a REST API, or both at the same time. Use the UI for day-to-day operations, the API for scripts and infrastructure-as-code, or run completely headless after the initial setup - the same validation runs on every path. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for DNSSEC operations.
 
 ## Features
 
@@ -86,6 +83,8 @@ docker run -d \
 **Important**:
 - DB_TYPE environment variable is required (sqlite, mysql, pgsql)
 - No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
+
+**Want to drive PowerDNS from scripts instead of a browser?** Add `-e PA_API_ENABLED=true -e PA_API_DOCS_ENABLED=true` and follow the [Headless / API-First Quickstart](https://docs.poweradmin.org/getting-started/headless-quickstart/) - zero to scripted record updates in about five minutes.
 
 * **Docker Hub**: `poweradmin/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
