@@ -40,6 +40,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\PermissionService;
@@ -205,6 +206,18 @@ class EditRecordController extends BaseController
         }
         if (isset($postData['content']) && isset($postData['type'])) {
             $postData['content'] = DnsIdnService::convertContentToPunycode($postData['type'], $postData['content']);
+        }
+
+        // Let users type [SERIAL] in the SOA form; updateSOASerial() below bumps it from the current value.
+        if (
+            ($postData['type'] ?? '') === RecordType::SOA
+            && isset($postData['content'])
+            && str_contains($postData['content'], '[SERIAL]')
+        ) {
+            $postData['content'] = SOARecordManager::expandSerialPlaceholder(
+                $postData['content'],
+                $old_record_info['content'] ?? ''
+            );
         }
 
         // Normalize record name to full FQDN (always, regardless of display setting)

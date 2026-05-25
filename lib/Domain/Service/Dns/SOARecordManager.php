@@ -91,6 +91,34 @@ class SOARecordManager implements SOARecordManagerInterface
     }
 
     /**
+     * Replace a literal "[SERIAL]" in the serial field of a submitted SOA
+     * record with the current serial from the existing SOA record. The
+     * subsequent updateSOASerial() bump (see EditRecordController) then
+     * advances the value, preserving RFC 1982 monotonicity even if today's
+     * serial has already been incremented several times.
+     *
+     * Falls back to today's YYYYMMDD00 when no existing serial is available.
+     *
+     * @param string $newContent SOA content as submitted by the user
+     * @param string $oldContent Current SOA content from the zone (may be empty)
+     * @return string SOA content with [SERIAL] resolved to a numeric value
+     */
+    public static function expandSerialPlaceholder(string $newContent, string $oldContent): string
+    {
+        $fields = preg_split('/\s+/', trim($newContent));
+        if ($fields === false || !isset($fields[2]) || $fields[2] !== '[SERIAL]') {
+            return $newContent;
+        }
+
+        $oldSerial = self::getSOASerial($oldContent);
+        $fields[2] = ($oldSerial !== null && is_numeric($oldSerial))
+            ? $oldSerial
+            : date('Ymd') . '00';
+
+        return implode(' ', $fields);
+    }
+
+    /**
      * Get Next Date
      *
      * @param string $curr_date Current date in YYYYMMDD format

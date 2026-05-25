@@ -127,4 +127,65 @@ class SOARecordManagerTest extends TestCase
 
         date_default_timezone_set($originalTz);
     }
+
+    public function testExpandSerialPlaceholderUsesCurrentSerial(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [SERIAL] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        // Substitute with the EXISTING serial so the post-write updateSOASerial() bump preserves monotonicity.
+        $this->assertSame(
+            'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400',
+            $result
+        );
+    }
+
+    public function testExpandSerialPlaceholderFallsBackWhenOldContentIsEmpty(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [SERIAL] 7200 1800 1209600 86400';
+        $expectedPrefix = date('Ymd');
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, '');
+
+        $this->assertStringContainsString(' ' . $expectedPrefix . '00 ', $result);
+        $this->assertStringNotContainsString('[SERIAL]', $result);
+    }
+
+    public function testExpandSerialPlaceholderFallsBackWhenOldSerialIsNonNumeric(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [SERIAL] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com bogus 7200 1800 1209600 86400';
+        $expectedPrefix = date('Ymd');
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        $this->assertStringContainsString(' ' . $expectedPrefix . '00 ', $result);
+        $this->assertStringNotContainsString('[SERIAL]', $result);
+    }
+
+    public function testExpandSerialPlaceholderIsNoOpWhenSerialIsNotPlaceholder(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com 2026052410 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        $this->assertSame($newContent, $result);
+    }
+
+    public function testExpandSerialPlaceholderOnlyReplacesSerialField(): void
+    {
+        // [SERIAL] appearing in primary NS / hostmaster is left alone here - the validator catches it.
+        $newContent = '[NS1] hostmaster.example.com [SERIAL] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        $this->assertSame(
+            '[NS1] hostmaster.example.com 2026052405 7200 1800 1209600 86400',
+            $result
+        );
+    }
 }
