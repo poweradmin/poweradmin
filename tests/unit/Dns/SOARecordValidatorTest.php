@@ -222,4 +222,60 @@ class SOARecordValidatorTest extends TestCase
 
         $this->assertNotEmpty($result->getErrors());
     }
+
+    public function testSerialPlaceholderReachingValidatorReturnsHelpfulError()
+    {
+        // The web UI substitutes [SERIAL] before validation; if it ever reaches
+        // the validator (e.g. API submission), we must not pass it as numeric.
+        $content = "ns1.example.com hostmaster.example.com [SERIAL] 7200 1800 1209600 86400";
+
+        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
+        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $errors = $result->getErrors();
+        $this->assertNotEmpty($errors);
+        $this->assertStringContainsString('template', strtolower($errors[0]));
+        $this->assertStringContainsString('[SERIAL]', $errors[0]);
+    }
+
+    public function testSerialPlaceholderIsCaseSensitive()
+    {
+        // Templates document [SERIAL] in uppercase; lowercase is not recognized.
+        $content = "ns1.example.com hostmaster.example.com [serial] 7200 1800 1209600 86400";
+
+        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
+        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+    }
+
+    public function testTemplatePlaceholderInPrimaryNsReturnsHelpfulError()
+    {
+        $content = "[NS1] hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+
+        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
+        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $errors = $result->getErrors();
+        $this->assertNotEmpty($errors);
+        $this->assertStringContainsString('template', strtolower($errors[0]));
+        $this->assertStringContainsString('[NS1]', $errors[0]);
+    }
+
+    public function testTemplatePlaceholderInHostmasterReturnsHelpfulError()
+    {
+        $content = "ns1.example.com [HOSTMASTER] 2023122801 7200 1800 1209600 86400";
+
+        $this->validator->setSOAParams("hostmaster@example.com", "example.com");
+        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $errors = $result->getErrors();
+        $this->assertNotEmpty($errors);
+        $this->assertStringContainsString('template', strtolower($errors[0]));
+        $this->assertStringContainsString('[HOSTMASTER]', $errors[0]);
+    }
 }

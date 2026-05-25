@@ -178,6 +178,17 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             return ['isValid' => false, 'errors' => $errors];
         }
 
+        // Reject template placeholders - they're only valid in template definitions, not stored SOA content.
+        foreach ($fields as $field) {
+            if (preg_match('/\[[A-Z0-9_]+\]/', $field, $match)) {
+                $errors[] = sprintf(
+                    _('SOA contains the template placeholder %s. Use literal values; placeholders are only expanded when creating a zone from a template.'),
+                    $match[0]
+                );
+                return ['isValid' => false, 'errors' => $errors];
+            }
+        }
+
         // Validate primary nameserver
         $primaryNsResult = $this->hostnameValidator->validate($fields[0], false);
         if (!$primaryNsResult->isValid() || preg_match('/\.arpa\.?$/', $fields[0])) {
