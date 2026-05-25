@@ -35,6 +35,11 @@ final class SessionKeys
     public const SEARCH_RECORD_SORT_BY = 'record_sort_by';
     public const REVERSE_ZONE_TYPE = 'reverse_zone_type';
 
+    public const MFA_REQUIRED = 'mfa_required';
+
+    public const LOGIN_MESSAGE = 'message';
+    public const LOGIN_MESSAGE_TYPE = 'type';
+
     private function __construct()
     {
     }

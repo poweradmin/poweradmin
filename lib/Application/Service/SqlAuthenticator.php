@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -209,7 +210,7 @@ class SqlAuthenticator extends LoggingService
             $_SESSION['email'] = $rowObj['email'];
             $_SESSION['auth_used'] = 'internal';
             $_SESSION['authenticated'] = true;
-            $_SESSION['mfa_required'] = false;
+            $_SESSION[SessionKeys::MFA_REQUIRED] = false;
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);

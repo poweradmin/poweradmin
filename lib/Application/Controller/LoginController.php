@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
@@ -92,9 +93,9 @@ class LoginController extends BaseController
 
     private function getSessionMessages(): array
     {
-        $msg = $_SESSION['message'] ?? '';
-        $type = $_SESSION['type'] ?? '';
-        unset($_SESSION['message'], $_SESSION['type']);
+        $msg = $_SESSION[SessionKeys::LOGIN_MESSAGE] ?? '';
+        $type = $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] ?? '';
+        unset($_SESSION[SessionKeys::LOGIN_MESSAGE], $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE]);
         return [$msg, $type];
     }
 

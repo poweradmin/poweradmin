@@ -34,8 +34,8 @@ class SessionService
     public function endSession(): void
     {
         // Explicitly clear MFA-related session variables
-        if (isset($_SESSION['mfa_required'])) {
-            unset($_SESSION['mfa_required']);
+        if (isset($_SESSION[SessionKeys::MFA_REQUIRED])) {
+            unset($_SESSION[SessionKeys::MFA_REQUIRED]);
         }
 
         // Clear authentication status
@@ -68,7 +68,7 @@ class SessionService
 
     public function setSessionData(SessionEntity $sessionEntity): void
     {
-        $_SESSION['message'] = $sessionEntity->getMessage();
-        $_SESSION['type'] = $sessionEntity->getType();
+        $_SESSION[SessionKeys::LOGIN_MESSAGE] = $sessionEntity->getMessage();
+        $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] = $sessionEntity->getType();
     }
 }
