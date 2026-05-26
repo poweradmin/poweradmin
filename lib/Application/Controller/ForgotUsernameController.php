@@ -138,7 +138,7 @@ class ForgotUsernameController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $_POST['username_recovery_token'] ?? '';
 
-            if (!$this->csrfTokenService->validateToken($token, 'username_recovery_token')) {
+            if (!$this->csrfTokenService->validateToken($token, SessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,

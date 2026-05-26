@@ -123,7 +123,7 @@ class MfaVerifyController extends BaseController
         $mfaToken = $_POST['mfa_token'] ?? '';
 
         // Validate CSRF token for security
-        if (!$this->csrfTokenService->validateToken($mfaToken, 'mfa_token')) {
+        if (!$this->csrfTokenService->validateToken($mfaToken, SessionKeys::MFA_TOKEN)) {
             $this->logger->warning('[MfaVerifyController] Invalid CSRF token for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Invalid security token. Please try again.'), 'danger');
             return;

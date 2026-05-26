@@ -24,6 +24,7 @@ namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
@@ -52,7 +53,7 @@ class InstallSecurityService
             $token = $request->request->get('install_token');
             if (empty($token)) {
                 $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please start the installation from the beginning.';
-            } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {
+            } elseif (!$this->csrfTokenService->validateToken($token, SessionKeys::INSTALL_TOKEN)) {
                 $errors['csrf'] = 'Invalid Security Token: The provided token is invalid or has expired. Please start the installation from the beginning.';
             }
         }

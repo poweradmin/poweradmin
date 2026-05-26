@@ -130,7 +130,7 @@ class SessionAuthenticator extends LoggingService
         if (
             ($login_token_validation || $global_token_validation)
             && isset($_POST['authenticate'])
-            && !$this->csrfTokenService->validateToken($login_token, 'login_token')
+            && !$this->csrfTokenService->validateToken($login_token, SessionKeys::LOGIN_TOKEN)
         ) {
             $this->logWarning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
 

@@ -134,7 +134,7 @@ class ForgotPasswordController extends BaseController
         if ($this->config->get('security', 'global_token_validation', true)) {
             $token = $_POST['password_reset_token'] ?? '';
 
-            if (!$this->csrfTokenService->validateToken($token, 'password_reset_token')) {
+            if (!$this->csrfTokenService->validateToken($token, SessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
