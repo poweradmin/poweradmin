@@ -331,8 +331,8 @@ class ZoneTemplate
                     ':created_by' => $userid // Always set created_by to current user
                 ]);
 
-                // Get the new template ID
-                $zone_templ_id = $this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
 
                 // Add a default SOA record to the template
                 $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
@@ -777,7 +777,8 @@ class ZoneTemplate
                     ':created_by' => $userid
                 ]);
 
-                $zone_templ_id = $this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
 
                 // Check if the records include an SOA record
                 $hasSOA = false;

@@ -64,7 +64,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
 
-        $domainId = (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        $domainId = (int)$this->db->lastInsertId('domains_id_seq');
 
         if ($type === 'SLAVE' && $slaveMaster !== '') {
             $stmt = $this->db->prepare("UPDATE $domainsTable SET master = :master WHERE id = :id");
@@ -169,7 +170,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
         $stmt->execute();
 
-        return (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return (int)$this->db->lastInsertId('records_id_seq');
     }
 
     public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null
@@ -201,7 +203,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
                 $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
                 $stmt->execute();
 
-                $id = (int)$this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $id = (int)$this->db->lastInsertId('records_id_seq');
 
                 if ($ownsTransaction) {
                     $this->db->commit();

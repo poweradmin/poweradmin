@@ -198,7 +198,8 @@ class DomainManager implements DomainManagerInterface
                         $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                         $stmt->execute();
 
-                        $zone_id = $db->lastInsertId();
+                        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                        $zone_id = $db->lastInsertId('zones_id_seq');
                     }
 
                     // Create sync tracking record if using a template

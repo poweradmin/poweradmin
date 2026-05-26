@@ -144,7 +144,8 @@ class DbZoneTemplateRepository
                 ':created_by' => $createdBy
             ]);
 
-            $templateId = (int)$this->db->lastInsertId();
+            // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+            $templateId = (int)$this->db->lastInsertId('zone_templ_id_seq');
 
             // Add default SOA record
             $ttl = (int)$this->config->get('dns', 'ttl');
@@ -258,7 +259,8 @@ class DbZoneTemplateRepository
             ':prio' => $prio
         ]);
 
-        return (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return (int)$this->db->lastInsertId('zone_templ_records_id_seq');
     }
 
     /**
