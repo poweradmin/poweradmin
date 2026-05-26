@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 
 class MessageService
@@ -59,7 +60,7 @@ class MessageService
             'content' => $content
         ];
 
-        $messages = $this->userContextService->getSessionData('messages') ?? [];
+        $messages = $this->userContextService->getSessionData(SessionKeys::MESSAGES) ?? [];
         if (!isset($messages[$script])) {
             $messages[$script] = [];
         }
@@ -72,7 +73,7 @@ class MessageService
         }
 
         $messages[$script][] = $newMessage;
-        $this->userContextService->setSessionData('messages', $messages);
+        $this->userContextService->setSessionData(SessionKeys::MESSAGES, $messages);
     }
 
     /**
@@ -128,14 +129,14 @@ class MessageService
      */
     public function getMessages(string $script): ?array
     {
-        $messages = $this->userContextService->getSessionData('messages') ?? [];
+        $messages = $this->userContextService->getSessionData(SessionKeys::MESSAGES) ?? [];
         if (!isset($messages[$script])) {
             return null;
         }
 
         $scriptMessages = $messages[$script];
         unset($messages[$script]);
-        $this->userContextService->setSessionData('messages', $messages);
+        $this->userContextService->setSessionData(SessionKeys::MESSAGES, $messages);
 
         return $scriptMessages;
     }
@@ -346,12 +347,12 @@ EOF;
      */
     public function storeFormData(string $token, array $data): void
     {
-        $formData = $this->userContextService->getSessionData('form_data') ?? [];
+        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA) ?? [];
         $formData[$token] = [
             'data' => $data,
             'expires' => time() + 300 // Expire after 5 minutes
         ];
-        $this->userContextService->setSessionData('form_data', $formData);
+        $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
     }
 
     /**
@@ -362,14 +363,14 @@ EOF;
      */
     public function getFormData(string $token): ?array
     {
-        $formData = $this->userContextService->getSessionData('form_data') ?? [];
+        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA) ?? [];
         if (!isset($formData[$token])) {
             return null;
         }
 
         $entry = $formData[$token];
         unset($formData[$token]);
-        $this->userContextService->setSessionData('form_data', $formData);
+        $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
 
         if (time() > $entry['expires']) {
             return null;
@@ -383,7 +384,7 @@ EOF;
      */
     public function cleanupFormData(): void
     {
-        $formData = $this->userContextService->getSessionData('form_data');
+        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA);
         if ($formData === null) {
             return;
         }
@@ -398,7 +399,7 @@ EOF;
         }
 
         if ($changed) {
-            $this->userContextService->setSessionData('form_data', $formData);
+            $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
         }
     }
 }

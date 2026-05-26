@@ -288,7 +288,7 @@ class MfaSetupController extends BaseController
             $this->displayRecoveryCodes($recoveryCodes);
         } else {
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
-            $this->displayEmailVerification($this->userContextService->getSessionData('email') ?? '');
+            $this->displayEmailVerification($this->userContextService->getSessionData(SessionKeys::EMAIL) ?? '');
         }
     }
 

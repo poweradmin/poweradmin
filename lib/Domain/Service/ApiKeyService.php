@@ -385,8 +385,8 @@ class ApiKeyService
                 }
 
                 // Set session variables for the authenticated user
-                $this->userContextService->setSessionData('userid', $keyData['created_by']);
-                $this->userContextService->setSessionData('auth_used', 'api_key');
+                $this->userContextService->setSessionData(SessionKeys::USERID, $keyData['created_by']);
+                $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
                 // Update last used timestamp
                 $this->apiKeyRepository->updateLastUsed($keyData['id']);
@@ -412,8 +412,8 @@ class ApiKeyService
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
 
         // Set session variables for the authenticated user
-        $this->userContextService->setSessionData('userid', $apiKey->getCreatedBy());
-        $this->userContextService->setSessionData('auth_used', 'api_key');
+        $this->userContextService->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
+        $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
         return true;
     }

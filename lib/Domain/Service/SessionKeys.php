@@ -62,6 +62,12 @@ final class SessionKeys
     public const PENDING_NAME = 'pending_name';
     public const PENDING_EMAIL = 'pending_email';
     public const PENDING_AUTH_USED = 'pending_auth_used';
+    public const PENDING_AUTH_METHOD_USED = 'pending_auth_method_used';
+    public const PENDING_OIDC_PROVIDER = 'pending_oidc_provider';
+    public const PENDING_OAUTH_AVATAR_URL = 'pending_oauth_avatar_url';
+    public const PENDING_SAML_PROVIDER = 'pending_saml_provider';
+    public const PENDING_SAML_NAME_ID = 'pending_saml_name_id';
+    public const PENDING_SAML_SESSION_INDEX = 'pending_saml_session_index';
 
     // MFA
     public const MFA_REQUIRED = 'mfa_required';
@@ -79,6 +85,7 @@ final class SessionKeys
     // SAML
     public const SAML_AUTHENTICATED = 'saml_authenticated';
     public const SAML_PROVIDER = 'saml_provider';
+    public const SAML_NAME_ID = 'saml_name_id';
     public const SAML_SESSION_INDEX = 'saml_session_index';
     public const SAML_SLO_PENDING = 'saml_slo_pending';
 
@@ -105,6 +112,7 @@ final class SessionKeys
     public const ADD_RECORD_LAST_DATA = 'add_record_last_data';
     public const ADD_RECORD_ZONE_ID = 'add_record_zone_id';
     public const ZONE_IMPORT_DATA = 'zone_import_data';
+    public const FORM_DATA = 'form_data';
 
     // Misc
     public const PDNS_VERSION_LAST_ATTEMPT = 'pdns_version_last_attempt';
