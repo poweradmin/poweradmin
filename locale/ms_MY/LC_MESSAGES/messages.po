@@ -3877,7 +3877,7 @@ msgstr "Garam NSEC3PARAM harus - (untuk kosong) atau nilai heksadesimal."
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr "Ædin RFC 9276 menyarankan TIDAK menggunakan garam (diindikasikan oleh α- β untuk mempermudah operasi tanpa mengurangi keamanan."
+msgstr "RFC 9276 menyarankan TIDAK menggunakan garam (ditandakan dengan \"-\") untuk memudahkan operasi tanpa mengurangi keamanan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -5149,7 +5149,7 @@ msgstr "Algoritma Legasi terdeteksi. Cafine HMAC-SHA256 atau lebih kuat disarank
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr "Nama algoritma langganan terdeteksi. Nama algoritma standar keserasian seperti Şhmac-sha256.\" dianjurkan untuk keserasian yang lebih baik."
+msgstr "Nama algoritma kustom terdeteksi. Nama algoritma standar seperti \"hmac-sha256.\" dianjurkan untuk keserasian yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -5218,11 +5218,11 @@ msgstr "Skema URI terkait telepon mungkin mengandung informasi pribadi yang sens
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "Skema URI Üfile\" URL mungkin menimbulkan risiko keamanan dan tidak disarankan untuk catatan DNS publik."
+msgstr "Skema URI \"file\" mungkin menimbulkan risiko keamanan dan tidak disarankan untuk catatan DNS publik."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "Catatan URI ifía harus dalam format: <priority> <weight> \"<target URI>\""
+msgstr "Catatan URI harus dalam format: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
