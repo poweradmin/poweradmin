@@ -4079,7 +4079,7 @@ msgstr "Méid luachmhar, cruinneas cothrománach, nó luach cruinneas ingearach.
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "FormÃ¡id taifead LOC neamhbhailÃ­. Ba cheart go mbeadh an fhormÃ¡id: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2]] {\"E\"|\"W\"} alt[\"m]] [siz[\"m\"] [hp[\"m]] [vp[\"m]]]."
+msgstr "Formáid taifead LOC neamhbhailí. Ba cheart go mbeadh an fhormáid: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2]] {\"E\"|\"W\"} alt[\"m]] [siz[\"m\"] [hp[\"m]] [vp[\"m]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4441,7 +4441,7 @@ msgstr "Ba chóir go mbeadh léarscáileanna giotán cineál i láthair chun a l
 msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
-msgstr "Ba chÃ³ir go mbeadh ionadaÃ­ocht ag cineÃ¡l uimhriÃºil \"%s\" ag baint ÃºsÃ¡ide as formÃ¡id RFC 3597 (TYPE # #)."
+msgstr "Ba chóir go mbeadh ionadaíocht ag cineál uimhriúil \"%s\" ag baint úsáide as formáid RFC 3597 (TYPE # #)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
@@ -5053,12 +5053,12 @@ msgstr "Ní mór paraiméadair taifead HTTPS a bheith i bhformáid eochair = lua
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "eochair paraimÃ©adar HTTPS aitheanta: \"%s\". FÃ©ach RFC 9460 le haghaidh eochracha bailÃ­."
+msgstr "eochair paraiméadar HTTPS aitheanta: \"%s\". Féach RFC 9460 le haghaidh eochracha bailí."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "DÃºblach eochair paraimÃ©adar HTTPS: \"%s\". Is fÃ©idir le gach eochair le feiceÃ¡il ach uair amhÃ¡in."
+msgstr "Dúblach eochair paraiméadar HTTPS: \"%s\". Is féidir le gach eochair le feiceáil ach uair amháin."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -5270,7 +5270,7 @@ msgstr "D'fhéadfadh an \"comhad\" scéim URI údar rioscaí slándála agus nac
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "NÃ­ mÃ³r taifead URI a bheith san fhormÃ¡id: <priority><weight> \"<target URI>\""
+msgstr "Ní mór taifead URI a bheith san fhormáid: <priority><weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -6443,7 +6443,7 @@ msgstr "Ní mór litreacha agus uimhreacha ASCII a bheith i gclib CAA."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "Sraith bratach chriticiÃºil le haghaidh tag anaithnid \"%s\". D'fhÃ©adfadh sÃ© seo a chur faoi deara teipeanna deimhniÃº eisiÃºint."
+msgstr "Sraith bratach chriticiúil le haghaidh tag anaithnid \"%s\". D'fhéadfadh sé seo a chur faoi deara teipeanna deimhniú eisiúint."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6681,12 +6681,12 @@ msgstr "Ní mór paraiméadair SVCB a bheith i bhformáid eochair = luach scarth
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "eochair paraimÃ©adar SVCB aitheanta: \"%s\"."
+msgstr "eochair paraiméadar SVCB aitheanta: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "DÃºblach eochair paraimÃ©adar SVCB: \"%s\". Is fÃ©idir le gach eochair le feiceÃ¡il ach uair amhÃ¡in."
+msgstr "Dúblach eochair paraiméadar SVCB: \"%s\". Is féidir le gach eochair le feiceáil ach uair amháin."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -7544,14 +7544,14 @@ msgstr "Luach prótacal luachmhar i dtaifead SRV. Ní mór Prótacal tús a chur
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "NÃ­l ainm na seirbhÃ­se \"%s\" i liosta na seirbhÃ­sÃ­ aitheanta go maith. TÃ¡ sÃ© seo ceadaithe ach neamhghnÃ¡ch."
+msgstr "Níl ainm na seirbhíse \"%s\" i liosta na seirbhísí aitheanta go maith. Tá sé seo ceadaithe ach neamhghnách."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
 " are _tcp and _udp."
-msgstr "NÃ­l PrÃ³tacal \"%s\" sa liosta de phrÃ³tacail aitheanta. TÃ¡ prÃ³tacail Common  tcp agus  udp."
+msgstr "Níl Prótacal \"%s\" sa liosta de phrótacail aitheanta. Tá prótacail Common  tcp agus  udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8002,7 +8002,7 @@ msgstr "Bain taifid SOA dúblach, a choinneáil ach amháin."
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "NÃ­ taifead SOA ag apex. Bunaithe ag \"%s\" ach tÃ¡ crios \"%s\"."
+msgstr "Ní taifead SOA ag apex. Bunaithe ag \"%s\" ach tá crios \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -13485,7 +13485,7 @@ msgstr "Bain an eolaire \"shuiteáil /\" ó do fhreastalaí"
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
-msgstr "LogÃ¡il isteach go <a href=\"../index.php\">Poweradmin</a> ag baint ÃºsÃ¡ide as an ainm ÃºsÃ¡ideora \"ialtÃ³g\" agus an focal faire atÃ¡ leagtha tÃº i cÃ©im 4"
+msgstr "Logáil isteach go <a href=\"../index.php\">Poweradmin</a> ag baint úsáide as an ainm úsáideora \"ialtóg\" agus an focal faire atá leagtha tú i céim 4"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -13643,12 +13643,12 @@ msgstr "Tá bunachair shonraí PowerDNS ar leith tacaíocht ach amháin le MySQL
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "TÃ¡blaÃ­ PowerDNS Missing i mbunachar sonraÃ­ \"%s\": %s. Cinntigh go bhfuil PowerDNS suiteÃ¡ilte i gceart sa bhunachar sonraÃ­ seo."
+msgstr "Táblaí PowerDNS Missing i mbunachar sonraí \"%s\": %s. Cinntigh go bhfuil PowerDNS suiteáilte i gceart sa bhunachar sonraí seo."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "NÃ­ fÃ©idir ceangal le bunachar sonraÃ­ PowerDNS \"%s\": %s"
+msgstr "Ní féidir ceangal le bunachar sonraí PowerDNS \"%s\": %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Treoraí Taifead"

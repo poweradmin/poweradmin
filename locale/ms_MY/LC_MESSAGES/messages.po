@@ -5222,7 +5222,7 @@ msgstr "Skema URI Üfile\" URL mungkin menimbulkan risiko keamanan dan tidak dis
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "Catatan URI ifÃ­a harus dalam format: <priority> <weight> \"<target URI>\""
+msgstr "Catatan URI ifía harus dalam format: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
