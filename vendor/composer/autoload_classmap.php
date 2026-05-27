@@ -3459,6 +3459,7 @@ return array(
     'Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface' => $vendorDir . '/symfony/event-dispatcher-contracts/EventDispatcherInterface.php',
     'Symfony\\Contracts\\Service\\Attribute\\Required' => $vendorDir . '/symfony/service-contracts/Attribute/Required.php',
     'Symfony\\Contracts\\Service\\Attribute\\SubscribedService' => $vendorDir . '/symfony/service-contracts/Attribute/SubscribedService.php',
+    'Symfony\\Contracts\\Service\\ContainerAwareInterface' => $vendorDir . '/symfony/service-contracts/ContainerAwareInterface.php',
     'Symfony\\Contracts\\Service\\ResetInterface' => $vendorDir . '/symfony/service-contracts/ResetInterface.php',
     'Symfony\\Contracts\\Service\\ServiceCollectionInterface' => $vendorDir . '/symfony/service-contracts/ServiceCollectionInterface.php',
     'Symfony\\Contracts\\Service\\ServiceLocatorTrait' => $vendorDir . '/symfony/service-contracts/ServiceLocatorTrait.php',
