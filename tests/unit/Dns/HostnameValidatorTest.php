@@ -229,6 +229,52 @@ class HostnameValidatorTest extends TestCase
     }
 
     /**
+     * Invalid-character errors must not echo the user-supplied label.
+     * MessageService renders system messages with `| raw`; interpolating the label
+     * would create reflected XSS because the regex only rejects labels containing
+     * exactly the characters needed to break out (e.g. <, >, ").
+     */
+    public function testInvalidCharacterErrorDoesNotEchoLabel(): void
+    {
+        $result = $this->validator->validate('<script>alert(1)</script>.example.com');
+        $this->assertFalse($result->isValid());
+        $joined = implode(' | ', $result->getErrors());
+        $this->assertStringNotContainsString('<script>', $joined);
+        $this->assertStringNotContainsString('alert(1)', $joined);
+    }
+
+    /**
+     * With strict_tld_check enabled, dns.custom_tlds whitelists private/internal TLDs
+     * (e.g. .lan, .corp) that aren't on the IANA or RFC special list.
+     */
+    public function testStrictTldCheckHonorsCustomTlds(): void
+    {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    if ($key === 'strict_tld_check') {
+                        return true;
+                    }
+                    if ($key === 'top_level_tld_check') {
+                        return false;
+                    }
+                    if ($key === 'custom_tlds') {
+                        return ['lan', 'corp'];
+                    }
+                }
+                return $default;
+            });
+
+        $validator = new HostnameValidator($configMock);
+
+        $this->assertTrue($validator->isValid('intranet.lan'));
+        $this->assertTrue($validator->isValid('host.corp'));
+        $this->assertTrue($validator->isValid('HOST.LAN'));
+        $this->assertFalse($validator->isValid('intranet.home'));
+    }
+
+    /**
      * Test RFC 2317 classless reverse delegation support
      */
     public function testRFC2317ClasslessReverseDelegation()
