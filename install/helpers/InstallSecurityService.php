@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,22 +23,22 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SessionKeys;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
 {
     private array $config;
     private CsrfTokenService $csrfTokenService;
-    private IPAddressValidator $ipValidator;
+    private array $server;
     private const DEFAULT_IP = '0.0.0.0';
 
-    public function __construct(array $config, CsrfTokenService $csrfTokenService, ?IPAddressValidator $ipValidator = null)
+    public function __construct(array $config, CsrfTokenService $csrfTokenService, ?array $server = null)
     {
         $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
-        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
+        $this->server = $server ?? $_SERVER;
     }
 
     public function validateRequest(Request $request): array
@@ -68,55 +68,44 @@ class InstallSecurityService
         }
 
         $clientIp = $this->getClientIp();
+        $allowed = array_merge(
+            $this->config['ip_access']['allowed_ips'] ?? [],
+            $this->config['ip_access']['allowed_ranges'] ?? []
+        );
 
-        $allowedIps = $this->config['ip_access']['allowed_ips'] ?? [];
-        if (in_array($clientIp, $allowedIps)) {
-            return true;
-        }
-
-        $allowedRanges = $this->config['ip_access']['allowed_ranges'] ?? [];
-        foreach ($allowedRanges as $range) {
-            if ($this->ipInRange($clientIp, $range)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function ipInRange(string $ip, string $range): bool
-    {
-        list($range, $netmask) = explode('/', $range, 2);
-        $rangeDecimal = ip2long($range);
-        $ipDecimal = ip2long($ip);
-        $wildcardDecimal = pow(2, (32 - (int)$netmask)) - 1;
-        $netmaskDecimal = ~$wildcardDecimal;
-
-        return ($ipDecimal & $netmaskDecimal) == ($rangeDecimal & $netmaskDecimal);
+        return $allowed !== [] && IpUtils::checkIp($clientIp, $allowed);
     }
 
     private function getClientIp(): string
     {
+        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+        if ($remoteAddr === '' || filter_var($remoteAddr, FILTER_VALIDATE_IP) === false) {
+            return self::DEFAULT_IP;
+        }
 
-        $hasForwardedForHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']);
-        $hasRemoteAddress = isset($_SERVER['REMOTE_ADDR']);
+        // Only entries explicitly listed in trusted_proxies are believed when reading
+        // X-Forwarded-For. Private/loopback addresses are NOT auto-trusted: a peer on
+        // the same LAN can be an attacker too, and a legitimate client could itself
+        // hold a private address behind NAT/VPN. Without an operator-configured list,
+        // REMOTE_ADDR is the only address that gates allowlist access.
+        $trusted = $this->config['ip_access']['trusted_proxies'] ?? [];
 
-        if ($hasRemoteAddress && $hasForwardedForHeader) {
-            $forwardedIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $clientIp = trim(end($forwardedIps));
+        if ($trusted === [] || !IpUtils::checkIp($remoteAddr, $trusted) || empty($this->server['HTTP_X_FORWARDED_FOR'])) {
+            return $remoteAddr;
+        }
 
-            if ($this->ipValidator->isValidIPv4($clientIp) || $this->ipValidator->isValidIPv6($clientIp)) {
-                return $clientIp;
+        // Walk the chain right-to-left peeling trusted hops; the first untrusted
+        // address is the real client, matching Symfony's getClientIp() model.
+        $forwarded = array_reverse(array_map('trim', explode(',', $this->server['HTTP_X_FORWARDED_FOR'])));
+        foreach ($forwarded as $ip) {
+            if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+                continue;
+            }
+            if (!IpUtils::checkIp($ip, $trusted)) {
+                return $ip;
             }
         }
 
-        if ($hasRemoteAddress) {
-            $remoteAddr = $_SERVER['REMOTE_ADDR'];
-            return ($this->ipValidator->isValidIPv4($remoteAddr) || $this->ipValidator->isValidIPv6($remoteAddr))
-                ? $remoteAddr
-                : self::DEFAULT_IP;
-        }
-
-        return self::DEFAULT_IP;
+        return $remoteAddr;
     }
 }
