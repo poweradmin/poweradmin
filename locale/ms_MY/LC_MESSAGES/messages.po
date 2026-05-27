@@ -824,7 +824,7 @@ msgstr "Format domain CA tidak sah"
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr "Menggunakan α;  memungkinkan SEMUA pihak yang berwenang untuk mengeluarkan sertifikat. Ini mengalahkan tujuan catatan CAA."
+msgstr "Menggunakan \";\" membenarkan SEMUA pihak yang berwenang untuk mengeluarkan sertifikat. Ini mengalahkan tujuan catatan CAA."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
@@ -1655,7 +1655,7 @@ msgstr "MultiMUDA"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 msgid "Single"
-msgstr "♪ Single ♪"
+msgstr "Single"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -3176,7 +3176,7 @@ msgstr "Otoprimar"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:122
 msgid "Supermaster"
-msgstr "♪ Supermaster ♪"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:123
 msgid "Add autoprimary"
@@ -3184,7 +3184,7 @@ msgstr "Adonan"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:123
 msgid "Add supermaster"
-msgstr "♪ Add supermaster ♪"
+msgstr "Tambah supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:124
 msgid "Edit autoprimary"
@@ -3192,7 +3192,7 @@ msgstr "Andorra"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:124
 msgid "Edit supermaster"
-msgstr "♪ Edit master super ♪"
+msgstr "Edit supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:125
 msgid "Delete autoprimary"
@@ -3683,7 +3683,7 @@ msgstr "Bagian lokal dari alamat email dicincang dengan SHA-256 dan diletakkan s
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "Catatan TLSA biasanya harus ditempatkan di α port. protocol.hostname α (e.g., α 443. tcp.www.example.com\")."
+msgstr "Catatan TLSA biasanya harus ditempatkan di \"_port._protocol.hostname\" (cth., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5143,7 +5143,7 @@ msgstr "Wadi HMAC-MD5 dianggap lemah oleh standar modern. Anjurkan atau lebih ku
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
 " security."
-msgstr "Algoritma Legasi terdeteksi. Cafine HMAC-SHA256 atau lebih kuat disarankan untuk keamanan yang lebih baik."
+msgstr "Algoritma Legasi terdeteksi. HMAC-SHA256 atau lebih kuat disarankan untuk keamanan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -5250,7 +5250,7 @@ msgstr "URI menggunakan protokol biasa. Keserasian yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr "URI dengan protokol ini harus mencakup α://\" setelah nama protokol."
+msgstr "URI dengan protokol ini harus mencakup \"://\" setelah nama protokol."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
@@ -5270,7 +5270,7 @@ msgstr "URI mengandung karakter backslash, yang mungkin ditafsirkan berbeda di s
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr "URI mengandung α..\" urutan, yang mungkin digunakan untuk serangan traversal direktori."
+msgstr "URI mengandungi urutan \"..\", yang mungkin digunakan untuk serangan traversal direktori."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
@@ -5358,7 +5358,7 @@ msgstr "Nama host kotak surat kesalahan tidak sah (EMAILBX)."
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "Dengan menggunakan α \" (root) untuk EMAILBX menunjukkan bahwa kesalahan harus dikembalikan ke pengirim pesan."
+msgstr "Menggunakan \".\" (root) untuk EMAILBX menunjukkan bahwa kesalahan harus dikembalikan ke pengirim pesan."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
@@ -5420,13 +5420,13 @@ msgstr "Panjang mekanisme CIDR tidak sah."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "Mekanisme patr gófa tidak disarankan karena masalah kinerja (RFC 7208 Section 5.5)."
+msgstr "Mekanisme ptr tidak disarankan kerana isu prestasi (RFC 7208 Section 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "Mekanisme Æall\" seharusnya mekanisme terakhir dalam catatan (RFC 7208 Bagian 5.1)."
+msgstr "Mekanisme \"all\" seharusnya mekanisme terakhir dalam catatan (RFC 7208 Bagian 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -5457,7 +5457,7 @@ msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "Rekor SPF borough memiliki baik  \"all\" mekanisme maupun  \"redirect\" modifier. Pengubah Æredirect\" akan diabaikan ketika  \"all\" hadir (RFC 7208 Bagian 6.1)."
+msgstr "Rekod SPF memiliki kedua-dua mekanisme \"all\" dan pengubah \"redirect\". Pengubah \"redirect\" akan diabaikan apabila \"all\" hadir (RFC 7208 Bagian 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:189
 msgid ""
@@ -5698,7 +5698,7 @@ msgstr "RRISG asli TTL harus merupakan integer positif yang valid."
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
 " are generally preferred for faster recovery in case of key compromise."
-msgstr "Æð Original TTL lebih besar dari 1 hari (86400). Untuk catatan DNSSEC, TTL yang lebih pendek umumnya lebih disukai untuk pemulihan yang lebih cepat jika terjadi kompromi kunci."
+msgstr "TTL asal lebih besar daripada 1 hari (86400). Untuk rekod DNSSEC, TTL yang lebih pendek umumnya lebih disukai untuk pemulihan yang lebih cepat jika berlaku kompromi kunci."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -5842,7 +5842,7 @@ msgstr "Pastikan catatan TXT yang berkaitan ada untuk medan txt-dname jika tidak
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr "Menggunakan α \" untuk domain kotak surat menunjukkan tidak ada orang yang bertanggung jawab yang ditentukan. Ini tidak disarankan untuk domain produksi."
+msgstr "Menggunakan \".\" untuk domain kotak surat menunjukkan tidak ada orang yang bertanggung jawab yang ditentukan. Ini tidak disarankan untuk domain produksi."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
@@ -6181,13 +6181,13 @@ msgstr "Tidak ada bendera dalam catatan CSYNC ini. Catatan itu mungkin tidak seg
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "Bendera Žimmediate\" (0x0001) tidak ditetapkan. Agen - agen induk mungkin menunda pemrosesan rekor ini."
+msgstr "Bendera \"immediate\" (0x0001) tidak ditetapkan. Ejen induk mungkin menangguhkan pemprosesan rekod ini."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "Bendera Ósoaminim\" (0x0002) tidak ditetapkan. Validasi nomor seri SOA mungkin tidak ditegakkan."
+msgstr "Bendera \"soaminimum\" (0x0002) tidak ditetapkan. Validasi nombor siri SOA mungkin tidak dikuatkuasakan."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -6610,7 +6610,7 @@ msgstr "Prioritas VVCB harus antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
-msgstr "Target SVCB α SVCB harus baik \".\" atau nama host yang valid."
+msgstr "Target SVCB harus sama ada \".\" atau nama host yang sah."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
@@ -6929,7 +6929,7 @@ msgstr "Algoritma Algoritma 10 (RSASHA512) TIDAK DIPERLUKAN untuk penandatangana
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "Data yang dikodekan oleh basis64 seharusnya dipadkan ke multiple dari 4 byte menggunakan α karakter."
+msgstr "Data yang dikodekan base64 seharusnya dipadkan kepada gandaan 4 bait menggunakan aksara \"=\"."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
@@ -7009,7 +7009,7 @@ msgstr "Lapangan prioritas untuk catatan SSHFP harus 0 atau kosong"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "Catatan SSHFP dapat dihasilkan dengan Øssh-keygen -r nama host\" perintah pada sistem dengan OpenSSH."
+msgstr "Rekod SSHFP boleh dijana dengan perintah \"ssh-keygen -r hostname\" pada sistem dengan OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -8327,7 +8327,7 @@ msgstr "Janakan Ulang Kunci API"
 
 #: templates/modern/api_key_edit.html:100
 msgid "Creates a new key, invalidating the old one"
-msgstr "♪ Menciptakan kunci baru, menodai kunci lama ♪"
+msgstr "Mencipta kunci baharu, membatalkan yang lama"
 
 #: templates/modern/api_key_delete.html:12
 msgid "Delete API Key"
@@ -10012,7 +10012,7 @@ msgstr "Pencarian jernih"
 
 #: templates/modern/edit_perm_templ.html:98
 msgid "Select All"
-msgstr "♪ Pilih Semua ♪"
+msgstr "Pilih Semua"
 
 #: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
@@ -10195,7 +10195,7 @@ msgstr "Pergi ke Homepage"
 
 #: templates/default/404.html:44 templates/modern/404.html:44
 msgid "Go Back"
-msgstr "♪ Pergi Kembali ♪"
+msgstr "Kembali"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -10277,7 +10277,7 @@ msgstr "g,  \"192.168.1./0/24\" atau  \"10.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:69
 msgid "e.g., \"2001:db8:1:1\""
-msgstr "E.g.,  \"2001:db8:1:1–"
+msgstr "cth., \"2001:db8:1:1\""
 
 #: templates/modern/batch_ptr_record.html:73
 msgid "Host Prefix"
@@ -10700,7 +10700,7 @@ msgstr "Konfigurasi Zona Varina"
 
 #: templates/modern/edit.html:804 templates/modern/edit.html:833
 msgid "Change"
-msgstr "♪ Berubah ♪"
+msgstr "Tukar"
 
 #: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:36
 msgid "IP address of master NS"
@@ -11498,7 +11498,7 @@ msgstr "Setiap rekor penambahan/edit/hapus dan zon buat/hapus/hapus/metadata-edi
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
-msgstr "♪ Semua tindakan ♪"
+msgstr "Semua tindakan"
 
 #: templates/modern/list_record_changes.html:52
 msgid "From"
@@ -11506,11 +11506,11 @@ msgstr "Dari"
 
 #: templates/modern/list_record_changes.html:55
 msgid "To"
-msgstr "♪ To ♪"
+msgstr "Kepada"
 
 #: templates/modern/list_record_changes.html:75
 msgid "When"
-msgstr "♪ Ketika ♪"
+msgstr "Apabila"
 
 #: templates/modern/list_record_changes.html:76
 msgid "Action"
@@ -12220,7 +12220,7 @@ msgstr "Terakhir Diperiksa"
 #: templates/default/pdns_status.html:125
 #: templates/modern/pdns_status.html:126 install/templates/step2.html.twig:18
 msgid "OK"
-msgstr "♪ OK ♪"
+msgstr "OK"
 
 #: templates/default/pdns_status.html:127
 #: templates/modern/pdns_status.html:128
@@ -12293,7 +12293,7 @@ msgstr "Segarkan"
 
 #: templates/modern/pdns_status.html:442
 msgid "Bytes"
-msgstr "♪ Byte ♪"
+msgstr "Bait"
 
 #: templates/default/pdns_status.html:410
 #: templates/modern/pdns_status.html:411
@@ -12490,7 +12490,7 @@ msgstr "Beregenerasi"
 
 #: templates/modern/api_keys.html:74 templates/modern/api_keys.html:158
 msgid "Enable"
-msgstr "♪ Aktifkan ♪"
+msgstr "Aktifkan"
 
 #: templates/modern/api_keys.html:79 templates/modern/api_keys.html:128
 msgid "Disable"
