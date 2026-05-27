@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 
 class TwigEnvironmentInitializer
 {
@@ -47,7 +48,27 @@ class TwigEnvironmentInitializer
         $translator->addResource('po', $this->localeHandler->getLocaleFile($language), $language);
 
         $twigEnvironment->addExtension(new TranslationExtension($translator));
+        $twigEnvironment->addFilter(self::phpStrFilter());
 
         return $twigEnvironment;
+    }
+
+    /**
+     * Escape a value so it is safe to embed inside a PHP single-quoted string literal
+     * being rendered for the operator to paste into config/settings.php. Without this
+     * an apostrophe in (for example) a password silently breaks the generated file,
+     * and a maliciously-crafted value could close the string and inject PHP code via
+     * the operator's copy/paste.
+     */
+    public static function phpStrFilter(): TwigFilter
+    {
+        return new TwigFilter('php_str', static function ($value): string {
+            // Non-scalars (arrays from repeated POST keys, stray objects) collapse
+            // to empty string rather than triggering a PHP cast warning. The form
+            // fields fed into step 7 are all single-valued by design; anything else
+            // is operator misconfiguration or hostile input.
+            $string = is_scalar($value) ? (string) $value : '';
+            return strtr($string, ['\\' => '\\\\', "'" => "\\'"]);
+        });
     }
 }
