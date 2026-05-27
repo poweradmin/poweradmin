@@ -13,7 +13,6 @@
     <div class="card-body p-4">
         <form class="needs-validation" method="post" action="{{ base_url_prefix }}/login" novalidate>
             <input type="hidden" name="_token" value="{{ login_token }}">
-            <input type="hidden" name="query_string" value="{{ query_string }}">
             <div class="mb-3">
                 <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
                 <input type="text" data-testid="username-input" class="form-control" id="username" name="username" required>

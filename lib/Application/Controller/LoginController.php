@@ -145,7 +145,6 @@ class LoginController extends BaseController
 
         $this->render('login.html', [
             'login_token' => $loginToken,
-            'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
             'locales' => $preparedLocales,
             'show_language_selector' => $showLanguageSelector,
