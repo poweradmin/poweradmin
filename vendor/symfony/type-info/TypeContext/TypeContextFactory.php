@@ -166,14 +166,37 @@ final class TypeContextFactory
 
         $uses = [];
         $inUseSection = false;
+        $inGroupedUse = false;
+        $groupPrefix = '';
 
         foreach ($lines as $line) {
+            $trimmed = trim($line, " \t");
+
+            if ($inGroupedUse) {
+                $this->parseGroupedUseMembers($trimmed, $groupPrefix, $uses);
+
+                if (str_contains($trimmed, '}')) {
+                    $inGroupedUse = false;
+                }
+
+                continue;
+            }
+
             if (str_starts_with($line, 'use ')) {
                 $inUseSection = true;
-                $use = explode(' as ', substr($line, 4, -1), 2);
+                $body = substr($trimmed, 4);
 
-                $alias = 1 === \count($use) ? substr($use[0], false !== ($p = strrpos($use[0], '\\')) ? 1 + $p : 0) : $use[1];
-                $uses[$alias] = $use[0];
+                if (str_contains($body, '{')) {
+                    $groupPrefix = substr($body, 0, strpos($body, '{'));
+                    $inGroupedUse = !str_contains($body, '}');
+                    $segment = trim(substr($body, strpos($body, '{')), " \t\r\n{};");
+                    $this->parseGroupedUseMembers($segment, $groupPrefix, $uses);
+                } else {
+                    $use = preg_split('/\s+as\s+/', rtrim($body, ';'), 2);
+                    $fqcn = ltrim($use[0], '\\');
+                    $alias = $use[1] ?? (false !== ($p = strrpos($fqcn, '\\')) ? substr($fqcn, 1 + $p) : $fqcn);
+                    $uses[$alias] = $fqcn;
+                }
             } elseif ($inUseSection) {
                 break;
             }
@@ -185,6 +208,23 @@ final class TypeContextFactory
         }
 
         return array_merge($uses, ...$traitUses);
+    }
+
+    /**
+     * @param array<string, string> $uses
+     */
+    private function parseGroupedUseMembers(string $segment, string $prefix, array &$uses): void
+    {
+        foreach (explode(',', $segment) as $member) {
+            if ('' === $member = trim($member, " \t\r\n};")) {
+                continue;
+            }
+
+            $parts = preg_split('/\s+as\s+/', $member, 2);
+            $fqcn = ltrim($prefix.$parts[0], '\\');
+            $alias = $parts[1] ?? (false !== ($p = strrpos($fqcn, '\\')) ? substr($fqcn, 1 + $p) : $fqcn);
+            $uses[$alias] = $fqcn;
+        }
     }
 
     /**

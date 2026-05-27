@@ -343,6 +343,12 @@ class AutowirePass extends AbstractRecursivePass
                             $lazy = str_contains($type, '&') ? explode('&', $type) : [];
                         }
 
+                        if (!$lazy && $value instanceof Reference && $this->container->has($value) && $this->container->findDefinition($value)->isLazy()) {
+                            $arguments[$index] = $value;
+
+                            continue 2;
+                        }
+
                         $proxyType = $lazy ? $type : $this->resolveProxyType($type, $value);
                         $definition = (new Definition($proxyType))
                             ->setFactory('current')
@@ -719,7 +725,7 @@ class AutowirePass extends AbstractRecursivePass
         }
 
         if (str_contains($type, '&')) {
-            $types = explode('&', $type);
+            $types = explode('&', trim($type, '()'));
         } elseif (str_contains($type, '|')) {
             $types = explode('|', $type);
         } else {
