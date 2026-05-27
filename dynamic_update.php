@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
@@ -61,7 +62,7 @@ $userAuthService = new UserAuthenticationService(
 
 $updateService = new DynamicDnsUpdateService(
     new DynamicDnsValidationService($config),
-    new DynamicDnsAuthenticationService($repository, $userAuthService),
+    new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config)),
     $repository,
     new LegacyLogger($db),
     new IpAddressRetriever($_SERVER)

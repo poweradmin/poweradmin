@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -31,26 +32,39 @@ class DynamicDnsAuthenticationService
 {
     public function __construct(
         private readonly DynamicDnsRepositoryInterface $repository,
-        private readonly UserAuthenticationService $userAuthService
+        private readonly UserAuthenticationService $userAuthService,
+        private readonly ?LoginAttemptService $loginAttemptService = null
     ) {
     }
 
-    public function authenticateUser(DynamicDnsRequest $request): ?User
+    /**
+     * Authenticate a DDNS update request.
+     *
+     * @param string $clientIp client IP for lockout tracking; pass '' to disable
+     *                         per-IP throttle for callers that don't have a stable
+     *                         peer address (e.g. CLI bootstrap).
+     */
+    public function authenticateUser(DynamicDnsRequest $request, string $clientIp = ''): ?User
     {
         if (!$request->hasUsername()) {
             return null;
         }
 
-        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($request->getUsername());
+        $username = $request->getUsername();
+
+        if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            return null;
+        }
+
+        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
             return null;
         }
 
-        if (!$this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword())) {
-            return null;
-        }
+        $passwordValid = $this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword());
+        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
-        return $user;
+        return $passwordValid ? $user : null;
     }
 
     public function getUserZones(User $user): array

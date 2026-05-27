@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -70,7 +71,7 @@ class DynamicDnsController extends PublicApiController
         $this->validationService = new DynamicDnsValidationService($config);
         $this->updateService = new DynamicDnsUpdateService(
             $this->validationService,
-            new DynamicDnsAuthenticationService($repository, $userAuthService),
+            new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config)),
             $repository,
             new LegacyLogger($this->db),
             new IpAddressRetriever($_SERVER)

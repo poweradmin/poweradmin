@@ -49,7 +49,8 @@ class DynamicDnsUpdateService
             return $this->determineErrorCode($validationResult->getErrors());
         }
 
-        $user = $this->authService->authenticateUser($request);
+        $clientIp = $this->ipRetriever?->getClientIp() ?? '';
+        $user = $this->authService->authenticateUser($request, $clientIp);
         if (!$user) {
             return 'badauth2';
         }
