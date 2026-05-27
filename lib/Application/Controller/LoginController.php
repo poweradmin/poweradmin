@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\Application\Service\SamlConfigurationService;
@@ -37,7 +36,6 @@ use Poweradmin\Infrastructure\Utility\LanguageCode;
 class LoginController extends BaseController
 {
     private LocaleService $localeService;
-    private LocalePresenter $localePresenter;
     private CsrfTokenService $csrfTokenService;
     private SamlService $samlService;
 
@@ -48,7 +46,6 @@ class LoginController extends BaseController
         parent::__construct($request, $authenticate);
 
         $this->localeService = new LocaleService();
-        $this->localePresenter = new LocalePresenter();
         $this->csrfTokenService = new CsrfTokenService();
 
         // Initialize external auth services
@@ -145,8 +142,6 @@ class LoginController extends BaseController
 
         $this->render('login.html', [
             'login_token' => $loginToken,
-            'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
-            'locales' => $preparedLocales,
             'show_language_selector' => $showLanguageSelector,
             'current_language' => $currentLanguage,
             'msg' => $msg,
@@ -177,15 +172,4 @@ class LoginController extends BaseController
     }
 
 
-    private function validateSamlProvider(string $provider): bool
-    {
-        // Sanitize provider ID - only allow alphanumeric characters and underscores
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $provider)) {
-            return false;
-        }
-
-        // Check if provider is actually available
-        $availableProviders = $this->samlService->getAvailableProviders();
-        return isset($availableProviders[$provider]);
-    }
 }
