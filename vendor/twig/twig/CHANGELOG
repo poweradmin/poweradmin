@@ -1,3 +1,20 @@
+# 3.27.0 (2026-05-27)
+
+ * Add a strict mode to `Twig\Sandbox\SecurityPolicy` to opt-in to the 4.0 behavior for the `extends`/`use` tags and the `parent`/`block`/`attribute` functions, which are otherwise still implicitly allowed in a sandbox
+ * Deprecate the fact that the `parent`, `block`, and `attribute` functions are always allowed in a sandboxed template
+ * Fix sandbox filter/tag/function allow-list bypass when the sandbox state changed between renders of a cached `Template` instance
+ * Fix PHP 8.1+ implicit float-to-int deprecation triggered by sandboxed `ArrayAccess` attribute access with a float key
+ * Restrict allowed classes in `Twig\Profiler\Profile::unserialize()` to prevent arbitrary class instantiation
+ * Escape root profile name in `HtmlDumper`
+ * Fix sandbox bypass in deprecated internal wrappers `twig_array_some()`, `twig_array_every()`, and `twig_check_arrow_in_sandbox()` (`src/Resources/core.php`)
+ * Deprecate the `Twig\Sandbox\SourcePolicyInterface` interface with no replacement
+ * Fix sandbox bypass in the "column" filter when sandboxing is enabled via `SourcePolicyInterface`
+ * Fix sandbox `__toString` bypass via `Traversable` arguments to the `join` and `replace` filters (also covers containers that implement both `Stringable` and `Traversable`)
+ * Fix sandbox `__toString` bypass via the `in` and `not in` operators
+ * Prevent a stack overflow in `SandboxExtension::ensureToStringAllowed()` when a self-referencing iterable is passed to a sandboxed template
+ * Add support for any expression as a dynamic mapping key (attribute access, filters, ...)
+ * Fix sandbox `__toString` policy bypass via dynamic mapping keys
+
 # 3.26.0 (2026-05-20)
 
  * Document that the sandbox doesn't protect against resource exhaustion

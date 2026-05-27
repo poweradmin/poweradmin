@@ -9,11 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Contracts\Service\Test;
+namespace Symfony\Contracts\Service;
+
+use Psr\Container\ContainerInterface;
 
 /**
- * @deprecated since PHPUnit 9.6
+ * Implemented by objects that expose a service container.
  */
-class ServiceLocatorTest extends ServiceLocatorTestCase
+interface ContainerAwareInterface
 {
+    public function getContainer(): ContainerInterface;
 }
