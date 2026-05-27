@@ -33,22 +33,22 @@ return [
      */
     'database' => [
 {% if db_file %}
-        'type' => '{{ db_type }}',
-        'file' => '{{ db_name }}',
+        'type' => '{{ db_type|php_str }}',
+        'file' => '{{ db_name|php_str }}',
 {% else %}
-        'host' => '{{ db_host }}',
-        'name' => '{{ db_name }}',
-        'user' => '{{ db_user }}',
-        'password' => '{{ db_pass }}',
-        'type' => '{{ db_type }}',
+        'host' => '{{ db_host|php_str }}',
+        'name' => '{{ db_name|php_str }}',
+        'user' => '{{ db_user|php_str }}',
+        'password' => '{{ db_pass|php_str }}',
+        'type' => '{{ db_type|php_str }}',
 {% if db_port %}
-        'port' => '{{ db_port }}',
+        'port' => '{{ db_port|php_str }}',
 {% endif %}
 {% if db_charset %}
-        'charset' => '{{ db_charset }}',
+        'charset' => '{{ db_charset|php_str }}',
 {% endif %}
 {% if pdns_db_name is defined and pdns_db_name is not empty %}
-        'pdns_db_name' => '{{ pdns_db_name }}',
+        'pdns_db_name' => '{{ pdns_db_name|php_str }}',
 {% endif %}
 {% endif %}
     ],
@@ -57,16 +57,16 @@ return [
      * Security Settings
      */
     'security' => [
-        'session_key' => '{{ session_key }}',
+        'session_key' => '{{ session_key|php_str }}',
     ],
 
     /**
      * Interface Settings
      */
     'interface' => [
-        'language' => '{{ language }}',
+        'language' => '{{ language|php_str }}',
 {% if base_url_prefix is defined and base_url_prefix is not empty %}
-        'base_url_prefix' => '{{ base_url_prefix }}',  // Auto-detected subfolder deployment
+        'base_url_prefix' => '{{ base_url_prefix|php_str }}',  // Auto-detected subfolder deployment
 {% endif %}
     ],
 
@@ -77,14 +77,14 @@ return [
 {% if pdns_api_backend is defined and pdns_api_backend == 'api' %}
         'backend' => 'api',
 {% endif %}
-        'hostmaster' => '{{ dns_hostmaster }}',
-        'ns1' => '{{ dns_ns1 }}',
-        'ns2' => '{{ dns_ns2 }}',
+        'hostmaster' => '{{ dns_hostmaster|php_str }}',
+        'ns1' => '{{ dns_ns1|php_str }}',
+        'ns2' => '{{ dns_ns2|php_str }}',
 {% if dns_ns3 is defined and dns_ns3 is not empty %}
-        'ns3' => '{{ dns_ns3 }}',
+        'ns3' => '{{ dns_ns3|php_str }}',
 {% endif %}
 {% if dns_ns4 is defined and dns_ns4 is not empty %}
-        'ns4' => '{{ dns_ns4 }}',
+        'ns4' => '{{ dns_ns4|php_str }}',
 {% endif %}
     ],
 {% if pdns_api_backend is defined and pdns_api_backend == 'api' %}
@@ -93,9 +93,9 @@ return [
      * PowerDNS API Settings
      */
     'pdns_api' => [
-        'url' => '{{ pdns_api_url }}',
-        'key' => '{{ pdns_api_key }}',
-        'server_name' => '{{ pdns_api_server_name|default('localhost') }}',
+        'url' => '{{ pdns_api_url|php_str }}',
+        'key' => '{{ pdns_api_key|php_str }}',
+        'server_name' => '{{ pdns_api_server_name|default('localhost')|php_str }}',
     ],
 {% endif %}
 ];
