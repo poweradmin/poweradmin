@@ -108,7 +108,8 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
                                                      (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
-                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
+                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.'),
+                                                     (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.');
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
@@ -185,7 +186,9 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (33,	8,	56),
     (34,	8,	62),
     (35,	9,	43),
-    (36,	9,	49);
+    (36,	9,	49),
+    (37,	2,	70),
+    (38,	7,	70);
 
 SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 

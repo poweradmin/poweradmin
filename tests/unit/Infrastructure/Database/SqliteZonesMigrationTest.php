@@ -56,6 +56,13 @@ class SqliteZonesMigrationTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type, zone_master)
             VALUES (1, 100, 5, 'first', 0, 'example.com', 'MASTER', NULL),
                    (2, 101, 6, NULL, 7, 'example.org', 'SLAVE', '192.0.2.1')");
+
+        // Migration also writes perm_items; satisfy that statement's table dep.
+        $this->db->exec("CREATE TABLE perm_items (
+            id integer PRIMARY KEY,
+            name VARCHAR(64) NOT NULL,
+            descr VARCHAR(1024) NOT NULL
+        )");
     }
 
     #[Test]

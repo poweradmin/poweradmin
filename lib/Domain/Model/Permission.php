@@ -138,6 +138,28 @@ class Permission
     }
 
     /**
+     * Get DNSSEC management permission.
+     *
+     * Gates mutating DNSSEC operations (add/delete/toggle/import/export keys,
+     * unsign zone) separately from zone content editing. Ueberusers always
+     * receive "all"; everyone else needs the explicit zone_dnssec_manage_own
+     * permission and ownership of the zone in question.
+     *
+     * @param PDO $db The database connection.
+     * @return string Returns "all", "own", or "none" depending on the user's DNSSEC management permission.
+     */
+    public static function getDnssecPermission(PDO $db): string
+    {
+        if (UserManager::verifyPermission($db, 'user_is_ueberuser')) {
+            return "all";
+        } elseif (UserManager::verifyPermission($db, 'zone_dnssec_manage_own')) {
+            return "own";
+        } else {
+            return "none";
+        }
+    }
+
+    /**
      * Get permissions.
      *
      * This method checks a set of permissions for the user.

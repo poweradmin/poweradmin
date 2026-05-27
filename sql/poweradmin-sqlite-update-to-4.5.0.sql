@@ -82,3 +82,11 @@ CREATE INDEX IF NOT EXISTS idx_zones_zone_templ_id ON zones(zone_templ_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_zones_zone_name ON zones(zone_name);
 COMMIT;
 PRAGMA foreign_keys = ON;
+
+-- Register zone_dnssec_manage_own so admins can grant DNSSEC key management
+-- separately from general zone editing. Existing templates are NOT auto-granted
+-- the new permission; admins must opt in via the permission template editor.
+-- perm_items.name has no unique constraint, so guard against duplicates by hand.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own');

@@ -68,3 +68,10 @@ CREATE TABLE IF NOT EXISTS "public"."app_settings" (
 UPDATE "zones" SET "zone_templ_id" = 0 WHERE "zone_templ_id" IS NULL;
 ALTER TABLE "zones" ALTER COLUMN "zone_templ_id" SET DEFAULT 0;
 ALTER TABLE "zones" ALTER COLUMN "zone_templ_id" SET NOT NULL;
+
+-- Register zone_dnssec_manage_own so admins can grant DNSSEC key management
+-- separately from general zone editing. Existing templates are NOT auto-granted
+-- the new permission; admins must opt in via the permission template editor.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own');

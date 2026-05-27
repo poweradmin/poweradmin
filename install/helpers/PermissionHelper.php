@@ -60,6 +60,7 @@ class PermissionHelper
             [67, 'zone_delete_own', 'User is allowed to delete zones they own.'],
             [68, 'zone_delete_others', 'User is allowed to delete zones owned by others.'],
             [69, 'user_enforce_mfa', 'User is required to use multi-factor authentication.'],
+            [70, 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'],
         ];
     }
 }

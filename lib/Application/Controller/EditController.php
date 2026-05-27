@@ -271,7 +271,9 @@ class EditController extends BaseController
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
+        $perm_dnssec = $this->permissionService->getDnssecPermissionLevelForZone($this->db, $userId, $zone_id);
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
+        $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner == "1");
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -287,6 +289,12 @@ class EditController extends BaseController
 
         if (isset($_POST['sign_zone'])) {
             $this->validateCsrfToken();
+
+            if (!$can_manage_dnssec) {
+                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+                $this->redirect('/zones/' . $zone_id . '/edit');
+                return;
+            }
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
@@ -335,6 +343,12 @@ class EditController extends BaseController
 
         if (isset($_POST['unsign_zone'])) {
             $this->validateCsrfToken();
+
+            if (!$can_manage_dnssec) {
+                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+                $this->redirect('/zones/' . $zone_id . '/edit');
+                return;
+            }
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
@@ -438,6 +452,7 @@ class EditController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
+            'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'user_is_zone_owner' => $user_is_zone_owner,

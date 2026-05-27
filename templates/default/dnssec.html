@@ -58,13 +58,15 @@
             {% endif %}
         </strong>
         <div>
+            {% if can_manage_dnssec %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add new key{% endtrans %}
             </a>
+            {% endif %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
-            {% if perm_edit != "none" %}
+            {% if can_manage_dnssec %}
             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#unsignZoneModal">
                 <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
             </button>
@@ -116,6 +118,7 @@
                         </td>
                         <td class="text-end">
                             <div class="gap-2">
+                                {% if can_manage_dnssec %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
@@ -127,6 +130,7 @@
                                 <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/delete">
                                     <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -138,7 +142,7 @@
     </div>
 </div>
 
-{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and perm_edit != "none" %}
+{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and can_manage_dnssec %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
         <strong><i class="bi bi-upload me-2"></i>{% trans %}Import key from PEM{% endtrans %}</strong>

@@ -61,3 +61,12 @@ CREATE TABLE IF NOT EXISTS `app_settings` (
 -- column land on the same "no template" sentinel used by every active write
 -- path (DomainManager, ZoneSyncService, RecordManager, ApiDnsBackendProvider).
 ALTER TABLE `zones` MODIFY `zone_templ_id` int(11) NOT NULL DEFAULT 0;
+
+-- Register zone_dnssec_manage_own so admins can grant DNSSEC key management
+-- separately from general zone editing. Existing templates are NOT auto-granted
+-- the new permission; admins must opt in via the permission template editor.
+-- `perm_items.name` has no unique constraint, so guard against duplicates by hand.
+INSERT INTO `perm_items` (`name`, `descr`)
+SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM `perm_items` WHERE `name` = 'zone_dnssec_manage_own');

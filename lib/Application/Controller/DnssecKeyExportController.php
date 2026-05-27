@@ -51,7 +51,7 @@ class DnssecKeyExportController extends BaseController
 
         $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
-        $permEdit = Permission::getEditPermission($this->db);
+        $permDnssec = Permission::getDnssecPermission($this->db);
         $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
@@ -65,8 +65,8 @@ class DnssecKeyExportController extends BaseController
             return;
         }
 
-        // Exporting private key material is an edit-equivalent operation.
-        if ($permEdit !== 'all' && !($permEdit === 'own' && $userIsZoneOwner)) {
+        // Exporting private key material requires DNSSEC management permission.
+        if ($permDnssec !== 'all' && !($permDnssec === 'own' && $userIsZoneOwner)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }

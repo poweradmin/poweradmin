@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -230,7 +230,7 @@ class DatabaseHelper
             'user_is_ueberuser', 'zone_master_add', 'zone_slave_add', 'zone_content_view_own',
             'zone_content_edit_own', 'zone_meta_edit_own', 'search', 'user_edit_own',
             'zone_templ_add', 'zone_templ_edit', 'api_manage_keys', 'zone_delete_own',
-            'zone_content_edit_own_as_client'
+            'zone_content_edit_own_as_client', 'zone_dnssec_manage_own'
         ];
 
         $permissionIds = [];
@@ -245,7 +245,7 @@ class DatabaseHelper
             'Administrator' => ['user_is_ueberuser'],
             'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own'],
             'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
             'Viewer' => ['zone_content_view_own', 'search'],
             'Guest' => []
@@ -297,7 +297,7 @@ class DatabaseHelper
             'Administrators' => ['user_is_ueberuser'],
             'Zone Managers' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own'],
             'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
             'Viewers' => ['zone_content_view_own', 'search'],
             'Guests' => [],

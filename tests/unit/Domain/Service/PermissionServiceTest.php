@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -323,6 +323,31 @@ class PermissionServiceTest extends TestCase
         $this->assertEquals('all', $this->service->getZoneMetaEditPermissionLevel(2)); // edit_others
         $this->assertEquals('own', $this->service->getZoneMetaEditPermissionLevel(3)); // edit_own
         $this->assertEquals('none', $this->service->getZoneMetaEditPermissionLevel(4)); // no permission
+    }
+
+    #[Test]
+    public function testGetDnssecPermissionLevel(): void
+    {
+        $this->userRepository->method('hasAdminPermission')
+            ->willReturnMap([
+                [1, true],
+                [2, false],
+                [3, false],
+                [4, false],
+            ]);
+
+        $this->userRepository->method('getUserPermissions')
+            ->willReturnMap([
+                [1, []],
+                [2, ['zone_dnssec_manage_own']],
+                [3, ['zone_content_edit_own']],
+                [4, []],
+            ]);
+
+        $this->assertEquals('all', $this->service->getDnssecPermissionLevel(1)); // admin
+        $this->assertEquals('own', $this->service->getDnssecPermissionLevel(2)); // explicit grant
+        $this->assertEquals('none', $this->service->getDnssecPermissionLevel(3)); // edit_own alone does not imply DNSSEC
+        $this->assertEquals('none', $this->service->getDnssecPermissionLevel(4)); // no permission
     }
 
     #[Test]

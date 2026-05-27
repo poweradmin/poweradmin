@@ -64,6 +64,7 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (65,	'api_manage_keys',	
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (67,	'zone_delete_own',	'User is allowed to delete zones they own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
@@ -119,6 +120,8 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (33,	8,	56);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (34,	8,	62);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (35,	9,	43);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (36,	9,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (37,	2,	70);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (38,	7,	70);
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 

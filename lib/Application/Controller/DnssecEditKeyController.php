@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -65,12 +65,12 @@ class DnssecEditKeyController extends BaseController
             $confirm = $_GET['confirm'];
         }
 
-        // Early permission check - validate DNSSEC access before any operations
+        // Early permission check - this page is the confirmation entry for toggling a key,
+        // so it requires the dedicated DNSSEC management permission.
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        // Check view permission first
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
             $this->showError(_("You do not have permission to view this zone."));
             return;
@@ -83,7 +83,7 @@ class DnssecEditKeyController extends BaseController
             return;
         }
 
-        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
+        if ($perm_dnssec !== "all" && !($perm_dnssec === "own" && $user_is_zone_owner)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
