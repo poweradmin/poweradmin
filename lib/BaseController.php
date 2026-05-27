@@ -285,14 +285,10 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
-        // Get system messages before rendering
-        $systemMessages = $this->messageService->getMessages('system');
-
-        // Pass system messages to header template
-        $this->renderHeader($systemMessages);
-
-        // Show template-specific messages
-        $this->showMessage($template);
+        $this->renderHeader(
+            $this->messageService->getMessages('system'),
+            $this->messageService->getMessages(pathinfo($template)['filename'])
+        );
 
         // Render main template
         // Ensure CSRF token exists, generate one if missing
@@ -432,16 +428,6 @@ abstract class BaseController
     public function getMessages(string $script): ?array
     {
         return $this->messageService->getMessages($script);
-    }
-
-    /**
-     * Displays messages for a specific template.
-     *
-     * @param string $template The template to display messages for.
-     */
-    public function showMessage(string $template): void
-    {
-        echo $this->messageService->renderMessages($template);
     }
 
     /**
@@ -632,7 +618,7 @@ abstract class BaseController
      *
      * @param array|null $systemMessages System messages to be displayed
      */
-    private function renderHeader(?array $systemMessages = null): void
+    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null): void
     {
         if (!headers_sent()) {
             header('Content-type: text/html; charset=utf-8');
@@ -737,9 +723,11 @@ abstract class BaseController
             }
         }
 
-        // Add system messages to header template variables
         if ($systemMessages) {
             $vars['system_messages'] = $systemMessages;
+        }
+        if ($scriptMessages) {
+            $vars['script_messages'] = $scriptMessages;
         }
 
         // Add the current page and page title to the header variables

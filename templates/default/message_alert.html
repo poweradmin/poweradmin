@@ -1,0 +1,23 @@
+{% if message.type == 'error' %}
+    {% set color = 'danger' %}
+    {% set icon = 'exclamation-triangle' %}
+    {% set title = 'Error:' %}
+{% elseif message.type in ['warn', 'warning'] %}
+    {% set color = 'warning' %}
+    {% set icon = message.type == 'warning' ? 'exclamation-triangle' : 'exclamation-circle' %}
+    {% set title = 'Warning:' %}
+{% elseif message.type == 'success' %}
+    {% set color = 'success' %}
+    {% set icon = 'check-circle' %}
+    {% set title = 'Success:' %}
+{% else %}
+    {% set color = message.type %}
+    {% set icon = 'info-circle' %}
+    {% set title = 'Info:' %}
+{% endif %}
+<div class="alert alert-{{ color }} bg-{{ color }} bg-opacity-10 py-2 border border-{{ color }} alert-dismissible small fade show"
+     role="alert" data-testid="system-message">
+    <i class="bi bi-{{ icon }}-fill me-2 text-{{ color }}"></i>
+    <strong class="text-{{ color }}">{{ title }}</strong> {{ message.content }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>

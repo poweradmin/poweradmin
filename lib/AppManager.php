@@ -126,7 +126,7 @@ class AppManager
             $messageService = new MessageService();
             $messageService->displayDirectSystemError(sprintf(
                 'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
-                htmlspecialchars($this->configuration->getDefaultsFilePath(), ENT_QUOTES)
+                $this->configuration->getDefaultsFilePath()
             ));
         }
 

@@ -77,10 +77,10 @@ class AppInitializer
 
         if (!file_exists($configFile)) {
             $messageService = new MessageService();
-            $messageService->displayHtmlError(
+            $messageService->displayDirectSystemError(
                 sprintf(
-                    _('No configuration file found at %s. Please use the <a href="install/">installer</a> to create one, or create the configuration file manually.'),
-                    htmlspecialchars($configFile)
+                    _('No configuration file found at %s. Please run the installer at install/ to create one, or create the configuration file manually.'),
+                    $configFile
                 )
             );
         }

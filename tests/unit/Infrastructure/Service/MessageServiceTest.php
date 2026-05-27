@@ -184,58 +184,6 @@ class MessageServiceTest extends TestCase
         $this->assertEquals('error', $_SESSION['messages']['system'][0]['type']);
     }
 
-    // ========== renderMessages tests ==========
-
-    #[Test]
-    public function testRenderMessagesReturnsHtmlWithAlert(): void
-    {
-        $this->service->addError('test', 'Error message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-danger', $html);
-        $this->assertStringContainsString('Error message', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesReturnsEmptyStringWhenNoMessages(): void
-    {
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertEquals('', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForSuccess(): void
-    {
-        $this->service->addSuccess('test', 'Success message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-success', $html);
-        $this->assertStringContainsString('check-circle', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForWarning(): void
-    {
-        $this->service->addWarning('test', 'Warning message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-warning', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForInfo(): void
-    {
-        $this->service->addInfo('test', 'Info message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-info', $html);
-        $this->assertStringContainsString('info-circle', $html);
-    }
 
     // ========== generateFormToken tests ==========
 
@@ -380,14 +328,6 @@ class MessageServiceTest extends TestCase
     public function testWithRecordContextReturnsInstance(): void
     {
         $result = $this->service->withRecordContext('record1');
-
-        $this->assertInstanceOf(MessageService::class, $result);
-    }
-
-    #[Test]
-    public function testAllowHtmlReturnsInstance(): void
-    {
-        $result = $this->service->allowHtml();
 
         $this->assertInstanceOf(MessageService::class, $result);
     }

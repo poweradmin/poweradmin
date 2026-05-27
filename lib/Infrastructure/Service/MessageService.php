@@ -142,60 +142,6 @@ class MessageService
     }
 
     /**
-     * Display messages for a specific template
-     *
-     * @param string $template The template to display messages for
-     * @return string HTML output with messages
-     */
-    public function renderMessages(string $template): string
-    {
-        $script = pathinfo($template)['filename'];
-        $output = '';
-
-        $messages = $this->getMessages($script);
-        if ($messages) {
-            foreach ($messages as $message) {
-                $alertClass = match ($message['type']) {
-                    self::TYPE_ERROR => 'alert-danger',
-                    self::TYPE_WARN, self::TYPE_WARNING => 'alert-warning',
-                    self::TYPE_SUCCESS => 'alert-success',
-                    self::TYPE_INFO => 'alert-info',
-                    default => '',
-                };
-
-                $bgClass = str_replace('alert-', '', $alertClass);
-                $borderClass = str_replace('alert-', 'border-', $alertClass);
-                $textClass = str_replace('alert-', 'text-', $alertClass);
-
-                $icon = match ($message['type']) {
-                    self::TYPE_ERROR, self::TYPE_WARNING => 'exclamation-triangle',
-                    self::TYPE_WARN => 'exclamation-circle',
-                    self::TYPE_SUCCESS => 'check-circle',
-                    default => 'info-circle',
-                };
-
-                $title = match ($message['type']) {
-                    self::TYPE_ERROR => 'Error:',
-                    self::TYPE_WARN, self::TYPE_WARNING => 'Warning:',
-                    self::TYPE_SUCCESS => 'Success:',
-                    self::TYPE_INFO => 'Info:',
-                    default => '',
-                };
-
-                $output .= <<<EOF
-<div class="alert $alertClass bg-$bgClass bg-opacity-10 py-2 border $borderClass alert-dismissible small fade show" role="alert" data-testid="alert-message">
-    <i class="bi bi-$icon-fill me-2 $textClass"></i>
-    <strong class="$textClass">$title</strong> {$message['content']}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-EOF;
-            }
-        }
-
-        return $output;
-    }
-
-    /**
      * Add a system error message that will be displayed in the proper place in the HTML
      *
      * @param string $error The error message to display
@@ -212,7 +158,6 @@ EOF;
     private array $errorOptions = [
         'recordName' => null,
         'exit' => true,
-        'allowHtml' => false
     ];
 
     /**
@@ -224,17 +169,6 @@ EOF;
     public function withRecordContext(string $recordName): self
     {
         $this->errorOptions['recordName'] = $recordName;
-        return $this;
-    }
-
-    /**
-     * Allow HTML in the error message
-     *
-     * @return $this For method chaining
-     */
-    public function allowHtml(): self
-    {
-        $this->errorOptions['allowHtml'] = true;
         return $this;
     }
 
@@ -257,7 +191,6 @@ EOF;
         $this->errorOptions = [
             'recordName' => null,
             'exit' => true,
-            'allowHtml' => false
         ];
     }
 
@@ -269,23 +202,18 @@ EOF;
      */
     public function displayDirectSystemError(string $error): void
     {
-        // Extract options and reset for next call
         $recordName = $this->errorOptions['recordName'];
         $exit = $this->errorOptions['exit'];
-        $allowHtml = $this->errorOptions['allowHtml'];
         $this->resetErrorOptions();
 
         if ($recordName !== null) {
             $error = sprintf('%s (Record: %s)', $error, $recordName);
         }
 
-        // First store the error in the session for later display if needed
         $this->addSystemError($error, $recordName);
 
-        // Process the error message based on allowHtml parameter
-        $processedError = $allowHtml ? $error : htmlspecialchars($error, ENT_QUOTES);
+        $processedError = htmlspecialchars($error, ENT_QUOTES, 'UTF-8');
 
-        // Check if headers have been sent - if not, we can output a complete HTML page
         if (!headers_sent()) {
             echo '<!DOCTYPE html>
 <html lang="en">
@@ -296,8 +224,6 @@ EOF;
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
         .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-        a { color: #007bff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -307,7 +233,6 @@ EOF;
 </body>
 </html>';
         } else {
-            // Headers already sent, output just the message
             echo '<div class="alert-danger" role="alert" style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
     <strong>Error:</strong> ' . $processedError . '
 </div>';
@@ -316,17 +241,6 @@ EOF;
         if ($exit) {
             exit();
         }
-    }
-
-    /**
-     * Display a system error with HTML content
-     * Convenience method that automatically sets allowHtml to true
-     *
-     * @param string $error The HTML error message to display
-     */
-    public function displayHtmlError(string $error): void
-    {
-        $this->allowHtml()->displayDirectSystemError($error);
     }
 
     /**
