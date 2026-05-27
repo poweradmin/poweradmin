@@ -647,7 +647,7 @@ abstract class BaseController
             'custom_light_exists' => $customLightExists,
             'custom_dark_exists' => $customDarkExists,
             'custom_theme_exists' => $customThemeExists,
-            'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
+            'install_error' => file_exists('install') ? _('The install/ directory exists, you must remove it first before proceeding.') : false,
             'version' => Version::VERSION,
             'show_style_switcher' => true,
         ], LanguageCode::templateVars($activeLocale));
