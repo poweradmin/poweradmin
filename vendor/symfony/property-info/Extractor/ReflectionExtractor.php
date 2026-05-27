@@ -166,7 +166,8 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
             return $fromMutator;
         }
 
-        if ($fromAccessor = $this->extractFromAccessor($class, $property)) {
+        $allowedPrefixes = array_diff($this->accessorPrefixes, ['is', 'can', 'has']);
+        if ($fromAccessor = $this->extractFromAccessor($class, $property, $allowedPrefixes)) {
             return $fromAccessor;
         }
 
@@ -179,6 +180,11 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
 
         if ($fromPropertyDeclaration = $this->extractFromPropertyDeclaration($class, $property)) {
             return $fromPropertyDeclaration;
+        }
+
+        $allowedPrefixes = array_diff($this->accessorPrefixes, $allowedPrefixes);
+        if ($fromAccessor = $this->extractFromAccessor($class, $property, $allowedPrefixes)) {
+            return $fromAccessor;
         }
 
         return null;
@@ -232,7 +238,8 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         }
 
         [$accessorReflection, $prefix] = $this->getAccessorMethod($class, $property);
-        if ($accessorReflection) {
+        $allowedPrefixes = array_diff($this->accessorPrefixes, ['is', 'can', 'has']);
+        if ($accessorReflection && (\in_array($prefix, $allowedPrefixes, true) || !property_exists($class, $property))) {
             try {
                 return $this->typeResolver->resolve($accessorReflection);
             } catch (UnsupportedException) {
@@ -259,6 +266,15 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
         try {
             return $this->typeResolver->resolve($reflectionProperty);
         } catch (UnsupportedException) {
+        }
+
+        $allowedPrefixes = array_diff($this->accessorPrefixes, $allowedPrefixes);
+        [$accessorReflection, $prefix] = $this->getAccessorMethod($class, $property);
+        if ($accessorReflection && \in_array($prefix, $allowedPrefixes, true)) {
+            try {
+                return $this->typeResolver->resolve($accessorReflection);
+            } catch (UnsupportedException) {
+            }
         }
 
         if (null === $defaultValue = ($reflectionClass->getDefaultProperties()[$property] ?? null)) {
@@ -578,10 +594,14 @@ class ReflectionExtractor implements PropertyListExtractorInterface, PropertyTyp
      *
      * @return LegacyType[]|null
      */
-    private function extractFromAccessor(string $class, string $property): ?array
+    private function extractFromAccessor(string $class, string $property, array $allowedPrefixes): ?array
     {
         [$reflectionMethod, $prefix] = $this->getAccessorMethod($class, $property);
         if (null === $reflectionMethod) {
+            return null;
+        }
+
+        if (!\in_array($prefix, $allowedPrefixes, true)) {
             return null;
         }
 

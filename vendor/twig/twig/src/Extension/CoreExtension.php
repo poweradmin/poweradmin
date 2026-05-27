@@ -1519,10 +1519,6 @@ final class CoreExtension extends AbstractExtension
                 return '';
             }
 
-            if ($isSandboxed) {
-                $loaded->unwrap()->checkSecurity();
-            }
-
             return $loaded->render($variables);
         } finally {
             if ($isSandboxed && !$alreadySandboxed) {
@@ -1698,6 +1694,10 @@ final class CoreExtension extends AbstractExtension
                 try {
                     $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $arrayItem, $lineno, $source);
                 } catch (SecurityNotAllowedPropertyError $propertyNotAllowedError) {
+                    // The methodCheck path expects $item to be a string; stringify it here
+                    // to avoid PHP 8.1+ implicit float-to-int deprecations on downstream
+                    // array key lookups (e.g. isset($cache[$class][$item])).
+                    $item = (string) $item;
                     goto methodCheck;
                 }
             }
@@ -1790,10 +1790,6 @@ final class CoreExtension extends AbstractExtension
             }
 
             static $propertyCheckers = [];
-
-            if ($object instanceof \Closure && '__invoke' === $item) {
-                return $isDefinedTest ? true : $object();
-            }
 
             if (isset($object->$item)
                 || ($propertyCheckers[$object::class][$item] ??= self::getPropertyChecker($object::class, $item))($object, $item)
@@ -1960,12 +1956,15 @@ final class CoreExtension extends AbstractExtension
         }
 
         if ($isSandboxed) {
-            $sandbox = $env->getExtension(SandboxExtension::class);
+            // The sandbox might be enabled via a SourcePolicyInterface, in which case the SandboxExtension
+            // would not consider the sandbox active without the current Source: $isSandboxed is already
+            // computed against the call-site source, so check the policy directly to honor that decision.
+            $policy = $env->getExtension(SandboxExtension::class)->getSecurityPolicy();
             foreach ($array as $item) {
                 if (\is_object($item)) {
-                    $sandbox->checkPropertyAllowed($item, (string) $name);
+                    $policy->checkPropertyAllowed($item, (string) $name);
                     if (null !== $index) {
-                        $sandbox->checkPropertyAllowed($item, (string) $index);
+                        $policy->checkPropertyAllowed($item, (string) $index);
                     }
                 }
             }
