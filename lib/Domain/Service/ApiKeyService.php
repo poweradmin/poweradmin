@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -357,61 +356,18 @@ class ApiKeyService
     }
 
     /**
-     * Internal method to authenticate with a specific key
-     *
-     * @param string $secretKey The secret key to authenticate with
-     * @return bool True if authentication succeeded, false otherwise
+     * Internal method to authenticate with a specific key. The repository hashes
+     * the candidate before lookup; legacy plaintext rows are migrated to a hash
+     * on first match (see {@see DbApiKeyRepository::findBySecretKey}).
      */
     private function authenticateWithKey(string $secretKey): bool
     {
-        // Use case-sensitive comparison to avoid collation-based false matches on MySQL.
-        // PostgreSQL and SQLite are byte-exact by default; MySQL needs the BINARY operator.
-        try {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
-            $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE $matchExpr = ?");
-            $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($keyData) {
-                // Check if key is disabled
-                if ((bool)$keyData['disabled']) {
-                    return false;
-                }
-
-                // Check if key is expired
-                if ($keyData['expires_at'] && new DateTime($keyData['expires_at']) < new DateTime()) {
-                    return false;
-                }
-
-                // Set session variables for the authenticated user
-                $this->userContextService->setSessionData(SessionKeys::USERID, $keyData['created_by']);
-                $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
-
-                // Update last used timestamp
-                $this->apiKeyRepository->updateLastUsed($keyData['id']);
-
-                return true;
-            }
-        } catch (Exception $e) {
-            // Fall through to repository method
-        }
-
-        // If the direct database check failed, try the repository method as fallback
         $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-
-        if ($apiKey === null) {
+        if ($apiKey === null || !$apiKey->isValid()) {
             return false;
         }
 
-        if (!$apiKey->isValid()) {
-            return false;
-        }
-
-        // Update the last used timestamp
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
-
-        // Set session variables for the authenticated user
         $this->userContextService->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
         $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
@@ -419,46 +375,25 @@ class ApiKeyService
     }
 
     /**
-     * Get user ID from API key without setting session (stateless)
-     *
-     * @param string $secretKey The API key to look up
-     * @return int User ID or 0 if invalid/not found
+     * Get user ID from API key without setting session (stateless).
      */
     public function getUserIdFromApiKey(string $secretKey): int
     {
-        // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
             return 0;
         }
 
         try {
-            // Check for a direct database match
-            $stmt = $this->db->prepare("SELECT created_by, disabled, expires_at FROM api_keys WHERE secret_key = ?");
-            $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($keyData) {
-                // Check if key is disabled
-                if ((bool)$keyData['disabled']) {
-                    return 0;
-                }
-
-                // Check if key is expired
-                if ($keyData['expires_at'] && new DateTime($keyData['expires_at']) < new DateTime()) {
-                    return 0;
-                }
-
-                // Update last used timestamp (database-agnostic using DbCompat)
-                $dbType = $this->config->get('database', 'type', 'mysql');
-                $nowFunc = DbCompat::now($dbType);
-                $this->db->prepare("UPDATE api_keys SET last_used_at = $nowFunc WHERE secret_key = ?")->execute([$secretKey]);
-
-                return (int)$keyData['created_by'];
+            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
+            if ($apiKey === null || !$apiKey->isValid()) {
+                return 0;
             }
+
+            $this->apiKeyRepository->updateLastUsed($apiKey->getId());
+            return $apiKey->getCreatedBy() ?? 0;
         } catch (Exception $e) {
             $this->logger->error('Failed to get user ID from API key: {error}', ['error' => $e->getMessage()]);
+            return 0;
         }
-
-        return 0;
     }
 }

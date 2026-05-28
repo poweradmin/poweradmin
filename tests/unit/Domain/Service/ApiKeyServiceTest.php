@@ -166,20 +166,12 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $futureDate = (new DateTime('+1 year'))->format('Y-m-d H:i:s');
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn(42);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'id' => 1,
-            'name' => 'Test Key',
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => $futureDate,
-        ]);
-
-        $this->db->method('prepare')->willReturn($stmt);
-
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
             ->with(1);
@@ -198,18 +190,12 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'id' => 1,
-            'name' => 'Test Key',
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => null, // No expiration
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn(42);
 
-        $this->db->method('prepare')->willReturn($stmt);
-
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
             ->with(1);
@@ -297,27 +283,17 @@ class ApiKeyServiceTest extends TestCase
         $this->config->method('get')
             ->willReturnMap([
                 ['api', 'enabled', false, true],
-                ['database', 'type', 'mysql', 'mysql'],
             ]);
 
-        $futureDate = (new DateTime('+1 year'))->format('Y-m-d H:i:s');
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn(42);
 
-        $selectStmt = $this->createMock(PDOStatement::class);
-        $selectStmt->method('execute')->willReturn(true);
-        $selectStmt->method('fetch')->willReturn([
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => $futureDate,
-        ]);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
+        $this->apiKeyRepository->expects($this->once())->method('updateLastUsed')->with(1);
 
-        $updateStmt = $this->createMock(PDOStatement::class);
-        $updateStmt->method('execute')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
-
-        $result = $this->service->getUserIdFromApiKey('pwa_valid_key');
-        $this->assertEquals(42, $result);
+        $this->assertEquals(42, $this->service->getUserIdFromApiKey('pwa_valid_key'));
     }
 
     #[Test]
@@ -326,25 +302,16 @@ class ApiKeyServiceTest extends TestCase
         $this->config->method('get')
             ->willReturnMap([
                 ['api', 'enabled', false, true],
-                ['database', 'type', 'mysql', 'mysql'],
             ]);
 
-        $selectStmt = $this->createMock(PDOStatement::class);
-        $selectStmt->method('execute')->willReturn(true);
-        $selectStmt->method('fetch')->willReturn([
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => null,
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn(42);
 
-        $updateStmt = $this->createMock(PDOStatement::class);
-        $updateStmt->method('execute')->willReturn(true);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
-
-        $result = $this->service->getUserIdFromApiKey('pwa_valid_key_no_expiry');
-        $this->assertEquals(42, $result);
+        $this->assertEquals(42, $this->service->getUserIdFromApiKey('pwa_valid_key_no_expiry'));
     }
 
     #[Test]
@@ -429,18 +396,12 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'id' => 1,
-            'name' => 'Legacy Key',
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => null,
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn(42);
 
-        $this->db->method('prepare')->willReturn($stmt);
-
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
             ->with(1);

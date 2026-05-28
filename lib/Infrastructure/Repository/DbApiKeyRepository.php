@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,135 +109,124 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function findBySecretKey(string $secretKey): ?ApiKey
     {
-        // Log the query details for debugging
-        $this->logger->debug('[DbApiKeyRepository] Looking up API key in database');
-        $this->logger->debug('[DbApiKeyRepository] Key length: {length}, First chars: {first}, Last chars: {last}', [
-            'length' => strlen($secretKey),
-            'first' => substr($secretKey, 0, 4),
-            'last' => substr($secretKey, -4),
-        ]);
-
-        // Try a different approach first - direct comparison to work around database encoding issues
         try {
-            $allKeys = $this->db->query("SELECT id, name, secret_key FROM api_keys");
-            $found = false;
-            $foundId = null;
-
-            while ($row = $allKeys->fetch(PDO::FETCH_ASSOC)) {
-                // Debug each key
-                $this->logger->debug('[DbApiKeyRepository] Found key ID {id} in DB, length: {length}, prefix: {prefix}, suffix: {suffix}', [
-                    'id' => $row['id'],
-                    'length' => strlen($row['secret_key']),
-                    'prefix' => substr($row['secret_key'], 0, 4),
-                    'suffix' => substr($row['secret_key'], -4),
-                ]);
-
-                // Check for exact match (timing-safe).
-                if (is_string($row['secret_key']) && hash_equals($row['secret_key'], $secretKey)) {
-                    $this->logger->debug('[DbApiKeyRepository] Exact match found with ID: {id}', ['id' => $row['id']]);
-                    $found = true;
-                    $foundId = $row['id'];
-                    break;
-                }
-            }
-
-            // If we found a match, get the full record
-            if ($found && $foundId) {
-                $exactStmt = $this->db->prepare("SELECT * FROM api_keys WHERE id = :id");
-                $exactStmt->bindValue(':id', $foundId, PDO::PARAM_INT);
-                $exactStmt->execute();
-                $exactResult = $exactStmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($exactResult) {
-                    $this->logger->debug('[DbApiKeyRepository] Successfully found key by ID: {id}, Name: {name}', [
-                        'id' => $exactResult['id'],
-                        'name' => $exactResult['name'],
-                    ]);
-                    return $this->createFromArray($exactResult);
-                }
-            }
-
-            // Fall back to original query
-            $this->logger->debug('[DbApiKeyRepository] No exact match found, trying normal query');
+            $hash = self::hashSecretKey($secretKey);
             $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE secret_key = :secretKey");
-            $stmt->bindValue(':secretKey', $secretKey);
+            $stmt->bindValue(':secretKey', $hash);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$result) {
-                // Log that no matching key was found
-                $this->logger->debug('[DbApiKeyRepository] No API key found matching the provided secret key');
-
-                // For debugging only, check if keys exist at all
-                $countStmt = $this->db->prepare("SELECT COUNT(*) FROM api_keys");
-                $countStmt->execute();
-                $count = $countStmt->fetchColumn();
-                $this->logger->debug('[DbApiKeyRepository] Total API keys in database: {count}', ['count' => $count]);
-
-                return null;
+            if ($result) {
+                return $this->createFromArray($result);
             }
 
-            // Log basic info about the found key (don't log the actual key)
-            $this->logger->debug('[DbApiKeyRepository] Found API key ID: {id}, Name: {name}, Created by: {createdBy}', [
-                'id' => $result['id'],
-                'name' => $result['name'],
-                'createdBy' => $result['created_by'],
-            ]);
-
-            return $this->createFromArray($result);
+            // Legacy plaintext keys (pre-4.5.0) are migrated to a SHA-256 hash on
+            // first use. Operators upgrading from 4.4.x retain working keys; rows
+            // that are never used remain plaintext until manually rotated.
+            return $this->findAndMigratePlaintext($secretKey, $hash);
         } catch (\Exception $e) {
-            // Log any database errors
             $this->logger->error('[DbApiKeyRepository] Database error while finding API key: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
 
     /**
+     * One-way hash applied to API keys before persistence. SHA-256 is sufficient
+     * because keys are 256+ bits of entropy from `random_bytes(32)`; brute force
+     * across the keyspace is infeasible without a salt. The `sha256$` prefix
+     * makes hashed entries syntactically distinct from any legacy plaintext key
+     * so the plaintext-fallback path can refuse pass-the-hash candidates without
+     * also rejecting unusual legacy key formats.
+     */
+    public static function hashSecretKey(string $secretKey): string
+    {
+        return 'sha256$' . hash('sha256', $secretKey);
+    }
+
+    private const HASH_PREFIX = 'sha256$';
+
+    private function findAndMigratePlaintext(string $plaintext, string $hash): ?ApiKey
+    {
+        // Refuse candidates already in our hash format (`sha256$<hex>`). Without
+        // this gate, an attacker who read the hashed column from the database
+        // could submit the raw stored value as a candidate: hashing it misses
+        // the hashed lookup, the plaintext SELECT then matches the row byte-for-
+        // byte, and the row is migrated to a fresh hash - auth bypass plus
+        // lock-out of the real owner. The prefix is distinctive enough that no
+        // realistic legacy plaintext key starts with it.
+        if (str_starts_with($plaintext, self::HASH_PREFIX)) {
+            return null;
+        }
+
+        // MySQL's default collation is case-insensitive, which would let a
+        // mistyped/case-shifted candidate match the stored plaintext and then
+        // migrate the row to the wrong-cased hash, locking the real owner out.
+        // BINARY restores byte-exact comparison; PostgreSQL and SQLite are
+        // already byte-exact by default.
+        $dbType = $this->config->get('database', 'type', 'mysql');
+        $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
+
+        $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE $matchExpr = :secretKey");
+        $stmt->bindValue(':secretKey', $plaintext);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result) {
+            return null;
+        }
+
+        $update = $this->db->prepare(
+            "UPDATE api_keys SET secret_key = :hash WHERE id = :id AND $matchExpr = :plaintext"
+        );
+        $update->bindValue(':hash', $hash);
+        $update->bindValue(':id', (int) $result['id'], PDO::PARAM_INT);
+        $update->bindValue(':plaintext', $plaintext);
+        $update->execute();
+
+        return $this->createFromArray($result);
+    }
+
+    /**
      * @inheritDoc
+     *
+     * The secret key is hashed before persistence. Updates that do not include a
+     * fresh secret (`getSecretKey()` empty - rows loaded via {@see createFromArray})
+     * leave the stored hash untouched so non-secret edits (name, disabled, expiry)
+     * cannot accidentally overwrite the key with a re-hash of an empty string.
      */
     public function save(ApiKey $apiKey): ApiKey
     {
+        $hasSecret = $apiKey->getSecretKey() !== '';
+
         if ($apiKey->getId() === null) {
-            // Insert new API key
             $stmt = $this->db->prepare("
                 INSERT INTO api_keys (
-                    name, 
-                    secret_key, 
-                    created_by, 
-                    created_at, 
-                    last_used_at, 
-                    disabled, 
-                    expires_at
+                    name, secret_key, created_by, created_at, last_used_at, disabled, expires_at
                 ) VALUES (
-                    :name, 
-                    :secretKey, 
-                    :createdBy, 
-                    :createdAt, 
-                    :lastUsedAt, 
-                    :disabled, 
-                    :expiresAt
+                    :name, :secretKey, :createdBy, :createdAt, :lastUsedAt, :disabled, :expiresAt
                 )
             ");
-        } else {
-            // Update existing API key
+            $stmt->bindValue(':secretKey', self::hashSecretKey($apiKey->getSecretKey()));
+        } elseif ($hasSecret) {
             $stmt = $this->db->prepare("
-                UPDATE api_keys SET 
-                    name = :name, 
-                    secret_key = :secretKey, 
-                    created_by = :createdBy, 
-                    created_at = :createdAt, 
-                    last_used_at = :lastUsedAt,
-                    disabled = :disabled, 
-                    expires_at = :expiresAt
+                UPDATE api_keys SET
+                    name = :name, secret_key = :secretKey, created_by = :createdBy,
+                    created_at = :createdAt, last_used_at = :lastUsedAt,
+                    disabled = :disabled, expires_at = :expiresAt
                 WHERE id = :id
             ");
-
+            $stmt->bindValue(':id', $apiKey->getId(), PDO::PARAM_INT);
+            $stmt->bindValue(':secretKey', self::hashSecretKey($apiKey->getSecretKey()));
+        } else {
+            $stmt = $this->db->prepare("
+                UPDATE api_keys SET
+                    name = :name, created_by = :createdBy,
+                    created_at = :createdAt, last_used_at = :lastUsedAt,
+                    disabled = :disabled, expires_at = :expiresAt
+                WHERE id = :id
+            ");
             $stmt->bindValue(':id', $apiKey->getId(), PDO::PARAM_INT);
         }
 
         $stmt->bindValue(':name', $apiKey->getName());
-        $stmt->bindValue(':secretKey', $apiKey->getSecretKey());
         $stmt->bindValue(':createdBy', $apiKey->getCreatedBy(), $apiKey->getCreatedBy() !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $stmt->bindValue(':createdAt', $apiKey->getCreatedAt()->format('Y-m-d H:i:s'));
         $stmt->bindValue(':lastUsedAt', $apiKey->getLastUsedAt() ? $apiKey->getLastUsedAt()->format('Y-m-d H:i:s') : null);
@@ -314,10 +303,11 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
     }
 
     /**
-     * Create an ApiKey object from a database row array
+     * Create an ApiKey object from a database row array.
      *
-     * @param array $data The database row data
-     * @return ApiKey The created ApiKey object
+     * The stored secret is a SHA-256 hash; we do NOT expose it on the in-memory
+     * model. Callers can verify a candidate via {@see findBySecretKey}, but the
+     * raw key is only known at creation/regeneration time.
      */
     private function createFromArray(array $data): ApiKey
     {
@@ -326,7 +316,6 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             $lastUsedAt = $data['last_used_at'] ? new DateTime($data['last_used_at']) : null;
             $expiresAt = $data['expires_at'] ? new DateTime($data['expires_at']) : null;
         } catch (Exception $e) {
-            // Handle date parsing errors
             $createdAt = new DateTime();
             $lastUsedAt = null;
             $expiresAt = null;
@@ -334,7 +323,7 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
 
         return new ApiKey(
             $data['name'],
-            $data['secret_key'],
+            '',
             $data['created_by'] !== null ? (int) $data['created_by'] : null,
             $createdAt,
             $lastUsedAt,
