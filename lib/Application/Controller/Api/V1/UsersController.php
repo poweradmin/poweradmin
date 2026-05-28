@@ -33,8 +33,10 @@ namespace Poweradmin\Application\Controller\Api\V1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -509,6 +511,15 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
+            $templateGate = $this->guardPermissionTemplateAssignment(
+                $currentUserId,
+                $input,
+                UserManager::getMinimalPermissionTemplateId($this->db, 'user')
+            );
+            if ($templateGate !== null) {
+                return $templateGate;
+            }
+
             // Use the domain service to create user
             $result = $this->userManagementService->createUser($input);
 
@@ -689,6 +700,14 @@ class UsersController extends PublicApiController
 
             if (!$input) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+
+            // Update path passes null so an omitted perm_templ stays omitted (the
+            // existing template persists). Only the create path injects a safe
+            // default to replace the repository's historical fallback to id 1.
+            $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null);
+            if ($templateGate !== null) {
+                return $templateGate;
             }
 
             // Use the domain service to update user
@@ -951,5 +970,17 @@ class UsersController extends PublicApiController
         } catch (Exception $e) {
             return $this->returnApiError('Failed to assign permission template: ' . $e->getMessage(), 500);
         }
+    }
+
+    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId): ?JsonResponse
+    {
+        $error = PermissionTemplateAssignmentGuard::apply(
+            $this->apiPermissionService,
+            $defaultUserTemplateId,
+            $currentUserId,
+            $input
+        );
+
+        return $error === null ? null : $this->returnApiError($error, 403);
     }
 }
