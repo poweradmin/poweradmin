@@ -340,18 +340,12 @@ class ApiKeyService
      */
     public function authenticate(string $secretKey): bool
     {
-        // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
             return false;
         }
 
-        // If the key doesn't start with 'pwa_', try to authenticate with it as is
-        // This provides backward compatibility with existing keys
-        if (strpos($secretKey, 'pwa_') !== 0) {
-            return $this->authenticateWithKey($secretKey);
-        }
-
-        // If it does start with 'pwa_', authenticate with the prefixed key
+        // The `pwa_` prefix is informational only; the repository looks the key
+        // up by hash regardless of prefix, so legacy unprefixed keys still work.
         return $this->authenticateWithKey($secretKey);
     }
 

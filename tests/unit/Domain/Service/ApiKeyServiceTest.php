@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use DateTime;
 use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -98,12 +97,6 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(false);
-
-        $this->db->method('prepare')->willReturn($stmt);
-
         $this->apiKeyRepository->method('findBySecretKey')->willReturn(null);
 
         $result = $this->service->authenticate('pwa_invalid_key');
@@ -118,17 +111,10 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'id' => 1,
-            'name' => 'Test Key',
-            'created_by' => 1,
-            'disabled' => true,
-            'expires_at' => null,
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $result = $this->service->authenticate('pwa_disabled_key');
         $this->assertFalse($result);
@@ -142,17 +128,10 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'id' => 1,
-            'name' => 'Test Key',
-            'created_by' => 1,
-            'disabled' => false,
-            'expires_at' => '2020-01-01 00:00:00', // Expired date
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $result = $this->service->authenticate('pwa_expired_key');
         $this->assertFalse($result);
@@ -223,11 +202,7 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(false);
-
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn(null);
 
         $result = $this->service->getUserIdFromApiKey('pwa_invalid_key');
         $this->assertEquals(0, $result);
@@ -241,15 +216,10 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'created_by' => 42,
-            'disabled' => true,
-            'expires_at' => null,
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $result = $this->service->getUserIdFromApiKey('pwa_disabled_key');
         $this->assertEquals(0, $result);
@@ -263,15 +233,10 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn([
-            'created_by' => 42,
-            'disabled' => false,
-            'expires_at' => '2020-01-01 00:00:00',
-        ]);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $result = $this->service->getUserIdFromApiKey('pwa_expired_key');
         $this->assertEquals(0, $result);
@@ -312,80 +277,6 @@ class ApiKeyServiceTest extends TestCase
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $this->assertEquals(42, $this->service->getUserIdFromApiKey('pwa_valid_key_no_expiry'));
-    }
-
-    #[Test]
-    public function testAuthenticateFallsBackToRepositoryOnDatabaseException(): void
-    {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
-
-        // Make the direct DB query throw an exception
-        $this->db->method('prepare')
-            ->willThrowException(new \Exception('Database error'));
-
-        // Repository returns null (key not found)
-        $this->apiKeyRepository->method('findBySecretKey')
-            ->willReturn(null);
-
-        $result = $this->service->authenticate('pwa_test_key');
-        $this->assertFalse($result);
-    }
-
-    #[Test]
-    public function testAuthenticateFallsBackToRepositoryAndSucceeds(): void
-    {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
-
-        // Make the direct DB query throw an exception
-        $this->db->method('prepare')
-            ->willThrowException(new \Exception('Database error'));
-
-        // Create a valid ApiKey mock
-        $apiKey = $this->createMock(ApiKey::class);
-        $apiKey->method('isValid')->willReturn(true);
-        $apiKey->method('getId')->willReturn(1);
-        $apiKey->method('getCreatedBy')->willReturn(42);
-
-        $this->apiKeyRepository->method('findBySecretKey')
-            ->willReturn($apiKey);
-
-        $this->apiKeyRepository->expects($this->once())
-            ->method('updateLastUsed')
-            ->with(1);
-
-        $result = $this->service->authenticate('pwa_test_key');
-        $this->assertTrue($result);
-        $this->assertEquals(42, $_SESSION['userid']);
-        $this->assertEquals('api_key', $_SESSION['auth_used']);
-    }
-
-    #[Test]
-    public function testAuthenticateFallsBackToRepositoryButKeyIsInvalid(): void
-    {
-        $this->config->method('get')
-            ->willReturnMap([
-                ['api', 'enabled', false, true],
-            ]);
-
-        // Make the direct DB query throw an exception
-        $this->db->method('prepare')
-            ->willThrowException(new \Exception('Database error'));
-
-        // Create an invalid ApiKey mock (disabled or expired)
-        $apiKey = $this->createMock(ApiKey::class);
-        $apiKey->method('isValid')->willReturn(false);
-
-        $this->apiKeyRepository->method('findBySecretKey')
-            ->willReturn($apiKey);
-
-        $result = $this->service->authenticate('pwa_test_key');
-        $this->assertFalse($result);
     }
 
     #[Test]
