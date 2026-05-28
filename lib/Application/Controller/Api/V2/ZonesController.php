@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -488,6 +488,13 @@ class ZonesController extends PublicApiController
             }
             $owner = $resolved->owner;
             $groupIds = $resolved->groupIds;
+
+            // Match ZoneManagementService: when DNSSEC is disabled server-side, enable_dnssec
+            // is a silent no-op, so the permission gate would just emit a misleading 403.
+            $dnssecEnabledServerSide = (bool) $this->getConfig()->get('dnssec', 'enabled', false);
+            if ($enableDnssec && $dnssecEnabledServerSide && !$this->permissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
+                return $this->returnApiError('You do not have permission to manage DNSSEC for this zone', 403);
+            }
 
             // Use the zone management service to create zone
             $result = $this->zoneManagementService->createZone(

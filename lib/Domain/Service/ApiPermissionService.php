@@ -335,6 +335,61 @@ class ApiPermissionService
     }
 
     /**
+     * Check if user can manage DNSSEC for an existing zone (stateless).
+     *
+     * Mirrors the web UI gate: ueberuser bypasses; otherwise the user must hold
+     * zone_dnssec_manage_own AND own (directly or via group) the zone.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     */
+    public function canManageDnssec(int $userId, int $zoneId): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        if (!$this->userHasPermission($userId, 'zone_dnssec_manage_own')) {
+            return false;
+        }
+
+        return $this->userOwnsZone($userId, $zoneId);
+    }
+
+    /**
+     * Check if user can request DNSSEC be enabled on a zone they are about to create.
+     *
+     * The zone does not exist yet, so reuse the would-be ownership intent:
+     * ueberuser bypasses; otherwise the user needs zone_dnssec_manage_own AND
+     * must be the new zone's direct owner or a member of one of its assigned groups.
+     *
+     * @param int $userId Authenticated caller
+     * @param int|null $ownerId The owner_user_id the new zone will be created with (null for groups-only V2 mode)
+     * @param int[] $groupIds Group IDs that will own the new zone (V2 only)
+     */
+    public function canManageDnssecForNewZone(int $userId, ?int $ownerId, array $groupIds = []): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        if (!$this->userHasPermission($userId, 'zone_dnssec_manage_own')) {
+            return false;
+        }
+
+        if ($ownerId !== null && $userId === $ownerId) {
+            return true;
+        }
+
+        if ($groupIds === []) {
+            return false;
+        }
+
+        $userGroupIds = $this->getUserGroupIds($userId);
+        return $userGroupIds !== [] && array_intersect($userGroupIds, $groupIds) !== [];
+    }
+
+    /**
      * Check if user can view other users (stateless)
      *
      * @param int $userId User ID to check

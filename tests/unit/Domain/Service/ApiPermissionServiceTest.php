@@ -679,4 +679,114 @@ class ApiPermissionServiceTest extends TestCase
 
         $this->assertSame([3, 8], $this->service->getExistingGroupIds([3, 5, 8]));
     }
+
+    #[Test]
+    public function testCanManageDnssecAsUberuser(): void
+    {
+        $this->mockPermissionCheck(1, 'user_is_ueberuser', true);
+
+        $this->assertTrue($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecRequiresOwnershipForNonUberuser(): void
+    {
+        $this->setupPermissionMock([0, 1, 1]);
+
+        $this->assertTrue($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecDeniesWhenPermissionGrantedButNotOwner(): void
+    {
+        $this->setupPermissionMock([0, 1, 0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecDeniesWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAsUberuser(): void
+    {
+        $this->mockPermissionCheck(1, 'user_is_ueberuser', true);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, 7));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAllowsSelfOwnedWithGrant(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, 1));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesOtherOwnerWithoutUberuser(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, 7));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, 1));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAllowsMatchingGroupOwner(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 1];
+            $index = $callIndex++;
+            return $results[$index] ?? 0;
+        });
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn([4, 9]);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, null, [9, 12]));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesNonOverlappingGroups(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 1];
+            $index = $callIndex++;
+            return $results[$index] ?? 0;
+        });
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn([4, 9]);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, null, [12, 15]));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesNullOwnerWithoutGroups(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, null, []));
+    }
 }
