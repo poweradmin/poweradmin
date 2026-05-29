@@ -87,12 +87,7 @@ class DocsController extends BaseController
      */
     private function generateSwaggerUI(): string
     {
-        // Get the base URL for API docs
-        $protocolDetector = new ProtocolDetector();
-        $protocol = $protocolDetector->detect();
-        $host = $this->getValidatedHost();
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $baseUrl = $protocol . '://' . $host . $baseUrlPrefix;
+        $baseUrl = $this->getDocsBaseUrl();
 
         // Support multiple API versions
         $v1JsonUrl = $baseUrl . '/api/docs/v1/json';
@@ -241,23 +236,43 @@ class DocsController extends BaseController
     }
 
     /**
-     * Get validated and sanitized host from HTTP_HOST header
+     * Build the base URL the Swagger UI page embeds when fetching spec JSON.
      *
-     * @return string Safe hostname or localhost fallback
+     * Prefers interface.application_url so the embedded spec URL cannot be
+     * poisoned via the Host header (otherwise the rendered docs page would
+     * point Swagger UI at an attacker-controlled spec).
+     */
+    private function getDocsBaseUrl(): string
+    {
+        $configuredUrl = $this->config->get('interface', 'application_url', '');
+        if (!empty($configuredUrl)) {
+            return rtrim($configuredUrl, '/');
+        }
+
+        $protocolDetector = new ProtocolDetector();
+        $protocol = $protocolDetector->detect();
+        $host = $this->getValidatedHost();
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+
+        return $protocol . '://' . $host . $baseUrlPrefix;
+    }
+
+    /**
+     * Validate the SERVER_NAME used as a fallback in getDocsBaseUrl().
+     *
+     * SERVER_NAME comes from webserver config, but a misconfigured vhost
+     * (e.g. one that copies the Host header into ServerName) could still let
+     * unexpected values through, so the hostname format is checked.
      */
     private function getValidatedHost(): string
     {
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
 
-        // Remove port number if present for validation
         $hostOnly = preg_replace('/:\d+$/', '', $host);
-
-        // Validate hostname format
         if (!$this->isValidHostname($hostOnly)) {
             return 'localhost';
         }
 
-        // Return the original host (including port) if validation passed
         return $host;
     }
 

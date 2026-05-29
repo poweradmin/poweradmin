@@ -16,7 +16,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithValidDomain(): void
     {
-        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['SERVER_NAME'] = 'example.com';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -25,7 +25,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithValidDomainAndPort(): void
     {
-        $_SERVER['HTTP_HOST'] = 'example.com:8080';
+        $_SERVER['SERVER_NAME'] = 'example.com:8080';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -34,7 +34,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithValidIPv4(): void
     {
-        $_SERVER['HTTP_HOST'] = '192.168.1.100';
+        $_SERVER['SERVER_NAME'] = '192.168.1.100';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -43,7 +43,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithValidIPv4AndPort(): void
     {
-        $_SERVER['HTTP_HOST'] = '192.168.1.100:3000';
+        $_SERVER['SERVER_NAME'] = '192.168.1.100:3000';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -52,8 +52,8 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithBareIPv6ShouldFallbackToLocalhost(): void
     {
-        // Bare IPv6 addresses are not valid in HTTP_HOST and should fallback to localhost
-        $_SERVER['HTTP_HOST'] = '2001:db8::1';
+        // Bare IPv6 addresses are not valid in SERVER_NAME and should fallback to localhost
+        $_SERVER['SERVER_NAME'] = '2001:db8::1';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -62,7 +62,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithMaliciousSingleQuote(): void
     {
-        $_SERVER['HTTP_HOST'] = "evil.com'; alert('xss'); var x='";
+        $_SERVER['SERVER_NAME'] = "evil.com'; alert('xss'); var x='";
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -71,7 +71,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithMaliciousDoubleQuote(): void
     {
-        $_SERVER['HTTP_HOST'] = 'evil.com"; alert("xss"); var x="';
+        $_SERVER['SERVER_NAME'] = 'evil.com"; alert("xss"); var x="';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -80,7 +80,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithMaliciousScript(): void
     {
-        $_SERVER['HTTP_HOST'] = 'evil.com<script>alert("xss")</script>';
+        $_SERVER['SERVER_NAME'] = 'evil.com<script>alert("xss")</script>';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -89,7 +89,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithSemicolon(): void
     {
-        $_SERVER['HTTP_HOST'] = 'evil.com; rm -rf /';
+        $_SERVER['SERVER_NAME'] = 'evil.com; rm -rf /';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -98,7 +98,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithExcessiveLength(): void
     {
-        $_SERVER['HTTP_HOST'] = str_repeat('a', 254) . '.com';
+        $_SERVER['SERVER_NAME'] = str_repeat('a', 254) . '.com';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -107,7 +107,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithInvalidCharacters(): void
     {
-        $_SERVER['HTTP_HOST'] = 'invalid@host.com';
+        $_SERVER['SERVER_NAME'] = 'invalid@host.com';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -116,7 +116,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithEmptyHost(): void
     {
-        $_SERVER['HTTP_HOST'] = '';
+        $_SERVER['SERVER_NAME'] = '';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -125,7 +125,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithMissingHost(): void
     {
-        unset($_SERVER['HTTP_HOST']);
+        unset($_SERVER['SERVER_NAME']);
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -134,7 +134,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithLocalhostFallback(): void
     {
-        $_SERVER['HTTP_HOST'] = 'localhost';
+        $_SERVER['SERVER_NAME'] = 'localhost';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -143,7 +143,7 @@ class DocsControllerTest extends TestCase
 
     public function testGetValidatedHostWithSubdomain(): void
     {
-        $_SERVER['HTTP_HOST'] = 'api.example.com';
+        $_SERVER['SERVER_NAME'] = 'api.example.com';
 
         $result = $this->controller->getValidatedHostPublic();
 
@@ -153,6 +153,6 @@ class DocsControllerTest extends TestCase
     protected function tearDown(): void
     {
         // Clean up $_SERVER state after each test
-        unset($_SERVER['HTTP_HOST']);
+        unset($_SERVER['SERVER_NAME']);
     }
 }
