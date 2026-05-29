@@ -33,10 +33,12 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\UserContextService;
 
 class ZoneController extends InternalApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
+    private UserContextService $userContextService;
 
     /**
      * Constructor for ZoneController
@@ -48,6 +50,7 @@ class ZoneController extends InternalApiController
         parent::__construct($request);
 
         $this->zoneRepository = $this->createZoneRepository();
+        $this->userContextService = new UserContextService();
     }
 
     /**
@@ -77,7 +80,11 @@ class ZoneController extends InternalApiController
         // Check if user can view zones
         $this->validatePermission('zone_content_view_own');
 
-        $zones = $this->zoneRepository->listZones();
+        // Scope to the user's own zones unless they hold zone_content_view_others.
+        // Without these args the repository defaults leak every zone in the system.
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $viewOthers = $this->hasPermission('zone_content_view_others');
+        $zones = $this->zoneRepository->listZones($userId, $viewOthers);
 
         $this->returnJsonResponse([
             'success' => true,
