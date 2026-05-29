@@ -155,16 +155,28 @@ class SamlConfigurationService extends LoggingService
 
     private function getBaseUrl(): string
     {
-        // Try to get from configuration first
+        // Prefer application_url so the SAML SP metadata advertised to the IdP
+        // (entityID, ACS, SLO) cannot be poisoned via the Host header. Matches
+        // OidcService::getCallbackUrl().
+        $configuredUrl = $this->configManager->get('interface', 'application_url', '');
+        if (!empty($configuredUrl)) {
+            return rtrim($configuredUrl, '/');
+        }
+
+        // Legacy, undocumented backstop kept so operators who set it manually
+        // are not silently broken.
         $configuredBaseUrl = $this->configManager->get('interface', 'base_url', '');
         if (!empty($configuredBaseUrl)) {
             return rtrim($configuredBaseUrl, '/');
         }
 
-        // Fallback to detecting from server environment
+        $this->logWarning(
+            'SAML: deriving SP base URL from SERVER_NAME because interface.application_url is unset. Set application_url to keep the advertised entityID/ACS URLs stable.'
+        );
+
         $protocolDetector = new ProtocolDetector();
         $scheme = $protocolDetector->detect();
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
         $prefix = $this->configManager->get('interface', 'base_url_prefix', '');
 
         return $scheme . '://' . $host . $prefix;

@@ -28,13 +28,37 @@ class SamlConfigurationServiceTest extends TestCase
             ->willReturnMap([
                 ['saml', 'sp', [], []],
                 ['saml', 'providers', [], []],
-                ['interface', 'base_url', '', 'https://localhost'],
+                ['interface', 'application_url', '', 'https://localhost'],
             ]);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Provider invalid_provider not found or invalid');
 
         $this->service->generateOneLoginSettings('invalid_provider');
+    }
+
+    public function testGenerateOneLoginSettingsPrefersApplicationUrlOverBaseUrl(): void
+    {
+        // Both keys set: application_url is the canonical setting and must win
+        // so the SP metadata advertised to the IdP cannot be quietly diverted
+        // through the undocumented base_url path.
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
+                ['saml', 'providers', [], [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                    ],
+                ]],
+                ['interface', 'application_url', '', 'https://canonical.example/poweradmin'],
+                ['interface', 'base_url', '', 'https://legacy.example'],
+            ]);
+
+        $settings = $this->service->generateOneLoginSettings('azure');
+
+        $this->assertStringStartsWith('https://canonical.example/poweradmin/', $settings['sp']['entityId']);
+        $this->assertStringStartsWith('https://canonical.example/poweradmin/', $settings['sp']['assertionConsumerService']['url']);
     }
 
     public function testGetProviderConfigReturnsNullForMissingProvider(): void
