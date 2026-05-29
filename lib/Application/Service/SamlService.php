@@ -315,10 +315,7 @@ class SamlService extends LoggingService
                 // Log successful authentication to database
                 $this->userEventLogger->logSuccessfulAuth(AuthMethod::SAML);
 
-                // Rotate the session id before binding the user to it. Matches the
-                // SqlAuthenticator pattern (lib/Application/Service/SqlAuthenticator.php:163)
-                // and closes session fixation: a planted PHPSESSID cannot survive into
-                // the authenticated session.
+                // Rotate session id before binding the user - matches SqlAuthenticator.
                 session_regenerate_id(true);
                 $this->logInfo('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
 
