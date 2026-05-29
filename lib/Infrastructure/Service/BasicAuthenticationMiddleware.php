@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\NullLogHandler;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +52,7 @@ class BasicAuthenticationMiddleware
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SqlAuthenticator $sqlAuthenticator;
+    private LoginAttemptService $loginAttemptService;
 
     /**
      * Constructor
@@ -78,7 +80,7 @@ class BasicAuthenticationMiddleware
         $logHandler = new NullLogHandler();
         $logger = new Logger($logHandler, 'info');
 
-        $loginAttemptService = new LoginAttemptService($db, $this->config);
+        $this->loginAttemptService = new LoginAttemptService($db, $this->config);
 
         // Initialize SQL authenticator with all required dependencies
         $this->sqlAuthenticator = new SqlAuthenticator(
@@ -88,7 +90,7 @@ class BasicAuthenticationMiddleware
             $authService,
             $csrfTokenService,
             $logger,
-            $loginAttemptService
+            $this->loginAttemptService
         );
     }
 
@@ -180,12 +182,22 @@ class BasicAuthenticationMiddleware
             return 0;
         }
 
+        // Refuse brute-force guesses once account_lockout thresholds trip. Without
+        // this, Basic Auth bypasses the throttling that the browser login already
+        // enforces via SqlAuthenticator.
+        $ipAddress = (new IpAddressRetriever($_SERVER))->getClientIp() ?: '0.0.0.0';
+        if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            return 0;
+        }
+
         // Get user ID and auth method
         $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
         $query->execute(['username' => $username]);
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
+            // Disabled account: still record so probing inactive users contributes to lockout.
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
@@ -195,24 +207,34 @@ class BasicAuthenticationMiddleware
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
-                // Set session for compatibility with legacy code (DomainManager)
-                $_SESSION[SessionKeys::USERID] = $userModel->getId();
-                $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
-                return $userModel->getId();
+                return $this->onAuthSuccess($userModel->getId());
             }
             // LDAP users should not fall back to SQL authentication
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
         // Fall back to SQL authentication for non-LDAP users
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
-            // Set session for compatibility with legacy code (DomainManager)
-            $_SESSION[SessionKeys::USERID] = $userModel->getId();
-            $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
-            return $userModel->getId();
+            return $this->onAuthSuccess($userModel->getId());
         }
 
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
         return 0;
+    }
+
+    /**
+     * Basic Auth is stateless and called on every request, so we deliberately do
+     * not call recordAttempt(true) here: that would (with clear_attempts_on_success)
+     * wipe an attacker's accumulating failures on every legitimate API call.
+     * Window-based expiry on failures is sufficient.
+     */
+    private function onAuthSuccess(int $userId): int
+    {
+        // Set session for compatibility with legacy code (DomainManager)
+        $_SESSION[SessionKeys::USERID] = $userId;
+        $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
+        return $userId;
     }
 
     /**
