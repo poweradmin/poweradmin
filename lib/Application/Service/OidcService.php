@@ -316,6 +316,13 @@ class OidcService extends LoggingService
                 // Log successful authentication to database
                 $this->userEventLogger->logSuccessfulAuth(AuthMethod::OIDC);
 
+                // Rotate the session id before binding the user to it. Matches the
+                // SqlAuthenticator pattern (lib/Application/Service/SqlAuthenticator.php:163)
+                // and closes session fixation: a planted PHPSESSID cannot survive into
+                // the authenticated session.
+                session_regenerate_id(true);
+                $this->logInfo('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
+
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for OIDC session.');
