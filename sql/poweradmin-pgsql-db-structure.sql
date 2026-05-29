@@ -383,7 +383,7 @@ CREATE INDEX "idx_needs_sync" ON "public"."zone_template_sync" USING btree ("nee
 CREATE TABLE password_reset_tokens (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
-    token VARCHAR(64) NOT NULL,
+    token VARCHAR(128) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     used BOOLEAN NOT NULL DEFAULT FALSE,

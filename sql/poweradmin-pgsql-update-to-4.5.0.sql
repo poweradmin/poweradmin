@@ -75,3 +75,9 @@ ALTER TABLE "zones" ALTER COLUMN "zone_templ_id" SET NOT NULL;
 INSERT INTO perm_items (name, descr)
 SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own');
+
+-- Widen password_reset_tokens.token so the new sha256$<64hex> storage format fits.
+-- Plaintext rows issued before this upgrade naturally expire within the
+-- token_lifetime (1 hour default) and remain unreadable to the new validator;
+-- affected users simply request a new reset link.
+ALTER TABLE "password_reset_tokens" ALTER COLUMN "token" TYPE VARCHAR(128);

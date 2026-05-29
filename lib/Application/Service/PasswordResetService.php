@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -265,63 +265,53 @@ class PasswordResetService
             return null;
         }
 
+        // Refuse candidates already in the stored hash format - blocks pass-the-hash
+        // from a DB-read leak. Matches the API key repository defense.
+        if (str_starts_with($token, 'sha256$')) {
+            $this->logger->warning('Password reset token rejected: candidate is in stored hash format', [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
+        }
+
         // Clean up expired tokens before validation
         $this->cleanupExpiredTokens();
 
-        // Find all non-expired tokens
-        $tokens = $this->tokenRepository->findActiveTokens();
+        // Indexed lookup by hash - replaces the previous full-scan of active tokens
+        // and the row no longer contains a plaintext token at rest.
+        $hashedToken = DbPasswordResetTokenRepository::hashToken($token);
+        $tokenData = $this->tokenRepository->findByToken($hashedToken);
 
-        foreach ($tokens as $tokenData) {
-            if (hash_equals((string) $tokenData['token'], $token)) {
-                // Check if already used
-                if ($tokenData['used']) {
-                    $this->logger->warning('Attempted to use already used password reset token', [
-                        'email' => $tokenData['email'],
-                        'token_id' => $tokenData['id'],
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                    return null;
-                }
-
-                // Check expiration
-                if (time() > strtotime($tokenData['expires_at'])) {
-                    $this->logger->info('Expired password reset token used', [
-                        'email' => $tokenData['email'],
-                        'token_id' => $tokenData['id'],
-                        'expired_at' => $tokenData['expires_at'],
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                    return null;
-                }
-
-                // Get user data
-                $user = $this->userRepository->getUserByEmail($tokenData['email']);
-                if ($user) {
-                    // Additional security check: verify auth method allows password reset
-                    $authMethod = $user['auth_method'] ?? 'sql';
-                    if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
-                        $this->logger->warning('Password reset token validation blocked for external auth user', [
-                            'email' => $tokenData['email'],
-                            'auth_method' => $authMethod,
-                            'user_id' => $user['id'],
-                            'token_id' => $tokenData['id'],
-                            'timestamp' => date('Y-m-d H:i:s')
-                        ]);
-                        return null;
-                    }
-
-                    return [
-                        'user' => $user,
-                        'token_id' => $tokenData['id']
-                    ];
-                }
-            }
+        if (!$tokenData) {
+            $this->logger->warning('Invalid password reset token used', [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
         }
 
-        $this->logger->warning('Invalid password reset token used', [
-            'timestamp' => date('Y-m-d H:i:s')
-        ]);
-        return null;
+        $user = $this->userRepository->getUserByEmail($tokenData['email']);
+        if (!$user) {
+            return null;
+        }
+
+        // External-auth users cannot reset their local password; their account
+        // may have switched to OIDC/SAML/LDAP since the token was minted.
+        $authMethod = $user['auth_method'] ?? 'sql';
+        if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+            $this->logger->warning('Password reset token validation blocked for external auth user', [
+                'email' => $tokenData['email'],
+                'auth_method' => $authMethod,
+                'user_id' => $user['id'],
+                'token_id' => $tokenData['id'],
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
+        }
+
+        return [
+            'user' => $user,
+            'token_id' => $tokenData['id']
+        ];
     }
 
     /**

@@ -332,7 +332,7 @@ CREATE TABLE `zone_template_sync` (
 CREATE TABLE `password_reset_tokens` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `email` varchar(255) NOT NULL,
-    `token` varchar(64) NOT NULL,
+    `token` varchar(128) NOT NULL,
     `expires_at` timestamp NOT NULL,
     `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `used` tinyint(1) NOT NULL DEFAULT 0,

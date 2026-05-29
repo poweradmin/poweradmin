@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,18 +38,27 @@ class DbPasswordResetTokenRepository
     }
 
     /**
-     * Create a new password reset token
+     * One-way hash applied to a reset token before persistence. SHA-256 is
+     * sufficient because tokens are 256 bits of entropy from `random_bytes(32)`;
+     * brute force across the keyspace is infeasible without a salt. The
+     * `sha256$` prefix matches the API key repository so the same shape gate
+     * defends both surfaces against pass-the-hash from a DB-read leak.
      */
+    public static function hashToken(string $token): string
+    {
+        return 'sha256$' . hash('sha256', $token);
+    }
+
     public function create(array $data): bool
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address, used) 
+        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address, used)
                 VALUES (:email, :token, " . DbCompat::now($db_type) . ", :expires_at, :ip_address, " . DbCompat::boolFalse($db_type) . ")";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':email' => $data['email'],
-            ':token' => $data['token'],
+            ':token' => self::hashToken((string) $data['token']),
             ':expires_at' => $data['expires_at'],
             ':ip_address' => $data['ip_address'] ?? null
         ]);

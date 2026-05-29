@@ -1475,7 +1475,7 @@ class DatabaseStructureHelper
                     'token' => array(
                         'type' => 'text',
                         'notnull' => 1,
-                        'length' => 64,
+                        'length' => 128,
                         'fixed' => 0,
                         'name' => 'token',
                         'table' => 'password_reset_tokens',

@@ -90,3 +90,7 @@ PRAGMA foreign_keys = ON;
 INSERT INTO perm_items (name, descr)
 SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own');
+
+-- password_reset_tokens.token VARCHAR is advisory in SQLite; existing rows
+-- accept the wider sha256$<64hex> value without ALTER. The structure file is
+-- updated to keep declarations consistent across databases.
