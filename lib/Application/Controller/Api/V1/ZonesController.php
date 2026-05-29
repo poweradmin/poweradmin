@@ -164,25 +164,46 @@ class ZonesController extends PublicApiController
     private function listZones(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
+
             // Get pagination parameters (defaults to returning all zones like PowerDNS and PowerDNS-Admin)
             $perPage = (int)$this->request->query->get('per_page', 0);
+            if ($perPage !== 0) {
+                $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
+            }
 
-            // Get total count for metadata
-            $totalCount = $this->zoneRepository->getZoneCount();
+            // Scope to zones the caller can view (null = all, [] = none, array = specific ids).
+            $visibleZoneIds = $this->permissionService->getUserVisibleZoneIds($userId);
+            $filterUserId = ($visibleZoneIds !== null) ? $userId : null;
+
+            $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, null);
+
+            // Empty-result short-circuit keeps pagination metadata 1-based even when the caller has no visible zones.
+            if ($totalCount === 0) {
+                $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]];
+                if ($perPage > 0) {
+                    $responseData['pagination'] = [
+                        'current_page' => 1,
+                        'per_page' => $perPage,
+                        'total' => 0,
+                        'last_page' => 1,
+                    ];
+                }
+                return $this->returnApiResponse([], true, 'Zones retrieved successfully', 200, $responseData);
+            }
 
             // If per_page is 0 or not specified, return all zones (compatible with PowerDNS/PowerDNS-Admin)
             if ($perPage === 0) {
-                $zones = $this->zoneRepository->getAllZones();
+                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, null);
                 $page = 1;
                 $lastPage = 1;
             } else {
                 // Use pagination
                 $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
                 $offset = ($page - 1) * $perPage;
 
-                $zones = $this->zoneRepository->getAllZones($offset, $perPage);
-                $lastPage = ceil($totalCount / $perPage);
+                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, null, $offset, $perPage);
+                $lastPage = (int)ceil($totalCount / $perPage);
             }
 
             // Format zone data

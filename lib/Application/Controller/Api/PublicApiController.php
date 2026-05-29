@@ -52,6 +52,8 @@ abstract class PublicApiController extends AbstractApiController
      */
     private const V1_SUNSET_DATE = 'Tue, 01 Sep 2026 00:00:00 GMT';
 
+    protected const MAX_PAGE_SIZE = 10000;
+
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
     protected LoggerInterface $logger;
