@@ -43,6 +43,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class PublicApiController extends AbstractApiController
 {
+    protected const MAX_PAGE_SIZE = 10000;
+
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
 
