@@ -13,7 +13,8 @@ use Poweradmin\Domain\Model\User;
 class DynamicDnsAuthenticationServiceTest extends TestCase
 {
     private DynamicDnsAuthenticationService $authService;
-    private DynamicDnsRepositoryInterface $mockRepository;
+    /** @var DynamicDnsRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
+    private $mockRepository;
     /** @var UserAuthenticationService&\PHPUnit\Framework\MockObject\MockObject */
     private $mockUserAuthService;
 
