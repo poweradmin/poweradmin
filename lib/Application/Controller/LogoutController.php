@@ -267,9 +267,20 @@ class LogoutController extends BaseController
 
     private function getBaseUrl(): string
     {
+        // Prefer the explicitly configured base so the IdP-bound post-logout URL
+        // cannot be poisoned via the Host header. Matches OidcService::getCallbackUrl().
+        $configuredUrl = $this->config->get('interface', 'application_url', '');
+        if ($configuredUrl !== '') {
+            return rtrim($configuredUrl, '/');
+        }
+
+        $this->logger->warning(
+            'Logout: deriving base URL from SERVER_NAME because interface.application_url is unset. Set application_url to keep the OIDC post_logout_redirect_uri stable.'
+        );
+
         $protocolDetector = new ProtocolDetector();
         $scheme = $protocolDetector->detect();
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
         $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
 
         return $scheme . '://' . $host . $basePrefix;
