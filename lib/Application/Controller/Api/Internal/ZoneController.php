@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 
 class ZoneController extends InternalApiController
