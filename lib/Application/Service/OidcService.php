@@ -486,8 +486,23 @@ class OidcService extends LoggingService
 
     private function getCallbackUrl(): string
     {
+        // Prefer the explicitly configured base so the OAuth redirect_uri sent to
+        // the IdP cannot be poisoned via the Host header. Operators already need
+        // to set interface.application_url for password-reset emails.
+        $configuredUrl = $this->configManager->get('interface', 'application_url', '');
+        if ($configuredUrl !== '') {
+            return rtrim($configuredUrl, '/') . '/oidc/callback';
+        }
+
+        // Fall back to SERVER_NAME (webserver-configured hostname), not HTTP_HOST,
+        // so the redirect_uri can't be flipped by a request-time Host header.
+        // Matches UrlService::getEmailUrlWithServerFallback().
+        $this->logWarning(
+            'OIDC: deriving callback URL from SERVER_NAME because interface.application_url is unset. Set application_url to a fixed value to make the OAuth redirect_uri stable.'
+        );
+
         $scheme = $this->detectScheme();
-        $host = $this->request->getServerParam('HTTP_HOST', 'localhost');
+        $host = $this->request->getServerParam('SERVER_NAME', 'localhost');
         $basePrefix = $this->configManager->get('interface', 'base_url_prefix', '');
 
         return $scheme . '://' . $host . $basePrefix . '/oidc/callback';
