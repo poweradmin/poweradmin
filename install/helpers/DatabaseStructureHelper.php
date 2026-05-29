@@ -1043,12 +1043,23 @@ class DatabaseStructureHelper
                         'name' => 'successful',
                         'table' => 'login_attempts',
                         'flags' => 'not_null'
+                    ),
+                    'attempt_type' => array(
+                        'notnull' => 1,
+                        'length' => 16,
+                        'fixed' => 0,
+                        'default' => 'password',
+                        'type' => 'text',
+                        'name' => 'attempt_type',
+                        'table' => 'login_attempts',
+                        'flags' => 'not_null'
                     )
                 ),
                 'indexes' => array(
                     'idx_login_attempts_user_id' => array('user_id'),
                     'idx_login_attempts_ip_address' => array('ip_address'),
-                    'idx_login_attempts_timestamp' => array('timestamp')
+                    'idx_login_attempts_timestamp' => array('timestamp'),
+                    'idx_login_attempts_attempt_type' => array('attempt_type')
                 ),
                 'foreign_keys' => array(
                     'fk_login_attempts_users' => array(

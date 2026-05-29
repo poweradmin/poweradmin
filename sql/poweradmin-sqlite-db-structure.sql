@@ -144,6 +144,7 @@ CREATE TABLE login_attempts (
     ip_address VARCHAR(45) NOT NULL,
     timestamp INTEGER NOT NULL,
     successful BOOLEAN NOT NULL,
+    attempt_type VARCHAR(16) NOT NULL DEFAULT 'password',
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE SET NULL
 );
@@ -151,6 +152,7 @@ CREATE TABLE login_attempts (
 CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
 CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
 CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
+CREATE INDEX idx_login_attempts_attempt_type ON login_attempts(attempt_type);
 
 CREATE TABLE zone_templ (
     id integer PRIMARY KEY,

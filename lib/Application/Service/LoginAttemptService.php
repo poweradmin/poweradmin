@@ -28,8 +28,16 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 
 class LoginAttemptService
 {
+    public const STAGE_PASSWORD = 'password';
+    public const STAGE_MFA = 'mfa';
+
     private ConfigurationManager $configManager;
     private PDO $connection;
+
+    // Cached per-connection so the introspection cost is paid once per request.
+    // Lets login keep working in the upgrade window between code deploy and the
+    // 4.5.0 SQL update (when `attempt_type` does not exist yet).
+    private ?bool $attemptTypeColumnExists = null;
 
     public function __construct(PDO $connection, ?ConfigurationManager $configManager = null)
     {
@@ -37,34 +45,53 @@ class LoginAttemptService
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
 
-    public function recordAttempt(string $username, string $ipAddress, bool $successful): void
+    /**
+     * @param string $attemptType Lockout stage identifier; defaults to "password"
+     *                            so existing callers (SQL/LDAP/DDNS) are unchanged.
+     *                            Pass STAGE_MFA from the MFA verify path to keep
+     *                            second-factor failures from polluting the
+     *                            first-factor counter.
+     */
+    public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD): void
     {
         if (!$this->configManager->get('security', 'account_lockout.enable_lockout')) {
             return;
         }
 
         $userId = $this->getUserId($username);
+        $hasAttemptType = $this->hasAttemptTypeColumn();
 
         if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success')) {
-            $this->clearFailedAttempts($userId, $ipAddress);
+            $this->clearFailedAttempts($userId, $ipAddress, $attemptType, $hasAttemptType);
         }
 
-        $stmt = $this->connection->prepare("
-        INSERT INTO login_attempts (user_id, ip_address, timestamp, successful)
-        VALUES (:user_id, :ip_address, :timestamp, :successful)
-    ");
-
-        $stmt->execute([
+        $columns = 'user_id, ip_address, timestamp, successful';
+        $placeholders = ':user_id, :ip_address, :timestamp, :successful';
+        $params = [
             'user_id' => $userId,
             'ip_address' => $ipAddress,
             'timestamp' => time(),
-            'successful' => DbCompat::boolValue($successful)
-        ]);
+            'successful' => DbCompat::boolValue($successful),
+        ];
+
+        // Pre-4.5.0 schema lacks attempt_type; the upgrade-window fallback omits
+        // the column so MFA failures temporarily mix with password failures
+        // until the SQL update runs.
+        if ($hasAttemptType) {
+            $columns .= ', attempt_type';
+            $placeholders .= ', :attempt_type';
+            $params['attempt_type'] = $attemptType;
+        }
+
+        $stmt = $this->connection->prepare(
+            "INSERT INTO login_attempts ($columns) VALUES ($placeholders)"
+        );
+        $stmt->execute($params);
 
         $this->cleanupOldAttempts();
     }
 
-    public function isAccountLocked(string $username, string $ipAddress): bool
+    public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD): bool
     {
         // Use the updated ConfigurationManager with dot notation support
         $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
@@ -105,6 +132,11 @@ class LoginAttemptService
             'user_id' => $userId,
             'cutoff_time' => $cutoffTime
         ];
+
+        if ($this->hasAttemptTypeColumn()) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
 
         if ($trackIpAddress) {
             $sql .= " AND ip_address = :ip_address";
@@ -194,15 +226,22 @@ class LoginAttemptService
         $stmt->execute(['cutoff_time' => $cutoffTime]);
     }
 
-    private function clearFailedAttempts(?int $userId, string $ipAddress): void
+    private function clearFailedAttempts(?int $userId, string $ipAddress, string $attemptType, bool $hasAttemptType): void
     {
         if ($userId === null) {
             return;
         }
 
         $sql = "DELETE FROM login_attempts WHERE user_id = :user_id";
-
         $params = ['user_id' => $userId];
+
+        // Scope clearing to the matching stage so a fresh first-factor success
+        // cannot reset MFA failures. Falls back to the pre-4.5.0 behavior
+        // (clear-all-for-user) when the column is not present yet.
+        if ($hasAttemptType) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
 
         if ($this->configManager->get('security', 'account_lockout.track_ip_address')) {
             $sql .= " AND ip_address = :ip_address";
@@ -211,5 +250,25 @@ class LoginAttemptService
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
+    }
+
+    /**
+     * Detects whether the `attempt_type` column exists. Cached per instance so
+     * the introspection cost is paid once per request, not per attempt.
+     */
+    private function hasAttemptTypeColumn(): bool
+    {
+        if ($this->attemptTypeColumnExists !== null) {
+            return $this->attemptTypeColumnExists;
+        }
+
+        try {
+            $this->connection->query("SELECT attempt_type FROM login_attempts WHERE 1 = 0");
+            $this->attemptTypeColumnExists = true;
+        } catch (\PDOException) {
+            $this->attemptTypeColumnExists = false;
+        }
+
+        return $this->attemptTypeColumnExists;
     }
 }

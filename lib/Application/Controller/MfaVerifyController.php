@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
@@ -42,6 +43,7 @@ class MfaVerifyController extends BaseController
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private LoginAttemptService $loginAttemptService;
 
     public function __construct(array $request)
     {
@@ -55,6 +57,7 @@ class MfaVerifyController extends BaseController
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
     }
 
     public function run(): void
@@ -129,6 +132,18 @@ class MfaVerifyController extends BaseController
             return;
         }
 
+        // Brute-force defense: reuses the account_lockout config but tracks the
+        // MFA stage separately so second-factor failures cannot block a future
+        // password login, and a fresh first-factor success cannot reset the MFA
+        // counter mid-attack.
+        $username = $this->userContextService->getLoggedInUsername() ?? '';
+        $clientIp = $this->ipAddressRetriever->getClientIp();
+        if ($username !== '' && $this->loginAttemptService->isAccountLocked($username, $clientIp, LoginAttemptService::STAGE_MFA)) {
+            $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
+            $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
+            return;
+        }
+
         // Get user MFA record
         try {
             $userMfa = $this->mfaService->getUserMfa($userId);
@@ -147,6 +162,12 @@ class MfaVerifyController extends BaseController
         // Use the MFA service for verification (handles both regular codes and recovery codes)
         $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
         $isValid = $this->mfaService->verifyCode($userId, $code);
+
+        // Record the attempt under the MFA stage so it accrues toward the MFA
+        // lockout only; first-factor (password) success/failure stays untouched.
+        if ($username !== '') {
+            $this->loginAttemptService->recordAttempt($username, $clientIp, $isValid, LoginAttemptService::STAGE_MFA);
+        }
 
         // Log the verification result
         if ($isValid) {

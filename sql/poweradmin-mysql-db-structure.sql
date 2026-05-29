@@ -84,10 +84,12 @@ CREATE TABLE `login_attempts` (
     `ip_address` varchar(45) NOT NULL,
     `timestamp` int(11) NOT NULL,
     `successful` tinyint(1) NOT NULL,
+    `attempt_type` varchar(16) NOT NULL DEFAULT 'password',
     PRIMARY KEY (`id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_ip_address` (`ip_address`),
     KEY `idx_timestamp` (`timestamp`),
+    KEY `idx_attempt_type` (`attempt_type`),
     CONSTRAINT `fk_login_attempts_users`
         FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
         ON DELETE SET NULL

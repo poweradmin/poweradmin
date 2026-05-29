@@ -63,6 +63,15 @@ class SqliteZonesMigrationTest extends TestCase
             name VARCHAR(64) NOT NULL,
             descr VARCHAR(1024) NOT NULL
         )");
+
+        // Migration ALTERs login_attempts to add the attempt_type column.
+        $this->db->exec("CREATE TABLE login_attempts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NULL,
+            ip_address VARCHAR(45) NOT NULL,
+            timestamp INTEGER NOT NULL,
+            successful BOOLEAN NOT NULL
+        )");
     }
 
     #[Test]

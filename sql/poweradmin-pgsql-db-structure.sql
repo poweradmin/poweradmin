@@ -250,6 +250,7 @@ CREATE TABLE "public"."login_attempts" (
     "ip_address" character varying(45) NOT NULL,
     "timestamp" integer NOT NULL,
     "successful" boolean NOT NULL,
+    "attempt_type" character varying(16) NOT NULL DEFAULT 'password',
     CONSTRAINT "login_attempts_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "fk_login_attempts_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) WITH (oids = false);
@@ -257,6 +258,7 @@ CREATE TABLE "public"."login_attempts" (
 CREATE INDEX "idx_login_attempts_user_id" ON "public"."login_attempts" USING btree ("user_id");
 CREATE INDEX "idx_login_attempts_ip_address" ON "public"."login_attempts" USING btree ("ip_address");
 CREATE INDEX "idx_login_attempts_timestamp" ON "public"."login_attempts" USING btree ("timestamp");
+CREATE INDEX "idx_login_attempts_attempt_type" ON "public"."login_attempts" USING btree ("attempt_type");
 
 CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

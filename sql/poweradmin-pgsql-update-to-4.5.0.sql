@@ -81,3 +81,9 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own'
 -- token_lifetime (1 hour default) and remain unreadable to the new validator;
 -- affected users simply request a new reset link.
 ALTER TABLE "password_reset_tokens" ALTER COLUMN "token" TYPE VARCHAR(128);
+
+-- Tag each login_attempts row with the authentication stage that produced it
+-- (password / mfa). Lets MfaVerifyController throttle the second factor without
+-- letting a fresh first-factor success clear the MFA failure counter.
+ALTER TABLE "login_attempts" ADD COLUMN "attempt_type" character varying(16) NOT NULL DEFAULT 'password';
+CREATE INDEX IF NOT EXISTS "idx_login_attempts_attempt_type" ON "public"."login_attempts" USING btree ("attempt_type");

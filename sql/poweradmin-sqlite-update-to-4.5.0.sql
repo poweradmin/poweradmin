@@ -94,3 +94,9 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own'
 -- password_reset_tokens.token VARCHAR is advisory in SQLite; existing rows
 -- accept the wider sha256$<64hex> value without ALTER. The structure file is
 -- updated to keep declarations consistent across databases.
+
+-- Tag each login_attempts row with the authentication stage that produced it
+-- (password / mfa). Lets MfaVerifyController throttle the second factor without
+-- letting a fresh first-factor success clear the MFA failure counter.
+ALTER TABLE login_attempts ADD COLUMN attempt_type VARCHAR(16) NOT NULL DEFAULT 'password';
+CREATE INDEX IF NOT EXISTS idx_login_attempts_attempt_type ON login_attempts(attempt_type);

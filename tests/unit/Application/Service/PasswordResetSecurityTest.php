@@ -516,8 +516,9 @@ class PasswordResetSecurityTest extends TestCase
     }
 
     /**
-     * Wrong token of the same length must NOT validate.
-     * Pins the timing-safe comparison contract.
+     * Wrong token of the same length must NOT validate. Timing safety now
+     * comes from a single indexed lookup on the hashed candidate rather
+     * than a hash_equals scan, but the rejection contract is unchanged.
      */
     public function testValidateTokenRejectsSameLengthWrongToken(): void
     {
@@ -536,7 +537,9 @@ class PasswordResetSecurityTest extends TestCase
     }
 
     /**
-     * Wrong token of different length must also be rejected.
+     * Wrong token of different length must also be rejected. With hashing,
+     * candidate length no longer matters at the SQL layer - every input
+     * collapses to a 64-hex digest - but the rejection contract still holds.
      */
     public function testValidateTokenRejectsDifferentLengthToken(): void
     {
