@@ -32,12 +32,14 @@
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -45,6 +47,8 @@ class ValidationController extends InternalApiController
 {
     private DnsRecordValidationService $validationService;
     private ZoneRepositoryInterface $zoneRepository;
+    private ApiPermissionService $apiPermissionService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -65,6 +69,8 @@ class ValidationController extends InternalApiController
             $this->zoneRepository,
             $dnsViolationValidator
         );
+        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -107,12 +113,23 @@ class ValidationController extends InternalApiController
         }
 
         // Extract record data with fallbacks for different input formats
-        $zoneId = $jsonData['zone_id'] ?? 0;
+        $zoneId = (int)($jsonData['zone_id'] ?? 0);
         $name = $jsonData['name'] ?? ($jsonData['records'][0]['name'] ?? '');
         $type = $jsonData['type'] ?? ($jsonData['records'][0]['type'] ?? '');
         $content = $jsonData['content'] ?? ($jsonData['records'][0]['content'] ?? '');
         $ttl = $jsonData['ttl'] ?? ($jsonData['records'][0]['ttl'] ?? $this->getConfig()->get('dns', 'ttl', 3600));
         $prio = $jsonData['prio'] ?? ($jsonData['records'][0]['prio'] ?? 0);
+
+        // Validation runs SQL conflict probes against the target zone (e.g. "already
+        // exists", "CNAME conflict"). Refuse to validate against zones the caller
+        // cannot view, otherwise an attacker enumerates record presence in others'
+        // zones via validation error messages.
+        if ($zoneId > 0) {
+            $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
+                return $this->returnErrorResponse('You do not have permission to validate against this zone', 403);
+            }
+        }
 
         // Validate the record
         $result = $this->validationService->validateRecord(
