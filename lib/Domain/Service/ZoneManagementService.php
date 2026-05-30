@@ -81,25 +81,25 @@ class ZoneManagementService
         array $groupIds = []
     ): array {
         if ($owner === null && empty($groupIds)) {
-            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner'];
+            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
         }
 
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($domain)) {
-            return ['success' => false, 'message' => 'Invalid domain name'];
+            return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
         }
 
         // Check if domain already exists
         $dnsRecord = new DnsRecord($this->db, $this->config);
         if ($dnsRecord->domainExists($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists'];
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
         if ($dnsRecord->hasNonDelegationRecords($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists'];
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
         // Validate zone type
@@ -107,29 +107,30 @@ class ZoneManagementService
         if (!in_array($type, $validTypes)) {
             return [
                 'success' => false,
-                'message' => 'Invalid zone type. Must be one of: ' . implode(', ', $validTypes)
+                'message' => 'Invalid zone type. Must be one of: ' . implode(', ', $validTypes),
+                'status' => 400
             ];
         }
 
         // For SLAVE zones, ensure master IP is provided
         if ($type === 'SLAVE' && empty($slaveMaster)) {
-            return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones'];
+            return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones', 'status' => 400];
         }
 
         // Resolve zone template: accept both name and numeric ID
         if ($zoneTemplate !== 'none' && $zoneTemplate !== '') {
             if (is_numeric($zoneTemplate)) {
                 if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
-                    return ['success' => false, 'message' => 'Zone template not found'];
+                    return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
                 }
                 $zoneTemplate = (string)(int)$zoneTemplate;
             } else {
                 $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
                 $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
                 if (count($matchingIds) === 0) {
-                    return ['success' => false, 'message' => 'Zone template not found'];
+                    return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
                 } elseif (count($matchingIds) > 1) {
-                    return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead'];
+                    return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409];
                 }
                 $zoneTemplate = (string)$matchingIds[0];
             }
@@ -144,14 +145,14 @@ class ZoneManagementService
         $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to create zone'];
+            return ['success' => false, 'message' => 'Failed to create zone', 'status' => 500];
         }
 
         // Get the ID of the newly created zone
         $zoneId = $this->zoneRepository->getZoneIdByName($domain);
 
         if (!$zoneId) {
-            return ['success' => false, 'message' => 'Failed to retrieve zone ID'];
+            return ['success' => false, 'message' => 'Failed to retrieve zone ID', 'status' => 500];
         }
 
         // Enable DNSSEC if requested and supported
@@ -188,7 +189,7 @@ class ZoneManagementService
     {
         // Check if zone exists
         if (!$this->zoneRepository->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found'];
+            return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
         }
 
         // Snapshot before
@@ -203,11 +204,11 @@ class ZoneManagementService
         try {
             $success = $this->zoneRepository->updateZone($zoneId, $updates);
         } catch (\InvalidArgumentException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
+            return ['success' => false, 'message' => $e->getMessage(), 'status' => 400];
         }
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to update zone'];
+            return ['success' => false, 'message' => 'Failed to update zone', 'status' => 500];
         }
 
         if ($beforeZone !== null) {
@@ -234,7 +235,7 @@ class ZoneManagementService
     {
         // Check if zone exists
         if (!$this->zoneRepository->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found'];
+            return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
         }
 
         // Snapshot the zone for the audit log before any state is touched.
@@ -257,7 +258,7 @@ class ZoneManagementService
         $success = $this->zoneRepository->deleteZone($zoneId);
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to delete zone'];
+            return ['success' => false, 'message' => 'Failed to delete zone', 'status' => 500];
         }
 
         if ($zoneSnapshot !== null) {
@@ -284,7 +285,7 @@ class ZoneManagementService
         // Check if domain exists
         $domain = $this->zoneRepository->getZone($domainId);
         if (!$domain) {
-            return ['success' => false, 'message' => 'Domain not found'];
+            return ['success' => false, 'message' => 'Domain not found', 'status' => 404];
         }
 
         // Check if user is already an owner
@@ -301,7 +302,7 @@ class ZoneManagementService
         $success = $this->zoneRepository->addOwnerToZone($domainId, $userId);
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to set domain permissions'];
+            return ['success' => false, 'message' => 'Failed to set domain permissions', 'status' => 500];
         }
 
         return [
