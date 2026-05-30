@@ -27,14 +27,17 @@ class IpAddressRetrieverTest extends TestCase
         $this->assertEquals('2001:db8:85a3:8d3:1319:8a2e:370:7348', $ipRetriever->getClientIp());
     }
 
-    public function testGetClientIpWithMultipleIpsFirstValid()
+    public function testGetClientIpWithMultipleIpsReturnsRightmostUntrusted()
     {
+        // With no trusted proxies configured, the only trustworthy entry is the
+        // rightmost one (recorded by the trusted peer); leftmost values are
+        // client-claimed and may be spoofed.
         $server = [
             'REMOTE_ADDR' => '127.0.0.1',
             'HTTP_X_FORWARDED_FOR' => '192.168.1.2, 10.0.0.1',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('192.168.1.2', $ipRetriever->getClientIp());
+        $this->assertEquals('10.0.0.1', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithMultipleIpsFirstInvalid()
@@ -93,12 +96,14 @@ class IpAddressRetrieverTest extends TestCase
 
     public function testGetClientIpWithSpacesAfterComma()
     {
+        // Whitespace after the comma is trimmed; with no trusted proxies the
+        // rightmost entry is returned.
         $server = [
             'REMOTE_ADDR' => '127.0.0.1',
             'HTTP_X_FORWARDED_FOR' => '10.0.0.1, 192.168.1.4',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('10.0.0.1', $ipRetriever->getClientIp());
+        $this->assertEquals('192.168.1.4', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithSpacesOnlySecondValid()
@@ -262,5 +267,41 @@ class IpAddressRetrieverTest extends TestCase
         // Configured in expanded form, peer reports the compressed form.
         $ipRetriever = new IpAddressRetriever($server, null, ['2001:0db8:0000:0000:0000:0000:0000:0001']);
         $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testIgnoresSpoofedLeftmostXffWhenTrustedProxyAppends()
+    {
+        // Client spoofs 1.2.3.4 as the leftmost value; the trusted public CDN
+        // appends the real client (198.51.100.42) to the right.
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_X_FORWARDED_FOR' => '1.2.3.4, 198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['203.0.113.10']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testWalksChainRightToLeftSkippingConfiguredProxyHops()
+    {
+        // The internal proxy tier is declared via a configured CIDR, so those
+        // hops are peeled and the real client to their left is returned.
+        $server = [
+            'REMOTE_ADDR' => '10.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42, 10.0.0.2, 10.0.0.3',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['10.0.0.0/8']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testDoesNotPeelPrivateHopUnlessConfiguredAsTrusted()
+    {
+        // A private hop inside the chain is NOT auto-trusted: a client on the
+        // internal network cannot forge a public address by prepending one.
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '1.2.3.4, 10.5.6.7',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('10.5.6.7', $ipRetriever->getClientIp());
     }
 }

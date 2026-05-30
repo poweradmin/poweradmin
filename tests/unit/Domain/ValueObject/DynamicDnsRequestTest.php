@@ -117,7 +117,11 @@ class DynamicDnsRequestTest extends TestCase
 
         $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
 
-        $this->assertEquals('198.51.100.1', $dynamicDnsRequest->getIpv4()); // Should use first IP from X-Forwarded-For
+        // The leftmost value (198.51.100.1) is claimed by the untrusted hop
+        // 203.0.113.1 and is therefore spoofable. With no trusted proxies
+        // configured, the first untrusted address from the right is the real
+        // client - add 203.0.113.1 to security.trusted_proxies to look further left.
+        $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
     }
 
     public function testHasUsername(): void

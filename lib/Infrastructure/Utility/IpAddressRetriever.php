@@ -62,18 +62,13 @@ class IpAddressRetriever
             ];
 
             foreach ($proxyHeaders as $header) {
-                if (!empty($this->server[$header])) {
-                    $ips = array_values(array_filter(
-                        array_map('trim', explode(',', $this->server[$header])),
-                        function (string $ip) use ($remoteAddr): bool {
-                            return $ip !== $remoteAddr
-                                && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
-                        }
-                    ));
+                if (empty($this->server[$header])) {
+                    continue;
+                }
 
-                    if (!empty($ips)) {
-                        return $ips[0];
-                    }
+                $clientIp = $this->resolveForwardedClientIp((string) $this->server[$header], $remoteAddr);
+                if ($clientIp !== null) {
+                    return $clientIp;
                 }
             }
         }
@@ -83,6 +78,44 @@ class IpAddressRetriever
         }
 
         return '';
+    }
+
+    /**
+     * Resolve the real client IP from a forwarded-for header value.
+     *
+     * The header is an ordered chain (leftmost = original client, rightmost = the
+     * hop closest to us). A client can spoof its address by sending a leftmost
+     * value through a proxy that appends rather than replaces the header, so the
+     * chain is walked from the right and only hops matching the configured
+     * trusted-proxy list are skipped; the first remaining address is the real
+     * client. Private/loopback ranges are NOT auto-skipped here - that allowance
+     * applies only to the immediate peer (REMOTE_ADDR), since a chain entry can
+     * be forged by a client on the internal network. When every hop is a
+     * configured proxy, the leftmost (the originator) is returned.
+     *
+     * @return string|null Resolved client IP, or null when the header carries no usable address
+     */
+    private function resolveForwardedClientIp(string $headerValue, string $remoteAddr): ?string
+    {
+        $ips = array_values(array_filter(
+            array_map('trim', explode(',', $headerValue)),
+            function (string $ip) use ($remoteAddr): bool {
+                return $ip !== $remoteAddr
+                    && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
+            }
+        ));
+
+        if ($ips === []) {
+            return null;
+        }
+
+        for ($i = count($ips) - 1; $i >= 0; $i--) {
+            if (!$this->matchesTrustedProxy($ips[$i])) {
+                return $ips[$i];
+            }
+        }
+
+        return $ips[0];
     }
 
     private function isPrivateOrReserved(string $ip): bool
