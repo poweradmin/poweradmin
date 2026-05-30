@@ -95,6 +95,10 @@ docker run -d --name poweradmin -p 80:80 \
   poweradmin/poweradmin
 ```
 
+**Database prerequisites:** The `DB_NAME` database and the `DB_USER` (with privileges on it) must already exist - the container does not create them. With the official `mysql` image, set `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD` so they are provisioned on first start (setting only `MYSQL_ROOT_PASSWORD` leaves the server with no Poweradmin database or user, which fails with `ERROR 1045 Access denied`). On startup the container loads the Poweradmin schema into an empty `DB_NAME` database automatically; if the tables already exist they are left untouched.
+
+**PowerDNS schema:** For the `sql` backend, PowerDNS stores its zones and records in its own database, which is created and initialized by PowerDNS (or you), not by Poweradmin. See [MySQL with Separate PowerDNS Database](#mysql-with-separate-powerdns-database) below.
+
 ### MySQL with Separate PowerDNS Database
 
 To use separate databases for Poweradmin and PowerDNS data (**MySQL only**):
@@ -133,6 +137,8 @@ docker run -d --name poweradmin -p 80:80 \
   -e DNS_HOSTMASTER=hostmaster.yourdomain.com \
   poweradmin/poweradmin
 ```
+
+**Database prerequisites:** As with MySQL, the `DB_NAME` database and `DB_USER` must already exist (with the official `postgres` image, set `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD`). The container loads the Poweradmin schema into an empty database on startup and leaves an already-populated one untouched. PowerDNS manages its own database and schema separately.
 
 ## Environment Variables
 

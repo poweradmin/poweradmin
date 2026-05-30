@@ -118,6 +118,93 @@ init_sqlite_db() {
     fi
 }
 
+# Build MySQL SSL command-line options from DB_SSL / DB_SSL_VERIFY
+build_mysql_ssl_opts() {
+    local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$db_ssl" != "true" ]; then
+        echo "--skip-ssl"
+    elif [ "$db_ssl_verify" != "true" ]; then
+        echo "--skip-ssl-verify-server-cert"
+    fi
+}
+
+# Load the Poweradmin schema into an empty MySQL database (parity with SQLite init).
+# Idempotent: skips when the users table already exists, so existing data is never touched.
+init_mysql_db() {
+    [ "${DB_TYPE}" = "mysql" ] || return 0
+
+    local ssl_opts
+    ssl_opts=$(build_mysql_ssl_opts)
+    local port_opt=""
+    [ -n "${DB_PORT:-}" ] && port_opt="-P${DB_PORT}"
+
+    # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
+    # the empty-result check below turns it into a graceful skip.
+    local table_exists
+    table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='users';" 2>/dev/null) || true
+
+    if [ -z "${table_exists}" ]; then
+        log "WARNING: Could not reach MySQL database '${DB_NAME}' to verify schema - skipping auto-initialization"
+        return 0
+    fi
+
+    if [ "${table_exists}" -gt 0 ]; then
+        debug_log "Poweradmin schema already present in MySQL database '${DB_NAME}'"
+        return 0
+    fi
+
+    log "Poweradmin schema not found in database '${DB_NAME}', initializing..."
+    if [ ! -f "/app/sql/poweradmin-mysql-db-structure.sql" ]; then
+        log "WARNING: Poweradmin MySQL schema file not found, database may not be properly initialized"
+        return 0
+    fi
+    if mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < /app/sql/poweradmin-mysql-db-structure.sql; then
+        log "Poweradmin schema initialized successfully in MySQL database '${DB_NAME}'"
+    else
+        log "ERROR: Failed to initialize Poweradmin schema in MySQL database '${DB_NAME}'"
+        exit 1
+    fi
+}
+
+# Load the Poweradmin schema into an empty PostgreSQL database (parity with SQLite init).
+# Idempotent: skips when the users table already exists, so existing data is never touched.
+init_pgsql_db() {
+    [ "${DB_TYPE}" = "pgsql" ] || return 0
+
+    local port_opt=""
+    [ -n "${DB_PORT:-}" ] && port_opt="-p ${DB_PORT}"
+
+    # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
+    # the empty-result check below turns it into a graceful skip.
+    local table_exists
+    table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+        "SELECT to_regclass('public.users') IS NOT NULL;" 2>/dev/null) || true
+
+    if [ -z "${table_exists}" ]; then
+        log "WARNING: Could not reach PostgreSQL database '${DB_NAME}' to verify schema - skipping auto-initialization"
+        return 0
+    fi
+
+    if [ "${table_exists}" = "t" ]; then
+        debug_log "Poweradmin schema already present in PostgreSQL database '${DB_NAME}'"
+        return 0
+    fi
+
+    log "Poweradmin schema not found in database '${DB_NAME}', initializing..."
+    if [ ! -f "/app/sql/poweradmin-pgsql-db-structure.sql" ]; then
+        log "WARNING: Poweradmin PostgreSQL schema file not found, database may not be properly initialized"
+        return 0
+    fi
+    if PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
+        log "Poweradmin schema initialized successfully in PostgreSQL database '${DB_NAME}'"
+    else
+        log "ERROR: Failed to initialize Poweradmin schema in PostgreSQL database '${DB_NAME}'"
+        exit 1
+    fi
+}
+
 # Validate required database configuration
 validate_database_config() {
     if [ -z "${DB_TYPE}" ]; then
@@ -410,17 +497,8 @@ create_admin_user() {
             debug_log "Creating admin user in MySQL database"
 
             # Build MySQL SSL options based on environment variables
-            local mysql_ssl_opts=""
-            local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
-            local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
-
-            if [ "$db_ssl" != "true" ]; then
-                # SSL disabled - skip SSL entirely
-                mysql_ssl_opts="--skip-ssl"
-            elif [ "$db_ssl_verify" != "true" ]; then
-                # SSL enabled but verification disabled - skip certificate verification
-                mysql_ssl_opts="--skip-ssl-verify-server-cert"
-            fi
+            local mysql_ssl_opts
+            mysql_ssl_opts=$(build_mysql_ssl_opts)
 
             debug_log "MySQL SSL options: ${mysql_ssl_opts:-none}"
 
@@ -1380,6 +1458,10 @@ main() {
         # Generate configuration
         generate_config
     fi
+
+    # Initialize MySQL/PostgreSQL schema on an empty database (SQLite is handled above)
+    init_mysql_db
+    init_pgsql_db
 
     # Create admin user if requested (after database and config are ready)
     create_admin_user
