@@ -452,6 +452,8 @@ Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOC
 
 When running behind a reverse proxy (Nginx, Traefik, HAProxy, etc.), the container sees the proxy's IP instead of the real client IP. Setting `TRUSTED_PROXIES` configures Caddy to resolve the real client IP from `X-Forwarded-For` headers, so both access logs and application logs show the correct IP.
 
+The same value is also written to Poweradmin's `security.trusted_proxies` setting, so the application honors forwarded IP headers from those proxies even when the proxy connects from a public (non-RFC1918) address. The Caddy-only `private_ranges` keyword is ignored at the application layer, which always trusts private/loopback peers. To configure the two layers independently, set `PA_TRUSTED_PROXIES` to override only the application allowlist.
+
 For most Docker setups, `private_ranges` is the recommended value - it trusts all private/reserved IP ranges (RFC 1918, RFC 4193, link-local):
 
 ```bash

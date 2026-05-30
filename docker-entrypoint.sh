@@ -547,6 +547,25 @@ generate_config() {
     local global_token_validation=$(echo "${PA_GLOBAL_TOKEN_VALIDATION:-true}" | tr '[:upper:]' '[:lower:]')
     local mfa_enforced=$(echo "${PA_MFA_ENFORCED:-false}" | tr '[:upper:]' '[:lower:]')
 
+    # Bridge the Caddy TRUSTED_PROXIES list into the PHP trusted-proxy allowlist so
+    # forwarded headers are honored even when the proxy uses a public (non-RFC1918)
+    # IP. The Caddy-only 'private_ranges' keyword is dropped (PHP trusts those
+    # automatically). PA_TRUSTED_PROXIES overrides if the two layers must differ;
+    # setting it to an empty string clears the application allowlist entirely.
+    local trusted_proxies_php="[]"
+    local trusted_proxies_src="${PA_TRUSTED_PROXIES-${TRUSTED_PROXIES:-}}"
+    if [ -n "${trusted_proxies_src}" ]; then
+        local proxy_items=""
+        local proxy_entry
+        for proxy_entry in $(echo "${trusted_proxies_src}" | tr ',' ' ' | tr -s ' '); do
+            [ "${proxy_entry}" = "private_ranges" ] && continue
+            proxy_items="${proxy_items}'${proxy_entry}', "
+        done
+        if [ -n "${proxy_items}" ]; then
+            trusted_proxies_php="[${proxy_items%, }]"
+        fi
+    fi
+
     # Convert notification boolean values to lowercase
     local notification_zone_access=$(echo "${PA_NOTIFICATION_ZONE_ACCESS:-false}" | tr '[:upper:]' '[:lower:]')
 
@@ -774,6 +793,7 @@ return [
         'password_cost' => ${PA_PASSWORD_COST:-12},
         'login_token_validation' => ${login_token_validation},
         'global_token_validation' => ${global_token_validation},
+        'trusted_proxies' => ${trusted_proxies_php},
         'password_policy' => [
             'enable_password_rules' => ${password_rules_enabled},
             'min_length' => ${PA_PASSWORD_MIN_LENGTH:-6},
