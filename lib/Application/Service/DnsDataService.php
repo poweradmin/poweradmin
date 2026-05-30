@@ -738,59 +738,6 @@ class DnsDataService
     }
 
     // ---------------------------------------------------------------
-    // Private: API-mode record fetching
-    // ---------------------------------------------------------------
-
-    /**
-     * Get zone records from API backend with in-memory filtering/pagination.
-     *
-     * @return array{records: array, total: int}
-     */
-    private function getZoneRecordsApi(
-        int $zoneId,
-        string $zoneName,
-        int $rowStart,
-        int $rowAmount,
-        string $sortBy,
-        string $sortDirection,
-        bool $includeComments,
-        string $searchTerm,
-        string $typeFilter,
-        string $contentFilter
-    ): array {
-        $records = $this->backendProvider->getZoneRecords($zoneId, $zoneName);
-
-        // Apply filters
-        if (!empty($searchTerm)) {
-            $records = ResultPaginator::filterByPattern($records, $searchTerm, ['name', 'content']);
-        }
-        if (!empty($typeFilter)) {
-            $records = ResultPaginator::filterByValue($records, 'type', $typeFilter);
-        }
-        if (!empty($contentFilter)) {
-            $records = ResultPaginator::filterByPattern($records, $contentFilter, ['content']);
-        }
-
-        $total = count($records);
-
-        // Sort
-        $records = ResultPaginator::sort($records, $sortBy, $sortDirection);
-
-        // Paginate
-        $records = ResultPaginator::paginate($records, $rowStart, $rowAmount);
-
-        if ($includeComments) {
-            foreach ($records as &$record) {
-                $record['comment'] = $record['api_comment'] ?? null;
-                unset($record['api_comment']);
-            }
-            unset($record);
-        }
-
-        return ['records' => $records, 'total' => $total];
-    }
-
-    // ---------------------------------------------------------------
     // Private: API-mode search
     // ---------------------------------------------------------------
 
