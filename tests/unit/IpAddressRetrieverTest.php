@@ -192,4 +192,75 @@ class IpAddressRetrieverTest extends TestCase
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('', $ipRetriever->getClientIp());
     }
+
+    public function testTrustsForwardedHeadersFromConfiguredPublicProxyExactIp()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['203.0.113.10']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testTrustsForwardedHeadersFromConfiguredPublicProxyCidr()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.55',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['203.0.113.0/24']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testTrustsForwardedHeadersFromConfiguredPublicProxyV6Cidr()
+    {
+        $server = [
+            'REMOTE_ADDR' => '2001:db8:abcd:12::1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['2001:db8:abcd:12::/64']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testTrustsForwardedHeadersFromConfiguredPublicProxyWildcard()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.77',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['203.0.113.*']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testIgnoresForwardedHeadersWhenPublicPeerNotInTrustedList()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['198.51.100.0/24']);
+        $this->assertEquals('203.0.113.10', $ipRetriever->getClientIp());
+    }
+
+    public function testPrivatePeerStillTrustedWhenTrustedListConfigured()
+    {
+        $server = [
+            'REMOTE_ADDR' => '10.0.0.5',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['203.0.113.10']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
+
+    public function testTrustsExactIpv6ProxyRegardlessOfTextualForm()
+    {
+        $server = [
+            'REMOTE_ADDR' => '2001:db8::1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        // Configured in expanded form, peer reports the compressed form.
+        $ipRetriever = new IpAddressRetriever($server, null, ['2001:0db8:0000:0000:0000:0000:0000:0001']);
+        $this->assertEquals('198.51.100.42', $ipRetriever->getClientIp());
+    }
 }
