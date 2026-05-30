@@ -100,8 +100,8 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
         $records = $this->backendProvider->getZoneRecords($id, $zoneName);
 
-        // Sort
-        $records = ResultPaginator::sort($records, $sortby, $sortDirection);
+        // Sort, pinning SOA/NS/apex records to the top (issue #1250)
+        $records = ResultPaginator::sortRecords($records, $sortby, $sortDirection, $zoneName);
 
         // Paginate
         if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
