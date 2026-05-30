@@ -51,21 +51,14 @@ class DatabaseConsistencyService
     }
 
     /**
-     * Whether the DNS backend can be queried for consistency checks.
-     *
-     * In API mode the provider swallows transport errors and returns an empty
-     * zone list, which would otherwise read as "all checks passed". An empty
-     * list paired with a recorded API error means the API is unreachable, so
-     * callers should surface an outage rather than run checks against no data.
+     * Whether a fetched zone list reflects an API outage rather than an empty
+     * backend. The provider swallows transport errors and returns an empty list,
+     * which would otherwise read as "all checks passed"; an empty list paired
+     * with a recorded API error means the API was unreachable.
      */
-    public function isBackendReachable(): bool
+    private function apiZonesUnavailable(array $zones): bool
     {
-        if (!$this->isApiBackend()) {
-            return true;
-        }
-
-        $zones = $this->backendProvider->getZones();
-        return !(empty($zones) && (new ApiStatusService())->getLastError() !== null);
+        return empty($zones) && (new ApiStatusService())->getLastError() !== null;
     }
 
 
@@ -74,10 +67,10 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkZonesHaveOwners(): array
+    public function checkZonesHaveOwners(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $orphanedZones = [];
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
@@ -161,10 +154,10 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkSlaveZonesHaveMasters(): array
+    public function checkSlaveZonesHaveMasters(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $slavesWithoutMaster = [];
             foreach ($allZones as $z) {
                 $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
@@ -271,10 +264,10 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkDuplicateSOARecords(): array
+    public function checkDuplicateSOARecords(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $duplicateSOA = [];
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
@@ -338,10 +331,10 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkZonesWithoutSOA(): array
+    public function checkZonesWithoutSOA(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $zonesWithoutSOA = [];
             foreach ($allZones as $z) {
                 $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
@@ -401,18 +394,31 @@ class DatabaseConsistencyService
     }
 
     /**
-     * Run all consistency checks
+     * Run all consistency checks.
      *
-     * @return array<string, array{status: string, message: string, data: array}>
+     * In API mode the zone list is fetched once and reused across every check,
+     * so a single transient failure can't make one check pass while another
+     * fails. Returns null when that fetch reveals an API outage, letting the
+     * caller surface one clear error instead of empty "all clear" results.
+     *
+     * @return array<string, array{status: string, message: string, data: array}>|null
      */
-    public function runAllChecks(): array
+    public function runAllChecks(): ?array
     {
+        $apiZones = null;
+        if ($this->isApiBackend()) {
+            $apiZones = $this->backendProvider->getZones();
+            if ($this->apiZonesUnavailable($apiZones)) {
+                return null;
+            }
+        }
+
         return [
-            'zones_have_owners' => $this->checkZonesHaveOwners(),
-            'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
+            'zones_have_owners' => $this->checkZonesHaveOwners($apiZones),
+            'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters($apiZones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
-            'duplicate_soa_records' => $this->checkDuplicateSOARecords(),
-            'zones_without_soa' => $this->checkZonesWithoutSOA()
+            'duplicate_soa_records' => $this->checkDuplicateSOARecords($apiZones),
+            'zones_without_soa' => $this->checkZonesWithoutSOA($apiZones)
         ];
     }
 
