@@ -91,6 +91,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('At least one user or group must be assigned as owner', $result['message']);
+        $this->assertEquals(400, $result['status']);
     }
 
     // ========== updateZone tests ==========
@@ -106,6 +107,25 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Zone not found', $result['message']);
+        $this->assertEquals(404, $result['status']);
+    }
+
+    #[Test]
+    public function testUpdateZoneReturnsBadRequestOnInvalidArgument(): void
+    {
+        $this->zoneRepository->method('zoneIdExists')
+            ->with(1)
+            ->willReturn(true);
+
+        $this->zoneRepository->method('updateZone')
+            ->with(1, ['type' => 'BOGUS'])
+            ->willThrowException(new \InvalidArgumentException('Invalid zone type'));
+
+        $result = $this->service->updateZone(1, ['type' => 'BOGUS']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Invalid zone type', $result['message']);
+        $this->assertEquals(400, $result['status']);
     }
 
     #[Test]
@@ -123,6 +143,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to update zone', $result['message']);
+        $this->assertEquals(500, $result['status']);
     }
 
     #[Test]
@@ -155,6 +176,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Zone not found', $result['message']);
+        $this->assertEquals(404, $result['status']);
     }
 
     #[Test]
@@ -174,6 +196,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to delete zone', $result['message']);
+        $this->assertEquals(500, $result['status']);
     }
 
     #[Test]
@@ -208,6 +231,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Domain not found', $result['message']);
+        $this->assertEquals(404, $result['status']);
     }
 
     #[Test]
@@ -248,6 +272,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to set domain permissions', $result['message']);
+        $this->assertEquals(500, $result['status']);
     }
 
     #[Test]

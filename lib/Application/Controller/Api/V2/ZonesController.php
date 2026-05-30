@@ -508,10 +508,7 @@ class ZonesController extends PublicApiController
             );
 
             if (!$result['success']) {
-                $statusCode = match ($result['message']) {
-                    'Domain already exists' => 409,
-                    default => 400
-                };
+                $statusCode = $result['status'] ?? 400;
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
@@ -737,10 +734,7 @@ class ZonesController extends PublicApiController
                 $result = $this->zoneManagementService->updateZone($zoneId, $updates);
 
                 if (!$result['success']) {
-                    $statusCode = match ($result['message']) {
-                        'Zone not found' => 404,
-                        default => 400
-                    };
+                    $statusCode = $result['status'] ?? 400;
                     return $this->returnApiError($result['message'], $statusCode);
                 }
             }
@@ -837,10 +831,7 @@ class ZonesController extends PublicApiController
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
             if (!$result['success']) {
-                $statusCode = match ($result['message']) {
-                    'Zone not found' => 404,
-                    default => 400
-                };
+                $statusCode = $result['status'] ?? 400;
                 return $this->returnApiError($result['message'], $statusCode);
             }
 

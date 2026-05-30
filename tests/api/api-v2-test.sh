@@ -912,6 +912,34 @@ test_master_port_syntax() {
 }
 
 ##############################################################################
+# Test: Zone operation HTTP status codes (issue #1309)
+##############################################################################
+
+test_zone_status_codes() {
+    print_section "Zone Status Code Tests"
+
+    # Duplicate zone name returns 409
+    local dup_zone='{"name":"dup-status-test.example.com","type":"MASTER"}'
+    api_request_v2 "POST" "/zones" "$dup_zone" 201 "Create zone for duplicate test"
+    local dup_zone_id=""
+    if [[ "$LAST_RESPONSE_CODE" -eq 201 ]]; then
+        dup_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    api_request_v2 "POST" "/zones" "$dup_zone" 409 "Reject duplicate zone name (already exists)"
+
+    # Operations on a non-existent zone return 404
+    api_request_v2 "PUT" "/zones/999999" '{"type":"NATIVE"}' 404 "Update non-existent zone returns 404"
+    api_request_v2 "DELETE" "/zones/999999" "" 404 "Delete non-existent zone returns 404"
+
+    # Clean up the zone created for the duplicate test
+    if [[ -n "$dup_zone_id" ]]; then
+        api_request_v2 "DELETE" "/zones/$dup_zone_id" "" 204 "Delete duplicate-test zone"
+    fi
+
+    print_info "Zone status code tests completed"
+}
+
+##############################################################################
 # Test: Groups API
 ##############################################################################
 
@@ -1279,7 +1307,7 @@ test_zone_templates() {
 
     # Test 10: Create zone with invalid template ID (should fail, no orphan)
     local bad_template_zone='{"name":"bad-template-test.example.com","type":"MASTER","template":999999}'
-    api_request_v2 "POST" "/zones" "$bad_template_zone" 400 "Reject zone creation with invalid template ID" || true
+    api_request_v2 "POST" "/zones" "$bad_template_zone" 404 "Reject zone creation with non-existent template ID" || true
 
     # Test 10b: Create zone with string template name (should fail, must be numeric ID)
     local name_template_zone='{"name":"name-template-test.example.com","type":"MASTER","template":"blockTemplate"}'
@@ -1879,6 +1907,7 @@ cleanup_existing_test_zones() {
         "slave-mixed.example.com"
         "slave-no-brackets.example.com"
         "master-nomasters.example.com"
+        "dup-status-test.example.com"
         "template-zone-test.example.com"
         "bad-template-test.example.com"
         "name-template-test.example.com"
@@ -2049,6 +2078,7 @@ main() {
     test_bulk_operations
     test_disabled_records
     test_master_port_syntax
+    test_zone_status_codes
     test_groups
     test_zone_owners
     test_zone_metadata
