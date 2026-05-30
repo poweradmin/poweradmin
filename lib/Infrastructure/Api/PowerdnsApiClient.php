@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
@@ -646,12 +647,25 @@ class PowerdnsApiClient
             $response = $this->httpClient->makeRequest('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
+                // Mirror getZones(): a successful read clears any stale API error
+                // so the outage banner doesn't linger after the API recovers.
+                (new ApiStatusService())->clearError();
                 return $response['data'];
             }
 
             return null;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            // Record real transport/server failures so callers can tell an outage
+            // apart from a genuinely empty zone. A 404 just means the zone is gone.
+            $httpCode = $e->getDetail('http_code', $e->getCode());
+            if ($httpCode !== 404) {
+                (new ApiStatusService())->recordError($e->getMessage(), [
+                    'endpoint' => 'zone',
+                    'http_code' => $httpCode,
+                    'url' => $e->getDetail('url'),
+                ]);
+            }
             return null;
         }
     }

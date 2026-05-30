@@ -36,6 +36,7 @@ class DatabaseConsistencyService
     private ConfigurationManager $config;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
+    private bool $apiReadFailed = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
@@ -61,6 +62,20 @@ class DatabaseConsistencyService
         return empty($zones) && (new ApiStatusService())->getLastError() !== null;
     }
 
+    /**
+     * Fetch a zone's records, flagging the run if the read failed. The provider
+     * swallows a failed per-zone read into an empty list; getZone() records the
+     * failure and clears on success, so an error set right after this call means
+     * this read failed and the empty result must not be trusted as "no records".
+     */
+    private function fetchRecordsTracked(int $zoneId, ?string $type = null): array
+    {
+        $records = $this->backendProvider->getRecordsByZoneId($zoneId, $type);
+        if ((new ApiStatusService())->getLastError() !== null) {
+            $this->apiReadFailed = true;
+        }
+        return $records;
+    }
 
     /**
      * Check if all zones have an owner
@@ -276,7 +291,7 @@ class DatabaseConsistencyService
                 if ($zoneId <= 0) {
                     continue;
                 }
-                $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                $records = $this->fetchRecordsTracked($zoneId, 'SOA');
                 if (count($records) > 1) {
                     $duplicateSOA[] = [
                         'zone_id' => $zoneId,
@@ -346,7 +361,7 @@ class DatabaseConsistencyService
                     if ($zoneId <= 0) {
                         continue;
                     }
-                    $soaRecords = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                    $soaRecords = $this->fetchRecordsTracked($zoneId, 'SOA');
                     if (empty($soaRecords)) {
                         $zonesWithoutSOA[] = [
                             'id' => $zoneId,
@@ -405,6 +420,8 @@ class DatabaseConsistencyService
      */
     public function runAllChecks(): ?array
     {
+        $this->apiReadFailed = false;
+
         $apiZones = null;
         if ($this->isApiBackend()) {
             $apiZones = $this->backendProvider->getZones();
@@ -413,13 +430,18 @@ class DatabaseConsistencyService
             }
         }
 
-        return [
+        // The SOA checks fetch each zone's records individually; fetchRecordsTracked
+        // flags this when one of those reads fails, so a swallowed empty result
+        // can't masquerade as "missing SOA". Discard the run if any read failed.
+        $results = [
             'zones_have_owners' => $this->checkZonesHaveOwners($apiZones),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters($apiZones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords($apiZones),
             'zones_without_soa' => $this->checkZonesWithoutSOA($apiZones)
         ];
+
+        return $this->apiReadFailed ? null : $results;
     }
 
     /**
