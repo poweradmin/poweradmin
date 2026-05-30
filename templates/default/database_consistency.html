@@ -54,7 +54,7 @@
                 {% if results.zones_have_owners.data is not empty %}
                     <div class="mt-3">
                         <form method="post" action="{{ base_url_prefix }}/tools/database-consistency"
-                              onsubmit="return confirm('{{ _('Assign yourself as owner of all listed zones?')|e('js') }}');">
+                              onsubmit="return confirm('{{ 'Assign yourself as owner of all listed zones?'|trans|e('js') }}');">
                             <input type="hidden" name="_token" value="{{ csrf_token }}">
                             <input type="hidden" name="check_type" value="zones_without_owners">
                             <input type="hidden" name="action" value="fix_all">
