@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
@@ -44,6 +45,13 @@ class DatabaseConsistencyController extends BaseController
         // Check if consistency checks are enabled
         if (!$this->config->get('interface', 'enable_consistency_checks', false)) {
             $this->showError(_('Database consistency checks are disabled.'));
+            return;
+        }
+
+        // The checks read the PowerDNS domains/records tables directly, which the API
+        // backend does not expose in the Poweradmin database. Skip instead of failing.
+        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+            $this->showError(_('Database consistency checks are not available when using the PowerDNS API backend.'));
             return;
         }
 
