@@ -1732,6 +1732,123 @@ test_zone_metadata() {
 }
 
 ##############################################################################
+# Zone DNSSEC Tests
+##############################################################################
+
+TEST_DNSSEC_ZONE_ID=""
+
+test_zone_dnssec() {
+    print_section "Zone DNSSEC API Tests"
+
+    print_info "Creating test zone for DNSSEC tests..."
+    local zone_data='{"name":"dnssec-test.example.com","type":"MASTER"}'
+
+    if api_request_v2 "POST" "/zones" "$zone_data" 201 "Create test zone for DNSSEC"; then
+        TEST_DNSSEC_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $TEST_DNSSEC_ZONE_ID"
+    else
+        print_fail "Failed to create test zone - skipping DNSSEC tests"
+        return 1
+    fi
+
+    # Apex NS records are required before a zone can be DNSSEC-signed.
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/records" \
+        '{"name":"dnssec-test.example.com","type":"NS","content":"ns1.example.com"}' 201 "Add apex NS1 record"
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/records" \
+        '{"name":"dnssec-test.example.com","type":"NS","content":"ns2.example.com"}' 201 "Add apex NS2 record"
+
+    # Probe the status endpoint. When the PowerDNS API is not configured the
+    # controller returns 501; skip the live sign/unsign checks in that case.
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        --max-time 30 \
+        "${API_BASE_URL}/api/v2/zones/${TEST_DNSSEC_ZONE_ID}/dnssec")
+
+    if [[ "$probe_code" == "501" ]]; then
+        print_info "DNSSEC endpoints return 501 (PowerDNS API not configured) - skipping live sign/unsign tests"
+    else
+        # Status on an unsigned zone
+        api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (unsigned)"
+        increment_test
+        local enabled
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        if [[ "$enabled" == "false" ]]; then
+            print_pass "New zone reports DNSSEC disabled"
+        else
+            print_fail "Expected DNSSEC disabled on new zone, got '$enabled'"
+        fi
+
+        # Enable DNSSEC
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":true}' 200 "Enable DNSSEC"
+        increment_test
+        local ds_count dnskey
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        ds_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.ds_records | length' 2>/dev/null)
+        dnskey=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.dnskey' 2>/dev/null)
+        if [[ "$enabled" == "true" && "$ds_count" -ge 1 && -n "$dnskey" && "$dnskey" != "null" ]]; then
+            print_pass "Enable returned signed status with $ds_count DS record(s) and a DNSKEY"
+        else
+            print_fail "Enable response incomplete (enabled=$enabled ds_records=$ds_count dnskey=$dnskey)"
+        fi
+
+        # Verify DS record fields are structured
+        increment_test
+        local key_tag
+        key_tag=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.ds_records[0].key_tag' 2>/dev/null)
+        if [[ "$key_tag" =~ ^[0-9]+$ ]]; then
+            print_pass "DS record exposes a numeric key_tag ($key_tag)"
+        else
+            print_fail "Expected numeric key_tag in DS record, got '$key_tag'"
+        fi
+
+        # Status now reports signed with DS records
+        api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (signed)"
+        increment_test
+        ds_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.ds_records | length' 2>/dev/null)
+        if [[ "$ds_count" -ge 1 ]]; then
+            print_pass "Signed zone status lists $ds_count DS record(s)"
+        else
+            print_fail "Expected DS records on signed zone, got $ds_count"
+        fi
+
+        # Re-enabling an already-signed zone is a no-op (idempotent)
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":true}' 200 "Re-enable DNSSEC is idempotent"
+
+        # Disable DNSSEC
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":false}' 200 "Disable DNSSEC"
+        increment_test
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        if [[ "$enabled" == "false" ]]; then
+            print_pass "Disable returned unsigned status"
+        else
+            print_fail "Expected DNSSEC disabled after disable, got '$enabled'"
+        fi
+
+        # A zone without apex NS records must be rejected before signing
+        local nons_zone_id
+        if api_request_v2 "POST" "/zones" '{"name":"dnssec-nons.example.com","type":"MASTER"}' 201 "Create zone without NS records"; then
+            nons_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+            api_request_v2 "POST" "/zones/${nons_zone_id}/dnssec" '{"enabled":true}' 400 "Reject signing a zone with no apex NS records"
+            api_request_v2 "DELETE" "/zones/${nons_zone_id}" "" 204 "Delete NS-less validation zone" || true
+        fi
+    fi
+
+    # Validation and error paths (independent of PowerDNS API availability)
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{}' 400 "Reject missing enabled field"
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":"yes"}' 400 "Reject non-boolean enabled field"
+    api_request_v2 "GET" "/zones/999999/dnssec" "" 404 "Get DNSSEC status for non-existent zone"
+    api_request_v2 "POST" "/zones/999999/dnssec" '{"enabled":true}' 404 "Enable DNSSEC on non-existent zone"
+
+    # Cleanup test zone
+    if [[ -n "$TEST_DNSSEC_ZONE_ID" ]]; then
+        print_info "Deleting DNSSEC test zone $TEST_DNSSEC_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_DNSSEC_ZONE_ID" "" 204 "Delete DNSSEC test zone" || true
+        TEST_DNSSEC_ZONE_ID=""
+    fi
+}
+
+##############################################################################
 # Users CRUD Tests
 ##############################################################################
 
@@ -2082,6 +2199,7 @@ main() {
     test_groups
     test_zone_owners
     test_zone_metadata
+    test_zone_dnssec
     test_users_crud
     test_zone_templates
     test_users_ldap_sync
