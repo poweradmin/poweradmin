@@ -355,6 +355,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Username is required', $result['message']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -364,6 +365,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Password is required', $result['message']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -380,6 +382,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Username already exists', $result['message']);
+        $this->assertSame(409, $result['status']);
     }
 
     #[Test]
@@ -400,6 +403,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Email already exists', $result['message']);
+        $this->assertSame(409, $result['status']);
     }
 
     #[Test]
@@ -440,6 +444,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Failed to create user', $result['message']);
+        $this->assertSame(500, $result['status']);
     }
 
     #[Test]
@@ -474,6 +479,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -491,6 +497,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -507,6 +514,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -524,6 +532,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -563,6 +572,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -631,6 +641,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -647,6 +658,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Username already exists', $result['message']);
+        $this->assertSame(409, $result['status']);
     }
 
     #[Test]
@@ -684,6 +696,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot disable the last remaining super admin', $result['message']);
+        $this->assertSame(409, $result['status']);
     }
 
     #[Test]
@@ -768,6 +781,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -782,6 +796,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -795,6 +810,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -827,6 +843,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -841,6 +858,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     // ========== deleteUser tests ==========
@@ -856,6 +874,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -875,6 +894,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('Cannot delete the last remaining super admin', $result['message']);
+        $this->assertSame(409, $result['status']);
     }
 
     #[Test]
@@ -894,6 +914,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertStringContainsString('transfer_to_user_id', $result['message']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -916,6 +937,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Transfer target user not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -986,6 +1008,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]
@@ -1002,6 +1025,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
     }
 
     #[Test]

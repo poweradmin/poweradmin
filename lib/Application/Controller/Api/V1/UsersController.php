@@ -488,6 +488,17 @@ class UsersController extends PublicApiController
         )
     )]
     #[OA\Response(
+        response: 404,
+        description: 'Not found - permission template does not exist',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Permission template not found'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
         response: 409,
         description: 'Conflict - username or email already exists',
         content: new OA\JsonContent(
@@ -527,10 +538,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->createUser($input);
 
             if (!$result['success']) {
-                $statusCode = match ($result['message']) {
-                    'Username already exists', 'Email already exists' => 409,
-                    default => 400
-                };
+                $statusCode = $result['status'] ?? 400;
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
@@ -669,7 +677,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 404,
-        description: 'User not found',
+        description: 'Not found - user or permission template does not exist',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
@@ -718,12 +726,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->updateUser($targetUserId, $input);
 
             if (!$result['success']) {
-                $statusCode = match ($result['message']) {
-                    'User not found' => 404,
-                    'Username already exists', 'Email already exists' => 409,
-                    'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.' => 409,
-                    default => 400
-                };
+                $statusCode = $result['status'] ?? 400;
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
@@ -798,7 +801,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 404,
-        description: 'User not found',
+        description: 'Not found - user to delete or transfer target user does not exist',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
@@ -808,11 +811,21 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 400,
-        description: 'Bad request - last super admin cannot be deleted or missing transfer target',
+        description: 'Bad request - user owns zones and no transfer target was provided',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 409,
+        description: 'Conflict - cannot delete the last remaining super admin',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.')
             ]
         )
     )]
@@ -835,7 +848,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId);
 
             if (!$result['success']) {
-                $statusCode = $result['message'] === 'User not found' ? 404 : 400;
+                $statusCode = $result['status'] ?? 400;
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
@@ -955,7 +968,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
             if (!$result['success']) {
-                $statusCode = $result['message'] === 'User not found' ? 404 : 400;
+                $statusCode = $result['status'] ?? 400;
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
