@@ -92,4 +92,22 @@ class ApiRecordRepositorySortingTest extends TestCase
             array_slice($order, 4)
         );
     }
+
+    public function testFilteredRecordsAlsoPinApexToTop(): void
+    {
+        // getFilteredRecords fetches via getRecordsByZoneId and resolves the apex via getZoneNameById.
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('getZoneNameById')->willReturn('example.com');
+        $provider->method('getRecordsByZoneId')->willReturn($this->sampleRecords());
+        $repo = new ApiRecordRepository($provider);
+
+        $records = $repo->getFilteredRecords(1, 0, 100, 'name', 'ASC', false, 'example');
+        $order = array_map(fn($r) => $r['name'] . '/' . $r['type'], $records);
+
+        $this->assertSame('example.com/SOA', $order[0]);
+        $this->assertSame('example.com/NS', $order[1]);
+        foreach (array_slice($order, 0, 4) as $entry) {
+            $this->assertStringStartsWith('example.com/', $entry);
+        }
+    }
 }

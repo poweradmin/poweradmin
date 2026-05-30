@@ -228,8 +228,9 @@ class ApiRecordRepository implements RecordRepositoryInterface
     ): array {
         $records = $this->fetchAndFilterRecords($zone_id, $search_term, $type_filter, $content_filter);
 
-        // Sort
-        $records = ResultPaginator::sort($records, $sort_by, $sort_direction);
+        // Sort, pinning SOA/NS/apex records to the top to match the unfiltered listing (issue #1250)
+        $zoneName = $this->backendProvider->getZoneNameById($zone_id) ?? '';
+        $records = ResultPaginator::sortRecords($records, $sort_by, $sort_direction, $zoneName);
 
         // Paginate
         $records = ResultPaginator::paginate($records, $row_start, $row_amount);

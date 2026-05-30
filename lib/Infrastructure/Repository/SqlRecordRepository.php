@@ -374,13 +374,19 @@ class SqlRecordRepository implements RecordRepositoryInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
         $sort_by_qualified = $sort_by === 'name'
             ? SortHelper::getRecordSortOrder($records_table, $driver, $sort_direction)
             : $records_table . '.' . $sort_by . ' ' . $sort_direction;
+        // Pin SOA, NS, and apex records to the top regardless of column or direction,
+        // matching the unfiltered listing so filtering does not scatter zone metadata.
+        $sort_by_qualified = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
+                     "$records_table.name = (SELECT name FROM $domains_table WHERE id = :domain_id_apex) DESC, " .
+                     $sort_by_qualified;
 
-        $params = [':zone_id' => $zone_id];
+        $params = [':zone_id' => $zone_id, ':domain_id_apex' => $zone_id];
 
         $search_condition = '';
         if (!empty($search_term)) {

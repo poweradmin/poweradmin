@@ -176,4 +176,45 @@ class RecordRepositoryApexSortingTest extends TestCase
         $this->assertArrayHasKey(':domain_id_apex', $expectedParams);
         $this->assertEquals($domainId, $expectedParams[':domain_id_apex']);
     }
+
+    public function testApexSortingAppliedInFilteredRecords(): void
+    {
+        $zoneId = 1;
+        $expectedQuery = null;
+        $boundParams = [];
+
+        $this->db->method('getAttribute')->willReturn('mysql');
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue')
+            ->willReturnCallback(function ($key, $value) use (&$boundParams) {
+                $boundParams[$key] = $value;
+                return true;
+            });
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        $this->db->method('prepare')
+            ->willReturnCallback(function ($query) use (&$expectedQuery, $stmt) {
+                $expectedQuery = $query;
+                return $stmt;
+            });
+
+        // Filtered listing (search term applied) must still pin apex records to the top.
+        $this->repository->getFilteredRecords(
+            $zoneId,
+            0,
+            100,
+            'name',
+            'ASC',
+            false,
+            'example'
+        );
+
+        $this->assertStringContainsString("records.type = 'SOA' DESC", $expectedQuery);
+        $this->assertStringContainsString("records.type = 'NS' DESC", $expectedQuery);
+        $this->assertStringContainsString("records.name = (SELECT name FROM domains WHERE id = :domain_id_apex) DESC", $expectedQuery);
+        $this->assertArrayHasKey(':domain_id_apex', $boundParams);
+        $this->assertEquals($zoneId, $boundParams[':domain_id_apex']);
+    }
 }
