@@ -47,7 +47,9 @@ class DatabaseConsistencyController extends BaseController
             return;
         }
 
-        $consistencyService = new DatabaseConsistencyService($this->db, $this->config);
+        // Pass the backend provider so checks run against the PowerDNS API when the
+        // API backend is configured, instead of querying tables that aren't local.
+        $consistencyService = new DatabaseConsistencyService($this->db, $this->config, $this->createDnsBackendProvider());
 
         // Handle fix actions
         if ($this->isPost() && isset($_POST['action']) && isset($_POST['check_type'])) {
