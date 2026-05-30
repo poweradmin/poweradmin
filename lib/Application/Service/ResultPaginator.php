@@ -61,6 +61,70 @@ class ResultPaginator
     }
 
     /**
+     * Sort records while keeping zone-level metadata grouped at the top.
+     *
+     * SOA, NS, and apex records are pinned above the rest regardless of the
+     * sort column or direction, so the zone header stays together while the
+     * user sorts through the body. Mirrors the SQL backend ordering for #1250.
+     *
+     * @param array $data Records to sort
+     * @param string $sortBy Key to sort by
+     * @param string $direction 'ASC' or 'DESC'
+     * @param string $apexName Zone apex name used to detect apex records
+     * @return array Sorted dataset
+     */
+    public static function sortRecords(array $data, string $sortBy, string $direction = 'ASC', string $apexName = ''): array
+    {
+        if (empty($data)) {
+            return $data;
+        }
+
+        $apex = strtolower(rtrim($apexName, '.'));
+        $dir = strtoupper($direction) === 'DESC' ? -1 : 1;
+
+        usort($data, function ($a, $b) use ($sortBy, $dir, $apex) {
+            $rankA = self::recordTopRank($a, $apex);
+            $rankB = self::recordTopRank($b, $apex);
+            if ($rankA !== $rankB) {
+                return $rankA - $rankB;
+            }
+
+            if ($sortBy === '') {
+                return 0;
+            }
+
+            $va = $a[$sortBy] ?? '';
+            $vb = $b[$sortBy] ?? '';
+
+            if (is_numeric($va) && is_numeric($vb)) {
+                return ($va - $vb) * $dir;
+            }
+
+            return strnatcasecmp((string)$va, (string)$vb) * $dir;
+        });
+
+        return $data;
+    }
+
+    /**
+     * Rank a record for top-of-list pinning: SOA first, then NS, then apex, then the rest.
+     */
+    private static function recordTopRank(array $record, string $apex): int
+    {
+        $type = strtoupper((string)($record['type'] ?? ''));
+        if ($type === 'SOA') {
+            return 0;
+        }
+        if ($type === 'NS') {
+            return 1;
+        }
+        if ($apex !== '' && strtolower(rtrim((string)($record['name'] ?? ''), '.')) === $apex) {
+            return 2;
+        }
+        return 3;
+    }
+
+    /**
      * Filter dataset by starting letter of a field.
      *
      * @param array $data Dataset to filter
