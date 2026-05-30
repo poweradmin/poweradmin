@@ -1216,6 +1216,7 @@ return array(
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',
     'Poweradmin\\Domain\\Service\\PdnsCapabilities' => $baseDir . '/lib/Domain/Service/PdnsCapabilities.php',
     'Poweradmin\\Domain\\Service\\PermissionService' => $baseDir . '/lib/Domain/Service/PermissionService.php',
+    'Poweradmin\\Domain\\Service\\PermissionTemplateAssignmentGuard' => $baseDir . '/lib/Domain/Service/PermissionTemplateAssignmentGuard.php',
     'Poweradmin\\Domain\\Service\\RecordDisplayService' => $baseDir . '/lib/Domain/Service/RecordDisplayService.php',
     'Poweradmin\\Domain\\Service\\RecordMatchingService' => $baseDir . '/lib/Domain/Service/RecordMatchingService.php',
     'Poweradmin\\Domain\\Service\\RecordTypeService' => $baseDir . '/lib/Domain/Service/RecordTypeService.php',
