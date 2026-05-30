@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use PDO;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -49,6 +50,24 @@ class DatabaseConsistencyService
         return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
+    /**
+     * Whether the DNS backend can be queried for consistency checks.
+     *
+     * In API mode the provider swallows transport errors and returns an empty
+     * zone list, which would otherwise read as "all checks passed". An empty
+     * list paired with a recorded API error means the API is unreachable, so
+     * callers should surface an outage rather than run checks against no data.
+     */
+    public function isBackendReachable(): bool
+    {
+        if (!$this->isApiBackend()) {
+            return true;
+        }
+
+        $zones = $this->backendProvider->getZones();
+        return !(empty($zones) && (new ApiStatusService())->getLastError() !== null);
+    }
+
 
     /**
      * Check if all zones have an owner
@@ -63,6 +82,12 @@ class DatabaseConsistencyService
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
                 $zoneName = $z['name'] ?? '';
+                // A zone that PowerDNS reports but Poweradmin has not synced yet has
+                // no local row to own (id 0); skip it rather than offer an owner fix
+                // that would insert a dangling zones row keyed on domain_id 0.
+                if ($zoneId <= 0) {
+                    continue;
+                }
                 // A zone may have multiple `zones` rows (one per direct owner)
                 // plus optional zones_groups entries; treat it as orphaned only
                 // when no row carries a real owner and there is no group link.
@@ -253,6 +278,11 @@ class DatabaseConsistencyService
             $duplicateSOA = [];
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
+                // Unsynced zones (id 0) have no local ID mapping yet; their SOA
+                // lookup is meaningless, so skip until ZoneSyncService imports them.
+                if ($zoneId <= 0) {
+                    continue;
+                }
                 $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
                 if (count($records) > 1) {
                     $duplicateSOA[] = [
@@ -317,6 +347,12 @@ class DatabaseConsistencyService
                 $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
                 if ($kind === 'MASTER' || $kind === 'NATIVE') {
                     $zoneId = (int)($z['id'] ?? 0);
+                    // Unsynced zones (id 0) have no local ID mapping, so the SOA
+                    // lookup always comes back empty; skip to avoid a false
+                    // "missing SOA" until ZoneSyncService imports the zone.
+                    if ($zoneId <= 0) {
+                        continue;
+                    }
                     $soaRecords = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
                     if (empty($soaRecords)) {
                         $zonesWithoutSOA[] = [
@@ -389,6 +425,12 @@ class DatabaseConsistencyService
      */
     public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
     {
+        // Guard against unsynced API zones (id 0): assigning an owner here would
+        // insert a dangling zones row keyed on domain_id 0 with no zone_name.
+        if ($zoneId <= 0) {
+            return false;
+        }
+
         // Check if zone entry exists
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE domain_id = :domain_id");
         $stmt->execute(['domain_id' => $zoneId]);

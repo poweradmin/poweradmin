@@ -51,10 +51,19 @@ class DatabaseConsistencyController extends BaseController
         // API backend is configured, instead of querying tables that aren't local.
         $consistencyService = new DatabaseConsistencyService($this->db, $this->config, $this->createDnsBackendProvider());
 
-        // Handle fix actions
+        // Handle fix actions. Run these before the reachability gate below: owner
+        // assignment touches only the local zones table, so it must still work when
+        // the API is briefly down. API-dependent fixes fail gracefully on their own.
         if ($this->isPost() && isset($_POST['action']) && isset($_POST['check_type'])) {
             $this->validateCsrfToken();
             $this->handleFixAction($consistencyService);
+            return;
+        }
+
+        // With the API backend, an outage returns an empty zone list that would read
+        // as "all clear". Surface a single error instead of running checks on no data.
+        if (!$consistencyService->isBackendReachable()) {
+            $this->showError(_('Could not reach the PowerDNS API; consistency checks are unavailable.'));
             return;
         }
 
