@@ -244,14 +244,16 @@ class UserManagementService
         if (empty($userData['username'])) {
             return [
                 'success' => false,
-                'message' => 'Username is required'
+                'message' => 'Username is required',
+                'status' => 400
             ];
         }
 
         if (empty($userData['password'])) {
             return [
                 'success' => false,
-                'message' => 'Password is required'
+                'message' => 'Password is required',
+                'status' => 400
             ];
         }
 
@@ -259,7 +261,8 @@ class UserManagementService
         if ($this->userRepository->getUserByUsername($userData['username'])) {
             return [
                 'success' => false,
-                'message' => 'Username already exists'
+                'message' => 'Username already exists',
+                'status' => 409
             ];
         }
 
@@ -267,7 +270,8 @@ class UserManagementService
         if (!empty($userData['email']) && $this->userRepository->getUserByEmail($userData['email'])) {
             return [
                 'success' => false,
-                'message' => 'Email already exists'
+                'message' => 'Email already exists',
+                'status' => 409
             ];
         }
 
@@ -278,7 +282,8 @@ class UserManagementService
             if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
                 return [
                     'success' => false,
-                    'message' => 'Permission template not found'
+                    'message' => 'Permission template not found',
+                    'status' => 404
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -293,7 +298,8 @@ class UserManagementService
             if (!$userId) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to create user'
+                    'message' => 'Failed to create user',
+                    'status' => 500
                 ];
             }
 
@@ -305,7 +311,8 @@ class UserManagementService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to create user: ' . $e->getMessage()
+                'message' => 'Failed to create user: ' . $e->getMessage(),
+                'status' => 500
             ];
         }
     }
@@ -323,7 +330,8 @@ class UserManagementService
         if (!$this->userExists($userId)) {
             return [
                 'success' => false,
-                'message' => 'User not found'
+                'message' => 'User not found',
+                'status' => 404
             ];
         }
 
@@ -333,7 +341,8 @@ class UserManagementService
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
-                    'message' => 'Username already exists'
+                    'message' => 'Username already exists',
+                    'status' => 409
                 ];
             }
         }
@@ -344,7 +353,8 @@ class UserManagementService
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
-                    'message' => 'Email already exists'
+                    'message' => 'Email already exists',
+                    'status' => 409
                 ];
             }
         }
@@ -358,7 +368,8 @@ class UserManagementService
             if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
                 return [
                     'success' => false,
-                    'message' => 'Permission template not found'
+                    'message' => 'Permission template not found',
+                    'status' => 404
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -371,7 +382,8 @@ class UserManagementService
                 if ($uberuserCount <= 1) {
                     return [
                         'success' => false,
-                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.'
+                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
+                        'status' => 409
                     ];
                 }
             }
@@ -391,7 +403,8 @@ class UserManagementService
                             'Cannot set password for %s authenticated users. This user authenticates via %s.',
                             strtoupper($authMethod),
                             strtoupper($authMethod)
-                        )
+                        ),
+                        'status' => 400
                     ];
                 }
 
@@ -404,7 +417,8 @@ class UserManagementService
             if (!$success) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to update user'
+                    'message' => 'Failed to update user',
+                    'status' => 500
                 ];
             }
 
@@ -416,7 +430,8 @@ class UserManagementService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to update user: ' . $e->getMessage()
+                'message' => 'Failed to update user: ' . $e->getMessage(),
+                'status' => 500
             ];
         }
     }
@@ -434,7 +449,8 @@ class UserManagementService
         if (!$this->userExists($userId)) {
             return [
                 'success' => false,
-                'message' => 'User not found'
+                'message' => 'User not found',
+                'status' => 404
             ];
         }
 
@@ -444,7 +460,8 @@ class UserManagementService
             if ($uberuserCount <= 1) {
                 return [
                     'success' => false,
-                    'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.'
+                    'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
+                    'status' => 409
                 ];
             }
         }
@@ -459,7 +476,8 @@ class UserManagementService
                 if (!$transferToUserId) {
                     return [
                         'success' => false,
-                        'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.'
+                        'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.',
+                        'status' => 400
                     ];
                 }
 
@@ -467,7 +485,8 @@ class UserManagementService
                 if (!$this->userExists($transferToUserId)) {
                     return [
                         'success' => false,
-                        'message' => 'Transfer target user not found'
+                        'message' => 'Transfer target user not found',
+                        'status' => 404
                     ];
                 }
 
@@ -475,7 +494,8 @@ class UserManagementService
                 if (!$this->userRepository->transferUserZones($userId, $transferToUserId)) {
                     return [
                         'success' => false,
-                        'message' => 'Failed to transfer zones to target user'
+                        'message' => 'Failed to transfer zones to target user',
+                        'status' => 500
                     ];
                 }
             }
@@ -484,7 +504,8 @@ class UserManagementService
             if (!$this->userRepository->deleteUser($userId)) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to delete user'
+                    'message' => 'Failed to delete user',
+                    'status' => 500
                 ];
             }
 
@@ -500,7 +521,8 @@ class UserManagementService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to delete user: ' . $e->getMessage()
+                'message' => 'Failed to delete user: ' . $e->getMessage(),
+                'status' => 500
             ];
         }
     }
@@ -518,7 +540,8 @@ class UserManagementService
         if (!$this->userExists($userId)) {
             return [
                 'success' => false,
-                'message' => 'User not found'
+                'message' => 'User not found',
+                'status' => 404
             ];
         }
 
@@ -526,7 +549,8 @@ class UserManagementService
         if (!$this->permissionTemplateExists($permTemplId)) {
             return [
                 'success' => false,
-                'message' => 'Permission template not found'
+                'message' => 'Permission template not found',
+                'status' => 404
             ];
         }
 
@@ -535,7 +559,8 @@ class UserManagementService
             if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to assign permission template'
+                    'message' => 'Failed to assign permission template',
+                    'status' => 500
                 ];
             }
 
@@ -546,7 +571,8 @@ class UserManagementService
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'message' => 'Failed to assign permission template: ' . $e->getMessage()
+                'message' => 'Failed to assign permission template: ' . $e->getMessage(),
+                'status' => 500
             ];
         }
     }
