@@ -16,51 +16,16 @@
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
 {% endif %}
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
-            </div>
-            <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-                    {% if user_owner_allowed %}
-                    <div class="mb-3">
-                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}{% if not group_owner_allowed %} <span class="text-danger">*</span>{% endif %}</label>
-                        <select class="form-select form-select-sm" id="owner" name="owner"{% if not group_owner_allowed %} required{% endif %}>
-                            {% if group_owner_allowed and all_groups is not empty %}
-                            <option value="" {% if owner_value == '' %}selected{% endif %}>{% trans %}No user owner{% endtrans %}</option>
-                            {% endif %}
-                            {% for user in users %}
-                                {% if perm_view_others or user['id'] == userid %}
-                                <option value="{{ user['id'] }}" {% if user['id'] == owner_value %}selected{% endif %}>
-                                    {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
-                                </option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% endif %}
-
-                    {% if group_owner_allowed and all_groups is not empty %}
-                    <div class="mb-3">
-                        <label class="form-label">{% trans %}Group ownership{% endtrans %}</label>
-                        <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
-                            {% for group in all_groups %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if group.id in selected_groups %}checked{% endif %}>
-                                <label class="form-check-label" for="group_{{ group.id }}">
-                                    {{ group.name }}{% if group.description %} <small class="text-muted">{{ group.description }}</small>{% endif %}
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <small class="text-muted">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
-                    </div>
-                    {% endif %}
-
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="dom_type" name="dom_type">
@@ -103,31 +68,56 @@
                         </div>
                         <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {% if perm_view_others or perm_edit_others %}
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}After Creation{% endtrans %}</strong>
-            </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <h6 class="mb-1"><i class="bi bi-person-gear text-success me-2"></i>{% trans %}Change zone owner{% endtrans %}</h6>
-                        <p class="small mb-2">{% trans %}You can transfer zone ownership to another user from the user list at any time.{% endtrans %}</p>
-                        <a href="{{ base_url_prefix }}/users" class="btn btn-sm btn-outline-success">
-                            <i class="bi bi-person-gear me-1"></i>{% trans %}Manage users{% endtrans %}
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
+
+        {% if user_owner_allowed or (group_owner_allowed and all_groups is not empty) %}
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-person-gear me-2"></i>{% trans %}Ownership{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
+                    {% if user_owner_allowed %}
+                    <div class="mb-3">
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}{% if not group_owner_allowed %} <span class="text-danger">*</span>{% endif %}</label>
+                        <select class="form-select form-select-sm" id="owner" name="owner"{% if not group_owner_allowed %} required{% endif %}>
+                            {% if group_owner_allowed and all_groups is not empty %}
+                            <option value="" {% if owner_value == '' %}selected{% endif %}>{% trans %}No user owner{% endtrans %}</option>
+                            {% endif %}
+                            {% for user in users %}
+                                {% if perm_view_others or user['id'] == userid %}
+                                <option value="{{ user['id'] }}" {% if user['id'] == owner_value %}selected{% endif %}>
+                                    {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    {% if group_owner_allowed and all_groups is not empty %}
+                    <div class="mb-3">
+                        <label class="form-label">{% trans %}Group ownership{% endtrans %}</label>
+                        <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
+                            {% for group in all_groups %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if group.id in selected_groups %}checked{% endif %}>
+                                <label class="form-check-label" for="group_{{ group.id }}">
+                                    {{ group.name }}{% if group.description %} <small class="text-muted">{{ group.description }}</small>{% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
+</form>
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
