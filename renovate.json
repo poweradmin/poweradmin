@@ -7,6 +7,11 @@
     "after 9am and before 9pm"
   ],
   "timezone": "Europe/Vilnius",
+  "minimumReleaseAge": "7 days",
+  "internalChecksFilter": "strict",
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": null
+  },
   "baseBranchPatterns": [
     "develop",
     "master",
