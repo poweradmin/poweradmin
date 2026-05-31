@@ -7,11 +7,17 @@
     "after 9am and before 9pm"
   ],
   "timezone": "Europe/Vilnius",
+  "minimumReleaseAge": "7 days",
+  "internalChecksFilter": "strict",
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": null
+  },
   "baseBranchPatterns": [
     "develop",
     "master",
     "release/3.x",
-    "release/4.3.x"
+    "release/4.3.x",
+    "release/4.2.x"
   ],
   "constraints": {
     "php": "<8.6"
@@ -40,7 +46,8 @@
       "description": "Only allow patch updates on stable branches",
       "matchBaseBranches": [
         "release/3.x",
-        "release/4.3.x"
+        "release/4.3.x",
+        "release/4.2.x"
       ],
       "matchUpdateTypes": [
         "major",
