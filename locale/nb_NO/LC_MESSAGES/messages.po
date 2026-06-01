@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:26+0300\n"
+"POT-Creation-Date: 2026-06-01 22:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1262,11 +1262,11 @@ msgstr "Kunne ikke opprette sone."
 msgid "Failed to retrieve created zone."
 msgstr "Kunne ikke hente opprettet sone."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "Du må være innlogget for å eksportere sonedata."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "Du har ikke tillatelse til å eksportere denne sonen."
 
@@ -1274,7 +1274,7 @@ msgstr "Du har ikke tillatelse til å eksportere denne sonen."
 msgid "There is no zone with this ID."
 msgstr "Det finnes ingen sone med denne ID-en."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "Denne sonen har ingen poster å eksportere."
 
@@ -1385,7 +1385,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Ugyldig eller uventet inndata gitt."
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:340
 msgid "You do not have the permission to delete this user."
 msgstr "Du har ikke tillatelse til å slette denne brukeren."
 
@@ -1677,20 +1677,20 @@ msgstr ""
 "Gjenopprettingskoder har blitt regenerert. Vennligst lagre dem på et trygt "
 "sted."
 
-#: lib/Application/Controller/ListLogApiController.php:51
+#: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "API-logger"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "Ugyldig sidenummer."
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "Sidenummer må være minst 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "Sidenummer overskrider tilgjengelige sider."
 
@@ -1854,11 +1854,11 @@ msgstr "Tillatelsesmalen har blitt oppdatert."
 msgid "Groups"
 msgstr "Grupper"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:49
 msgid "You do not have the permission to perform searches."
 msgstr "Du har ikke tillatelse til å utføre søk."
 
-#: lib/Application/Controller/SearchController.php:49
+#: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Søk"
@@ -1879,7 +1879,7 @@ msgstr "Medlem fjernet fra gruppe."
 msgid "User was not a member of this group."
 msgstr "Brukeren var ikke medlem av denne gruppen."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1050
 msgid "You do not have the permission to add a new user."
 msgstr "Du har ikke tillatelse til å legge til en ny bruker."
 
@@ -1925,7 +1925,7 @@ msgstr "Du har ikke tillatelse til å slette denne posten."
 msgid "The record could not be deleted."
 msgstr "Posten kunne ikke slettes."
 
-#: lib/Application/Controller/ListLogZonesController.php:62
+#: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:219 templates/modern/index.html:219
 msgid "Zone Logs"
 msgstr "Sonelogger"
@@ -2003,7 +2003,7 @@ msgstr "Mal eksisterer ikke."
 msgid "You do not have permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
-#: lib/Application/Controller/ListLogUsersController.php:61
+#: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:229 templates/modern/index.html:229
 msgid "User Logs"
 msgstr "Brukerlogger"
@@ -2097,19 +2097,19 @@ msgstr ""
 "Kunne ikke signere sone. Sonevalidering godkjent, men PowerDNS API "
 "returnerte en feil. Sjekk PowerDNS-logger for detaljer."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:94
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Sonen er ikke signert med DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:106
 msgid "Zone has been unsigned successfully."
 msgstr "Sonen har blitt usignert."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:111
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Sone-usignering forespurt, men verifisering mislyktes."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:115
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke usignere sone. Sjekk PowerDNS-logger for detaljer."
 
@@ -2276,7 +2276,7 @@ msgstr "Ingen OIDC-leverandører er konfigurert"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "Kunne ikke starte OIDC-autentisering: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
+#: lib/Application/Controller/ListLogGroupsController.php:67
 #: templates/default/index.html:239 templates/modern/index.html:239
 msgid "Group Logs"
 msgstr "Gruppelogger"
@@ -2385,15 +2385,15 @@ msgstr "Du har ikke tillatelse til å administrere DNSSEC for denne sonen."
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC-nøkkel ikke funnet eller eksisterer ikke lenger."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:109
+#: lib/Application/Controller/DnssecDeleteKeyController.php:108
 msgid "Zone key has been deleted successfully."
 msgstr "Sonenøkkel har blitt slettet."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:117
+#: lib/Application/Controller/DnssecDeleteKeyController.php:116
 msgid "Failed to delete the zone key."
 msgstr "Kunne ikke slette sonenøkkelen."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:124
+#: lib/Application/Controller/DnssecDeleteKeyController.php:123
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "En feil oppstod under sletting av DNSSEC-nøkkelen: "
 
@@ -2482,69 +2482,75 @@ msgstr "Legg til tillatelsesmal"
 msgid "The permission template has been added successfully."
 msgstr "Tillatelsesmalen har blitt lagt til."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
+#: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
 msgstr "Ikke tilgjengelig for anonyme brukere."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
+#: lib/Application/Controller/DatabaseConsistencyController.php:39
 msgid "You do not have the permission to view this page."
 msgstr "Du har ikke tillatelse til å se denne siden."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
+#: lib/Application/Controller/DatabaseConsistencyController.php:43
 #: templates/default/header.html:232 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "Databasekonsistens"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:46
+#: lib/Application/Controller/DatabaseConsistencyController.php:47
 msgid "Database consistency checks are disabled."
 msgstr "Database-konsistenssjekker er deaktivert."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:82
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr "Databasekonsistenssjekker er ikke tilgjengelige når PowerDNS API-backend brukes."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "Database-konsistenssjekk"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Zone owner assigned successfully"
 msgstr "Soneeier tildelt"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Failed to assign zone owner"
 msgstr "Kunne ikke tildele soneeier"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Slave zone deleted successfully"
 msgstr "Slavesone slettet"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Failed to delete slave zone"
 msgstr "Kunne ikke slette slavesone"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Orphaned record deleted successfully"
 msgstr "Forlatt post slettet"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Failed to delete orphaned record"
 msgstr "Kunne ikke slette forlatt post"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Duplikat SOA-poster fikset"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Failed to fix duplicate SOA records"
 msgstr "Kunne ikke fikse duplikat SOA-poster"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Default SOA record created successfully"
 msgstr "Standard SOA-post opprettet"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Failed to create default SOA record"
 msgstr "Kunne ikke opprette standard SOA-post"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:134
+#: lib/Application/Controller/DatabaseConsistencyController.php:142
 msgid "Invalid check type"
 msgstr "Ugyldig sjekktype"
 
@@ -2666,7 +2672,7 @@ msgstr "Brukeren har blitt oppdatert."
 msgid "The user could not be updated."
 msgstr "Brukeren kunne ikke oppdateres."
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
 msgid "You do not have the permission to edit this user."
 msgstr "Du har ikke tillatelse til å redigere denne brukeren."
 
@@ -2803,40 +2809,40 @@ msgstr ""
 msgid "Change Password"
 msgstr "Endre passord"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritme må bruke 256 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritme må bruke 384 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:125
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritme må bruke 256 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:130
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritme må bruke 456 bits (ikke støttet i dette grensesnittet)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:137
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA algoritmer bør bruke 1024 eller 2048 bits for tilstrekkelig sikkerhet"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:160
 msgid "Zone key has been added successfully."
 msgstr "Sonenøkkel har blitt lagt til."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:164
 msgid "Failed to add new DNSSEC key."
 msgstr "Kunne ikke legge til ny DNSSEC nøkkel."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:168
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "En feil oppstod ved tillegging av DNSSEC nøkkel: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:172
 msgid "Please select both algorithm and bits"
 msgstr "Vennligst velg både algoritme og bits"
 
@@ -3017,7 +3023,7 @@ msgstr "Dette er et ugyldig sonenavn."
 msgid "This template is assigned to at least one user and one group."
 msgstr "Denne malen er tilordnet minst én bruker og én gruppe."
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:385
 msgid "This template is assigned to at least one user."
 msgstr "Denne malen er tildelt minst én bruker."
 
@@ -3046,15 +3052,15 @@ msgstr ""
 "Databasefeil: Kunne ikke verifisere brukerautentisering. Vennligst sjekk "
 "databasekonfigurasjonen."
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1062
 msgid "Enter a valid email address."
 msgstr "Skriv inn en gyldig e-postadresse."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1054
 msgid "Username exist already, please choose another one."
 msgstr "Brukernavnet eksisterer allerede, vennligst velg et annet."
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1058
 msgid "Enter a valid user name."
 msgstr "Skriv inn et gyldig brukernavn."
 
@@ -8571,11 +8577,11 @@ msgstr "Følgende advarsler ble funnet:"
 msgid "Empty line."
 msgstr "Tom linje."
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Ugyldig format. Forventet minst: navn,type,innhold"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:90
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -9312,7 +9318,7 @@ msgstr "Legg til gruppe"
 msgid "No groups found"
 msgstr "Ingen grupper funnet"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:95
 msgid "Search groups..."
 msgstr "Søk grupper..."
 
@@ -10243,7 +10249,7 @@ msgstr "IPv4 omvendte soner:"
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 omvendte soner:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "Rader per side:"
 
@@ -10275,7 +10281,7 @@ msgstr "Mal"
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "Slett sone(r)"
 
@@ -10520,7 +10526,7 @@ msgstr "Tøm søk"
 msgid "Select All"
 msgstr "Velg alle"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:99
 msgid "Clear All"
 msgstr "Tøm alle"
 
@@ -10972,7 +10978,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "Eierskap"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:50
 msgid "User Owner"
 msgstr "Brukereier"
 
@@ -10988,7 +10994,7 @@ msgstr "Legg til brukereier"
 msgid "Search users..."
 msgstr "Søk brukere..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:77
 msgid "You"
 msgstr "Du"
 
@@ -10996,7 +11002,7 @@ msgstr "Du"
 msgid "Add Owner"
 msgstr "Legg til eier"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:91
 msgid "Group Ownership"
 msgstr "Gruppeeierskap"
 
@@ -11236,7 +11242,7 @@ msgstr "poster totalt"
 msgid "Edit selected"
 msgstr "Rediger valgte"
 
-#: templates/modern/edit.html:502 templates/modern/search.html:486
+#: templates/modern/edit.html:502 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "Slett post(er)"
 
@@ -11252,7 +11258,7 @@ msgstr "Importer"
 msgid "Generate PTR"
 msgstr "Generer PTR"
 
-#: templates/modern/edit.html:736 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:736 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Sonekonfigurasjon"
 
@@ -11260,7 +11266,7 @@ msgstr "Sonekonfigurasjon"
 msgid "Change"
 msgstr "Endre"
 
-#: templates/modern/edit.html:771 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:771 templates/modern/add_zone_slave.html:36
 msgid "IP address of master NS"
 msgstr "IP-adresse til master NS"
 
@@ -11571,55 +11577,55 @@ msgstr "Velg grupper å legge den nye brukeren til ved opprettelse."
 msgid "Zone name"
 msgstr "Sonenavn"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Oppgi sonenavn"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:32
 msgid "Example: example.com"
 msgstr "Eksempel: eksempel.no"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:47
 msgid "Zone type (usually NATIVE)"
 msgstr "Sonetype (vanligvis NATIVE)"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:59
 msgid "Optional: Apply predefined records from a template"
 msgstr "Valgfritt: Anvend forhåndsdefinerte poster fra en mal"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:67
 msgid "Enable DNSSEC"
 msgstr "Aktiver DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:69
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Sikre denne sonen med DNSSEC-signering"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:55
 msgid "Selected:"
 msgstr "Valgt:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:60
 msgid "No user owner"
 msgstr "Ingen brukereier"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:61
 msgid "Zone will be owned only by groups"
 msgstr "Sonen vil kun eies av grupper"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:83
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Valgfritt: Velg en bruker ansvarlig for denne sonen"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:106
 msgid "members"
 msgstr "medlemmer"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:112
 msgid "Optional: Select one or more groups"
 msgstr "Valgfritt: Velg én eller flere grupper"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:127
 msgid "Add zone"
 msgstr "Legg til sone"
 
@@ -11643,7 +11649,7 @@ msgstr "Soner koblet"
 msgid "Sync Status"
 msgstr "Synkroniseringsstatus"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "Ingen resultater funnet"
 
@@ -11970,37 +11976,39 @@ msgstr "Skriv ett domene per linje"
 msgid "Add Zones"
 msgstr "Legg til soner"
 
-#: templates/modern/bulk_registration.html:99
+#: templates/modern/bulk_registration.html:100
 msgid "After Creation"
 msgstr "Etter opprettelse"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_registration.html:106
 msgid "Assign zones to a group"
 msgstr "Tildel soner til en gruppe"
 
-#: templates/modern/bulk_registration.html:105
+#: templates/modern/bulk_registration.html:107
 msgid ""
 "Bulk registration assigns ownership to a single user. To share access with a "
 "group, open the group and add the newly created zones."
 msgstr ""
-"Massiv registrering tildeler eierskap til én enkelt bruker. For å dele tilgang med en gruppe, åpne gruppen og legg til de nyopprettede sonene."
+"Massiv registrering tildeler eierskap til én enkelt bruker. For å dele "
+"tilgang med en gruppe, åpne gruppen og legg til de nyopprettede sonene."
 
-#: templates/modern/bulk_registration.html:107
+#: templates/modern/bulk_registration.html:109
 msgid "Manage groups"
 msgstr "Administrer grupper"
 
-#: templates/modern/bulk_registration.html:111
+#: templates/modern/bulk_registration.html:115
 msgid "Change zone owner"
 msgstr "Endre soneier"
 
-#: templates/modern/bulk_registration.html:112
+#: templates/modern/bulk_registration.html:116
 msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Du kan når som helst overføre eierskap av en sone til en annen bruker fra brukerlisten."
+"Du kan når som helst overføre eierskap av en sone til en annen bruker fra "
+"brukerlisten."
 
-#: templates/modern/bulk_registration.html:114
+#: templates/modern/bulk_registration.html:118
 msgid "Manage users"
 msgstr "Administrer brukere"
 
@@ -12417,31 +12425,31 @@ msgstr ""
 msgid "Zones found"
 msgstr "Soner funnet"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "Poster funnet"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "Prøv andre søkeord eller filtre"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "Bekreft sonesletting"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "Er du sikker på at du vil slette"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "valgt(e) sone(r)?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "Bekreft postsletting"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "valgt(e) post(er)?"
 
@@ -12506,15 +12514,15 @@ msgstr "Brukerlogger"
 msgid "User Activity Logs"
 msgstr "Brukeraktivitetslogger"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Slavesone-konfigurasjon"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:38
 msgid "Provide IP address"
 msgstr "Oppgi IP-adresse"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:39
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -13784,7 +13792,10 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin beholder sine egne tabeller (brukere, tillatelser, sonemetadata) i den konfigurerte databasen, selv når PowerDNS API-backend er valgt. Disse påloggingsdetaljene gjelder den databasen, ikke PowerDNS."
+msgstr ""
+"Poweradmin beholder sine egne tabeller (brukere, tillatelser, sonemetadata) "
+"i den konfigurerte databasen, selv når PowerDNS API-backend er valgt. Disse "
+"påloggingsdetaljene gjelder den databasen, ikke PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
