@@ -1589,6 +1589,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\MfaSessionManager' => __DIR__ . '/../..' . '/lib/Domain/Service/MfaSessionManager.php',
         'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => __DIR__ . '/../..' . '/lib/Domain/Service/PasswordEncryptionService.php',
         'Poweradmin\\Domain\\Service\\PermissionService' => __DIR__ . '/../..' . '/lib/Domain/Service/PermissionService.php',
+        'Poweradmin\\Domain\\Service\\PermissionTemplateAssignmentGuard' => __DIR__ . '/../..' . '/lib/Domain/Service/PermissionTemplateAssignmentGuard.php',
         'Poweradmin\\Domain\\Service\\RecordDisplayService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordDisplayService.php',
         'Poweradmin\\Domain\\Service\\RecordMatchingService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordMatchingService.php',
         'Poweradmin\\Domain\\Service\\RecordTypeService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordTypeService.php',
