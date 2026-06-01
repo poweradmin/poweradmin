@@ -2038,10 +2038,9 @@ msgid "%d record(s) were successfully added."
 msgstr "已成功添加 %d 条记录。"
 
 #: lib/Application/Controller/AddRecordController.php:480
-#, auto-english-fallback
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "另外创建了 %d 条匹配的记录。"
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -11941,9 +11940,8 @@ msgid "Add record to zone"
 msgstr "向区域添加记录"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "无法添加记录。请检查记录数据后重试。"
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"

@@ -2137,10 +2137,9 @@ msgid "%d record(s) were successfully added."
 msgstr "%d kayıt başarıyla eklendi."
 
 #: lib/Application/Controller/AddRecordController.php:480
-#, auto-english-fallback
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "%d eşleşen kayıt da oluşturuldu."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -12863,9 +12862,8 @@ msgid "Add record to zone"
 msgstr "Zona Kayıt Ekle"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Kayıt eklenemedi. Lütfen kayıt verilerini kontrol edip tekrar deneyin."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"

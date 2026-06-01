@@ -2146,7 +2146,7 @@ msgstr "%d záznam(y) byly úspěšně přidány."
 #: lib/Application/Controller/AddRecordController.php:480
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "Bylo také vytvořeno %d odpovídajících záznamů."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -12807,7 +12807,7 @@ msgstr "Přidat záznam do zóny"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Záznam se nepodařilo přidat. Zkontrolujte data záznamu a zkuste to znovu."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"

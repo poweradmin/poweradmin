@@ -2162,10 +2162,9 @@ msgid "%d record(s) were successfully added."
 msgstr "Pomyślnie dodano %d rekordów."
 
 #: lib/Application/Controller/AddRecordController.php:480
-#, auto-english-fallback
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "Utworzono również %d pasujących rekordów."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -12977,9 +12976,8 @@ msgid "Add record to zone"
 msgstr "Dodaj rekord do strefy"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Nie można dodać rekordu. Sprawdź dane rekordu i spróbuj ponownie."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"

@@ -2152,10 +2152,9 @@ msgid "%d record(s) were successfully added."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
 #: lib/Application/Controller/AddRecordController.php:480
-#, auto-english-fallback
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "Taip pat sukurta %d atitinkančių įrašų."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -12884,9 +12883,8 @@ msgid "Add record to zone"
 msgstr "Pridėti įrašą į zoną"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Nepavyko pridėti įrašo. Patikrinkite įrašo duomenis ir bandykite dar kartą."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"

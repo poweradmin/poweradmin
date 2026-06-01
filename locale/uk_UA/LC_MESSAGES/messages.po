@@ -2158,10 +2158,9 @@ msgid "%d record(s) were successfully added."
 msgstr "%d запис(ів) було успішно додано."
 
 #: lib/Application/Controller/AddRecordController.php:480
-#, auto-english-fallback
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d matching record(s) were also created."
+msgstr "%d відповідних записів також створено."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -5506,7 +5505,7 @@ msgstr "ZONEMD scheme must be 1 (SIMPLE)."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
+msgstr "Виявлено дубльований модифікатор %s. Кожен модифікатор може з'являтися щонайбільше один раз."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5520,12 +5519,12 @@ msgstr "SVCB priority must be a number between 0 and 65535."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "Недійсне доменне ім'я в механізмі %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "CIDR notation is not valid with the %s mechanism."
+msgstr "Нотація CIDR недійсна з механізмом %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5563,12 +5562,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "Невідомий модифікатор: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "Невідомий механізм: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -6056,7 +6055,7 @@ msgstr "SPF record found in TXT record. Verify syntax according to RFC 7208."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "The mailbox domain represents the email address: %s"
+msgstr "Домен поштової скриньки представляє електронну адресу: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -6157,7 +6156,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "You should create a TXT record at domain: %s"
+msgstr "Вам слід створити запис TXT для домену: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -6633,27 +6632,27 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Invalid IPv6 address in %s: %s"
+msgstr "Недійсна адреса IPv6 у %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "Invalid port number: %d (must be 1-65535)"
+msgstr "Недійсний номер порту: %d (має бути 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
+msgstr "Недійсний формат сервера: %s (очікується IP:port або [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Invalid IPv4 address in %s: %s"
+msgstr "Недійсна адреса IPv4 у %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "Invalid IP address: %s"
+msgstr "Недійсна IP-адреса: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6710,7 +6709,7 @@ msgstr "This record type may not be logged by default. Enable audit logging."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "Значення iodef CAA має бути URL-адресою, що починається з %s, %s або %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6808,7 +6807,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
+msgstr "Підмережа %d не вирівняна з префіксом /%d. Має бути кратною %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -6887,12 +6886,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "Поле SOA %s має бути числовим."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "SOA %s field must be a positive integer."
+msgstr "Поле SOA %s має бути додатним цілим числом."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -6955,12 +6954,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "Unknown SVCB parameter key: \"%s\"."
+msgstr "Невідомий ключ параметра SVCB: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
+msgstr "Дубльований ключ параметра SVCB: \"%s\". Кожен ключ може з'являтися лише один раз."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
@@ -7713,12 +7712,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "Тег DMARC %s має містити дійсні URI mailto: або https:"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "Недійсна електронна адреса в тезі DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7729,12 +7728,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "Невідомий тег DMARC: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "Відсутній обов'язковий тег DMARC: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -8133,7 +8132,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "Запис NSEC3 містить недійсний тип запису: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -8369,7 +8368,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s (алгоритм %d) є алгоритмом, ОБОВ'ЯЗКОВИМ до реалізації згідно з RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8427,7 +8426,7 @@ msgstr "Content includes learning rate schedule. Use decay or adaptive rates."
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "Немає керованої зони для домену: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -8494,7 +8493,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:135
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
+msgstr "Зона має %d записів SOA. На зону дозволено лише один запис SOA."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
 msgid "Remove duplicate SOA records, keeping only one."
@@ -8504,7 +8503,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:147
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "Запис SOA не на вершині (apex). Знайдено в \"%s\", але зона - \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
 msgid "Move the SOA record to the zone apex."
@@ -8559,12 +8558,12 @@ msgstr ""
 #: lib/Domain/Service/ReverseRecordCreator.php:70
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "Немає відповідної зворотної зони для: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:78
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "Запис PTR для %s, що вказує на %s, вже існує."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
@@ -8613,7 +8612,7 @@ msgstr ""
 #: lib/Domain/Service/Dns/DomainManager.php:464
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "Недійсні аргументи передано до функції %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:291
 msgid "There is already a supermaster with this IP address and hostname."
@@ -8629,7 +8628,7 @@ msgstr "Не вдалося створити зону: %s"
 #: lib/Domain/Service/Dns/DomainManager.php:229
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Invalid argument(s) given to function %s"
+msgstr "Недійсні аргументи передано до функції %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:427
 msgid "The selected user already owns the zone."
@@ -8745,7 +8744,7 @@ msgstr "Record appears to be using game tree search. Handle branching factor."
 
 #: templates/modern/dnssec_delete_key.html:33
 msgid "Warning"
-msgstr "Warning"
+msgstr "Попередження"
 
 #: templates/modern/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -10499,7 +10498,7 @@ msgstr "Рекомендована кількість бітів для"
 #: lib/Module/ZoneImportExport/templates/import.html:33
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Попередження:"
 
 #: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
@@ -12890,7 +12889,7 @@ msgstr "Недоступний"
 
 #: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
 msgid "Error"
-msgstr "Error"
+msgstr "Помилка"
 
 #: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
 msgid "Server Statistics"
@@ -13012,9 +13011,8 @@ msgid "Add record to zone"
 msgstr "Додати запис до зони"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Не вдалося додати запис. Перевірте дані запису та повторіть спробу."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -13902,7 +13900,7 @@ msgstr "Налаштування DNS"
 
 #: install/templates/step5.html.twig:90
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "Адміністратор хоста"
 
 #: install/templates/step5.html.twig:94
 msgid "Provide the DNS hostmaster"
