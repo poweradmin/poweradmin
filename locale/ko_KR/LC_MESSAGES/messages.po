@@ -5812,7 +5812,7 @@ msgstr "zone_templ_id는 양의 정수여야 합니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
+msgstr "중복된 수정자 %s이(가) 발견되었습니다. 각 수정자는 최대 한 번만 나타날 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5825,12 +5825,12 @@ msgstr "잘못된 레코드 ID입니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "%s 메커니즘에 유효하지 않은 도메인 이름이 있습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "CIDR notation is not valid with the %s mechanism."
+msgstr "CIDR 표기법은 %s 메커니즘과 함께 사용할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5859,12 +5859,12 @@ msgstr "비밀번호는 최소 하나의 숫자를 포함해야 합니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "알 수 없는 수정자: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "알 수 없는 메커니즘: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -6282,7 +6282,7 @@ msgstr "존은 이미 존재합니다."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "The mailbox domain represents the email address: %s"
+msgstr "메일박스 도메인은 이메일 주소를 나타냅니다: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -6359,7 +6359,7 @@ msgstr "필수 필드가 누락되었습니다."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "You should create a TXT record at domain: %s"
+msgstr "도메인에 TXT 레코드를 생성해야 합니다: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -6777,12 +6777,12 @@ msgstr "필드 '%s'는 유효한 IP 주소여야 합니다."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Invalid IPv6 address in %s: %s"
+msgstr "%s의 유효하지 않은 IPv6 주소: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "Invalid port number: %d (must be 1-65535)"
+msgstr "유효하지 않은 포트 번호: %d (1-65535이어야 함)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
@@ -6792,7 +6792,7 @@ msgstr "필드 '%s'는 유효한 시간이어야 합니다."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Invalid IPv4 address in %s: %s"
+msgstr "%s의 유효하지 않은 IPv4 주소: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
@@ -6849,7 +6849,7 @@ msgstr "필드 '%s'는 %d와 %d 사이여야 합니다."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef 값은 %s, %s 또는 %s(으)로 시작하는 URL이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6931,7 +6931,7 @@ msgstr "잘못된 MFA 코드입니다."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
+msgstr "서브넷 %d이(가) 접두사 /%d와(과) 정렬되지 않았습니다. %d의 배수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -6996,12 +6996,12 @@ msgstr "새로고침 토큰이 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "SOA %s 필드는 숫자여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "SOA %s field must be a positive integer."
+msgstr "SOA %s 필드는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -7061,12 +7061,12 @@ msgstr "LDAP 바인드에 실패했습니다."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "Unknown SVCB parameter key: \"%s\"."
+msgstr "알 수 없는 SVCB 매개변수 키: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
+msgstr "중복된 SVCB 매개변수 키: \"%s\". 각 키는 한 번만 나타날 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -7712,12 +7712,12 @@ msgstr "압축 수준이 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "DMARC %s 태그에는 유효한 mailto: 또는 https: URI가 포함되어야 합니다"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "DMARC %s 태그에 유효하지 않은 이메일 주소: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7726,12 +7726,12 @@ msgstr "잘못된 인코딩입니다."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "알 수 없는 DMARC 태그: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "필수 DMARC 태그 누락: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -8081,7 +8081,7 @@ msgstr "프로세스를 종료할 수 없습니다."
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "NSEC3 레코드에 유효하지 않은 레코드 유형이 포함되어 있습니다: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -8283,7 +8283,7 @@ msgstr "CRC를 확인할 수 없습니다."
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s(알고리즘 %d)은(는) RFC 8624에 따라 반드시 구현해야 하는 알고리즘입니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8335,7 +8335,7 @@ msgstr "인증서 목적이 잘못되었습니다."
 #: lib/Domain/Service/DomainRecordCreator.php:71
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "도메인에 대해 관리되는 존이 없습니다: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -8393,7 +8393,7 @@ msgstr "인증서 권한 정보 액세스가 잘못되었습니다."
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
+msgstr "존에 %d개의 SOA 레코드가 있습니다. 존당 하나의 SOA 레코드만 허용됩니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
@@ -8402,7 +8402,7 @@ msgstr "인증서 권한 키 식별자가 잘못되었습니다."
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "SOA 레코드가 apex에 없습니다. \"%s\"에서 발견되었지만 존은 \"%s\"입니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -8463,12 +8463,12 @@ msgstr "예약 작업을 시작할 수 없습니다."
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "%s에 대한 일치하는 역방향 존이 없습니다."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:99
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "%s에 대한 PTR 레코드가 %s을(를) 가리키며 이미 존재합니다."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:112
 #, php-format
@@ -8518,7 +8518,7 @@ msgstr "대기열 작업을 삭제할 수 없습니다."
 #: lib/Domain/Service/Dns/DomainManager.php:591
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "%s %s 함수에 유효하지 않은 인수가 전달되었습니다"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:336
 msgid "There is already a supermaster with this IP address and hostname."
@@ -8545,7 +8545,7 @@ msgstr "존의 %s 레코드를 생성하지 못했습니다."
 #: lib/Domain/Service/Dns/DomainManager.php:305
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Invalid argument(s) given to function %s"
+msgstr "%s 함수에 유효하지 않은 인수가 전달되었습니다"
 
 #: lib/Domain/Service/Dns/DomainManager.php:409
 msgid "Failed to delete zone from DNS backend."
@@ -8669,7 +8669,7 @@ msgstr "세션을 시작할 수 없습니다."
 
 #: templates/modern/dnssec_delete_key.html:33
 msgid "Warning"
-msgstr "Warning"
+msgstr "경고"
 
 #: templates/modern/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -10219,7 +10219,7 @@ msgstr "권장 비트 수"
 #: lib/Module/ZoneImportExport/templates/import.html:33
 #: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "경고:"
 
 #: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
@@ -12617,7 +12617,7 @@ msgstr "접근 불가"
 
 #: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
 msgid "Error"
-msgstr "Error"
+msgstr "오류"
 
 #: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
 msgid "Server Statistics"
@@ -13730,7 +13730,7 @@ msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "호스트마스터"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"

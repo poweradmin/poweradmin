@@ -5524,12 +5524,12 @@ msgstr "Nameserver utama"
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
+msgstr "Kunci parameter HTTPS tidak dikenal: \"%s\". Lihat RFC 9460 untuk kunci yang valid."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
+msgstr "Kunci parameter HTTPS duplikat: \"%s\". Setiap kunci hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -5546,12 +5546,12 @@ msgstr "Hostmaster email"
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
-msgstr "Invalid IPv4 address in ipv4hint: \"%s\"."
+msgstr "Alamat IPv4 tidak valid pada ipv4hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:262
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
-msgstr "Invalid IPv6 address in ipv6hint: \"%s\"."
+msgstr "Alamat IPv6 tidak valid pada ipv6hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
@@ -5918,7 +5918,7 @@ msgstr "SSHFP record fingerprint type is mandatory."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
+msgstr "Modifier %s duplikat ditemukan. Setiap modifier hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5931,12 +5931,12 @@ msgstr "Tipe fingerprint SSHFP record harus antara 0 dan 255."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "Nama domain tidak valid pada mekanisme %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "CIDR notation is not valid with the %s mechanism."
+msgstr "Notasi CIDR tidak valid dengan mekanisme %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5965,12 +5965,12 @@ msgstr "TLSA record selector is mandatory."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "Modifier tidak dikenal: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "Mekanisme tidak dikenal: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -6388,7 +6388,7 @@ msgstr "Vertical precision LOC record harus berupa angka yang valid."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "The mailbox domain represents the email address: %s"
+msgstr "Domain kotak surat mewakili alamat email: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -6465,7 +6465,7 @@ msgstr "HINFO record CPU is mandatory."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "You should create a TXT record at domain: %s"
+msgstr "Anda harus membuat rekaman TXT pada domain: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -6883,27 +6883,27 @@ msgstr "Record content is mandatory."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Invalid IPv6 address in %s: %s"
+msgstr "Alamat IPv6 tidak valid pada %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "Invalid port number: %d (must be 1-65535)"
+msgstr "Nomor port tidak valid: %d (harus 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
+msgstr "Format server tidak valid: %s (diharapkan IP:port atau [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Invalid IPv4 address in %s: %s"
+msgstr "Alamat IPv4 tidak valid pada %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "Invalid IP address: %s"
+msgstr "Alamat IP tidak valid: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6957,7 +6957,7 @@ msgstr "Record type is not supported."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "Nilai iodef CAA harus berupa URL yang diawali dengan %s, %s, atau %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -7039,7 +7039,7 @@ msgstr "Detail zone"
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
+msgstr "Subnet %d tidak selaras dengan prefiks /%d. Harus kelipatan %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -7104,12 +7104,12 @@ msgstr "Nama zone wajib diisi."
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "Bidang SOA %s harus berupa angka."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "SOA %s field must be a positive integer."
+msgstr "Bidang SOA %s harus berupa bilangan bulat positif."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -7169,12 +7169,12 @@ msgstr "Server master wajib untuk zone slave."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "Unknown SVCB parameter key: \"%s\"."
+msgstr "Kunci parameter SVCB tidak dikenal: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
+msgstr "Kunci parameter SVCB duplikat: \"%s\". Setiap kunci hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -7821,12 +7821,12 @@ msgstr "DNSSEC disabled successfully."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "Tag DMARC %s harus berisi URI mailto: atau https: yang valid"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "Alamat email tidak valid pada tag DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7835,12 +7835,12 @@ msgstr "Gagal menonaktifkan DNSSEC."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "Tag DMARC tidak dikenal: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "Tag DMARC yang wajib tidak ada: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -8190,7 +8190,7 @@ msgstr "Gunakan TSIG"
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "Rekaman NSEC3 berisi jenis rekaman yang tidak valid: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -8392,7 +8392,7 @@ msgstr "SOA-EDIT-DNSUPDATE"
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s (algoritma %d) adalah algoritma yang WAJIB diterapkan menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8444,7 +8444,7 @@ msgstr "ALLOW-AXFR-FROM"
 #: lib/Domain/Service/DomainRecordCreator.php:71
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "Tidak ada zona yang dikelola untuk domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -8502,7 +8502,7 @@ msgstr "GSS-ACCEPTOR-PRINCIPAL"
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
+msgstr "Zona memiliki %d rekaman SOA. Hanya satu rekaman SOA yang diperbolehkan per zona."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
@@ -8511,7 +8511,7 @@ msgstr "IXFR"
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "Rekaman SOA tidak berada di apex. Ditemukan pada \"%s\" tetapi zona adalah \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -8572,12 +8572,12 @@ msgstr "Export zone as BIND format"
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "Tidak ada zona-balik yang cocok untuk: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:99
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "Rekaman PTR untuk %s yang menunjuk ke %s sudah ada."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:112
 #, php-format
@@ -8627,7 +8627,7 @@ msgstr "Select zone file to import"
 #: lib/Domain/Service/Dns/DomainManager.php:591
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "Argumen tidak valid diberikan ke fungsi %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:336
 msgid "There is already a supermaster with this IP address and hostname."
@@ -8654,7 +8654,7 @@ msgstr "Gagal membuat rekaman %s untuk zona."
 #: lib/Domain/Service/Dns/DomainManager.php:305
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Invalid argument(s) given to function %s"
+msgstr "Argumen tidak valid diberikan ke fungsi %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:409
 msgid "Failed to delete zone from DNS backend."
