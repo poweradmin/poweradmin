@@ -14087,10 +14087,7 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin mantiene sus propias tablas (usuarios, permisos, metadatos de zona) en la base de datos configurada, incluso cuando se selecciona el backend de la API de PowerDNS. Estas credenciales son para esa base de datos, no para PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""

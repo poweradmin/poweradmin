@@ -5293,34 +5293,27 @@ msgstr "X25 records are obsolete. Modern networks do not use X.25 protocol."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+msgstr "Значення TTL перевищує максимально дозволене (%d). RFC 2181 обмежує його знаковим 32-бітним цілим числом."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
-"TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
-"Low TTL values increase DNS traffic."
+msgstr "Значення TTL (%d) нижче рекомендованого мінімуму в %d секунд (5 хвилин). Низькі значення TTL збільшують трафік DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+msgstr "Значення TTL (%d) вище рекомендованого максимуму в %d секунд (1 тиждень). Високі значення TTL затримують оновлення DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr ""
-"SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
+msgstr "TTL запису SOA (%d) нижче рекомендованого мінімуму в %d секунд (1 година)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -5571,7 +5564,7 @@ msgstr "ZONEMD scheme must be 1 (SIMPLE)."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
+msgstr "Виявлено дубльований модифікатор %s. Кожен модифікатор може з'являтися щонайбільше один раз."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5585,12 +5578,12 @@ msgstr "SVCB priority must be a number between 0 and 65535."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "Недійсне доменне ім'я в механізмі %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "CIDR notation is not valid with the %s mechanism."
+msgstr "Нотація CIDR недійсна з механізмом %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5628,12 +5621,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "Невідомий модифікатор: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "Невідомий механізм: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -5761,18 +5754,14 @@ msgstr "TTL value exceeds maximum allowed value of 2147483647 (2^31-1)."
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "Тип ідентифікатора DHCID 0x%04X не є одним зі стандартних типів, визначених у RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+msgstr "Тип дайджесту DHCID %d не є стандартним типом (1 для SHA-256), визначеним у RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6121,7 +6110,7 @@ msgstr "SPF record found in TXT record. Verify syntax according to RFC 7208."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "The mailbox domain represents the email address: %s"
+msgstr "Домен поштової скриньки представляє електронну адресу: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -6222,7 +6211,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "You should create a TXT record at domain: %s"
+msgstr "Вам слід створити запис TXT для домену: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -6407,32 +6396,26 @@ msgstr "Detected possible typo or common misconfiguration pattern."
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr "%s (алгоритм %d) є РЕКОМЕНДОВАНИМ для використання згідно з RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%s (algorithm %d) is in common use, but newer algorithms like "
-"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr "%s (алгоритм %d) широко використовується, але новіші алгоритми, такі як ECDSAP256SHA256 (13) або ED25519 (15), є кращим вибором."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (алгоритм %d) є необов'язковим для реалізації згідно з RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+msgstr "%s (алгоритм %d) НЕ РЕКОМЕНДУЄТЬСЯ для використання згідно з RFC 8624. Замість нього варто використати ECDSAP256SHA256 (13) або ED25519 (15)."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6698,27 +6681,27 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Invalid IPv6 address in %s: %s"
+msgstr "Недійсна адреса IPv6 у %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "Invalid port number: %d (must be 1-65535)"
+msgstr "Недійсний номер порту: %d (має бути 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
+msgstr "Недійсний формат сервера: %s (очікується IP:port або [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Invalid IPv4 address in %s: %s"
+msgstr "Недійсна адреса IPv4 у %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "Invalid IP address: %s"
+msgstr "Недійсна IP-адреса: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6743,9 +6726,7 @@ msgstr "Record may be subject to governance policies. Verify compliance."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+msgstr "Критичний прапорець встановлено для невідомого тегу \"%s\". Це може спричинити збої у видачі сертифікатів."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6775,7 +6756,7 @@ msgstr "This record type may not be logged by default. Enable audit logging."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "Значення iodef CAA має бути URL-адресою, що починається з %s, %s або %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6873,7 +6854,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
+msgstr "Підмережа %d не вирівняна з префіксом /%d. Має бути кратною %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -6952,21 +6933,19 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "Поле SOA %s має бути числовим."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "SOA %s field must be a positive integer."
+msgstr "Поле SOA %s має бути додатним цілим числом."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "Значення SOA %s (%d) нижче рекомендованого мінімуму RFC 2308 (%d). Це дозволено, але не рекомендується."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -7020,12 +6999,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "Unknown SVCB parameter key: \"%s\"."
+msgstr "Невідомий ключ параметра SVCB: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
+msgstr "Дубльований ключ параметра SVCB: \"%s\". Кожен ключ може з'являтися лише один раз."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -7039,9 +7018,7 @@ msgstr ""
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr ""
-"A CNAME record cannot coexist with other record types for the same name. "
-"Found existing %s record."
+msgstr "Запис CNAME не може співіснувати з іншими типами записів для того самого імені. Знайдено наявний запис %s."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7061,9 +7038,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "Ім'я запису SMIMEA має формат: SHA256(local-part)._smimecert.domain.tld для адрес електронної пошти на кшталт %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7758,9 +7733,7 @@ msgstr ""
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"DMARC policy is applied to only %d%% of messages. This should only be used "
-"during policy rollout."
+msgstr "Політика DMARC застосовується лише до %d%% повідомлень. Це слід використовувати лише під час поетапного впровадження політики."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7778,12 +7751,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "Тег DMARC %s має містити дійсні URI mailto: або https:"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "Недійсна електронна адреса в тезі DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7794,12 +7767,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "Невідомий тег DMARC: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "Відсутній обов'язковий тег DMARC: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -7830,9 +7803,7 @@ msgstr ""
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr ""
-"TXT record content exceeds maximum length of %d bytes. Please reduce the "
-"content size."
+msgstr "Вміст запису TXT перевищує максимальну довжину %d байтів. Будь ласка, зменшіть розмір вмісту."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7847,9 +7818,7 @@ msgstr ""
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Загальний вміст запису TXT перевищує максимальну довжину %d байтів. Будь ласка, зменшіть розмір вмісту."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -7928,9 +7897,7 @@ msgstr "Content suggests route optimization. Document optimization objective."
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr ""
-"CDS digest must be a valid hex string of length %d for the selected digest "
-"type."
+msgstr "Дайджест CDS має бути дійсним шістнадцятковим рядком довжиною %d для вибраного типу дайджесту."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -8030,18 +7997,14 @@ msgstr ""
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Назва служби \"%s\" відсутня у списку загальновідомих служб. Це дозволено, але незвично."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Протокол \"%s\" відсутній у списку загальновідомих протоколів. Поширеними протоколами є _tcp та _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8072,9 +8035,7 @@ msgstr ""
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "Порт %d відрізняється від стандартного порту %d для служби %s. Це дозволено, але незвично."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8198,7 +8159,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "Запис NSEC3 містить недійсний тип запису: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -8434,32 +8395,27 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s (алгоритм %d) є алгоритмом, ОБОВ'ЯЗКОВИМ до реалізації згідно з RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
-"%s (algorithm %d) is specified as optional for implementation in RFC 8624."
+msgstr "%s (алгоритм %d) визначено як необов'язковий для реалізації в RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (алгоритм %d) є ЗАСТАРІЛИМ згідно з RFC 8624. Не використовуйте цей алгоритм для нових розгортань."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Алгоритм %d НЕ ПОВИНЕН реалізовуватися згідно з RFC 8624. Це значення не слід використовувати."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8492,7 +8448,7 @@ msgstr "Content includes learning rate schedule. Use decay or adaptive rates."
 #: lib/Domain/Service/DomainRecordCreator.php:71
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "Немає керованої зони для домену: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -8559,7 +8515,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
+msgstr "Зона має %d записів SOA. На зону дозволено лише один запис SOA."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
@@ -8569,7 +8525,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "Запис SOA не на вершині (apex). Знайдено в \"%s\", але зона - \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -8640,21 +8596,19 @@ msgstr ""
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "Немає відповідної зворотної зони для: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:99
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "Запис PTR для %s, що вказує на %s, вже існує."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:113
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr ""
-"Reverse record added. Warning: A PTR record for %s already exists pointing "
-"to: %s. Having multiple PTR records for the same IP is not recommended."
+msgstr "Зворотний запис додано. Попередження: запис PTR для %s вже існує та вказує на: %s. Мати декілька записів PTR для однієї IP-адреси не рекомендується."
 
 #: lib/Domain/Service/Dns/RecordManager.php:208
 msgid "You do not have the permission to add SOA record."
@@ -8702,7 +8656,7 @@ msgstr ""
 #: lib/Domain/Service/Dns/DomainManager.php:591
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "Недійсні аргументи передано до функції %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:336
 msgid "There is already a supermaster with this IP address and hostname."
@@ -8731,7 +8685,7 @@ msgstr "Не вдалося створити %s-запис для зони."
 #: lib/Domain/Service/Dns/DomainManager.php:305
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Invalid argument(s) given to function %s"
+msgstr "Недійсні аргументи передано до функції %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:409
 msgid "Failed to delete zone from DNS backend."
@@ -8873,7 +8827,7 @@ msgstr "Record appears to be using game tree search. Handle branching factor."
 
 #: templates/modern/dnssec_delete_key.html:33
 msgid "Warning"
-msgstr "Warning"
+msgstr "Попередження"
 
 #: templates/modern/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -10517,7 +10471,7 @@ msgstr "Рекомендована кількість бітів для"
 #: lib/Module/ZoneImportExport/templates/import.html:33
 #: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Попередження:"
 
 #: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
@@ -12937,7 +12891,7 @@ msgstr "Недоступний"
 
 #: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
 msgid "Error"
-msgstr "Error"
+msgstr "Помилка"
 
 #: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
 msgid "Server Statistics"
@@ -13988,10 +13942,7 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin зберігає власні таблиці (користувачі, дозволи, метадані зон) у налаштованій базі даних навіть тоді, коли вибрано бекенд PowerDNS API. Ці облікові дані призначені для цієї бази даних, а не для PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
@@ -14014,7 +13965,7 @@ msgstr "Налаштування DNS"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "Адміністратор хоста"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"

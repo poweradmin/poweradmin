@@ -521,9 +521,7 @@ msgstr "百分比必须在0到100之间"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr ""
-"Policy will only apply to %d%% of messages. Use 100%% once testing is "
-"complete."
+msgstr "策略将仅应用于 %d%% 的邮件。测试完成后请使用 100%%。"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -7352,9 +7350,7 @@ msgstr "SRV 记录端口字段的值无效。必须为 1-65535。"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "端口 %d 与标准端口 %d 不同（用于 %s 服务）。这是允许的，但不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -12898,10 +12894,7 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "即使选择了 PowerDNS API 后端，Poweradmin 仍会在所配置的数据库中保留自己的表（用户、权限、区域元数据）。这些凭据用于该数据库，而非 PowerDNS。"
 
 #: install/templates/step5.html.twig:67
 msgid ""

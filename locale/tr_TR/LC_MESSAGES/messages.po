@@ -551,9 +551,7 @@ msgstr "Yüzde 0 ile 100 arasında olmalıdır"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr ""
-"Policy will only apply to %d%% of messages. Use 100%% once testing is "
-"complete."
+msgstr "İlke yalnızca mesajların %d%%'ine uygulanacaktır. Test tamamlandıktan sonra %%100 kullanın."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -8092,9 +8090,7 @@ msgstr ""
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "Bağlantı noktası %d, standart bağlantı noktası %d'den farklı (%s hizmeti için). Buna izin verilir ancak olağandışıdır."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -13856,10 +13852,7 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin, PowerDNS API arka ucu seçili olsa bile kendi tablolarını (kullanıcılar, izinler, bölge meta verileri) yapılandırılan veritabanında tutar. Bu kimlik bilgileri PowerDNS için değil, o veritabanı içindir."
 
 #: install/templates/step5.html.twig:67
 msgid ""
