@@ -110,7 +110,10 @@ class RecordSearch extends BaseSearch
         $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
 
         $db_type = $this->config->get('database', 'type');
-        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$records_table.$sort_records_by $record_sort_direction";
+        // Grouped results expose ttl/prio as aggregates, so sort by the result column
+        // name there; qualify it otherwise to keep the column unambiguous (#1224).
+        $sortColumn = $iface_search_group_records ? $sort_records_by : "$records_table.$sort_records_by";
+        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sortColumn $record_sort_direction";
 
         // Prepare query parameters
         $params = [];
