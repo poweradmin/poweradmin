@@ -174,7 +174,7 @@ class BulkRecordAddController extends BaseController
             // accepted here and rejected by PowerDNS later.
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-            $caps = $this->getPdnsCapabilities();
+            $caps = $this->getRecordTypeCapabilities();
             $valid_types = $isReverseZone
                 ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
                 : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps, false);

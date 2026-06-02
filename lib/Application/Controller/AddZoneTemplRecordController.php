@@ -156,7 +156,7 @@ class AddZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'name' => htmlspecialchars($name),
             'type' => htmlspecialchars($type),
-            'record_types' => $this->recordTypeService->getAllTypes($this->getPdnsCapabilities()),
+            'record_types' => $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities()),
             'content' => htmlspecialchars($content),
             'prio' => htmlspecialchars($prio),
             'ttl' => htmlspecialchars($ttl),

@@ -143,7 +143,7 @@ class EditRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->getDomainNameById($zid);
 
-        $recordTypes = $this->recordTypeService->getAllTypes($this->getPdnsCapabilities());
+        $recordTypes = $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
         $record = $dnsRecord->getRecordFromId($record_id);
         if ($record === null) {
             $this->showError(_('Record not found.'));
