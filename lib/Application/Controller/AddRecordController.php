@@ -304,8 +304,8 @@ class AddRecordController extends BaseController
 
         $this->render('add_record.html', [
             'types' => $isReverseZone
-                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities())
-                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities()),
+                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
+                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities()),
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'name' => $formData['name'] ?? $_POST['name'] ?? '',
             'type' => $formData['type'] ?? $_POST['type'] ?? '',

@@ -329,6 +329,24 @@ abstract class BaseController
     }
 
     /**
+     * Capabilities to use when filtering selectable record types, or null to
+     * skip version filtering entirely.
+     *
+     * Only API backends can report their PowerDNS version, so only there can we
+     * safely hide types a newer-than-server feature would need. On SQL backends
+     * the version is never known, and strict-unknown filtering would wrongly and
+     * permanently drop valid types (HTTPS, SVCB, ZONEMD, ...) from every form.
+     * Returning null there leaves the configured/default type list intact.
+     */
+    protected function getRecordTypeCapabilities(): ?PdnsCapabilities
+    {
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return null;
+        }
+        return $this->getPdnsCapabilities();
+    }
+
+    /**
      * Trigger a session-cached refresh of PowerDNS version + capabilities.
      *
      * Makes at most one API call per minute (rate-limited via the session
