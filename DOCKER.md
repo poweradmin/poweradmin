@@ -97,7 +97,7 @@ docker run -d --name poweradmin -p 80:80 \
 
 **Database prerequisites:** The `DB_NAME` database and the `DB_USER` (with privileges on it) must already exist - the container does not create them. With the official `mysql` image, set `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD` so they are provisioned on first start (setting only `MYSQL_ROOT_PASSWORD` leaves the server with no Poweradmin database or user, which fails with `ERROR 1045 Access denied`). On startup the container loads the Poweradmin schema into an empty `DB_NAME` database automatically; if the tables already exist they are left untouched.
 
-**PowerDNS schema:** For the `sql` backend, PowerDNS stores its zones and records in its own database, which is created and initialized by PowerDNS (or you), not by Poweradmin. See [MySQL with Separate PowerDNS Database](#mysql-with-separate-powerdns-database) below.
+**PowerDNS schema:** For the `sql` backend, PowerDNS stores its zones and records in its own database, which is created and initialized by PowerDNS (or you), not by Poweradmin. See [MySQL with Separate PowerDNS Database](#mysql-with-separate-powerdns-database) below. If you want the container to load the PowerDNS schema into an empty `DB_NAME` database for you (for example a single shared database), set `PA_INIT_PDNS_SCHEMA=true`; it is off by default and skipped when `PA_PDNS_DB_NAME` is set.
 
 ### MySQL with Separate PowerDNS Database
 
@@ -160,6 +160,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_SSL_KEY` | Path to client private key file (for client cert auth) | Empty | No |
 | `DB_SSL_CERT` | Path to client certificate file (for client cert auth) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
+| `PA_INIT_PDNS_SCHEMA` | Load the PowerDNS schema into an empty `DB_NAME` database on startup (**MySQL/PostgreSQL**, skipped when `PA_PDNS_DB_NAME` is set) | `false` | No |
 
 ### DNS Configuration
 
