@@ -181,8 +181,17 @@ class IndexController extends BaseController
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
         $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
 
-        $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM $domains_table")->fetchColumn();
-        $recordCount = (int) $this->db->query("SELECT COUNT(*) FROM $records_table")->fetchColumn();
+        // The PowerDNS tables may be absent or ungranted (e.g. PowerDNS not yet
+        // deployed, or its schema in a separate database). Don't let that fatal
+        // the whole dashboard - show no zone/record counts instead.
+        try {
+            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM $domains_table")->fetchColumn();
+            $recordCount = (int) $this->db->query("SELECT COUNT(*) FROM $records_table")->fetchColumn();
+        } catch (\Throwable $e) {
+            $this->logger->warning('Dashboard zone/record count failed: {error}', ['error' => $e->getMessage()]);
+            $zoneCount = null;
+            $recordCount = null;
+        }
 
         return [
             'zones' => $zoneCount,
