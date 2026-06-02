@@ -166,14 +166,3 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $initializedProperty->setValue($config, $initialized);
     }
 }
-
-/**
- * Minimal concrete BaseController so getRecordTypeCapabilities() can be
- * exercised without the heavy real constructor (instantiated via reflection).
- */
-class RecordTypeCapabilitiesTestController extends BaseController
-{
-    public function run(): void
-    {
-    }
-}
