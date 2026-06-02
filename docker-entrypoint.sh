@@ -150,6 +150,29 @@ init_mysql_db() {
         return 0
     fi
 
+    # Optionally load the PowerDNS schema (domains, records, ...) into an empty database, matching
+    # SQLite init. Off by default: most MySQL/PostgreSQL deployments provision the PowerDNS schema
+    # separately (dedicated container, DBA) or use the API backend. Set PA_INIT_PDNS_SCHEMA=true to
+    # opt in. Skipped when PA_PDNS_DB_NAME points the PowerDNS tables at a separate database.
+    local init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
+        local pdns_version="${PDNS_VERSION:-49}"
+        local pdns_table_exists
+        pdns_table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='domains';" 2>/dev/null) || true
+        if [ "${pdns_table_exists}" = "0" ]; then
+            local pdns_schema="/app/sql/pdns/${pdns_version}/schema.mysql.sql"
+            if [ ! -f "${pdns_schema}" ]; then
+                log "WARNING: PowerDNS MySQL schema file for version ${pdns_version} not found, database may not be properly initialized"
+            elif mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "${pdns_schema}"; then
+                log "PowerDNS schema (version ${pdns_version}) initialized successfully in MySQL database '${DB_NAME}'"
+            else
+                log "ERROR: Failed to initialize PowerDNS schema in MySQL database '${DB_NAME}'"
+                exit 1
+            fi
+        fi
+    fi
+
     if [ "${table_exists}" -gt 0 ]; then
         debug_log "Poweradmin schema already present in MySQL database '${DB_NAME}'"
         return 0
@@ -185,6 +208,29 @@ init_pgsql_db() {
     if [ -z "${table_exists}" ]; then
         log "WARNING: Could not reach PostgreSQL database '${DB_NAME}' to verify schema - skipping auto-initialization"
         return 0
+    fi
+
+    # Optionally load the PowerDNS schema (domains, records, ...) into an empty database, matching
+    # SQLite init. Off by default: most MySQL/PostgreSQL deployments provision the PowerDNS schema
+    # separately (dedicated container, DBA) or use the API backend. Set PA_INIT_PDNS_SCHEMA=true to
+    # opt in. Skipped when PA_PDNS_DB_NAME points the PowerDNS tables at a separate database.
+    local init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
+        local pdns_version="${PDNS_VERSION:-49}"
+        local pdns_table_exists
+        pdns_table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+            "SELECT to_regclass('public.domains') IS NOT NULL;" 2>/dev/null) || true
+        if [ "${pdns_table_exists}" = "f" ]; then
+            local pdns_schema="/app/sql/pdns/${pdns_version}/schema.pgsql.sql"
+            if [ ! -f "${pdns_schema}" ]; then
+                log "WARNING: PowerDNS PostgreSQL schema file for version ${pdns_version} not found, database may not be properly initialized"
+            elif PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
+                log "PowerDNS schema (version ${pdns_version}) initialized successfully in PostgreSQL database '${DB_NAME}'"
+            else
+                log "ERROR: Failed to initialize PowerDNS schema in PostgreSQL database '${DB_NAME}'"
+                exit 1
+            fi
+        fi
     fi
 
     if [ "${table_exists}" = "t" ]; then
