@@ -417,8 +417,20 @@ class UserManager
         $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
 
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
+            // Fetch the current record up front: needed for the username-change check
+            // below and to know whether this is an externally authenticated user.
+            $stmt = $this->db->prepare("SELECT username, auth_method FROM users WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $usercheck = $stmt->fetch();
+
+            // External-auth users have an IdP-managed email that may legitimately be
+            // empty, so skip the format check for them; internal users still need a
+            // valid address. Gate on the resulting auth method so disabling LDAP
+            // (converting the account to internal) re-applies the email requirement.
+            $newAuthMethod = self::resolveAuthMethod((bool)$useLdap, $usercheck['auth_method'] ?? null);
+            $isExternalAuth = in_array($newAuthMethod, ['ldap', 'oidc', 'saml'], true);
             $validation = new Validator($this->db, $this->config);
-            if (!$validation->isValidEmail($email)) {
+            if (!$isExternalAuth && !$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
@@ -431,15 +443,6 @@ class UserManager
             // Before updating the database we need to check whether the user wants to
             // change the username. If the user wants to change the username, we need
             // to make sure it doesn't already exist.
-            //
-            // First find the current username of the user ID we want to change. If the
-            // current username is not the same as the username that was given by the
-            // user, the username should apparently be changed. If so, check if the "new"
-            // username already exists.
-
-            $stmt = $this->db->prepare("SELECT username, auth_method FROM users WHERE id = :id");
-            $stmt->execute([':id' => $id]);
-            $usercheck = $stmt->fetch();
 
             if ($usercheck ['username'] != $user) {
                 // Username of user ID in the database is different from the name
@@ -494,7 +497,7 @@ class UserManager
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
             $stmt->bindValue(':use_ldap', $useLdap ?: 0, PDO::PARAM_INT);
 
-            $stmt->bindValue(':auth_method', self::resolveAuthMethod((bool) $useLdap, $usercheck['auth_method'] ?? null), PDO::PARAM_STR);
+            $stmt->bindValue(':auth_method', $newAuthMethod, PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
             if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
