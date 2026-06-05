@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:57+0300\n"
+"POT-Creation-Date: 2026-06-05 21:10+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Croatian\n"
@@ -55,7 +55,7 @@ msgstr "Provjera nije uspjela:"
 msgid "Failed to generate record:"
 msgstr "Generiranje zapisa nije uspjelo:"
 
-#: lib/Application/Controller/AddRecordController.php:184
+#: lib/Application/Controller/AddRecordController.php:189
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,7 +63,7 @@ msgstr ""
 "Ovaj zapis nije bio valjan i nije se mogao dodati. Možda postoji ili je "
 "nevažeći."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:268
 msgid "The record was successfully added."
 msgstr "Zapis je uspješno dodan."
 
@@ -1234,11 +1234,11 @@ msgstr "Nije uspjelo stvaranje zone."
 msgid "Failed to retrieve created zone."
 msgstr "Nije uspjelo dohvaćanje stvorene zone."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "Morate biti prijavljeni za izvoz zone."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "Nemate dozvolu za izvoz ove zone."
 
@@ -1246,7 +1246,7 @@ msgstr "Nemate dozvolu za izvoz ove zone."
 msgid "There is no zone with this ID."
 msgstr "Nema zone s ovim ID-om."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "Ova zona nema zapisa za izvoz."
 
@@ -1276,11 +1276,11 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Neuspjelo dohvaćanje RDAP podataka s %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:135
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "Nevažeći CSRF token."
 
-#: lib/BaseController.php:651
+#: lib/BaseController.php:675
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1288,18 +1288,18 @@ msgstr ""
 "<a href=\"install/\">install/</a> direktorij postoji, uklonite ga prije "
 "nastavka."
 
-#: lib/BaseController.php:708
+#: lib/BaseController.php:732
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Koristi se zadani ključ sesije, postavite ga u konfiguraciji."
 
-#: lib/BaseController.php:852
+#: lib/BaseController.php:876
 #, php-format
 msgid "The %s field is required."
 msgstr "Polje %s je obavezno."
 
-#: lib/BaseController.php:860
+#: lib/BaseController.php:884
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Polje %s mora biti broj."
@@ -1350,7 +1350,7 @@ msgstr "Nema odabranih valjanih zapisa ili nemate dozvolu za brisanje."
 msgid "Invalid or unexpected input given."
 msgstr "Nevažeći ili neočekivan unos."
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:340
 msgid "You do not have the permission to delete this user."
 msgstr "Nemate dozvolu za brisanje ovog korisnika."
 
@@ -1491,19 +1491,19 @@ msgstr "Grupa nije pronađena."
 msgid "User Preferences"
 msgstr "Postavke korisnika"
 
-#: lib/Application/Controller/UserPreferencesController.php:101
+#: lib/Application/Controller/UserPreferencesController.php:117
 msgid "Preferences saved successfully."
 msgstr "Postavke uspješno spremljene."
 
-#: lib/Application/Controller/UserPreferencesController.php:109
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Failed to update preferences. Please try again."
 msgstr "Ažuriranje postavki nije uspjelo. Pokušajte ponovno."
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:140
 msgid "Top"
 msgstr "Vrh"
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:141
 msgid "Bottom"
 msgstr "Dno"
 
@@ -1635,20 +1635,20 @@ msgstr "MFA mora biti omogućen za ponovno generiranje kodova."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Kodovi za oporavak su ponovno generirani. Spremite ih na sigurno."
 
-#: lib/Application/Controller/ListLogApiController.php:51
+#: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "API zapisnici"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "Nevažeći broj stranice."
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "Broj stranice mora biti najmanje 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "Broj stranice premašuje dostupne stranice."
 
@@ -1764,7 +1764,7 @@ msgstr "omogućeno"
 msgid "API key %s successfully."
 msgstr "API ključ %s uspješno."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:111
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nemate dozvolu za dodavanje zapisa u ovu zonu."
 
@@ -1810,11 +1810,11 @@ msgstr "Predložak dozvola je uspješno ažuriran."
 msgid "Groups"
 msgstr "Grupe"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:49
 msgid "You do not have the permission to perform searches."
 msgstr "Nemate dozvolu za izvođenje pretraga."
 
-#: lib/Application/Controller/SearchController.php:49
+#: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Pretraga"
@@ -1835,7 +1835,7 @@ msgstr "Član uspješno uklonjen iz grupe."
 msgid "User was not a member of this group."
 msgstr "Korisnik nije bio član ove grupe."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1050
 msgid "You do not have the permission to add a new user."
 msgstr "Nemate dozvolu za dodavanje novog korisnika."
 
@@ -1881,7 +1881,7 @@ msgstr "Nemate dozvolu za brisanje ovog zapisa."
 msgid "The record could not be deleted."
 msgstr "Zapis se nije mogao obrisati."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Zapisnici zone"
@@ -1959,7 +1959,7 @@ msgstr "Predložak ne postoji."
 msgid "You do not have permission to view this zone."
 msgstr "Nemate dozvolu za pregled ove zone."
 
-#: lib/Application/Controller/ListLogUsersController.php:61
+#: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Zapisnici korisnika"
@@ -2012,41 +2012,41 @@ msgstr "Uredi zonu"
 msgid "You do not have permission to access this zone."
 msgstr "Nemate dozvolu za pristup ovoj zoni."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
 msgstr "Nemate dozvolu za pregled ove zone."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:283
 msgid "Zone type has been changed successfully."
 msgstr "Vrsta zone je uspješno promijenjena."
 
-#: lib/Application/Controller/EditController.php:284
+#: lib/Application/Controller/EditController.php:291
 msgid "Slave master has been changed successfully."
 msgstr "Glavni sekundarne zone je uspješno promijenjen."
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:312
 msgid "Zone template has been changed successfully."
 msgstr "Predložak zone je uspješno promijenjen."
 
-#: lib/Application/Controller/EditController.php:317
+#: lib/Application/Controller/EditController.php:324
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC nije omogućen na poslužitelju."
 
-#: lib/Application/Controller/EditController.php:320
+#: lib/Application/Controller/EditController.php:327
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona je već potpisana s DNSSEC."
 
-#: lib/Application/Controller/EditController.php:342
+#: lib/Application/Controller/EditController.php:349
 msgid "Zone has been signed successfully."
 msgstr "Zona je uspješno potpisana."
 
-#: lib/Application/Controller/EditController.php:347
+#: lib/Application/Controller/EditController.php:354
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "Zahtjev za potpisivanje zone uspješan, ali provjera nije uspjela."
 
-#: lib/Application/Controller/EditController.php:351
+#: lib/Application/Controller/EditController.php:358
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2070,15 +2070,15 @@ msgstr "Zahtjev za uklanjanje potpisa uspješan, ali provjera nije uspjela."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Neuspjelo uklanjanje potpisa zone. Provjerite PowerDNS zapisnike."
 
-#: lib/Application/Controller/EditController.php:738
+#: lib/Application/Controller/EditController.php:745
 msgid "Request has expired, please try again."
 msgstr "Zahtjev je istekao, pokušajte ponovno."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:750
 msgid "Zone has been updated successfully."
 msgstr "Zona je uspješno ažurirana."
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:752
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2086,27 +2086,27 @@ msgstr ""
 "Zona uspješno spremljena. Nema promjena zapisa, ali SOA serijski broj je "
 "povećan."
 
-#: lib/Application/Controller/EditController.php:754
+#: lib/Application/Controller/EditController.php:761
 msgid "Zone has not been updated successfully."
 msgstr "Zona nije uspješno ažurirana."
 
-#: lib/Application/Controller/EditController.php:782
+#: lib/Application/Controller/EditController.php:789
 msgid "Please provide all required fields."
 msgstr "Ispunite sva obavezna polja."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Zapis uspješno dodan. Stvoren je i odgovarajući PTR zapis."
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Zapis uspješno dodan, ali stvaranje PTR zapisa nije uspjelo: "
 
-#: lib/Application/Controller/AddRecordController.php:253
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Zapis je uspješno dodan, ali stvaranje PTR zapisa nije uspjelo."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:265
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Zapis uspješno dodan. Stvoren je i odgovarajući A zapis."
 
@@ -2148,36 +2148,36 @@ msgstr "Nije moguće poslati kod na e-poštu. Koristite kod za oporavak."
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nemate dozvolu za dodavanje zapisa u ovu zonu."
 
-#: lib/Application/Controller/AddRecordController.php:241
+#: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "Zapis uspješno dodan."
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:446
 msgid "No records were provided."
 msgstr "Nisu priloženi zapisi."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d zapisa uspješno dodano."
 
-#: lib/Application/Controller/AddRecordController.php:489
+#: lib/Application/Controller/AddRecordController.php:504
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Stvoreno je i %d podudarajućih zapisa."
 
-#: lib/Application/Controller/AddRecordController.php:492
+#: lib/Application/Controller/AddRecordController.php:507
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d zapisa nije dodano."
 
-#: lib/Application/Controller/AddRecordController.php:497
+#: lib/Application/Controller/AddRecordController.php:512
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "Neki zapisi nisu mogli biti dodani. Možda već postoje ili su nevažeći."
 
-#: lib/Application/Controller/AddRecordController.php:523
+#: lib/Application/Controller/AddRecordController.php:538
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nije dodan niti jedan zapis. Mogu sadržavati nevažeće podatke."
 
@@ -2205,7 +2205,7 @@ msgstr "Nemate dozvolu za uređivanje zapisa predloška zone."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC autentifikacija nije omogućena"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:417
 msgid "Authentication failed: "
 msgstr "Autentifikacija nije uspjela: "
 
@@ -2229,7 +2229,7 @@ msgstr "Nema konfiguriranih OIDC pružatelja"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "Pokretanje OIDC autentifikacije nije uspjelo: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
+#: lib/Application/Controller/ListLogGroupsController.php:67
 #: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Zapisnici grupe"
@@ -2320,20 +2320,20 @@ msgstr "Zona je stvorena i potpisivanje zatraženo, ali provjera nije uspjela."
 msgid "Zone has been added successfully."
 msgstr "Zona je uspješno dodana."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:72
+#: lib/Application/Controller/BatchPtrRecordController.php:75
 msgid "Batch PTR record creation is not enabled."
 msgstr "Skupno stvaranje PTR zapisa nije omogućeno."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:79
+#: lib/Application/Controller/BatchPtrRecordController.php:82
 msgid "You do not have permission to edit DNS records."
 msgstr "Nemate dozvolu za uređivanje DNS zapisa."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:84
+#: lib/Application/Controller/BatchPtrRecordController.php:87
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
 msgstr "Skupni PTR zapisi"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:99
+#: lib/Application/Controller/BatchPtrRecordController.php:102
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Skupno stvaranje PTR zapisa nije dostupno za obrnute zone."
 
@@ -2443,16 +2443,16 @@ msgstr "Nevažeći SAML pružatelj"
 msgid "SAML authentication failed: "
 msgstr "SAML autentifikacija nije uspjela: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:60
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Nemate dovoljne dozvole za pregled ove stranice."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Obrnute zone"
 
-#: lib/Application/Controller/ListForwardZonesController.php:213
+#: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
 msgstr "Nemate dozvolu da vidite nijednu zonu."
 
@@ -2512,69 +2512,75 @@ msgstr "Dodaj predložak dozvola"
 msgid "The permission template has been added successfully."
 msgstr "Predložak dozvola je uspješno dodan."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
+#: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
 msgstr "Nije dostupno anonimnim korisnicima."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
+#: lib/Application/Controller/DatabaseConsistencyController.php:39
 msgid "You do not have the permission to view this page."
 msgstr "Nemate dozvolu za pregled ove stranice."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
+#: lib/Application/Controller/DatabaseConsistencyController.php:43
 #: templates/default/header.html:234 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "Konzistentnost baze"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:46
+#: lib/Application/Controller/DatabaseConsistencyController.php:47
 msgid "Database consistency checks are disabled."
 msgstr "Provjere konzistentnosti baze su onemogućene."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:82
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr ""
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "Provjera konzistentnosti baze"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Zone owner assigned successfully"
 msgstr "Vlasnik zone uspješno dodijeljen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Failed to assign zone owner"
 msgstr "Neuspješno dodjeljivanje vlasnika zone"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Slave zone deleted successfully"
 msgstr "Sekundarna zona uspješno obrisana"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Failed to delete slave zone"
 msgstr "Neuspješno brisanje sekundarne zone"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Orphaned record deleted successfully"
 msgstr "Zapis bez roditelja uspješno obrisan"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Failed to delete orphaned record"
 msgstr "Brisanje zapisa bez roditelja nije uspjelo"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Duplicirani SOA zapisi uspješno ispravljeni"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Failed to fix duplicate SOA records"
 msgstr "Neuspjelo ispravljanje dupliciranih SOA zapisa"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Default SOA record created successfully"
 msgstr "Zadani SOA zapis uspješno stvoren"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Failed to create default SOA record"
 msgstr "Stvaranje zadanog SOA zapisa nije uspjelo"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:134
+#: lib/Application/Controller/DatabaseConsistencyController.php:142
 msgid "Invalid check type"
 msgstr "Nevažeća vrsta provjere"
 
@@ -2662,22 +2668,22 @@ msgstr "Zona uspješno uklonjena iz grupe."
 msgid "Zone was not owned by this group."
 msgstr "Zona nije pripadala ovoj grupi."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Zone prosljeđivanja"
 
-#: lib/Application/Controller/ListForwardZonesController.php:82
+#: lib/Application/Controller/ListForwardZonesController.php:83
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "Nemate dopuštenje za sinkronizaciju zona iz PowerDNS-a."
 
-#: lib/Application/Controller/ListForwardZonesController.php:93
+#: lib/Application/Controller/ListForwardZonesController.php:94
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr ""
 "Zone sinkronizirane iz PowerDNS-a: %d dodano, %d ažurirano, %d uklonjeno."
 
-#: lib/Application/Controller/ListForwardZonesController.php:101
+#: lib/Application/Controller/ListForwardZonesController.php:102
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Sinkronizacija zone neuspješna: %s"
@@ -2734,7 +2740,7 @@ msgstr "Korisnik je uspješno ažuriran."
 msgid "The user could not be updated."
 msgstr "Korisnik se ne može ažurirati."
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
 msgid "You do not have the permission to edit this user."
 msgstr "Nemate dozvolu za uređivanje ovog korisnika."
 
@@ -2977,7 +2983,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster je uspješno obrisan."
 
 #: lib/Application/Controller/BulkRegistrationController.php:69
-#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:26
 msgid "Bulk Registration"
 msgstr "Skupna registracija"
 
@@ -3129,29 +3135,29 @@ msgstr "Aktivacija ključa zone nije uspjela."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Došlo je do greške pri promjeni DNSSEC ključa. Pokušajte ponovno."
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Da"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:99
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Račun je privremeno zaključan. Pokušajte kasnije."
 
-#: lib/Application/Service/SqlAuthenticator.php:135
+#: lib/Application/Service/SqlAuthenticator.php:142
 msgid "The user account is disabled."
 msgstr "Korisnički račun je onemogućen."
 
-#: lib/Application/Service/SqlAuthenticator.php:216
+#: lib/Application/Service/SqlAuthenticator.php:223
 msgid "Authentication failed!"
 msgstr "Autentifikacija nije uspjela!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:192
+#: lib/Infrastructure/Service/SessionAuthenticator.php:193
 msgid "Session expired, please login again."
 msgstr "Sesija je istekla, prijavite se ponovno."
 
@@ -3159,43 +3165,43 @@ msgstr "Sesija je istekla, prijavite se ponovno."
 msgid "Failed to update password"
 msgstr "Neuspjelo ažuriranje lozinke"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:213
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentifikacija nije uspjela: Nevažeći state parametar"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:234
 msgid "Authentication failed: No authorization code"
 msgstr "Autentifikacija nije uspjela: Bez autorizacijskog koda"
 
-#: lib/Application/Service/SamlService.php:188
+#: lib/Application/Service/SamlService.php:218
 msgid "Authentication failed: Invalid session"
 msgstr "Autentifikacija nije uspjela: Nevažeća sesija"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:377
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentifikacija nije uspjela: Nije moguće stvoriti ili ažurirati račun"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:243
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentifikacija nije uspjela!"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:148
 msgid "Failed to connect to LDAP server!"
 msgstr "Neuspjelo povezivanje s LDAP poslužiteljem!"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:164
 msgid "Failed to bind to LDAP server!"
 msgstr "Neuspjelo povezivanje na LDAP poslužitelj!"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:192
 msgid "Failed to search LDAP."
 msgstr "LDAP pretraga nije uspjela."
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:209
 msgid "Failed to authenticate against LDAP."
 msgstr "Autentifikacija prema LDAP nije uspjela."
 
-#: lib/Application/Service/SamlService.php:246
+#: lib/Application/Service/SamlService.php:276
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentifikacija nije uspjela: Nevažeći SAML odgovor"
 
@@ -3207,7 +3213,7 @@ msgstr "Ovo je nevažeći naziv zone."
 msgid "This template is assigned to at least one user and one group."
 msgstr "Ovaj predložak je dodijeljen barem jednom korisniku i grupi."
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:385
 msgid "This template is assigned to at least one user."
 msgstr "Ovaj predložak je dodijeljen barem jednom korisniku."
 
@@ -3384,20 +3390,20 @@ msgstr "Ne, sačuvaj ovaj autoprimary"
 msgid "No, keep this supermaster"
 msgstr "Ne, zadrži ovaj supermaster"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:154
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA provjera nije uspjela. Pokušajte ponovno."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:177
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "Prazna lozinka nije dopuštena"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:220
+#: lib/Infrastructure/Service/SessionAuthenticator.php:221
 msgid "LDAP authentication is disabled"
 msgstr "LDAP autentifikacija je onemogućena"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:406
+#: lib/Infrastructure/Service/SessionAuthenticator.php:409
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -3405,15 +3411,15 @@ msgstr ""
 "Greška baze: nije moguće provjeriti autentifikaciju korisnika. Provjerite "
 "konfiguraciju."
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1062
 msgid "Enter a valid email address."
 msgstr "Unesite valjanu adresu e-pošte."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1054
 msgid "Username exist already, please choose another one."
 msgstr "Korisničko ime već postoji, odaberite drugo."
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1058
 msgid "Enter a valid user name."
 msgstr "Unesite valjano korisničko ime."
 
@@ -8337,11 +8343,11 @@ msgstr "Pronađena su sljedeća upozorenja:"
 msgid "Empty line."
 msgstr "Prazan redak."
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Nevažeći format. Očekivano barem: naziv,vrsta,sadržaj"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:90
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -9096,7 +9102,7 @@ msgstr "Dodaj grupu"
 msgid "No groups found"
 msgstr "Nema pronađenih grupa"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Pretraži grupe..."
 
@@ -9205,7 +9211,7 @@ msgstr "Ukloni"
 msgid "and"
 msgstr "i"
 
-#: templates/modern/list_forward_zones.html:180
+#: templates/modern/list_forward_zones.html:197
 msgid "more..."
 msgstr "više..."
 
@@ -10030,7 +10036,7 @@ msgstr "IPv4 obrnute zone:"
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 obrnute zone:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "Redova po stranici:"
 
@@ -10042,39 +10048,43 @@ msgstr "Nema obrnutih zona za prikaz u popisu."
 msgid "Owner"
 msgstr "Vlasnik"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "Grupa"
+
+#: templates/modern/list_forward_zones.html:111
 msgid "Full name"
 msgstr "Puno ime"
 
-#: templates/modern/list_reverse_zones.html:127
+#: templates/modern/list_reverse_zones.html:141
 msgid "Associated Forward Zones"
 msgstr "Povezane zone prosljeđivanja"
 
-#: templates/modern/list_forward_zones.html:101
+#: templates/modern/list_forward_zones.html:115
 msgid "Serial"
 msgstr "Serijski"
 
-#: templates/modern/bulk_registration.html:79
+#: templates/modern/bulk_registration.html:44
 msgid "Template"
 msgstr "Predložak"
 
-#: templates/modern/list_forward_zones.html:131
+#: templates/modern/list_forward_zones.html:145
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "SOA zapis je onemogućen, zona neće biti posluživana"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "Zone has no SOA record"
 msgstr "Zona nema SOA zapis"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "No SOA"
 msgstr "Bez SOA"
 
-#: templates/modern/list_reverse_zones.html:233
+#: templates/modern/list_reverse_zones.html:252
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "Obriši zonu/e"
 
@@ -10311,7 +10321,7 @@ msgstr "Očisti pretragu"
 msgid "Select All"
 msgstr "Odaberi sve"
 
-#: templates/modern/add_zone_slave.html:102
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Očisti sve"
 
@@ -10615,16 +10625,14 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Stvori direktne A/AAAA zapise u primarnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Stvori PTR samo za postojeće A zapise u direktnoj zoni"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Stvori PTR samo za postojeće A/AAAA zapise u direktnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:108
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Kad je označeno, PTR zapisi se stvaraju samo za IP s odgovarajućim A "
-"zapisima."
+"corresponding A/AAAA records in the specified domain"
+msgstr "Kad je označeno, PTR zapisi se stvaraju samo za IP s odgovarajućim A/AAAA zapisima."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10656,9 +10664,9 @@ msgstr "Samo podudaranja"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
-msgstr "Stvara PTR zapise samo za IP s postojećim A zapisima u direktnoj zoni"
+"Creates PTR records only for IPs that have existing A/AAAA records in the "
+"forward zone"
+msgstr "Stvara PTR zapise samo za IP s postojećim A/AAAA zapisima u direktnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10705,10 +10713,9 @@ msgstr ""
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+"Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
+"on your forward zone"
 msgstr ""
-"Koristite \"Create PTRs only for existing A records\" za popunjavanje PTR-ova"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -10724,11 +10731,11 @@ msgid ""
 msgstr ""
 "Označite \"Create forward A/AAAA\" za automatsko stvaranje forward zapisa."
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:223
+#: templates/modern/bulk_registration.html:79
 msgid "Ownership"
 msgstr "Vlasništvo"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:51
 msgid "User Owner"
 msgstr "Korisnik-vlasnik"
 
@@ -10744,7 +10751,7 @@ msgstr "Dodaj vlasnika korisnika"
 msgid "Search users..."
 msgstr "Pretraži korisnike..."
 
-#: templates/modern/add_zone_slave.html:79
+#: templates/modern/add_zone_slave.html:80
 msgid "You"
 msgstr "Vi"
 
@@ -10752,7 +10759,7 @@ msgstr "Vi"
 msgid "Add Owner"
 msgstr "Dodaj vlasnika"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Vlasništvo grupe"
 
@@ -10994,7 +11001,7 @@ msgstr "Posljednja izmjena"
 msgid "Edit selected"
 msgstr "Uredi odabrano"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "Obriši zapis(e)"
 
@@ -11010,7 +11017,7 @@ msgstr "Uvoz"
 msgid "Generate PTR"
 msgstr "Generiraj PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Konfiguracija zone"
 
@@ -11018,7 +11025,7 @@ msgstr "Konfiguracija zone"
 msgid "Change"
 msgstr "Promijeni"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:36
 msgid "IP address of master NS"
 msgstr "IP adresa glavnog NS"
 
@@ -11091,7 +11098,7 @@ msgstr "Ukupan broj zona:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Nema forward zona za prikaz u popisu."
 
-#: templates/modern/list_forward_zones.html:212
+#: templates/modern/list_forward_zones.html:231
 msgid "PTR"
 msgstr "PTR"
 
@@ -11334,15 +11341,15 @@ msgstr "Odaberite grupe za novog korisnika."
 msgid "Zone name"
 msgstr "naziv zone"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Unesite naziv zone"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:32
 msgid "Example: example.com"
 msgstr "Primjer: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:47
 msgid "Zone type (usually NATIVE)"
 msgstr "Vrsta zone (obično NATIVE)"
 
@@ -11350,43 +11357,43 @@ msgstr "Vrsta zone (obično NATIVE)"
 msgid "default"
 msgstr "zadano"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:59
 msgid "Optional: Apply predefined records from a template"
 msgstr "Neobavezno: Primijeni unaprijed definirane zapise"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:67
 msgid "Enable DNSSEC"
 msgstr "Omogući DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:69
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Zaštiti zonu DNSSEC potpisivanjem"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:56
 msgid "Selected:"
 msgstr "Odabrano:"
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:62
 msgid "No user owner"
 msgstr "Bez korisnika vlasnika"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:63
 msgid "Zone will be owned only by groups"
 msgstr "Zonu će posjedovati samo grupe"
 
-#: templates/modern/add_zone_slave.html:85
+#: templates/modern/add_zone_slave.html:86
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Neobavezno: Odaberite korisnika odgovornog za zonu"
 
-#: templates/modern/add_zone_slave.html:109
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "članovi"
 
-#: templates/modern/add_zone_slave.html:115
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "Neobavezno: Odaberite jednu ili više grupa"
 
-#: templates/modern/add_zone_slave.html:130
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Dodaj zonu"
 
@@ -11410,7 +11417,7 @@ msgstr "Povezane zone"
 msgid "Sync Status"
 msgstr "Status sinkronizacije"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "Nema rezultata"
 
@@ -11726,51 +11733,29 @@ msgstr "API ključ:"
 msgid "Bulk registration"
 msgstr "skupna registracija"
 
-#: lib/Module/ZoneImportExport/templates/import.html:138
-msgid "Group ownership"
-msgstr "Vlasništvo grupe"
-
-#: templates/modern/bulk_registration.html:65
+#: templates/modern/bulk_registration.html:30
 msgid "Zone Type"
 msgstr "Vrsta zone"
 
-#: templates/modern/bulk_registration.html:89
+#: templates/modern/bulk_registration.html:54
 msgid "Domains"
 msgstr "Domene"
 
-#: templates/modern/bulk_registration.html:91
+#: templates/modern/bulk_registration.html:56
 msgid "Provide a domain name(s)"
 msgstr "Unesite naziv(e) domene"
 
-#: templates/modern/bulk_registration.html:92
+#: templates/modern/bulk_registration.html:57
 msgid "Type one domain per line"
 msgstr "Jedna domena po redu"
 
-#: templates/modern/bulk_registration.html:98
+#: templates/modern/bulk_registration.html:63
 msgid "Add Zones"
 msgstr "Dodaj zone"
 
-#: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
-msgid "After Creation"
-msgstr "Nakon stvaranja"
-
-#: templates/modern/bulk_registration.html:120
-#, auto-english-fallback
-msgid "Change zone owner"
-msgstr "Promijeni vlasnika zone"
-
-#: templates/modern/bulk_registration.html:121
-msgid ""
-"You can transfer zone ownership to another user from the user list at any "
-"time."
-msgstr ""
-"Vlasništvo zone u bilo kojem trenutku možete prenijeti drugom korisniku s popisa korisnika."
-
-#: templates/modern/bulk_registration.html:123
-#, auto-english-fallback
-msgid "Manage users"
-msgstr "Upravljaj korisnicima"
+#: lib/Module/ZoneImportExport/templates/import.html:138
+msgid "Group ownership"
+msgstr "Vlasništvo grupe"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12067,82 +12052,108 @@ msgid "Items per page"
 msgstr "Stavki po stranici"
 
 #: templates/modern/user_preferences.html:36
+#, auto-english-fallback
+msgid "Timezone"
+msgstr "Timezone"
+
+#: templates/modern/user_preferences.html:46
+#, auto-english-fallback
+msgid "Region"
+msgstr "Region"
+
+#: templates/modern/user_preferences.html:48
+#, auto-english-fallback
+msgid "Inherit global setting"
+msgstr "Inherit global setting"
+
+#: templates/modern/user_preferences.html:55
+#, auto-english-fallback
+msgid "City"
+msgstr "City"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr ""
+
+#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "Opcije zone"
 
-#: templates/modern/user_preferences.html:42
+#: templates/modern/user_preferences.html:101
 msgid "Zone serial numbers"
 msgstr "Serijski brojevi zona"
 
-#: templates/modern/user_preferences.html:43
+#: templates/modern/user_preferences.html:102
 msgid "Display serial numbers in zone lists"
 msgstr "Prikaži serijske brojeve u popisima zona"
 
-#: templates/modern/user_preferences.html:51
+#: templates/modern/user_preferences.html:110
 msgid "Display template information in zone lists"
 msgstr "Prikaži informacije o predlošku u popisima zona"
 
-#: templates/modern/user_preferences.html:64
+#: templates/modern/user_preferences.html:123
 msgid "Interface Behavior"
 msgstr "Ponašanje sučelja"
 
-#: templates/modern/user_preferences.html:69
+#: templates/modern/user_preferences.html:128
 msgid "Record form"
 msgstr "Obrazac zapisa"
 
-#: templates/modern/user_preferences.html:78
+#: templates/modern/user_preferences.html:137
 msgid "Save buttons"
 msgstr "Gumbi za spremanje"
 
-#: templates/modern/user_preferences.html:88
+#: templates/modern/user_preferences.html:147
 msgid "Edit Zone View"
 msgstr "Uredi prikaz zone"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:152
 msgid "Show record ID"
 msgstr "Prikaži ID zapisa"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:153
 msgid "Display record ID column in edit view"
 msgstr "Prikaži stupac ID zapisa u uređivanju"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:160
 msgid "Show add record form"
 msgstr "Prikaži obrazac dodavanja"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:161
 msgid "Display inline add record form in edit view"
 msgstr "Prikaži ugrađeni obrazac za dodavanje zapisa"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:168
 msgid "Show edit buttons"
 msgstr "Prikaži gumbe za uređivanje"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:169
 msgid "Display individual edit button per record"
 msgstr "Prikaži pojedinačni gumb za uređivanje po zapisu"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:176
 msgid "Show delete buttons"
 msgstr "Prikaži gumbe za brisanje"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:177
 msgid "Display individual delete button per record"
 msgstr "Prikaži pojedinačni gumb za brisanje po zapisu"
 
-#: templates/modern/user_preferences.html:125
+#: templates/modern/user_preferences.html:184
 msgid "Hostname-only display"
 msgstr "Prikaži samo naziv računala"
 
-#: templates/modern/user_preferences.html:126
+#: templates/modern/user_preferences.html:185
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Ukloni sufiks zone iz naziva zapisa u prikazu za uređivanje"
 
-#: templates/modern/user_preferences.html:141
+#: templates/modern/user_preferences.html:200
 msgid "Save Preferences"
 msgstr "Spremi postavke"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:206
 msgid "Changes will be applied after saving"
 msgstr "Promjene će se primijeniti nakon spremanja"
 
@@ -12177,31 +12188,31 @@ msgstr ""
 msgid "Zones found"
 msgstr "Pronađene zone"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "Pronađeni zapisi"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "Pokušajte s drugim pojmovima ili filtrima"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "Potvrdi brisanje zone"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "Jeste li sigurni da želite obrisati"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "odabranu zonu/e?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "Potvrdi brisanje zapisa"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "odabrane zapise?"
 
@@ -12241,15 +12252,15 @@ msgstr "zapisnici korisnika"
 msgid "User Activity Logs"
 msgstr "Zapisnici aktivnosti korisnika"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Konfiguracija sekundarne zone"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:38
 msgid "Provide IP address"
 msgstr "Unesite IP adresu"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:39
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12942,10 +12953,6 @@ msgstr "dodaj predložak pristupa"
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
 msgstr "Korisnik"
-
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "Grupa"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
@@ -13890,47 +13897,48 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nije moguće spojiti se na PowerDNS bazu podataka \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "O skupnoj registraciji"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Ovaj alat omogućuje stvaranje više DNS zona odjednom."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Unesite jedan naziv domene po redu"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Odaberite predložak zone za primjenu standardnih zapisa"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Odabrani vlasnik imat će potpun pristup svim stvorenim zonama"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Kako radi"
+# OBSOLETE: msgid "Create PTRs only for existing A records in forward zone"
+# OBSOLETE: msgstr "Stvori PTR samo za postojeće A zapise u direktnoj zoni"
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
+# OBSOLETE: "When checked, PTR records will only be created for IPs that have "
+# OBSOLETE: "corresponding A records in the specified domain"
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Sustav će pokušati stvoriti svaku zonu s istim postavkama. Neuspjele "
-# OBSOLETE: "domene će biti prikazane."
+# OBSOLETE: "Kad je označeno, PTR zapisi se stvaraju samo za IP s odgovarajućim A "
+# OBSOLETE: "zapisima."
 
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Savjeti i preporuke"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Creates PTR records only for IPs that have existing A records in the "
+# OBSOLETE: "forward zone"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Stvara PTR zapise samo za IP s postojećim A zapisima u direktnoj zoni"
 
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Koristite NATIVE tip zone za većinu standardnih postavki"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
+# OBSOLETE: "your forward zone"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Koristite \"Create PTRs only for existing A records\" za popunjavanje PTR-"
+# OBSOLETE: "ova"
 
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr "Prvo stvorite predložak ako trebate standardne zapise za sve zone"
+# OBSOLETE: msgid "After Creation"
+# OBSOLETE: msgstr "Nakon stvaranja"
 
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Možete kopirati i zalijepiti popis domena iz tablice"
+# OBSOLETE: msgid "Change zone owner"
+# OBSOLETE: msgstr "Promijeni vlasnika zone"
 
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr "Osigurajte da nazivi domena prate valjane DNS konvencije"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
+# OBSOLETE: "time."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vlasništvo zone u bilo kojem trenutku možete prenijeti drugom korisniku s "
+# OBSOLETE: "popisa korisnika."
+
+# OBSOLETE: msgid "Manage users"
+# OBSOLETE: msgstr "Upravljaj korisnicima"
 
 
 

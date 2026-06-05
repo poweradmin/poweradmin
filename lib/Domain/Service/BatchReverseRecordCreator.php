@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -366,6 +366,9 @@ class BatchReverseRecordCreator
      * @param string $account Optional account name
      * @param int $count Number of records to create (default 256)
      * @param bool $createForwardRecords Whether to create corresponding A/AAAA records in forward zone
+     * @param int|null $forwardTtl Optional separate TTL for the auto-created forward AAAA records; falls back to $ttl when null
+     * @param bool $onlyMatchingRecords Whether to create PTRs only for existing AAAA records
+     * @param int|null $matchingPtrTtl Optional override for the PTR TTL in matching-records mode; when null, the matched AAAA record's TTL is used
      *
      * @return array Result of the operation
      */
@@ -380,7 +383,9 @@ class BatchReverseRecordCreator
         string $account = '',
         int $count = 256,
         bool $createForwardRecords = false,
-        ?int $forwardTtl = null
+        ?int $forwardTtl = null,
+        bool $onlyMatchingRecords = false,
+        ?int $matchingPtrTtl = null
     ): array {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -407,6 +412,15 @@ class BatchReverseRecordCreator
         // Limit count to prevent excessive record creation
         $count = min($count, 1000);
 
+        // If only matching records, get AAAA records from forward zone
+        $matchingForwardRecords = [];
+        if ($onlyMatchingRecords) {
+            $matchingForwardRecords = $this->recordMatchingService->getMatchingIPv6ForwardRecords($domain, $networkPrefix);
+            if (empty($matchingForwardRecords)) {
+                return $this->createErrorResponse("No AAAA records found in forward zone '$domain' that match the IPv6 prefix $networkPrefix.");
+            }
+        }
+
         // Create IPv6 PTR records
         try {
             // Validate zone existence using a test IP
@@ -416,6 +430,56 @@ class BatchReverseRecordCreator
 
             if ($test_zone_rev_id === -1) {
                 throw new Exception("No matching reverse zone found for this IPv6 network prefix. Please create the appropriate reverse zone first.");
+            }
+
+            if ($onlyMatchingRecords) {
+                // Create PTRs only for existing AAAA records
+                foreach ($matchingForwardRecords as $record) {
+                    $ip = $record['ip'];
+                    $fqdn = $record['name'];
+
+                    $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
+
+                    $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($reverseDomain);
+                    if ($zone_rev_id === -1) {
+                        $failCount++;
+                        $errors[] = "No matching reverse zone found for $reverseDomain";
+                        continue;
+                    }
+
+                    // Check if ANY PTR record already exists for this IP (if configured)
+                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+                    if ($preventDuplicatePTR) {
+                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
+                        if ($ptr_exists) {
+                            $skipCount++;
+                            continue;
+                        }
+                    } else {
+                        $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                        if ($record_exists) {
+                            $skipCount++;
+                            continue;
+                        }
+                    }
+
+                    try {
+                        $ptrTtl = $matchingPtrTtl ?? $record['ttl'];
+                        $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ptrTtl, $record['prio'], $comment, $account);
+
+                        if ($result) {
+                            $successCount++;
+                        } else {
+                            $failCount++;
+                            $errors[] = "Failed to create PTR record for $ip";
+                        }
+                    } catch (Exception $e) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
+                    }
+                }
+
+                return $this->buildIPv6Result($successCount, $skipCount, $failCount, $errors);
             }
 
             for ($i = 0; $i < $count; $i++) {
@@ -496,6 +560,14 @@ class BatchReverseRecordCreator
             return $this->createErrorResponse('No matching reverse zone found for this IPv6 network prefix. Please create the reverse zone first.');
         }
 
+        return $this->buildIPv6Result($successCount, $skipCount, $failCount, $errors);
+    }
+
+    /**
+     * Build the result payload shared by the IPv6 generate-all and matching-only paths.
+     */
+    private function buildIPv6Result(int $successCount, int $skipCount, int $failCount, array $errors): array
+    {
         if ($successCount === 0 && $skipCount === 0) {
             return $this->createErrorResponse('Failed to create any IPv6 PTR records. ' . implode(' ', array_slice($errors, 0, 3)) . (count($errors) > 3 ? '...' : ''));
         }

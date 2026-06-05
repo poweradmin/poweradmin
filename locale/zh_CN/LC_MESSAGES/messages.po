@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:57+0300\n"
+"POT-Creation-Date: 2026-06-05 21:10+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -54,13 +54,13 @@ msgstr "验证失败："
 msgid "Failed to generate record:"
 msgstr "无法生成记录："
 
-#: lib/Application/Controller/AddRecordController.php:184
+#: lib/Application/Controller/AddRecordController.php:189
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr "此记录无效，无法添加。它可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:268
 msgid "The record was successfully added."
 msgstr "记录已成功添加。"
 
@@ -1223,11 +1223,11 @@ msgstr "创建区域失败。"
 msgid "Failed to retrieve created zone."
 msgstr "获取已创建的区域失败。"
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "您需要登录才能导出区域数据。"
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "您没有导出此区域的权限。"
 
@@ -1235,7 +1235,7 @@ msgstr "您没有导出此区域的权限。"
 msgid "There is no zone with this ID."
 msgstr "不存在此 ID 的区域。"
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "此区域没有要导出的记录。"
 
@@ -1265,28 +1265,28 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "使用服务器 %s 检索 RDAP 信息失败"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:135
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "无效的 CSRF 令牌。"
 
-#: lib/BaseController.php:651
+#: lib/BaseController.php:675
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> 目录存在，在继续之前必须先删除它。"
 
-#: lib/BaseController.php:708
+#: lib/BaseController.php:732
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "正在使用默认会话加密密钥，请在配置文件中设置。"
 
-#: lib/BaseController.php:852
+#: lib/BaseController.php:876
 #, php-format
 msgid "The %s field is required."
 msgstr "%s 字段是必需的。"
 
-#: lib/BaseController.php:860
+#: lib/BaseController.php:884
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s 字段必须是数字。"
@@ -1337,7 +1337,7 @@ msgstr "没有选择有效的删除记录或您没有删除权限。"
 msgid "Invalid or unexpected input given."
 msgstr "给定的输入无效或异常。"
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:340
 msgid "You do not have the permission to delete this user."
 msgstr "您没有删除此用户的权限。"
 
@@ -1475,19 +1475,19 @@ msgstr "未找到组。"
 msgid "User Preferences"
 msgstr "用户首选项"
 
-#: lib/Application/Controller/UserPreferencesController.php:101
+#: lib/Application/Controller/UserPreferencesController.php:117
 msgid "Preferences saved successfully."
 msgstr "首选项已成功保存。"
 
-#: lib/Application/Controller/UserPreferencesController.php:109
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Failed to update preferences. Please try again."
 msgstr "无法更新首选项。请重试。"
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:140
 msgid "Top"
 msgstr "顶部"
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:141
 msgid "Bottom"
 msgstr "底部"
 
@@ -1612,20 +1612,20 @@ msgstr "必须启用多因素认证才能重新生成恢复代码。"
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "恢复代码已重新生成。请将它们保存在安全的地方。"
 
-#: lib/Application/Controller/ListLogApiController.php:51
+#: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "API 日志"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "无效的页码。"
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "页码必须至少为1。"
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "页码超出可用页面。"
 
@@ -1739,7 +1739,7 @@ msgstr "已启用"
 msgid "API key %s successfully."
 msgstr "API 密钥 %s 成功。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:111
 msgid "You do not have the permission to add records to this zone."
 msgstr "您没有向此区域添加记录的权限。"
 
@@ -1785,11 +1785,11 @@ msgstr "权限模板已成功更新。"
 msgid "Groups"
 msgstr "组"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:49
 msgid "You do not have the permission to perform searches."
 msgstr "您没有执行搜索的权限。"
 
-#: lib/Application/Controller/SearchController.php:49
+#: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "搜索"
@@ -1810,7 +1810,7 @@ msgstr "成员已成功从组中移除。"
 msgid "User was not a member of this group."
 msgstr "用户不是此组的成员。"
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1050
 msgid "You do not have the permission to add a new user."
 msgstr "您没有添加新用户的权限。"
 
@@ -1856,7 +1856,7 @@ msgstr "您没有删除此记录的权限。"
 msgid "The record could not be deleted."
 msgstr "无法删除记录。"
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "区域日志"
@@ -1934,7 +1934,7 @@ msgstr "模板不存在。"
 msgid "You do not have permission to view this zone."
 msgstr "您没有权限查看此区域。"
 
-#: lib/Application/Controller/ListLogUsersController.php:61
+#: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "用户日志"
@@ -1985,41 +1985,41 @@ msgstr "编辑区域"
 msgid "You do not have permission to access this zone."
 msgstr "您没有权限访问此区域。"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
 msgstr "您没有查看此区域的权限。"
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:283
 msgid "Zone type has been changed successfully."
 msgstr "区域类型已成功更改。"
 
-#: lib/Application/Controller/EditController.php:284
+#: lib/Application/Controller/EditController.php:291
 msgid "Slave master has been changed successfully."
 msgstr "从服务器主机已成功更改。"
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:312
 msgid "Zone template has been changed successfully."
 msgstr "区域模板已成功更改。"
 
-#: lib/Application/Controller/EditController.php:317
+#: lib/Application/Controller/EditController.php:324
 msgid "DNSSEC is not enabled on the server."
 msgstr "服务器上未启用 DNSSEC。"
 
-#: lib/Application/Controller/EditController.php:320
+#: lib/Application/Controller/EditController.php:327
 msgid "Zone is already signed with DNSSEC."
 msgstr "区域已使用 DNSSEC 签名。"
 
-#: lib/Application/Controller/EditController.php:342
+#: lib/Application/Controller/EditController.php:349
 msgid "Zone has been signed successfully."
 msgstr "区域已成功签名。"
 
-#: lib/Application/Controller/EditController.php:347
+#: lib/Application/Controller/EditController.php:354
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "区域签名请求成功，但验证失败。请检查 DNSSEC 密钥。"
 
-#: lib/Application/Controller/EditController.php:351
+#: lib/Application/Controller/EditController.php:358
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2043,41 +2043,41 @@ msgstr "区域取消签名请求成功，但验证失败。"
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "取消区域签名失败。请查看 PowerDNS 日志了解详情。"
 
-#: lib/Application/Controller/EditController.php:738
+#: lib/Application/Controller/EditController.php:745
 msgid "Request has expired, please try again."
 msgstr "请求已过期，请重试。"
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:750
 msgid "Zone has been updated successfully."
 msgstr "区域已成功更新。"
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:752
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "区域保存成功。没有进行记录更改，但 SOA 序列号已递增。"
 
-#: lib/Application/Controller/EditController.php:754
+#: lib/Application/Controller/EditController.php:761
 msgid "Zone has not been updated successfully."
 msgstr "区域更新失败。"
 
-#: lib/Application/Controller/EditController.php:782
+#: lib/Application/Controller/EditController.php:789
 msgid "Please provide all required fields."
 msgstr "请提供所有必填字段。"
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "记录添加成功。还创建了匹配的 PTR 记录。"
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "记录添加成功，但 PTR 记录创建失败："
 
-#: lib/Application/Controller/AddRecordController.php:253
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "记录添加成功，但 PTR 记录创建失败。"
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:265
 msgid "Record successfully added. A matching A record was also created."
 msgstr "记录添加成功。还创建了匹配的 A 记录。"
 
@@ -2117,36 +2117,36 @@ msgstr "无法向您的电子邮件发送验证码。请改用恢复代码。"
 msgid "You do not have the permission to add a record to this zone."
 msgstr "您没有向此区域添加记录的权限。"
 
-#: lib/Application/Controller/AddRecordController.php:241
+#: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "记录已成功添加。"
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:446
 msgid "No records were provided."
 msgstr "未提供记录。"
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "已成功添加 %d 条记录。"
 
-#: lib/Application/Controller/AddRecordController.php:489
+#: lib/Application/Controller/AddRecordController.php:504
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "同时创建了 %d 条匹配的记录。"
 
-#: lib/Application/Controller/AddRecordController.php:492
+#: lib/Application/Controller/AddRecordController.php:507
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 条记录添加失败。"
 
-#: lib/Application/Controller/AddRecordController.php:497
+#: lib/Application/Controller/AddRecordController.php:512
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "某些记录无法添加。它们可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:523
+#: lib/Application/Controller/AddRecordController.php:538
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "添加任何记录都失败了。它们可能包含无效数据。"
 
@@ -2174,7 +2174,7 @@ msgstr "您没有编辑区域模板记录的权限。"
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC 身份验证未启用"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:417
 msgid "Authentication failed: "
 msgstr "身份验证失败："
 
@@ -2198,7 +2198,7 @@ msgstr "未配置 OIDC 提供程序"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "启动 OIDC 身份验证失败："
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
+#: lib/Application/Controller/ListLogGroupsController.php:67
 #: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "组日志"
@@ -2284,20 +2284,20 @@ msgstr "区域已创建并请求签名，但验证失败。请检查DNSSEC密钥
 msgid "Zone has been added successfully."
 msgstr "区域已成功添加。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:72
+#: lib/Application/Controller/BatchPtrRecordController.php:75
 msgid "Batch PTR record creation is not enabled."
 msgstr "批量 PTR 记录创建未启用。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:79
+#: lib/Application/Controller/BatchPtrRecordController.php:82
 msgid "You do not have permission to edit DNS records."
 msgstr "您没有编辑 DNS 记录的权限。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:84
+#: lib/Application/Controller/BatchPtrRecordController.php:87
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
 msgstr "批量 PTR 记录"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:99
+#: lib/Application/Controller/BatchPtrRecordController.php:102
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "反向区域不支持批量 PTR 记录创建。"
 
@@ -2407,16 +2407,16 @@ msgstr "无效的SAML提供商"
 msgid "SAML authentication failed: "
 msgstr "SAML身份验证失败："
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:60
 msgid "You do not have sufficient permissions to view this page."
 msgstr "您没有足够的权限查看此页面。"
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "反向区域"
 
-#: lib/Application/Controller/ListForwardZonesController.php:213
+#: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
 msgstr "您没有查看任何区域的权限。"
 
@@ -2472,69 +2472,75 @@ msgstr "添加权限模板"
 msgid "The permission template has been added successfully."
 msgstr "权限模板已成功添加。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
+#: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
 msgstr "匿名用户不可用。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
+#: lib/Application/Controller/DatabaseConsistencyController.php:39
 msgid "You do not have the permission to view this page."
 msgstr "您没有查看此页面的权限。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
+#: lib/Application/Controller/DatabaseConsistencyController.php:43
 #: templates/default/header.html:234 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "数据库一致性"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:46
+#: lib/Application/Controller/DatabaseConsistencyController.php:47
 msgid "Database consistency checks are disabled."
 msgstr "数据库一致性检查已禁用。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:82
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr ""
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "数据库一致性检查"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Zone owner assigned successfully"
 msgstr "区域所有者分配成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Failed to assign zone owner"
 msgstr "分配区域所有者失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Slave zone deleted successfully"
 msgstr "从区域删除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Failed to delete slave zone"
 msgstr "删除从区域失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Orphaned record deleted successfully"
 msgstr "孤立记录删除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Failed to delete orphaned record"
 msgstr "删除孤立记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Duplicate SOA records fixed successfully"
 msgstr "重复 SOA 记录修复成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Failed to fix duplicate SOA records"
 msgstr "修复重复 SOA 记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Default SOA record created successfully"
 msgstr "默认 SOA 记录创建成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Failed to create default SOA record"
 msgstr "创建默认 SOA 记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:134
+#: lib/Application/Controller/DatabaseConsistencyController.php:142
 msgid "Invalid check type"
 msgstr "检查类型无效"
 
@@ -2622,21 +2628,21 @@ msgstr "区域已成功从组中移除。"
 msgid "Zone was not owned by this group."
 msgstr "区域不属于此组。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "正向区域"
 
-#: lib/Application/Controller/ListForwardZonesController.php:82
+#: lib/Application/Controller/ListForwardZonesController.php:83
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "您没有从 PowerDNS 同步区域的权限。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:93
+#: lib/Application/Controller/ListForwardZonesController.php:94
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "已从 PowerDNS 同步区域：新增 %d 条，更新 %d 条，移除 %d 条。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:101
+#: lib/Application/Controller/ListForwardZonesController.php:102
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "区域同步失败：%s"
@@ -2691,7 +2697,7 @@ msgstr "用户已成功更新。"
 msgid "The user could not be updated."
 msgstr "用户无法更新。"
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
 msgid "You do not have the permission to edit this user."
 msgstr "您没有编辑此用户的权限。"
 
@@ -2927,7 +2933,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "超级主机已成功删除。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:69
-#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:26
 msgid "Bulk Registration"
 msgstr "批量注册"
 
@@ -3070,29 +3076,29 @@ msgstr "激活区域密钥失败。"
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "切换DNSSEC密钥时发生错误。请重试。"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "是"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "否"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:99
 msgid "Account is temporarily locked. Please try again later."
 msgstr "账户暂时锁定。请稍后重试。"
 
-#: lib/Application/Service/SqlAuthenticator.php:135
+#: lib/Application/Service/SqlAuthenticator.php:142
 msgid "The user account is disabled."
 msgstr "用户账户已禁用。"
 
-#: lib/Application/Service/SqlAuthenticator.php:216
+#: lib/Application/Service/SqlAuthenticator.php:223
 msgid "Authentication failed!"
 msgstr "认证失败！"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:192
+#: lib/Infrastructure/Service/SessionAuthenticator.php:193
 msgid "Session expired, please login again."
 msgstr "会话已过期，请重新登录。"
 
@@ -3100,43 +3106,43 @@ msgstr "会话已过期，请重新登录。"
 msgid "Failed to update password"
 msgstr "更新密码失败"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:213
 msgid "Authentication failed: Invalid state parameter"
 msgstr "身份验证失败：无效的状态参数"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:234
 msgid "Authentication failed: No authorization code"
 msgstr "身份验证失败：没有授权码"
 
-#: lib/Application/Service/SamlService.php:188
+#: lib/Application/Service/SamlService.php:218
 msgid "Authentication failed: Invalid session"
 msgstr "身份验证失败：无效的会话"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:377
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "身份验证失败：无法创建或更新用户账户"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:243
 msgid "LDAP Authentication failed!"
 msgstr "LDAP 认证失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:148
 msgid "Failed to connect to LDAP server!"
 msgstr "连接到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:164
 msgid "Failed to bind to LDAP server!"
 msgstr "绑定到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:192
 msgid "Failed to search LDAP."
 msgstr "搜索 LDAP 失败。"
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:209
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP 认证失败。"
 
-#: lib/Application/Service/SamlService.php:246
+#: lib/Application/Service/SamlService.php:276
 msgid "Authentication failed: Invalid SAML response"
 msgstr "身份验证失败：无效的SAML响应"
 
@@ -3148,7 +3154,7 @@ msgstr "这是无效的区域名称。"
 msgid "This template is assigned to at least one user and one group."
 msgstr "此模板已分配给至少一个用户和一个组。"
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:385
 msgid "This template is assigned to at least one user."
 msgstr "此模板分配给至少一个用户。"
 
@@ -3324,34 +3330,34 @@ msgstr "否,保留此 autoprimary"
 msgid "No, keep this supermaster"
 msgstr "不，保留此超级主服务器"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:154
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA 验证失败。请重试。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:177
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "不允许空密码"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:220
+#: lib/Infrastructure/Service/SessionAuthenticator.php:221
 msgid "LDAP authentication is disabled"
 msgstr "LDAP身份验证已禁用"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:406
+#: lib/Infrastructure/Service/SessionAuthenticator.php:409
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr "数据库错误：无法验证用户身份。请检查数据库配置。"
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1062
 msgid "Enter a valid email address."
 msgstr "请输入有效的电子邮件地址。"
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1054
 msgid "Username exist already, please choose another one."
 msgstr "用户名已存在，请选择另一个。"
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1058
 msgid "Enter a valid user name."
 msgstr "请输入有效的用户名。"
 
@@ -8289,11 +8295,11 @@ msgstr "发现以下警告："
 msgid "Empty line."
 msgstr "空行。"
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "格式无效。至少需要：名称,类型,内容"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:90
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -9048,7 +9054,7 @@ msgstr "添加组"
 msgid "No groups found"
 msgstr "未找到组"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "搜索组..."
 
@@ -9157,7 +9163,7 @@ msgstr "移除"
 msgid "and"
 msgstr "和"
 
-#: templates/modern/list_forward_zones.html:180
+#: templates/modern/list_forward_zones.html:197
 msgid "more..."
 msgstr "更多..."
 
@@ -9973,7 +9979,7 @@ msgstr "IPv4 反向区域："
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 反向区域："
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "每页行数："
 
@@ -9985,39 +9991,43 @@ msgstr "此列表中没有反向区域可显示。"
 msgid "Owner"
 msgstr "所有者"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "组"
+
+#: templates/modern/list_forward_zones.html:111
 msgid "Full name"
 msgstr "全名"
 
-#: templates/modern/list_reverse_zones.html:127
+#: templates/modern/list_reverse_zones.html:141
 msgid "Associated Forward Zones"
 msgstr "关联的正向区域"
 
-#: templates/modern/list_forward_zones.html:101
+#: templates/modern/list_forward_zones.html:115
 msgid "Serial"
 msgstr "序列号"
 
-#: templates/modern/bulk_registration.html:79
+#: templates/modern/bulk_registration.html:44
 msgid "Template"
 msgstr "模板"
 
-#: templates/modern/list_forward_zones.html:131
+#: templates/modern/list_forward_zones.html:145
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "SOA 记录已禁用，该区域将不会被解析"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "Zone has no SOA record"
 msgstr "该区域没有 SOA 记录"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "No SOA"
 msgstr "无 SOA"
 
-#: templates/modern/list_reverse_zones.html:233
+#: templates/modern/list_reverse_zones.html:252
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "删除区域"
 
@@ -10252,7 +10262,7 @@ msgstr "清除搜索"
 msgid "Select All"
 msgstr "全选"
 
-#: templates/modern/add_zone_slave.html:102
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "全部清除"
 
@@ -10555,14 +10565,14 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "在主区域中创建正向 A/AAAA 记录"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "仅为正向区域中现有的 A 记录创建 PTR"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "仅为正向区域中现有的 A/AAAA 记录创建 PTR"
 
 #: templates/modern/batch_ptr_record.html:108
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A 记录的 IP 创建"
+"corresponding A/AAAA records in the specified domain"
+msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A/AAAA 记录的 IP 创建"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10594,9 +10604,9 @@ msgstr "仅匹配"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
-msgstr "仅为在正向区域中具有现有 A 记录的 IP 创建 PTR 记录"
+"Creates PTR records only for IPs that have existing A/AAAA records in the "
+"forward zone"
+msgstr "仅为在正向区域中具有现有 A/AAAA 记录的 IP 创建 PTR 记录"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10642,9 +10652,9 @@ msgstr "使用网络前缀旁边的下拉按钮从现有反向区域中选择"
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "使用\\\"仅为现有 A 记录创建 PTR\\\"根据您的正向区域填充 PTR"
+"Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
+"on your forward zone"
+msgstr ""
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -10660,11 +10670,11 @@ msgstr ""
 "选中\\\"创建正向 A/AAAA 记录\\\"以自动创建匹配的正向记录（使用匹配模式时被禁"
 "用）"
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:223
+#: templates/modern/bulk_registration.html:79
 msgid "Ownership"
 msgstr "所有权"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:51
 msgid "User Owner"
 msgstr "用户所有者"
 
@@ -10680,7 +10690,7 @@ msgstr "添加用户所有者"
 msgid "Search users..."
 msgstr "搜索用户..."
 
-#: templates/modern/add_zone_slave.html:79
+#: templates/modern/add_zone_slave.html:80
 msgid "You"
 msgstr "您"
 
@@ -10688,7 +10698,7 @@ msgstr "您"
 msgid "Add Owner"
 msgstr "添加所有者"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "组所有权"
 
@@ -10932,7 +10942,7 @@ msgstr "最后修改"
 msgid "Edit selected"
 msgstr "编辑选定"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "删除记录"
 
@@ -10948,7 +10958,7 @@ msgstr "导入"
 msgid "Generate PTR"
 msgstr "生成PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "区域配置"
 
@@ -10956,7 +10966,7 @@ msgstr "区域配置"
 msgid "Change"
 msgstr "更改"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:36
 msgid "IP address of master NS"
 msgstr "主 NS 的 IP 地址"
 
@@ -11029,7 +11039,7 @@ msgstr "区域总数："
 msgid "There are no forward zones to show in this listing."
 msgstr "此列表中没有正向区域可显示。"
 
-#: templates/modern/list_forward_zones.html:212
+#: templates/modern/list_forward_zones.html:231
 msgid "PTR"
 msgstr "PTR"
 
@@ -11270,15 +11280,15 @@ msgstr "选择在创建时将新用户添加到的组。"
 msgid "Zone name"
 msgstr "区域名称"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "提供区域名称"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:32
 msgid "Example: example.com"
 msgstr "示例：example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:47
 msgid "Zone type (usually NATIVE)"
 msgstr "区域类型（通常为 NATIVE）"
 
@@ -11286,43 +11296,43 @@ msgstr "区域类型（通常为 NATIVE）"
 msgid "default"
 msgstr "默认"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:59
 msgid "Optional: Apply predefined records from a template"
 msgstr "可选：从模板应用预定义记录"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:67
 msgid "Enable DNSSEC"
 msgstr "启用 DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:69
 msgid "Secure this zone with DNSSEC signing"
 msgstr "使用 DNSSEC 签名保护此区域"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:56
 msgid "Selected:"
 msgstr "已选择："
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:62
 msgid "No user owner"
 msgstr "无用户所有者"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:63
 msgid "Zone will be owned only by groups"
 msgstr "区域将仅由组拥有"
 
-#: templates/modern/add_zone_slave.html:85
+#: templates/modern/add_zone_slave.html:86
 msgid "Optional: Select a user responsible for this zone"
 msgstr "可选：选择负责此区域的用户"
 
-#: templates/modern/add_zone_slave.html:109
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "成员"
 
-#: templates/modern/add_zone_slave.html:115
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "可选：选择一个或多个组"
 
-#: templates/modern/add_zone_slave.html:130
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "添加区域"
 
@@ -11346,7 +11356,7 @@ msgstr "已链接区域"
 msgid "Sync Status"
 msgstr "同步状态"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "未找到结果"
 
@@ -11661,50 +11671,29 @@ msgstr "API 密钥："
 msgid "Bulk registration"
 msgstr "批量注册"
 
-#: lib/Module/ZoneImportExport/templates/import.html:138
-msgid "Group ownership"
-msgstr "组所有权"
-
-#: templates/modern/bulk_registration.html:65
+#: templates/modern/bulk_registration.html:30
 msgid "Zone Type"
 msgstr "区域类型"
 
-#: templates/modern/bulk_registration.html:89
+#: templates/modern/bulk_registration.html:54
 msgid "Domains"
 msgstr "域名"
 
-#: templates/modern/bulk_registration.html:91
+#: templates/modern/bulk_registration.html:56
 msgid "Provide a domain name(s)"
 msgstr "提供域名"
 
-#: templates/modern/bulk_registration.html:92
+#: templates/modern/bulk_registration.html:57
 msgid "Type one domain per line"
 msgstr "每行输入一个域名"
 
-#: templates/modern/bulk_registration.html:98
+#: templates/modern/bulk_registration.html:63
 msgid "Add Zones"
 msgstr "添加区域"
 
-#: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
-msgid "After Creation"
-msgstr "创建后"
-
-#: templates/modern/bulk_registration.html:120
-#, auto-english-fallback
-msgid "Change zone owner"
-msgstr "更改区域所有者"
-
-#: templates/modern/bulk_registration.html:121
-msgid ""
-"You can transfer zone ownership to another user from the user list at any "
-"time."
-msgstr "您可以随时从用户列表将区域所有权转让给其他用户。"
-
-#: templates/modern/bulk_registration.html:123
-#, auto-english-fallback
-msgid "Manage users"
-msgstr "管理用户"
+#: lib/Module/ZoneImportExport/templates/import.html:138
+msgid "Group ownership"
+msgstr "组所有权"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12002,82 +11991,108 @@ msgid "Items per page"
 msgstr "每页项目数"
 
 #: templates/modern/user_preferences.html:36
+#, auto-english-fallback
+msgid "Timezone"
+msgstr "Timezone"
+
+#: templates/modern/user_preferences.html:46
+#, auto-english-fallback
+msgid "Region"
+msgstr "Region"
+
+#: templates/modern/user_preferences.html:48
+#, auto-english-fallback
+msgid "Inherit global setting"
+msgstr "Inherit global setting"
+
+#: templates/modern/user_preferences.html:55
+#, auto-english-fallback
+msgid "City"
+msgstr "City"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr ""
+
+#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "区域选项"
 
-#: templates/modern/user_preferences.html:42
+#: templates/modern/user_preferences.html:101
 msgid "Zone serial numbers"
 msgstr "区域序列号"
 
-#: templates/modern/user_preferences.html:43
+#: templates/modern/user_preferences.html:102
 msgid "Display serial numbers in zone lists"
 msgstr "在区域列表中显示序列号"
 
-#: templates/modern/user_preferences.html:51
+#: templates/modern/user_preferences.html:110
 msgid "Display template information in zone lists"
 msgstr "在区域列表中显示模板信息"
 
-#: templates/modern/user_preferences.html:64
+#: templates/modern/user_preferences.html:123
 msgid "Interface Behavior"
 msgstr "界面行为"
 
-#: templates/modern/user_preferences.html:69
+#: templates/modern/user_preferences.html:128
 msgid "Record form"
 msgstr "记录表单"
 
-#: templates/modern/user_preferences.html:78
+#: templates/modern/user_preferences.html:137
 msgid "Save buttons"
 msgstr "保存按钮"
 
-#: templates/modern/user_preferences.html:88
+#: templates/modern/user_preferences.html:147
 msgid "Edit Zone View"
 msgstr "编辑区域视图"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:152
 msgid "Show record ID"
 msgstr "显示记录ID"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:153
 msgid "Display record ID column in edit view"
 msgstr "在编辑视图中显示记录ID列"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:160
 msgid "Show add record form"
 msgstr "显示添加记录表单"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:161
 msgid "Display inline add record form in edit view"
 msgstr "在编辑视图中显示内联添加记录表单"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:168
 msgid "Show edit buttons"
 msgstr "显示编辑按钮"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:169
 msgid "Display individual edit button per record"
 msgstr "为每条记录显示单独的编辑按钮"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:176
 msgid "Show delete buttons"
 msgstr "显示删除按钮"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:177
 msgid "Display individual delete button per record"
 msgstr "为每条记录显示单独的删除按钮"
 
-#: templates/modern/user_preferences.html:125
+#: templates/modern/user_preferences.html:184
 msgid "Hostname-only display"
 msgstr "仅显示主机名"
 
-#: templates/modern/user_preferences.html:126
+#: templates/modern/user_preferences.html:185
 msgid "Strip zone suffix from record names in edit view"
 msgstr "在编辑视图中从记录名称中去除区域后缀"
 
-#: templates/modern/user_preferences.html:141
+#: templates/modern/user_preferences.html:200
 msgid "Save Preferences"
 msgstr "保存首选项"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:206
 msgid "Changes will be applied after saving"
 msgstr "更改将在保存后应用"
 
@@ -12110,31 +12125,31 @@ msgstr ""
 msgid "Zones found"
 msgstr "找到的区域"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "找到的记录"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "尝试不同的搜索条件或过滤器"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "确认删除区域"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "您确定要删除"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "选定的区域吗？"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "确认删除记录"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "选定的记录吗？"
 
@@ -12174,15 +12189,15 @@ msgstr "用户日志"
 msgid "User Activity Logs"
 msgstr "用户活动日志"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "从区域配置"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:38
 msgid "Provide IP address"
 msgstr "提供 IP 地址"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:39
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12865,10 +12880,6 @@ msgstr "添加访问模板"
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
 msgstr "用户"
-
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "组"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
@@ -13771,47 +13782,37 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到 PowerDNS 数据库 \"%s\"：%s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "关于批量注册"
+# OBSOLETE: msgid "Create PTRs only for existing A records in forward zone"
+# OBSOLETE: msgstr "仅为正向区域中现有的 A 记录创建 PTR"
 
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "此工具允许您一次创建多个 DNS 区域。"
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "在域名字段中每行输入一个域名"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "选择区域模板以将标准记录应用于所有区域"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "所选所有者将对所有创建的区域拥有完全访问权限"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "工作原理"
-
-#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "系统将尝试使用相同的设置创建每个区域。失败的域名将被显示，以便您可以纠正任"
-# OBSOLETE: "何问题并重试。"
+# OBSOLETE: "When checked, PTR records will only be created for IPs that have "
+# OBSOLETE: "corresponding A records in the specified domain"
+# OBSOLETE: msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A 记录的 IP 创建"
 
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "提示和建议"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Creates PTR records only for IPs that have existing A records in the "
+# OBSOLETE: "forward zone"
+# OBSOLETE: msgstr "仅为在正向区域中具有现有 A 记录的 IP 创建 PTR 记录"
 
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "大多数标准设置使用 NATIVE 区域类型"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
+# OBSOLETE: "your forward zone"
+# OBSOLETE: msgstr "使用\\\"仅为现有 A 记录创建 PTR\\\"根据您的正向区域填充 PTR"
 
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr "如果您需要为所有区域创建标准记录，请先创建模板"
+# OBSOLETE: msgid "After Creation"
+# OBSOLETE: msgstr "创建后"
 
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "您可以从电子表格复制和粘贴域名列表"
+# OBSOLETE: msgid "Change zone owner"
+# OBSOLETE: msgstr "更改区域所有者"
 
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr "确保域名遵循有效的 DNS 命名约定"
+# OBSOLETE: msgid ""
+# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
+# OBSOLETE: "time."
+# OBSOLETE: msgstr "您可以随时从用户列表将区域所有权转让给其他用户。"
+
+# OBSOLETE: msgid "Manage users"
+# OBSOLETE: msgstr "管理用户"
 
 
 

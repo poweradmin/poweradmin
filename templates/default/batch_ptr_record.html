@@ -104,8 +104,8 @@
 
                     <div class="mb-3 form-check">
                         <input type="checkbox" id="only_matching_records" name="only_matching_records" class="form-check-input" {% if only_matching_records == 'on' %}checked{% endif %}>
-                        <label for="only_matching_records" class="form-check-label">{% trans %}Create PTRs only for existing A records in forward zone{% endtrans %}</label>
-                        <small class="form-text text-muted d-block">{% trans %}When checked, PTR records will only be created for IPs that have corresponding A records in the specified domain{% endtrans %}</small>
+                        <label for="only_matching_records" class="form-check-label">{% trans %}Create PTRs only for existing A/AAAA records in forward zone{% endtrans %}</label>
+                        <small class="form-text text-muted d-block">{% trans %}When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain{% endtrans %}</small>
                     </div>
 
                     <div class="d-flex justify-content-between">
@@ -142,7 +142,7 @@
                         <p class="small mb-1">{% trans %}This tool creates PTR records in bulk. Two modes are available:{% endtrans %}</p>
                         <ul class="mb-1 ps-4 small">
                             <li><strong>{% trans %}All IPs{% endtrans %}:</strong> {% trans %}Creates PTR records for every IP in the network range{% endtrans %}</li>
-                            <li><strong>{% trans %}Matching only{% endtrans %}:</strong> {% trans %}Creates PTR records only for IPs that have existing A records in the forward zone{% endtrans %}</li>
+                            <li><strong>{% trans %}Matching only{% endtrans %}:</strong> {% trans %}Creates PTR records only for IPs that have existing A/AAAA records in the forward zone{% endtrans %}</li>
                         </ul>
                         <p class="small mb-1">{% trans %}For IPv4, supported networks are:{% endtrans %}</p>
                         <ul class="mb-0 ps-4 small">
@@ -181,7 +181,7 @@
                     <div class="list-group-item">
                         <ul class="mb-0 ps-4 small">
                             <li>{% trans %}Use the dropdown button next to Network Prefix to select from existing reverse zones{% endtrans %}</li>
-                            <li>{% trans %}Use "Create PTRs only for existing A records" to populate PTRs based on your forward zone{% endtrans %}</li>
+                            <li>{% trans %}Use "Create PTRs only for existing A/AAAA records" to populate PTRs based on your forward zone{% endtrans %}</li>
                             <li>{% trans %}Use the Host Prefix field to add a prefix to all hostnames when creating all IPs{% endtrans %}</li>
                             <li>{% trans %}Check "Create forward A/AAAA records" to automatically create matching forward records (disabled when using matching mode){% endtrans %}</li>
                         </ul>
@@ -205,21 +205,27 @@
         const createForwardCheckbox = document.getElementById('create_forward_records');
         const hostPrefixInput = document.getElementById('host_prefix');
 
+        // Matching-only mode (IPv4 and IPv6) ignores the host prefix and forward
+        // records, so keep those controls disabled whenever it is enabled.
+        function syncMatchingMode() {
+            if (onlyMatchingCheckbox.checked) {
+                createForwardCheckbox.checked = false;
+                createForwardCheckbox.disabled = true;
+                hostPrefixInput.disabled = true;
+                hostPrefixInput.value = '';
+            } else {
+                createForwardCheckbox.disabled = false;
+                hostPrefixInput.disabled = false;
+            }
+        }
+
         function updateVisibility() {
             const isIPv4 = networkTypeSelect.value === 'ipv4';
             ipv4Help.style.display = isIPv4 ? 'block' : 'none';
             ipv6Help.style.display = isIPv4 ? 'none' : 'block';
             ipv6CountGroup.style.display = isIPv4 ? 'none' : 'block';
 
-            // Disable matching-only mode for IPv6 (not supported in backend)
-            if (!isIPv4) {
-                onlyMatchingCheckbox.checked = false;
-                onlyMatchingCheckbox.disabled = true;
-                createForwardCheckbox.disabled = false;
-                hostPrefixInput.disabled = false;
-            } else {
-                onlyMatchingCheckbox.disabled = false;
-            }
+            syncMatchingMode();
 
             // Toggle reverse zone dropdown items by type
             document.querySelectorAll('.zone-ipv4').forEach(function(el) { el.style.display = isIPv4 ? '' : 'none'; });
@@ -240,26 +246,8 @@
             });
         });
 
-        // Handle checkbox interaction
-        onlyMatchingCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                // Disable create forward records when only matching is selected
-                createForwardCheckbox.checked = false;
-                createForwardCheckbox.disabled = true;
-                // Disable host prefix as it won't be used
-                hostPrefixInput.disabled = true;
-                hostPrefixInput.value = '';
-            } else {
-                createForwardCheckbox.disabled = false;
-                hostPrefixInput.disabled = false;
-            }
-        });
-
-        // Initial state
-        if (onlyMatchingCheckbox.checked) {
-            createForwardCheckbox.disabled = true;
-            hostPrefixInput.disabled = true;
-        }
+        // Handle checkbox interaction (initial state is applied by updateVisibility above)
+        onlyMatchingCheckbox.addEventListener('change', syncMatchingMode);
     });
 </script>
 
