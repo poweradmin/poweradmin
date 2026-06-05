@@ -11056,16 +11056,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Buat rekod A/AAAA forward di zona primer"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Buat PTR hanya untuk rekod A yang ada di zona forward"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Buat PTR hanya untuk rekod A/AAAA yang ada di zona forward"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Jika dicentang, rekod PTR hanya akan dibuat untuk IP yang memiliki rekod A "
-"terkait di domain yang ditentukan"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Jika dicentang, rekod PTR hanya akan dibuat untuk IP yang memiliki rekod A/AAAA terkait di domain yang ditentukan"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11096,12 +11092,8 @@ msgid "Matching only"
 msgstr "Hanya yang cocok"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"Membuat rekod PTR hanya untuk IP yang memiliki rekod A yang ada di zona "
-"forward"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Membuat rekod PTR hanya untuk IP yang memiliki rekod A/AAAA yang ada di zona forward"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11152,12 +11144,8 @@ msgstr ""
 "reverse yang ada"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Gunakan \"Buat PTR hanya untuk rekod A yang ada\" untuk mengisi PTR "
-"berdasarkan zona forward Anda"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Gunakan \"Buat PTR hanya untuk rekod A/AAAA yang ada\" untuk mengisi PTR berdasarkan zona forward Anda"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

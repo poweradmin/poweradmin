@@ -10412,14 +10412,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Közvetlen A/AAAA rekordok létrehozása az elsődleges zónában"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "PTR-ek létrehozása csak meglévő A rekordokhoz"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "PTR-ek létrehozása csak meglévő A/AAAA rekordokhoz"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "PTR csak A-val rendelkező IP-khez."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "PTR csak A/AAAA-val rendelkező IP-khez."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10450,10 +10448,8 @@ msgid "Matching only"
 msgstr "Csak egyezés"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "PTR csak meglévő A-val rendelkező IP-khez."
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "PTR csak meglévő A/AAAA-val rendelkező IP-khez."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10496,10 +10492,8 @@ msgid ""
 msgstr "Használja a legördülőt Network Prefix mellett."
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "\"Create PTRs only for existing A records\" használata."
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "\"Create PTRs only for existing A/AAAA records\" használata."
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

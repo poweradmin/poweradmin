@@ -10309,14 +10309,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "filum Arthropoda Buat catatan maju A/AAAA di zona primer"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Vaksion Buat PTR hanya untuk A catatan yang ada di zona depan"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Vaksion Buat PTR hanya untuk A/AAAA catatan yang ada di zona depan"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "Ketika diperiksa, catatan PTR hanya akan dibuat untuk IP yang memiliki catatan A sesuai dalam domain yang ditentukan"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Ketika diperiksa, catatan PTR hanya akan dibuat untuk IP yang memiliki catatan A/AAAA sesuai dalam domain yang ditentukan"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10347,9 +10345,7 @@ msgid "Matching only"
 msgstr "Hanya untuk pasangan"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
 msgstr "Apa?"
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10393,10 +10389,8 @@ msgid ""
 msgstr "Anda menggunakan tombol dropdown di sebelah Network Prefiks untuk memilih dari zona terbalik yang ada"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Use \"Create PTRs hanya untuk catatan A yang ada\" untuk mengisi PTR berdasarkan zona maju Anda"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Use \"Create PTRs hanya untuk catatan A/AAAA yang ada\" untuk mengisi PTR berdasarkan zona maju Anda"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

@@ -10321,13 +10321,11 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "יצירת רשומות A/AA באזור הראשי"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "יצירת PTRs רק עבור רשומות קיימות באזור קדימה"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr "בעת בדיקה, רשומות PTR ייווצרו רק עבור IP אשר מקבילו רשומות בתחום שצוין"
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10359,9 +10357,7 @@ msgid "Matching only"
 msgstr "התאמה רק"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
 msgstr "יצירת רשומות PTR רק עבור IP שיש קיימים רשומות באזור קדימה"
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10405,9 +10401,7 @@ msgid ""
 msgstr "השתמש בלחיצת כפתור ההורדה ליד Network Prefix כדי לבחור מאזורי הפוך הקיימים"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
 msgstr "השתמש \"Create PTRs רק עבור רשומות קיימות\" כדי למפות PTRs על בסיס אזור קדימה שלך"
 
 #: templates/modern/batch_ptr_record.html:185

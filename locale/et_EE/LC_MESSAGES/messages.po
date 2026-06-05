@@ -10581,14 +10581,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Loo edastavad A/AAAA-kirjed esmases tsoonis"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Loo PTR-id ainult olemasolevate A-kirjete jaoks edastustsoonis"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Loo PTR-id ainult olemasolevate A/AAAA-kirjete jaoks edastustsoonis"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "Kui märgitud, luuakse PTR ainult A-kirjetega IP-dele."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Kui märgitud, luuakse PTR ainult A/AAAA-kirjetega IP-dele."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10619,10 +10617,8 @@ msgid "Matching only"
 msgstr "Ainult sobitus"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Loob PTR-kirjed ainult IP-dele, millel on edastustsoonis A-kirjed"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Loob PTR-kirjed ainult IP-dele, millel on edastustsoonis A/AAAA-kirjed"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10666,10 +10662,8 @@ msgstr ""
 "Kasutage Network Prefix kõrval olevat rippmenüüd pöördtsoonide valimiseks"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Kasutage \"Create PTRs only for existing A records\" PTR-ide täitmiseks"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Kasutage \"Create PTRs only for existing A/AAAA records\" PTR-ide täitmiseks"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

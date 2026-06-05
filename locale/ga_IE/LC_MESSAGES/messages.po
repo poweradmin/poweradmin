@@ -10357,13 +10357,11 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Cruthaigh taifid A / AAAA i gcrios bunscoile"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Cruthaigh PTRs ach amháin le haghaidh taifid A atá ann cheana féin i gcrios ar aghaidh"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Cruthaigh PTRs ach amháin le haghaidh taifid A/AAAA atá ann cheana féin i gcrios ar aghaidh"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr "Nuair a sheiceáil, ní chruthófar taifid PTR ach amháin le haghaidh IPanna a bhfuil taifid chomhfhreagracha acu sa bhfearann sonraithe"
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10395,10 +10393,8 @@ msgid "Matching only"
 msgstr "Matching ach amháin"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Cruthaigh taifid PTR ach amháin le haghaidh IPanna a bhfuil taifid A atá ann cheana féin sa chrios ar aghaidh"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Cruthaigh taifid PTR ach amháin le haghaidh IPanna a bhfuil taifid A/AAAA atá ann cheana féin sa chrios ar aghaidh"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10441,10 +10437,8 @@ msgid ""
 msgstr "Bain úsáid as an cnaipe anuas in aice le Líonra Réamhshocrú a roghnú ó chriosanna droim ar ais atá ann cheana"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Úsáid \"Create PTRs ach amháin le haghaidh taifid A atá ann cheana féin\" a populate PTRs bunaithe ar do chrios ar aghaidh"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Úsáid \"Create PTRs ach amháin le haghaidh taifid A/AAAA atá ann cheana féin\" a populate PTRs bunaithe ar do chrios ar aghaidh"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

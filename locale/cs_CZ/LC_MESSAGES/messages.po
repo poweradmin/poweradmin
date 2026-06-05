@@ -11612,16 +11612,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Vytvořit přímé A/AAAA záznamy v primární zóně"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Vytvořit PTR pouze pro existující A záznamy v přímé zóně"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Vytvořit PTR pouze pro existující A/AAAA záznamy v přímé zóně"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Když je zaškrtnuto, PTR záznamy budou vytvořeny pouze pro IP adresy, které "
-"mají odpovídající A záznamy v zadané doméně"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Když je zaškrtnuto, PTR záznamy budou vytvořeny pouze pro IP adresy, které mají odpovídající A/AAAA záznamy v zadané doméně"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11653,12 +11649,8 @@ msgid "Matching only"
 msgstr "Pouze odpovídající"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"Vytváří PTR záznamy pouze pro IP adresy, které mají existující A záznamy v "
-"přímé zóně"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Vytváří PTR záznamy pouze pro IP adresy, které mají existující A/AAAA záznamy v přímé zóně"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11708,12 +11700,8 @@ msgstr ""
 "reverzních zón"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Použijte \"Vytvořit PTR pouze pro existující A záznamy\" k naplnění PTR na "
-"základě vaší přímé zóny"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Použijte \"Vytvořit PTR pouze pro existující A/AAAA záznamy\" k naplnění PTR na základě vaší přímé zóny"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

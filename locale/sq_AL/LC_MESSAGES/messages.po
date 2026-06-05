@@ -10321,14 +10321,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Krijo të dhëna A/AAAAA në zonën kryesore"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Krijo PTRs vetëm për të dhënat ekzistuese A në zonën përpara"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Krijo PTRs vetëm për të dhënat ekzistuese A/AAAA në zonën përpara"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "Kur të kontrollohen, të dhënat PTR do të krijohen vetëm për IP që kanë të dhëna korresponduese A në domenin e caktuar"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Kur të kontrollohen, të dhënat PTR do të krijohen vetëm për IP që kanë të dhëna korresponduese A/AAAA në domenin e caktuar"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10359,10 +10357,8 @@ msgid "Matching only"
 msgstr "Vetëm"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Krijon të dhëna PTR vetëm për IP që kanë të dhëna ekzistuese A në zonën përpara"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Krijon të dhëna PTR vetëm për IP që kanë të dhëna ekzistuese A/AAAA në zonën përpara"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10405,10 +10401,8 @@ msgid ""
 msgstr "Përdor butonin në vazhdim për tu futur në rrjet"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Krijo PTR-të vetëm për të dhënat ekzistuese A"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Krijo PTR-të vetëm për të dhënat ekzistuese A/AAAA"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

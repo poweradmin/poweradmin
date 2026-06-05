@@ -10274,13 +10274,11 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10312,9 +10310,7 @@ msgid "Matching only"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10358,9 +10354,7 @@ msgid ""
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:185

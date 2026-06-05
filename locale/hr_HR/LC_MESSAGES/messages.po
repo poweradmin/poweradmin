@@ -10845,16 +10845,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Stvori direktne A/AAAA zapise u primarnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Stvori PTR samo za postojeće A zapise u direktnoj zoni"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Stvori PTR samo za postojeće A/AAAA zapise u direktnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Kad je označeno, PTR zapisi se stvaraju samo za IP s odgovarajućim A "
-"zapisima."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Kad je označeno, PTR zapisi se stvaraju samo za IP s odgovarajućim A/AAAA zapisima."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10885,10 +10881,8 @@ msgid "Matching only"
 msgstr "Samo podudaranja"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Stvara PTR zapise samo za IP s postojećim A zapisima u direktnoj zoni"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Stvara PTR zapise samo za IP s postojećim A/AAAA zapisima u direktnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10934,12 +10928,8 @@ msgstr ""
 "zona"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Koristite \"Create PTRs only for existing A records\" za popunjavanje PTR-"
-"ova"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Koristite \"Create PTRs only for existing A/AAAA records\" za popunjavanje PTR-ova"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

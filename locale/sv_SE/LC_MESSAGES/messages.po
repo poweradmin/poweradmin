@@ -11009,16 +11009,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Skapa forward A/AAAA-poster i primär zon"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Skapa PTR endast för befintliga A-poster i forward-zon"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Skapa PTR endast för befintliga A/AAAA-poster i forward-zon"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"När markerad kommer PTR-poster endast att skapas för IP-adresser som har "
-"motsvarande A-poster i den angivna domänen"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "När markerad kommer PTR-poster endast att skapas för IP-adresser som har motsvarande A/AAAA-poster i den angivna domänen"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11049,12 +11045,8 @@ msgid "Matching only"
 msgstr "Endast matchande"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"Skapar PTR-poster endast för IP-adresser som har befintliga A-poster i "
-"forward-zonen"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Skapar PTR-poster endast för IP-adresser som har befintliga A/AAAA-poster i forward-zonen"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11105,12 +11097,8 @@ msgstr ""
 "befintliga reverse-zoner"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Använd \"Skapa PTR endast för befintliga A-poster\" för att fylla i PTR "
-"baserat på din forward-zon"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Använd \"Skapa PTR endast för befintliga A/AAAA-poster\" för att fylla i PTR baserat på din forward-zon"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

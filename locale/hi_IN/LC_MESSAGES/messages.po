@@ -10321,14 +10321,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "प्राथमिक क्षेत्र में आगे A/AAAA रिकॉर्ड बनाएं"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "आगे के क्षेत्र में मौजूदा A रिकॉर्ड के लिए केवल PTR बनाएं"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "आगे के क्षेत्र में मौजूदा A/AAAA रिकॉर्ड के लिए केवल PTR बनाएं"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "जब चेक किया जाता है, तो PTR रिकॉर्ड केवल IPs के लिए बनाया जाएगा, जिसमें निर्दिष्ट डोमेन में A रिकॉर्ड का उल्लेख किया गया है।"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "जब चेक किया जाता है, तो PTR रिकॉर्ड केवल IPs के लिए बनाया जाएगा, जिसमें निर्दिष्ट डोमेन में A/AAAA रिकॉर्ड का उल्लेख किया गया है।"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10359,10 +10357,8 @@ msgid "Matching only"
 msgstr "केवल मैच"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "केवल IPs के लिए PTR रिकॉर्ड बनाता है जिसमें आगे के क्षेत्र में A रिकॉर्ड मौजूद है।"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "केवल IPs के लिए PTR रिकॉर्ड बनाता है जिसमें आगे के क्षेत्र में A/AAAA रिकॉर्ड मौजूद है।"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10405,10 +10401,8 @@ msgid ""
 msgstr "मौजूदा रिवर्स जोनों से चयन करने के लिए नेटवर्क प्रिफिक्स के बगल में ड्रॉपडाउन बटन का उपयोग करें"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "अपने फॉरवर्ड ज़ोन के आधार पर PTR को पॉप्युलेट करने के लिए \"केवल मौजूदा A रिकॉर्ड के लिए PTR बनाएं\" का उपयोग करें"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "अपने फॉरवर्ड ज़ोन के आधार पर PTR को पॉप्युलेट करने के लिए \"केवल मौजूदा A/AAAA रिकॉर्ड के लिए PTR बनाएं\" का उपयोग करें"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

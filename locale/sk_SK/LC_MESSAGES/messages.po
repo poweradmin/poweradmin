@@ -10413,14 +10413,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Vytvoriť dopredné záznamy A/AAAA v primárnej zóne"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Vytvoriť PTR iba pre existujúce A záznamy"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Vytvoriť PTR iba pre existujúce A/AAAA záznamy"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "PTR iba pre IP s A záznamami."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "PTR iba pre IP s A/AAAA záznamami."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10451,10 +10449,8 @@ msgid "Matching only"
 msgstr "Iba zhoda"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "PTR iba pre IP s existujúcimi A v doprednej zóne"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "PTR iba pre IP s existujúcimi A/AAAA v doprednej zóne"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10498,10 +10494,8 @@ msgid ""
 msgstr "Použite rozbaľovacie vedľa Network Prefix."
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Použite \"Create PTRs only for existing A records\"."
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Použite \"Create PTRs only for existing A/AAAA records\"."
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

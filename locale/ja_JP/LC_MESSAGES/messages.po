@@ -10531,14 +10531,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "プライマリゾーンに正引きA/AAAAレコードを作成"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "正引きゾーンの既存のAレコードに対してのみPTRを作成"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "正引きゾーンの既存のA/AAAAレコードに対してのみPTRを作成"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "チェックすると、指定されたドメインに対応するAレコードがあるIPに対してのみPTRレコードが作成されます"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "チェックすると、指定されたドメインに対応するA/AAAAレコードがあるIPに対してのみPTRレコードが作成されます"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10569,10 +10567,8 @@ msgid "Matching only"
 msgstr "マッチングのみ"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "正引きゾーンに既存のAレコードがあるIPにのみPTRレコードを作成"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "正引きゾーンに既存のA/AAAAレコードがあるIPにのみPTRレコードを作成"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10615,10 +10611,8 @@ msgid ""
 msgstr "ネットワークプレフィックスの隣のドロップダウンボタンを使用して、既存の逆引きゾーンから選択してください"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "「既存のAレコードに対してのみPTRを作成」を使用して、正引きゾーンに基づいてPTRを設定してください"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "「既存のA/AAAAレコードに対してのみPTRを作成」を使用して、正引きゾーンに基づいてPTRを設定してください"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

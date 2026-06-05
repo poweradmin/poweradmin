@@ -10321,14 +10321,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "ایجاد سوابق A /AA در منطقه اولیه"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "ایجاد PTR تنها برای ثبت های موجود در منطقه پیش رو"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "هنگامی که بررسی می شود، سوابق PTR تنها برای IP هایی ایجاد می شود که دارای سوابق A مربوطه در دامنه مشخص هستند."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "هنگامی که بررسی می شود، سوابق PTR تنها برای IP هایی ایجاد می شود که دارای سوابق A/AAAA مربوطه در دامنه مشخص هستند."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10359,10 +10357,8 @@ msgid "Matching only"
 msgstr "بازی فقط"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "ایجاد PTR فقط برای IP هایی که دارای A رکورد در منطقه رو به جلو هستند"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "ایجاد PTR فقط برای IP هایی که دارای A/AAAA رکورد در منطقه رو به جلو هستند"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10405,10 +10401,8 @@ msgid ""
 msgstr "استفاده از دکمه کشویی در کنار Network Prefix برای انتخاب از مناطق معکوس موجود"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "استفاده از “Create PTRs only for Current A Records” برای ulate PTRs بر اساس منطقه پیش رو شما"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "استفاده از “Create PTRs only for Current A/AAAA Records” برای ulate PTRs بر اساس منطقه پیش رو شما"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

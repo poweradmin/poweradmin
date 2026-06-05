@@ -205,4 +205,166 @@ class BatchReverseRecordCreatorTest extends TestCase
         // Should be capped at 1000 minus 1 (skipped network address) = 999
         $this->assertEquals(999, $addCount);
     }
+
+    public function testCreateIPv6NetworkMatchingModeCreatesPtrPerAaaaRecord(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+
+        $created = [];
+        $dnsRecord->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$created) {
+                $created[] = ['name' => $name, 'content' => $content, 'ttl' => $ttl];
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        // One AAAA inside the /64, one outside - only the first should yield a PTR.
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'host5.example.com', 'content' => '2001:db8:1:1::5', 'ttl' => 7200, 'prio' => 0],
+            ['name' => 'other.example.com', 'content' => '2001:db8:2:2::9', 'ttl' => 7200, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($dnsRecord, null, $recordRepo);
+
+        $result = $service->createIPv6Network(
+            '2001:db8:1:1',
+            'host-',
+            'example.com',
+            '1',
+            3600,
+            0,
+            '',
+            '',
+            256,
+            false,
+            null,
+            true // onlyMatchingRecords
+        );
+
+        $this->assertTrue($result['success']);
+        $this->assertCount(1, $created);
+        $this->assertEquals(
+            '5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa',
+            $created[0]['name']
+        );
+        // PTR points back at the forward record's own hostname, not a generated host- name.
+        $this->assertEquals('host5.example.com', $created[0]['content']);
+    }
+
+    public function testCreateIPv6NetworkMatchingModeReturnsErrorWhenNoMatches(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+
+        $addCount = 0;
+        $dnsRecord->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+            $addCount++;
+            return true;
+        });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        // AAAA exists but lives in a different /64, so nothing matches.
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'other.example.com', 'content' => '2001:db8:2:2::9', 'ttl' => 7200, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($dnsRecord, null, $recordRepo);
+
+        $result = $service->createIPv6Network(
+            '2001:db8:1:1',
+            '',
+            'example.com',
+            '1',
+            3600,
+            0,
+            '',
+            '',
+            256,
+            false,
+            null,
+            true
+        );
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('No AAAA records', $result['message']);
+        $this->assertEquals(0, $addCount);
+    }
+
+    public function testCreateIPv6NetworkMatchingModeHonorsPtrTtlOverride(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+
+        $ttls = [];
+        $dnsRecord->method('addRecord')
+            ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$ttls) {
+                $ttls[] = $ttl;
+                return true;
+            });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'host5.example.com', 'content' => '2001:db8:1:1::5', 'ttl' => 7200, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($dnsRecord, null, $recordRepo);
+
+        $args = ['2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 256, false, null, true];
+
+        // With an explicit matchingPtrTtl, the PTR uses it instead of the AAAA's TTL.
+        $override = $service->createIPv6Network(...array_merge($args, [1800]));
+        $this->assertTrue($override['success']);
+
+        // With null, it falls back to the matched record's own TTL.
+        $fallback = $service->createIPv6Network(...array_merge($args, [null]));
+        $this->assertTrue($fallback['success']);
+
+        $this->assertSame([1800, 7200], $ttls);
+    }
+
+    public function testCreateIPv6NetworkMatchingModeSkipsDuplicatePtr(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+
+        $addCount = 0;
+        $dnsRecord->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+            $addCount++;
+            return true;
+        });
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(true); // a PTR already exists
+        $recordRepo->method('getRecordsByDomainId')->willReturn([
+            ['name' => 'host5.example.com', 'content' => '2001:db8:1:1::5', 'ttl' => 7200, 'prio' => 0],
+        ]);
+
+        $service = $this->createService($dnsRecord, null, $recordRepo);
+
+        $result = $service->createIPv6Network(
+            '2001:db8:1:1',
+            '',
+            'example.com',
+            '1',
+            3600,
+            0,
+            '',
+            '',
+            256,
+            false,
+            null,
+            true
+        );
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals(0, $addCount);
+        $this->assertStringContainsString('skipped', $result['message']);
+    }
 }

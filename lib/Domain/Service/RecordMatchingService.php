@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,10 +75,10 @@ class RecordMatchingService
     }
 
     /**
-     * Get AAAA records from the forward zone that match the given IPv6 network
+     * Get AAAA records from the forward zone that match the given IPv6 /64 network
      *
      * @param string $domain The forward zone domain name
-     * @param string $networkPrefix The IPv6 network prefix
+     * @param string $networkPrefix The IPv6 /64 prefix (e.g., "2001:db8:1:1")
      * @return array Array of matching AAAA records
      */
     public function getMatchingIPv6ForwardRecords(string $domain, string $networkPrefix): array
@@ -88,14 +88,27 @@ class RecordMatchingService
             return [];
         }
 
+        // AAAA content can be stored in different but equivalent textual forms,
+        // so compare the first 64 bits in binary rather than as a string prefix.
+        $networkBinary = @inet_pton($networkPrefix . '::');
+        if ($networkBinary === false) {
+            return [];
+        }
+        $networkPrefixBytes = substr($networkBinary, 0, 8);
+
         // Get all AAAA records from the forward zone
         $aaaaRecords = $this->recordRepository->getRecordsByDomainId($forward_domain_id, 'AAAA');
 
         $matchingRecords = [];
 
         foreach ($aaaaRecords as $record) {
-            // Check if the IPv6 address is within the network prefix
-            if (str_starts_with($record['content'], $networkPrefix)) {
+            $recordBinary = @inet_pton($record['content']);
+            if ($recordBinary === false || strlen($recordBinary) !== 16) {
+                continue;
+            }
+
+            // Check if the address falls within the /64 network prefix
+            if (substr($recordBinary, 0, 8) === $networkPrefixBytes) {
                 $matchingRecords[] = [
                     'name' => $record['name'],
                     'ip' => $record['content'],

@@ -11877,16 +11877,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Crea record A/AAAA diretti nella zona primaria"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Crea PTR solo per record A esistenti nella zona diretta"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Crea PTR solo per record A/AAAA esistenti nella zona diretta"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Quando selezionato, i record PTR saranno creati solo per IP che hanno record"
-" A corrispondenti nel dominio specificato"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Quando selezionato, i record PTR saranno creati solo per IP che hanno record A/AAAA corrispondenti nel dominio specificato"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11918,11 +11914,8 @@ msgid "Matching only"
 msgstr "Solo corrispondenti"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"Crea record PTR solo per IP che hanno record A esistenti nella zona diretta"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Crea record PTR solo per IP che hanno record A/AAAA esistenti nella zona diretta"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11973,12 +11966,8 @@ msgstr ""
 "inverse esistenti"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Usa \"Crea PTR solo per record A esistenti\" per popolare i PTR basati sulla"
-" tua zona diretta"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Usa \"Crea PTR solo per record A/AAAA esistenti\" per popolare i PTR basati sulla tua zona diretta"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

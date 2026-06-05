@@ -10369,13 +10369,11 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "إعداد سجلات A/AAAAA إلى الأمام في المنطقة الرئيسية"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr ":: إنشاء سجلات ثابتة فقط للسجلات الموجودة في المنطقة الأمامية"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr "وعند التحقق من ذلك، لن تُنشأ سجلات استعراض المعاملات المشبوهة إلا لشركات التنفيذ التي لها سجلات مقابلة في نطاق محدد"
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10407,9 +10405,7 @@ msgid "Matching only"
 msgstr "المطابقة فقط"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
 msgstr ":: إنشاء سجلات لسجلات الملوثات العضوية الثابتة فقط لشركات التنفيذ التي لديها سجلات قائمة في المنطقة الأمامية"
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10453,10 +10449,8 @@ msgid ""
 msgstr "استخدام زر الانزال بجانب الشبكة بريفيكس للاختيار من المناطق العكسية القائمة"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "استخدام \"السجلات المقطعية فقط لسجلات A القائمة\" لحشد PTR على أساس منطقتك الأمامية"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "استخدام \"السجلات المقطعية فقط لسجلات A/AAAA القائمة\" لحشد PTR على أساس منطقتك الأمامية"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

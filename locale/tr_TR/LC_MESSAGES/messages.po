@@ -11653,16 +11653,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Birincil zonda düz A/AAAA kayıtları oluştur"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Sadece düz zondaki mevcut A kayıtları için PTR'ler oluştur"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Sadece düz zondaki mevcut A/AAAA kayıtları için PTR'ler oluştur"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"İşaretlendiğinde, PTR kayıtları sadece belirtilen domainde karşılık gelen A "
-"kayıtları bulunan IP'ler için oluşturulacaktır"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "İşaretlendiğinde, PTR kayıtları sadece belirtilen domainde karşılık gelen A/AAAA kayıtları bulunan IP'ler için oluşturulacaktır"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11693,12 +11689,8 @@ msgid "Matching only"
 msgstr "Sadece eşleşenler"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"PTR kayıtlarını sadece düz zonda mevcut A kayıtları bulunan IP'ler için "
-"oluşturur"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "PTR kayıtlarını sadece düz zonda mevcut A/AAAA kayıtları bulunan IP'ler için oluşturur"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11749,12 +11741,8 @@ msgstr ""
 "kullanın"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Düz zonunuza dayalı olarak PTR'leri doldurmak için \"Sadece mevcut A "
-"kayıtları için PTR'ler oluştur\" seçeneğini kullanın"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Düz zonunuza dayalı olarak PTR'leri doldurmak için \"Sadece mevcut A/AAAA kayıtları için PTR'ler oluştur\" seçeneğini kullanın"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

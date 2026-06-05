@@ -10321,13 +10321,11 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Създаване на архиви на A/AAA в първична зона"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "Създаване на PTR само за съществуващи А записи в предна зона"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr "При включена отметка, PTR записите ще бъдат създадени само за IPs, които имат съответстващи А записи в посочения домейн"
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10359,10 +10357,8 @@ msgid "Matching only"
 msgstr "Само съвпадения"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Създаване на PTR записи само за IPs, които имат съществуващи A записи в предната зона"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Създаване на PTR записи само за IPs, които имат съществуващи A/AAAA записи в предната зона"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10405,9 +10401,7 @@ msgid ""
 msgstr "Използвайте бутона за пускане до Network Prefix, за да изберете от съществуващите обратни зони"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
 msgstr "Използвайте \"Create PTRs само за съществуващи А записи\" за населяване на PTR въз основа на вашата предна зона"
 
 #: templates/modern/batch_ptr_record.html:185

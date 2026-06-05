@@ -10345,14 +10345,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Ustvari naprej evidence A/AAAA v primarnem območju"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Ustvarite PTR le za obstoječe zapise A v prednjem območju"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Ustvarite PTR le za obstoječe zapise A/AAAA v prednjem območju"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "Ob preverjanju bodo zapisi PTR ustvarjeni samo za IP-je, ki imajo ustrezne zapise A v določeni domeni."
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Ob preverjanju bodo zapisi PTR ustvarjeni samo za IP-je, ki imajo ustrezne zapise A/AAAA v določeni domeni."
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10383,10 +10381,8 @@ msgid "Matching only"
 msgstr "Samo ujemanje"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Ustvarja zapise PTR samo za IP, ki imajo obstoječe zapise A v prednjem območju"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Ustvarja zapise PTR samo za IP, ki imajo obstoječe zapise A/AAAA v prednjem območju"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10429,10 +10425,8 @@ msgid ""
 msgstr "Uporabite spustni gumb poleg predpone omrežja, da izberete iz obstoječih hrbtnih con"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Uporabite \"Ustvarite PTR samo za obstoječe zapise A\" za poselitev PTR na podlagi vašega sprednjega območja"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Uporabite \"Ustvarite PTR samo za obstoječe zapise A/AAAA\" za poselitev PTR na podlagi vašega sprednjega območja"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

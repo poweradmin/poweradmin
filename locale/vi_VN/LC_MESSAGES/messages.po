@@ -11227,16 +11227,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Tạo bản ghi A/AAAA chuyển tiếp trong vùng chính"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Chỉ tạo PTR cho bản ghi A hiện có trong vùng chuyển tiếp"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Chỉ tạo PTR cho bản ghi A/AAAA hiện có trong vùng chuyển tiếp"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr ""
-"Khi được chọn, bản ghi PTR sẽ chỉ được tạo cho các IP có bản ghi A tương ứng"
-" trong tên miền được chỉ định"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Khi được chọn, bản ghi PTR sẽ chỉ được tạo cho các IP có bản ghi A/AAAA tương ứng trong tên miền được chỉ định"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11267,11 +11263,8 @@ msgid "Matching only"
 msgstr "Chỉ khớp"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr ""
-"Chỉ tạo bản ghi PTR cho các IP có bản ghi A hiện có trong vùng chuyển tiếp"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Chỉ tạo bản ghi PTR cho các IP có bản ghi A/AAAA hiện có trong vùng chuyển tiếp"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11322,12 +11315,8 @@ msgstr ""
 "hiện có"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr ""
-"Sử dụng \"Chỉ tạo PTR cho bản ghi A hiện có\" để điền PTR dựa trên vùng "
-"chuyển tiếp của bạn"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Sử dụng \"Chỉ tạo PTR cho bản ghi A/AAAA hiện có\" để điền PTR dựa trên vùng chuyển tiếp của bạn"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

@@ -10390,14 +10390,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "在主区域中创建正向 A/AAAA 记录"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "仅为正向区域中现有的 A 记录创建 PTR"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "仅为正向区域中现有的 A/AAAA 记录创建 PTR"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A 记录的 IP 创建"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A/AAAA 记录的 IP 创建"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10428,10 +10426,8 @@ msgid "Matching only"
 msgstr "仅匹配"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "仅为在正向区域中具有现有 A 记录的 IP 创建 PTR 记录"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "仅为在正向区域中具有现有 A/AAAA 记录的 IP 创建 PTR 记录"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10474,10 +10470,8 @@ msgid ""
 msgstr "使用网络前缀旁边的下拉按钮从现有反向区域中选择"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "使用\\\"仅为现有 A 记录创建 PTR\\\"根据您的正向区域填充 PTR"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "使用\\\"仅为现有 A/AAAA 记录创建 PTR\\\"根据您的正向区域填充 PTR"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

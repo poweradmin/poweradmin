@@ -10321,14 +10321,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "Δημιουργία προθεσμιακών εγγραφών A/AAAA στην πρωταρχική ζώνη"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Δημιουργία PTR μόνο για τις υπάρχουσες εγγραφές A στη ζώνη εμπρός"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "Δημιουργία PTR μόνο για τις υπάρχουσες εγγραφές A/AAAA στη ζώνη εμπρός"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "Όταν ενεργοποιηθεί, οι εγγραφές PTR θα δημιουργηθούν μόνο για IPs που έχουν αντίστοιχες εγγραφές A στον καθορισμένο τομέα"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "Όταν ενεργοποιηθεί, οι εγγραφές PTR θα δημιουργηθούν μόνο για IPs που έχουν αντίστοιχες εγγραφές A/AAAA στον καθορισμένο τομέα"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10359,10 +10357,8 @@ msgid "Matching only"
 msgstr "Ταίριασμα μόνο"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "Δημιουργεί εγγραφές PTR μόνο για IPs που έχουν υπάρχουσες εγγραφές A στη ζώνη μπροστά"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "Δημιουργεί εγγραφές PTR μόνο για IPs που έχουν υπάρχουσες εγγραφές A/AAAA στη ζώνη μπροστά"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10405,10 +10401,8 @@ msgid ""
 msgstr "Χρησιμοποιήστε το κουμπί dropdown δίπλα στο πρόθεμα δικτύου για να επιλέξετε από τις υπάρχουσες αντιστρεπτέες ζώνες"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "Χρήση \"Δημιουργήστε PTRs μόνο για τα υπάρχοντα αρχεία A\" για να γεμίσετε PTRs με βάση τη ζώνη σας προς τα εμπρός"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "Χρήση \"Δημιουργήστε PTRs μόνο για τα υπάρχοντα αρχεία A/AAAA\" για να γεμίσετε PTRs με βάση τη ζώνη σας προς τα εμπρός"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""

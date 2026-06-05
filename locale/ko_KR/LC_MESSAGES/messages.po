@@ -10522,14 +10522,12 @@ msgid "Create forward A/AAAA records in primary zone"
 msgstr "주 존에 정방향 A/AAAA 레코드 생성"
 
 #: templates/modern/batch_ptr_record.html:107
-msgid "Create PTRs only for existing A records in forward zone"
-msgstr "정방향 존의 기존 A 레코드에 대해서만 PTR 생성"
+msgid "Create PTRs only for existing A/AAAA records in forward zone"
+msgstr "정방향 존의 기존 A/AAAA 레코드에 대해서만 PTR 생성"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
-msgstr "선택하면 지정된 도메인에 해당 A 레코드가 있는 IP에 대해서만 PTR 레코드가 생성됩니다"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgstr "선택하면 지정된 도메인에 해당 A/AAAA 레코드가 있는 IP에 대해서만 PTR 레코드가 생성됩니다"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10560,10 +10558,8 @@ msgid "Matching only"
 msgstr "일치하는 항목만"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward"
-" zone"
-msgstr "정방향 존에 기존 A 레코드가 있는 IP에 대해서만 PTR 레코드를 생성합니다"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgstr "정방향 존에 기존 A/AAAA 레코드가 있는 IP에 대해서만 PTR 레코드를 생성합니다"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10606,10 +10602,8 @@ msgid ""
 msgstr "네트워크 프리픽스 옆의 드롭다운 버튼을 사용하여 기존 역방향 존에서 선택하세요"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
-msgstr "\"기존 A 레코드에 대해서만 PTR 생성\"을 사용하여 정방향 존을 기반으로 PTR을 채우세요"
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "\"기존 A/AAAA 레코드에 대해서만 PTR 생성\"을 사용하여 정방향 존을 기반으로 PTR을 채우세요"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
