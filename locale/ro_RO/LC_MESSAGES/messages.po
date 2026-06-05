@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-06-05 21:10+0300\n"
+"POT-Creation-Date: 2026-05-09 10:57+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Romanian\n"
@@ -53,13 +53,13 @@ msgstr "Validare eșuată:"
 msgid "Failed to generate record:"
 msgstr "Generare înregistrare eșuată:"
 
-#: lib/Application/Controller/AddRecordController.php:189
+#: lib/Application/Controller/AddRecordController.php:184
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr "Nu valid."
 
-#: lib/Application/Controller/AddRecordController.php:268
+#: lib/Application/Controller/AddRecordController.php:260
 msgid "The record was successfully added."
 msgstr "Înregistrarea a fost adăugată cu succes."
 
@@ -1198,11 +1198,11 @@ msgstr "Nu s-a putut crea zona."
 msgid "Failed to retrieve created zone."
 msgstr "Obținerea zonei create a eșuat."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+#: lib/Module/CsvExport/Controller/CsvExportController.php:38
 msgid "You need to be logged in to export zone data."
 msgstr "Trebuie autentificat pentru export."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+#: lib/Module/CsvExport/Controller/CsvExportController.php:55
 msgid "You do not have permission to export this zone."
 msgstr "Nu aveți permisiunea de a exporta zona."
 
@@ -1210,7 +1210,7 @@ msgstr "Nu aveți permisiunea de a exporta zona."
 msgid "There is no zone with this ID."
 msgstr "Nu există zonă cu acest ID."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+#: lib/Module/CsvExport/Controller/CsvExportController.php:71
 msgid "This zone does not have any records to export."
 msgstr "Nu există înregistrări de exportat."
 
@@ -1240,28 +1240,28 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Eroare RDAP de la serverul %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:136
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr "Token CSRF invalid."
 
-#: lib/BaseController.php:675
+#: lib/BaseController.php:651
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> lipsește."
 
-#: lib/BaseController.php:732
+#: lib/BaseController.php:708
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Set session key."
 
-#: lib/BaseController.php:876
+#: lib/BaseController.php:852
 #, php-format
 msgid "The %s field is required."
 msgstr "Câmpul %s este obligatoriu."
 
-#: lib/BaseController.php:884
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Câmpul %s trebuie să fie un număr."
@@ -1312,7 +1312,7 @@ msgstr "Fără permisiune."
 msgid "Invalid or unexpected input given."
 msgstr "Intrare invalidă sau neașteptată."
 
-#: lib/Domain/Model/UserManager.php:340
+#: lib/Domain/Model/UserManager.php:339
 msgid "You do not have the permission to delete this user."
 msgstr "Nu aveți permisiunea de a șterge utilizatorul."
 
@@ -1450,19 +1450,19 @@ msgstr "Grupul nu a fost găsit."
 msgid "User Preferences"
 msgstr "Preferințe utilizator"
 
-#: lib/Application/Controller/UserPreferencesController.php:117
+#: lib/Application/Controller/UserPreferencesController.php:101
 msgid "Preferences saved successfully."
 msgstr "Preferințe salvate cu succes."
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:109
 msgid "Failed to update preferences. Please try again."
 msgstr "Actualizarea preferințelor a eșuat. Încercați din nou."
 
-#: lib/Application/Controller/UserPreferencesController.php:140
+#: lib/Application/Controller/UserPreferencesController.php:124
 msgid "Top"
 msgstr "Sus"
 
-#: lib/Application/Controller/UserPreferencesController.php:141
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Bottom"
 msgstr "Jos"
 
@@ -1591,20 +1591,20 @@ msgstr "MFA necesar pentru regenerare."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Coduri regenerate."
 
-#: lib/Application/Controller/ListLogApiController.php:52
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "Jurnale API"
 
-#: lib/Application/Controller/ListLogUsersController.php:94
+#: lib/Application/Controller/ListLogUsersController.php:93
 msgid "Invalid page number."
 msgstr "Număr pagină invalid."
 
-#: lib/Application/Controller/ListLogUsersController.php:96
+#: lib/Application/Controller/ListLogUsersController.php:95
 msgid "Page number must be at least 1."
 msgstr "Numărul paginii trebuie să fie cel puțin 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:115
+#: lib/Application/Controller/ListLogUsersController.php:114
 msgid "Page number exceeds available pages."
 msgstr "Numărul paginii depășește paginile disponibile."
 
@@ -1718,7 +1718,7 @@ msgstr "activat"
 msgid "API key %s successfully."
 msgstr "Cheia API %s cu succes."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:111
+#: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nu aveți permisiunea de a adăuga la zonă."
 
@@ -1764,11 +1764,11 @@ msgstr "Șablonul permisiuni a fost actualizat cu succes."
 msgid "Groups"
 msgstr "Grupuri"
 
-#: lib/Application/Controller/SearchController.php:49
+#: lib/Application/Controller/SearchController.php:45
 msgid "You do not have the permission to perform searches."
 msgstr "Nu aveți permisiunea de a face căutări."
 
-#: lib/Application/Controller/SearchController.php:53
+#: lib/Application/Controller/SearchController.php:49
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Căutare"
@@ -1789,7 +1789,7 @@ msgstr "Membru eliminat cu succes din grup."
 msgid "User was not a member of this group."
 msgstr "Utilizatorul nu era membru al grupului."
 
-#: lib/Domain/Model/UserManager.php:1050
+#: lib/Domain/Model/UserManager.php:1003
 msgid "You do not have the permission to add a new user."
 msgstr "Nu aveți permisiunea de a adăuga utilizator nou."
 
@@ -1835,7 +1835,7 @@ msgstr "Nu aveți permisiunea de a șterge înregistrarea."
 msgid "The record could not be deleted."
 msgstr "Înregistrarea nu a putut fi ștearsă."
 
-#: lib/Application/Controller/ListLogZonesController.php:73
+#: lib/Application/Controller/ListLogZonesController.php:72
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Jurnale zonă"
@@ -1913,7 +1913,7 @@ msgstr "Șablonul nu există."
 msgid "You do not have permission to view this zone."
 msgstr "Nu aveți permisiunea de a vedea această zonă."
 
-#: lib/Application/Controller/ListLogUsersController.php:62
+#: lib/Application/Controller/ListLogUsersController.php:61
 #: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Jurnale utilizator"
@@ -1966,41 +1966,41 @@ msgstr "Editează zona"
 msgid "You do not have permission to access this zone."
 msgstr "Nu aveți permisiunea de a accesa zona."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
 msgid "You do not have the permission to view this zone."
 msgstr "Nu aveți permisiunea de a vedea zona."
 
-#: lib/Application/Controller/EditController.php:283
+#: lib/Application/Controller/EditController.php:276
 msgid "Zone type has been changed successfully."
 msgstr "Tipul zonei a fost modificat cu succes."
 
-#: lib/Application/Controller/EditController.php:291
+#: lib/Application/Controller/EditController.php:284
 msgid "Slave master has been changed successfully."
 msgstr "Master secundar schimbat cu succes."
 
-#: lib/Application/Controller/EditController.php:312
+#: lib/Application/Controller/EditController.php:305
 msgid "Zone template has been changed successfully."
 msgstr "Șablonul zonă a fost modificat cu succes."
 
-#: lib/Application/Controller/EditController.php:324
+#: lib/Application/Controller/EditController.php:317
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC nu este activat pe server."
 
-#: lib/Application/Controller/EditController.php:327
+#: lib/Application/Controller/EditController.php:320
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona este deja semnată cu DNSSEC."
 
-#: lib/Application/Controller/EditController.php:349
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone has been signed successfully."
 msgstr "Zona a fost semnată cu succes."
 
-#: lib/Application/Controller/EditController.php:354
+#: lib/Application/Controller/EditController.php:347
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "Verification DNSSEC failed."
 
-#: lib/Application/Controller/EditController.php:358
+#: lib/Application/Controller/EditController.php:351
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2022,41 +2022,41 @@ msgstr "Unsigning cerut, verificare eșuată."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Eliminarea semnăturii a eșuat. Verificați logs."
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:738
 msgid "Request has expired, please try again."
 msgstr "Cererea a expirat, încercați din nou."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:743
 msgid "Zone has been updated successfully."
 msgstr "Zona a fost actualizată cu succes."
 
-#: lib/Application/Controller/EditController.php:752
+#: lib/Application/Controller/EditController.php:745
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "SOA serial ↑."
 
-#: lib/Application/Controller/EditController.php:761
+#: lib/Application/Controller/EditController.php:754
 msgid "Zone has not been updated successfully."
 msgstr "Zona nu a fost actualizată cu succes."
 
-#: lib/Application/Controller/EditController.php:789
+#: lib/Application/Controller/EditController.php:782
 msgid "Please provide all required fields."
 msgstr "Furnizați toate câmpurile obligatorii."
 
-#: lib/Application/Controller/AddRecordController.php:252
+#: lib/Application/Controller/AddRecordController.php:244
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Adăugat. PTR creat."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Înregistrare adăugată, PTR eșuat: "
 
-#: lib/Application/Controller/AddRecordController.php:261
+#: lib/Application/Controller/AddRecordController.php:253
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Adăugat, PTR eșuat."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Adăugat. A creat."
 
@@ -2096,36 +2096,36 @@ msgstr "Cod nefolosibil, use recovery."
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nu aveți permisiunea de a adăuga."
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:241
 msgid "Record successfully added."
 msgstr "Înregistrare adăugată cu succes."
 
-#: lib/Application/Controller/AddRecordController.php:446
+#: lib/Application/Controller/AddRecordController.php:433
 msgid "No records were provided."
 msgstr "Nu au fost furnizate înregistrări."
 
-#: lib/Application/Controller/AddRecordController.php:502
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d înregistrări au fost adăugate cu succes."
 
-#: lib/Application/Controller/AddRecordController.php:504
+#: lib/Application/Controller/AddRecordController.php:489
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Au fost create și %d înregistrări potrivite."
 
-#: lib/Application/Controller/AddRecordController.php:507
+#: lib/Application/Controller/AddRecordController.php:492
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Adăugarea a %d înregistrări a eșuat."
 
-#: lib/Application/Controller/AddRecordController.php:512
+#: lib/Application/Controller/AddRecordController.php:497
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "Unele înregistrări nu au fost adăugate."
 
-#: lib/Application/Controller/AddRecordController.php:538
+#: lib/Application/Controller/AddRecordController.php:523
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nicio înregistrare adăugată."
 
@@ -2153,7 +2153,7 @@ msgstr "Nu aveți permisiunea de a edita înregistrări șablon."
 msgid "OIDC authentication is not enabled"
 msgstr "Autentificarea OIDC nu este activată"
 
-#: lib/Application/Service/SamlService.php:417
+#: lib/Application/Service/SamlService.php:387
 msgid "Authentication failed: "
 msgstr "Autentificare eșuată: "
 
@@ -2177,7 +2177,7 @@ msgstr "Niciun furnizor OIDC configurat"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "Inițierea autentificării OIDC a eșuat: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:67
+#: lib/Application/Controller/ListLogGroupsController.php:66
 #: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Jurnale grup"
@@ -2265,20 +2265,20 @@ msgstr "Creat, verificare eșuată."
 msgid "Zone has been added successfully."
 msgstr "Zona a fost adăugată cu succes."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:75
+#: lib/Application/Controller/BatchPtrRecordController.php:72
 msgid "Batch PTR record creation is not enabled."
 msgstr "Crearea în masă a înregistrărilor PTR nu este activată."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:82
+#: lib/Application/Controller/BatchPtrRecordController.php:79
 msgid "You do not have permission to edit DNS records."
 msgstr "Nu aveți permisiunea de a edita înregistrări."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
 msgstr "Înregistrări PTR în masă"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:102
+#: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Crearea PTR în masă indisponibilă pentru zone inverse."
 
@@ -2388,16 +2388,16 @@ msgstr "Furnizor SAML invalid"
 msgid "SAML authentication failed: "
 msgstr "Autentificare SAML eșuată: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:60
+#: lib/Application/Controller/ListForwardZonesController.php:59
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Permisiuni insuficiente."
 
-#: lib/Application/Controller/ListReverseZonesController.php:81
+#: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Zone inverse"
 
-#: lib/Application/Controller/ListForwardZonesController.php:229
+#: lib/Application/Controller/ListForwardZonesController.php:213
 msgid "You do not have the permission to see any zones."
 msgstr "Nu aveți permisiunea de a vedea zone."
 
@@ -2457,75 +2457,69 @@ msgstr "Adaugă șablon permisiuni"
 msgid "The permission template has been added successfully."
 msgstr "Șablon permisiuni adăugat cu succes."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:35
+#: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
 msgstr "Nu e disponibil pentru utilizatori anonimi."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:39
+#: lib/Application/Controller/DatabaseConsistencyController.php:38
 msgid "You do not have the permission to view this page."
 msgstr "Nu aveți permisiunea de a vedea pagina."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:43
+#: lib/Application/Controller/DatabaseConsistencyController.php:42
 #: templates/default/header.html:234 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "Consistență bază de date"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:47
+#: lib/Application/Controller/DatabaseConsistencyController.php:46
 msgid "Database consistency checks are disabled."
 msgstr "Verificările de consistență BD sunt dezactivate."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:54
-msgid ""
-"Database consistency checks are not available when using the PowerDNS API "
-"backend."
-msgstr ""
-
-#: lib/Application/Controller/DatabaseConsistencyController.php:90
+#: lib/Application/Controller/DatabaseConsistencyController.php:82
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "Verificare consistență bază de date"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:109
+#: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Zone owner assigned successfully"
 msgstr "Proprietar zonă atribuit cu succes"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:109
+#: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Failed to assign zone owner"
 msgstr "Nu s-a putut atribui proprietarul zonei"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:116
+#: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Slave zone deleted successfully"
 msgstr "Zonă secundară ștearsă cu succes"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:116
+#: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Failed to delete slave zone"
 msgstr "Nu s-a putut șterge zona secundară"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:123
+#: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Orphaned record deleted successfully"
 msgstr "Înregistrare orfană ștearsă cu succes"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:123
+#: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Failed to delete orphaned record"
 msgstr "Ștergerea înregistrării orfane a eșuat"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:130
+#: lib/Application/Controller/DatabaseConsistencyController.php:122
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Înregistrări SOA duplicate reparate"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:130
+#: lib/Application/Controller/DatabaseConsistencyController.php:122
 msgid "Failed to fix duplicate SOA records"
 msgstr "Repararea înregistrărilor SOA duplicate a eșuat"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:137
+#: lib/Application/Controller/DatabaseConsistencyController.php:129
 msgid "Default SOA record created successfully"
 msgstr "Înregistrare SOA implicită creată cu succes"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:137
+#: lib/Application/Controller/DatabaseConsistencyController.php:129
 msgid "Failed to create default SOA record"
 msgstr "Crearea înregistrării SOA implicite a eșuat"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:142
+#: lib/Application/Controller/DatabaseConsistencyController.php:134
 msgid "Invalid check type"
 msgstr "Tip verificare invalid"
 
@@ -2613,22 +2607,22 @@ msgstr "Zonă eliminată cu succes din grup."
 msgid "Zone was not owned by this group."
 msgstr "Zona nu aparținea acestui grup."
 
-#: lib/Application/Controller/ListForwardZonesController.php:64
+#: lib/Application/Controller/ListForwardZonesController.php:63
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Zone directe"
 
-#: lib/Application/Controller/ListForwardZonesController.php:83
+#: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "Nu aveți permisiunea de a sincroniza zonele din PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:94
+#: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr ""
 "Zone sincronizate din PowerDNS: %d adăugate, %d actualizate, %d eliminate."
 
-#: lib/Application/Controller/ListForwardZonesController.php:102
+#: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Sincronizarea zonei a eșuat: %s"
@@ -2687,7 +2681,7 @@ msgstr "Utilizatorul a fost actualizat cu succes."
 msgid "The user could not be updated."
 msgstr "Utilizatorul nu a putut fi actualizat."
 
-#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
+#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
 msgid "You do not have the permission to edit this user."
 msgstr "Nu aveți permisiunea de a edita utilizatorul."
 
@@ -2927,7 +2921,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster șters cu succes."
 
 #: lib/Application/Controller/BulkRegistrationController.php:69
-#: templates/modern/index.html:179 templates/modern/bulk_registration.html:26
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Înregistrare în masă"
 
@@ -3083,29 +3077,29 @@ msgstr "Activarea cheii zonei a eșuat."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Eroare la comutarea cheii DNSSEC."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Da"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nu"
 
-#: lib/Application/Service/LdapAuthenticator.php:99
+#: lib/Application/Service/LdapAuthenticator.php:92
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Cont blocat temporar. Încercați mai târziu."
 
-#: lib/Application/Service/SqlAuthenticator.php:142
+#: lib/Application/Service/SqlAuthenticator.php:135
 msgid "The user account is disabled."
 msgstr "Contul utilizatorului este dezactivat."
 
-#: lib/Application/Service/SqlAuthenticator.php:223
+#: lib/Application/Service/SqlAuthenticator.php:216
 msgid "Authentication failed!"
 msgstr "Autentificare eșuată!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:193
+#: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
 msgstr "Sesiunea a expirat, autentificați-vă din nou."
 
@@ -3113,43 +3107,43 @@ msgstr "Sesiunea a expirat, autentificați-vă din nou."
 msgid "Failed to update password"
 msgstr "Nu s-a putut actualiza parola"
 
-#: lib/Application/Service/OidcService.php:213
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentificare eșuată: Parametru state invalid"
 
-#: lib/Application/Service/OidcService.php:234
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Autentificare eșuată: Fără cod autorizare"
 
-#: lib/Application/Service/SamlService.php:218
+#: lib/Application/Service/SamlService.php:188
 msgid "Authentication failed: Invalid session"
 msgstr "Autentificare eșuată: Sesiune invalidă"
 
-#: lib/Application/Service/SamlService.php:377
+#: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentificare eșuată"
 
-#: lib/Application/Service/LdapAuthenticator.php:243
+#: lib/Application/Service/LdapAuthenticator.php:236
 msgid "LDAP Authentication failed!"
 msgstr "Autentificare LDAP eșuată!"
 
-#: lib/Application/Service/LdapAuthenticator.php:148
+#: lib/Application/Service/LdapAuthenticator.php:141
 msgid "Failed to connect to LDAP server!"
 msgstr "Conectarea la serverul LDAP a eșuat!"
 
-#: lib/Application/Service/LdapAuthenticator.php:164
+#: lib/Application/Service/LdapAuthenticator.php:157
 msgid "Failed to bind to LDAP server!"
 msgstr "Conectarea la serverul LDAP a eșuat!"
 
-#: lib/Application/Service/LdapAuthenticator.php:192
+#: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to search LDAP."
 msgstr "Căutare LDAP eșuată."
 
-#: lib/Application/Service/LdapAuthenticator.php:209
+#: lib/Application/Service/LdapAuthenticator.php:202
 msgid "Failed to authenticate against LDAP."
 msgstr "Autentificarea față de LDAP a eșuat."
 
-#: lib/Application/Service/SamlService.php:276
+#: lib/Application/Service/SamlService.php:246
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentificare eșuată: Răspuns SAML invalid"
 
@@ -3161,7 +3155,7 @@ msgstr "Acesta este un nume de zonă invalid."
 msgid "This template is assigned to at least one user and one group."
 msgstr "Șablonul atribuit cel puțin unui user și grup."
 
-#: lib/Domain/Model/UserManager.php:385
+#: lib/Domain/Model/UserManager.php:384
 msgid "This template is assigned to at least one user."
 msgstr "Șablonul este atribuit cel puțin unui utilizator."
 
@@ -3338,34 +3332,34 @@ msgstr "Nu, păstrează acest autoprimary"
 msgid "No, keep this supermaster"
 msgstr "Nu, păstrează acest supermaster"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:155
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "Verificarea reCAPTCHA a eșuat. Încercați din nou."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:178
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr "Parolă goală nepermisă"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:221
+#: lib/Infrastructure/Service/SessionAuthenticator.php:220
 msgid "LDAP authentication is disabled"
 msgstr "Autentificarea LDAP este dezactivată"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:409
+#: lib/Infrastructure/Service/SessionAuthenticator.php:406
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr "DB error auth."
 
-#: lib/Domain/Model/UserManager.php:1062
+#: lib/Domain/Model/UserManager.php:1015
 msgid "Enter a valid email address."
 msgstr "Introduceți adresă email validă."
 
-#: lib/Domain/Model/UserManager.php:1054
+#: lib/Domain/Model/UserManager.php:1007
 msgid "Username exist already, please choose another one."
 msgstr "Numele utilizator există, alegeți altul."
 
-#: lib/Domain/Model/UserManager.php:1058
+#: lib/Domain/Model/UserManager.php:1011
 msgid "Enter a valid user name."
 msgstr "Introduceți un nume utilizator valid."
 
@@ -7985,11 +7979,11 @@ msgstr "Au fost găsite următoarele avertismente:"
 msgid "Empty line."
 msgstr "Linie goală."
 
-#: lib/Domain/Service/BulkRecordParser.php:44
+#: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Format invalid. Necesar: nume,tip,conținut"
 
-#: lib/Domain/Service/BulkRecordParser.php:90
+#: lib/Domain/Service/BulkRecordParser.php:88
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -8737,7 +8731,7 @@ msgstr "Adaugă grup"
 msgid "No groups found"
 msgstr "Nu s-au găsit grupuri"
 
-#: templates/modern/add_zone_slave.html:99
+#: templates/modern/add_zone_slave.html:98
 msgid "Search groups..."
 msgstr "Caută grupuri..."
 
@@ -8846,7 +8840,7 @@ msgstr "Elimină"
 msgid "and"
 msgstr "și"
 
-#: templates/modern/list_forward_zones.html:197
+#: templates/modern/list_forward_zones.html:180
 msgid "more..."
 msgstr "mai mult..."
 
@@ -9655,7 +9649,7 @@ msgstr "Zone inverse IPv4:"
 msgid "IPv6 reverse zones:"
 msgstr "Zone inverse IPv6:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:321
+#: templates/modern/search.html:123 templates/modern/search.html:319
 msgid "Rows per page:"
 msgstr "Rânduri pe pagină:"
 
@@ -9667,43 +9661,39 @@ msgstr "Nu sunt zone inverse în listare."
 msgid "Owner"
 msgstr "Proprietar"
 
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "Grup"
-
-#: templates/modern/list_forward_zones.html:111
+#: templates/modern/list_forward_zones.html:97
 msgid "Full name"
 msgstr "Nume complet"
 
-#: templates/modern/list_reverse_zones.html:141
+#: templates/modern/list_reverse_zones.html:127
 msgid "Associated Forward Zones"
 msgstr "Zone directe asociate"
 
-#: templates/modern/list_forward_zones.html:115
+#: templates/modern/list_forward_zones.html:101
 msgid "Serial"
 msgstr "Serial"
 
-#: templates/modern/bulk_registration.html:44
+#: templates/modern/bulk_registration.html:79
 msgid "Template"
 msgstr "Șablon"
 
-#: templates/modern/list_forward_zones.html:145
+#: templates/modern/list_forward_zones.html:131
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "Înregistrarea SOA este dezactivată, zona nu va fi servită"
 
-#: templates/modern/list_forward_zones.html:147
+#: templates/modern/list_forward_zones.html:133
 msgid "Zone has no SOA record"
 msgstr "Zona nu are înregistrare SOA"
 
-#: templates/modern/list_forward_zones.html:147
+#: templates/modern/list_forward_zones.html:133
 msgid "No SOA"
 msgstr "Fără SOA"
 
-#: templates/modern/list_reverse_zones.html:252
+#: templates/modern/list_reverse_zones.html:233
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:305
+#: templates/modern/search.html:303
 msgid "Delete zone(s)"
 msgstr "Șterge zona/zonele"
 
@@ -9936,7 +9926,7 @@ msgstr "Șterge căutarea"
 msgid "Select All"
 msgstr "Selectează tot"
 
-#: templates/modern/add_zone_slave.html:103
+#: templates/modern/add_zone_slave.html:102
 msgid "Clear All"
 msgstr "Șterge tot"
 
@@ -10235,9 +10225,7 @@ msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "Creează PTR doar pentru A/AAAA existente"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A/AAAA records in the specified domain"
+msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
 msgstr "PTR cu A/AAAA."
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10269,9 +10257,7 @@ msgid "Matching only"
 msgstr "Numai potrivire"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid ""
-"Creates PTR records only for IPs that have existing A/AAAA records in the "
-"forward zone"
+msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
 msgstr "PTR doar pt IP cu A/AAAA."
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10315,10 +10301,8 @@ msgid ""
 msgstr "Dropdown Network Prefix."
 
 #: templates/modern/batch_ptr_record.html:184
-msgid ""
-"Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
-"on your forward zone"
-msgstr ""
+msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
+msgstr "PTR din A/AAAA existente."
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -10332,11 +10316,11 @@ msgid ""
 "forward records (disabled when using matching mode)"
 msgstr "Auto A/AAAA."
 
-#: templates/modern/bulk_registration.html:79
+#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:223
 msgid "Ownership"
 msgstr "Proprietate"
 
-#: templates/modern/add_zone_slave.html:51
+#: templates/modern/add_zone_slave.html:50
 msgid "User Owner"
 msgstr "Proprietar utilizator"
 
@@ -10352,7 +10336,7 @@ msgstr "Adaugă proprietar utilizator"
 msgid "Search users..."
 msgstr "Caută utilizatori..."
 
-#: templates/modern/add_zone_slave.html:80
+#: templates/modern/add_zone_slave.html:79
 msgid "You"
 msgstr "Tu"
 
@@ -10360,7 +10344,7 @@ msgstr "Tu"
 msgid "Add Owner"
 msgstr "Adaugă proprietar"
 
-#: templates/modern/add_zone_slave.html:95
+#: templates/modern/add_zone_slave.html:94
 msgid "Group Ownership"
 msgstr "Proprietate grup"
 
@@ -10598,7 +10582,7 @@ msgstr "Ultima modificare"
 msgid "Edit selected"
 msgstr "Editează selectate"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:489
+#: templates/modern/edit.html:528 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Șterge înregistrare(a)"
 
@@ -10614,7 +10598,7 @@ msgstr "Importă"
 msgid "Generate PTR"
 msgstr "Generează PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:25
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Configurare zonă"
 
@@ -10622,7 +10606,7 @@ msgstr "Configurare zonă"
 msgid "Change"
 msgstr "Schimbă"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:36
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Adresă IP master NS"
 
@@ -10695,7 +10679,7 @@ msgstr "Număr total de zone:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Nu sunt zone forward în listare."
 
-#: templates/modern/list_forward_zones.html:231
+#: templates/modern/list_forward_zones.html:212
 msgid "PTR"
 msgstr "PTR"
 
@@ -10934,15 +10918,15 @@ msgstr "Selectați grupurile pentru utilizator."
 msgid "Zone name"
 msgstr "nume zonă"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:30
 msgid "Provide zone name"
 msgstr "Furnizați nume zonă"
 
-#: templates/modern/add_zone_slave.html:32
+#: templates/modern/add_zone_slave.html:31
 msgid "Example: example.com"
 msgstr "Exemplu: example.com"
 
-#: templates/modern/add_zone_master.html:47
+#: templates/modern/add_zone_master.html:46
 msgid "Zone type (usually NATIVE)"
 msgstr "Tip zonă (de obicei NATIVE)"
 
@@ -10950,43 +10934,43 @@ msgstr "Tip zonă (de obicei NATIVE)"
 msgid "default"
 msgstr "implicit"
 
-#: templates/modern/add_zone_master.html:59
+#: templates/modern/add_zone_master.html:58
 msgid "Optional: Apply predefined records from a template"
 msgstr "Opțional: Aplică înregistrări predefinite"
 
-#: templates/modern/add_zone_master.html:67
+#: templates/modern/add_zone_master.html:66
 msgid "Enable DNSSEC"
 msgstr "Activează DNSSEC"
 
-#: templates/modern/add_zone_master.html:69
+#: templates/modern/add_zone_master.html:68
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Securizează zona cu semnare DNSSEC"
 
-#: templates/modern/add_zone_slave.html:56
+#: templates/modern/add_zone_slave.html:55
 msgid "Selected:"
 msgstr "Selectat:"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:61
 msgid "No user owner"
 msgstr "Fără proprietar"
 
-#: templates/modern/add_zone_slave.html:63
+#: templates/modern/add_zone_slave.html:62
 msgid "Zone will be owned only by groups"
 msgstr "Zona va fi deținută doar de grupuri"
 
-#: templates/modern/add_zone_slave.html:86
+#: templates/modern/add_zone_slave.html:85
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Opțional: Selectați responsabil pentru zonă"
 
-#: templates/modern/add_zone_slave.html:110
+#: templates/modern/add_zone_slave.html:109
 msgid "members"
 msgstr "membri"
 
-#: templates/modern/add_zone_slave.html:116
+#: templates/modern/add_zone_slave.html:115
 msgid "Optional: Select one or more groups"
 msgstr "Opțional: Selectați unul sau mai multe grupuri"
 
-#: templates/modern/add_zone_slave.html:131
+#: templates/modern/add_zone_slave.html:130
 msgid "Add zone"
 msgstr "Adaugă zonă"
 
@@ -11010,7 +10994,7 @@ msgstr "Zone legate"
 msgid "Sync Status"
 msgstr "Stare sinc."
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
 msgid "No results found"
 msgstr "Nu s-au găsit rezultate"
 
@@ -11320,29 +11304,51 @@ msgstr "Cheie API:"
 msgid "Bulk registration"
 msgstr "înregistrare în masă"
 
-#: templates/modern/bulk_registration.html:30
-msgid "Zone Type"
-msgstr "Tip zonă"
-
-#: templates/modern/bulk_registration.html:54
-msgid "Domains"
-msgstr "Domenii"
-
-#: templates/modern/bulk_registration.html:56
-msgid "Provide a domain name(s)"
-msgstr "Furnizați nume domeniu"
-
-#: templates/modern/bulk_registration.html:57
-msgid "Type one domain per line"
-msgstr "Un domeniu pe linie"
-
-#: templates/modern/bulk_registration.html:63
-msgid "Add Zones"
-msgstr "Adaugă zone"
-
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Group ownership"
 msgstr "Proprietate grup"
+
+#: templates/modern/bulk_registration.html:65
+msgid "Zone Type"
+msgstr "Tip zonă"
+
+#: templates/modern/bulk_registration.html:89
+msgid "Domains"
+msgstr "Domenii"
+
+#: templates/modern/bulk_registration.html:91
+msgid "Provide a domain name(s)"
+msgstr "Furnizați nume domeniu"
+
+#: templates/modern/bulk_registration.html:92
+msgid "Type one domain per line"
+msgstr "Un domeniu pe linie"
+
+#: templates/modern/bulk_registration.html:98
+msgid "Add Zones"
+msgstr "Adaugă zone"
+
+#: templates/modern/bulk_registration.html:115
+#, auto-english-fallback
+msgid "After Creation"
+msgstr "După creare"
+
+#: templates/modern/bulk_registration.html:120
+#, auto-english-fallback
+msgid "Change zone owner"
+msgstr "Schimbă proprietarul zonei"
+
+#: templates/modern/bulk_registration.html:121
+msgid ""
+"You can transfer zone ownership to another user from the user list at any "
+"time."
+msgstr ""
+"Puteți transfera proprietatea zonei către un alt utilizator din lista de utilizatori în orice moment."
+
+#: templates/modern/bulk_registration.html:123
+#, auto-english-fallback
+msgid "Manage users"
+msgstr "Gestionează utilizatorii"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -11632,109 +11638,83 @@ msgid "Items per page"
 msgstr "Elemente pe pagină"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
-msgid "Timezone"
-msgstr "Timezone"
-
-#: templates/modern/user_preferences.html:46
-#, auto-english-fallback
-msgid "Region"
-msgstr "Region"
-
-#: templates/modern/user_preferences.html:48
-#, auto-english-fallback
-msgid "Inherit global setting"
-msgstr "Inherit global setting"
-
-#: templates/modern/user_preferences.html:55
-#, auto-english-fallback
-msgid "City"
-msgstr "City"
-
-#: templates/modern/user_preferences.html:64
-msgid ""
-"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
-"the global server timezone."
-msgstr ""
-
-#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "Opțiuni zonă"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:42
 msgid "Zone serial numbers"
 msgstr "Numere serie zone"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:43
 msgid "Display serial numbers in zone lists"
 msgstr "Afișează numere de serie în listele de zone"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:51
 msgid "Display template information in zone lists"
 msgstr "Afișează informații șablon în liste zone"
 
-#: templates/modern/user_preferences.html:123
+#: templates/modern/user_preferences.html:64
 msgid "Interface Behavior"
 msgstr "Comportament interfață"
 
-#: templates/modern/user_preferences.html:128
+#: templates/modern/user_preferences.html:69
 msgid "Record form"
 msgstr "Formular înregistrare"
 
-#: templates/modern/user_preferences.html:137
+#: templates/modern/user_preferences.html:78
 msgid "Save buttons"
 msgstr "Butoane de salvare"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:88
 msgid "Edit Zone View"
 msgstr "Editează vizualizare zonă"
 
-#: templates/modern/user_preferences.html:152
+#: templates/modern/user_preferences.html:93
 msgid "Show record ID"
 msgstr "Afișează ID înregistrare"
 
-#: templates/modern/user_preferences.html:153
+#: templates/modern/user_preferences.html:94
 msgid "Display record ID column in edit view"
 msgstr "Afișează coloană ID înregistrare la editare"
 
-#: templates/modern/user_preferences.html:160
+#: templates/modern/user_preferences.html:101
 msgid "Show add record form"
 msgstr "Afișează formular adăugare"
 
-#: templates/modern/user_preferences.html:161
+#: templates/modern/user_preferences.html:102
 msgid "Display inline add record form in edit view"
 msgstr "Afișează formular adăugare inline"
 
-#: templates/modern/user_preferences.html:168
+#: templates/modern/user_preferences.html:109
 msgid "Show edit buttons"
 msgstr "Afișează butoane editare"
 
-#: templates/modern/user_preferences.html:169
+#: templates/modern/user_preferences.html:110
 msgid "Display individual edit button per record"
 msgstr "Afișează buton edit individual per înregistrare"
 
-#: templates/modern/user_preferences.html:176
+#: templates/modern/user_preferences.html:117
 msgid "Show delete buttons"
 msgstr "Afișează butoane ștergere"
 
-#: templates/modern/user_preferences.html:177
+#: templates/modern/user_preferences.html:118
 msgid "Display individual delete button per record"
 msgstr "Afișează buton șterge individual"
 
-#: templates/modern/user_preferences.html:184
+#: templates/modern/user_preferences.html:125
 msgid "Hostname-only display"
 msgstr "Afișează doar numele gazdei"
 
-#: templates/modern/user_preferences.html:185
+#: templates/modern/user_preferences.html:126
 msgid "Strip zone suffix from record names in edit view"
 msgstr ""
 "Elimină sufixul de zonă din numele înregistrărilor în vizualizarea de editare"
 
-#: templates/modern/user_preferences.html:200
+#: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
 msgstr "Salvează preferințe"
 
-#: templates/modern/user_preferences.html:206
+#: templates/modern/user_preferences.html:147
 msgid "Changes will be applied after saving"
 msgstr "Modificările vor fi aplicate după salvare"
 
@@ -11765,31 +11745,31 @@ msgstr "Filter syntax."
 msgid "Zones found"
 msgstr "Zone găsite"
 
-#: templates/default/search.html:318 templates/modern/search.html:318
+#: templates/default/search.html:316 templates/modern/search.html:316
 msgid "Records found"
 msgstr "Înregistrări găsite"
 
-#: templates/default/search.html:504 templates/modern/search.html:504
+#: templates/default/search.html:501 templates/modern/search.html:501
 msgid "Try different search terms or filters"
 msgstr "Încercați alți termeni sau filtre"
 
-#: templates/default/search.html:667 templates/modern/search.html:678
+#: templates/default/search.html:664 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
 msgstr "Confirmă ștergerea zonei"
 
-#: templates/modern/search.html:683 templates/modern/search.html:709
+#: templates/modern/search.html:680 templates/modern/search.html:706
 msgid "Are you sure you want to delete"
 msgstr "Sunteți sigur că doriți să ștergeți"
 
-#: templates/default/search.html:672 templates/modern/search.html:683
+#: templates/default/search.html:669 templates/modern/search.html:680
 msgid "selected zone(s)?"
 msgstr "zona/zonele selectate?"
 
-#: templates/default/search.html:693 templates/modern/search.html:704
+#: templates/default/search.html:690 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
 msgstr "Confirmă ștergerea înregistrării"
 
-#: templates/default/search.html:698 templates/modern/search.html:709
+#: templates/default/search.html:695 templates/modern/search.html:706
 msgid "selected record(s)?"
 msgstr "înregistrările selectate?"
 
@@ -11829,15 +11809,15 @@ msgstr "jurnale utilizator"
 msgid "User Activity Logs"
 msgstr "Jurnale activitate utilizator"
 
-#: templates/modern/add_zone_slave.html:25
+#: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Configurare zonă secundară"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:37
 msgid "Provide IP address"
 msgstr "Furnizați adresă IP"
 
-#: templates/modern/add_zone_slave.html:39
+#: templates/modern/add_zone_slave.html:38
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12511,6 +12491,10 @@ msgstr "adaugă șablon acces"
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
 msgstr "Utilizator"
+
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "Grup"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
@@ -13450,40 +13434,44 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nu se poate conecta la baza de date PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "Create PTRs only for existing A records in forward zone"
-# OBSOLETE: msgstr "Creează PTR doar pentru A existente"
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Despre înregistrarea în masă"
+
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Creează mai multe zone DNS."
+
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Un nume per linie în Domenii"
+
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Selectați șablon pentru înregistrări standard"
+
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Proprietarul va avea acces complet"
+
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Cum funcționează"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "When checked, PTR records will only be created for IPs that have "
-# OBSOLETE: "corresponding A records in the specified domain"
-# OBSOLETE: msgstr "PTR cu A."
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr "Try each zone."
 
-# OBSOLETE: msgid ""
-# OBSOLETE: "Creates PTR records only for IPs that have existing A records in the "
-# OBSOLETE: "forward zone"
-# OBSOLETE: msgstr "PTR doar pt IP cu A."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Sfaturi și recomandări"
 
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-# OBSOLETE: "your forward zone"
-# OBSOLETE: msgstr "PTR din A existente."
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Folosiți NATIVE pentru setări standard"
 
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "După creare"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr "Creați șablon pentru înregistrări standard"
 
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Schimbă proprietarul zonei"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Puteți copia domenii din tabel"
 
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Puteți transfera proprietatea zonei către un alt utilizator din lista de "
-# OBSOLETE: "utilizatori în orice moment."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Gestionează utilizatorii"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr "Respectă convenții DNS."
 
 
 
