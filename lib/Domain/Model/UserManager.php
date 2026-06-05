@@ -120,6 +120,13 @@ class UserManager
      */
     public static function isUserSuperuser(PDO $db, int $userId): bool
     {
+        // Superuser status does not change within a request, so memoize per user to
+        // avoid repeat queries when bulk-record loops check the same user many times.
+        static $cache = [];
+        if (isset($cache[$userId])) {
+            return $cache[$userId];
+        }
+
         // Check both direct user permissions and group permissions
         // Uses same logic as verifyPermission for consistency
         $query = $db->prepare("
@@ -147,7 +154,7 @@ class UserManager
         $query->execute([$userId, $userId]);
         $result = $query->fetch();
 
-        return $result !== false;
+        return $cache[$userId] = ($result !== false);
     }
 
     /**

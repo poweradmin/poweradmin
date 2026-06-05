@@ -226,7 +226,6 @@ class DeleteRecordsController extends BaseController
                 $domain_id = $dnsRecord->recidToDomid($record_id);
 
                 $zone_info = $dnsRecord->getZoneInfoFromId($zid);
-                $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
 
                 // Check zone-specific edit permission (includes group permissions)
                 $userId = $this->userContextService->getLoggedInUserId();
