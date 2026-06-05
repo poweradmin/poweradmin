@@ -34,14 +34,21 @@
 
                     <div class="mb-3">
                         <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} <span class="text-danger">*</span></label>
-                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ user['fullname'] }}" required>
+                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ user['fullname'] }}"{% if is_external_auth %} readonly{% endif %} required>
+                        {% if is_external_auth %}
+                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
+                        {% else %}
                         <small class="text-muted">{% trans %}User's full name for identification{% endtrans %}</small>
+                        {% endif %}
                         <div class="invalid-feedback">{% trans %}Provide full name{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">{% trans %}Email address{% endtrans %} <span class="text-danger">*</span></label>
-                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}" required>
+                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}"{% if is_external_auth %} readonly{% endif %} required>
+                        {% if is_external_auth %}
+                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Managed externally via %auth_type% authentication{% endtrans %}</small>
+                        {% endif %}
                         <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
                     </div>
 
@@ -336,6 +343,17 @@ function disablePasswordField() {
     } else {
         passwordField.disabled = false;
     }
+{% if user['auth_type'] == 'ldap' %}
+    // An LDAP account converts to a local account when LDAP is unchecked, so its
+    // fullname/email are only IdP-managed (read-only) while LDAP stays enabled.
+    const idpManaged = ldapCheckbox && ldapCheckbox.checked;
+    ['fullname', 'email'].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) {
+            field.readOnly = idpManaged;
+        }
+    });
+{% endif %}
 }
 
 function showRemoveGroupModal(userId, groupId, groupName) {

@@ -48,6 +48,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
 {
+    /** Auth methods whose identity/password fields are owned by an external provider. */
+    private const EXTERNAL_AUTH_METHODS = ['ldap', 'oidc', 'saml'];
+
     protected Request $request;
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
@@ -103,18 +106,18 @@ class EditUserController extends BaseController
 
     private function updateUser(int $editId, array $policyConfig): void
     {
-        if (!$this->validateInput()) {
+        if (!$this->validateInput($editId)) {
             $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
-        if (!$this->validatePasswordPolicy()) {
+        if (!$this->validatePasswordPolicy($editId)) {
             $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
         try {
-            $params = $this->prepareUserData();
+            $params = $this->prepareUserData($editId);
         } catch (\InvalidArgumentException $e) {
             $this->setMessage('edit_user', 'error', $e->getMessage());
             $this->showUserEditForm($editId, $policyConfig);
@@ -177,17 +180,27 @@ class EditUserController extends BaseController
         }
     }
 
-    private function validateInput(): bool
+    private function validateInput(int $editId): bool
     {
         $constraints = [
             'username' => [
                 new Assert\NotBlank()
-            ],
-            'email' => [
-                new Assert\NotBlank(),
-                new Assert\Email()
             ]
         ];
+
+        // External-auth users have an IdP-managed (read-only, possibly empty) email,
+        // so don't enforce the email constraint here - the submitted value is ignored
+        // anyway and requiring it would block all edits when the IdP supplied none.
+        // A user being converted to a local account (LDAP unchecked) is no longer
+        // managed, so the email requirement applies again.
+        $user = $this->getUserDetails($editId);
+        $useLdap = $this->request->getPostParam('use_ldap') === '1';
+        if (!self::isIdpManaged($user['auth_type'] ?? null, $useLdap)) {
+            $constraints['email'] = [
+                new Assert\NotBlank(),
+                new Assert\Email()
+            ];
+        }
 
         $this->setValidationConstraints($constraints);
         $data = $this->request->getPostParams();
@@ -200,7 +213,7 @@ class EditUserController extends BaseController
         return true;
     }
 
-    private function validatePasswordPolicy(): bool
+    private function validatePasswordPolicy(int $editId): bool
     {
         $password = $this->request->getPostParam('password');
         if (empty($password) || $this->request->getPostParam('use_ldap')) {
@@ -208,10 +221,8 @@ class EditUserController extends BaseController
         }
 
         // Skip password validation for external auth users
-        $editId = (int)$this->request->getPostParam('number');
         $user = $this->getUserDetails($editId);
-        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        if (in_array($user['auth_type'] ?? 'sql', $externalAuthMethods)) {
+        if (in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true)) {
             return true;
         }
 
@@ -243,11 +254,11 @@ class EditUserController extends BaseController
         }
     }
 
-    private function prepareUserData(): array
+    private function prepareUserData(int $editId): array
     {
-        $editId = (int)$this->request->getPostParam('number');
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
         $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $userData = null;
 
         // Force active state to true if user is editing their own profile
         $active = $isOwnProfile ? true : $this->request->getPostParam('active') === '1';
@@ -275,15 +286,67 @@ class EditUserController extends BaseController
             }
         }
 
+        // Externally authenticated users have their identity fields owned by the IdP
+        // (overwritten on the next sync), so ignore any submitted changes to them.
+        $useLdap = $this->request->getPostParam('use_ldap') === '1';
+        $userData = $userData ?? $this->getUserDetails($editId);
+        $identity = self::resolveIdentityFields(
+            $userData,
+            $useLdap,
+            htmlspecialchars($this->request->getPostParam('fullname')),
+            htmlspecialchars($this->request->getPostParam('email'))
+        );
+
         return [
             'username' => htmlspecialchars($this->request->getPostParam('username')),
-            'fullname' => htmlspecialchars($this->request->getPostParam('fullname')),
-            'email' => htmlspecialchars($this->request->getPostParam('email')),
+            'fullname' => $identity['fullname'],
+            'email' => $identity['email'],
             'description' => htmlspecialchars($this->request->getPostParam('description')),
             'password' => $this->request->getPostParam('password', ''),
             'perm_templ' => $permTempl,
             'active' => $active,
-            'use_ldap' => $this->request->getPostParam('use_ldap') === '1'
+            'use_ldap' => $useLdap
+        ];
+    }
+
+    /**
+     * Whether a user's identity fields (fullname/email) are owned by an external
+     * identity provider after this edit, and so must stay read-only.
+     *
+     * OIDC/SAML accounts are always external (this form cannot convert them). An
+     * LDAP account is external only while LDAP stays enabled - unchecking "Use LDAP"
+     * converts it to a local account, after which the fields become user-managed.
+     */
+    public static function isIdpManaged(?string $currentAuthMethod, bool $useLdap): bool
+    {
+        return $useLdap || in_array($currentAuthMethod, ['oidc', 'saml'], true);
+    }
+
+    /**
+     * Resolve the fullname/email to persist for a user edit.
+     *
+     * When the account is IdP-managed after this edit, the identity provider owns
+     * these fields (overwritten on the next sync), so the stored values are kept and
+     * submitted changes discarded. Otherwise the submitted values are used.
+     *
+     * @param array $userData The persisted user record (expects auth_type, fullname, email)
+     * @param bool $useLdap Whether LDAP is being enabled for this user by the form
+     * @param string $submittedFullname Fullname from the form
+     * @param string $submittedEmail Email from the form
+     * @return array{fullname: string, email: string}
+     */
+    public static function resolveIdentityFields(array $userData, bool $useLdap, string $submittedFullname, string $submittedEmail): array
+    {
+        if (self::isIdpManaged($userData['auth_type'] ?? null, $useLdap)) {
+            return [
+                'fullname' => (string)($userData['fullname'] ?? ''),
+                'email' => (string)($userData['email'] ?? ''),
+            ];
+        }
+
+        return [
+            'fullname' => $submittedFullname,
+            'email' => $submittedEmail,
         ];
     }
 
@@ -293,8 +356,7 @@ class EditUserController extends BaseController
         $permissions = $this->getUserPermissions($editId);
 
         // Check if password changes should be disabled for external auth users
-        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', $externalAuthMethods);
+        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true);
 
         // Fetch user's group memberships
         $groupMemberRepo = new DbUserGroupMemberRepository($this->db);
