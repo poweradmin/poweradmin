@@ -44,6 +44,15 @@ class HybridPermissionService
     private UserGroupRepositoryInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
 
+    /**
+     * Per-instance cache of resolved zone permissions, keyed by "userId:domainId".
+     * Bulk-record flows resolve the same zone repeatedly; permissions do not change
+     * within a request, so the lookup is memoized.
+     *
+     * @var array<string, array{permissions: string[], sources: array}>
+     */
+    private array $zonePermissionCache = [];
+
     public function __construct(
         PDO $db,
         UserGroupRepositoryInterface $groupRepository,
@@ -67,6 +76,11 @@ class HybridPermissionService
      */
     public function getUserPermissionsForZone(int $userId, int $domainId): array
     {
+        $cacheKey = $userId . ':' . $domainId;
+        if (isset($this->zonePermissionCache[$cacheKey])) {
+            return $this->zonePermissionCache[$cacheKey];
+        }
+
         $allPermissions = [];
         $sources = [];
 
@@ -96,10 +110,14 @@ class HybridPermissionService
         // Remove duplicates and return union of all permissions
         $effectivePermissions = array_unique($allPermissions);
 
-        return [
+        $result = [
             'permissions' => array_values($effectivePermissions),
             'sources' => $sources
         ];
+
+        $this->zonePermissionCache[$cacheKey] = $result;
+
+        return $result;
     }
 
     /**

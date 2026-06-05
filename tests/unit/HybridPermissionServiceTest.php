@@ -340,4 +340,43 @@ class HybridPermissionServiceTest extends TestCase
         $this->assertFalse($result['has_direct']);
         $this->assertSame([], $result['group_ids']);
     }
+
+    // --- per-zone memoization (bulk-record loops) ---
+
+    #[Test]
+    public function getUserPermissionsForZoneIsMemoizedPerZone(): void
+    {
+        $directStmt = $this->createMock(PDOStatement::class);
+        $directStmt->method('fetchAll')->willReturn(['zone_content_edit_own']);
+        $directStmt->method('execute')->willReturn(true);
+
+        $groupStmt = $this->createMock(PDOStatement::class);
+        $groupStmt->method('fetchAll')->willReturn([]);
+        $groupStmt->method('execute')->willReturn(true);
+
+        $prepareCalls = 0;
+        $this->db->method('prepare')
+            ->willReturnCallback(function () use ($directStmt, $groupStmt, &$prepareCalls) {
+                $prepareCalls++;
+                return $prepareCalls === 1 ? $directStmt : $groupStmt;
+            });
+
+        $first = $this->service->getUserPermissionsForZone(7, 42);
+        $callsAfterFirstZone = $prepareCalls;
+        $this->assertGreaterThan(0, $callsAfterFirstZone);
+
+        // Second lookup for the same zone is served from cache - no extra queries.
+        $second = $this->service->getUserPermissionsForZone(7, 42);
+        $this->assertSame($first, $second);
+        $this->assertSame($callsAfterFirstZone, $prepareCalls);
+
+        // canUserPerformAction reuses the cached zone permissions too.
+        $this->assertTrue($this->service->canUserPerformAction(7, 42, 'zone_content_edit_own'));
+        $this->assertFalse($this->service->canUserPerformAction(7, 42, 'zone_delete_own'));
+        $this->assertSame($callsAfterFirstZone, $prepareCalls);
+
+        // A different zone is resolved freshly rather than served from zone 42's cache.
+        $this->service->getUserPermissionsForZone(7, 99);
+        $this->assertGreaterThan($callsAfterFirstZone, $prepareCalls);
+    }
 }
