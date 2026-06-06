@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Query;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
@@ -59,11 +60,13 @@ abstract class BaseSearch
         $reverse_search_string = '';
 
         if ($parameters['reverse']) {
+            // Anchor the reversed query to the full PTR name (e.g. "5.0.0.10.in-addr.arpa")
+            // so the LIKE pattern matches reverse-zone record names instead of any string
+            // that merely contains the reversed octets.
             if ($this->ipValidator->isValidIPv4($parameters['query'])) {
-                $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
+                $reverse_search_string = DomainUtility::convertIPv4AddrToPtrRec($parameters['query']);
             } elseif ($this->ipValidator->isValidIPv6($parameters['query'])) {
-                $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
-                $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
+                $reverse_search_string = DomainUtility::convertIPv6AddrToPtrRec($parameters['query']);
             } else {
                 $parameters['reverse'] = false;
             }

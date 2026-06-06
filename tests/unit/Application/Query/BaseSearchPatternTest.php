@@ -129,10 +129,9 @@ class BaseSearchPatternTest extends TestCase
 
         [$reverseString, , ] = $this->baseSearch->exposeBuildSearchString($parameters);
 
-        // IPv4 should be reversed: 192.168.1.10 -> 10.1.168.192
-        $this->assertStringContainsString('10.1.168.192', $reverseString);
-        $this->assertStringStartsWith('%', $reverseString);
-        $this->assertStringEndsWith('%', $reverseString);
+        // IPv4 should be reversed and anchored to the in-addr.arpa zone:
+        // 192.168.1.10 -> %10.1.168.192.in-addr.arpa%
+        $this->assertSame('%10.1.168.192.in-addr.arpa%', $reverseString);
     }
 
     public function testIPv6ReverseSearch(): void
@@ -145,10 +144,12 @@ class BaseSearchPatternTest extends TestCase
 
         [$reverseString, $updatedParams, ] = $this->baseSearch->exposeBuildSearchString($parameters);
 
-        // IPv6 should be expanded and reversed
-        $this->assertNotEmpty($reverseString);
-        $this->assertStringStartsWith('%', $reverseString);
-        $this->assertStringEndsWith('%', $reverseString);
+        // IPv6 should be expanded, reversed and anchored to the ip6.arpa zone.
+        $this->assertSame(
+            '%1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa%',
+            $reverseString
+        );
+        $this->assertStringEndsWith('.ip6.arpa%', $reverseString);
         $this->assertTrue($updatedParams['reverse']);
     }
 
