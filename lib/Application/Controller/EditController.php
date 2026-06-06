@@ -37,6 +37,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
@@ -163,7 +164,10 @@ class EditController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
-        $iface_show_id = $userPreferenceService->getShowRecordId($userId);
+        // API-backend records have no numeric ID, only an opaque composite identifier;
+        // showing it as a column is unreadable, so suppress it regardless of preference.
+        $iface_show_id = $userPreferenceService->getShowRecordId($userId)
+            && !DnsBackendProviderFactory::isApiBackend($this->getConfig());
         $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
         $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
         $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
