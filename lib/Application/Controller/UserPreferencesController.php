@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserPreference;
 
@@ -67,6 +68,8 @@ class UserPreferencesController extends BaseController
             'preferences' => $preferences,
             'available_rows_per_page' => $availableRowsPerPageOptions,
             'available_positions' => $availablePositions,
+            // Record IDs are not human-readable in API mode, so the toggle is hidden there.
+            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
         ];
 
         $this->render('user_preferences.html', $templateVars);
@@ -90,6 +93,12 @@ class UserPreferencesController extends BaseController
                 UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => isset($_POST['show_record_edit_button']) ? 'true' : 'false',
                 UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => isset($_POST['show_record_delete_button']) ? 'true' : 'false',
             ];
+
+            // The record-ID toggle is hidden in API mode, so its checkbox is never
+            // submitted; skip it to keep the user's saved SQL-mode preference intact.
+            if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+                unset($preferencesToUpdate[UserPreference::KEY_SHOW_RECORD_ID]);
+            }
 
             foreach ($preferencesToUpdate as $key => $value) {
                 if ($value !== null) {
