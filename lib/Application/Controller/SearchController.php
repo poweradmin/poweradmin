@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
@@ -141,6 +142,14 @@ class SearchController extends BaseController
             $parameters['wildcard'] = isset($_POST['wildcard']) ? htmlspecialchars($_POST['wildcard']) : false;
             $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
             $parameters['comments'] = isset($_POST['comments']) ? htmlspecialchars($_POST['comments']) : false;
+
+            // A bare IP query should always search records and reverse zones, even when
+            // the user did not tick those boxes - that is almost certainly a PTR lookup.
+            $ipValidator = new IPAddressValidator();
+            if ($ipValidator->isValidIPv4($parameters['query']) || $ipValidator->isValidIPv6($parameters['query'])) {
+                $parameters['records'] = true;
+                $parameters['reverse'] = true;
+            }
 
             // Only use extracted type and content filters from the query string
             // This ensures filters from the search box always take precedence
