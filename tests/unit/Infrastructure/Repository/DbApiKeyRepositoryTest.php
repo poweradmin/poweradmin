@@ -223,13 +223,13 @@ class DbApiKeyRepositoryTest extends TestCase
     #[Test]
     public function testDeleteReturnsTrueOnSuccess(): void
     {
+        // delete() prepares two statements: the api_key_zones child cleanup and
+        // the api_keys row delete. Both share this mock.
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
         $stmt->method('rowCount')->willReturn(1);
 
-        $this->db->method('prepare')
-            ->with($this->stringContains('DELETE FROM api_keys'))
-            ->willReturn($stmt);
+        $this->db->method('prepare')->willReturn($stmt);
 
         $result = $this->repository->delete(1);
 

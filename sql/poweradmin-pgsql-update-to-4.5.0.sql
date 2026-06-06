@@ -87,3 +87,23 @@ ALTER TABLE "password_reset_tokens" ALTER COLUMN "token" TYPE VARCHAR(128);
 -- letting a fresh first-factor success clear the MFA failure counter.
 ALTER TABLE "login_attempts" ADD COLUMN "attempt_type" character varying(16) NOT NULL DEFAULT 'password';
 CREATE INDEX IF NOT EXISTS "idx_login_attempts_attempt_type" ON "public"."login_attempts" USING btree ("attempt_type");
+
+-- Granular API key permissions (closes #795). New columns and the api_key_zones
+-- table are optional: existing keys get is_readonly=false, allowed_operations=NULL
+-- and no zone rows, which means "unrestricted" - identical to the previous behavior.
+ALTER TABLE "api_keys" ADD COLUMN "is_readonly" boolean DEFAULT false NOT NULL;
+ALTER TABLE "api_keys" ADD COLUMN "allowed_operations" character varying(255);
+
+CREATE SEQUENCE IF NOT EXISTS api_key_zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE IF NOT EXISTS "public"."api_key_zones" (
+    "id" integer DEFAULT nextval('api_key_zones_id_seq') NOT NULL,
+    "api_key_id" integer NOT NULL,
+    "zone_id" integer NOT NULL,
+    CONSTRAINT "api_key_zones_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "idx_api_key_zones_unique" UNIQUE ("api_key_id", "zone_id"),
+    CONSTRAINT "fk_api_key_zones_api_key" FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE INDEX IF NOT EXISTS "idx_api_key_zones_api_key_id" ON "public"."api_key_zones" USING btree ("api_key_id");
+CREATE INDEX IF NOT EXISTS "idx_api_key_zones_zone_id" ON "public"."api_key_zones" USING btree ("zone_id");

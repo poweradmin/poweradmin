@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -78,6 +79,15 @@ class ZoneDnssecController extends PublicApiController
 
         $response->send();
         exit;
+    }
+
+    // Enabling/disabling DNSSEC on an existing zone is an update, not a create,
+    // so the POST here must not be treated as the default "create" operation.
+    protected function requiredApiKeyOperations(): array
+    {
+        return strtoupper($this->request->getMethod()) === 'POST'
+            ? [ApiKeyScope::OP_UPDATE]
+            : [ApiKeyScope::OP_VIEW];
     }
 
     #[OA\Get(
@@ -136,6 +146,10 @@ class ZoneDnssecController extends PublicApiController
     protected function getStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
+
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
 
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
@@ -201,6 +215,10 @@ class ZoneDnssecController extends PublicApiController
     protected function setStatus(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
+
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
 
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);

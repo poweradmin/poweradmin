@@ -82,3 +82,20 @@ ALTER TABLE `password_reset_tokens` MODIFY COLUMN `token` varchar(128) NOT NULL;
 -- letting a fresh first-factor success clear the MFA failure counter.
 ALTER TABLE `login_attempts` ADD COLUMN `attempt_type` varchar(16) NOT NULL DEFAULT 'password';
 ALTER TABLE `login_attempts` ADD KEY `idx_attempt_type` (`attempt_type`);
+
+-- Granular API key permissions (closes #795). New columns and the api_key_zones
+-- table are optional: existing keys get is_readonly=0, allowed_operations=NULL and
+-- no zone rows, which means "unrestricted" - identical to the previous behavior.
+ALTER TABLE `api_keys` ADD COLUMN `is_readonly` tinyint(1) NOT NULL DEFAULT '0';
+ALTER TABLE `api_keys` ADD COLUMN `allowed_operations` varchar(255) DEFAULT NULL;
+
+CREATE TABLE IF NOT EXISTS `api_key_zones` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `api_key_id` int(11) NOT NULL,
+    `zone_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_api_key_zones_unique` (`api_key_id`, `zone_id`),
+    KEY `idx_api_key_zones_api_key_id` (`api_key_id`),
+    KEY `idx_api_key_zones_zone_id` (`zone_id`),
+    CONSTRAINT `fk_api_key_zones_api_key` FOREIGN KEY (`api_key_id`) REFERENCES `api_keys` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

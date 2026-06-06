@@ -277,11 +277,26 @@ CREATE TABLE `api_keys` (
     `last_used_at` timestamp NULL DEFAULT NULL,
     `disabled` tinyint(1) NOT NULL DEFAULT '0',
     `expires_at` timestamp NULL DEFAULT NULL,
+    `is_readonly` tinyint(1) NOT NULL DEFAULT '0',
+    `allowed_operations` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_api_keys_secret_key` (`secret_key`),
     KEY `idx_api_keys_created_by` (`created_by`),
     KEY `idx_api_keys_disabled` (`disabled`),
     CONSTRAINT `fk_api_keys_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE TABLE `api_key_zones` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `api_key_id` int(11) NOT NULL,
+    `zone_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_api_key_zones_unique` (`api_key_id`, `zone_id`),
+    KEY `idx_api_key_zones_api_key_id` (`api_key_id`),
+    KEY `idx_api_key_zones_zone_id` (`zone_id`),
+    CONSTRAINT `fk_api_key_zones_api_key` FOREIGN KEY (`api_key_id`) REFERENCES `api_keys` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `user_mfa` (

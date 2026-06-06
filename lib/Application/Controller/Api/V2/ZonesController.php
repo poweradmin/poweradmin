@@ -165,6 +165,16 @@ class ZonesController extends PublicApiController
             // Determine the actual userId to pass to repository (only needed for non-uber users)
             $filterUserId = ($visibleZoneIds !== null) ? $userId : null;
 
+            // Narrow the visible set to the API key's zone scope, if the key is
+            // restricted. An empty intersection yields an empty list, never a 403.
+            $scope = $this->getApiKeyScope();
+            if ($scope->hasZoneRestriction()) {
+                $scopeIds = $scope->getZoneIds();
+                $visibleZoneIds = ($visibleZoneIds === null)
+                    ? $scopeIds
+                    : array_values(array_intersect($visibleZoneIds, $scopeIds));
+            }
+
             // Get total count for metadata (permission-filtered and name-filtered)
             $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter);
 
@@ -282,6 +292,10 @@ class ZonesController extends PublicApiController
         try {
             $zoneId = $this->pathParameters['id'];
             $userId = $this->getAuthenticatedUserId();
+
+            if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Get zone details
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -439,6 +453,16 @@ class ZonesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            // A zone-scoped key is restricted to a fixed set of zones; creating a
+            // new zone would fall outside that set, so it is not allowed.
+            if ($this->getApiKeyScope()->hasZoneRestriction()) {
+                return $this->returnApiError(
+                    'Forbidden: this API key is restricted to specific zones and cannot create new zones',
+                    403
+                );
+            }
+
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input) {
@@ -675,6 +699,10 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
@@ -816,6 +844,10 @@ class ZonesController extends PublicApiController
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             // Check if user has permission to delete this zone

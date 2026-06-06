@@ -189,12 +189,27 @@ CREATE TABLE api_keys (
     last_used_at TIMESTAMP NULL,
     disabled BOOLEAN NOT NULL DEFAULT 0,
     expires_at TIMESTAMP NULL,
+    is_readonly BOOLEAN NOT NULL DEFAULT 0,
+    allowed_operations VARCHAR(255) NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE UNIQUE INDEX idx_api_keys_secret_key ON api_keys(secret_key);
 CREATE INDEX idx_api_keys_created_by ON api_keys(created_by);
 CREATE INDEX idx_api_keys_disabled ON api_keys(disabled);
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE TABLE api_key_zones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    api_key_id INTEGER NOT NULL,
+    zone_id INTEGER NOT NULL,
+    UNIQUE (api_key_id, zone_id),
+    FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_api_key_zones_api_key_id ON api_key_zones(api_key_id);
+CREATE INDEX idx_api_key_zones_zone_id ON api_key_zones(zone_id);
 
 CREATE TABLE user_mfa (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

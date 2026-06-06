@@ -77,6 +77,9 @@ class DynamicDnsUpdateService
      * Apply an update for a user that was already authenticated by the caller (e.g. via API key).
      * The shared zone-matching and audit-logging logic lives here so any front end can reuse it.
      *
+     * @param int[]|null $allowedZoneIds When provided, the resolved zone must be in this
+     *                                   list (used to honor an API key's zone scope); null
+     *                                   means no additional restriction.
      * @return array{status: string, zone_id: ?int, applied_ipv4: list<string>, applied_ipv6: list<string>, changed: bool}
      */
     public function applyForUser(
@@ -84,11 +87,16 @@ class DynamicDnsUpdateService
         string $username,
         HostnameValue $hostname,
         IpAddressList $ipList,
-        bool $dualstackUpdate
+        bool $dualstackUpdate,
+        ?array $allowedZoneIds = null
     ): array {
         $zoneId = $this->findOwningZoneId($user, $hostname);
         if ($zoneId === null) {
             return $this->emptyResult('nohost', null);
+        }
+
+        if ($allowedZoneIds !== null && !in_array($zoneId, $allowedZoneIds, true)) {
+            return $this->emptyResult('forbidden', $zoneId);
         }
 
         try {

@@ -1140,6 +1140,25 @@ class DatabaseStructureHelper
                         'name' => 'expires_at',
                         'table' => 'api_keys',
                         'flags' => ''
+                    ),
+                    'is_readonly' => array(
+                        'notnull' => 1,
+                        'length' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'is_readonly',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'allowed_operations' => array(
+                        'notnull' => 0,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'allowed_operations',
+                        'table' => 'api_keys',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(
@@ -1152,6 +1171,49 @@ class DatabaseStructureHelper
                         'table' => 'users',
                         'fields' => array('created_by' => 'id'),
                         'ondelete' => 'SET NULL'
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'api_key_zones',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'api_key_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'api_key_id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'zone_id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'idx_api_key_zones_unique' => array('api_key_id', 'zone_id'),
+                    'idx_api_key_zones_api_key_id' => array('api_key_id'),
+                    'idx_api_key_zones_zone_id' => array('zone_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_api_key_zones_api_key' => array(
+                        'table' => 'api_keys',
+                        'fields' => array('api_key_id' => 'id'),
+                        'ondelete' => 'CASCADE'
                     )
                 )
             ),

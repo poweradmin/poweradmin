@@ -104,4 +104,21 @@ interface ApiKeyRepositoryInterface
      * @return int Number of API keys
      */
     public function countByUser(int $userId): int;
+
+    /**
+     * Get the zone IDs an API key is restricted to
+     *
+     * @param int $apiKeyId The ID of the API key
+     * @return int[] The zone IDs (empty array means no restriction)
+     */
+    public function getZoneIds(int $apiKeyId): array;
+
+    /**
+     * Replace the set of zone IDs an API key is restricted to
+     *
+     * @param int $apiKeyId The ID of the API key
+     * @param int[] $zoneIds The zone IDs to store (empty array clears the restriction)
+     * @return void
+     */
+    public function saveZoneIds(int $apiKeyId, array $zoneIds): void;
 }

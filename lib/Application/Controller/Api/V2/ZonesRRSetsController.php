@@ -35,6 +35,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -111,6 +112,17 @@ class ZonesRRSetsController extends PublicApiController
         exit;
     }
 
+    // POST/PUT/PATCH all replace an RRSet (an upsert that may create or update),
+    // so writes require both operations rather than the method's default mapping.
+    protected function requiredApiKeyOperations(): array
+    {
+        return match (strtoupper($this->request->getMethod())) {
+            'GET', 'HEAD' => [ApiKeyScope::OP_VIEW],
+            'DELETE' => [ApiKeyScope::OP_DELETE],
+            default => [ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE],
+        };
+    }
+
     /**
      * List all RRSets in a zone
      *
@@ -179,6 +191,10 @@ class ZonesRRSetsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
+
+            if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -287,6 +303,10 @@ class ZonesRRSetsController extends PublicApiController
             $zoneId = (int)$this->pathParameters['id'];
             $name = $this->pathParameters['name'];
             $type = strtoupper($this->pathParameters['type']);
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -406,6 +426,10 @@ class ZonesRRSetsController extends PublicApiController
 
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             // Verify zone exists
@@ -698,6 +722,10 @@ class ZonesRRSetsController extends PublicApiController
 
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             // Verify zone exists

@@ -38,6 +38,7 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -112,6 +113,13 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $response->send();
         exit;
+    }
+
+    // Each bulk item carries its own action, so the operation scope is enforced
+    // per action in bulkRecordOperations(), not by the request's HTTP method.
+    protected function requiredApiKeyOperations(): array
+    {
+        return [];
     }
 
     /**
@@ -201,6 +209,10 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -220,6 +232,26 @@ class ZonesRecordsBulkController extends PublicApiController
 
             if (empty($input['operations'])) {
                 return $this->returnApiError("At least one operation is required", 400);
+            }
+
+            // The HTTP method (POST) does not determine the operation here: each item
+            // carries its own action. Enforce the API key's operation scope per action
+            // before mutating anything, so a create-only key cannot update or delete.
+            $scope = $this->getApiKeyScope();
+            foreach ($input['operations'] as $operation) {
+                $action = strtolower($operation['action'] ?? '');
+                $operationType = match ($action) {
+                    'create' => ApiKeyScope::OP_CREATE,
+                    'update' => ApiKeyScope::OP_UPDATE,
+                    'delete' => ApiKeyScope::OP_DELETE,
+                    default => null,
+                };
+                if ($operationType !== null && !$scope->isOperationTypeAllowed($operationType)) {
+                    return $this->returnApiError(
+                        "Forbidden: this API key is not permitted to perform the {$action} operation",
+                        403
+                    );
+                }
             }
 
             // Start transaction for atomic operations (SQL backend only).

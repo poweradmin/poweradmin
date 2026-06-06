@@ -134,6 +134,10 @@ class ZoneMetadataController extends PublicApiController
     {
         $zoneId = (int)$this->pathParameters['id'];
 
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
+
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -207,6 +211,10 @@ class ZoneMetadataController extends PublicApiController
     {
         $zoneId = (int)$this->pathParameters['id'];
         $kind = strtoupper($this->pathParameters['kind']);
+
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
 
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
@@ -297,6 +305,10 @@ class ZoneMetadataController extends PublicApiController
         $zoneId = (int)$this->pathParameters['id'];
         $kind = strtoupper($this->pathParameters['kind']);
 
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
+
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -384,6 +396,10 @@ class ZoneMetadataController extends PublicApiController
     {
         $zoneId = (int)$this->pathParameters['id'];
         $kind = strtoupper($this->pathParameters['kind']);
+
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
 
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);

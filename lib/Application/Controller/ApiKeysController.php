@@ -25,11 +25,13 @@ namespace Poweradmin\Application\Controller;
 use DateTime;
 use Exception;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -42,6 +44,7 @@ class ApiKeysController extends BaseController
 {
     private ApiKeyService $apiKeyService;
     private ApiKeyRepositoryInterface $apiKeyRepository;
+    private DbZoneRepository $zoneRepository;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
 
@@ -61,6 +64,7 @@ class ApiKeysController extends BaseController
             $this->config,
             $this->messageService
         );
+        $this->zoneRepository = new DbZoneRepository($this->db, $this->config);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -178,6 +182,7 @@ class ApiKeysController extends BaseController
             // Process form data
             $name = $this->getSafeRequestValue('name');
             $expiresAt = $this->getSafeRequestValue('expires_at');
+            $scope = $this->getScopeInputFromRequest();
 
             // Validate form data
             if (empty($name)) {
@@ -197,7 +202,13 @@ class ApiKeysController extends BaseController
             }
 
             // Create the API key
-            $apiKey = $this->apiKeyService->createApiKey($name, $expiresAtDate);
+            $apiKey = $this->apiKeyService->createApiKey(
+                $name,
+                $expiresAtDate,
+                $scope['is_readonly'],
+                $scope['operations'],
+                $scope['zones']
+            );
 
             if ($apiKey !== null) {
                 $this->auditLogger->logApiInfo(sprintf(
@@ -219,7 +230,10 @@ class ApiKeysController extends BaseController
         }
 
         // Show the add form
-        $this->render('api_key_add.html', []);
+        $this->render('api_key_add.html', [
+            'available_zones' => $this->getAssignableZones(),
+            'available_operations' => ApiKeyScope::OPERATIONS,
+        ]);
     }
 
     /**
@@ -245,6 +259,7 @@ class ApiKeysController extends BaseController
             $name = $this->getSafeRequestValue('name');
             $expiresAt = $this->getSafeRequestValue('expires_at');
             $disabled = $this->getSafeRequestValue('disabled') === 'on';
+            $scope = $this->getScopeInputFromRequest();
 
             // Validate form data
             if (empty($name)) {
@@ -264,7 +279,15 @@ class ApiKeysController extends BaseController
             }
 
             // Update the API key
-            $apiKey = $this->apiKeyService->updateApiKey($id, $name, $expiresAtDate, $disabled);
+            $apiKey = $this->apiKeyService->updateApiKey(
+                $id,
+                $name,
+                $expiresAtDate,
+                $disabled,
+                $scope['is_readonly'],
+                $scope['operations'],
+                $scope['zones']
+            );
 
             if ($apiKey !== null) {
                 $this->auditLogger->logApiInfo(sprintf(
@@ -285,7 +308,11 @@ class ApiKeysController extends BaseController
 
         // Show the edit form
         $this->render('api_key_edit.html', [
-            'api_key' => $apiKey
+            'api_key' => $apiKey,
+            'available_zones' => $this->getAssignableZones(),
+            'available_operations' => ApiKeyScope::OPERATIONS,
+            'selected_zones' => $apiKey->getZoneIds() ?? [],
+            'selected_operations' => $apiKey->getAllowedOperations() ?? [],
         ]);
     }
 
@@ -414,5 +441,44 @@ class ApiKeysController extends BaseController
         }
 
         $this->redirect('/settings/api-keys');
+    }
+
+    /**
+     * Read the optional scope fields (read-only, operations, zones) from the form.
+     *
+     * @return array{is_readonly: bool, operations: string[]|null, zones: int[]}
+     */
+    private function getScopeInputFromRequest(): array
+    {
+        // Only extract raw form values here; ApiKeyService sanitizes the operation
+        // list and the model/repository normalize the zone IDs on persistence.
+        $operations = $this->requestData['operations'] ?? null;
+        $zones = $this->requestData['zones'] ?? [];
+
+        return [
+            'is_readonly' => $this->getSafeRequestValue('is_readonly') === 'on',
+            'operations' => is_array($operations) ? $operations : null,
+            'zones' => is_array($zones) ? $zones : [],
+        ];
+    }
+
+    /**
+     * Zones the current user may scope a key to: their own zones, or all zones
+     * for an administrator. Returned as lightweight id/name pairs for the picker.
+     *
+     * @return array<int, array{id: int, name: string, utf8_name: string}>
+     */
+    private function getAssignableZones(): array
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $viewOthers = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+
+        $zones = $this->zoneRepository->listZones($userId, $viewOthers, [], 0, 100000);
+
+        return array_map(static fn(array $zone): array => [
+            'id' => (int) $zone['id'],
+            'name' => $zone['name'],
+            'utf8_name' => $zone['utf8_name'],
+        ], $zones);
     }
 }

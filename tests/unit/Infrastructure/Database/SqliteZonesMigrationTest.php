@@ -72,6 +72,19 @@ class SqliteZonesMigrationTest extends TestCase
             timestamp INTEGER NOT NULL,
             successful BOOLEAN NOT NULL
         )");
+
+        // Migration ALTERs api_keys (granular permissions) and creates api_key_zones;
+        // seed the 4.4.x api_keys shape so those statements have a table to alter.
+        $this->db->exec("CREATE TABLE api_keys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(255) NOT NULL,
+            secret_key VARCHAR(255) NOT NULL,
+            created_by INTEGER NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_used_at TIMESTAMP NULL,
+            disabled BOOLEAN NOT NULL DEFAULT 0,
+            expires_at TIMESTAMP NULL
+        )");
     }
 
     #[Test]

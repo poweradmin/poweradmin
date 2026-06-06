@@ -825,29 +825,58 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($zoneIds !== null && empty($zoneIds)) {
             return 0;
         }
-        if ($zoneIds === null && $userId === null) {
-            $query = "SELECT COUNT(*) FROM zones z WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } elseif ($zoneIds === null) {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } else {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE (z.owner = :user_id
+
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL"
+            . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build shared WHERE conditions for the API-backed zone list/count queries.
+     * Conditions reference `z` (the Poweradmin-native zones table).
+     *
+     * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
+     * @param int|null $userId Owner to filter by, or null for no ownership restriction
+     * @param string|null $nameFilter Optional exact zone-name filter
+     * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
+     */
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($userId !== null) {
+            $conditions[] = "(z.owner = :user_id
                 OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                     WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
-                )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
+                ))";
+            $params[':user_id'] = $userId;
+            $params[':user_id_own'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
+
+        if ($zoneIds !== null && $zoneIds !== []) {
+            $placeholders = [];
+            foreach (array_values($zoneIds) as $i => $zoneId) {
+                $placeholders[] = ":zone_id_$i";
+                $params[":zone_id_$i"] = (int)$zoneId;
+            }
+            $conditions[] = "z.id IN (" . implode(', ', $placeholders) . ")";
+        }
+
         if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
+            $conditions[] = "z.zone_name = :name_filter";
             $params[':name_filter'] = $nameFilter;
         }
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        return (int)$stmt->fetchColumn();
+
+        return [$conditions, $params];
     }
 
     public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
@@ -855,29 +884,13 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($zoneIds !== null && empty($zoneIds)) {
             return [];
         }
-        if ($zoneIds === null && $userId === null) {
-            $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                             COALESCE(z.owner, 0) as owner
-                      FROM zones z
-                      WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } else {
-            $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                             COALESCE(z.owner, 0) as owner
-                      FROM zones z
-                      WHERE (z.owner = :user_id
-                          OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
-                          OR EXISTS (
-                              SELECT 1 FROM zones_groups zg
-                              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                              WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
-                          )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
-        }
-        if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
-        }
+
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
+                         COALESCE(z.owner, 0) as owner
+                  FROM zones z
+                  WHERE z.zone_name IS NOT NULL"
+            . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
         $query .= " ORDER BY z.zone_name";
         if ($limit !== null && $limit > 0) {
             $query .= " LIMIT :limit OFFSET :offset";

@@ -2176,6 +2176,168 @@ test_users_perm_templ_validation() {
     fi
 }
 
+##############################################################################
+# Test: Granular API Key Permissions (gh #795)
+##############################################################################
+
+# Run a one-shot SQL statement against the configured database. Best-effort:
+# returns non-zero (and prints nothing) when the client/credentials are missing.
+db_exec() {
+    local sql="$1"
+    case "${DB_TYPE:-mysql}" in
+        mysql|mariadb)
+            command -v mysql >/dev/null 2>&1 || return 1
+            mysql --batch --skip-column-names -h"${DB_HOST:-localhost}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "$sql"
+            ;;
+        pgsql|postgres|postgresql)
+            command -v psql >/dev/null 2>&1 || return 1
+            PGPASSWORD="${DB_PASS}" psql -h"${DB_HOST:-localhost}" -U"${DB_USER}" -d"${DB_NAME}" -tA -c "$sql"
+            ;;
+        sqlite|sqlite3)
+            command -v sqlite3 >/dev/null 2>&1 || return 1
+            sqlite3 "${DB_NAME}" "$sql"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Stored form of an API key secret (mirrors DbApiKeyRepository::hashSecretKey).
+hash_api_key() {
+    printf 'sha256$%s' "$(printf '%s' "$1" | sha256sum | awk '{print $1}')"
+}
+
+# Like api_request_v2 but sends an explicit X-API-Key (first argument).
+api_request_v2_with_key() {
+    local key="$1"
+    local method="$2"
+    local endpoint="$3"
+    local data="${4:-}"
+    local expected_status="${5:-200}"
+    local description="${6:-API v2 request}"
+
+    increment_test
+    print_test "$description"
+
+    local curl_opts=(
+        -s
+        -w "\n%{http_code}"
+        -H "X-API-Key: $key"
+        -H "Content-Type: application/json"
+        -H "Accept: application/json"
+        -X "$method"
+        --max-time 30
+    )
+    if [[ -n "$data" ]]; then
+        curl_opts+=(-d "$data")
+    fi
+
+    local response http_code body
+    response=$(curl "${curl_opts[@]}" "${API_BASE_URL}/api/v2${endpoint}")
+    http_code=$(echo "$response" | tail -1)
+    body=$(echo "$response" | sed '$d')
+    LAST_RESPONSE_BODY="$body"
+    LAST_RESPONSE_CODE="$http_code"
+
+    if [[ "$http_code" -eq "$expected_status" ]]; then
+        print_pass "$description (HTTP $http_code)"
+        return 0
+    else
+        print_fail "$description - Expected $expected_status, got $http_code"
+        echo "Response: $body"
+        return 1
+    fi
+}
+
+test_api_key_scopes() {
+    print_section "Granular API Key Permissions (gh #795)"
+
+    # These tests seed scoped keys directly in the database; skip cleanly when
+    # the DB client or credentials are not available to this runner.
+    local owner_id
+    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null) || [[ -z "$owner_id" ]]; then
+        print_info "Database access not available - skipping API key scope tests"
+        return 0
+    fi
+    owner_id=$(echo "$owner_id" | tr -d '[:space:]')
+
+    local ro_secret="scopetest-readonly-key-aaaaaaaaaaaa"
+    local ops_secret="scopetest-ops-key-bbbbbbbbbbbb"
+    local zone_secret="scopetest-zone-key-cccccccccccc"
+
+    # Clean any leftovers from a previous run, then seed fresh keys.
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, 1);" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-ops', '$(hash_api_key "$ops_secret")', ${owner_id}, 'view,create');" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('scopetest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
+
+    # Two zones: one in the zone-scoped key's allowlist, one outside it.
+    local zone_a zone_b
+    api_request_v2 "POST" "/zones" '{"name":"scope-allowed.example.com","type":"MASTER"}' 201 "Create in-scope zone" || true
+    zone_a=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    api_request_v2 "POST" "/zones" '{"name":"scope-denied.example.com","type":"MASTER"}' 201 "Create out-of-scope zone" || true
+    zone_b=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+    local zone_key_id
+    zone_key_id=$(db_exec "SELECT id FROM api_keys WHERE name='scopetest-zone' LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+    if [[ -n "$zone_key_id" && -n "$zone_a" ]]; then
+        db_exec "INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (${zone_key_id}, ${zone_a});" >/dev/null 2>&1
+    fi
+
+    # Read-only key: view allowed, every write rejected with 403.
+    api_request_v2_with_key "$ro_secret" "GET" "/zones/${zone_a}" "" 200 "Read-only key may GET a zone"
+    api_request_v2_with_key "$ro_secret" "POST" "/zones" '{"name":"ro-denied.example.com","type":"MASTER"}' 403 "Read-only key may not POST"
+    api_request_v2_with_key "$ro_secret" "PUT" "/zones/${zone_a}" '{"type":"NATIVE"}' 403 "Read-only key may not PUT"
+    api_request_v2_with_key "$ro_secret" "DELETE" "/zones/${zone_b}" "" 403 "Read-only key may not DELETE"
+
+    # Operation-subset key (view+create): create allowed, update/delete rejected.
+    api_request_v2_with_key "$ops_secret" "GET" "/zones/${zone_a}" "" 200 "Ops key may GET (view in subset)"
+    api_request_v2_with_key "$ops_secret" "PUT" "/zones/${zone_a}" '{"type":"NATIVE"}' 403 "Ops key may not PUT (update not in subset)"
+    api_request_v2_with_key "$ops_secret" "DELETE" "/zones/${zone_a}" "" 403 "Ops key may not DELETE (delete not in subset)"
+    if api_request_v2_with_key "$ops_secret" "POST" "/zones" '{"name":"ops-allowed.example.com","type":"MASTER"}' 201 "Ops key may POST (create in subset)"; then
+        local ops_created
+        ops_created=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        [[ -n "$ops_created" ]] && api_request_v2 "DELETE" "/zones/${ops_created}" "" 200 "Cleanup ops-created zone"
+    fi
+
+    # Operation scope is enforced per bulk action, not by the POST method: a
+    # view+create key may not smuggle an update through the bulk endpoint.
+    api_request_v2_with_key "$ops_secret" "POST" "/zones/${zone_a}/records/bulk" \
+        '{"operations":[{"action":"update","id":1,"name":"x.scope-allowed.example.com","type":"A","content":"192.0.2.9","ttl":3600}]}' \
+        403 "Ops key (view+create) may not bulk-update"
+
+    # A zone-scoped key is confined to its allowlist, so it cannot create new zones.
+    api_request_v2_with_key "$zone_secret" "POST" "/zones" '{"name":"zonescope-create.example.com","type":"MASTER"}' 403 "Zone-scoped key may not create new zones"
+
+    # Zone-scoped key: in-scope zone allowed, out-of-scope zone rejected.
+    api_request_v2_with_key "$zone_secret" "GET" "/zones/${zone_a}" "" 200 "Zone-scoped key may access allowed zone"
+    api_request_v2_with_key "$zone_secret" "GET" "/zones/${zone_b}" "" 403 "Zone-scoped key may not access other zone"
+    api_request_v2_with_key "$zone_secret" "POST" "/zones/${zone_b}/records" '{"name":"x.scope-denied.example.com","type":"A","content":"192.0.2.1","ttl":3600}' 403 "Zone-scoped key may not write to other zone"
+
+    # The list endpoint is filtered, not rejected: only in-scope zones appear.
+    if api_request_v2_with_key "$zone_secret" "GET" "/zones" "" 200 "Zone-scoped key lists zones"; then
+        if echo "$LAST_RESPONSE_BODY" | jq -e '.data.zones[]? | select(.name == "scope-allowed.example.com")' >/dev/null 2>&1; then
+            increment_test; print_pass "List includes the in-scope zone"
+        else
+            increment_test; print_fail "List should include the in-scope zone"
+        fi
+        if echo "$LAST_RESPONSE_BODY" | jq -e '.data.zones[]? | select(.name == "scope-denied.example.com")' >/dev/null 2>&1; then
+            increment_test; print_fail "List must exclude the out-of-scope zone"
+        else
+            increment_test; print_pass "List excludes the out-of-scope zone"
+        fi
+    fi
+
+    # Cleanup seeded keys (api_key_zones rows cascade / are removed with the key)
+    # and the two test zones.
+    db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone'));" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+    [[ -n "$zone_a" ]] && api_request_v2 "DELETE" "/zones/${zone_a}" "" 200 "Cleanup in-scope zone" || true
+    [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 200 "Cleanup out-of-scope zone" || true
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -2204,6 +2366,7 @@ main() {
     test_zone_templates
     test_users_ldap_sync
     test_users_perm_templ_validation
+    test_api_key_scopes
 
     # Cleanup
     cleanup

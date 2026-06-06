@@ -136,12 +136,20 @@ class GroupZonesController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
-            $zonesData = array_map(fn($z) => [
-                'zone_id' => $z->getDomainId(),
-                'zone_name' => $z->getName(),
-                'zone_type' => $z->getType(),
-                'created_at' => $z->getCreatedAt(),
-            ], $zones);
+            // Do not disclose zones outside a zone-scoped key's allowlist.
+            $scope = $this->getApiKeyScope();
+            $zonesData = [];
+            foreach ($zones as $z) {
+                if (!$scope->isZoneAllowed($z->getDomainId())) {
+                    continue;
+                }
+                $zonesData[] = [
+                    'zone_id' => $z->getDomainId(),
+                    'zone_name' => $z->getName(),
+                    'zone_type' => $z->getType(),
+                    'created_at' => $z->getCreatedAt(),
+                ];
+            }
 
             return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
         } catch (Exception $e) {
@@ -219,6 +227,10 @@ class GroupZonesController extends PublicApiController
 
             $zoneId = (int)$data['zone_id'];
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
@@ -286,6 +298,10 @@ class GroupZonesController extends PublicApiController
 
             if ($zoneId === 0) {
                 return $this->returnApiError('Invalid zone_id', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             if (!$this->zoneRepository->zoneExists($zoneId)) {

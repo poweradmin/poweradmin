@@ -26,6 +26,7 @@ use DateTime;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -156,6 +157,8 @@ class ApiKeyService
                 $apiKey->setCreatorFullname('');
             }
 
+            $apiKey->setZoneIds($this->apiKeyRepository->getZoneIds($apiKey->getId()));
+
             return $apiKey;
         }
 
@@ -167,9 +170,12 @@ class ApiKeyService
      *
      * @param string $name The name of the API key
      * @param DateTime|null $expiresAt Optional expiration date
+     * @param bool $isReadonly Whether the key is restricted to read-only requests
+     * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
+     * @param int[] $zoneIds Zones the key is restricted to; empty means no restriction
      * @return ApiKey|null The created API key, or null if creation failed
      */
-    public function createApiKey(string $name, ?DateTime $expiresAt = null): ?ApiKey
+    public function createApiKey(string $name, ?DateTime $expiresAt = null, bool $isReadonly = false, ?array $allowedOperations = null, array $zoneIds = []): ?ApiKey
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
@@ -205,8 +211,14 @@ class ApiKeyService
             false,
             $expiresAt
         );
+        $apiKey->setIsReadonly($isReadonly);
+        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
 
-        return $this->apiKeyRepository->save($apiKey);
+        $saved = $this->apiKeyRepository->save($apiKey);
+        $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
+        $saved->setZoneIds($zoneIds);
+
+        return $saved;
     }
 
     /**
@@ -216,9 +228,12 @@ class ApiKeyService
      * @param string $name The new name for the API key
      * @param DateTime|null $expiresAt The new expiration date
      * @param bool $disabled Whether the API key should be disabled
+     * @param bool $isReadonly Whether the key is restricted to read-only requests
+     * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
+     * @param int[]|null $zoneIds Zones the key is restricted to; null leaves them unchanged, [] clears
      * @return ApiKey|null The updated API key, or null if update failed
      */
-    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false): ?ApiKey
+    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false, bool $isReadonly = false, ?array $allowedOperations = null, ?array $zoneIds = null): ?ApiKey
     {
         $apiKey = $this->getApiKey($id);
 
@@ -240,8 +255,19 @@ class ApiKeyService
         $apiKey->setName($name);
         $apiKey->setExpiresAt($expiresAt);
         $apiKey->setDisabled($disabled);
+        $apiKey->setIsReadonly($isReadonly);
+        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
 
-        return $this->apiKeyRepository->save($apiKey);
+        $saved = $this->apiKeyRepository->save($apiKey);
+
+        // A null zone list means "leave the existing scope untouched"; an empty
+        // array clears it. This lets callers that don't manage zones skip them.
+        if ($zoneIds !== null) {
+            $this->apiKeyRepository->saveZoneIds($id, $zoneIds);
+            $saved->setZoneIds($zoneIds);
+        }
+
+        return $saved;
     }
 
     /**
@@ -389,5 +415,58 @@ class ApiKeyService
             $this->logger->error('Failed to get user ID from API key: {error}', ['error' => $e->getMessage()]);
             return 0;
         }
+    }
+
+    /**
+     * Resolve the permission scope of an API key (stateless, no session writes).
+     *
+     * Returns null when the key is missing/invalid or the API is disabled, in
+     * which case the caller should fall back to an unrestricted scope (the key is
+     * already rejected by authentication). A key with no restrictions yields a
+     * scope where every zone and operation is allowed.
+     *
+     * @param string $secretKey The raw secret key from the request
+     * @return ApiKeyScope|null The resolved scope, or null if it cannot be resolved
+     */
+    public function getScopeFromApiKey(string $secretKey): ?ApiKeyScope
+    {
+        if (!$this->config->get('api', 'enabled', false)) {
+            return null;
+        }
+
+        try {
+            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
+            if ($apiKey === null || !$apiKey->isValid()) {
+                return null;
+            }
+
+            $zoneIds = $this->apiKeyRepository->getZoneIds($apiKey->getId());
+
+            return new ApiKeyScope(
+                $zoneIds === [] ? null : $zoneIds,
+                $apiKey->getAllowedOperations(),
+                $apiKey->isReadonly()
+            );
+        } catch (Exception $e) {
+            $this->logger->error('Failed to resolve API key scope: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * Keep only recognised operation names; an empty/null result means "all".
+     *
+     * @param string[]|null $operations
+     * @return string[]|null
+     */
+    private function sanitizeOperations(?array $operations): ?array
+    {
+        if ($operations === null) {
+            return null;
+        }
+
+        $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
+
+        return $valid === [] ? null : $valid;
     }
 }

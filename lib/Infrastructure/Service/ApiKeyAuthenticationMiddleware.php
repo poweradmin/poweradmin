@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -95,6 +96,22 @@ class ApiKeyAuthenticationMiddleware
         }
 
         return $this->apiKeyService->getUserIdFromApiKey($apiKey);
+    }
+
+    /**
+     * Get the permission scope of the request's API key (stateless)
+     *
+     * @param Request $request The HTTP request
+     * @return ApiKeyScope|null The scope, or null when no key is present/resolvable
+     */
+    public function getApiKeyScope(Request $request): ?ApiKeyScope
+    {
+        $apiKey = $this->extractApiKey($request);
+        if (empty($apiKey)) {
+            return null;
+        }
+
+        return $this->apiKeyService->getScopeFromApiKey($apiKey);
     }
 
     /**

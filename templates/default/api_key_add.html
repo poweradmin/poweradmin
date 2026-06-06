@@ -28,7 +28,36 @@
                         <input type="date" class="form-control" id="expires_at" name="expires_at">
                         <div class="form-text">{% trans %}Leave empty for a key that never expires{% endtrans %}</div>
                     </div>
-                    
+
+                    <hr>
+                    <h6 class="mb-3">{% trans %}Permissions{% endtrans %}</h6>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_readonly" name="is_readonly">
+                        <label class="form-check-label" for="is_readonly">{% trans %}Read-only (allow GET requests only){% endtrans %}</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% trans %}Allowed operations{% endtrans %}</label>
+                        {% for op in available_operations %}
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="op_{{ op }}" name="operations[]" value="{{ op }}">
+                                <label class="form-check-label" for="op_{{ op }}">{{ op|capitalize }}</label>
+                            </div>
+                        {% endfor %}
+                        <div class="form-text">{% trans %}Leave all unchecked to allow every operation.{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="zones" class="form-label">{% trans %}Zone access{% endtrans %}</label>
+                        <select multiple class="form-select" id="zones" name="zones[]" size="8">
+                            {% for zone in available_zones %}
+                                <option value="{{ zone.id }}">{{ zone.utf8_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">{% trans %}Leave empty to allow access to all zones available to you.{% endtrans %}</div>
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary btn-sm">

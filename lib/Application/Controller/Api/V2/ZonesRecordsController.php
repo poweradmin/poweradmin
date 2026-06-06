@@ -188,6 +188,10 @@ class ZonesRecordsController extends PublicApiController
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
 
+            if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -295,6 +299,10 @@ class ZonesRecordsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)$this->pathParameters['id'];
             $recordId = RecordIdHelper::normalizeId($this->pathParameters['record_id']);
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -421,6 +429,10 @@ class ZonesRecordsController extends PublicApiController
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             // Verify zone exists
@@ -740,6 +752,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -970,6 +986,10 @@ class ZonesRecordsController extends PublicApiController
 
             if ($zoneId <= 0 || !$recordId) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
             }
 
             // Verify zone exists

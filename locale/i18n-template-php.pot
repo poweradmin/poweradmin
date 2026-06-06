@@ -8277,6 +8277,30 @@ msgstr ""
 msgid "Disable this API key"
 msgstr ""
 
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Permissions"
+msgstr ""
+
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Read-only (allow GET requests only)"
+msgstr ""
+
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Allowed operations"
+msgstr ""
+
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Leave all unchecked to allow every operation."
+msgstr ""
+
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Zone access"
+msgstr ""
+
+#: templates/default/api_key_add.html templates/default/api_key_edit.html templates/modern/api_key_add.html templates/modern/api_key_edit.html
+msgid "Leave empty to allow access to all zones available to you."
+msgstr ""
+
 #: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:38
 msgid "Disabled keys cannot be used for authentication"
 msgstr ""

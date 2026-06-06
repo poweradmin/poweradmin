@@ -1161,39 +1161,70 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        // Build query with optional JOIN for permission filtering
-        if ($zoneIds === null && $userId === null) {
-            // No filtering - count all zones
-            $query = "SELECT COUNT(*) FROM $domains_table";
-            $params = [];
-        } elseif ($zoneIds === null && $userId !== null) {
-            // User can see all zones, but use JOIN for consistency
-            $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d";
-            $params = [];
+        // Build the WHERE conditions: ownership (when a user is given) AND an explicit
+        // zone-id allowlist (when provided). Both are optional and combine with AND.
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+
+        if ($conditions === []) {
+            $query = "SELECT COUNT(*) FROM $domains_table d";
         } else {
+            // The zones join is only needed when filtering by owner.
+            $join = ($userId !== null) ? " LEFT JOIN zones z ON d.id = z.domain_id" : "";
+            $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d" . $join
+                . " WHERE " . implode(' AND ', $conditions);
+        }
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build shared WHERE conditions for the permission-aware zone list/count queries.
+     * Conditions reference `d` (domains) and, for ownership, `z` (zones).
+     *
+     * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
+     * @param int|null $userId Owner to filter by, or null for no ownership restriction
+     * @param string|null $nameFilter Optional exact zone-name filter
+     * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
+     */
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($userId !== null) {
             // Include zones owned only via a group (no direct owner).
-            $query = "SELECT COUNT(DISTINCT d.id)
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      WHERE (z.owner = :user_id OR EXISTS (
+            $conditions[] = "(z.owner = :user_id OR EXISTS (
                           SELECT 1 FROM zones_groups zg
                           INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                           WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
                       ))";
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
+            $params[':user_id'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
 
-        // Add name filter if specified
+        // Empty array is handled by callers (no results); here a non-empty list
+        // restricts to exactly those zone IDs.
+        if ($zoneIds !== null && $zoneIds !== []) {
+            $placeholders = [];
+            foreach (array_values($zoneIds) as $i => $zoneId) {
+                $placeholders[] = ":zone_id_$i";
+                $params[":zone_id_$i"] = (int)$zoneId;
+            }
+            $conditions[] = "d.id IN (" . implode(', ', $placeholders) . ")";
+        }
+
         if ($nameFilter !== null && $nameFilter !== '') {
-            $whereClause = ($zoneIds === null && $userId === null) ? 'WHERE' : 'AND';
-            $query .= " $whereClause d.name = :name_filter";
+            $conditions[] = "d.name = :name_filter";
             $params[':name_filter'] = $nameFilter;
         }
 
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-
-        return (int)$stmt->fetchColumn();
+        return [$conditions, $params];
     }
 
     /**
@@ -1217,40 +1248,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Build query based on permission model
-        if ($zoneIds === null && $userId === null) {
-            // No filtering - get all zones (uberuser or view_others permission)
-            $query = "SELECT d.id, d.name, d.type, d.master,
-                             COALESCE(MIN(z.owner), 0) as owner,
-                             COUNT(DISTINCT r.id) as record_count
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      LEFT JOIN $records_table r ON d.id = r.domain_id";
-            $whereAdded = false;
-            $params = [];
-        } else {
-            // Include zones owned only via a group (no direct owner).
-            $query = "SELECT d.id, d.name, d.type, d.master,
-                             COALESCE(MIN(z.owner), 0) as owner,
-                             COUNT(DISTINCT r.id) as record_count
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      LEFT JOIN $records_table r ON d.id = r.domain_id
-                      WHERE (z.owner = :user_id OR EXISTS (
-                          SELECT 1 FROM zones_groups zg
-                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                          WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
-                      ))";
-            $whereAdded = true;
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
-        }
+        // Ownership and explicit zone-id allowlist conditions (both optional).
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
 
-        // Add name filter if specified
-        if ($nameFilter !== null && $nameFilter !== '') {
-            $whereClause = $whereAdded ? 'AND' : 'WHERE';
-            $query .= " $whereClause d.name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
-            $whereAdded = true;
+        $query = "SELECT d.id, d.name, d.type, d.master,
+                         COALESCE(MIN(z.owner), 0) as owner,
+                         COUNT(DISTINCT r.id) as record_count
+                  FROM $domains_table d
+                  LEFT JOIN zones z ON d.id = z.domain_id
+                  LEFT JOIN $records_table r ON d.id = r.domain_id";
+
+        if ($conditions !== []) {
+            $query .= " WHERE " . implode(' AND ', $conditions);
         }
 
         // Add GROUP BY and ORDER BY

@@ -323,6 +323,8 @@ CREATE TABLE "public"."api_keys" (
     "last_used_at" timestamp,
     "disabled" boolean DEFAULT false NOT NULL,
     "expires_at" timestamp,
+    "is_readonly" boolean DEFAULT false NOT NULL,
+    "allowed_operations" character varying(255),
     CONSTRAINT "api_keys_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "fk_api_keys_users" FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 ) WITH (oids = false);
@@ -330,6 +332,22 @@ CREATE TABLE "public"."api_keys" (
 CREATE UNIQUE INDEX "idx_api_keys_secret_key" ON "public"."api_keys" USING btree ("secret_key");
 CREATE INDEX "idx_api_keys_created_by" ON "public"."api_keys" USING btree ("created_by");
 CREATE INDEX "idx_api_keys_disabled" ON "public"."api_keys" USING btree ("disabled");
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE SEQUENCE api_key_zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."api_key_zones" (
+    "id" integer DEFAULT nextval('api_key_zones_id_seq') NOT NULL,
+    "api_key_id" integer NOT NULL,
+    "zone_id" integer NOT NULL,
+    CONSTRAINT "api_key_zones_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "idx_api_key_zones_unique" UNIQUE ("api_key_id", "zone_id"),
+    CONSTRAINT "fk_api_key_zones_api_key" FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE INDEX "idx_api_key_zones_api_key_id" ON "public"."api_key_zones" USING btree ("api_key_id");
+CREATE INDEX "idx_api_key_zones_zone_id" ON "public"."api_key_zones" USING btree ("zone_id");
 
 CREATE SEQUENCE user_mfa_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

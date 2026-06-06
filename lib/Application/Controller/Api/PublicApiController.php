@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
@@ -60,6 +61,13 @@ abstract class PublicApiController extends AbstractApiController
     protected LoggerInterface $logger;
 
     /**
+     * Permission scope of the API key used for this request. Null when the request
+     * authenticated via HTTP Basic auth or no key scope could be resolved, in which
+     * case {@see self::getApiKeyScope()} returns an unrestricted scope.
+     */
+    protected ?ApiKeyScope $apiKeyScope = null;
+
+    /**
      * PublicApiController constructor
      *
      * @param array $requestParams The request parameters
@@ -82,6 +90,9 @@ abstract class PublicApiController extends AbstractApiController
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
+
+        // Enforce the API key's read-only / operation scope before any handler runs
+        $this->enforceApiKeyMethodScope();
 
         // Log deprecation warning for V1 API requests
         if (!$this->isV2Controller()) {
@@ -126,6 +137,18 @@ abstract class PublicApiController extends AbstractApiController
         // Get authenticated user ID in a stateless way
         if ($authenticated) {
             $this->authenticatedUserId = $apiKeyMiddleware->getAuthenticatedUserId($this->request);
+            $this->apiKeyScope = $apiKeyMiddleware->getApiKeyScope($this->request);
+
+            // The key authenticated, so its scope must resolve. A null here means a
+            // lookup error (e.g. transient DB failure); fail closed rather than fall
+            // back to an unrestricted scope and grant more than the key allows.
+            if ($this->apiKeyScope === null) {
+                $response = $this->isV2Controller()
+                    ? $this->returnApiError('Unable to verify API key permissions', 403)
+                    : $this->returnErrorResponse('Unable to verify API key permissions', 403);
+                $response->send();
+                exit;
+            }
         }
 
         // Try Basic auth if API key auth failed and it's enabled
@@ -274,6 +297,97 @@ abstract class PublicApiController extends AbstractApiController
         $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
         $stmt->execute([':id' => $this->authenticatedUserId]);
         return $stmt->fetchColumn() ?: 'user_id:' . $this->authenticatedUserId;
+    }
+
+    /**
+     * Get the permission scope of the API key for this request. Requests without a
+     * key scope (Basic auth, or an unresolvable key) are treated as unrestricted.
+     *
+     * @return ApiKeyScope The resolved scope, never null
+     */
+    protected function getApiKeyScope(): ApiKeyScope
+    {
+        return $this->apiKeyScope ?? ApiKeyScope::unrestricted();
+    }
+
+    /**
+     * Reject the request with 403 when the API key's read-only/operation scope
+     * does not permit the HTTP method. This is a request-global gate and only
+     * applies to the v2 API; v1 keys remain unrestricted.
+     *
+     * @return void
+     */
+    protected function enforceApiKeyMethodScope(): void
+    {
+        if (!$this->isV2Controller()) {
+            return;
+        }
+
+        $scope = $this->getApiKeyScope();
+        $method = strtoupper($this->request->getMethod());
+
+        // Read-only is always method-based and always correct: only GET/HEAD pass.
+        if ($scope->isReadonly() && !in_array($method, ['GET', 'HEAD'], true)) {
+            $this->sendApiKeyOperationForbidden();
+        }
+
+        // Every operation this request performs must be permitted. The default is
+        // the HTTP method's operation; controllers whose method does not map to a
+        // single operation (upserts, DNSSEC toggles, bulk) override the hook below.
+        foreach ($this->requiredApiKeyOperations() as $operation) {
+            if (!$scope->isOperationTypeAllowed($operation)) {
+                $this->sendApiKeyOperationForbidden();
+            }
+        }
+    }
+
+    /**
+     * Operations the current request performs, all of which the API key must
+     * permit. Defaults to the single operation implied by the HTTP method.
+     * Override for endpoints where the method is not a 1:1 operation mapping:
+     * return the exact set (e.g. [create, update] for an upsert), or [] to skip
+     * the central check and enforce the operation scope inside the handler.
+     *
+     * @return string[]
+     */
+    protected function requiredApiKeyOperations(): array
+    {
+        return [ApiKeyScope::methodToOperation($this->request->getMethod())];
+    }
+
+    /**
+     * Send a 403 for an operation the API key may not perform, and stop.
+     *
+     * @return never
+     */
+    protected function sendApiKeyOperationForbidden(): void
+    {
+        $response = $this->returnApiError(
+            'Forbidden: this API key is not permitted to perform this operation',
+            403
+        );
+        $response->send();
+        exit;
+    }
+
+    /**
+     * Guard a zone-scoped endpoint against the API key's zone restriction.
+     * Returns a 403 response when the zone is out of scope, or null when allowed.
+     * Callers return the response directly: `if (($r = $this->enforceApiKeyZoneScope($id)) !== null) { return $r; }`
+     *
+     * @param int $zoneId The zone (domain) ID the request targets
+     * @return JsonResponse|null A 403 response, or null when the zone is in scope
+     */
+    protected function enforceApiKeyZoneScope(int $zoneId): ?JsonResponse
+    {
+        if ($this->getApiKeyScope()->isZoneAllowed($zoneId)) {
+            return null;
+        }
+
+        return $this->returnApiError(
+            'Forbidden: this API key does not have access to the requested zone',
+            403
+        );
     }
 
     /**

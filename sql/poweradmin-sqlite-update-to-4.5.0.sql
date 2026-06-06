@@ -100,3 +100,20 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own'
 -- letting a fresh first-factor success clear the MFA failure counter.
 ALTER TABLE login_attempts ADD COLUMN attempt_type VARCHAR(16) NOT NULL DEFAULT 'password';
 CREATE INDEX IF NOT EXISTS idx_login_attempts_attempt_type ON login_attempts(attempt_type);
+
+-- Granular API key permissions (closes #795). New columns and the api_key_zones
+-- table are optional: existing keys get is_readonly=0, allowed_operations=NULL and
+-- no zone rows, which means "unrestricted" - identical to the previous behavior.
+ALTER TABLE api_keys ADD COLUMN is_readonly BOOLEAN NOT NULL DEFAULT 0;
+ALTER TABLE api_keys ADD COLUMN allowed_operations VARCHAR(255) NULL;
+
+CREATE TABLE IF NOT EXISTS api_key_zones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    api_key_id INTEGER NOT NULL,
+    zone_id INTEGER NOT NULL,
+    UNIQUE (api_key_id, zone_id),
+    FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_api_key_zones_api_key_id ON api_key_zones(api_key_id);
+CREATE INDEX IF NOT EXISTS idx_api_key_zones_zone_id ON api_key_zones(zone_id);

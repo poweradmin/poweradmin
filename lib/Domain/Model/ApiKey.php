@@ -44,6 +44,11 @@ class ApiKey implements JsonSerializable
     private ?DateTime $expiresAt = null;
     private string $creatorUsername = '';
     private string $creatorFullname = '';
+    private bool $isReadonly = false;
+    /** @var string[]|null Operations the key may perform; null means all */
+    private ?array $allowedOperations = null;
+    /** @var int[]|null Zones the key is restricted to; null/empty means no restriction */
+    private ?array $zoneIds = null;
 
     /**
      * ApiKey constructor.
@@ -332,6 +337,66 @@ class ApiKey implements JsonSerializable
     }
 
     /**
+     * Whether this API key is restricted to read-only (view/GET) requests
+     *
+     * @return bool
+     */
+    public function isReadonly(): bool
+    {
+        return $this->isReadonly;
+    }
+
+    /**
+     * Set whether this API key is restricted to read-only requests
+     *
+     * @param bool $isReadonly
+     */
+    public function setIsReadonly(bool $isReadonly): void
+    {
+        $this->isReadonly = $isReadonly;
+    }
+
+    /**
+     * Operations the key may perform (view/create/update/delete); null means all
+     *
+     * @return string[]|null
+     */
+    public function getAllowedOperations(): ?array
+    {
+        return $this->allowedOperations;
+    }
+
+    /**
+     * Set the operations the key may perform; null/empty means all
+     *
+     * @param string[]|null $allowedOperations
+     */
+    public function setAllowedOperations(?array $allowedOperations): void
+    {
+        $this->allowedOperations = ($allowedOperations === null || $allowedOperations === []) ? null : array_values($allowedOperations);
+    }
+
+    /**
+     * Zones the key is restricted to; null/empty means no restriction
+     *
+     * @return int[]|null
+     */
+    public function getZoneIds(): ?array
+    {
+        return $this->zoneIds;
+    }
+
+    /**
+     * Set the zones the key is restricted to; null/empty means no restriction
+     *
+     * @param int[]|null $zoneIds
+     */
+    public function setZoneIds(?array $zoneIds): void
+    {
+        $this->zoneIds = ($zoneIds === null || $zoneIds === []) ? null : array_values(array_map('intval', $zoneIds));
+    }
+
+    /**
      * Specifies data which should be serialized to JSON
      *
      * @return array
@@ -351,6 +416,9 @@ class ApiKey implements JsonSerializable
             'isValid' => $this->isValid(),
             'creatorUsername' => $this->creatorUsername,
             'creatorFullname' => $this->creatorFullname,
+            'isReadonly' => $this->isReadonly,
+            'allowedOperations' => $this->allowedOperations,
+            'zoneIds' => $this->zoneIds,
         ];
     }
 }

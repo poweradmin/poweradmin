@@ -199,9 +199,11 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         if ($apiKey->getId() === null) {
             $stmt = $this->db->prepare("
                 INSERT INTO api_keys (
-                    name, secret_key, created_by, created_at, last_used_at, disabled, expires_at
+                    name, secret_key, created_by, created_at, last_used_at, disabled, expires_at,
+                    is_readonly, allowed_operations
                 ) VALUES (
-                    :name, :secretKey, :createdBy, :createdAt, :lastUsedAt, :disabled, :expiresAt
+                    :name, :secretKey, :createdBy, :createdAt, :lastUsedAt, :disabled, :expiresAt,
+                    :isReadonly, :allowedOperations
                 )
             ");
             $stmt->bindValue(':secretKey', self::hashSecretKey($apiKey->getSecretKey()));
@@ -210,7 +212,8 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 UPDATE api_keys SET
                     name = :name, secret_key = :secretKey, created_by = :createdBy,
                     created_at = :createdAt, last_used_at = :lastUsedAt,
-                    disabled = :disabled, expires_at = :expiresAt
+                    disabled = :disabled, expires_at = :expiresAt,
+                    is_readonly = :isReadonly, allowed_operations = :allowedOperations
                 WHERE id = :id
             ");
             $stmt->bindValue(':id', $apiKey->getId(), PDO::PARAM_INT);
@@ -220,11 +223,14 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 UPDATE api_keys SET
                     name = :name, created_by = :createdBy,
                     created_at = :createdAt, last_used_at = :lastUsedAt,
-                    disabled = :disabled, expires_at = :expiresAt
+                    disabled = :disabled, expires_at = :expiresAt,
+                    is_readonly = :isReadonly, allowed_operations = :allowedOperations
                 WHERE id = :id
             ");
             $stmt->bindValue(':id', $apiKey->getId(), PDO::PARAM_INT);
         }
+
+        $allowedOperations = $apiKey->getAllowedOperations();
 
         $stmt->bindValue(':name', $apiKey->getName());
         $stmt->bindValue(':createdBy', $apiKey->getCreatedBy(), $apiKey->getCreatedBy() !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
@@ -232,6 +238,8 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         $stmt->bindValue(':lastUsedAt', $apiKey->getLastUsedAt() ? $apiKey->getLastUsedAt()->format('Y-m-d H:i:s') : null);
         $stmt->bindValue(':disabled', DbCompat::boolValue($apiKey->isDisabled()));
         $stmt->bindValue(':expiresAt', $apiKey->getExpiresAt() ? $apiKey->getExpiresAt()->format('Y-m-d H:i:s') : null);
+        $stmt->bindValue(':isReadonly', DbCompat::boolValue($apiKey->isReadonly()));
+        $stmt->bindValue(':allowedOperations', $allowedOperations === null ? null : implode(',', $allowedOperations));
 
         $stmt->execute();
 
@@ -248,6 +256,13 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function delete(int $id): bool
     {
+        // Remove scope rows explicitly: the ON DELETE CASCADE is only present on
+        // databases built from the SQL structure files, not on installer-created
+        // schemas, so we cannot rely on it alone.
+        $zones = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :id");
+        $zones->bindValue(':id', $id, PDO::PARAM_INT);
+        $zones->execute();
+
         $stmt = $this->db->prepare("DELETE FROM api_keys WHERE id = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
@@ -321,7 +336,7 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             $expiresAt = null;
         }
 
-        return new ApiKey(
+        $apiKey = new ApiKey(
             $data['name'],
             '',
             $data['created_by'] !== null ? (int) $data['created_by'] : null,
@@ -331,5 +346,58 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             $expiresAt,
             (int) $data['id']
         );
+
+        // Scope columns are absent on rows created before the 4.5.0 upgrade; treat
+        // a missing value as "unrestricted" so legacy keys keep working. Use the DB
+        // boolean normalizer: PostgreSQL returns booleans as 't'/'f' strings, and a
+        // bare (bool) cast of 'f' would be true.
+        $apiKey->setIsReadonly(DbCompat::boolFromDb($data['is_readonly'] ?? false) === 1);
+
+        $operations = $data['allowed_operations'] ?? null;
+        if ($operations !== null && $operations !== '') {
+            $apiKey->setAllowedOperations(array_values(array_filter(array_map('trim', explode(',', $operations)))));
+        }
+
+        return $apiKey;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getZoneIds(int $apiKeyId): array
+    {
+        $stmt = $this->db->prepare("SELECT zone_id FROM api_key_zones WHERE api_key_id = :apiKeyId ORDER BY zone_id");
+        $stmt->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function saveZoneIds(int $apiKeyId, array $zoneIds): void
+    {
+        $this->db->beginTransaction();
+        try {
+            $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
+            $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
+            $delete->execute();
+
+            $unique = array_values(array_unique(array_map('intval', $zoneIds)));
+            if ($unique !== []) {
+                $insert = $this->db->prepare("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (:apiKeyId, :zoneId)");
+                foreach ($unique as $zoneId) {
+                    $insert->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
+                    $insert->bindValue(':zoneId', $zoneId, PDO::PARAM_INT);
+                    $insert->execute();
+                }
+            }
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

@@ -26,6 +26,7 @@ use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -90,6 +91,13 @@ class DynamicDnsController extends PublicApiController
         exit;
     }
 
+    // A dynamic DNS update is an upsert that may create and/or update records, so
+    // the key must permit both operations (the POST method alone is not enough).
+    protected function requiredApiKeyOperations(): array
+    {
+        return [ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE];
+    }
+
     #[OA\Post(
         path: '/v2/dynamic-dns',
         operationId: 'v2DynamicDnsUpdate',
@@ -139,6 +147,10 @@ class DynamicDnsController extends PublicApiController
             return $this->returnApiError('User does not have permission to update dynamic DNS records', 403);
         }
 
+        // The operation scope (create+update) is enforced centrally via
+        // requiredApiKeyOperations(); the zone scope is applied below.
+        $scope = $this->getApiKeyScope();
+
         $payload = $this->getJsonInput();
         if (!is_array($payload)) {
             return $this->returnApiError('Request body must be a JSON object or form data', 400);
@@ -171,7 +183,8 @@ class DynamicDnsController extends PublicApiController
             $this->getAuthenticatedUsername(),
             $hostname,
             $ipList,
-            $dualstack
+            $dualstack,
+            $scope->getZoneIds()
         );
 
         return match ($result['status']) {
@@ -182,6 +195,7 @@ class DynamicDnsController extends PublicApiController
                 'applied_ipv6' => $result['applied_ipv6'],
                 'changed' => $result['changed'],
             ], true, $result['changed'] ? 'Dynamic DNS record updated' : 'Records already match supplied addresses'),
+            'forbidden' => $this->returnApiError('Forbidden: this API key does not have access to the requested zone', 403),
             'nohost' => $this->returnApiError('Hostname is not contained in any zone the user owns', 404),
             '!yours' => $this->returnApiError('Update did not produce any change and no matching records exist', 409),
             default => $this->returnApiError('Failed to apply dynamic DNS update', 500),
