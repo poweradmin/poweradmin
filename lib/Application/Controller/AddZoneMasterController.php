@@ -102,7 +102,23 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
-        $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
+        $raw_domain = trim($_POST['domain']);
+
+        // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
+        // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
+        // instead of silently creating a forward zone with that literal name.
+        $is_reverse_context = (isset($_POST['type']) && $_POST['type'] === 'reverse');
+        if ($is_reverse_context) {
+            $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
+            if ($reverse_zone === null) {
+                $this->setMessage('add_zone_master', 'error', _('Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa.'));
+                $this->showForm();
+                return;
+            }
+            $raw_domain = $reverse_zone;
+        }
+
+        $zone_name = DnsIdnService::toPunycode($raw_domain);
         $dom_type = $_POST["dom_type"];
         $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";

@@ -242,4 +242,28 @@ class DnsHelperTest extends TestCase
         $restored = DnsHelper::restoreZoneSuffix($stripped, $zone);
         $this->assertEquals('www.example.com', $restored); // Trailing dot removed
     }
+
+    public function testResolveReverseZoneNamePassesThroughReverseNames(): void
+    {
+        // Already-valid reverse zone names are returned unchanged
+        $this->assertEquals('1.168.192.in-addr.arpa', DnsHelper::resolveReverseZoneName('1.168.192.in-addr.arpa'));
+        $this->assertEquals('8.b.d.0.1.0.0.2.ip6.arpa', DnsHelper::resolveReverseZoneName('8.b.d.0.1.0.0.2.ip6.arpa'));
+    }
+
+    public function testResolveReverseZoneNameConvertsNetworks(): void
+    {
+        $this->assertEquals('1.168.192.in-addr.arpa', DnsHelper::resolveReverseZoneName('192.168.1.0/24'));
+        $this->assertEquals('0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', DnsHelper::resolveReverseZoneName('2001:db8::/48'));
+    }
+
+    public function testResolveReverseZoneNameRejectsForwardNames(): void
+    {
+        // Non-reverse, non-network input returns null so the caller can reject it
+        $this->assertNull(DnsHelper::resolveReverseZoneName('example.com'));
+        $this->assertNull(DnsHelper::resolveReverseZoneName('myreversezone'));
+        // Names isReverseZone() does not recognize are rejected for consistency
+        // with the post-create redirect (RFC 2317 range-style, malformed labels)
+        $this->assertNull(DnsHelper::resolveReverseZoneName('0-63.1.168.192.in-addr.arpa'));
+        $this->assertNull(DnsHelper::resolveReverseZoneName('abc.in-addr.arpa'));
+    }
 }
