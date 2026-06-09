@@ -217,6 +217,90 @@ class IpHelper
     }
 
     /**
+     * Convert a network in CIDR notation to its reverse DNS zone name.
+     *
+     * Accepts IPv4 networks ("192.168.1.0/24", or shorthand "192.168.1") and
+     * IPv6 networks ("2001:db8::/48"), returning the matching in-addr.arpa or
+     * ip6.arpa zone name aligned to the nearest octet (IPv4) or nibble (IPv6)
+     * boundary. Returns null when the input is not a usable network.
+     *
+     * @param string $network Network address, optionally with a /prefix
+     * @return string|null Reverse zone name, or null if not convertible
+     */
+    public static function networkToReverseZone(string $network): ?string
+    {
+        $network = trim($network);
+        if ($network === '') {
+            return null;
+        }
+
+        $prefix = null;
+        $address = $network;
+        if (str_contains($network, '/')) {
+            [$address, $prefixPart] = explode('/', $network, 2);
+            if ($prefixPart === '' || !ctype_digit($prefixPart)) {
+                return null;
+            }
+            $prefix = (int)$prefixPart;
+        }
+
+        if (str_contains($address, ':')) {
+            return self::ipv6NetworkToReverseZone($address, $prefix);
+        }
+
+        return self::ipv4NetworkToReverseZone($address, $prefix);
+    }
+
+    private static function ipv4NetworkToReverseZone(string $address, ?int $prefix): ?string
+    {
+        $parts = explode('.', $address);
+        $octetCount = count($parts);
+        if ($octetCount < 1 || $octetCount > 4) {
+            return null;
+        }
+        foreach ($parts as $part) {
+            if ($part === '' || !ctype_digit($part) || (int)$part > 255) {
+                return null;
+            }
+        }
+
+        // Shorthand without a prefix takes one octet of mask per octet written.
+        $prefix ??= $octetCount * 8;
+        // Only octet-aligned prefixes map to a single in-addr.arpa zone. Sub-/8
+        // and classless (RFC 2317) prefixes are rejected so the user supplies an
+        // exact reverse zone name instead of getting a wrong or broader zone.
+        if ($prefix < 8 || $prefix > 32 || $prefix % 8 !== 0) {
+            return null;
+        }
+
+        $labels = intdiv($prefix, 8);
+        if ($octetCount < $labels) {
+            return null;
+        }
+
+        $kept = array_slice($parts, 0, $labels);
+        return implode('.', array_reverse($kept)) . '.in-addr.arpa';
+    }
+
+    private static function ipv6NetworkToReverseZone(string $address, ?int $prefix): ?string
+    {
+        $prefix ??= 64;
+        // Reverse zones align to nibble (4-bit) boundaries.
+        if ($prefix < 4 || $prefix > 128 || $prefix % 4 !== 0) {
+            return null;
+        }
+
+        $binary = @inet_pton($address);
+        if ($binary === false || strlen($binary) !== 16) {
+            return null;
+        }
+
+        $hex = bin2hex($binary);
+        $nibbles = str_split(substr($hex, 0, intdiv($prefix, 4)));
+        return implode('.', array_reverse($nibbles)) . '.ip6.arpa';
+    }
+
+    /**
      * Convert IPv6 reverse zone (ip6.arpa) to shortened IPv6 notation
      *
      * @param string $reverseZone The reverse zone name (e.g., "1.0.0.0...ip6.arpa")
