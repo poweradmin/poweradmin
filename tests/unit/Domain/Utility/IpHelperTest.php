@@ -495,4 +495,62 @@ class IpHelperTest extends TestCase
         $result2 = IpHelper::shortenIPv6Address($result1);
         $this->assertEquals($result1, $result2);
     }
+
+    /**
+     * Test converting IPv4 networks in CIDR notation to reverse zone names
+     */
+    public function testNetworkToReverseZoneIpv4Cidr(): void
+    {
+        $this->assertEquals('1.168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168.1.0/24'));
+        $this->assertEquals('168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168.0.0/16'));
+        $this->assertEquals('10.in-addr.arpa', IpHelper::networkToReverseZone('10.0.0.0/8'));
+        // Host octet is dropped for a /24 zone
+        $this->assertEquals('1.168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168.1.55/24'));
+        // A /32 maps to a single-host reverse zone
+        $this->assertEquals('5.1.168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168.1.5/32'));
+    }
+
+    /**
+     * Test IPv4 shorthand without a prefix infers the mask from octet count
+     */
+    public function testNetworkToReverseZoneIpv4Shorthand(): void
+    {
+        $this->assertEquals('1.168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168.1'));
+        $this->assertEquals('168.192.in-addr.arpa', IpHelper::networkToReverseZone('192.168'));
+        $this->assertEquals('10.in-addr.arpa', IpHelper::networkToReverseZone('10'));
+    }
+
+    /**
+     * Test converting IPv6 networks in CIDR notation to reverse zone names
+     */
+    public function testNetworkToReverseZoneIpv6Cidr(): void
+    {
+        $this->assertEquals('8.b.d.0.1.0.0.2.ip6.arpa', IpHelper::networkToReverseZone('2001:db8::/32'));
+        $this->assertEquals('0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', IpHelper::networkToReverseZone('2001:db8::/48'));
+        // Defaults to /64 when no prefix is given
+        $this->assertEquals(
+            '0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa',
+            IpHelper::networkToReverseZone('2001:db8::')
+        );
+    }
+
+    /**
+     * Test that invalid or non-network input returns null
+     */
+    public function testNetworkToReverseZoneRejectsInvalidInput(): void
+    {
+        $this->assertNull(IpHelper::networkToReverseZone(''));
+        $this->assertNull(IpHelper::networkToReverseZone('example.com'));
+        $this->assertNull(IpHelper::networkToReverseZone('192.168.1.0/33'));
+        $this->assertNull(IpHelper::networkToReverseZone('192.168.1.999/24'));
+        $this->assertNull(IpHelper::networkToReverseZone('192.168.1.0/'));
+        // Sub-/8 IPv4 networks span multiple in-addr.arpa zones
+        $this->assertNull(IpHelper::networkToReverseZone('10.0.0.0/7'));
+        $this->assertNull(IpHelper::networkToReverseZone('0.0.0.0/0'));
+        // Classless (non-octet-aligned) IPv4 prefixes are rejected (RFC 2317)
+        $this->assertNull(IpHelper::networkToReverseZone('192.168.1.0/26'));
+        $this->assertNull(IpHelper::networkToReverseZone('192.168.0.0/20'));
+        // IPv6 reverse zones must align to a nibble boundary
+        $this->assertNull(IpHelper::networkToReverseZone('2001:db8::/33'));
+    }
 }

@@ -46,6 +46,28 @@ class DnsHelper
     }
 
     /**
+     * Resolve user input on a reverse-zone form to a reverse zone name.
+     *
+     * Passes an already-valid reverse zone name through unchanged and converts
+     * a network (e.g. 192.168.1.0/24, 2001:db8::/48) to its reverse zone name.
+     * Returns null when the input is neither, so the caller can reject it
+     * instead of silently creating a forward zone.
+     *
+     * Pass-through is gated on isReverseZone() (not a looser .arpa suffix) so
+     * every accepted value is one the post-create redirect and zone lists also
+     * classify as reverse. RFC 2317 range-style names fall outside that and are
+     * rejected; the user enters the parent zone instead.
+     */
+    public static function resolveReverseZoneName(string $input): ?string
+    {
+        if (self::isReverseZone($input)) {
+            return $input;
+        }
+
+        return IpHelper::networkToReverseZone($input);
+    }
+
+    /**
      * @throws CannotProcessHost
      */
     public static function getRegisteredDomain(string $domain): string
