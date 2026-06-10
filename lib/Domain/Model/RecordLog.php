@@ -57,12 +57,26 @@ class RecordLog
         $this->record_prior['comment'] = $comment;
     }
 
-    public function logAfter($rid): void
+    public function logAfter($rid, ?array $record = null): void
     {
         $this->record_after = $this->getRecord($rid);
+
+        // With the API backend a record's encoded ID changes when its name or
+        // content is edited, so looking it up by the original ID after the edit
+        // returns nothing. Fall back to the submitted values so the audit log
+        // stays complete and write() does not dereference a null record.
+        if ($this->record_after === null && $record !== null) {
+            $this->record_after = [
+                'type' => $record['type'] ?? '',
+                'name' => $record['name'] ?? '',
+                'content' => $record['content'] ?? '',
+                'ttl' => $record['ttl'] ?? '',
+                'prio' => $record['prio'] ?? '',
+            ];
+        }
     }
 
-    private function getRecord(int|string $rid): ?array
+    protected function getRecord(int|string $rid): ?array
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         return $dnsRecord->getRecordFromId($rid);
@@ -96,22 +110,30 @@ class RecordLog
 
     public function write(): void
     {
-        $this->logger->logInfo(sprintf(
+        $this->logger->logInfo($this->buildLogMessage(), $this->record_prior['zid'] ?? null);
+    }
+
+    protected function buildLogMessage(): string
+    {
+        $prior = $this->record_prior ?? [];
+        $after = $this->record_after ?? [];
+
+        return sprintf(
             'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $this->ipAddressRetriever->getClientIp(),
             $this->userContextService->getLoggedInUsername(),
-            $this->record_prior['type'],
-            $this->record_prior['name'],
-            $this->record_prior['content'],
-            $this->record_prior['ttl'],
-            $this->record_prior['prio'],
-            $this->record_after['type'],
-            $this->record_after['name'],
-            $this->record_after['content'],
-            $this->record_after['ttl'],
-            $this->record_after['prio']
-        ), $this->record_prior['zid']);
+            $prior['type'] ?? '',
+            $prior['name'] ?? '',
+            $prior['content'] ?? '',
+            $prior['ttl'] ?? '',
+            $prior['prio'] ?? '',
+            $after['type'] ?? '',
+            $after['name'] ?? '',
+            $after['content'] ?? '',
+            $after['ttl'] ?? '',
+            $after['prio'] ?? ''
+        );
     }
 }

@@ -612,7 +612,7 @@ class EditController extends BaseController
                     if (false === $edit_record) {
                         $error = true;
                     } else {
-                        $log->logAfter($record['rid']);
+                        $log->logAfter($record['rid'], $record);
                         $log->write();
 
                         if ($this->config->get('interface', 'show_record_comments', false)) {
