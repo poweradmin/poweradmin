@@ -22,6 +22,11 @@ USE pdns;
 INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
 ('group-only-zone.example.com', 'MASTER');
 
+-- Group-orphan zone (group-owned with no zones row at all - the state left
+-- behind after the last direct owner is removed; regression trap for #1329)
+INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
+('group-orphan-zone.example.com', 'MASTER');
+
 -- Viewer zone (viewer currently has no zones to view)
 INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
 ('viewer-zone.example.com', 'MASTER');
@@ -57,7 +62,7 @@ SELECT
     86400,
     0
 FROM `domains` d
-WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d.`name` IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'SOA'
   );
@@ -82,7 +87,7 @@ WHERE d.`name` IN ('disabled-zone.example.com', '99.in-addr.arpa')
 INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns1.example.com.', 86400, 0
 FROM `domains` d
-WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d.`name` IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns1.example.com.'
   );
@@ -90,7 +95,7 @@ WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'na
 INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns2.example.com.', 86400, 0
 FROM `domains` d
-WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d.`name` IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns2.example.com.'
   );
@@ -179,6 +184,10 @@ WHERE d.`name` = 'group-only-zone.example.com'
   AND NOT EXISTS (
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id`
   );
+
+-- group-orphan-zone.example.com intentionally gets NO zones row at all:
+-- removing the last direct owner deletes the row, and group members must
+-- still see the zone (issue #1329)
 
 -- =============================================================================
 -- POWERADMIN DATABASE - EXPIRED API KEY
