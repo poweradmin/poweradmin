@@ -15,6 +15,9 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
   // group-only-zone.example.com is assigned to Zone Managers group with no direct user owner.
   // The manager user is a member of Zone Managers and has zone_content_view_own permission.
   const groupOnlyZone = 'group-only-zone.example.com';
+  // group-orphan-zone.example.com is group-owned with no zones row at all,
+  // the state left after the last direct owner is removed (issue #1329).
+  const groupOrphanZone = 'group-orphan-zone.example.com';
 
   test('group member should see group-only zone in forward zones list', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
@@ -22,6 +25,14 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
 
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).toContain(groupOnlyZone);
+  });
+
+  test('group member should see group-owned zone that has no zones row (issue #1329)', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    await page.goto('/zones/forward?letter=all');
+
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).toContain(groupOrphanZone);
   });
 
   test('group member should be able to access group-only zone edit page', async ({ page }) => {

@@ -25,6 +25,11 @@ ATTACH DATABASE '/data/pdns.db' AS pdns;
 INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
 ('group-only-zone.example.com', 'MASTER');
 
+-- Group-orphan zone (group-owned with no zones row at all - the state left
+-- behind after the last direct owner is removed; regression trap for #1329)
+INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
+('group-orphan-zone.example.com', 'MASTER');
+
 -- Viewer zone (viewer currently has no zones to view)
 INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
 ('viewer-zone.example.com', 'MASTER');
@@ -43,20 +48,20 @@ SELECT d."id", d."name", 'SOA',
        'ns1.example.com. hostmaster.example.com. ' || CAST(strftime('%s', 'now') AS INTEGER) || ' 10800 3600 604800 86400',
        86400, 0
 FROM pdns."domains" d
-WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d."name" IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'SOA');
 
 -- Add NS records for MASTER and NATIVE zones
 INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio")
 SELECT d."id", d."name", 'NS', 'ns1.example.com.', 86400, 0
 FROM pdns."domains" d
-WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d."name" IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns1.example.com.');
 
 INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio")
 SELECT d."id", d."name", 'NS', 'ns2.example.com.', 86400, 0
 FROM pdns."domains" d
-WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+WHERE d."name" IN ('group-only-zone.example.com', 'group-orphan-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
   AND NOT EXISTS (SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns2.example.com.');
 
 -- Add sample A record for viewer zone
@@ -117,6 +122,10 @@ SELECT d."id", NULL, 0, d."name"
 FROM pdns."domains" d
 WHERE d."name" = 'group-only-zone.example.com'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id");
+
+-- group-orphan-zone.example.com intentionally gets NO zones row at all:
+-- removing the last direct owner deletes the row, and group members must
+-- still see the zone (issue #1329)
 
 -- =============================================================================
 -- EXPIRED API KEY
