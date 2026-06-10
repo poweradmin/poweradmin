@@ -193,6 +193,15 @@ WHERE d.name = 'group-only-zone.example.com' AND g.name = 'Zone Managers'
     SELECT 1 FROM zones_groups zg WHERE zg.domain_id = d.id AND zg.group_id = g.id
   );
 
+-- group-orphan-zone.example.com -> Zone Managers group (no zones row at all, #1329)
+INSERT INTO zones_groups (domain_id, group_id)
+SELECT d.id, g.id
+FROM domains d, user_groups g
+WHERE d.name = 'group-orphan-zone.example.com' AND g.name = 'Zone Managers'
+  AND NOT EXISTS (
+    SELECT 1 FROM zones_groups zg WHERE zg.domain_id = d.id AND zg.group_id = g.id
+  );
+
 -- =============================================================================
 -- GROUP AUDIT LOG ENTRIES
 -- =============================================================================
