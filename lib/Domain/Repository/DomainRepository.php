@@ -256,7 +256,9 @@ class DomainRepository implements DomainRepositoryInterface
         } else {
             $params = [];
             if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = $domains_table.id AND (zones.owner = :userid OR EXISTS (
+                // Group-owned zones may have no zones row at all, so the ownership
+                // filter must not require a zones match here (issue #1329)
+                $sql_add = " AND (zones.owner = :userid OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                     WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group

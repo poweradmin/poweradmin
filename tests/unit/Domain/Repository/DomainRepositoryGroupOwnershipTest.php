@@ -102,6 +102,16 @@ class DomainRepositoryGroupOwnershipTest extends TestCase
     }
 
     #[Test]
+    public function getZonesShowsGroupOwnedZonesWithoutZonesRow(): void
+    {
+        $captured = $this->captureGetZonesQueries('own');
+
+        // A group-owned zone with no direct owner has no zones row; requiring a
+        // zones match in WHERE defeats the LEFT JOIN and hides the zone (issue #1329)
+        $this->assertStringNotContainsString('zones.domain_id = domains.id', $captured, 'Forward zone fetch must not require a zones row to exist');
+    }
+
+    #[Test]
     public function getZonesSkipsGroupCheckForAllPermType(): void
     {
         $captured = $this->captureGetZonesQueries('all');
