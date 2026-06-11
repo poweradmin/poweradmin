@@ -80,12 +80,11 @@ class RecordManagerService
     private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, string $zone_id): void
     {
         $this->logger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
+            'client_ip:%s user:%s operation:add_record record_type:%s record:%s content:%s ttl:%s priority:%s',
             $clientIp,
             $userlogin,
             $type,
-            $name,
-            $zone_name,
+            DnsHelper::restoreZoneSuffix($name, $zone_name),
             $content,
             $ttl,
             $prio
