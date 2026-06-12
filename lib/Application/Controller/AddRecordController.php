@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,13 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -65,12 +66,13 @@ class AddRecordController extends BaseController
     private FormStateService $formStateService;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        // ConfigurationManager is now handled by the BaseController
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
@@ -295,8 +297,9 @@ class AddRecordController extends BaseController
 
         // Retrieve form state data from session (e.g. after validation error redirect)
         $formData = null;
-        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
-            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        $formId = $this->request->getQueryParam('form_id');
+        if ($formId) {
+            $formData = $this->formStateService->getFormData($formId);
         }
 
         // Build saved_records array for multi-row restore

@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -187,8 +187,9 @@ class EditController extends BaseController
 
         // Check if we have any form data from a failed submission
         $formData = null;
-        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
-            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        $formId = $this->request->getQueryParam('form_id');
+        if ($formId) {
+            $formData = $this->formStateService->getFormData($formId);
         }
 
         $row_start = 0;
