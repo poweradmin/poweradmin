@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DynamicDnsHelper
@@ -42,10 +42,11 @@ class DynamicDnsHelper
      * Print verbose status message for request
      *
      * @param string $status Short status message
+     * @param bool $verbose Print the long explanation instead of the short code
      *
      * @return boolean false
      */
-    public static function statusExit(string $status): bool
+    public static function statusExit(string $status, bool $verbose = false): bool
     {
         $verbose_codes = array(
             'badagent' => 'Your user agent is not valid.',
@@ -61,7 +62,7 @@ class DynamicDnsHelper
             'baddbtype' => 'Unsupported database type',
         );
 
-        if (isset($_REQUEST['verbose'])) {
+        if ($verbose) {
             $pieces = preg_split('/\s/', $status);
             $status = $verbose_codes[$pieces[0]];
         }

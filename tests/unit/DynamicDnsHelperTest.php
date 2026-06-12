@@ -10,16 +10,6 @@ use PDOStatement;
 
 class DynamicDnsHelperTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $_REQUEST = [];
-    }
-
-    protected function tearDown(): void
-    {
-        $_REQUEST = [];
-    }
-
     public function testStatusExitWithoutVerbose(): void
     {
         ob_start();
@@ -32,10 +22,8 @@ class DynamicDnsHelperTest extends TestCase
 
     public function testStatusExitWithVerbose(): void
     {
-        $_REQUEST['verbose'] = '1';
-
         ob_start();
-        $result = DynamicDnsHelper::statusExit('good');
+        $result = DynamicDnsHelper::statusExit('good', true);
         $output = ob_get_clean();
 
         $this->assertFalse($result);
@@ -44,10 +32,8 @@ class DynamicDnsHelperTest extends TestCase
 
     public function testStatusExitWithVerboseMultipleWords(): void
     {
-        $_REQUEST['verbose'] = '1';
-
         ob_start();
-        $result = DynamicDnsHelper::statusExit('good 192.168.1.1');
+        $result = DynamicDnsHelper::statusExit('good 192.168.1.1', true);
         $output = ob_get_clean();
 
         $this->assertFalse($result);
@@ -56,8 +42,6 @@ class DynamicDnsHelperTest extends TestCase
 
     public function testStatusExitAllVerboseCodes(): void
     {
-        $_REQUEST['verbose'] = '1';
-
         $test_cases = [
             'badagent' => 'Your user agent is not valid.',
             'badauth' => 'No username available.',
@@ -74,7 +58,7 @@ class DynamicDnsHelperTest extends TestCase
 
         foreach ($test_cases as $code => $expected_message) {
             ob_start();
-            $result = DynamicDnsHelper::statusExit((string)$code);
+            $result = DynamicDnsHelper::statusExit((string)$code, true);
             $output = ob_get_clean();
 
             $this->assertFalse($result, "statusExit should always return false for code: $code");

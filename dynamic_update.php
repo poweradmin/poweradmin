@@ -69,4 +69,4 @@ $updateService = new DynamicDnsUpdateService(
 );
 
 $result = $updateService->processUpdate(DynamicDnsRequest::fromHttpRequest($request));
-DynamicDnsHelper::statusExit($result);
+DynamicDnsHelper::statusExit($result, $request->query->has('verbose'));
