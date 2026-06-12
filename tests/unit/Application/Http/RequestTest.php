@@ -51,13 +51,6 @@ class RequestTest extends TestCase
         parent::tearDown();
     }
 
-    public function testGetallheadersIsAvailableViaPolyfill(): void
-    {
-        // The ralouphie/getallheaders polyfill must be autoloaded so
-        // Request::__construct() doesn't fatal in non-Apache SAPIs.
-        $this->assertTrue(function_exists('getallheaders'));
-    }
-
     public function testConstructorDoesNotThrowInCliContext(): void
     {
         $request = new Request();
@@ -99,13 +92,16 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getPostParam('missing', 'default'));
     }
 
-    public function testGetPostParamPicksUpLatePostMutation(): void
+    public function testPostMutationAfterConstructionRequiresRefresh(): void
     {
-        // The wrapper documents that POST is re-read on access, so values
-        // set after construction must still be returned.
+        // The wrapper is a snapshot; refresh() is the explicit way to
+        // pick up superglobal changes made after construction.
         $request = new Request();
         $_POST['late'] = 'value';
 
+        $this->assertNull($request->getPostParam('late'));
+
+        $request->refresh();
         $this->assertSame('value', $request->getPostParam('late'));
     }
 

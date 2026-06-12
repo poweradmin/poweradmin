@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,11 +27,9 @@ class Request
     protected array $queryParams;
     protected array $postParams;
     protected array $serverParams;
-    protected array $headers;
 
     public function __construct()
     {
-        // Always get fresh request data
         $this->refresh();
     }
 
@@ -43,7 +41,6 @@ class Request
         $this->queryParams = $_GET;
         $this->postParams = $_POST;
         $this->serverParams = $_SERVER;
-        $this->headers = getallheaders();
     }
 
     public function getQueryParams(): array
@@ -53,8 +50,6 @@ class Request
 
     public function getPostParams(): array
     {
-        // Ensure we have the latest POST data
-        $this->postParams = $_POST;
         return $this->postParams;
     }
 
@@ -65,20 +60,12 @@ class Request
 
     public function getPostParam(string $key, $default = null)
     {
-        // Ensure we have the latest POST data
-        $this->postParams = $_POST;
         return $this->postParams[$key] ?? $default;
     }
 
     public function getServerParam(string $key, $default = null)
     {
         return $this->serverParams[$key] ?? $default;
-    }
-
-    public function getHeader(string $key, $default = null)
-    {
-        $key = strtolower($key);
-        return $this->headers[$key] ?? $default;
     }
 
     public function getMethod(): string
