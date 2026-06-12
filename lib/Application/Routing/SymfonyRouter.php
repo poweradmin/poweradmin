@@ -169,15 +169,19 @@ class SymfonyRouter
             throw new Exception("Controller class {$controllerClass} not found", 404);
         }
 
+        // Explicit GET+POST merge (POST wins) instead of $_REQUEST, which can
+        // also include cookies depending on the request_order ini setting
+        $requestData = array_merge(
+            $this->request->query->all(),
+            $this->request->request->all()
+        );
+
         // Create controller instance
         if ($this->isApiRoute()) {
-            // API controllers get clean parameter injection
-            // Pass $_REQUEST as first parameter and route parameters as second
-            $controller = new $controllerClass($_REQUEST, $parameters);
+            $controller = new $controllerClass($requestData, $parameters);
         } else {
-            // Web controllers maintain current request structure for compatibility
-            // but merge route parameters into the request data
-            $requestData = array_merge($_REQUEST, $parameters);
+            // Web controllers get route parameters merged into the request data
+            $requestData = array_merge($requestData, $parameters);
             // Add the route name as 'page' for template navigation
             $requestData['page'] = $routeInfo['route'];
             $controller = new $controllerClass($requestData);
