@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
@@ -44,6 +45,13 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 
 class DnssecAddKeyController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -77,8 +85,8 @@ class DnssecAddKeyController extends BaseController
         }
 
         $key_type = "";
-        if (isset($_POST['key_type'])) {
-            $key_type = $_POST['key_type'];
+        if ($this->request->getPostParam('key_type') !== null) {
+            $key_type = $this->request->getPostParam('key_type');
 
             if ($key_type != 'ksk' && $key_type != 'zsk' && $key_type != 'csk') {
                 $this->showError(_('Invalid or unexpected input given.'));
@@ -86,8 +94,8 @@ class DnssecAddKeyController extends BaseController
         }
 
         $bits = "";
-        if (isset($_POST["bits"])) {
-            $bits = $_POST["bits"];
+        if ($this->request->getPostParam('bits') !== null) {
+            $bits = $this->request->getPostParam('bits');
 
             $valid_values = array('2048', '1024', '768', '384', '256');
             if (!in_array($bits, $valid_values)) {
@@ -96,8 +104,8 @@ class DnssecAddKeyController extends BaseController
         }
 
         $algorithm = "";
-        if (isset($_POST["algorithm"])) {
-            $algorithm = $_POST["algorithm"];
+        if ($this->request->getPostParam('algorithm') !== null) {
+            $algorithm = $this->request->getPostParam('algorithm');
 
             // The dropdown is filtered against the connected server's
             // capabilities; validate against the same list so the form and
@@ -143,7 +151,7 @@ class DnssecAddKeyController extends BaseController
             return ['valid' => true, 'message' => ''];
         };
 
-        if (isset($_POST["submit"])) {
+        if ($this->request->getPostParam('submit') !== null) {
             $this->validateCsrfToken();
 
             // Validate combination of algorithm and bits before attempting to add the key

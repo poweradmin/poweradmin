@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
@@ -48,6 +49,13 @@ use Poweradmin\Domain\Service\SessionKeys;
 
 class DnssecController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -80,7 +88,7 @@ class DnssecController extends BaseController
         (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
-        if (isset($_POST['unsign_zone'])) {
+        if ($this->request->getPostParam('unsign_zone') !== null) {
             if ($perm_dnssec !== "all" && !($perm_dnssec === "own" && $user_is_zone_owner)) {
                 $this->setMessage('dnssec', 'error', _("You do not have permission to manage DNSSEC for this zone."));
                 $this->showDnsSecKeys($zone_id);

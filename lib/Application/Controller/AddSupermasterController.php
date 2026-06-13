@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -39,14 +40,21 @@ use Poweradmin\Domain\Service\SessionKeys;
 
 class AddSupermasterController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
 
-        $master_ip = $_POST["master_ip"] ?? "";
-        $ns_name = $_POST["ns_name"] ?? "";
-        $account = $_POST["account"] ?? "";
+        $master_ip = $this->request->getPostParam('master_ip', "");
+        $ns_name = $this->request->getPostParam('ns_name', "");
+        $account = $this->request->getPostParam('account', "");
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

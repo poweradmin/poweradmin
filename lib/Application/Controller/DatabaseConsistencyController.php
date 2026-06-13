@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,20 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
 class DatabaseConsistencyController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
         if (!$this->getUserContextService()->isAuthenticated()) {
@@ -54,7 +63,7 @@ class DatabaseConsistencyController extends BaseController
         // Handle fix actions before the outage check below: owner assignment touches
         // only the local zones table, so it must still work when the API is briefly
         // down. API-dependent fixes fail gracefully on their own.
-        if ($this->isPost() && isset($_POST['action']) && isset($_POST['check_type'])) {
+        if ($this->isPost() && $this->request->getPostParam('action') !== null && $this->request->getPostParam('check_type') !== null) {
             $this->validateCsrfToken();
             $this->handleFixAction($consistencyService);
             return;
@@ -94,9 +103,9 @@ class DatabaseConsistencyController extends BaseController
 
     private function handleFixAction(DatabaseConsistencyService $service): void
     {
-        $checkType = $_POST['check_type'] ?? '';
-        $action = $_POST['action'] ?? '';
-        $itemId = $_POST['item_id'] ?? null;
+        $checkType = $this->request->getPostParam('check_type', '');
+        $action = $this->request->getPostParam('action', '');
+        $itemId = $this->request->getPostParam('item_id');
 
         try {
             $result = false;

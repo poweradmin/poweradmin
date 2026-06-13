@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -38,16 +39,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class DeleteSupermasterController extends BaseController
 {
+    private Request $request;
+
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
     }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->request->getQueryParam('confirm') !== null) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();
@@ -69,8 +73,8 @@ class DeleteSupermasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->request->getQueryParams())) {
+            $this->showFirstValidationError($this->request->getQueryParams());
             return;
         }
 
@@ -103,7 +107,7 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($_GET['master_ip']);
+        $master_ip = htmlspecialchars($this->request->getQueryParam('master_ip'));
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $info = $dnsRecord->getSupermasterInfoFromIp($master_ip);
 

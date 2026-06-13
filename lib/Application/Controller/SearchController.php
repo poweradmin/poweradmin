@@ -25,13 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use PDO;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -48,10 +49,12 @@ use Poweradmin\Module\ModuleRegistry;
 class SearchController extends BaseController
 {
     private ZoneSortingService $zoneSortingService;
+    private Request $request;
 
     public function __construct(array $request, bool $authenticate = true)
     {
         parent::__construct($request, $authenticate);
+        $this->request = new Request();
         $this->zoneSortingService = new ZoneSortingService();
     }
 
@@ -102,8 +105,9 @@ class SearchController extends BaseController
         // Get zones rows per page
         $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
         // Override with POST parameter if available for zones
-        if ($this->isPost() && isset($_POST['zones_rows_per_page']) && is_numeric($_POST['zones_rows_per_page'])) {
-            $post_rows_per_page = (int)$_POST['zones_rows_per_page'];
+        $zones_rows_per_page = $this->request->getPostParam('zones_rows_per_page');
+        if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {
+            $post_rows_per_page = (int)$zones_rows_per_page;
             // Validate against allowed values
             if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
                 $zone_rowamount = $post_rows_per_page;
@@ -113,8 +117,9 @@ class SearchController extends BaseController
         // Get records rows per page
         $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
         // Override with POST parameter if available for records
-        if ($this->isPost() && isset($_POST['records_rows_per_page']) && is_numeric($_POST['records_rows_per_page'])) {
-            $post_rows_per_page = (int)$_POST['records_rows_per_page'];
+        $records_rows_per_page = $this->request->getPostParam('records_rows_per_page');
+        if ($this->isPost() && $records_rows_per_page !== null && is_numeric($records_rows_per_page)) {
+            $post_rows_per_page = (int)$records_rows_per_page;
             // Validate against allowed values
             if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
                 $record_rowamount = $post_rows_per_page;
@@ -122,8 +127,9 @@ class SearchController extends BaseController
         }
 
         // Backward compatibility
-        if ($this->isPost() && isset($_POST['rows_per_page']) && is_numeric($_POST['rows_per_page'])) {
-            $post_rows_per_page = (int)$_POST['rows_per_page'];
+        $rows_per_page = $this->request->getPostParam('rows_per_page');
+        if ($this->isPost() && $rows_per_page !== null && is_numeric($rows_per_page)) {
+            $post_rows_per_page = (int)$rows_per_page;
             // Validate against allowed values
             if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
                 $zone_rowamount = $post_rows_per_page;
@@ -136,7 +142,8 @@ class SearchController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $rawQuery = !empty($_POST['query']) ? $_POST['query'] : '';
+            $query = $this->request->getPostParam('query');
+            $rawQuery = !empty($query) ? $query : '';
 
             // Parse query for embedded filters
             list($cleanQuery, $extractedFilters) = $this->parseQueryFilters($rawQuery);
@@ -150,11 +157,16 @@ class SearchController extends BaseController
             // Store the original query for display purposes
             $parameters['displayed_query'] = htmlspecialchars($displayed_query);
 
-            $parameters['zones'] = isset($_POST['zones']) ? htmlspecialchars($_POST['zones']) : false;
-            $parameters['records'] = isset($_POST['records']) ? htmlspecialchars($_POST['records']) : false;
-            $parameters['wildcard'] = isset($_POST['wildcard']) ? htmlspecialchars($_POST['wildcard']) : false;
-            $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
-            $parameters['comments'] = isset($_POST['comments']) ? htmlspecialchars($_POST['comments']) : false;
+            $zones = $this->request->getPostParam('zones');
+            $records = $this->request->getPostParam('records');
+            $wildcard = $this->request->getPostParam('wildcard');
+            $reverse = $this->request->getPostParam('reverse');
+            $comments = $this->request->getPostParam('comments');
+            $parameters['zones'] = $zones !== null ? htmlspecialchars($zones) : false;
+            $parameters['records'] = $records !== null ? htmlspecialchars($records) : false;
+            $parameters['wildcard'] = $wildcard !== null ? htmlspecialchars($wildcard) : false;
+            $parameters['reverse'] = $reverse !== null ? htmlspecialchars($reverse) : false;
+            $parameters['comments'] = $comments !== null ? htmlspecialchars($comments) : false;
 
             // A bare IP query should always search records and reverse zones, even when
             // the user did not tick those boxes - that is almost certainly a PTR lookup.
@@ -172,7 +184,8 @@ class SearchController extends BaseController
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
-                $parameters['type_filter'] = isset($_POST['type_filter']) ? htmlspecialchars($_POST['type_filter']) : '';
+                $type_filter = $this->request->getPostParam('type_filter');
+                $parameters['type_filter'] = $type_filter !== null ? htmlspecialchars($type_filter) : '';
             }
 
             if (!empty($extractedFilters['content'])) {
@@ -181,7 +194,8 @@ class SearchController extends BaseController
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
-                $parameters['content_filter'] = isset($_POST['content_filter']) ? htmlspecialchars($_POST['content_filter']) : '';
+                $content_filter = $this->request->getPostParam('content_filter');
+                $parameters['content_filter'] = $content_filter !== null ? htmlspecialchars($content_filter) : '';
             }
 
             // If records search is disabled, clear the filters
@@ -190,7 +204,7 @@ class SearchController extends BaseController
                 $parameters['content_filter'] = '';
             }
 
-            $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
+            $zones_page = (int)$this->request->getPostParam('zones_page', 1);
 
             $permission_view = Permission::getViewPermission($this->db);
 
@@ -208,7 +222,7 @@ class SearchController extends BaseController
 
             $totalZones = $dnsDataService->searchZonesTotalCount($parameters, $permission_view);
 
-            $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
+            $records_page = (int)$this->request->getPostParam('records_page', 1);
 
             $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
             $searchResultRecords = $dnsDataService->searchRecords(

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
@@ -39,6 +40,14 @@ use Poweradmin\Domain\Service\Validator;
  */
 class DnssecKeyImportController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
         $zoneId = $this->getSafeRequestValue('id');
@@ -79,7 +88,7 @@ class DnssecKeyImportController extends BaseController
 
         $keyType = $this->getSafeRequestValue('key_type');
         $algorithm = $this->getSafeRequestValue('algorithm');
-        $privateKeyPem = (string) ($_POST['private_key_pem'] ?? '');
+        $privateKeyPem = (string) $this->request->getPostParam('private_key_pem', '');
 
         if (!in_array($keyType, ['ksk', 'zsk', 'csk'], true)) {
             $this->setMessage('dnssec', 'error', _('Invalid or unexpected input given.'));

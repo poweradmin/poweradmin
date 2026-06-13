@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
@@ -43,6 +44,13 @@ use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnssecEditKeyController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -61,8 +69,9 @@ class DnssecEditKeyController extends BaseController
         $key_id = (int)$key_id;
 
         $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
-            $confirm = $_GET['confirm'];
+        $confirmParam = $this->request->getQueryParam('confirm');
+        if ($confirmParam !== null && Validator::isNumber($confirmParam)) {
+            $confirm = $confirmParam;
         }
 
         // Early permission check - this page is the confirmation entry for toggling a key,
