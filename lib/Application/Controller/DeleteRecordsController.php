@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -52,11 +53,13 @@ class DeleteRecordsController extends BaseController
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
     private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
@@ -79,7 +82,7 @@ class DeleteRecordsController extends BaseController
 
     public function run(): void
     {
-        $raw_ids = $_POST['record_id'] ?? null;
+        $raw_ids = $this->request->getPostParam('record_id');
         if (!is_array($raw_ids) || empty($raw_ids)) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
             $this->redirect('/search');
@@ -88,7 +91,7 @@ class DeleteRecordsController extends BaseController
 
         $record_ids = array_values(array_filter($raw_ids, fn($id) => is_int($id) || is_string($id)));
 
-        if (isset($_POST['confirm'])) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->deleteRecords($record_ids);
         }
 
@@ -154,7 +157,7 @@ class DeleteRecordsController extends BaseController
                     DnsRecord::deleteRecordZoneTempl($this->db, $record_id);
 
                     // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                    $delete_ptr = isset($_POST['delete_ptr']) && $_POST['delete_ptr'] === '1';
+                    $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
                     if ($hasPtrRecord && $delete_ptr) {
                         $this->reverseRecordCreator->deleteReverseRecord(
                             $record_info['type'],
@@ -190,8 +193,9 @@ class DeleteRecordsController extends BaseController
         $redirectParams = [];
 
         // Check if this was submitted from a zone edit page
-        if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-            $zone_id = (int) $_POST['zone_id'];
+        $post_zone_id = $this->request->getPostParam('zone_id');
+        if (is_numeric($post_zone_id)) {
+            $zone_id = (int) $post_zone_id;
             // Validate zone exists
             if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
                 $redirectPage = 'edit';
@@ -262,8 +266,9 @@ class DeleteRecordsController extends BaseController
             $redirectParams = [];
 
             // Check if this was submitted from a zone edit page
-            if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-                $zone_id = (int) $_POST['zone_id'];
+            $post_zone_id = $this->request->getPostParam('zone_id');
+            if (is_numeric($post_zone_id)) {
+                $zone_id = (int) $post_zone_id;
                 // Validate zone exists
                 if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
                     $redirectPage = 'edit';
@@ -281,7 +286,7 @@ class DeleteRecordsController extends BaseController
         $this->render('delete_records.html', [
             'records' => $records,
             'total_records' => count($records),
-            'zone_id' => $_POST['zone_id'] ?? null
+            'zone_id' => $this->request->getPostParam('zone_id')
         ]);
     }
 

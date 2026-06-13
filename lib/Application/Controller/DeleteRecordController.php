@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
@@ -58,11 +59,13 @@ class DeleteRecordController extends BaseController
     private UserContextService $userContextService;
     private PermissionService $permissionService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
@@ -175,7 +178,7 @@ class DeleteRecordController extends BaseController
                 $dnsRecord->updateSOASerial($zid);
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                $delete_ptr = isset($_POST['delete_ptr']) && $_POST['delete_ptr'] === '1';
+                $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
                 if ($hasPtrRecord && $delete_ptr) {
                     $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
                         $record_info['type'],
@@ -185,7 +188,7 @@ class DeleteRecordController extends BaseController
                 }
 
                 // Delete corresponding A/AAAA record if this was a PTR record and deletion is requested
-                $delete_forward = isset($_POST['delete_forward']) && $_POST['delete_forward'] === '1';
+                $delete_forward = $this->request->getPostParam('delete_forward') === '1';
                 if ($hasForwardRecord && $delete_forward) {
                     $deletedForwardRecord = $this->reverseRecordCreator->deleteForwardRecord(
                         $record_info['name'],

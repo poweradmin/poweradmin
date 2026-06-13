@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -42,6 +43,13 @@ use Poweradmin\Domain\Service\Validator;
 
 class EditCommentController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -84,7 +92,7 @@ class EditCommentController extends BaseController
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;
 
-        if (isset($_POST["commit"])) {
+        if ($this->request->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             if ($perm_edit_comment) {
@@ -92,7 +100,7 @@ class EditCommentController extends BaseController
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->editZoneComment($zone_id, $_POST['comment']);
+                $dnsRecord->editZoneComment($zone_id, $this->request->getPostParam('comment'));
 
                 $zoneIdInt = (int)$zone_id;
                 $auditService = new AuditService($this->db);

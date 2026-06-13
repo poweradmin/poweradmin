@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -63,11 +64,13 @@ class EditRecordController extends BaseController
     private IpAddressRetriever $ipAddressRetriever;
     private RecordRepositoryInterface $recordRepository;
     private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
@@ -192,13 +195,14 @@ class EditRecordController extends BaseController
     public function saveRecord($zid): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $old_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        $rid = $this->request->getPostParam('rid');
+        $old_record_info = $dnsRecord->getRecordFromId($rid);
         if ($old_record_info === null) {
             $this->setMessage('edit', 'error', _('Record not found.'));
             return false;
         }
 
-        $postData = $_POST;
+        $postData = $this->request->getPostParams();
 
         // Convert IDN record name and content to punycode
         if (isset($postData['name'])) {
@@ -243,7 +247,7 @@ class EditRecordController extends BaseController
 
         $dnsRecord->updateSOASerial($zid);
 
-        $new_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        $new_record_info = $dnsRecord->getRecordFromId($rid);
         if ($new_record_info === null) {
             // In API mode the record ID changes when name/type/content/prio change,
             // so the old ID won't match. Use POST data for audit logging instead.
@@ -283,14 +287,14 @@ class EditRecordController extends BaseController
 
         if ($showRecordComments) {
             // Comments visible - use per-record comment (linked by record ID via record_comment_links table)
-            $commentValue = $_POST['comment'] ?? '';
+            $commentValue = $this->request->getPostParam('comment', '');
 
             $this->recordCommentService->updateCommentForRecord(
                 $zid,
                 $new_record_info['name'],
                 $new_record_info['type'],
                 $commentValue,
-                RecordIdHelper::normalizeId($_POST['rid']),
+                RecordIdHelper::normalizeId($rid),
                 $this->userContextService->getLoggedInUsername()
             );
 

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
@@ -51,11 +52,13 @@ class DeleteDomainsController extends BaseController
     private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
@@ -67,7 +70,7 @@ class DeleteDomainsController extends BaseController
 
     public function run(): void
     {
-        $zone_ids = $_POST['zone_id'] ?? null;
+        $zone_ids = $this->request->getPostParam('zone_id');
         if (!$zone_ids) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';
@@ -82,7 +85,7 @@ class DeleteDomainsController extends BaseController
             return;
         }
 
-        if (isset($_POST['confirm'])) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->deleteDomains($zone_ids);
         }
 

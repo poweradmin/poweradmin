@@ -134,7 +134,7 @@ class AddRecordController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if (isset($_POST['multi_record_mode']) && isset($_POST['records']) && is_array($_POST['records'])) {
+            if ($this->request->getPostParam('multi_record_mode') !== null && is_array($this->request->getPostParam('records'))) {
                 $this->addMultipleRecords();
             } else {
                 $this->addRecord();
@@ -159,15 +159,17 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
         }
 
-        $name = $_POST['name'] ?? '';
-        $content = $_POST['content'];
-        $type = $_POST['type'];
-        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $comment = $_POST['comment'] ?? '';
+        $name = $this->request->getPostParam('name', '');
+        $content = $this->request->getPostParam('content');
+        $type = $this->request->getPostParam('type');
+        $prio = $this->request->getPostParam('prio');
+        $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
+        $comment = $this->request->getPostParam('comment', '');
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
@@ -176,7 +178,8 @@ class AddRecordController extends BaseController
             return;
         }
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
         // Convert IDN record name and content to punycode
         $name = DnsIdnService::toPunycode($name);
@@ -238,11 +241,12 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
-        if (isset($_POST['reverse'])) {
+        if ($this->request->getPostParam('reverse') !== null) {
             // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
             // when unset, the PTR inherits the forward record's TTL (historical behavior).
             $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
@@ -265,7 +269,7 @@ class AddRecordController extends BaseController
                 // Reverse record creation failed without a specific message
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
-        } elseif (isset($_POST['create_domain_record'])) {
+        } elseif ($this->request->getPostParam('create_domain_record') !== null) {
             $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('edit', 'success', $message);
@@ -313,14 +317,14 @@ class AddRecordController extends BaseController
                 ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false)
                 : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false),
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
-            'name' => $formData['name'] ?? $_POST['name'] ?? '',
-            'type' => $formData['type'] ?? $_POST['type'] ?? '',
-            'content' => $formData['content'] ?? $_POST['content'] ?? '',
-            'ttl' => $formData['ttl'] ?? $_POST['ttl'] ?? $ttl,
+            'name' => $formData['name'] ?? $this->request->getPostParam('name', ''),
+            'type' => $formData['type'] ?? $this->request->getPostParam('type', ''),
+            'content' => $formData['content'] ?? $this->request->getPostParam('content', ''),
+            'ttl' => $formData['ttl'] ?? $this->request->getPostParam('ttl', $ttl),
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
-            'prio' => $formData['prio'] ?? $_POST['prio'] ?? 0,
+            'prio' => $formData['prio'] ?? $this->request->getPostParam('prio', 0),
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
@@ -346,8 +350,8 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->request->getQueryParams())) {
+            $this->showFirstValidationError($this->request->getQueryParams());
         }
     }
 
@@ -440,7 +444,7 @@ class AddRecordController extends BaseController
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $records = $_POST['records'] ?? [];
+        $records = $this->request->getPostParam('records', []);
         $successCount = 0;
         $failureCount = 0;
         $matchingRecordCount = 0;
@@ -501,8 +505,9 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
         if ($successCount > 0) {

@@ -178,9 +178,9 @@ class EditController extends BaseController
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 
         // Initialize filter parameters
-        $searchTerm = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
-        $recordTypeFilter = isset($_GET['record_type']) ? htmlspecialchars($_GET['record_type']) : '';
-        $contentFilter = isset($_GET['content']) ? htmlspecialchars($_GET['content']) : '';
+        $searchTerm = htmlspecialchars($this->request->getQueryParam('search', ''));
+        $recordTypeFilter = htmlspecialchars($this->request->getQueryParam('record_type', ''));
+        $contentFilter = htmlspecialchars($this->request->getQueryParam('content', ''));
 
         // Generate a form token for the add record form
         $formToken = $this->formStateService->generateFormId('add_record');
@@ -193,8 +193,9 @@ class EditController extends BaseController
         }
 
         $row_start = 0;
-        if (isset($_GET["start"])) {
-            $row_start = ((int)$_GET["start"] - 1) * $iface_rowamount;
+        $start = $this->request->getQueryParam('start');
+        if ($start !== null) {
+            $row_start = ((int)$start - 1) * $iface_rowamount;
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
@@ -231,23 +232,28 @@ class EditController extends BaseController
         $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
         // Process form submissions
-        if ($this->isPost() && isset($_POST['commit'])) {
+        if ($this->isPost() && $this->request->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             // Check if this is a record addition (has name, content, type fields)
-            if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
+            $name = $this->request->getPostParam('name');
+            $content = $this->request->getPostParam('content');
+            $type = $this->request->getPostParam('type');
+            if ($name !== null && $content !== null && $type !== null) {
                 // Store the original form data before processing (in case validation fails)
+                $prio = $this->request->getPostParam('prio');
+                $ttl = $this->request->getPostParam('ttl');
                 $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = [
-                    'name' => $_POST['name'] ?? '',
-                    'content' => $_POST['content'] ?? '',
-                    'type' => $_POST['type'] ?? '',
-                    'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
-                    'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($_POST['type'] ?? '', $isReverseZone),
-                    'comment' => $_POST['comment'] ?? ''
+                    'name' => $name,
+                    'content' => $content,
+                    'type' => $type,
+                    'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
+                    'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
+                    'comment' => $this->request->getPostParam('comment', '')
                 ];
 
                 // Handle record addition directly in edit controller (no redirect)
-                if (!isset($_POST['record'])) { // Check if it's an add record operation (not a zone update)
+                if ($this->request->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
                     $result = $this->addRecord($zone_id);
 
                     // If the record was added successfully, clear the stored data
@@ -262,7 +268,7 @@ class EditController extends BaseController
                     // This is a zone update operation, handle as before
                     $this->saveRecords($zone_id, $zone_name);
                 }
-            } elseif (isset($_POST['record']) || isset($_POST['zone_comment'])) {
+            } elseif ($this->request->getPostParam('record') !== null || $this->request->getPostParam('zone_comment') !== null) {
                 // This is just a save operation without adding new records, or zone comment update
                 $this->saveRecords($zone_id, $zone_name);
             }
@@ -292,7 +298,7 @@ class EditController extends BaseController
             $this->handleZoneMetadataPost($zone_id);
         }
 
-        if (isset($_POST['sign_zone'])) {
+        if ($this->request->getPostParam('sign_zone') !== null) {
             $this->validateCsrfToken();
 
             if (!$can_manage_dnssec) {
@@ -346,7 +352,7 @@ class EditController extends BaseController
             }
         }
 
-        if (isset($_POST['unsign_zone'])) {
+        if ($this->request->getPostParam('unsign_zone') !== null) {
             $this->validateCsrfToken();
 
             if (!$can_manage_dnssec) {
@@ -550,14 +556,17 @@ class EditController extends BaseController
         $baseUrl = $baseUrlPrefix . '/zones/' . $id . '/edit?start={PageNumber}';
 
         // Add filters to pagination links if they exist
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-            $baseUrl .= '&search=' . urlencode($_GET['search']);
+        $search = $this->request->getQueryParam('search');
+        if (!empty($search)) {
+            $baseUrl .= '&search=' . urlencode($search);
         }
-        if (isset($_GET['record_type']) && !empty($_GET['record_type'])) {
-            $baseUrl .= '&record_type=' . urlencode($_GET['record_type']);
+        $recordType = $this->request->getQueryParam('record_type');
+        if (!empty($recordType)) {
+            $baseUrl .= '&record_type=' . urlencode($recordType);
         }
-        if (isset($_GET['content']) && !empty($_GET['content'])) {
-            $baseUrl .= '&content=' . urlencode($_GET['content']);
+        $content = $this->request->getQueryParam('content');
+        if (!empty($content)) {
+            $baseUrl .= '&content=' . urlencode($content);
         }
 
         $presenter = new PaginationPresenter($pagination, $baseUrl);
@@ -569,7 +578,7 @@ class EditController extends BaseController
     {
         $sortOrder = 'name';
 
-        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
             if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
                 $sortOrder = $source[$name];
                 $_SESSION[$name] = $source[$name];
@@ -584,7 +593,7 @@ class EditController extends BaseController
     {
         $sortDirection = 'ASC';
 
-        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
             if (isset($source[$name]) && in_array($source[$name], ['ASC', 'DESC'])) {
                 $sortDirection = $source[$name];
                 $_SESSION[$name] = $source[$name];
@@ -601,14 +610,15 @@ class EditController extends BaseController
         $one_record_changed = false;
         $serial_mismatch = false;
 
-        if (isset($_POST['record'])) {
+        $records = $this->request->getPostParam('record');
+        if ($records !== null) {
             $soa_record = $this->dnsRecord->getSOARecord($zone_id);
             $current_serial = DnsRecord::getSOASerial($soa_record);
 
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
-                foreach ($_POST['record'] as &$record) {
+                foreach ($records as &$record) {
                     // Normalize record name to full FQDN (always, regardless of display setting)
                     // This converts @ to zone apex and ensures proper zone suffix
                     if (isset($record['name'])) {
@@ -731,7 +741,8 @@ class EditController extends BaseController
      */
     public function isSerialMismatch(string $current_serial): bool
     {
-        return isset($_POST['serial']) && $_POST['serial'] != $current_serial;
+        $serial = $this->request->getPostParam('serial');
+        return $serial !== null && $serial != $current_serial;
     }
 
     /**
@@ -745,7 +756,7 @@ class EditController extends BaseController
     public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
     {
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
-        $zone_comment = $_POST['zone_comment'] ?? '';
+        $zone_comment = $this->request->getPostParam('zone_comment', '');
         if ($raw_zone_comment != $zone_comment) {
             $this->zoneRepository->updateZoneComment($zone_id, $zone_comment);
             $one_record_changed = true;
@@ -809,12 +820,12 @@ class EditController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
+        if (!$this->doValidateRequest($this->request->getPostParams())) {
             // Store validation error directly in session
             $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
-                'fieldError' => isset($_POST['content']) && !empty($_POST['content']) ? 'type' : 'content'
+                'fieldError' => !empty($this->request->getPostParam('content')) ? 'type' : 'content'
             ];
 
             // Don't call showFirstValidationError as it would redirect
@@ -822,11 +833,12 @@ class EditController extends BaseController
             return false;
         }
 
-        $name = $_POST['name'] ?? '';
-        $content = $_POST['content'];
-        $type = $_POST['type'];
-        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $comment = $_POST['comment'] ?? '';
+        $name = $this->request->getPostParam('name', '');
+        $content = $this->request->getPostParam('content');
+        $type = $this->request->getPostParam('type');
+        $prio = $this->request->getPostParam('prio');
+        $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
+        $comment = $this->request->getPostParam('comment', '');
 
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
@@ -840,7 +852,8 @@ class EditController extends BaseController
             return false;
         }
         $isReverseZone = DnsHelper::isReverseZone($zone_name_for_record);
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);
 
         try {
@@ -880,11 +893,12 @@ class EditController extends BaseController
         unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
-        if (isset($_POST['reverse'])) {
+        if ($this->request->getPostParam('reverse') !== null) {
             // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
             // when unset, the PTR inherits the forward record's TTL (historical behavior).
             $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
@@ -901,7 +915,7 @@ class EditController extends BaseController
                 // Reverse record creation failed without a specific message
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
-        } elseif (isset($_POST['create_domain_record'])) {
+        } elseif ($this->request->getPostParam('create_domain_record') !== null) {
             // Strip zone suffix for PTR record processing - DomainRecordCreator expects relative hostname
             $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name_for_record);
             $domainRecord = $this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment);
