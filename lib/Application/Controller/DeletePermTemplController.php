@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
@@ -44,10 +45,13 @@ class DeletePermTemplController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+
+        $this->request = new Request();
 
         $this->permissionTemplate = new DbPermissionTemplateRepository($this->db, $this->getConfig());
         $this->auditLogger = new LegacyLogger($this->db);
@@ -59,7 +63,7 @@ class DeletePermTemplController extends BaseController
     {
         $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->request->getQueryParam('confirm') !== null) {
             $this->handleFormSubmission();
         } else {
             $this->showForm();

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\UserEntity;
@@ -46,10 +47,13 @@ class DeleteUserController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+
+        $this->request = new Request();
 
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
@@ -97,8 +101,9 @@ class DeleteUserController extends BaseController
         $targetUsername = UserEntity::getUserNameById($this->db, $uid);
 
         $zones = array();
-        if (isset($_POST['zone'])) {
-            $zones = $_POST['zone'];
+        $zone = $this->request->getPostParam('zone');
+        if ($zone !== null) {
+            $zones = $zone;
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());

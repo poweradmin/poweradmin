@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -48,10 +49,13 @@ class ForgotUsernameController extends BaseController
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for forgot username
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -136,7 +140,7 @@ class ForgotUsernameController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['username_recovery_token'] ?? '';
+            $token = $this->request->getPostParam('username_recovery_token', '');
 
             if (!$this->csrfTokenService->validateToken($token, SessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
@@ -154,7 +158,7 @@ class ForgotUsernameController extends BaseController
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
-            $recaptchaToken = $_POST['g-recaptcha-response'] ?? '';
+            $recaptchaToken = $this->request->getPostParam('g-recaptcha-response', '');
             if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
                 $this->logger->warning('Username recovery failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -166,7 +170,7 @@ class ForgotUsernameController extends BaseController
             }
         }
 
-        $email = trim($_POST['email'] ?? '');
+        $email = trim($this->request->getPostParam('email', ''));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

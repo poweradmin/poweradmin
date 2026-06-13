@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -49,10 +50,13 @@ class ForgotPasswordController extends BaseController
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for forgot password
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -132,7 +136,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['password_reset_token'] ?? '';
+            $token = $this->request->getPostParam('password_reset_token', '');
 
             if (!$this->csrfTokenService->validateToken($token, SessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -150,7 +154,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
-            $recaptchaToken = $_POST['g-recaptcha-response'] ?? '';
+            $recaptchaToken = $this->request->getPostParam('g-recaptcha-response', '');
             if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
                 $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -162,7 +166,7 @@ class ForgotPasswordController extends BaseController
             }
         }
 
-        $email = trim($_POST['email'] ?? '');
+        $email = trim($this->request->getPostParam('email', ''));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

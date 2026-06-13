@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PasswordResetService;
@@ -50,10 +51,13 @@ class ResetPasswordController extends BaseController
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
     private ?string $token = null;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for password reset
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -90,7 +94,7 @@ class ResetPasswordController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
 
         // Extract token from URL parameters
-        $this->token = $_GET['token'] ?? null;
+        $this->token = $this->request->getQueryParam('token');
     }
 
     public function run(): void
@@ -176,7 +180,7 @@ class ResetPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['reset_password_token'] ?? '';
+            $token = $this->request->getPostParam('reset_password_token', '');
 
             if (!$this->csrfTokenService->validateToken($token, SessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -193,8 +197,8 @@ class ResetPasswordController extends BaseController
             unset($_SESSION[SessionKeys::RESET_PASSWORD_TOKEN]);
         }
 
-        $password = $_POST['password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
+        $password = $this->request->getPostParam('password', '');
+        $confirmPassword = $this->request->getPostParam('confirm_password', '');
 
         // Check if passwords match
         if ($password !== $confirmPassword) {

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
@@ -40,10 +41,13 @@ class MfaSetupController extends BaseController
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+
+        $this->request = new Request();
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailService = new MailService($this->config);
@@ -71,32 +75,32 @@ class MfaSetupController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if (isset($_POST['setup_app'])) {
+            if ($this->request->getPostParam('setup_app') !== null) {
                 $this->handleAppSetup();
                 return;
             }
 
-            if (isset($_POST['verify_app'])) {
+            if ($this->request->getPostParam('verify_app') !== null) {
                 $this->handleAppVerification();
                 return;
             }
 
-            if (isset($_POST['setup_email'])) {
+            if ($this->request->getPostParam('setup_email') !== null) {
                 $this->handleEmailSetup();
                 return;
             }
 
-            if (isset($_POST['verify_email'])) {
+            if ($this->request->getPostParam('verify_email') !== null) {
                 $this->handleEmailVerification();
                 return;
             }
 
-            if (isset($_POST['disable_mfa'])) {
+            if ($this->request->getPostParam('disable_mfa') !== null) {
                 $this->handleMfaDisable();
                 return;
             }
 
-            if (isset($_POST['regenerate_codes'])) {
+            if ($this->request->getPostParam('regenerate_codes') !== null) {
                 $this->handleRegenerateRecoveryCodes();
                 return;
             }
@@ -141,7 +145,7 @@ class MfaSetupController extends BaseController
     private function handleAppVerification(): void
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $code = $_POST['verification_code'] ?? '';
+        $code = $this->request->getPostParam('verification_code', '');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));
@@ -257,7 +261,7 @@ class MfaSetupController extends BaseController
     private function handleEmailVerification(): void
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $code = $_POST['verification_code'] ?? '';
+        $code = $this->request->getPostParam('verification_code', '');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));

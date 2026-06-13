@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\MailService;
@@ -44,10 +45,13 @@ class MfaVerifyController extends BaseController
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private LoginAttemptService $loginAttemptService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false);
+
+        $this->request = new Request();
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailService = new MailService($this->config);
@@ -63,14 +67,15 @@ class MfaVerifyController extends BaseController
     public function run(): void
     {
         // Check if MFA is globally enabled or this is a logout request
-        if (!$this->config->get('security', 'mfa.enabled', false) || isset($_GET['logout'])) {
+        $logout = $this->request->getQueryParam('logout');
+        if (!$this->config->get('security', 'mfa.enabled', false) || $logout !== null) {
             // If MFA is disabled or this is a logout request, but we have MFA session flags, clear them
             if ($this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
                 $this->userContextService->unsetSessionData(SessionKeys::MFA_REQUIRED);
             }
 
             // If this is a logout request, do a proper logout
-            if (isset($_GET['logout'])) {
+            if ($logout !== null) {
                 session_regenerate_id(true);
                 session_unset();
 
@@ -106,7 +111,7 @@ class MfaVerifyController extends BaseController
         }
 
         // Make verification more robust by just checking for the code
-        if (isset($_POST['mfa_code'])) {
+        if ($this->request->getPostParam('mfa_code') !== null) {
             $this->handleMfaVerification();
             return;
         }
@@ -120,10 +125,10 @@ class MfaVerifyController extends BaseController
         // Basic logging
         $this->logger->debug('[MfaVerifyController] Verification attempt started');
 
-        $code = $_POST['mfa_code'] ?? '';
+        $code = $this->request->getPostParam('mfa_code', '');
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
         $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData(SessionKeys::PENDING_USERID);
-        $mfaToken = $_POST['mfa_token'] ?? '';
+        $mfaToken = $this->request->getPostParam('mfa_token', '');
 
         // Validate CSRF token for security
         if (!$this->csrfTokenService->validateToken($mfaToken, SessionKeys::MFA_TOKEN)) {
