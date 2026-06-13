@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -55,11 +56,13 @@ class ListReverseZonesController extends BaseController
     private ForwardZoneAssociationService $forwardZoneAssociationService;
     private UserContextService $userContextService;
     private ZoneSortingService $zoneSortingService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         // Initialize repository and services
         $zoneRepository = $this->createZoneRepository();
         $this->dnsDataService = $this->createDnsDataService();
@@ -101,8 +104,9 @@ class ListReverseZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        if (isset($_GET['start'])) {
-            $start = (int)htmlspecialchars($_GET['start']);
+        $start_param = $this->request->getQueryParam('start');
+        if ($start_param !== null) {
+            $start = (int)htmlspecialchars($start_param);
             $row_start = ($start - 1) * $iface_rowamount;
         }
 
@@ -274,13 +278,15 @@ class ListReverseZonesController extends BaseController
         $paginationUrl = $baseUrlPrefix . '/zones/reverse?start={PageNumber}';
 
         // Add reverse_type parameter if it exists
-        if (isset($_GET['reverse_type'])) {
-            $paginationUrl .= '&reverse_type=' . htmlspecialchars($_GET['reverse_type']);
+        $reverse_type = $this->request->getQueryParam('reverse_type');
+        if ($reverse_type !== null) {
+            $paginationUrl .= '&reverse_type=' . htmlspecialchars($reverse_type);
         }
 
         // Add rows_per_page parameter if it exists
-        if (isset($_GET['rows_per_page'])) {
-            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($_GET['rows_per_page']);
+        $rows_per_page = $this->request->getQueryParam('rows_per_page');
+        if ($rows_per_page !== null) {
+            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($rows_per_page);
         }
 
         $presenter = new PaginationPresenter($pagination, $paginationUrl);

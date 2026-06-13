@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,12 +26,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
@@ -53,10 +54,12 @@ class ZoneOwnershipController extends BaseController
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
 
@@ -176,34 +179,36 @@ class ZoneOwnershipController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Add owner
-        if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
+        $newowner = $this->request->getPostParam('newowner');
+        if ($newowner !== null && is_numeric($newowner) && $meta_edit) {
             if (!$ownershipMode->isUserOwnerAllowed()) {
                 $this->setMessage('zone_ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
                 return;
             }
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$_POST["newowner"]);
+            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$newowner);
 
             if ($ownerAdded) {
-                $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$_POST["newowner"]);
+                $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
                 $this->setMessage('zone_ownership', 'success', _('Owner has been added successfully.'));
 
                 // Send zone access granted notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
                     $notificationService = $this->createZoneAccessNotificationService();
-                    $notificationService->notifyAccessGranted($zone_id, (int)$_POST["newowner"], $userId);
+                    $notificationService->notifyAccessGranted($zone_id, (int)$newowner, $userId);
                 }
             }
         }
 
         // Delete owner
-        if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) && $meta_edit) {
+        $delete_owner = $this->request->getPostParam('delete_owner');
+        if ($delete_owner !== null && is_numeric($delete_owner) && $meta_edit) {
             // Orphan prevention: refuse if this deletion would leave the zone
             // with no remaining owners and no group ownership. The mode hint in
             // the message tells the operator what kind of replacement is allowed.
             $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
-            $deleteUserId = (int)$_POST["delete_owner"];
+            $deleteUserId = (int)$delete_owner;
             $isCurrentOwner = false;
             foreach ($currentOwners as $o) {
                 if ((int)($o['id'] ?? 0) === $deleteUserId) {
@@ -232,24 +237,25 @@ class ZoneOwnershipController extends BaseController
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
 
             if ($ownerRemoved) {
-                $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$_POST["delete_owner"]);
+                $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$delete_owner);
                 $this->setMessage('zone_ownership', 'success', _('Owner has been removed successfully.'));
 
                 // Send zone access revoked notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
                     $notificationService = $this->createZoneAccessNotificationService();
-                    $notificationService->notifyAccessRevoked($zone_id, (int)$_POST["delete_owner"], $userId);
+                    $notificationService->notifyAccessRevoked($zone_id, (int)$delete_owner, $userId);
                 }
             }
         }
 
         // Add group
-        if (isset($_POST["newgroup"]) && is_numeric($_POST["newgroup"]) && $meta_edit) {
+        $newgroup = $this->request->getPostParam('newgroup');
+        if ($newgroup !== null && is_numeric($newgroup) && $meta_edit) {
             if (!$ownershipMode->isGroupOwnerAllowed()) {
                 $this->setMessage('zone_ownership', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
                 return;
             }
-            $groupId = (int)$_POST["newgroup"];
+            $groupId = (int)$newgroup;
 
             // Validate group ID against user's allowed groups
             $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -270,12 +276,13 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Delete group
-        if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"]) && $meta_edit) {
+        $delete_group = $this->request->getPostParam('delete_group');
+        if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             // Orphan prevention: refuse if this deletion would leave the zone
             // with no remaining groups and no user owners. Applies in every
             // mode - the message hints what kind of replacement is allowed.
-            $deleteGroupId = (int)$_POST["delete_group"];
+            $deleteGroupId = (int)$delete_group;
             $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
             $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
             $isCurrentGroup = false;

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -33,6 +34,14 @@ use Poweradmin\Domain\Model\UserManager;
  */
 class ListViewsController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
         if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
@@ -51,7 +60,7 @@ class ListViewsController extends BaseController
             return;
         }
 
-        if (!empty($_POST)) {
+        if (!empty($this->request->getPostParams())) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $view = trim($this->getSafeRequestValue('view'));

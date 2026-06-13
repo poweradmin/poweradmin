@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -29,6 +30,13 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 
 class UnlinkZonesTemplController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -41,7 +49,7 @@ class UnlinkZonesTemplController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $zone_ids = $_POST['zone_ids'] ?? [];
+            $zone_ids = $this->request->getPostParam('zone_ids', []);
             $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {
@@ -54,7 +62,7 @@ class UnlinkZonesTemplController extends BaseController
                 return;
             }
 
-            if (isset($_POST['confirm'])) {
+            if ($this->request->getPostParam('confirm') !== null) {
                 $this->unlinkZones($zone_ids, $template_id);
             } else {
                 $this->showConfirmation($zone_ids, $template_id);

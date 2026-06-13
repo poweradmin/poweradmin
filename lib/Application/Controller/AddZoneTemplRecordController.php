@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -44,10 +45,12 @@ class AddZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
     }
@@ -97,10 +100,11 @@ class AddZoneTemplRecordController extends BaseController
 
             $this->setValidationConstraints($constraints);
 
-            if ($this->doValidateRequest($_POST)) {
+            $postParams = $this->request->getPostParams();
+            if ($this->doValidateRequest($postParams)) {
                 $this->addZoneTemplRecord();
             } else {
-                $this->showFirstValidationError($_POST);
+                $this->showFirstValidationError($postParams);
             }
         } else {
             $this->showAddZoneTemplRecord();
@@ -110,12 +114,12 @@ class AddZoneTemplRecordController extends BaseController
     private function addZoneTemplRecord(): void
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $name = $_POST['name'] ?? "[ZONE]";
-        $type = $_POST['type'] ?? "";
-        $content = $_POST['content'] ?? "";
-        $prio = $_POST['prio'] ?? 0;
+        $name = $this->request->getPostParam('name', "[ZONE]");
+        $type = $this->request->getPostParam('type', "");
+        $content = $this->request->getPostParam('content', "");
+        $prio = $this->request->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $_POST['ttl'] ?? $dns_ttl;
+        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
 
         $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
@@ -138,12 +142,12 @@ class AddZoneTemplRecordController extends BaseController
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $name = $_POST['name'] ?? "[ZONE]";
-        $type = $_POST['type'] ?? "";
-        $content = $_POST['content'] ?? "";
-        $prio = $_POST['prio'] ?? 0;
+        $name = $this->request->getPostParam('name', "[ZONE]");
+        $type = $this->request->getPostParam('type', "");
+        $content = $this->request->getPostParam('content', "");
+        $prio = $this->request->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $_POST['ttl'] ?? $dns_ttl;
+        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
 
         // Get count of zones using this template
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());

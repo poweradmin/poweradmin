@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\HybridPermissionService;
@@ -54,10 +55,12 @@ use Poweradmin\Domain\Service\SessionKeys;
 class ListForwardZonesController extends BaseController
 {
     private ZoneSortingService $zoneSortingService;
+    private Request $request;
 
     public function __construct(array $request, bool $authenticate = true)
     {
         parent::__construct($request, $authenticate);
+        $this->request = new Request();
         $this->zoneSortingService = new ZoneSortingService();
     }
 
@@ -135,8 +138,9 @@ class ListForwardZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        if (isset($_GET['start'])) {
-            $start = (int)htmlspecialchars($_GET['start']);
+        $start_param = $this->request->getQueryParam('start');
+        if ($start_param !== null) {
+            $start = (int)htmlspecialchars($start_param);
             $row_start = ($start - 1) * $iface_rowamount;
         }
 
@@ -152,9 +156,10 @@ class ListForwardZonesController extends BaseController
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
             $letter_start = 'a';
-            if (isset($_GET['letter'])) {
-                $letter_start = htmlspecialchars($_GET['letter']);
-                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($_GET['letter']);
+            $letter = $this->request->getQueryParam('letter');
+            if ($letter !== null) {
+                $letter_start = htmlspecialchars($letter);
+                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($letter);
             } elseif (isset($_SESSION[SessionKeys::LETTER])) {
                 $letter_start = $_SESSION[SessionKeys::LETTER];
             }

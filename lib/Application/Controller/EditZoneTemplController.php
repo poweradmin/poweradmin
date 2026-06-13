@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PaginationService;
@@ -47,10 +48,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 class EditZoneTemplController extends BaseController
 {
     private UserContextService $userContext;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->userContext = new UserContextService();
     }
 
@@ -104,15 +107,15 @@ class EditZoneTemplController extends BaseController
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
-        if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
+        if ($this->request->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
-        if (isset($_POST['save_as'])) {
+        if ($this->request->getPostParam('save_as') !== null) {
             $this->saveTemplateAs($zone_templ_id);
         }
 
-        if (isset($_POST['update_zones'])) {
+        if ($this->request->getPostParam('update_zones') !== null) {
             $this->updateZoneRecords($zone_templ_id);
         }
     }
@@ -178,7 +181,7 @@ class EditZoneTemplController extends BaseController
     {
         $sortOrder = 'name';
 
-        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
             if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
                 $sortOrder = $source[$name];
                 $_SESSION[$name] = $source[$name];
@@ -202,16 +205,17 @@ class EditZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
             return;
         }
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $userId);
+        $zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
         $auditService = new AuditService($this->db);
-        $auditService->logZoneTemplateEdit($zone_templ_id, $_POST['templ_name'] ?? '');
+        $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('/zones/templates');
     }
@@ -259,13 +263,14 @@ class EditZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
             return;
         }
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
-        $templateExists = $zoneTemplate->zoneTemplNameExists($_POST['templ_name']);
+        $templateExists = $zoneTemplate->zoneTemplNameExists($postParams['templ_name']);
         $currentTemplate = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         if ($templateExists) {
@@ -274,7 +279,7 @@ class EditZoneTemplController extends BaseController
         }
 
         // Don't allow saving with the same name
-        if ($_POST['templ_name'] === $currentTemplate['name']) {
+        if ($postParams['templ_name'] === $currentTemplate['name']) {
             $this->showError(_('Please enter a different name when using Save As.'));
             return;
         }
@@ -284,14 +289,14 @@ class EditZoneTemplController extends BaseController
 
         // For a simple "save as" with no domain substitution
         $options = [];
-        if (isset($_POST['templ_global'])) {
+        if (isset($postParams['templ_global'])) {
             $options['global'] = true;
         }
 
         // Call the addZoneTemplSaveAs with the correct signature
         $success = $zoneTemplate->addZoneTemplSaveAs(
-            $_POST['templ_name'],
-            $_POST['templ_descr'],
+            $postParams['templ_name'],
+            $postParams['templ_descr'],
             $_SESSION[SessionKeys::USERID],
             $records,
             $options,

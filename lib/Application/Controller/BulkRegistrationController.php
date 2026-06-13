@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -51,11 +52,13 @@ class BulkRegistrationController extends BaseController
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
@@ -118,16 +121,17 @@ class BulkRegistrationController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
         }
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
-        $domains = DomainHelper::getDomains($_POST['domains']);
-        $dom_type = $_POST['dom_type'];
-        $zone_template = $_POST['zone_template'];
+        $domains = DomainHelper::getDomains($this->request->getPostParam('domains'));
+        $dom_type = $this->request->getPostParam('dom_type');
+        $zone_template = $this->request->getPostParam('zone_template');
 
-        $rawOwner = $_POST['owner'] ?? '';
+        $rawOwner = $this->request->getPostParam('owner', '');
         if ($ownershipMode->isUserOwnerAllowed() && $rawOwner !== '' && $rawOwner !== null) {
             if (!is_numeric($rawOwner)) {
                 $this->setMessage('bulk_registration', 'error', _('Owner must be a numeric user ID.'));
@@ -141,8 +145,9 @@ class BulkRegistrationController extends BaseController
         } else {
             $owner = null;
         }
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $groups = $this->request->getPostParam('groups');
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groups) ?
+            array_map('intval', $groups) : [];
 
         if (!empty($selected_groups)) {
             $userGroupRepo = new DbUserGroupRepository($this->db);
@@ -234,11 +239,12 @@ class BulkRegistrationController extends BaseController
         // when re-rendering after a partial failure. Only honour foreign user
         // IDs when the caller is allowed to see other users; otherwise fall back
         // to the caller's own ID so the dropdown can't leak hidden accounts.
-        if (array_key_exists('owner', $_POST)) {
-            if ($_POST['owner'] === '') {
+        $postParams = $this->request->getPostParams();
+        if (array_key_exists('owner', $postParams)) {
+            if ($postParams['owner'] === '') {
                 $owner_value = '';
-            } elseif (is_numeric($_POST['owner'])) {
-                $postedId = (int)$_POST['owner'];
+            } elseif (is_numeric($postParams['owner'])) {
+                $postedId = (int)$postParams['owner'];
                 $owner_value = ($postedId === $callerId || $canViewOthers) ? $postedId : $callerId;
             } else {
                 $owner_value = $callerId;
@@ -261,7 +267,7 @@ class BulkRegistrationController extends BaseController
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
             'all_groups' => $allGroups,
-            'selected_groups' => isset($_POST['groups']) && is_array($_POST['groups']) ? array_map('intval', $_POST['groups']) : [],
+            'selected_groups' => isset($postParams['groups']) && is_array($postParams['groups']) ? array_map('intval', $postParams['groups']) : [],
         ]);
     }
 }
