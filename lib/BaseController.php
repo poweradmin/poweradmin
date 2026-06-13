@@ -285,9 +285,15 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
+        // Build the language selector once and share it with the header and the
+        // body template so the login form's hidden userlang field carries the
+        // chosen language through submission.
+        $languageVars = $this->getLanguageSelectorVars($this->resolveActiveLocale());
+
         $this->renderHeader(
             $this->messageService->getMessages('system'),
-            $this->messageService->getMessages(pathinfo($template)['filename'])
+            $this->messageService->getMessages(pathinfo($template)['filename']),
+            $languageVars
         );
 
         // Render main template
@@ -297,6 +303,8 @@ abstract class BaseController
 
         // Add base_url_prefix for subfolder deployment support
         $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
+
+        $params = array_merge($languageVars, $params);
 
         // Expose connected PowerDNS capabilities to every template so views
         // can adapt (record types, zone kinds, terminology, etc).
@@ -636,7 +644,7 @@ abstract class BaseController
      *
      * @param array|null $systemMessages System messages to be displayed
      */
-    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null): void
+    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
     {
         if (!headers_sent()) {
             header('Content-type: text/html; charset=utf-8');
@@ -670,25 +678,7 @@ abstract class BaseController
             'show_style_switcher' => true,
         ], LanguageCode::templateVars($activeLocale));
 
-        // Language selector for login page
-        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-        $localeList = explode(',', $enabledLanguages);
-        if (count($localeList) > 1) {
-            $preparedLocales = [];
-            foreach ($localeList as $locale) {
-                $locale = trim($locale);
-                $language = LanguageCode::getByLocale($locale);
-                $preparedLocales[] = [
-                    'locale' => $locale,
-                    'language' => $language,
-                    'selected' => $locale === $activeLocale,
-                ];
-            }
-            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
-            $vars['locales'] = $preparedLocales;
-            $vars['show_language_selector'] = true;
-            $vars['current_language'] = $activeLocale;
-        }
+        $vars = array_merge($vars, $languageVars ?? $this->getLanguageSelectorVars($activeLocale));
 
         $dblog_use = $this->config->get('logging', 'database_enabled');
         $session_key = $this->config->get('security', 'session_key');
@@ -783,6 +773,37 @@ abstract class BaseController
             'user_logged_in' => $this->userContextService->isAuthenticated(),
             'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
         ]);
+    }
+
+    /**
+     * Build the login-page language selector variables: the active locale,
+     * the dropdown options, and a visibility flag. Shared by the header
+     * dropdown and the login form's hidden userlang field so the chosen
+     * language survives form submission.
+     *
+     * @return array<string, mixed>
+     */
+    private function getLanguageSelectorVars(string $activeLocale): array
+    {
+        $vars = ['current_language' => $activeLocale];
+
+        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
+        $localeList = array_map('trim', explode(',', $enabledLanguages));
+        if (count($localeList) > 1) {
+            $preparedLocales = [];
+            foreach ($localeList as $locale) {
+                $preparedLocales[] = [
+                    'locale' => $locale,
+                    'language' => LanguageCode::getByLocale($locale),
+                    'selected' => $locale === $activeLocale,
+                ];
+            }
+            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
+            $vars['locales'] = $preparedLocales;
+            $vars['show_language_selector'] = true;
+        }
+
+        return $vars;
     }
 
     /**
