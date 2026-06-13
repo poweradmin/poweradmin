@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -59,7 +59,7 @@ class ZoneController extends InternalApiController
      */
     public function run(): void
     {
-        $action = $_GET['action'] ?? '';
+        $action = $this->request->query->get('action', '');
 
         switch ($action) {
             case 'list':
@@ -105,7 +105,7 @@ class ZoneController extends InternalApiController
     private function getZone(): void
     {
         // Validate required parameters
-        $zoneId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $zoneId = (int)$this->request->query->get('id', 0);
 
         if ($zoneId <= 0) {
             $this->returnErrorResponse('Missing or invalid zone ID', 400);

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ class UserPreferencesController extends InternalApiController
 
     private function handleGet(int $userId): void
     {
-        $key = $_GET['key'] ?? null;
+        $key = $this->request->query->get('key');
 
         if ($key) {
             if (!UserPreference::isValidKey($key)) {
@@ -128,7 +128,7 @@ class UserPreferencesController extends InternalApiController
 
     private function handleDelete(int $userId): void
     {
-        $key = $_GET['key'] ?? null;
+        $key = $this->request->query->get('key');
 
         if (!$key) {
             $response = $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);
