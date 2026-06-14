@@ -164,9 +164,9 @@ class DnssecAddKeyController extends BaseController
                 } else {
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     try {
-                        if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
+                        if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
                             $auditService = new AuditService($this->db);
-                            $auditService->logDnssecAddKey((int)$zone_id, $domain_name, $key_type, $bits, $algorithm);
+                            $auditService->logDnssecAddKey((int)$zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {
