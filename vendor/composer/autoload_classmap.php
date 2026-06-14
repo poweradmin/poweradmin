@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'BaconQrCode\\Common\\BitArray' => $vendorDir . '/bacon/bacon-qr-code/src/Common/BitArray.php',
     'BaconQrCode\\Common\\BitMatrix' => $vendorDir . '/bacon/bacon-qr-code/src/Common/BitMatrix.php',
     'BaconQrCode\\Common\\BitUtils' => $vendorDir . '/bacon/bacon-qr-code/src/Common/BitUtils.php',
@@ -251,6 +252,7 @@ return array(
     'GuzzleHttp\\Psr7\\Query' => $vendorDir . '/guzzlehttp/psr7/src/Query.php',
     'GuzzleHttp\\Psr7\\Request' => $vendorDir . '/guzzlehttp/psr7/src/Request.php',
     'GuzzleHttp\\Psr7\\Response' => $vendorDir . '/guzzlehttp/psr7/src/Response.php',
+    'GuzzleHttp\\Psr7\\Rfc3986' => $vendorDir . '/guzzlehttp/psr7/src/Rfc3986.php',
     'GuzzleHttp\\Psr7\\Rfc7230' => $vendorDir . '/guzzlehttp/psr7/src/Rfc7230.php',
     'GuzzleHttp\\Psr7\\ServerRequest' => $vendorDir . '/guzzlehttp/psr7/src/ServerRequest.php',
     'GuzzleHttp\\Psr7\\Stream' => $vendorDir . '/guzzlehttp/psr7/src/Stream.php',
@@ -865,6 +867,7 @@ return array(
     'PhpParser\\PrettyPrinterAbstract' => $vendorDir . '/nikic/php-parser/lib/PhpParser/PrettyPrinterAbstract.php',
     'PhpParser\\PrettyPrinter\\Standard' => $vendorDir . '/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php',
     'PhpParser\\Token' => $vendorDir . '/nikic/php-parser/lib/PhpParser/Token.php',
+    'PhpToken' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
     'PoweradminInstall\\DatabaseHelper' => $baseDir . '/install/helpers/DatabaseHelper.php',
     'PoweradminInstall\\DatabaseStructureHelper' => $baseDir . '/install/helpers/DatabaseStructureHelper.php',
     'PoweradminInstall\\InstallSecurityService' => $baseDir . '/install/helpers/InstallSecurityService.php',
@@ -1390,6 +1393,7 @@ return array(
     'RobRichards\\XMLSecLibs\\XMLSecurityKey' => $vendorDir . '/robrichards/xmlseclibs/src/XMLSecurityKey.php',
     'RoundingMode' => $vendorDir . '/symfony/polyfill-php84/Resources/stubs/RoundingMode.php',
     'SQLite3Exception' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'Symfony\\Bridge\\Twig\\AppVariable' => $vendorDir . '/symfony/twig-bridge/AppVariable.php',
     'Symfony\\Bridge\\Twig\\Attribute\\Template' => $vendorDir . '/symfony/twig-bridge/Attribute/Template.php',
     'Symfony\\Bridge\\Twig\\Command\\DebugCommand' => $vendorDir . '/symfony/twig-bridge/Command/DebugCommand.php',
@@ -3440,6 +3444,8 @@ return array(
     'Symfony\\Polyfill\\Intl\\Idn\\Resources\\unidata\\Regex' => $vendorDir . '/symfony/polyfill-intl-idn/Resources/unidata/Regex.php',
     'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Normalizer.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
+    'Symfony\\Polyfill\\Php80\\Php80' => $vendorDir . '/symfony/polyfill-php80/Php80.php',
+    'Symfony\\Polyfill\\Php80\\PhpToken' => $vendorDir . '/symfony/polyfill-php80/PhpToken.php',
     'Symfony\\Polyfill\\Php83\\Php83' => $vendorDir . '/symfony/polyfill-php83/Php83.php',
     'Symfony\\Polyfill\\Php84\\Php84' => $vendorDir . '/symfony/polyfill-php84/Php84.php',
     'Symfony\\Polyfill\\Php85\\Php85' => $vendorDir . '/symfony/polyfill-php85/Php85.php',
@@ -3705,4 +3711,6 @@ return array(
     'Twig\\Util\\DeprecationCollector' => $vendorDir . '/twig/twig/src/Util/DeprecationCollector.php',
     'Twig\\Util\\ReflectionCallable' => $vendorDir . '/twig/twig/src/Util/ReflectionCallable.php',
     'Twig\\Util\\TemplateDirIterator' => $vendorDir . '/twig/twig/src/Util/TemplateDirIterator.php',
+    'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );
