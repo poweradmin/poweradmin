@@ -31,13 +31,17 @@ class PaginationPresenter
     private string $urlPattern;
     private string $id;
 
+    /** @var array<string, string|int> Extra query parameters preserved across page links (e.g. active filters). */
+    private array $queryParams;
+
     private int $numDisplayPages = 8;
 
-    public function __construct(Pagination $pagination, string $urlPattern, string $id = '')
+    public function __construct(Pagination $pagination, string $urlPattern, string $id = '', array $queryParams = [])
     {
         $this->pagination = $pagination;
         $this->urlPattern = $urlPattern;
         $this->id = $id;
+        $this->queryParams = $queryParams;
     }
 
     public function present(): string
@@ -99,6 +103,11 @@ class PaginationPresenter
         // Add ID parameter if present
         if ($this->id !== '') {
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
+        }
+
+        // Preserve active filters (e.g. zone_id) across page links
+        foreach ($this->queryParams as $key => $value) {
+            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . urlencode((string)$key) . '=' . urlencode((string)$value);
         }
 
         // Add rows_per_page parameter if present in the current request

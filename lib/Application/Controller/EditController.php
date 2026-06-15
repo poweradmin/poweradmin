@@ -471,6 +471,7 @@ class EditController extends BaseController
             'meta_edit' => $meta_edit,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
+            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'user_is_zone_owner' => $user_is_zone_owner,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,

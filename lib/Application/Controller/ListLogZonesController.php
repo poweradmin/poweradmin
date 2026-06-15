@@ -31,9 +31,11 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
@@ -42,12 +44,14 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 class ListLogZonesController extends BaseController
 {
     private DbZoneLogger $dbZoneLogger;
+    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbZoneLogger = new DbZoneLogger($this->db);
+        $this->httpRequest = new Request();
     }
 
     public function run(): void
@@ -64,8 +68,9 @@ class ListLogZonesController extends BaseController
     private function showListLogZones(): void
     {
         $selected_page = 1;
-        if (isset($_GET['start'])) {
-            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die(_('Invalid page number.'));
+        $start = $this->httpRequest->getQueryParam('start');
+        if ($start !== null) {
+            is_numeric($start) ? $selected_page = $start : die(_('Invalid page number.'));
             if ($selected_page < 1) {
                 die(_('Page number must be at least 1.'));
             }
@@ -74,13 +79,30 @@ class ListLogZonesController extends BaseController
         $configManager = ConfigurationManager::getInstance();
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
-        if (isset($_GET['name']) && $_GET['name'] != '') {
-            $number_of_logs = $this->dbZoneLogger->countLogsByDomain(DnsIdnService::toPunycode($_GET['name']));
+        $zoneIdParam = $this->httpRequest->getQueryParam('zone_id');
+        $name = $this->httpRequest->getQueryParam('name');
+
+        $zone_id_filter = null;
+        $zone_filter_name = null;
+
+        if ($zoneIdParam !== null && is_numeric($zoneIdParam)) {
+            $zone_id_filter = (int)$zoneIdParam;
+            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainName = $domainRepository->getDomainNameById($zone_id_filter);
+            $zone_filter_name = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
+            $number_of_logs = $this->dbZoneLogger->countLogsByZoneId($zone_id_filter);
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
                 die(_('Page number exceeds available pages.'));
             }
-            $logs = $this->dbZoneLogger->getLogsForDomain(DnsIdnService::toPunycode($_GET['name']), $logs_per_page, ($selected_page - 1) * $logs_per_page);
+            $logs = $this->dbZoneLogger->getLogsByZoneId($zone_id_filter, $logs_per_page, ($selected_page - 1) * $logs_per_page);
+        } elseif (!empty($name)) {
+            $number_of_logs = $this->dbZoneLogger->countLogsByDomain(DnsIdnService::toPunycode($name));
+            $number_of_pages = ceil($number_of_logs / $logs_per_page);
+            if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
+                die(_('Page number exceeds available pages.'));
+            }
+            $logs = $this->dbZoneLogger->getLogsForDomain(DnsIdnService::toPunycode($name), $logs_per_page, ($selected_page - 1) * $logs_per_page);
         } else {
             $number_of_logs = $this->dbZoneLogger->countAllLogs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
@@ -92,16 +114,18 @@ class ListLogZonesController extends BaseController
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
-            'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
+            'name' => $name !== null ? htmlspecialchars($name) : null,
+            'zone_id_filter' => $zone_id_filter,
+            'zone_name' => $zone_filter_name,
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page),
+            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $zone_id_filter),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, ?int $zoneIdFilter = null): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -109,7 +133,8 @@ class ListLogZonesController extends BaseController
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/logs?start={PageNumber}');
+        $queryParams = $zoneIdFilter !== null ? ['zone_id' => $zoneIdFilter] : [];
+        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/logs?start={PageNumber}', '', $queryParams);
 
         return $presenter->present();
     }

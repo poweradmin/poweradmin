@@ -116,6 +116,32 @@ class DbZoneLogger
         return $this->processFetchedLogs($records);
     }
 
+    public function countLogsByZoneId(int $zoneId): int
+    {
+        $stmt = $this->db->prepare("SELECT count(*) AS number_of_logs FROM log_zones WHERE zone_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetch()['number_of_logs'];
+    }
+
+    public function getLogsByZoneId(int $zoneId, $limit, $offset): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT log_zones.id, log_zones.event, log_zones.created_at FROM log_zones
+            WHERE log_zones.zone_id = :zone_id
+            ORDER BY log_zones.created_at DESC
+            LIMIT :limit
+            OFFSET :offset");
+
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = $stmt->fetchAll();
+        return $this->processFetchedLogs($records);
+    }
+
     public function checkIfDomainExist($domain_searched): bool
     {
         if ($domain_searched == "") {
