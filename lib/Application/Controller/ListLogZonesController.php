@@ -36,6 +36,7 @@ use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -68,6 +69,10 @@ class ListLogZonesController extends BaseController
     private function buildFilters(): array
     {
         $filters = [];
+        $zoneId = $this->httpRequest->getQueryParam('zone_id');
+        if ($zoneId !== null && is_numeric($zoneId)) {
+            $filters['zone_id'] = (int)$zoneId;
+        }
         $name = $this->httpRequest->getQueryParam('name');
         if (!empty($name)) {
             $filters['name'] = DnsIdnService::toPunycode($name);
@@ -107,6 +112,15 @@ class ListLogZonesController extends BaseController
 
         $filters = $this->buildFilters();
 
+        $zone_id_filter = $filters['zone_id'] ?? null;
+        $zone_filter_name = null;
+        $is_reverse_zone = false;
+        if ($zone_id_filter !== null) {
+            $domainName = $this->createZoneRepository()->getDomainNameById($zone_id_filter);
+            $zone_filter_name = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
+            $is_reverse_zone = $domainName !== null && DnsHelper::isReverseZone($domainName);
+        }
+
         // Handle export
         $exportFormat = $this->httpRequest->getQueryParam('export');
         if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
@@ -124,6 +138,9 @@ class ListLogZonesController extends BaseController
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
+            'zone_id_filter' => $zone_id_filter,
+            'zone_name' => $zone_filter_name,
+            'is_reverse_zone' => $is_reverse_zone,
             'name' => htmlspecialchars($this->httpRequest->getQueryParam('name', '')),
             'operation' => htmlspecialchars($this->httpRequest->getQueryParam('operation', '')),
             'user_filter' => htmlspecialchars($this->httpRequest->getQueryParam('user', '')),
