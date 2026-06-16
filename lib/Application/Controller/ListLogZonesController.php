@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -137,6 +138,16 @@ class ListLogZonesController extends BaseController
             $filters['zone_id'] = (string) $requestedZoneId;
         }
 
+        // Only resolve the zone name/breadcrumb when the requested zone survived the
+        // ownership intersection, so owner-scoped users cannot enumerate other zones' names.
+        $zone_filter_name = null;
+        $is_reverse_zone = false;
+        if ($requestedZoneId !== null && in_array($requestedZoneId, $ownedZoneIds, true)) {
+            $domainName = $this->createZoneRepository()->getDomainNameById($requestedZoneId);
+            $zone_filter_name = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
+            $is_reverse_zone = $domainName !== null && DnsHelper::isReverseZone($domainName);
+        }
+
         // Handle export
         $exportFormat = $this->httpRequest->getQueryParam('export');
         if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
@@ -160,6 +171,8 @@ class ListLogZonesController extends BaseController
             'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
             'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
             'zone_id_filter' => $requestedZoneId,
+            'zone_name' => $zone_filter_name,
+            'is_reverse_zone' => $is_reverse_zone,
             'operations' => $this->dbZoneLogger->getDistinctOperations(),
             'users' => $applyOwnerFilter
                 ? $this->dbZoneLogger->getDistinctUsersForZones($ownedZoneIds ?? [])
