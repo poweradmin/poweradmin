@@ -38,7 +38,7 @@ DNSSEC operations.
 
 ### Login Screen
 
-![Login interface with multi-language and MFA support](https://docs.poweradmin.org/screenshots/theme-light.png)
+![Login interface with multi-language support](https://docs.poweradmin.org/screenshots/login.png)
 
 ### Dashboard
 
