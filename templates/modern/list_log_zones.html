@@ -8,7 +8,12 @@
         <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
+        {% if zone_id_filter and zone_name %}
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id_filter }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Logs{% endtrans %}</li>
+        {% else %}
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone logs{% endtrans %}</li>
+        {% endif %}
     </ol>
 </nav>
 
@@ -36,11 +41,13 @@
             <input type="hidden" name="zone_id" value="{{ zone_id_filter }}">
             {% endif %}
             <div class="row g-2 mb-2">
+                {% if not zone_id_filter %}
                 <div class="col-md-3">
                     <input name="name" type="text" class="form-control form-control-sm"
                            placeholder="{% trans %}Domain name{% endtrans %}"
                            {% if name %}value="{{ name }}"{% endif %}>
                 </div>
+                {% endif %}
                 <div class="col-md-2">
                     <select name="operation" class="form-select form-select-sm">
                         <option value="">{% trans %}All operations{% endtrans %}</option>
