@@ -244,15 +244,9 @@ class DbZoneLogger
     private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params): void
     {
         if (!empty($filters['zone_id'])) {
-            if ($this->isApiBackend()) {
-                // log_zones.zone_id may hold the Poweradmin zone id or the PowerDNS domain id depending on when the row was written (see #1210); match either for the selected zone
-                $conditions[] = "log_zones.zone_id IN (:zone_id_self, (SELECT zones.domain_id FROM zones WHERE zones.id = :zone_id_dom))";
-                $params[':zone_id_self'] = [(int)$filters['zone_id'], PDO::PARAM_INT];
-                $params[':zone_id_dom'] = [(int)$filters['zone_id'], PDO::PARAM_INT];
-            } else {
-                $conditions[] = "log_zones.zone_id = :zone_id";
-                $params[':zone_id'] = [(int)$filters['zone_id'], PDO::PARAM_INT];
-            }
+            // log_zones.zone_id holds the PowerDNS domain id (the id used by the edit route and doLog).
+            $conditions[] = "log_zones.zone_id = :zone_id";
+            $params[':zone_id'] = [(int)$filters['zone_id'], PDO::PARAM_INT];
         }
 
         if (!empty($filters['name'])) {
