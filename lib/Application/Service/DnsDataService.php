@@ -31,6 +31,8 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -606,38 +608,50 @@ class DnsDataService
         unset($zone);
 
         // Enrich with record counts from the records table
-        $zoneIds = array_filter(array_map(fn($z) => $z['id'] ?? 0, $zones));
-        if (!empty($zoneIds)) {
-            $recordCounts = $this->batchCountZoneRecords($zoneIds);
-
-            foreach ($zones as &$zone) {
-                $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
-            }
-            unset($zone);
+        $recordCounts = $this->batchCountZoneRecords($zones);
+        foreach ($zones as &$zone) {
+            $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
         }
+        unset($zone);
 
         return $zones;
     }
 
     /**
      * Batch count records for multiple zones.
-     * Uses a single SQL query for SQL backend, per-zone API calls for API backend.
+     * SQL backend uses a single query. API backend uses one /zones stats call
+     * (getZoneStats) instead of a per-zone zone-body fetch, falling back to a
+     * per-zone call only when PowerDNS omits rrset_count (pre-4.4) or reports 0.
      *
-     * @param int[] $zoneIds
+     * @param array<int, array{id?: int, name?: string}> $zones
      * @return array<int, int> zone ID => record count
      */
-    private function batchCountZoneRecords(array $zoneIds): array
+    private function batchCountZoneRecords(array $zones): array
     {
         if ($this->backendProvider->isApiBackend()) {
+            $stats = $this->backendProvider->getZoneStats();
             $counts = [];
-            foreach ($zoneIds as $zid) {
-                $counts[$zid] = $this->backendProvider->countZoneRecords($zid);
+            foreach ($zones as $zone) {
+                $id = (int)($zone['id'] ?? 0);
+                if ($id <= 0) {
+                    continue;
+                }
+                $apiName = rtrim((string)($zone['name'] ?? ''), '.') . '.';
+                $count = (int)($stats[$apiName]['rrset_count'] ?? 0);
+                if ($count === 0) {
+                    $count = $this->backendProvider->countZoneRecords($id);
+                }
+                $counts[$id] = $count;
             }
             return $counts;
         }
 
-        $tableNameService = new \Poweradmin\Infrastructure\Database\TableNameService($this->config);
-        $recordsTable = $tableNameService->getTable(\Poweradmin\Infrastructure\Database\PdnsTable::RECORDS);
+        $zoneIds = array_filter(array_map(fn($z) => (int)($z['id'] ?? 0), $zones));
+        if (empty($zoneIds)) {
+            return [];
+        }
+        $tableNameService = new TableNameService($this->config);
+        $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
         $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
         $stmt = $this->db->prepare(
             "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable

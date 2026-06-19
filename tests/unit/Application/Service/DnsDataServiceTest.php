@@ -258,6 +258,83 @@ class DnsDataServiceTest extends TestCase
         $this->assertSame(2, $total);
     }
 
+    // ---------------------------------------------------------------
+    // batchCountZoneRecords() - API mode N+1 regression (#1178)
+    // ---------------------------------------------------------------
+
+    public function testApiRecordCountsUseSingleStatsCallNotPerZone(): void
+    {
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('searchDnsData')->willReturn([
+            'zones' => [
+                ['id' => 1, 'name' => 'one.example.com', 'type' => 'NATIVE'],
+                ['id' => 2, 'name' => 'two.example.com', 'type' => 'NATIVE'],
+                ['id' => 3, 'name' => 'three.example.com', 'type' => 'NATIVE'],
+            ],
+            'records' => [],
+        ]);
+
+        // getZoneStats() must be hit exactly once for the whole list, and the
+        // slow per-zone fallback must never run when rrset_count is present.
+        $this->mockBackend->expects($this->once())
+            ->method('getZoneStats')
+            ->willReturn([
+                'one.example.com.' => ['rrset_count' => 5, 'dnssec' => false, 'serial' => 1],
+                'two.example.com.' => ['rrset_count' => 9, 'dnssec' => false, 'serial' => 1],
+                'three.example.com.' => ['rrset_count' => 2, 'dnssec' => false, 'serial' => 1],
+            ]);
+        $this->mockBackend->expects($this->never())->method('countZoneRecords');
+
+        $mockStmt = $this->createMock(\PDOStatement::class);
+        $mockStmt->method('fetch')->willReturn(false);
+        $mockStmt->method('execute')->willReturn(true);
+        $this->mockDb->method('query')->willReturn($mockStmt);
+        $this->mockDb->method('prepare')->willReturn($mockStmt);
+
+        $parameters = ['query' => 'example', 'zones' => true, 'records' => false];
+        $service = $this->createService();
+        $result = $service->searchZones($parameters, 'all', 'name', 'ASC', 10, false, 1);
+
+        $byName = [];
+        foreach ($result as $zone) {
+            $byName[$zone['name']] = $zone['count_records'];
+        }
+        $this->assertSame(5, $byName['one.example.com']);
+        $this->assertSame(9, $byName['two.example.com']);
+        $this->assertSame(2, $byName['three.example.com']);
+    }
+
+    public function testApiRecordCountFallsBackToPerZoneCallWhenStatsMissing(): void
+    {
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('searchDnsData')->willReturn([
+            'zones' => [
+                ['id' => 7, 'name' => 'legacy.example.com', 'type' => 'NATIVE'],
+            ],
+            'records' => [],
+        ]);
+
+        // Pre-4.4 PowerDNS omits rrset_count, so a single zone with no stats
+        // is allowed one fallback fetch.
+        $this->mockBackend->expects($this->once())->method('getZoneStats')->willReturn([]);
+        $this->mockBackend->expects($this->once())
+            ->method('countZoneRecords')
+            ->with(7)
+            ->willReturn(42);
+
+        $mockStmt = $this->createMock(\PDOStatement::class);
+        $mockStmt->method('fetch')->willReturn(false);
+        $mockStmt->method('execute')->willReturn(true);
+        $this->mockDb->method('query')->willReturn($mockStmt);
+        $this->mockDb->method('prepare')->willReturn($mockStmt);
+
+        $parameters = ['query' => 'legacy', 'zones' => true, 'records' => false];
+        $service = $this->createService();
+        $result = $service->searchZones($parameters, 'all', 'name', 'ASC', 10, false, 1);
+
+        $this->assertSame(42, $result[0]['count_records']);
+    }
+
     public function testSearchRecordsApiModeWithTypeFilter(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
