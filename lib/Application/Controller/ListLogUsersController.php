@@ -35,6 +35,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -55,7 +56,13 @@ class ListLogUsersController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+            && !UserManager::verifyPermission($this->db, 'user_logs_view')
+        ) {
+            $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+            return;
+        }
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_users');

@@ -707,6 +707,10 @@ abstract class BaseController
                 'perm_edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
                 'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
                 'perm_api_manage_keys' => UserManager::verifyPermission($this->db, 'api_manage_keys'),
+                'perm_view_zone_logs_own' => UserManager::verifyPermission($this->db, 'zone_logs_view_own'),
+                'perm_view_zone_logs_others' => UserManager::verifyPermission($this->db, 'zone_logs_view_others'),
+                'perm_user_logs_view' => UserManager::verifyPermission($this->db, 'user_logs_view'),
+                'perm_group_logs_view' => UserManager::verifyPermission($this->db, 'group_logs_view'),
                 'session_key_error' => $perm_is_godlike && in_array($session_key, ['p0w3r4dm1n', 'change_this_key'], true) ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',

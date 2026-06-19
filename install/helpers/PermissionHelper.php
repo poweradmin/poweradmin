@@ -61,6 +61,10 @@ class PermissionHelper
             [68, 'zone_delete_others', 'User is allowed to delete zones owned by others.'],
             [69, 'user_enforce_mfa', 'User is required to use multi-factor authentication.'],
             [70, 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'],
+            [71, 'zone_logs_view_own', 'User is allowed to view activity logs for zones he owns.'],
+            [72, 'zone_logs_view_others', 'User is allowed to view activity logs for zones he does not own.'],
+            [73, 'user_logs_view', 'User is allowed to view the user activity logs.'],
+            [74, 'group_logs_view', 'User is allowed to view the group activity logs.'],
         ];
     }
 }

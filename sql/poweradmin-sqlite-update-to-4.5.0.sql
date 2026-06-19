@@ -91,6 +91,26 @@ INSERT INTO perm_items (name, descr)
 SELECT 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_dnssec_manage_own');
 
+-- Register dedicated log-view permissions so admins can grant access to the
+-- activity logs without granting ueberuser. Zone logs split into own/others
+-- like zone_content_view; user and group logs are global. Existing templates
+-- are NOT auto-granted these; admins opt in via the permission template editor.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_logs_view_own', 'User is allowed to view activity logs for zones he owns.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_logs_view_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_logs_view_others', 'User is allowed to view activity logs for zones he does not own.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_logs_view_others');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'user_logs_view', 'User is allowed to view the user activity logs.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'user_logs_view');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'group_logs_view', 'User is allowed to view the group activity logs.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'group_logs_view');
+
 -- password_reset_tokens.token VARCHAR is advisory in SQLite; existing rows
 -- accept the wider sha256$<64hex> value without ALTER. The structure file is
 -- updated to keep declarations consistent across databases.

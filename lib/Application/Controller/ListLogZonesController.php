@@ -36,7 +36,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -59,11 +59,9 @@ class ListLogZonesController extends BaseController
 
     public function run(): void
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $canViewOwn = UserManager::verifyPermission($this->db, 'zone_content_view_own');
-        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $logPermission = Permission::getZoneLogPermission($this->db);
 
-        if (!$isAdmin && !$canViewOwn && !$canViewOthers) {
+        if ($logPermission === 'none') {
             // Existing deny path: logs the access denial via AuditService and halts.
             $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
             return;
@@ -73,9 +71,9 @@ class ListLogZonesController extends BaseController
         $this->setCurrentPage('list_log_zones');
         $this->setPageTitle(_('Zone Logs'));
 
-        // Owner-only filter applies when the user can see their own zones but not others'.
-        // Users with view_others (delegated staff) see the full log set, like admins.
-        $applyOwnerFilter = !$isAdmin && !$canViewOthers && $canViewOwn;
+        // Owner-only filter applies when the user may see their own zones' logs but
+        // not others'. "all" holders (ueberuser or zone_logs_view_others) see everything.
+        $applyOwnerFilter = $logPermission === 'own';
         $this->showListLogZones($applyOwnerFilter);
     }
 

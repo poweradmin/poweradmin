@@ -65,6 +65,10 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (67,	'zone_delete_own',	
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (73,	'user_logs_view',	'User is allowed to view the user activity logs.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
@@ -122,6 +126,12 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (35,	9,	43);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (36,	9,	49);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (37,	2,	70);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (38,	7,	70);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (39,	2,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (40,	3,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (41,	4,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (42,	7,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (43,	8,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (44,	9,	71);
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 

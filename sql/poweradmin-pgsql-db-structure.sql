@@ -109,7 +109,11 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
                                                      (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
                                                      (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.'),
-                                                     (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.');
+                                                     (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.'),
+                                                     (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.'),
+                                                     (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.'),
+                                                     (73,	'user_logs_view',	'User is allowed to view the user activity logs.'),
+                                                     (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
@@ -188,7 +192,13 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (35,	9,	43),
     (36,	9,	49),
     (37,	2,	70),
-    (38,	7,	70);
+    (38,	7,	70),
+    (39,	2,	71),
+    (40,	3,	71),
+    (41,	4,	71),
+    (42,	7,	71),
+    (43,	8,	71),
+    (44,	9,	71);
 
 SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 

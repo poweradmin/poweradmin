@@ -160,6 +160,30 @@ class Permission
     }
 
     /**
+     * Get zone log view permission.
+     *
+     * Determines how much of the zone activity log the user may see. Ueberusers
+     * and holders of zone_logs_view_others see every zone's log; zone_logs_view_own
+     * holders are limited to zones they own (directly or via a group).
+     *
+     * @param PDO $db The database connection.
+     * @return string Returns "all", "own", or "none".
+     */
+    public static function getZoneLogPermission($db): string
+    {
+        if (
+            UserManager::verifyPermission($db, 'user_is_ueberuser')
+            || UserManager::verifyPermission($db, 'zone_logs_view_others')
+        ) {
+            return "all";
+        } elseif (UserManager::verifyPermission($db, 'zone_logs_view_own')) {
+            return "own";
+        } else {
+            return "none";
+        }
+    }
+
+    /**
      * Get permissions.
      *
      * This method checks a set of permissions for the user.
