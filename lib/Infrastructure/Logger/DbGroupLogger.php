@@ -223,7 +223,10 @@ class DbGroupLogger
 
     private function processDetails($event): string
     {
-        return strtr($event, [" " => "<br>", ":" => ": "]);
+        // Escape the stored event before adding line-break markup, so values
+        // logged verbatim cannot be rendered as markup in the details view.
+        $escaped = htmlspecialchars($event, ENT_QUOTES, 'UTF-8');
+        return strtr($escaped, [" " => "<br>", ":" => ": "]);
     }
 
     private function processFetchedLogs(array $records): array
