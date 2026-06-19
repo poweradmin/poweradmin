@@ -269,6 +269,10 @@ class OidcService extends LoggingService
             if ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
+                // Issue a fresh session ID on successful login, matching the local
+                // login flow, so a pre-authentication session cannot be reused.
+                session_regenerate_id(true);
+
                 // Get the actual database username (important for existing users linked by email)
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
                 if (!$databaseUsername) {
