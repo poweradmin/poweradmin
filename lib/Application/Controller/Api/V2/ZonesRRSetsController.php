@@ -440,7 +440,7 @@ class ZonesRRSetsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
@@ -736,7 +736,7 @@ class ZonesRRSetsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client

@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
@@ -280,6 +281,22 @@ abstract class PublicApiController extends AbstractApiController
     protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
     {
         return $this->returnApiResponse($data, false, $message, $status, $headers);
+    }
+
+    /**
+     * Pick the right "cannot edit this zone's records" message: read-only zones
+     * (Secondary, Consumer) replicate from a primary and are rejected for a
+     * different reason than a missing edit permission. Keeps the public error
+     * contract accurate for both cases.
+     *
+     * @param string|null $zoneType Zone kind (MASTER, SLAVE, NATIVE, CONSUMER) when known
+     * @return string Error message describing why record edits are not allowed
+     */
+    protected function zoneEditDeniedMessage(?string $zoneType): string
+    {
+        return ZoneType::isReadOnly($zoneType)
+            ? 'Records in Secondary and Consumer zones are read-only; they replicate from a primary'
+            : 'You do not have permission to edit this zone';
     }
 
     /**

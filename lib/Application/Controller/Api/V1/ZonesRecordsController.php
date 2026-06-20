@@ -399,7 +399,7 @@ class ZonesRecordsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
@@ -627,7 +627,7 @@ class ZonesRecordsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             // Get existing record
@@ -772,7 +772,7 @@ class ZonesRecordsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             // Verify record exists in this zone

@@ -222,7 +222,7 @@ class ZonesRecordsBulkController extends PublicApiController
             // Check if user has permission to edit records in this zone
             $zoneType = $zone['type'] ?? null;
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zoneType)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zoneType), 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
