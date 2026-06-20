@@ -195,9 +195,14 @@ class DeleteDomainsController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
 
+        // Fetch all zone details in one bulk call to avoid per-zone API round-trips
+        $zoneInfos = [];
+        foreach ($dnsRecord->getZoneInfoFromIds($zone_ids) as $info) {
+            $zoneInfos[(int)($info['id'] ?? 0)] = $info;
+        }
+
         foreach ($zone_ids as $zone_id) {
-            $zones[$zone_id]['id'] = $zone_id;
-            $zones[$zone_id] = $dnsRecord->getZoneInfoFromId($zone_id);
+            $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
             $zones[$zone_id]['owner'] = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
             $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 

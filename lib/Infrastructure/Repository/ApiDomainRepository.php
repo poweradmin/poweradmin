@@ -290,10 +290,43 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
     public function getZoneInfoFromIds(array $zones): array
     {
-        $zone_infos = array();
-        foreach ($zones as $zone) {
-            $zone_info = $this->getZoneInfoFromId($zone);
-            $zone_infos[] = $zone_info;
+        if (empty($zones)) {
+            return [];
+        }
+
+        $perm_view = Permission::getViewPermission($this->db);
+        if ($perm_view == "none") {
+            $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
+            return [];
+        }
+
+        // One bulk zone-list fetch for name/type/master plus one stats fetch for
+        // record counts, instead of two per-zone zone-body fetches per zone.
+        $byId = [];
+        foreach ($this->backendProvider->getZones() as $zone) {
+            $byId[(int)($zone['id'] ?? 0)] = $zone;
+        }
+        $stats = $this->backendProvider->getZoneStats();
+
+        $zone_infos = [];
+        foreach ($zones as $zid) {
+            $zid = (int)$zid;
+            $zone = $byId[$zid] ?? null;
+            if ($zone === null) {
+                continue;
+            }
+            $apiName = rtrim((string)($zone['name'] ?? ''), '.') . '.';
+            $recordCount = (int)($stats[$apiName]['rrset_count'] ?? 0);
+            if ($recordCount === 0) {
+                $recordCount = $this->backendProvider->countZoneRecords($zid);
+            }
+            $zone_infos[] = [
+                'id' => $zid,
+                'name' => $zone['name'],
+                'type' => $zone['type'],
+                'master_ip' => $zone['master'],
+                'record_count' => $recordCount,
+            ];
         }
         return $zone_infos;
     }

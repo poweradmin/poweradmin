@@ -316,23 +316,23 @@ class ManageGroupZonesController extends BaseController
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);
             $ownedDomainIds = array_map(fn($zg) => $zg->getDomainId(), $zoneGroups);
 
-            // Get owned zone details
+            // Get owned zone details in one bulk call to avoid per-zone API round-trips
             $ownedZones = [];
             if (!empty($ownedDomainIds)) {
-                foreach ($ownedDomainIds as $domainId) {
-                    $zoneInfo = $domainRepository->getZoneInfoFromId($domainId);
-                    if ($zoneInfo) {
-                        $name = $zoneInfo['name'] ?? '';
-                        if (str_ends_with($name, '.ip6.arpa')) {
-                            $shortened = IpHelper::shortenIPv6ReverseZone($name);
-                            $name = $shortened ?? $name;
-                        }
-                        $ownedZones[] = [
-                            'id' => $domainId,
-                            'name' => $name,
-                            'type' => $zoneInfo['type'] ?? '',
-                        ];
+                foreach ($domainRepository->getZoneInfoFromIds($ownedDomainIds) as $zoneInfo) {
+                    $name = $zoneInfo['name'] ?? '';
+                    if ($name === '') {
+                        continue;
                     }
+                    if (str_ends_with($name, '.ip6.arpa')) {
+                        $shortened = IpHelper::shortenIPv6ReverseZone($name);
+                        $name = $shortened ?? $name;
+                    }
+                    $ownedZones[] = [
+                        'id' => (int)($zoneInfo['id'] ?? 0),
+                        'name' => $name,
+                        'type' => $zoneInfo['type'] ?? '',
+                    ];
                 }
                 usort($ownedZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
             }
