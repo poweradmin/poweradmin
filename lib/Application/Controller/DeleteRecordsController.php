@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -237,7 +238,7 @@ class DeleteRecordsController extends BaseController
                 $userId = $this->userContextService->getLoggedInUserId();
                 $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $domain_id);
 
-                if ($zone_info['type'] == "SLAVE" || $perm_edit === 'none') {
+                if (ZoneType::isReadOnly($zone_info['type']) || $perm_edit === 'none') {
                     continue;
                 }
 

@@ -25,6 +25,7 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
@@ -306,6 +307,12 @@ class ZoneFileImportController extends BaseController
 
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
+
+            // Secondary and Consumer zones replicate from a primary - records cannot be imported
+            if (ZoneType::isReadOnly($dnsRecord->getDomainType($existingZoneId))) {
+                $this->showError(_('You cannot import records into a read-only zone.'));
                 return;
             }
 

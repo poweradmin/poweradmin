@@ -27,6 +27,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -112,7 +113,7 @@ class BatchPtrRecordController extends BaseController
             $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
 
             $this->checkCondition(
-                $zone_type == "SLAVE" || $perm_edit === 'none',
+                ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
                 _("You do not have the permission to add records to this zone.")
             );
         }

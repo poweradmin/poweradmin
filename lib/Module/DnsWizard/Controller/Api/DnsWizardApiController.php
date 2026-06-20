@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
@@ -367,7 +368,7 @@ class DnsWizardApiController extends InternalApiController
 
             // Same permission check as AddRecordController
             if (
-                $zone_type == "SLAVE"
+                ZoneType::isReadOnly($zone_type)
                 || $perm_edit == "none"
                 || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)
             ) {

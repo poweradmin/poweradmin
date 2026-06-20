@@ -37,6 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
@@ -79,15 +80,15 @@ class EditCommentController extends BaseController
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
         $is_admin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
-        // Permission check logic matches what's in DnsRecord->edit_zone_comment
-        // Users can edit if:
-        // 1. They are an admin (uberuser) OR
-        // 2. It's not a slave zone AND they have edit permission AND (they have 'all' permission OR they own the zone)
-        $can_edit = $is_admin ||
-                   ($zone_type != "SLAVE" &&
-                    $perm_edit != "none" &&
-                    ($perm_edit == "all" ||
-                     (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner)));
+        // Permission check logic matches what's in DnsRecord->edit_zone_comment.
+        // Read-only zones (Secondary, Consumer) block comment edits for everyone -
+        // including admins - because RecordManager rejects the write. Otherwise a
+        // user can edit if they are an admin, or have edit permission and own the zone.
+        $can_edit = !ZoneType::isReadOnly($zone_type) &&
+                   ($is_admin ||
+                    ($perm_edit != "none" &&
+                     ($perm_edit == "all" ||
+                      (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner))));
 
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;

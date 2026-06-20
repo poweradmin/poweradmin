@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Web;
 
 use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -54,6 +55,7 @@ class BadgeTwigExtension extends AbstractExtension
             new TwigFunction('record_type_class', [$this, 'getRecordTypeClass']),
             new TwigFunction('zone_type_class', [$this, 'getZoneTypeClass']),
             new TwigFunction('zone_type_label', [$this, 'getZoneTypeLabel']),
+            new TwigFunction('zone_is_read_only', [$this, 'isZoneReadOnly']),
             new TwigFunction('autoprimaries_label', [$this, 'getAutoprimariesLabel']),
         ];
     }
@@ -69,6 +71,15 @@ class BadgeTwigExtension extends AbstractExtension
     public function getZoneTypeClass(string $type): string
     {
         return self::ZONE_TYPE_CLASSES[strtoupper($type)] ?? 'bg-secondary';
+    }
+
+    /**
+     * Secondary and Consumer zones replicate records from a primary, so their
+     * records are read-only - templates hide edit controls for them.
+     */
+    public function isZoneReadOnly(?string $type): bool
+    {
+        return ZoneType::isReadOnly($type);
     }
 
     /**

@@ -73,6 +73,15 @@ class BadgeTwigExtensionTest extends TestCase
         $this->assertSame('', $this->ext->getZoneTypeLabel(''));
     }
 
+    public function testIsZoneReadOnlyForReplicatedKinds(): void
+    {
+        $this->assertTrue($this->ext->isZoneReadOnly('SLAVE'));
+        $this->assertTrue($this->ext->isZoneReadOnly('consumer'));
+        $this->assertFalse($this->ext->isZoneReadOnly('MASTER'));
+        $this->assertFalse($this->ext->isZoneReadOnly('PRODUCER'));
+        $this->assertFalse($this->ext->isZoneReadOnly(null));
+    }
+
     public function testZoneTypeLabelUnknownKindFallsBackToTitleCase(): void
     {
         $this->setSessionVersion('4.5.0');

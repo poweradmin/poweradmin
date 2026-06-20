@@ -36,6 +36,11 @@ interface DynamicDnsRepositoryInterface
      */
     public function getUserZones(User $user): array;
 
+    /**
+     * @return string|null PowerDNS zone kind (MASTER, SLAVE, NATIVE, CONSUMER, ...) or null if unknown.
+     */
+    public function getZoneType(int $zoneId): ?string;
+
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array;
 
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void;

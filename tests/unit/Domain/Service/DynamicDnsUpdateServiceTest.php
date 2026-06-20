@@ -94,6 +94,40 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('good 192.168.1.1', $result);
     }
 
+    public function testProcessUpdateRejectsReadOnlyZone(): void
+    {
+        $request = new DynamicDnsRequest(
+            'user',
+            'pass',
+            'test.example.com',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $validationResult = ValidationResult::success(null);
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->validationService->method('validateRequest')->willReturn($validationResult);
+        $this->authService->method('authenticateUser')->willReturn($user);
+        $this->validationService->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn($ipList);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+
+        // Secondary/Consumer zones replicate from a primary - no records may be written
+        $this->repository->method('getZoneType')->with(1)->willReturn('SLAVE');
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('deleteDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $this->service->processUpdate($request);
+
+        $this->assertEquals('!yours', $result);
+    }
+
     public function testProcessUpdateReturnsGoodWhenNoUpdateNeeded(): void
     {
         $request = new DynamicDnsRequest(

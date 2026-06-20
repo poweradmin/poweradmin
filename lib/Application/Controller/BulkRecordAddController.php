@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -101,7 +102,7 @@ class BulkRecordAddController extends BaseController
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
 
         $this->checkCondition(
-            $zone_type == "SLAVE" || $perm_edit === 'none',
+            ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
             _('You do not have the permission to add records to this zone.')
         );
 

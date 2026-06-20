@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
@@ -97,6 +98,11 @@ class DynamicDnsUpdateService
 
         if ($allowedZoneIds !== null && !in_array($zoneId, $allowedZoneIds, true)) {
             return $this->emptyResult('forbidden', $zoneId);
+        }
+
+        // Secondary and Consumer zones replicate from a primary - records are read-only
+        if (ZoneType::isReadOnly($this->repository->getZoneType($zoneId))) {
+            return $this->emptyResult('!yours', $zoneId);
         }
 
         try {

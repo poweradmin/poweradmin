@@ -105,6 +105,15 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
         return $zones;
     }
 
+    public function getZoneType(int $zoneId): ?string
+    {
+        $query = $this->db->prepare("SELECT type FROM {$this->domainsTable} WHERE id = :id");
+        $query->execute([':id' => $zoneId]);
+        $type = $query->fetchColumn();
+
+        return $type === false ? null : (string)$type;
+    }
+
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
     {
         $query = $this->db->prepare("

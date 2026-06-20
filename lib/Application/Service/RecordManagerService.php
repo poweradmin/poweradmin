@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -61,6 +62,13 @@ class RecordManagerService
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
     {
+        // Secondary and Consumer zones replicate from a primary - records are read-only.
+        // The non-atomic path is already blocked by RecordManager, but the atomic
+        // (disabled-record) path writes directly to the backend and must be guarded here.
+        if (ZoneType::isReadOnly($this->dnsRecord->getDomainType($zone_id))) {
+            return false;
+        }
+
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
         $recordId = ($disabled && $this->backendProvider !== null)

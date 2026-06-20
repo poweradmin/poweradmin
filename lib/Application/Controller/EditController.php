@@ -531,6 +531,13 @@ class EditController extends BaseController
 
         if ($this->request->getPostParam('template_change') !== null) {
             $this->validateCsrfToken();
+
+            // Applying a template writes records, which read-only zones cannot accept
+            if (ZoneType::isReadOnly($this->dnsRecord->getDomainType($zone_id))) {
+                $this->setMessage('edit', 'error', _('You cannot apply a template to a read-only zone.'));
+                return;
+            }
+
             $zone_template = $this->request->getPostParam('zone_template');
             $new_zone_template = ($zone_template === null || $zone_template === 'none') ? 0 : $zone_template;
             $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
@@ -609,6 +616,13 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
+        // Secondary and Consumer zones replicate from a primary - reject any save
+        // (records, comment, or SOA serial bump) server-side, not just in the UI
+        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
+            $this->setMessage('edit', 'error', _('You cannot edit records in a read-only zone.'));
+            return;
+        }
+
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;

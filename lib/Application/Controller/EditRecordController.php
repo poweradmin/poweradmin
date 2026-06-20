@@ -40,6 +40,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -120,9 +121,9 @@ class EditRecordController extends BaseController
         // Get zone type after permission validation
         $zone_type = $dnsRecord->getDomainType($zid);
 
-        // Check edit permission for SLAVE zones and zone-specific edit rights
-        if ($zone_type == "SLAVE") {
-            $this->showError(_("You cannot edit records in a SLAVE zone."));
+        // Secondary and Consumer zones replicate records from a primary - records are read-only
+        if (ZoneType::isReadOnly($zone_type)) {
+            $this->showError(_("You cannot edit records in a read-only zone."));
             return;
         }
 

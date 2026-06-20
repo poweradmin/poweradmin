@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneType;
 
 /**
  * Stateless permission service for API requests
@@ -224,19 +225,20 @@ class ApiPermissionService
      * Record-type restrictions for own_as_client (SOA, NS) are enforced by
      * canEditZoneRecord().
      *
-     * SLAVE zones cannot be content-edited via Poweradmin (records are owned by
-     * the master); pass the zone type from the caller to enforce this in the
-     * API write paths that bypass RecordManager. ApiPermissionService never
-     * queries PowerDNS tables itself, so the zone type must be supplied.
+     * Secondary and Consumer zones cannot be content-edited via Poweradmin
+     * (records are replicated from a primary); pass the zone type from the
+     * caller to enforce this in the API write paths that bypass RecordManager.
+     * ApiPermissionService never queries PowerDNS tables itself, so the zone
+     * type must be supplied.
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
-     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE, CONSUMER) when known
      * @return bool True if user can edit records in the zone
      */
     public function canEditZoneContent(int $userId, int $zoneId, ?string $zoneType = null): bool
     {
-        if ($zoneType !== null && strtoupper($zoneType) === 'SLAVE') {
+        if ($zoneType !== null && ZoneType::isReadOnly($zoneType)) {
             return false;
         }
 
@@ -257,8 +259,9 @@ class ApiPermissionService
      * Mirrors the web UI behavior in RecordManager: users holding only
      * zone_content_edit_own_as_client may edit records in their own zones except
      * for SOA and NS records, which require zone_content_edit_own (or higher).
-     * SLAVE zones are rejected outright (when $zoneType is provided) so API
-     * create paths that bypass RecordManager keep the same restriction as the UI.
+     * Read-only zones (Secondary, Consumer) are rejected outright (when $zoneType
+     * is provided) so API create paths that bypass RecordManager keep the same
+     * restriction as the UI.
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)

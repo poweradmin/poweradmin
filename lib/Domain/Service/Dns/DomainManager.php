@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -815,6 +816,12 @@ class DomainManager implements DomainManagerInterface
      */
     public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
     {
+        // Secondary and Consumer zones replicate from a primary - applying a
+        // template would write replicated records, so skip them entirely
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
+            return;
+        }
+
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 

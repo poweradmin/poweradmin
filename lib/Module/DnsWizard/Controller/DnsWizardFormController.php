@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
@@ -106,7 +107,7 @@ class DnsWizardFormController extends BaseController
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 

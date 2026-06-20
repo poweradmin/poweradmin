@@ -29,6 +29,7 @@ use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -124,7 +125,7 @@ class RecordManager implements RecordManagerInterface
             throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -230,7 +231,7 @@ class RecordManager implements RecordManagerInterface
             throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -340,7 +341,7 @@ class RecordManager implements RecordManagerInterface
 
         $dns_ttl = $this->config->get('dns', 'ttl');
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } else {
             $beforeRecord = null;
@@ -434,6 +435,12 @@ class RecordManager implements RecordManagerInterface
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
+        // Secondary and Consumer zones replicate records from a primary - records are read-only
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
+            $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
+            return false;
+        }
+
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
                 $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
@@ -521,7 +528,7 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
 
             return false;

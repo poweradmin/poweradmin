@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
@@ -246,9 +247,9 @@ class DeleteRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->getZoneInfoFromId($zid);
 
-        // SLAVE zones cannot have records deleted
-        if ($zone_info['type'] == "SLAVE") {
-            $this->showError(_("You cannot delete records from a SLAVE zone."));
+        // Secondary and Consumer zones replicate records from a primary - records are read-only
+        if (ZoneType::isReadOnly($zone_info['type'])) {
+            $this->showError(_("You cannot delete records from a read-only zone."));
         }
 
         // Permission already validated with zone-aware check at top of method

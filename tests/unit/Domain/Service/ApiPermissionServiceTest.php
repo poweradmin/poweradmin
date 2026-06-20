@@ -309,6 +309,16 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditZoneContentBlocksConsumerZone(): void
+    {
+        // No permission queries should be made: read-only zones short-circuit to false.
+        $this->db->expects($this->never())->method('prepare');
+
+        $result = $this->service->canEditZoneContent(1, 100, 'CONSUMER');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testCanEditZoneContentAllowsMasterZoneWhenZoneTypeProvided(): void
     {
         // ueberuser=0, edit_others=0, edit_own=1, owns=1

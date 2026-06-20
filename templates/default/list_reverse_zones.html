@@ -179,7 +179,7 @@
                             <span class="badge bg-warning text-dark ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Zone has no SOA record{% endtrans %}"><i class="bi bi-exclamation-triangle-fill"></i> {% trans %}No SOA{% endtrans %}</span>
                             {% endif %}
                         </td>
-                        <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
+                        <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span>{% if zone_is_read_only(zone['type']) %} <span class="badge bg-secondary-subtle text-secondary-emphasis" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Records for this zone are replicated from its primary and cannot be edited here.{% endtrans %}">{% trans %}Read-only{% endtrans %}</span>{% endif %}</td>
                         {% if iface_zonelist_record_count %}
                         <td>{{ zone["count_records"] }}</td>
                         {% endif %}

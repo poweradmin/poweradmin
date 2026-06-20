@@ -107,6 +107,12 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         return $zones;
     }
 
+    public function getZoneType(int $zoneId): ?string
+    {
+        // Read zone kind via the API; this repository never queries PowerDNS tables
+        return $this->backendProvider->getZoneTypeById($zoneId) ?: null;
+    }
+
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
     {
         $allRecords = $this->backendProvider->getRecordsByZoneId($zoneId, $recordType);

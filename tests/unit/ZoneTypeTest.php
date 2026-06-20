@@ -28,4 +28,22 @@ class ZoneTypeTest extends TestCase
         $this->assertContains('SLAVE', $types);
         $this->assertContains('NATIVE', $types);
     }
+
+    #[Test]
+    public function isReadOnlyTrueForSlaveAndConsumer(): void
+    {
+        $this->assertTrue(ZoneType::isReadOnly('SLAVE'));
+        $this->assertTrue(ZoneType::isReadOnly('CONSUMER'));
+        $this->assertTrue(ZoneType::isReadOnly('consumer'));
+    }
+
+    #[Test]
+    public function isReadOnlyFalseForEditableTypes(): void
+    {
+        $this->assertFalse(ZoneType::isReadOnly('MASTER'));
+        $this->assertFalse(ZoneType::isReadOnly('NATIVE'));
+        $this->assertFalse(ZoneType::isReadOnly('PRODUCER'));
+        $this->assertFalse(ZoneType::isReadOnly(''));
+        $this->assertFalse(ZoneType::isReadOnly(null));
+    }
 }

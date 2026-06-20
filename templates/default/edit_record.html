@@ -55,7 +55,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        {% if zone_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client")
+                        {% if zone_is_read_only(zone_type) or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client")
                         and user_is_zone_owner == "0" %}
                         <td>{{ record["name"] }}</td>
                         <td>IN</td>

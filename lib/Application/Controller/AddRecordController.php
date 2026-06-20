@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -126,7 +127,7 @@ class AddRecordController extends BaseController
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        $this->checkCondition($zone_type == "SLAVE"
+        $this->checkCondition(ZoneType::isReadOnly($zone_type)
             || $perm_edit == "none"
             || ($perm_edit == "own" || $perm_edit == "own_as_client")
             && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone."));
