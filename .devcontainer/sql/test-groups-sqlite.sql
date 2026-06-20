@@ -189,36 +189,41 @@ WHERE d."name" = 'group-orphan-zone.example.com' AND g."name" = 'Zone Managers'
 -- GROUP AUDIT LOG ENTRIES
 -- =============================================================================
 
+-- Entries use the structured "operation:key:value" format the app writes today,
+-- which the log view renders as colored operation badges. The first row is kept in
+-- the old free-text format on purpose, to exercise the "legacy" fallback badge that
+-- still displays audit rows recorded before structured logging existed.
+
 INSERT INTO "log_groups" ("event", "priority", "group_id")
 SELECT 'Group "Zone Managers" created by admin', 1, g."id"
 FROM "user_groups" g
 WHERE g."name" = 'Zone Managers'
   AND NOT EXISTS (
-    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND lg."event" LIKE '%created%'
+    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND lg."event" LIKE '%created by admin%'
   );
 
 INSERT INTO "log_groups" ("event", "priority", "group_id")
-SELECT 'User "manager" added to group "Zone Managers"', 1, g."id"
+SELECT 'client_ip:127.0.0.1 user:admin operation:add_members group:Zone_Managers group_id:' || g."id" || ' count:1 members:manager', 1, g."id"
 FROM "user_groups" g
 WHERE g."name" = 'Zone Managers'
   AND NOT EXISTS (
-    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND lg."event" LIKE '%manager%added%'
+    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND (lg."event" LIKE '%operation:add_members%' OR lg."event" LIKE '%added to group%')
   );
 
 INSERT INTO "log_groups" ("event", "priority", "group_id")
-SELECT 'Zone "shared-zone.example.com" assigned to group "Editors"', 1, g."id"
+SELECT 'client_ip:127.0.0.1 user:admin operation:add_zones group:Editors group_id:' || g."id" || ' count:1 zones:shared-zone.example.com', 1, g."id"
 FROM "user_groups" g
 WHERE g."name" = 'Editors'
   AND NOT EXISTS (
-    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND lg."event" LIKE '%assigned%'
+    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND (lg."event" LIKE '%operation:add_zones%' OR lg."event" LIKE '%assigned to group%')
   );
 
 INSERT INTO "log_groups" ("event", "priority", "group_id")
-SELECT 'User "manager" added to group "Editors" (cross-group membership)', 1, g."id"
+SELECT 'client_ip:127.0.0.1 user:admin operation:add_members group:Editors group_id:' || g."id" || ' count:1 members:manager', 1, g."id"
 FROM "user_groups" g
 WHERE g."name" = 'Editors'
   AND NOT EXISTS (
-    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND lg."event" LIKE '%manager%added%'
+    SELECT 1 FROM "log_groups" lg WHERE lg."group_id" = g."id" AND (lg."event" LIKE '%operation:add_members%' OR lg."event" LIKE '%added to group%')
   );
 
 -- =============================================================================
