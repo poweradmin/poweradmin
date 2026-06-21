@@ -239,6 +239,11 @@ class EditController extends BaseController
                 // This is just a save operation without adding new records, or zone comment update
                 $this->saveRecords($zone_id, $zone_name);
             }
+        } elseif ($this->isPost() && isset($_POST['record']) && !isset($_POST['commit'])) {
+            // max_input_vars truncated the POST and dropped the bottom save button; run
+            // the save anyway so incomplete rows are skipped and the operator is warned.
+            $this->validateCsrfToken();
+            $this->saveRecords($zone_id, $zone_name);
         }
 
         // If we have stored validation error data from a previous request, use it
@@ -572,6 +577,10 @@ class EditController extends BaseController
         $one_record_changed = false;
         $serial_mismatch = false;
 
+        // A truncated POST (max_input_vars) drops the form's trailing fields, so the
+        // zone comment must not be processed either - it would be saved as empty.
+        $records_truncated = isset($_POST['record']) && !isset($_POST['form_complete']);
+
         if (isset($_POST['record'])) {
             $soa_record = $this->dnsRecord->getSOARecord($zone_id);
             $current_serial = DnsRecord::getSOASerial($soa_record);
@@ -580,6 +589,14 @@ class EditController extends BaseController
                 $serial_mismatch = true;
             } else {
                 foreach ($_POST['record'] as &$record) {
+                    // Rows end with a hidden _complete marker; max_input_vars truncation
+                    // drops it, so skip such rows and flag the partial save.
+                    if (!isset($record['_complete'])) {
+                        $records_truncated = true;
+                        continue;
+                    }
+                    unset($record['_complete']);
+
                     // Normalize record name to full FQDN (always, regardless of display setting)
                     // This converts @ to zone apex and ensures proper zone suffix
                     if (isset($record['name'])) {
@@ -640,10 +657,14 @@ class EditController extends BaseController
                         }
                     }
                 }
+
+                if ($records_truncated) {
+                    $this->setMessage('edit', 'warn', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
+                }
             }
         }
 
-        if ($this->config->get('interface', 'show_zone_comments', true)) {
+        if (!$records_truncated && $this->config->get('interface', 'show_zone_comments', true)) {
             $one_record_changed = $this->processZoneComment($zone_id, $this->dnsRecord, $one_record_changed);
         }
 
