@@ -96,6 +96,31 @@ class RecordLogTest extends TestCase
         $this->assertStringContainsString('old_content:192.0.2.1', $message);
     }
 
+    public function testHasChangedDoesNotWarnWhenNamesAreNull(): void
+    {
+        // With the API backend the prior record's encoded id no longer resolves,
+        // so record_prior carries no name; a row can likewise reach hasChanged()
+        // without a name. Neither must trigger a strtolower(null) deprecation.
+        $log = $this->makeRecordLog([]);
+        $log->logPrior('missing-id', 5, '');
+
+        $record = ['rid' => 'missing-id', 'zid' => 5, 'type' => 'A', 'content' => '192.0.2.1'];
+
+        $errors = [];
+        set_error_handler(function (int $errno, string $errstr) use (&$errors): bool {
+            $errors[] = $errstr;
+            return true;
+        });
+
+        try {
+            $log->hasChanged($record);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $errors, 'hasChanged() must not emit warnings when either name is null');
+    }
+
     public function testLogAfterFallsBackToSubmittedRecordData(): void
     {
         $prior = [
