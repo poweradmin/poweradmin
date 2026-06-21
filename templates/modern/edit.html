@@ -458,6 +458,8 @@
             {% endif %}
             <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
+                {# Row-complete marker; dropped first if max_input_vars truncates the POST. #}
+                <input type="hidden" name="record[{{ r['id'] }}][_complete]" value="1">
             </td>
             {% endif %}
 
@@ -517,6 +519,8 @@
                 </div>
             </div>
             {% endif %}
+            {# Last field of the form; dropped if max_input_vars truncates the POST. #}
+            <input type="hidden" name="form_complete" value="1">
 
     {% endif %}
 

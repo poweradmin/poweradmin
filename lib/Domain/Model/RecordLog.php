@@ -92,11 +92,13 @@ class RecordLog
         // Arrays are assigned by copy.
         // Copy arrays to avoid side effects caused by unset().
         $record_copy = $record;
-        $record_prior_copy = $this->record_prior;
+        $record_prior_copy = $this->record_prior ?? [];
 
-        // PowerDNS only searches for lowercase records
-        $record_copy['name'] = strtolower($record_copy['name']);
-        $record_prior_copy['name'] = strtolower($record_prior_copy['name']);
+        // PowerDNS only searches for lowercase records. The prior record can lack a
+        // name with the API backend (the encoded id no longer resolves), so guard
+        // both sides against null before lowercasing.
+        $record_copy['name'] = strtolower($record_copy['name'] ?? '');
+        $record_prior_copy['name'] = strtolower($record_prior_copy['name'] ?? '');
 
         // Make $record_copy and $record_prior_copy compatible
         $record_copy['id'] = $record_copy['rid'];
