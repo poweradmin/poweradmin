@@ -21,6 +21,9 @@
     {% endif %}
 </div>
 
+{% if permissions['user_is_ueberuser'] %}
+{# The ueberuser dashboard has enough tiles to warrant grouped, collapsible sections. #}
+
 {# --- DNS Management --- #}
 {% set has_dns_management = (permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status)
     or permissions['search']
@@ -396,6 +399,191 @@
         </div>
     </div>
 </div>
+
+{% else %}
+{# Non-ueberuser roles have few tiles - a single flat grid of larger cards fills the
+   row without the half-empty look that grouped sections produce when sparse. #}
+<div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2">
+    {% if permissions['search'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/search" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="search-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-search display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Search{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/forward" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-forward-zones-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-diagram-3 display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Forward Zones{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/reverse" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-reverse-zones-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-arrow-left-right display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Reverse Zones{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/templates" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-zone-templates-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-files display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Templates{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['supermaster_view'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/supermasters" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-supermasters-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-hdd-rack display-5 mb-2"></i>
+                <span class="text-truncate">{{ autoprimaries_label('plural') }}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_master_add'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/add/master" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="add-master-zone-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-plus-circle display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Master Zone{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_slave_add'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/add/slave" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="add-slave-zone-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-plus-circle-dotted display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Slave Zone{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['supermaster_add'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/supermasters/add" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="add-supermaster-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-hdd-network display-5 mb-2"></i>
+                <span class="text-truncate">{{ autoprimaries_label('singular') }}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['zone_master_add'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/bulk-registration" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="bulk-registration-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-collection display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Bulk Registration{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="batch-ptr-records-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-arrow-repeat display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}PTR Records{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/users" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="user-administration-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-people display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Users{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['templ_perm_edit'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/permissions/templates" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-permission-templates-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-person-lock display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Access{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if permissions['api_manage_keys'] and api_enabled %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/settings/api-keys" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="api-keys-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-key-fill display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}API Keys{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if module_nav_items is defined %}
+    {% for item in module_nav_items %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}{{ item.url }}" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="{{ item.page_id }}-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-{{ item.icon }} display-5 mb-2"></i>
+                <span class="text-truncate">{{ item.label|trans }}</span>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if is_limited_user and permissions['user_edit_own'] %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/users/{{ user_id }}/edit" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="edit-profile-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-person-fill-gear display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}My Profile{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if can_change_password %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/password/change" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="change-password-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-key display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Password{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/user/preferences" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="user-preferences-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-gear display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Preferences{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/logout" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="logout-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-box-arrow-right display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Logout{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+</div>
+{% endif %}
 
 <style>
     [data-bs-toggle="collapse"] .collapse-icon {
