@@ -8,11 +8,18 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-people me-2"></i>{% trans %}User Management{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_users }}</span></strong>
-        {% if perm_add_new %}
-        <a href="{{ base_url_prefix }}/users/add" class="btn btn-primary btn-sm">
-            <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
-        </a>
-        {% endif %}
+        <div class="d-flex gap-2">
+            {% if (perm_is_godlike or perm_user_logs_view) and dblog_use %}
+            <a href="{{ base_url_prefix }}/users/logs" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-journal-text me-1 text-secondary"></i>{% trans %}User logs{% endtrans %}
+            </a>
+            {% endif %}
+            {% if perm_add_new %}
+            <a href="{{ base_url_prefix }}/users/add" class="btn btn-primary btn-sm">
+                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
+            </a>
+            {% endif %}
+        </div>
     </div>
     <div class="card-body p-0">
         <div class="d-flex justify-content-between align-items-center px-3 pt-3">

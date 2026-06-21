@@ -90,6 +90,9 @@ class ListGroupsController extends BaseController
             'groups' => $enrichedGroups,
             'is_admin' => $isAdmin,
             'can_add_group' => $isAdmin, // Only admins can create groups
+            'perm_is_godlike' => $isAdmin,
+            'perm_group_logs_view' => UserManager::verifyPermission($this->db, 'group_logs_view'),
+            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
         ]);
     }
 }
