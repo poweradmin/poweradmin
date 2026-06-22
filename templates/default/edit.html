@@ -1231,3 +1231,47 @@
 
 
 </script>
+
+<script>
+    // Submit only the rows the operator actually changed. Unchanged rows are
+    // disabled on submit so the browser omits them, keeping the field count
+    // proportional to edits and well under the server's max_input_vars limit.
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('edit-zone-form');
+        if (!form) {
+            return;
+        }
+
+        const fieldPattern = /^record\[([^\]]+)\]\[(.+)\]$/;
+        const fieldValue = (el) => (el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value);
+
+        // Snapshot each row's submitted values as the form was rendered.
+        const original = {};
+        form.querySelectorAll('[name^="record["]').forEach((el) => {
+            const match = el.name.match(fieldPattern);
+            if (!match) {
+                return;
+            }
+            const [, id, field] = match;
+            (original[id] = original[id] || {})[field] = fieldValue(el);
+        });
+
+        form.addEventListener('submit', () => {
+            Object.keys(original).forEach((id) => {
+                const fields = form.querySelectorAll('[name^="record[' + id + ']["]');
+                let changed = false;
+                fields.forEach((el) => {
+                    const match = el.name.match(fieldPattern);
+                    if (match && fieldValue(el) !== original[id][match[2]]) {
+                        changed = true;
+                    }
+                });
+                if (!changed) {
+                    fields.forEach((el) => {
+                        el.disabled = true;
+                    });
+                }
+            });
+        });
+    });
+</script>

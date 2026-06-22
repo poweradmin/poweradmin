@@ -268,8 +268,10 @@ class EditController extends BaseController
                     // This is a zone update operation, handle as before
                     $this->saveRecords($zone_id, $zone_name);
                 }
-            } elseif ($this->request->getPostParam('record') !== null || $this->request->getPostParam('zone_comment') !== null) {
-                // This is just a save operation without adding new records, or zone comment update
+            } elseif ($this->request->getPostParam('record') !== null || $this->request->getPostParam('zone_comment') !== null || $this->request->getPostParam('form_complete') !== null) {
+                // Save operation: records, a zone comment, or an unchanged form. The
+                // form_complete marker is always present, so a save where the client
+                // omitted every unchanged record still bumps the SOA serial as before.
                 $this->saveRecords($zone_id, $zone_name);
             }
         } elseif ($this->isPost() && $this->request->getPostParam('record') !== null && $this->request->getPostParam('commit') === null) {
@@ -633,18 +635,21 @@ class EditController extends BaseController
         $serial_mismatch = false;
 
         $records = $this->request->getPostParam('record');
+        $form_submitted = $this->request->getPostParam('form_complete') !== null;
         // A truncated POST (max_input_vars) drops the form's trailing fields, so the
         // zone comment must not be processed either - it would be saved as empty.
-        $records_truncated = $records !== null && $this->request->getPostParam('form_complete') === null;
+        $records_truncated = $records !== null && !$form_submitted;
 
-        if ($records !== null) {
+        // The client omits unchanged rows but always sends form_complete, so treat
+        // either as an edit-form save and run the stale-form serial check for both.
+        if ($records !== null || $form_submitted) {
             $soa_record = $this->dnsRecord->getSOARecord($zone_id);
             $current_serial = DnsRecord::getSOASerial($soa_record);
 
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
-                foreach ($records as &$record) {
+                foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
                     if (!isset($record['_complete'])) {
