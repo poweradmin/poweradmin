@@ -83,7 +83,7 @@ class ZoneTemplateSyncService
         ]);
 
         // If no rows were affected, insert new record
-        if ($stmt->rowCount() === 0) {
+        if ($stmt->rowCount() === 0 && !$this->syncRecordExists($zoneId, $templateId)) {
             $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
                            VALUES (:zone_id, :template_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . ")";
 
@@ -121,7 +121,7 @@ class ZoneTemplateSyncService
             ]);
 
             // If no rows were affected, insert new record
-            if ($stmt->rowCount() === 0) {
+            if ($stmt->rowCount() === 0 && !$this->syncRecordExists($zoneId, $templateId)) {
                 $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
                                VALUES (:zone_id, :template_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . ")";
 
@@ -153,7 +153,7 @@ class ZoneTemplateSyncService
         ]);
 
         // If no rows were affected, insert new record
-        if ($stmt->rowCount() === 0) {
+        if ($stmt->rowCount() === 0 && !$this->syncRecordExists($zoneId, $templateId)) {
             $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync)
                            VALUES (:zone_id, :template_id, " . DbCompat::boolTrue($db_type) . ")";
 
@@ -163,6 +163,25 @@ class ZoneTemplateSyncService
                 'template_id' => $templateId
             ]);
         }
+    }
+
+    /**
+     * Whether a sync row already exists for the zone/template pair.
+     *
+     * MySQL reports zero affected rows for an UPDATE that matches a row but
+     * changes nothing, so the UPDATE-then-INSERT upsert cannot rely on
+     * rowCount() alone - it would insert a duplicate and hit the unique key.
+     */
+    private function syncRecordExists(int $zoneId, int $templateId): bool
+    {
+        $stmt = $this->db->prepare("SELECT 1 FROM zone_template_sync
+                                    WHERE zone_id = :zone_id AND zone_templ_id = :template_id");
+        $stmt->execute([
+            'zone_id' => $zoneId,
+            'template_id' => $templateId
+        ]);
+
+        return $stmt->fetchColumn() !== false;
     }
 
     /**
