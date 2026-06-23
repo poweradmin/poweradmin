@@ -176,4 +176,28 @@ class ZoneTemplateSyncIntegrationTest extends TestCase
 
         $this->assertSame(0, $service->getUnsyncedZoneCount($templateA), 'no unsynced zones expected after reconciliation');
     }
+
+    /**
+     * Regression for the "update zones from template" fatal error: re-applying a
+     * template to a zone whose sync row already exists and is flagged
+     * needs_sync makes the createSyncRecord UPDATE match the row without
+     * changing it. MySQL reports zero affected rows, which previously caused a
+     * duplicate INSERT and a unique-key violation on idx_zone_template_unique.
+     */
+    public function testReapplyingTemplateDoesNotDuplicateSyncRow(): void
+    {
+        $template = $this->createTemplate('Integ-Upsert-' . uniqid());
+        $zoneId = $this->createZone(900000 + random_int(1, 99999), $template);
+
+        $service = $this->makeService();
+        $service->createSyncRecord($zoneId, $template);
+        $service->markTemplateAsModified($template);
+        // Second create finds the row already present with needs_sync set, so its
+        // UPDATE changes nothing - this is the call that used to raise a duplicate
+        // key error on MySQL.
+        $service->createSyncRecord($zoneId, $template);
+        $service->markZoneAsSynced($zoneId, $template);
+
+        $this->assertSame(1, $this->countSyncRows($zoneId), 'reapplying a template must keep exactly one sync row');
+    }
 }
