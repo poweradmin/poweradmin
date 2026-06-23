@@ -82,4 +82,68 @@ class ZoneTemplateSyncServiceTest extends TestCase
         $service = new ZoneTemplateSyncService($pdo, $config);
         $service->removeStaleSyncRecords(34, 0);
     }
+
+    /**
+     * Regression: createSyncRecord must not INSERT when the sync row already
+     * exists but the UPDATE reports zero affected rows. MySQL returns zero for
+     * an UPDATE that matches a row without changing any value, which previously
+     * triggered a duplicate INSERT and a unique-key violation on
+     * idx_zone_template_unique (the "update zones from template" fatal error).
+     */
+    public function testCreateSyncRecordDoesNotInsertWhenRowExistsButUpdateAffectsNoRows(): void
+    {
+        $updateStmt = $this->createMock(PDOStatement::class);
+        $updateStmt->method('execute')->willReturn(true);
+        $updateStmt->method('rowCount')->willReturn(0);
+
+        $existsStmt = $this->createMock(PDOStatement::class);
+        $existsStmt->expects($this->once())->method('execute');
+        $existsStmt->method('fetchColumn')->willReturn(1);
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($updateStmt, $existsStmt) {
+            if (str_contains($sql, 'INSERT INTO zone_template_sync')) {
+                $this->fail('createSyncRecord must not INSERT when a sync row already exists');
+            }
+            return str_contains($sql, 'SELECT 1 FROM zone_template_sync') ? $existsStmt : $updateStmt;
+        });
+
+        $config = $this->createMock(ConfigurationInterface::class);
+        $config->method('get')->willReturn('mysql');
+
+        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service->createSyncRecord(7, 11);
+    }
+
+    /**
+     * The existence guard must not suppress a legitimate insert: when no sync
+     * row exists and the UPDATE affects nothing, the row is still created.
+     */
+    public function testCreateSyncRecordInsertsWhenRowDoesNotExist(): void
+    {
+        $updateStmt = $this->createMock(PDOStatement::class);
+        $updateStmt->method('execute')->willReturn(true);
+        $updateStmt->method('rowCount')->willReturn(0);
+
+        $existsStmt = $this->createMock(PDOStatement::class);
+        $existsStmt->method('execute');
+        $existsStmt->method('fetchColumn')->willReturn(false);
+
+        $insertStmt = $this->createMock(PDOStatement::class);
+        $insertStmt->expects($this->once())->method('execute');
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($updateStmt, $existsStmt, $insertStmt) {
+            if (str_contains($sql, 'INSERT INTO zone_template_sync')) {
+                return $insertStmt;
+            }
+            return str_contains($sql, 'SELECT 1 FROM zone_template_sync') ? $existsStmt : $updateStmt;
+        });
+
+        $config = $this->createMock(ConfigurationInterface::class);
+        $config->method('get')->willReturn('mysql');
+
+        $service = new ZoneTemplateSyncService($pdo, $config);
+        $service->createSyncRecord(7, 11);
+    }
 }
