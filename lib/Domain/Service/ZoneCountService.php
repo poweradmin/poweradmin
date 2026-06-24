@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -185,13 +186,11 @@ class ZoneCountService
         // Filter by zone type
         if ($zone_type === 'forward') {
             $allZones = array_filter($allZones, function ($z) {
-                $name = rtrim($z['name'] ?? '', '.');
-                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+                return !DnsHelper::isReverseZoneName($z['name'] ?? '');
             });
         } elseif ($zone_type === 'reverse') {
             $allZones = array_filter($allZones, function ($z) {
-                $name = rtrim($z['name'] ?? '', '.');
-                return str_ends_with($name, '.in-addr.arpa') || str_ends_with($name, '.ip6.arpa');
+                return DnsHelper::isReverseZoneName($z['name'] ?? '');
             });
         }
 

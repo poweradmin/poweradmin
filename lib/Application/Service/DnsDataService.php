@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Orchestration service for DNS data reads.
@@ -485,8 +486,7 @@ class DnsDataService
     {
         if ($zoneType === 'forward') {
             return array_values(array_filter($zones, function ($zone) {
-                $name = $zone['name'] ?? '';
-                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+                return !DnsHelper::isReverseZoneName($zone['name'] ?? '');
             }));
         }
 
@@ -499,7 +499,7 @@ class DnsDataService
                 if ($reverseType === 'ipv6') {
                     return str_ends_with($name, '.ip6.arpa');
                 }
-                return str_ends_with($name, '.in-addr.arpa') || str_ends_with($name, '.ip6.arpa');
+                return DnsHelper::isReverseZoneName($name);
             });
             return array_values($filtered);
         }

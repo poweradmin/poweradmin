@@ -32,6 +32,37 @@ class DnsHelperTest extends TestCase
         $this->assertFalse(DnsHelper::isReverseZone(' 1.0.0.127.in-addr.arpa'), 'Should return false for a reverse zone with leading whitespace.');
     }
 
+    public function testIsReverseZoneNamePositiveCases(): void
+    {
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.in-addr.arpa'), 'IPv4 reverse zone is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa'), 'IPv6 reverse zone is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('in-addr.arpa'), 'The in-addr.arpa apex is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('ip6.arpa'), 'The ip6.arpa apex is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.IN-ADDR.ARPA'), 'Classification is case-insensitive.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.in-addr.arpa.'), 'A trailing dot does not change classification.');
+    }
+
+    public function testIsReverseZoneNameNegativeCases(): void
+    {
+        $this->assertFalse(DnsHelper::isReverseZoneName('example.com'), 'A regular domain is not reverse.');
+        $this->assertFalse(DnsHelper::isReverseZoneName('example.in-addr.arpa.com'), 'A name only containing in-addr.arpa as an infix is not reverse.');
+        $this->assertFalse(DnsHelper::isReverseZoneName(''), 'An empty string is not reverse.');
+    }
+
+    /**
+     * RFC 2317 classless names carry no parsable network, so the strict
+     * isReverseZone() rejects them, but they still belong to the reverse
+     * namespace and must be classified as reverse for listing and the
+     * overlap guard. This pins that divergence.
+     */
+    public function testIsReverseZoneNameAcceptsRfc2317ClasslessNames(): void
+    {
+        $classless = '0-25.2.0.192.in-addr.arpa';
+
+        $this->assertFalse(DnsHelper::isReverseZone($classless), 'Strict check rejects the classless name.');
+        $this->assertTrue(DnsHelper::isReverseZoneName($classless), 'Namespace check accepts the classless name.');
+    }
+
     public function testGetRegisteredDomainWithSimpleDomain()
     {
         $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('example.com'));

@@ -32,6 +32,13 @@ class DnsHelper
     private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:[\d\/]+\.){1,4}in-addr\.arpa$/i';
     private const IPV6_REVERSE_ZONE_PATTERN = '/^[0-9a-fA-F\/]+(?:\.[0-9a-fA-F\/]+)*\.ip6\.arpa$/i';
 
+    /**
+     * Tell whether a network can be derived from a reverse zone name.
+     *
+     * This is the strict test: the name must be a structured in-addr.arpa or
+     * ip6.arpa name (it powers the reverse-zone form redirect). For plain
+     * "is this a reverse zone at all" classification use isReverseZoneName().
+     */
     public static function isReverseZone(string $zoneName): bool
     {
         if (preg_match(self::IPV4_REVERSE_ZONE_PATTERN, $zoneName) === 1) {
@@ -43,6 +50,26 @@ class DnsHelper
         }
 
         return false;
+    }
+
+    /**
+     * Tell whether a name belongs to the reverse-DNS namespace.
+     *
+     * This is the broad classification test: any name under in-addr.arpa or
+     * ip6.arpa counts, including RFC 2317 classless names (e.g.
+     * "0-25.2.0.192.in-addr.arpa") that the strict isReverseZone() rejects
+     * because they carry no parsable network. Use this for listing, filtering
+     * and "is this a reverse zone at all" decisions; use isReverseZone() only
+     * when a network must be derived from the name.
+     */
+    public static function isReverseZoneName(string $name): bool
+    {
+        $name = strtolower(rtrim($name, '.'));
+
+        return $name === 'in-addr.arpa'
+            || $name === 'ip6.arpa'
+            || str_ends_with($name, '.in-addr.arpa')
+            || str_ends_with($name, '.ip6.arpa');
     }
 
     /**

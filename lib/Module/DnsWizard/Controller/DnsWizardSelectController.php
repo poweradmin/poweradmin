@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
@@ -82,7 +83,7 @@ class DnsWizardSelectController extends BaseController
         }
 
         // Check if zone is reverse zone
-        $is_reverse_zone = preg_match('/\.in-addr\.arpa$/i', $zone_name) || preg_match('/\.ip6\.arpa$/i', $zone_name);
+        $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get available wizards
         $wizards = $this->wizardRegistry->getWizardMetadata();

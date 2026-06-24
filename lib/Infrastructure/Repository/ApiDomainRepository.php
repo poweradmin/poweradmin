@@ -31,6 +31,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -139,8 +140,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         // Filter reverse zones if requested
         if ($excludeReverse) {
             $allZones = array_values(array_filter($allZones, function ($zone) {
-                $name = $zone['name'] ?? '';
-                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+                return !DnsHelper::isReverseZoneName($zone['name'] ?? '');
             }));
         }
 
