@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -539,6 +540,26 @@ abstract class BaseController
     protected function getCurrentUserId(): ?int
     {
         return $this->userContextService->getLoggedInUserId();
+    }
+
+    /**
+     * Error message when the new zone would overlap an existing zone owned by
+     * another user, or null when creation is allowed. The conflicting name is
+     * not disclosed, to avoid leaking another owner's zone.
+     */
+    protected function getZoneOverlapError(string $zoneName): ?string
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null) {
+            return null;
+        }
+
+        $service = new ZoneOverlapService($this->db, $this->getConfig());
+        if ($service->findConflictingZone($zoneName, $userId) === null) {
+            return null;
+        }
+
+        return _('Cannot create this zone because it overlaps an existing zone owned by another user.');
     }
 
     /**

@@ -207,6 +207,7 @@ return [
         'strict_tld_check' => false,               // Strict validation of TLDs
         'top_level_tld_check' => false,            // Prevent creation of top-level domains (added in 2.1.7)
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
+        'parent_zone_ownership_check' => true,     // Block creating a zone that overlaps an existing zone (forward or reverse) owned by another user (added in 4.5.0)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
         'custom_tlds' => [],                       // Whitelist of non-IANA TLDs allowed in hostnames and CNAME targets when strict_tld_check is on (e.g., ['lan', 'corp', 'dn42'])

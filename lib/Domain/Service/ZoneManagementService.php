@@ -78,7 +78,8 @@ class ZoneManagementService
         string $slaveMaster = '',
         string $zoneTemplate = 'none',
         bool $enableDnssec = false,
-        array $groupIds = []
+        array $groupIds = [],
+        ?int $actingUserId = null
     ): array {
         if ($owner === null && empty($groupIds)) {
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
@@ -100,6 +101,14 @@ class ZoneManagementService
         // Only delegation records (NS, DS) are allowed
         if ($dnsRecord->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
+        }
+
+        // Block a zone that would overlap an existing zone owned by another user.
+        if ($actingUserId !== null) {
+            $overlapService = new ZoneOverlapService($this->db, $this->config);
+            if ($overlapService->findConflictingZone($domain, $actingUserId) !== null) {
+                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
+            }
         }
 
         // Validate zone type

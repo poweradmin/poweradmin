@@ -215,6 +215,9 @@ class AddZoneMasterController extends BaseController
         } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
+        } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
+            $this->setMessage('add_zone_master', 'error', $overlapError);
+            $this->showForm();
         } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
 

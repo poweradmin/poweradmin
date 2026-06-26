@@ -208,6 +208,9 @@ class AddZoneSlaveController extends BaseController
         } elseif ($dnsRecord->domainExists($zone) || $dnsRecord->hasNonDelegationRecords($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
+        } elseif (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
+            $this->setMessage('add_zone_slave', 'error', $overlapError);
+            $this->showForm();
         } elseif (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();

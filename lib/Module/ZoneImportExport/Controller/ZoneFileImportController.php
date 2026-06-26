@@ -376,6 +376,11 @@ class ZoneFileImportController extends BaseController
                 $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
                 return;
             }
+            $overlapError = $this->getZoneOverlapError($zoneName);
+            if ($overlapError !== null) {
+                $this->showError($overlapError);
+                return;
+            }
             if (!$dnsRecord->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
                 $this->showError(_('Failed to create zone.'));
                 return;

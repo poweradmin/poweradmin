@@ -2338,6 +2338,63 @@ test_api_key_scopes() {
     [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 200 "Cleanup out-of-scope zone" || true
 }
 
+test_zone_overlap_guard() {
+    print_section "Zone Overlap Guard (parent_zone_ownership_check)"
+
+    # The guard reads zone state via SQL, so it only applies to the SQL backend
+    # (ports 8080-8082); the API backend (8083-8085) is out of scope here.
+    if [[ "${API_BASE_URL:-}" == *:808[345] ]]; then
+        print_info "Skipping zone overlap guard tests in API-backend mode"
+        return 0
+    fi
+
+    # Seeds a non-ueberuser key directly in the DB (ueberusers bypass the guard);
+    # skip cleanly when the DB client or credentials are unavailable.
+    local mgr_id
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
+        print_info "Database access not available - skipping zone overlap guard tests"
+        return 0
+    fi
+    mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
+
+    local mgr_secret="overlaptest-manager-key-aaaaaaaaaaaa"
+    db_exec "DELETE FROM api_keys WHERE name='overlaptest-mgr';" >/dev/null 2>&1 || true
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('overlaptest-mgr', '$(hash_api_key "$mgr_secret")', ${mgr_id});" >/dev/null 2>&1
+
+    # Parent zone owned by the suite's admin key user; manager does not own it.
+    local parent="overlap-parent.example.com"
+    local parent_id=""
+    if api_request_v2 "POST" "/zones" "{\"name\":\"${parent}\",\"type\":\"MASTER\"}" 201 "Create admin-owned parent zone"; then
+        parent_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+
+    # child-under-parent across owners must be rejected with 409.
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"child.${parent}\",\"type\":\"MASTER\"}" 409 "Non-owner blocked from child of another owner's zone"; then
+        increment_test
+        if echo "$LAST_RESPONSE_BODY" | grep -q "overlaps"; then
+            print_pass "409 message mentions overlap"
+        else
+            print_fail "409 message should mention overlap"
+        fi
+    fi
+
+    # Same owner may nest under their own zone.
+    local own="overlap-mgr-own.example.com"
+    local own_id="" own_child_id=""
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"${own}\",\"type\":\"MASTER\"}" 201 "Owner may create their own zone"; then
+        own_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"sub.${own}\",\"type\":\"MASTER\"}" 201 "Owner may create a child under their own zone"; then
+        own_child_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+
+    # Cleanup (admin key deletes all created zones; then drop the seeded key).
+    [[ -n "$own_child_id" ]] && api_request_v2 "DELETE" "/zones/${own_child_id}" "" 204 "Cleanup own child zone" || true
+    [[ -n "$own_id" ]] && api_request_v2 "DELETE" "/zones/${own_id}" "" 204 "Cleanup own zone" || true
+    [[ -n "$parent_id" ]] && api_request_v2 "DELETE" "/zones/${parent_id}" "" 204 "Cleanup parent zone" || true
+    db_exec "DELETE FROM api_keys WHERE name='overlaptest-mgr';" >/dev/null 2>&1 || true
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -2367,6 +2424,7 @@ main() {
     test_users_ldap_sync
     test_users_perm_templ_validation
     test_api_key_scopes
+    test_zone_overlap_guard
 
     # Cleanup
     cleanup
