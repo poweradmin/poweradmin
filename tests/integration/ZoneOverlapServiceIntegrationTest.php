@@ -145,6 +145,42 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
         $this->assertSame(self::PREFIX . 'caseparent.example.test', $conflict);
     }
 
+    public function testApiBackendDetectsAncestorViaZonesTable(): void
+    {
+        // In API mode zone names live in zones.zone_name (domains is not used), so
+        // the guard must match there. Uses the poweradmin DB where zones resides.
+        try {
+            $pwDb = new PDO('mysql:host=127.0.0.1;port=3306;dbname=poweradmin', self::DB_USER, self::DB_PASS, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ]);
+        } catch (PDOException) {
+            $this->markTestSkipped('poweradmin database not available.');
+        }
+
+        $parent = self::PREFIX . 'api-parent.example.test';
+        $clear = static fn() => $pwDb->prepare("DELETE FROM zones WHERE zone_name LIKE :p")
+            ->execute([':p' => '%' . self::PREFIX . '%']);
+        $clear();
+        $pwDb->prepare("INSERT INTO zones (domain_id, zone_name, zone_type) VALUES (999001, :n, 'MASTER')")
+            ->execute([':n' => $parent]);
+
+        try {
+            $config = new FakeConfiguration([
+                'dns' => ['parent_zone_ownership_check' => true, 'backend' => 'api'],
+            ]);
+            $permission = $this->createMock(ApiPermissionService::class);
+            $permission->method('userHasPermission')->willReturn(false);
+            $permission->method('userOwnsZone')->willReturn(false);
+            $service = new ZoneOverlapService($pwDb, $config, $permission);
+
+            $conflict = $service->findConflictingZone('child.' . $parent, self::USER_ID);
+
+            $this->assertSame($parent, $conflict);
+        } finally {
+            $clear();
+        }
+    }
+
     public function testUnderscoreInZoneNameIsMatchedLiterally(): void
     {
         // A new zone name containing an underscore must not let the LIKE wildcard

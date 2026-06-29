@@ -2341,13 +2341,6 @@ test_api_key_scopes() {
 test_zone_overlap_guard() {
     print_section "Zone Overlap Guard (parent_zone_ownership_check)"
 
-    # The guard reads zone state via SQL, so it only applies to the SQL backend
-    # (ports 8080-8082); the API backend (8083-8085) is out of scope here.
-    if [[ "${API_BASE_URL:-}" == *:808[345] ]]; then
-        print_info "Skipping zone overlap guard tests in API-backend mode"
-        return 0
-    fi
-
     # Seeds a non-ueberuser key directly in the DB (ueberusers bypass the guard);
     # skip cleanly when the DB client or credentials are unavailable.
     local mgr_id

@@ -40,18 +40,27 @@ class ZoneOverlapServiceTest extends TestCase
      * @param array<array{id:int,name:string}> $descendantRows zones matched by the descendant LIKE lookup
      * @param list<int> $ownedZoneIds domain ids the user owns
      */
+    /** @var list<string> SQL strings prepared during the last makeService() run */
+    private array $preparedSql = [];
+
     private function makeService(
         array $ancestorRows = [],
         array $descendantRows = [],
         array $ownedZoneIds = [],
         bool $isAdmin = false,
-        bool $checkEnabled = true
+        bool $checkEnabled = true,
+        string $backend = 'sql'
     ): ZoneOverlapService {
+        $this->preparedSql = [];
+
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(
-            function (string $group, string $key, $default = null) use ($checkEnabled) {
+            function (string $group, string $key, $default = null) use ($checkEnabled, $backend) {
                 if ($group === 'dns' && $key === 'parent_zone_ownership_check') {
                     return $checkEnabled;
+                }
+                if ($group === 'dns' && $key === 'backend') {
+                    return $backend;
                 }
                 if ($group === 'database' && $key === 'pdns_db_name') {
                     return null;
@@ -68,6 +77,7 @@ class ZoneOverlapServiceTest extends TestCase
 
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturnCallback(function (string $sql) use ($ancestorRows, $descendantRows) {
+            $this->preparedSql[] = $sql;
             if (str_contains($sql, ' IN (')) {
                 return $this->statementReturning($ancestorRows);
             }
@@ -158,6 +168,16 @@ class ZoneOverlapServiceTest extends TestCase
         $service = $this->makeService(ancestorRows: [['id' => 20, 'name' => '10.in-addr.arpa']]);
 
         $this->assertSame('10.in-addr.arpa', $service->findConflictingZone('1.10.in-addr.arpa', self::USER_ID));
+    }
+
+    public function testApiBackendMatchesAgainstZonesTable(): void
+    {
+        $service = $this->makeService(ancestorRows: [['id' => 14, 'name' => 'a.com']], backend: 'api');
+
+        $this->assertSame('a.com', $service->findConflictingZone('b.a.com', self::USER_ID));
+        // The lookup must read the API-mode source (zones.zone_name), not domains.
+        $this->assertNotEmpty(array_filter($this->preparedSql, fn(string $s): bool => str_contains($s, 'zone_name')));
+        $this->assertEmpty(array_filter($this->preparedSql, fn(string $s): bool => str_contains($s, ' domains ')));
     }
 
     public function testUeberuserBypassesCheck(): void
