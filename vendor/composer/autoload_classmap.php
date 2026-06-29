@@ -1251,6 +1251,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ZoneCountService' => $baseDir . '/lib/Domain/Service/ZoneCountService.php',
     'Poweradmin\\Domain\\Service\\ZoneCreateOwnershipResolver' => $baseDir . '/lib/Domain/Service/ZoneCreateOwnershipResolver.php',
     'Poweradmin\\Domain\\Service\\ZoneManagementService' => $baseDir . '/lib/Domain/Service/ZoneManagementService.php',
+    'Poweradmin\\Domain\\Service\\ZoneOverlapService' => $baseDir . '/lib/Domain/Service/ZoneOverlapService.php',
     'Poweradmin\\Domain\\Service\\ZoneOwnershipModeService' => $baseDir . '/lib/Domain/Service/ZoneOwnershipModeService.php',
     'Poweradmin\\Domain\\Service\\ZoneOwnershipResolution' => $baseDir . '/lib/Domain/Service/ZoneOwnershipResolution.php',
     'Poweradmin\\Domain\\Service\\ZoneSortingService' => $baseDir . '/lib/Domain/Service/ZoneSortingService.php',

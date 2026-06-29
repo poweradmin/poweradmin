@@ -1647,6 +1647,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\ZoneCountService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCountService.php',
         'Poweradmin\\Domain\\Service\\ZoneCreateOwnershipResolver' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCreateOwnershipResolver.php',
         'Poweradmin\\Domain\\Service\\ZoneManagementService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneManagementService.php',
+        'Poweradmin\\Domain\\Service\\ZoneOverlapService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneOverlapService.php',
         'Poweradmin\\Domain\\Service\\ZoneOwnershipModeService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneOwnershipModeService.php',
         'Poweradmin\\Domain\\Service\\ZoneOwnershipResolution' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneOwnershipResolution.php',
         'Poweradmin\\Domain\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneSortingService.php',
