@@ -224,9 +224,11 @@ class SecondaryZoneImportController extends BaseController
         $ownerInput = $this->request->getPostParam('owner');
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
 
-        if ($owner !== null && $owner !== $callerId
+        if (
+            $owner !== null && $owner !== $callerId
             && !UserManager::verifyPermission($this->db, 'user_is_ueberuser')
-            && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+            && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+        ) {
             return [null, [], _('You do not have permission to create zones for other users.')];
         }
 

@@ -1382,6 +1382,8 @@ return array(
     'Poweradmin\\Module\\Rdap\\Controller\\RdapController' => $baseDir . '/lib/Module/Rdap/Controller/RdapController.php',
     'Poweradmin\\Module\\Rdap\\RdapModule' => $baseDir . '/lib/Module/Rdap/RdapModule.php',
     'Poweradmin\\Module\\Rdap\\Service\\RdapService' => $baseDir . '/lib/Module/Rdap/Service/RdapService.php',
+    'Poweradmin\\Module\\SecondaryZoneImport\\Controller\\SecondaryZoneImportController' => $baseDir . '/lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php',
+    'Poweradmin\\Module\\SecondaryZoneImport\\SecondaryZoneImportModule' => $baseDir . '/lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php',
     'Poweradmin\\Module\\Whois\\Controller\\WhoisController' => $baseDir . '/lib/Module/Whois/Controller/WhoisController.php',
     'Poweradmin\\Module\\Whois\\Service\\WhoisService' => $baseDir . '/lib/Module/Whois/Service/WhoisService.php',
     'Poweradmin\\Module\\Whois\\WhoisModule' => $baseDir . '/lib/Module/Whois/WhoisModule.php',

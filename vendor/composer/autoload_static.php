@@ -1778,6 +1778,8 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Module\\Rdap\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Module/Rdap/Controller/RdapController.php',
         'Poweradmin\\Module\\Rdap\\RdapModule' => __DIR__ . '/../..' . '/lib/Module/Rdap/RdapModule.php',
         'Poweradmin\\Module\\Rdap\\Service\\RdapService' => __DIR__ . '/../..' . '/lib/Module/Rdap/Service/RdapService.php',
+        'Poweradmin\\Module\\SecondaryZoneImport\\Controller\\SecondaryZoneImportController' => __DIR__ . '/../..' . '/lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php',
+        'Poweradmin\\Module\\SecondaryZoneImport\\SecondaryZoneImportModule' => __DIR__ . '/../..' . '/lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php',
         'Poweradmin\\Module\\Whois\\Controller\\WhoisController' => __DIR__ . '/../..' . '/lib/Module/Whois/Controller/WhoisController.php',
         'Poweradmin\\Module\\Whois\\Service\\WhoisService' => __DIR__ . '/../..' . '/lib/Module/Whois/Service/WhoisService.php',
         'Poweradmin\\Module\\Whois\\WhoisModule' => __DIR__ . '/../..' . '/lib/Module/Whois/WhoisModule.php',
