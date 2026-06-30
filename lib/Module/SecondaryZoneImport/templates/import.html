@@ -52,8 +52,54 @@
         <small class="text-muted d-block mt-3">
             {% trans %}Converting to a primary zone keeps the transferred records and stops Poweradmin from treating the zone as a replica.{% endtrans %}
         </small>
+
+        <div id="transfer-status" class="small text-muted mt-2"
+             data-status-url="{{ base_url_prefix }}/zones/import-secondary/status/{{ imported_zone_id }}"
+             data-ready-suffix="{% trans %}records received - ready to convert.{% endtrans %}"
+             data-timeout-text="{% trans %}No records transferred yet. PowerDNS may still be transferring; reload to check again.{% endtrans %}">
+            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>{% trans %}Checking transfer status...{% endtrans %}
+        </div>
     </div>
 </div>
+
+<script>
+(function () {
+    var el = document.getElementById('transfer-status');
+    if (!el) {
+        return;
+    }
+    var url = el.getAttribute('data-status-url');
+    var readySuffix = el.getAttribute('data-ready-suffix');
+    var timeoutText = el.getAttribute('data-timeout-text');
+    var tries = 0;
+    var maxTries = 40;
+
+    function poll() {
+        fetch(url, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (d.ready) {
+                    el.className = 'small text-success mt-2';
+                    el.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>' + d.records + ' ' + readySuffix;
+                } else if (++tries < maxTries) {
+                    setTimeout(poll, 3000);
+                } else {
+                    el.className = 'small text-muted mt-2';
+                    el.textContent = timeoutText;
+                }
+            })
+            .catch(function () {
+                if (++tries < maxTries) {
+                    setTimeout(poll, 3000);
+                } else {
+                    el.className = 'small text-muted mt-2';
+                    el.textContent = timeoutText;
+                }
+            });
+    }
+    setTimeout(poll, 1500);
+})();
+</script>
 {% else %}
 {# Import form #}
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/import-secondary" novalidate>

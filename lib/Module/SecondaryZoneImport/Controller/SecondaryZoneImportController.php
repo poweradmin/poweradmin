@@ -85,6 +85,44 @@ class SecondaryZoneImportController extends BaseController
     }
 
     /**
+     * JSON endpoint polled by the import status view to report whether the
+     * AXFR transfer has populated the zone yet, so the convert step can tell
+     * the user when the records have arrived.
+     */
+    public function status(): void
+    {
+        header('Content-Type: application/json');
+
+        $zoneId = (int)$this->getSafeRequestValue('id');
+        if (!UserManager::verifyPermission($this->db, 'zone_slave_add') || !$this->userMayAccessZone($zoneId)) {
+            http_response_code(403);
+            echo json_encode(['ready' => false, 'records' => 0]);
+            return;
+        }
+
+        $records = $this->createDnsBackendProvider()->countZoneRecords($zoneId);
+        echo json_encode(['ready' => $records > 0, 'records' => $records]);
+    }
+
+    /**
+     * Whether the current user may read or convert the given zone: its owner
+     * (directly or through a group), or an operator allowed to edit others'
+     * zones. Prevents polling/probing record counts of unrelated zones.
+     */
+    private function userMayAccessZone(int $zoneId): bool
+    {
+        if ($zoneId <= 0) {
+            return false;
+        }
+        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+            || UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+            || UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
+            return true;
+        }
+        return UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
+    }
+
+    /**
      * In groups_only ownership mode the form has no usable owner controls when
      * the user has no assignable groups. Block that dead end up front with an
      * actionable message instead of letting every submission fail.
@@ -187,7 +225,7 @@ class SecondaryZoneImportController extends BaseController
     private function handleConvert(): void
     {
         $zoneId = (int)$this->request->getPostParam('zone_id', 0);
-        if ($zoneId <= 0) {
+        if (!$this->userMayAccessZone($zoneId)) {
             $this->showError(_('Invalid zone.'));
             return;
         }

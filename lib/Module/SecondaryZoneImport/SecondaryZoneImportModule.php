@@ -65,6 +65,13 @@ class SecondaryZoneImportModule implements ModuleInterface
                 'controller' => 'Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController::run',
                 'methods' => ['GET', 'POST'],
             ],
+            [
+                'name' => 'module_secondary_zone_import_status',
+                'path' => '/zones/import-secondary/status/{id}',
+                'controller' => 'Poweradmin\Module\SecondaryZoneImport\Controller\SecondaryZoneImportController::status',
+                'methods' => ['GET'],
+                'requirements' => ['id' => '\d+'],
+            ],
         ];
     }
 
