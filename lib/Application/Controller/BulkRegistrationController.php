@@ -195,7 +195,7 @@ class BulkRegistrationController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($domains as $domain) {
             $hostnameValidator = new HostnameValidator($this->config);
-            if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {
+            if (!$hostnameValidator->isValid($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
             } elseif ($dnsRecord->domainExists($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];

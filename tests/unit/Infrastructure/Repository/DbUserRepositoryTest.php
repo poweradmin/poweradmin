@@ -662,14 +662,4 @@ class DbUserRepositoryTest extends TestCase
 
         $this->assertFalse($result);
     }
-
-    // ========== unassignUserZones tests ==========
-
-    #[Test]
-    public function testUnassignUserZonesReturnsFalseAsDeprecated(): void
-    {
-        $result = $this->repository->unassignUserZones(1);
-
-        $this->assertFalse($result);
-    }
 }

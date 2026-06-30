@@ -52,17 +52,17 @@ class HostnameValidationTest extends BaseDnsTest
         $validator = new HostnameValidator($configMock);
 
         // Test valid hostname without wildcard
-        $result = $validator->isValidHostnameFqdn('example.com', 0);
-        $this->assertIsArray($result);
-        $this->assertEquals(['hostname' => 'example.com'], $result);
+        $result = $validator->validate('example.com', false);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(['hostname' => 'example.com'], $result->getData());
 
         // Test valid hostname with wildcard
-        $result = $validator->isValidHostnameFqdn('*.example.com', 1);
-        $this->assertIsArray($result);
-        $this->assertEquals(['hostname' => '*.example.com'], $result);
+        $result = $validator->validate('*.example.com', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(['hostname' => '*.example.com'], $result->getData());
 
         // Test invalid hostname
-        $this->assertFalse($validator->isValidHostnameFqdn('-invalid.com', 0));
+        $this->assertFalse($validator->validate('-invalid.com', false)->isValid());
     }
 
     /**

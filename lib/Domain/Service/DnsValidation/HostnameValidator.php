@@ -230,27 +230,6 @@ class HostnameValidator
     }
 
     /**
-     * Legacy method for compatibility with existing code
-     *
-     * @param mixed $hostname Hostname string
-     * @param mixed $wildcard Whether wildcards are allowed (1/0 or true/false)
-     *
-     * @return array|bool Returns array with normalized hostname if valid, false otherwise
-     * @deprecated Use validate() instead
-     */
-    public function isValidHostnameFqdn(mixed $hostname, mixed $wildcard): array|bool
-    {
-        $allowWildcard = (bool)$wildcard;
-        $result = $this->validate($hostname, $allowWildcard);
-
-        if (!$result->isValid()) {
-            return false;
-        }
-
-        return $result->getData();
-    }
-
-    /**
      * Simple validator for hostname validity
      *
      * @param string $hostname Hostname to validate

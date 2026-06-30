@@ -360,20 +360,6 @@ class DbUserRepository implements UserRepository
     }
 
     /**
-     * Unassign all zones owned by a user (not used anymore - kept for interface compatibility)
-     *
-     * @param int $userId User ID
-     * @return bool True if zones were unassigned successfully
-     * @deprecated Use transferUserZones() instead
-     */
-    public function unassignUserZones(int $userId): bool
-    {
-        // This method is deprecated - zones should be transferred to another user
-        // to avoid the NOT NULL constraint issue
-        return false;
-    }
-
-    /**
      * Count total number of uberusers (super admins) in the system
      *
      * @return int Number of uberusers

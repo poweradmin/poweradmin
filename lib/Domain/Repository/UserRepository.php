@@ -118,14 +118,6 @@ interface UserRepository
     public function transferUserZones(int $fromUserId, int $toUserId): bool;
 
     /**
-     * Unassign all zones owned by a user (set owner to NULL)
-     *
-     * @param int $userId User ID
-     * @return bool True if zones were unassigned successfully
-     */
-    public function unassignUserZones(int $userId): bool;
-
-    /**
      * Count total number of uberusers (super admins) in the system
      *
      * @return int Number of uberusers
