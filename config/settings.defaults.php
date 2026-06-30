@@ -844,5 +844,8 @@ return [
                 ';' => 'Allow all CAs (not recommended)',
             ],
         ],
+        'secondary_zone_import' => [
+            'enabled' => false,                         // Import a zone from a live primary over AXFR (API backend only)
+        ],
     ],
 ];

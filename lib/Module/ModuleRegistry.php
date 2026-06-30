@@ -27,6 +27,7 @@ use Poweradmin\Module\CsvExport\CsvExportModule;
 use Poweradmin\Module\DnsWizard\DnsWizardModule;
 use Poweradmin\Module\EmailPreviews\EmailPreviewsModule;
 use Poweradmin\Module\Rdap\RdapModule;
+use Poweradmin\Module\SecondaryZoneImport\SecondaryZoneImportModule;
 use Poweradmin\Module\Whois\WhoisModule;
 use Poweradmin\Module\ZoneImportExport\ZoneImportExportModule;
 
@@ -56,6 +57,7 @@ class ModuleRegistry
         'rdap' => RdapModule::class,
         'dns_wizards' => DnsWizardModule::class,
         'email_previews' => EmailPreviewsModule::class,
+        'secondary_zone_import' => SecondaryZoneImportModule::class,
     ];
 
     public function __construct(ConfigurationManager $config)

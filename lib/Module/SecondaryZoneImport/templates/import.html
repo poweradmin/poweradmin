@@ -1,0 +1,278 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Import secondary zone{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if imported %}
+{# Post-import status + convert step #}
+<div class="card shadow-sm mb-4" style="max-width: 720px;">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-cloud-arrow-down me-2"></i>{% trans %}Secondary zone created{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="mb-3">
+            {% trans %}Created secondary zone{% endtrans %}
+            <strong>{{ imported_zone_name }}</strong>.
+        </p>
+
+        {% if transfer_requested %}
+        <div class="alert alert-success bg-success bg-opacity-10 py-2 border border-success small">
+            <i class="bi bi-check-circle-fill me-2 text-success"></i>
+            {% trans %}A transfer from the primary server was requested. PowerDNS pulls the zone in the background; once the records arrive you can convert it to a primary zone.{% endtrans %}
+        </div>
+        {% else %}
+        <div class="alert alert-warning bg-warning bg-opacity-10 py-2 border border-warning small">
+            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>
+            {% trans %}The zone was created, but the transfer request was not accepted. The primary may refuse AXFR, or PowerDNS will retry on its own refresh schedule.{% endtrans %}
+        </div>
+        {% endif %}
+
+        <div class="d-flex gap-2 mt-3">
+            <form method="post" action="{{ base_url_prefix }}/zones/import-secondary" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="action" value="convert">
+                <input type="hidden" name="zone_id" value="{{ imported_zone_id }}">
+                <button class="btn btn-primary btn-sm" type="submit">
+                    <i class="bi bi-arrow-up-circle me-1 text-white"></i>{% trans %}Convert to primary zone{% endtrans %}
+                </button>
+            </form>
+            <a href="{{ base_url_prefix }}/zones/{{ imported_zone_id }}/edit" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-pencil me-1"></i>{% trans %}View zone{% endtrans %}
+            </a>
+            <a href="{{ base_url_prefix }}/zones/import-secondary" class="btn btn-link btn-sm">
+                {% trans %}Import another{% endtrans %}
+            </a>
+        </div>
+        <small class="text-muted d-block mt-3">
+            {% trans %}Converting to a primary zone keeps the transferred records and stops Poweradmin from treating the zone as a replica.{% endtrans %}
+        </small>
+    </div>
+</div>
+{% else %}
+{# Import form #}
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/import-secondary" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+    <div class="row">
+        <!-- Left column: zone + primary -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-cloud-arrow-down me-2"></i>{% trans %}Import secondary zone{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">
+                        {% trans %}Creates a secondary zone pointing at the primary server below and asks PowerDNS to transfer it over AXFR. After the records arrive you can convert it to a primary zone.{% endtrans %}
+                    </p>
+
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
+                        <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="slave_master" class="form-label">{% trans %}Primary server IP address{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="text" id="slave_master" name="slave_master" value="{{ slave_master_value }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide IP address{% endtrans %}</div>
+                        <small class="text-muted">{% trans %}IPv4 or IPv6 address. Separate multiple primaries with commas.{% endtrans %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column: ownership -->
+        <div class="col-md-6">
+            {% if user_owner_allowed %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <div class="alert alert-sm alert-success py-2 mb-2" id="selected_user_indicator" style="display: none;">
+                            <small><strong>{% trans %}Selected:{% endtrans %}</strong> <span id="selected_user_name"></span></small>
+                        </div>
+                        {% if group_owner_allowed and all_groups is not empty %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="owner" id="owner_none" value="" {% if owner_value == '' %}checked{% endif %}>
+                            <label class="form-check-label" for="owner_none">
+                                <strong>{% trans %}No user owner{% endtrans %}</strong>
+                                <small class="text-muted d-block">{% trans %}Zone will be owned only by groups{% endtrans %}</small>
+                            </label>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if group_owner_allowed and all_groups is not empty %}<hr class="my-2">{% endif %}
+                    <div class="mb-2">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clear_user_search" title="{% trans %}Clear search{% endtrans %}">
+                                <i class="bi bi-x-circle text-secondary"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="user_list" style="max-height: 200px; overflow-y: auto;">
+                        {% for user in users %}
+                        {% if perm_view_others or user['id'] == session_user_id %}
+                        <div class="form-check mb-2 user-item" data-username="{{ user['fullname']|lower }} {{ user['username']|lower }}">
+                            <input class="form-check-input" type="radio" name="owner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}" {% if user['id'] == owner_value %}checked{% endif %}>
+                            <label class="form-check-label" for="owner_{{ user['id'] }}">
+                                {{ user['fullname'] }}
+                                <small class="text-muted">({{ user['username'] }})</small>
+                                {% if user['id'] == session_user_id %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
+                            </label>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted mt-2 d-block">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if group_owner_allowed and all_groups is not empty %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clear_group_search" title="{% trans %}Clear search{% endtrans %}">
+                                <i class="bi bi-x-circle text-secondary"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="select_all_groups">{% trans %}Select All{% endtrans %}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect_all_groups">{% trans %}Clear All{% endtrans %}</button>
+                    </div>
+                    <div id="group_list" style="max-height: 200px; overflow-y: auto;">
+                        {% for group in all_groups %}
+                        <div class="form-check mb-2 group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">
+                            <input class="form-check-input group-checkbox" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}checked{% endif %}>
+                            <label class="form-check-label" for="group_{{ group.id }}">
+                                {{ group.name }}
+                                <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_counts[group.id]|default(0) }} {% trans %}members{% endtrans %}</span>
+                                {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted mt-2 d-block">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-primary btn-sm" type="submit">
+                                <i class="bi bi-cloud-arrow-down me-1 text-white"></i>{% trans %}Create and transfer{% endtrans %}
+                            </button>
+                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userList = document.getElementById('user_list');
+    const selectedIndicator = document.getElementById('selected_user_indicator');
+    const selectedUserName = document.getElementById('selected_user_name');
+    const ownerRadios = document.querySelectorAll('input[name="owner"]');
+
+    function updateSelectedUserIndicator() {
+        if (!selectedIndicator || !selectedUserName) {
+            return;
+        }
+        const selectedRadio = document.querySelector('input[name="owner"]:checked');
+        if (selectedRadio && selectedRadio.value !== '') {
+            const label = document.querySelector(`label[for="${selectedRadio.id}"]`);
+            if (label) {
+                selectedUserName.textContent = label.textContent.trim();
+                selectedIndicator.style.display = 'block';
+            }
+        } else {
+            selectedIndicator.style.display = 'none';
+        }
+    }
+
+    updateSelectedUserIndicator();
+    ownerRadios.forEach(radio => radio.addEventListener('change', updateSelectedUserIndicator));
+
+    const userSearch = document.getElementById('user_search');
+    const clearUserSearch = document.getElementById('clear_user_search');
+    const userItems = document.querySelectorAll('.user-item');
+    if (userSearch) {
+        userSearch.addEventListener('input', function() {
+            const term = this.value.toLowerCase();
+            userItems.forEach(item => {
+                item.style.display = item.getAttribute('data-username').includes(term) ? '' : 'none';
+            });
+        });
+        if (clearUserSearch) {
+            clearUserSearch.addEventListener('click', function() {
+                userSearch.value = '';
+                userItems.forEach(item => item.style.display = '');
+                userSearch.focus();
+            });
+        }
+    }
+
+    const groupSearch = document.getElementById('group_search');
+    const clearGroupSearch = document.getElementById('clear_group_search');
+    const groupItems = document.querySelectorAll('.group-item');
+    if (groupSearch) {
+        groupSearch.addEventListener('input', function() {
+            const term = this.value.toLowerCase();
+            groupItems.forEach(item => {
+                const name = item.getAttribute('data-groupname');
+                const desc = item.getAttribute('data-groupdesc');
+                item.style.display = (name.includes(term) || desc.includes(term)) ? '' : 'none';
+            });
+        });
+        if (clearGroupSearch) {
+            clearGroupSearch.addEventListener('click', function() {
+                groupSearch.value = '';
+                groupItems.forEach(item => item.style.display = '');
+                groupSearch.focus();
+            });
+        }
+    }
+
+    const selectAllBtn = document.getElementById('select_all_groups');
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            Array.from(document.querySelectorAll('.group-item'))
+                .filter(item => item.style.display !== 'none')
+                .forEach(item => item.querySelector('.group-checkbox').checked = true);
+        });
+    }
+    const deselectAllBtn = document.getElementById('deselect_all_groups');
+    if (deselectAllBtn) {
+        deselectAllBtn.addEventListener('click', function() {
+            document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = false);
+        });
+    }
+});
+</script>
+{% endif %}

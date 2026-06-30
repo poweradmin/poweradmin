@@ -161,5 +161,8 @@ return [
         'dns_wizards' => [
             'enabled' => true,
         ],
+        'secondary_zone_import' => [
+            'enabled' => true,
+        ],
     ],
 ];
