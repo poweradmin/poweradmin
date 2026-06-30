@@ -224,4 +224,34 @@ class ZoneTemplateDefaultTest extends TestCase
 
         $this->assertTrue($template->unsetDefaultTemplate());
     }
+
+    public function testIsUserOwnerOfTemplateTrueWhenOwnerMatches(): void
+    {
+        $db = $this->makeDb([
+            ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 5],
+        ]);
+        $template = new ZoneTemplate($db, $this->makeConfig());
+
+        $this->assertTrue($template->isUserOwnerOfTemplate(42, 5));
+    }
+
+    public function testIsUserOwnerOfTemplateFalseWhenOwnerDiffers(): void
+    {
+        $db = $this->makeDb([
+            ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => 5],
+        ]);
+        $template = new ZoneTemplate($db, $this->makeConfig());
+
+        $this->assertFalse($template->isUserOwnerOfTemplate(42, 9));
+    }
+
+    public function testIsUserOwnerOfTemplateFalseWhenTemplateMissing(): void
+    {
+        $db = $this->makeDb([
+            ['sql' => 'SELECT owner FROM zone_templ WHERE id = :id', 'fetchColumn' => false],
+        ]);
+        $template = new ZoneTemplate($db, $this->makeConfig());
+
+        $this->assertFalse($template->isUserOwnerOfTemplate(999, 5));
+    }
 }
