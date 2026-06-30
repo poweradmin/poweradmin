@@ -724,25 +724,6 @@ class ZoneTemplate
     }
 
     /**
-     * Check if the session user is the owner for the zone template (static version for backward compatibility)
-     *
-     * @deprecated Use instance method isUserOwnerOfTemplate() instead
-     * @param mixed $db Database connection
-     * @param int $zone_templ_id zone template id
-     * @param int $userid user id
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public static function getZoneTemplIsOwner($db, int $zone_templ_id, int $userid): bool
-    {
-        $stmt = $db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
-        $stmt->execute([':id' => $zone_templ_id]);
-        $result = $stmt->fetchColumn();
-
-        return ($result == $userid);
-    }
-
-    /**
      * Add a zone template from zone / another template
      *
      * @param string $template_name template name

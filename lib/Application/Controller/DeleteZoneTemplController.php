@@ -64,7 +64,7 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 

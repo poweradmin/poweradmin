@@ -67,7 +67,7 @@ class EditZoneTemplController extends BaseController
 
         $zone_templ_id = (int)$id;
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
+        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
@@ -104,7 +104,7 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(int $zone_templ_id): void
     {
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
+        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         if ($this->request->getPostParam('edit') !== null && ($owner || $perm_godlike)) {

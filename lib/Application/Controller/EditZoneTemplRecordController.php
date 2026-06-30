@@ -78,7 +78,7 @@ class EditZoneTemplRecordController extends BaseController
         $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
 
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
+        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));

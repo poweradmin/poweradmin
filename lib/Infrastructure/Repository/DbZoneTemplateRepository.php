@@ -345,7 +345,7 @@ class DbZoneTemplateRepository
      */
     public function isOwner(int $templateId, int $userId): bool
     {
-        return ZoneTemplate::getZoneTemplIsOwner($this->db, $templateId, $userId);
+        return (new ZoneTemplate($this->db, $this->config))->isUserOwnerOfTemplate($templateId, $userId);
     }
 
     /**
