@@ -192,6 +192,13 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
+        // Refuse to convert before the transfer has populated the zone: an empty
+        // conversion would discard the secondary and stop PowerDNS retrying AXFR.
+        if ($this->createDnsBackendProvider()->countZoneRecords($zoneId) === 0) {
+            $this->showError(_('This zone has no transferred records yet. Wait for the transfer to complete before converting it to a primary zone.'));
+            return;
+        }
+
         // changeZoneType() enforces the metadata-edit permission and ownership
         // and writes its own audit entry, so no extra gating is needed here.
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
