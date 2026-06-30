@@ -102,7 +102,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
 
         // For SMIMEA records with special format
         // Validate printable characters at minimum
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
@@ -185,7 +185,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('SMIMEA record contains invalid characters.'));
         }
 

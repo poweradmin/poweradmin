@@ -109,18 +109,6 @@ class StringValidator
     }
 
     /**
-     * Test if string is printable (legacy method for backward compatibility)
-     *
-     * @deprecated Use validatePrintable() instead which returns a ValidationResult
-     * @param string $string string to validate
-     * @return boolean true if valid, false otherwise
-     */
-    public static function isValidPrintable(string $string): bool
-    {
-        return preg_match('/^[[:print:]]+$/', trim($string)) === 1;
-    }
-
-    /**
      * Test if string is a valid domain name
      *
      * @param string $domain Domain name to validate

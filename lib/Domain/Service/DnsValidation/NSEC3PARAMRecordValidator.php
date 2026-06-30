@@ -110,7 +110,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate that content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('NSEC3PARAM record contains invalid characters.'));
         }
 

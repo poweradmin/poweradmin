@@ -104,7 +104,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate the hostname format
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Hostname contains invalid characters.'));
         }
 
@@ -170,7 +170,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('RRSIG record contains invalid characters.'));
         }
 

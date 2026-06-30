@@ -30,16 +30,6 @@ use Poweradmin\Domain\Service\DnsValidation\StringValidator;
  */
 class StringValidatorTest extends TestCase
 {
-    public function testIsValidPrintable()
-    {
-        $this->assertTrue(StringValidator::isValidPrintable('abc123'));
-        $this->assertTrue(StringValidator::isValidPrintable('example.com'));
-        $this->assertTrue(StringValidator::isValidPrintable('Special@Chars!'));
-
-        // Non-printable characters should fail
-        $this->assertFalse(StringValidator::isValidPrintable("abc\x07def"));
-    }
-
     public function testIsValidDomain()
     {
         // Valid domains

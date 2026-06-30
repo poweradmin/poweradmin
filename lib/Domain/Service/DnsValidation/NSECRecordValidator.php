@@ -98,7 +98,7 @@ class NSECRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate that content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('NSEC record contains invalid characters.'));
         }
 

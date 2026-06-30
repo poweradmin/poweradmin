@@ -104,7 +104,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
     {
         // For TLSA records with special format _port._protocol.hostname
         // Validate printable characters at minimum
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
@@ -216,7 +216,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
     private function validateTLSAHostname(string $hostname): ValidationResult
     {
         // Check if hostname is valid
-        if (!StringValidator::isValidPrintable($hostname)) {
+        if (!StringValidator::validatePrintable($hostname)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 

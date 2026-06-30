@@ -109,7 +109,7 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate that content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('NSEC3 record contains invalid characters.'));
         }
 
