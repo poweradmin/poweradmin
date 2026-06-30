@@ -52,6 +52,28 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertEmpty($keys[0]->getDs());
     }
 
+    public function testRetrieveZoneTriggersAxfrRetrieve(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./axfr-retrieve')
+            ->willReturn(['responseCode' => 200]);
+
+        $this->assertTrue($this->apiClient->retrieveZone('example.com.'));
+    }
+
+    public function testRetrieveZoneReturnsFalseOnNonSuccess(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./axfr-retrieve')
+            ->willReturn(['responseCode' => 422]);
+
+        $this->assertFalse($this->apiClient->retrieveZone('example.com.'));
+    }
+
     public function testGetZoneKeysWithDsRecords(): void
     {
         $zone = new Zone('example.com');

@@ -127,6 +127,13 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
+    public function retrieveZone(int $domainId): bool
+    {
+        // PowerDNS pulls secondaries on its own refresh schedule with the SQL
+        // backend; there is no way to trigger an immediate transfer from here.
+        return false;
+    }
+
     public function updateZoneAccount(int $domainId, string $account): bool
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);

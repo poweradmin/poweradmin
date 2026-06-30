@@ -650,6 +650,16 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Request an immediate AXFR transfer of a secondary zone from its master.
+     *
+     * @param int $id Zone ID
+     */
+    public function retrieveZone(int $id): bool
+    {
+        return $this->backendProvider->retrieveZone($id);
+    }
+
+    /**
      * Change Zone Type
      *
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]

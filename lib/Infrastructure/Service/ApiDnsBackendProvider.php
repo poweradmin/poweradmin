@@ -70,7 +70,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         ];
 
         if ($type === 'SLAVE' && $slaveMaster !== '') {
-            $zoneData['masters'] = [$slaveMaster];
+            $zoneData['masters'] = self::parseMasters($slaveMaster);
         }
 
         $result = $this->client->createZoneWithData($zoneData);
@@ -155,7 +155,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         $apiName = self::ensureTrailingDot($zoneName);
-        $result = $this->client->updateZoneProperties($apiName, ['masters' => [$masterIp]]);
+        $result = $this->client->updateZoneProperties($apiName, ['masters' => self::parseMasters($masterIp)]);
 
         if ($result) {
             $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
@@ -165,6 +165,30 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         return $result;
+    }
+
+    public function retrieveZone(int $domainId): bool
+    {
+        // Skip placeholder ownership rows (zone_name IS NULL) and prefer the row
+        // whose id matches, so a shared identifier can't target the wrong zone.
+        $stmt = $this->db->prepare(
+            "SELECT zone_name, zone_type
+             FROM zones
+             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
+             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
+             LIMIT 1"
+        );
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':pref', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false || strtoupper($row['zone_type'] ?? '') !== 'SLAVE') {
+            return false;
+        }
+
+        return $this->client->retrieveZone(self::ensureTrailingDot($row['zone_name']));
     }
 
     public function updateZoneAccount(int $domainId, string $account): bool
@@ -1116,6 +1140,17 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     private static function ensureTrailingDot(string $name): string
     {
         return str_ends_with($name, '.') ? $name : $name . '.';
+    }
+
+    /**
+     * Split a comma-separated list of master IPs into the array PowerDNS expects.
+     * The forms collect several masters as a single comma-separated string.
+     *
+     * @return string[]
+     */
+    private static function parseMasters(string $masters): array
+    {
+        return array_values(array_filter(array_map('trim', explode(',', $masters)), 'strlen'));
     }
 
     private static function contentMatchesApi(string $apiContent, string $dbFormattedContent): bool

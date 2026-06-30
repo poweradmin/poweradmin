@@ -40,6 +40,31 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->isApiBackend());
     }
 
+    public function testRetrieveZoneTriggersAxfrForSlave(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->once())
+            ->method('retrieveZone')
+            ->with('example.com.')
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->retrieveZone(42));
+    }
+
+    public function testRetrieveZoneDoesNothingForNonSlave(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'NATIVE']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->never())->method('retrieveZone');
+
+        $this->assertFalse($this->provider->retrieveZone(42));
+    }
+
     // ---------------------------------------------------------------
     // Zone operations
     // ---------------------------------------------------------------
@@ -224,6 +249,27 @@ class ApiDnsBackendProviderTest extends TestCase
         $result = $this->provider->updateZoneMaster(1, '192.168.1.100');
 
         $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneMasterSplitsCommaSeparatedMasters(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn('slave.example.com');
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('slave.example.com.', ['masters' => ['10.0.0.1', '10.0.0.2']])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneMaster(1, '10.0.0.1, 10.0.0.2'));
     }
 
     // ---------------------------------------------------------------

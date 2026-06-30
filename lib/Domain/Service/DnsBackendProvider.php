@@ -77,6 +77,17 @@ interface DnsBackendProvider
     public function updateZoneMaster(int $domainId, string $masterIp): bool;
 
     /**
+     * Request an immediate AXFR transfer of a secondary (slave) zone from its master.
+     *
+     * Only the API backend can trigger this. The SQL backend returns false,
+     * since PowerDNS pulls secondaries on its own refresh schedule there.
+     *
+     * @param int $domainId Domain ID
+     * @return bool
+     */
+    public function retrieveZone(int $domainId): bool;
+
+    /**
      * Update zone account field.
      *
      * @param int $domainId Domain ID

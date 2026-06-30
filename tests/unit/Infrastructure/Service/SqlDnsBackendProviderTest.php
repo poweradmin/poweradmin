@@ -33,6 +33,12 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->isApiBackend());
     }
 
+    public function testRetrieveZoneReturnsFalse(): void
+    {
+        // SQL backend cannot trigger an immediate transfer; PowerDNS handles it.
+        $this->assertFalse($this->provider->retrieveZone(1));
+    }
+
     // ---------------------------------------------------------------
     // Zone operations
     // ---------------------------------------------------------------

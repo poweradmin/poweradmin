@@ -713,6 +713,28 @@ class PowerdnsApiClient
         }
     }
 
+    /**
+     * Trigger an immediate AXFR transfer of a secondary zone from its master.
+     *
+     * Asks PowerDNS to pull the zone now instead of waiting for the next
+     * scheduled refresh. Returns false when the master refuses the transfer.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return bool
+     */
+    public function retrieveZone(string $zoneName): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName, '/axfr-retrieve');
+            $response = $this->httpClient->makeRequest('PUT', $endpoint);
+
+            return $response && $response['responseCode'] === 200;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to retrieve zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
     // ---------------------------------------------------------------
     // RRset operations
     // ---------------------------------------------------------------
