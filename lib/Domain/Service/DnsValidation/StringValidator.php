@@ -121,58 +121,6 @@ class StringValidator
     }
 
     /**
-     * Test if string has html opening and closing tags (legacy method for backward compatibility)
-     *
-     * @deprecated Use validateNoHtmlTags() instead which returns a ValidationResult
-     * @param string $string Input string
-     * @return bool true if HTML tags are found, false otherwise
-     */
-    public static function hasHtmlTags(string $string): bool
-    {
-        return preg_match('/[<>]/', trim($string)) === 1;
-    }
-
-    /**
-     * Verify that the content is properly quoted (legacy method for backward compatibility)
-     *
-     * @deprecated Use validateProperQuoting() instead which returns a ValidationResult
-     * @param string $content
-     * @return bool
-     */
-    public static function isProperlyQuoted(string $content): bool
-    {
-        $startsWithQuote = isset($content[0]) && $content[0] === '"';
-        $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
-
-        if ($startsWithQuote && $endsWithQuote) {
-            $subContent = substr($content, 1, -1);
-        } else {
-            $subContent = $content;
-        }
-
-        $pattern = '/(?<!\\\\)"/';
-
-        return !preg_match($pattern, $subContent);
-    }
-
-    /**
-     * Verify that the string is enclosed in quotes (legacy method for backward compatibility)
-     *
-     * @deprecated Use validateQuotesAround() instead which returns a ValidationResult
-     * @param string $string Input string
-     * @return bool true if valid, false otherwise
-     */
-    public static function hasQuotesAround(string $string): bool
-    {
-        // Ignore empty line
-        if (strlen($string) === 0) {
-            return true;
-        }
-
-        return str_starts_with($string, '"') && str_ends_with($string, '"');
-    }
-
-    /**
      * Test if string is a valid domain name
      *
      * @param string $domain Domain name to validate

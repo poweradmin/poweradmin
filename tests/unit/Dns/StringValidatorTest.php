@@ -40,36 +40,6 @@ class StringValidatorTest extends TestCase
         $this->assertFalse(StringValidator::isValidPrintable("abc\x07def"));
     }
 
-    public function testHasHtmlTags()
-    {
-        $this->assertTrue(StringValidator::hasHtmlTags('<html>'));
-        $this->assertTrue(StringValidator::hasHtmlTags('abc<div>content</div>'));
-
-        $this->assertFalse(StringValidator::hasHtmlTags('No html tags here'));
-        $this->assertFalse(StringValidator::hasHtmlTags('email@example.com'));
-    }
-
-    public function testIsProperlyQuoted()
-    {
-        $this->assertTrue(StringValidator::isProperlyQuoted('"Simple quoted string"'));
-        $this->assertTrue(StringValidator::isProperlyQuoted('"Quoted with \\"escaped\\" quotes"'));
-        $this->assertTrue(StringValidator::isProperlyQuoted('Unquoted string'));
-
-        $this->assertFalse(StringValidator::isProperlyQuoted('"Improperly quoted "string"'));
-        $this->assertFalse(StringValidator::isProperlyQuoted('"Missing end quote'));
-    }
-
-    public function testHasQuotesAround()
-    {
-        $this->assertTrue(StringValidator::hasQuotesAround('"Quoted string"'));
-        $this->assertTrue(StringValidator::hasQuotesAround('""')); // Empty quoted string
-        $this->assertTrue(StringValidator::hasQuotesAround('')); // Empty string (special case)
-
-        $this->assertFalse(StringValidator::hasQuotesAround('Unquoted string'));
-        $this->assertFalse(StringValidator::hasQuotesAround('"Missing end quote'));
-        $this->assertFalse(StringValidator::hasQuotesAround('Missing start quote"'));
-    }
-
     public function testIsValidDomain()
     {
         // Valid domains

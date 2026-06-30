@@ -165,24 +165,4 @@ class KXRecordValidator implements DnsRecordValidatorInterface
 
         return ValidationResult::failure(_('Invalid value for KX preference field. Must be between 0 and 65535.'));
     }
-
-    /**
-     * Legacy adapter method for backward compatibility
-     *
-     * This method maintains compatibility with code that may still use
-     * the legacy validation approach.
-     *
-     * @param mixed $prio Preference value for the KX record
-     * @return int|bool The validated preference value or false if invalid
-     *
-     * @deprecated Use validatePriority() with ValidationResult pattern instead
-     */
-    private function validatePriorityLegacy(mixed $prio): int|bool
-    {
-        $result = $this->validatePriority($prio);
-        if (!$result->isValid()) {
-            return false;
-        }
-        return $result->getData();
-    }
 }
