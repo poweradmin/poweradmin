@@ -586,38 +586,6 @@ class DnsRecord
         return $this->recordRepository->getRecordsFromDomainId($db_type, $id, $rowstart, $rowamount, $sortby, $sortDirection, $fetchComments);
     }
 
-    /** Get list of owners for Domain ID
-     *
-     * @param int $id Domain ID
-     *
-     * @return array array of owners [id,fullname]
-     */
-    public static function getUsersFromDomainId($db, int $id): array
-    {
-        $owners = array();
-
-        $stmt = $db->prepare("SELECT owner FROM zones WHERE domain_id = ?");
-        $stmt->execute([$id]);
-        $id_owners = $stmt;
-        if ($id_owners) {
-            while ($r = $id_owners->fetch()) {
-                $userStmt = $db->prepare("SELECT username, fullname FROM users WHERE id = ?");
-                $userStmt->execute([$r['owner']]);
-                $result = $userStmt->fetch();
-                if ($result) {
-                    $owners[] = array(
-                        "id" => $r['owner'],
-                        "fullname" => $result["fullname"],
-                        "username" => $result["username"],
-                    );
-                }
-            }
-        } else {
-            return [];
-        }
-        return $owners;
-    }
-
     /** Get Domain Type for Domain ID
      *
      * @param int $id Domain ID
