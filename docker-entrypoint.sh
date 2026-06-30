@@ -79,14 +79,38 @@ configure_trusted_proxies() {
 
     log "Configuring trusted proxies: ${proxies}"
 
+    # Replace placeholder with trusted_proxies block
+    # Pattern: insert servers block after 'order php_server before file_server'
     sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
 
     log "Trusted proxies configured in Caddyfile"
 }
 
 # Escape single quotes for SQL by replacing ' with ''
+# NOTE: Only covers basic quoting - values are interpolated into shell strings.
+# Newlines and other control characters in values may still cause issues.
+# For production use, prefer parameterised queries via a PHP helper script.
 escape_sql() {
     printf '%s' "$1" | sed "s/'/''/g"
+}
+
+# Escape a value for embedding inside a PHP single-quoted string literal.
+# Escapes backslashes first, then single quotes.
+escape_php() {
+    printf '%s' "$1" | sed "s/\\\\/\\\\\\\\/g; s/'/\\\\'/g"
+}
+
+# Write a temporary MySQL defaults file to avoid exposing the password in the
+# process list (visible in /proc/<pid>/cmdline).
+# Usage:  mysql_with_pass <host> [<port_opt>] [<ssl_opts_array_name>] <user> <db> <sql>
+# Instead, callers build a temp file via make_mysql_defaults_file and pass
+# --defaults-file=<path> themselves. Helper below.
+make_mysql_defaults_file() {
+    local tmpfile
+    tmpfile=$(mktemp)
+    chmod 600 "${tmpfile}"
+    printf '[client]\npassword=%s\n' "${DB_PASS}" > "${tmpfile}"
+    echo "${tmpfile}"
 }
 
 # Initialize SQLite database if it doesn't exist
@@ -118,10 +142,15 @@ init_sqlite_db() {
     fi
 }
 
-# Build MySQL SSL command-line options from DB_SSL / DB_SSL_VERIFY
+# Build MySQL SSL options array from DB_SSL / DB_SSL_VERIFY.
+# Returns options as newline-separated values; callers use mapfile/read -ra to
+# build a proper array so options with spaces are handled correctly.
 build_mysql_ssl_opts() {
-    local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
-    local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl
+    db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl_verify
+    db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+
     if [ "$db_ssl" != "true" ]; then
         echo "--skip-ssl"
     elif [ "$db_ssl_verify" != "true" ]; then
@@ -134,15 +163,25 @@ build_mysql_ssl_opts() {
 init_mysql_db() {
     [ "${DB_TYPE}" = "mysql" ] || return 0
 
-    local ssl_opts
-    ssl_opts=$(build_mysql_ssl_opts)
-    local port_opt=""
-    [ -n "${DB_PORT:-}" ] && port_opt="-P${DB_PORT}"
+    # Build SSL options as a proper array to handle options with spaces correctly
+    local -a ssl_opts
+    mapfile -t ssl_opts < <(build_mysql_ssl_opts)
 
-    # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
+
+    # Use a temporary defaults file to avoid password exposure in process list
+    local mycnf
+    mycnf=$(make_mysql_defaults_file)
+    # Ensure cleanup on exit
+    # shellcheck disable=SC2064
+    trap "rm -f '${mycnf}'" RETURN
+
+    # '|| true' keeps a probe failure from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+    table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='users';" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -150,21 +189,22 @@ init_mysql_db() {
         return 0
     fi
 
-    # Optionally load the PowerDNS schema (domains, records, ...) into an empty database, matching
-    # SQLite init. Off by default: most MySQL/PostgreSQL deployments provision the PowerDNS schema
-    # separately (dedicated container, DBA) or use the API backend. Set PA_INIT_PDNS_SCHEMA=true to
-    # opt in. Skipped when PA_PDNS_DB_NAME points the PowerDNS tables at a separate database.
-    local init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
+    # Optionally load the PowerDNS schema into an empty database.
+    # Off by default. Set PA_INIT_PDNS_SCHEMA=true to opt in.
+    local init_pdns_schema
+    init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+        pdns_table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='domains';" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "0" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.mysql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS MySQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "${pdns_schema}"; then
+            elif mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" < "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in MySQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in MySQL database '${DB_NAME}'"
@@ -183,7 +223,9 @@ init_mysql_db() {
         log "WARNING: Poweradmin MySQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < /app/sql/poweradmin-mysql-db-structure.sql; then
+    if mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" \
+            < /app/sql/poweradmin-mysql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in MySQL database '${DB_NAME}'"
     else
         log "ERROR: Failed to initialize Poweradmin schema in MySQL database '${DB_NAME}'"
@@ -199,8 +241,6 @@ init_pgsql_db() {
     local port_opt=""
     [ -n "${DB_PORT:-}" ] && port_opt="-p ${DB_PORT}"
 
-    # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
-    # the empty-result check below turns it into a graceful skip.
     local table_exists
     table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -tAc \
         "SELECT to_regclass('public.users') IS NOT NULL;" 2>/dev/null) || true
@@ -210,11 +250,8 @@ init_pgsql_db() {
         return 0
     fi
 
-    # Optionally load the PowerDNS schema (domains, records, ...) into an empty database, matching
-    # SQLite init. Off by default: most MySQL/PostgreSQL deployments provision the PowerDNS schema
-    # separately (dedicated container, DBA) or use the API backend. Set PA_INIT_PDNS_SCHEMA=true to
-    # opt in. Skipped when PA_PDNS_DB_NAME points the PowerDNS tables at a separate database.
-    local init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
+    local init_pdns_schema
+    init_pdns_schema=$(echo "${PA_INIT_PDNS_SCHEMA:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
@@ -283,6 +320,9 @@ validate_database_config() {
                 log "ERROR: DB_NAME is required for ${DB_TYPE} database"
                 exit 1
             fi
+            if [ -z "${DB_PASS:-}" ]; then
+                log "WARNING: DB_PASS is empty for ${DB_TYPE} database - ensure this is intentional"
+            fi
             ;;
         *)
             log "ERROR: Unsupported database type: ${DB_TYPE}. Supported types: sqlite, mysql, pgsql"
@@ -314,7 +354,8 @@ validate_dns_config() {
 
 # Validate mail configuration if enabled
 validate_mail_config() {
-    local mail_enabled=$(echo "${PA_MAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+    local mail_enabled
+    mail_enabled=$(echo "${PA_MAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
     if [ "$mail_enabled" = "true" ] && [ "${PA_MAIL_TRANSPORT}" = "smtp" ]; then
         if [ -z "${PA_SMTP_HOST}" ]; then
             log "ERROR: PA_SMTP_HOST is required when using SMTP transport"
@@ -329,7 +370,8 @@ validate_mail_config() {
 
 # Validate API configuration if enabled
 validate_api_config() {
-    local api_enabled=$(echo "${PA_API_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local api_enabled
+    api_enabled=$(echo "${PA_API_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "$api_enabled" = "true" ] && [ -n "${PA_PDNS_API_URL}" ]; then
         if [ -z "${PA_PDNS_API_KEY}" ]; then
             log "ERROR: PA_PDNS_API_KEY is required when PowerDNS API URL is specified"
@@ -344,7 +386,8 @@ validate_api_config() {
 
 # Validate LDAP configuration if enabled
 validate_ldap_config() {
-    local ldap_enabled=$(echo "${PA_LDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local ldap_enabled
+    ldap_enabled=$(echo "${PA_LDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "$ldap_enabled" = "true" ]; then
         local required_ldap_vars=("PA_LDAP_URI" "PA_LDAP_BASE_DN")
         for var in "${required_ldap_vars[@]}"; do
@@ -358,21 +401,21 @@ validate_ldap_config() {
 
 # Validate SAML configuration if enabled
 validate_saml_config() {
-    local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_enabled
+    saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "$saml_enabled" = "true" ]; then
-        # Check if at least one provider is enabled
-        local azure_enabled=$(echo "${PA_SAML_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local okta_enabled=$(echo "${PA_SAML_OKTA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local auth0_enabled=$(echo "${PA_SAML_AUTH0_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local keycloak_enabled=$(echo "${PA_SAML_KEYCLOAK_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local generic_enabled=$(echo "${PA_SAML_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local azure_enabled okta_enabled auth0_enabled keycloak_enabled generic_enabled
+        azure_enabled=$(echo "${PA_SAML_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        okta_enabled=$(echo "${PA_SAML_OKTA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        auth0_enabled=$(echo "${PA_SAML_AUTH0_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        keycloak_enabled=$(echo "${PA_SAML_KEYCLOAK_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        generic_enabled=$(echo "${PA_SAML_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
 
         if [ "$azure_enabled" != "true" ] && [ "$okta_enabled" != "true" ] && [ "$auth0_enabled" != "true" ] && [ "$keycloak_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
             log "ERROR: SAML is enabled but no SAML providers are configured. Enable at least one provider (PA_SAML_*_ENABLED=true)"
             exit 1
         fi
 
-        # Validate Azure SAML configuration if enabled
         if [ "$azure_enabled" = "true" ]; then
             if [ -z "${PA_SAML_AZURE_X509_CERT}" ]; then
                 log "ERROR: PA_SAML_AZURE_X509_CERT is required when Azure SAML is enabled"
@@ -380,7 +423,6 @@ validate_saml_config() {
             fi
         fi
 
-        # Validate Okta SAML configuration if enabled
         if [ "$okta_enabled" = "true" ]; then
             local required_okta_vars=("PA_SAML_OKTA_ENTITY_ID" "PA_SAML_OKTA_SSO_URL" "PA_SAML_OKTA_X509_CERT")
             for var in "${required_okta_vars[@]}"; do
@@ -391,7 +433,6 @@ validate_saml_config() {
             done
         fi
 
-        # Validate Auth0 SAML configuration if enabled
         if [ "$auth0_enabled" = "true" ]; then
             local required_auth0_vars=("PA_SAML_AUTH0_ENTITY_ID" "PA_SAML_AUTH0_SSO_URL" "PA_SAML_AUTH0_X509_CERT")
             for var in "${required_auth0_vars[@]}"; do
@@ -402,7 +443,6 @@ validate_saml_config() {
             done
         fi
 
-        # Validate Keycloak SAML configuration if enabled
         if [ "$keycloak_enabled" = "true" ]; then
             local required_keycloak_vars=("PA_SAML_KEYCLOAK_ENTITY_ID" "PA_SAML_KEYCLOAK_SSO_URL" "PA_SAML_KEYCLOAK_X509_CERT")
             for var in "${required_keycloak_vars[@]}"; do
@@ -413,7 +453,6 @@ validate_saml_config() {
             done
         fi
 
-        # Validate Generic SAML configuration if enabled
         if [ "$generic_enabled" = "true" ]; then
             local required_generic_vars=("PA_SAML_GENERIC_ENTITY_ID" "PA_SAML_GENERIC_SSO_URL" "PA_SAML_GENERIC_X509_CERT")
             for var in "${required_generic_vars[@]}"; do
@@ -428,19 +467,19 @@ validate_saml_config() {
 
 # Validate OIDC configuration if enabled
 validate_oidc_config() {
-    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_enabled
+    oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "$oidc_enabled" = "true" ]; then
-        # Check if at least one provider is enabled
-        local azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-        local generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local azure_enabled google_enabled generic_enabled
+        azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
 
         if [ "$azure_enabled" != "true" ] && [ "$google_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
             log "ERROR: OIDC is enabled but no OIDC providers are configured. Enable at least one provider (PA_OIDC_*_ENABLED=true)"
             exit 1
         fi
 
-        # Validate Azure OIDC configuration if enabled
         if [ "$azure_enabled" = "true" ]; then
             if [ -z "${PA_OIDC_AZURE_CLIENT_ID}" ] || [ -z "${PA_OIDC_AZURE_CLIENT_SECRET}" ]; then
                 log "ERROR: PA_OIDC_AZURE_CLIENT_ID and PA_OIDC_AZURE_CLIENT_SECRET are required when Azure OIDC is enabled"
@@ -448,7 +487,6 @@ validate_oidc_config() {
             fi
         fi
 
-        # Validate Google OIDC configuration if enabled
         if [ "$google_enabled" = "true" ]; then
             if [ -z "${PA_OIDC_GOOGLE_CLIENT_ID}" ] || [ -z "${PA_OIDC_GOOGLE_CLIENT_SECRET}" ]; then
                 log "ERROR: PA_OIDC_GOOGLE_CLIENT_ID and PA_OIDC_GOOGLE_CLIENT_SECRET are required when Google OIDC is enabled"
@@ -456,22 +494,20 @@ validate_oidc_config() {
             fi
         fi
 
-        # Validate Generic OIDC configuration if enabled
         if [ "$generic_enabled" = "true" ]; then
             if [ -z "${PA_OIDC_GENERIC_CLIENT_ID}" ] || [ -z "${PA_OIDC_GENERIC_CLIENT_SECRET}" ]; then
                 log "ERROR: PA_OIDC_GENERIC_CLIENT_ID and PA_OIDC_GENERIC_CLIENT_SECRET are required when Generic OIDC is enabled"
                 exit 1
             fi
 
-            # Check for either auto_discovery with metadata_url OR manual endpoint URLs
-            local auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
+            local auto_discovery
+            auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
             if [ "$auto_discovery" = "true" ]; then
                 if [ -z "${PA_OIDC_GENERIC_METADATA_URL}" ]; then
                     log "ERROR: PA_OIDC_GENERIC_METADATA_URL is required when PA_OIDC_GENERIC_AUTO_DISCOVERY is enabled"
                     exit 1
                 fi
             else
-                # Manual configuration - require essential endpoints
                 if [ -z "${PA_OIDC_GENERIC_AUTHORIZE_URL}" ] || [ -z "${PA_OIDC_GENERIC_TOKEN_URL}" ]; then
                     log "ERROR: PA_OIDC_GENERIC_AUTHORIZE_URL and PA_OIDC_GENERIC_TOKEN_URL are required when auto_discovery is disabled"
                     exit 1
@@ -483,7 +519,8 @@ validate_oidc_config() {
 
 # Create initial admin user if specified
 create_admin_user() {
-    local create_admin=$(echo "${PA_CREATE_ADMIN:-false}" | tr '[:upper:]' '[:lower:]')
+    local create_admin
+    create_admin=$(echo "${PA_CREATE_ADMIN:-false}" | tr '[:upper:]' '[:lower:]')
 
     if [ "$create_admin" != "true" ] && [ "$create_admin" != "1" ] && [ "$create_admin" != "yes" ]; then
         debug_log "Admin user creation disabled"
@@ -516,7 +553,6 @@ create_admin_user() {
 
     debug_log "Generated password hash for admin user"
 
-    # Database-specific user creation
     local insert_result=0
 
     case "${DB_TYPE}" in
@@ -524,7 +560,6 @@ create_admin_user() {
             local db_file="${DB_FILE:-/db/pdns.db}"
             debug_log "Creating admin user in SQLite database: ${db_file}"
 
-            # Check if user already exists
             local user_exists
             user_exists=$(sqlite3 "${db_file}" "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
@@ -533,7 +568,7 @@ create_admin_user() {
                 return 0
             fi
 
-            # Insert admin user
+            # Values are escaped via escape_sql; passwords are hashed by PHP before insertion
             if ! sqlite3 "${db_file}" "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
@@ -542,23 +577,27 @@ create_admin_user() {
         "mysql")
             debug_log "Creating admin user in MySQL database"
 
-            # Build MySQL SSL options based on environment variables
-            local mysql_ssl_opts
-            mysql_ssl_opts=$(build_mysql_ssl_opts)
+            local -a ssl_opts
+            mapfile -t ssl_opts < <(build_mysql_ssl_opts)
 
-            debug_log "MySQL SSL options: ${mysql_ssl_opts:-none}"
+            local mycnf
+            mycnf=$(make_mysql_defaults_file)
+            # shellcheck disable=SC2064
+            trap "rm -f '${mycnf}'" RETURN
 
-            # Check if user already exists
             local user_exists
-            user_exists=$(mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+                -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -sNe \
+                "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
                 return 0
             fi
 
-            # Insert admin user
-            if ! mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+                    -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -e \
+                    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -566,17 +605,17 @@ create_admin_user() {
         "pgsql")
             debug_log "Creating admin user in PostgreSQL database"
 
-            # Check if user already exists
             local user_exists
-            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+                "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
                 return 0
             fi
 
-            # Insert admin user
-            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c \
+                    "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -585,7 +624,6 @@ create_admin_user() {
     if [ $insert_result -eq 0 ]; then
         log "Admin user '${admin_username}' created successfully"
 
-        # Display credentials prominently if password was generated
         if [ "${password_generated}" = "true" ]; then
             log "=========================================="
             log "IMPORTANT: Admin credentials"
@@ -598,145 +636,141 @@ create_admin_user() {
         exit 1
     fi
 
-    # Export for use in print_config_summary
     export ADMIN_PASSWORD_GENERATED="${password_generated}"
     export ADMIN_USERNAME="${admin_username}"
     export ADMIN_PASSWORD="${admin_password}"
+}
+
+# Convert an environment variable value to a lowercase boolean string.
+# Usage: to_bool "${PA_SOME_OPTION:-false}"
+# Replaces ~50 identical inline subshell invocations in generate_config.
+to_bool() {
+    echo "${1:-false}" | tr '[:upper:]' '[:lower:]'
 }
 
 # Generate configuration file from environment variables
 generate_config() {
     log "Generating configuration from environment variables..."
 
-    # Generate a random session key if not provided
     local session_key="${PA_SESSION_KEY:-$(openssl rand -hex 32)}"
 
-    # Convert boolean values to lowercase
-    local recaptcha_enabled=$(echo "${PA_RECAPTCHA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mail_enabled=$(echo "${PA_MAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
-    local api_enabled=$(echo "${PA_API_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local api_basic_auth_enabled=$(echo "${PA_API_BASIC_AUTH_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local api_docs_enabled=$(echo "${PA_API_DOCS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local ldap_enabled=$(echo "${PA_LDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    # --- Boolean flags ---
+    local recaptcha_enabled;          recaptcha_enabled=$(to_bool "${PA_RECAPTCHA_ENABLED:-false}")
+    local mail_enabled;               mail_enabled=$(to_bool "${PA_MAIL_ENABLED:-true}")
+    local api_enabled;                api_enabled=$(to_bool "${PA_API_ENABLED:-false}")
+    local api_basic_auth_enabled;     api_basic_auth_enabled=$(to_bool "${PA_API_BASIC_AUTH_ENABLED:-false}")
+    local api_docs_enabled;           api_docs_enabled=$(to_bool "${PA_API_DOCS_ENABLED:-false}")
+    local ldap_enabled;               ldap_enabled=$(to_bool "${PA_LDAP_ENABLED:-false}")
 
-    # Convert interface boolean values to lowercase
-    local show_record_id=$(echo "${PA_SHOW_RECORD_ID:-true}" | tr '[:upper:]' '[:lower:]')
-    local position_record_form_top=$(echo "${PA_POSITION_RECORD_FORM_TOP:-true}" | tr '[:upper:]' '[:lower:]')
-    local position_save_button_top=$(echo "${PA_POSITION_SAVE_BUTTON_TOP:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_zone_comments=$(echo "${PA_SHOW_ZONE_COMMENTS:-true}" | tr '[:upper:]' '[:lower:]')
-    local show_record_comments=$(echo "${PA_SHOW_RECORD_COMMENTS:-false}" | tr '[:upper:]' '[:lower:]')
-    local display_serial_in_zone_list=$(echo "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
-    local display_template_in_zone_list=$(echo "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
-    local display_fullname_in_zone_list=$(echo "${PA_DISPLAY_FULLNAME_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
-    local search_group_records=$(echo "${PA_SEARCH_GROUP_RECORDS:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_pdns_status=$(echo "${PA_SHOW_PDNS_STATUS:-false}" | tr '[:upper:]' '[:lower:]')
-    local add_reverse_record=$(echo "${PA_ADD_REVERSE_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
-    local add_domain_record=$(echo "${PA_ADD_DOMAIN_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
-    local display_hostname_only=$(echo "${PA_DISPLAY_HOSTNAME_ONLY:-false}" | tr '[:upper:]' '[:lower:]')
-    local enable_consistency_checks=$(echo "${PA_ENABLE_CONSISTENCY_CHECKS:-false}" | tr '[:upper:]' '[:lower:]')
+    local show_record_id;             show_record_id=$(to_bool "${PA_SHOW_RECORD_ID:-true}")
+    local position_record_form_top;   position_record_form_top=$(to_bool "${PA_POSITION_RECORD_FORM_TOP:-true}")
+    local position_save_button_top;   position_save_button_top=$(to_bool "${PA_POSITION_SAVE_BUTTON_TOP:-false}")
+    local show_zone_comments;         show_zone_comments=$(to_bool "${PA_SHOW_ZONE_COMMENTS:-true}")
+    local show_record_comments;       show_record_comments=$(to_bool "${PA_SHOW_RECORD_COMMENTS:-false}")
+    local display_serial_in_zone_list; display_serial_in_zone_list=$(to_bool "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}")
+    local display_template_in_zone_list; display_template_in_zone_list=$(to_bool "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}")
+    local display_fullname_in_zone_list; display_fullname_in_zone_list=$(to_bool "${PA_DISPLAY_FULLNAME_IN_ZONE_LIST:-false}")
+    local search_group_records;       search_group_records=$(to_bool "${PA_SEARCH_GROUP_RECORDS:-false}")
+    local show_pdns_status;           show_pdns_status=$(to_bool "${PA_SHOW_PDNS_STATUS:-false}")
+    local add_reverse_record;         add_reverse_record=$(to_bool "${PA_ADD_REVERSE_RECORD:-true}")
+    local add_domain_record;          add_domain_record=$(to_bool "${PA_ADD_DOMAIN_RECORD:-true}")
+    local display_hostname_only;      display_hostname_only=$(to_bool "${PA_DISPLAY_HOSTNAME_ONLY:-false}")
+    local enable_consistency_checks;  enable_consistency_checks=$(to_bool "${PA_ENABLE_CONSISTENCY_CHECKS:-false}")
 
-    # Convert DNS boolean values to lowercase
-    local dns_strict_tld_check=$(echo "${PA_DNS_STRICT_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
-    local dns_top_level_tld_check=$(echo "${PA_DNS_TOP_LEVEL_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
-    local dns_third_level_check=$(echo "${PA_DNS_THIRD_LEVEL_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
-    local dns_txt_auto_quote=$(echo "${PA_DNS_TXT_AUTO_QUOTE:-false}" | tr '[:upper:]' '[:lower:]')
-    local dns_prevent_duplicate_ptr=$(echo "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}" | tr '[:upper:]' '[:lower:]')
+    local dns_strict_tld_check;       dns_strict_tld_check=$(to_bool "${PA_DNS_STRICT_TLD_CHECK:-false}")
+    local dns_top_level_tld_check;    dns_top_level_tld_check=$(to_bool "${PA_DNS_TOP_LEVEL_TLD_CHECK:-false}")
+    local dns_third_level_check;      dns_third_level_check=$(to_bool "${PA_DNS_THIRD_LEVEL_CHECK:-false}")
+    local dns_txt_auto_quote;         dns_txt_auto_quote=$(to_bool "${PA_DNS_TXT_AUTO_QUOTE:-false}")
+    local dns_prevent_duplicate_ptr;  dns_prevent_duplicate_ptr=$(to_bool "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}")
 
-    # Convert DNSSEC boolean values to lowercase
-    local dnssec_enabled=$(echo "${PA_DNSSEC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local dnssec_debug=$(echo "${PA_DNSSEC_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
+    local dnssec_enabled;             dnssec_enabled=$(to_bool "${PA_DNSSEC_ENABLED:-false}")
+    local dnssec_debug;               dnssec_debug=$(to_bool "${PA_DNSSEC_DEBUG:-false}")
 
-    # Convert logging boolean values to lowercase
-    local logging_database_enabled=$(echo "${PA_LOGGING_DATABASE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local logging_syslog_enabled=$(echo "${PA_LOGGING_SYSLOG_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local logging_database_enabled;   logging_database_enabled=$(to_bool "${PA_LOGGING_DATABASE_ENABLED:-false}")
+    local logging_syslog_enabled;     logging_syslog_enabled=$(to_bool "${PA_LOGGING_SYSLOG_ENABLED:-false}")
 
-    # Convert password policy boolean values to lowercase
-    local password_rules_enabled=$(echo "${PA_PASSWORD_RULES_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
-    local password_require_uppercase=$(echo "${PA_PASSWORD_REQUIRE_UPPERCASE:-true}" | tr '[:upper:]' '[:lower:]')
-    local password_require_lowercase=$(echo "${PA_PASSWORD_REQUIRE_LOWERCASE:-true}" | tr '[:upper:]' '[:lower:]')
-    local password_require_numbers=$(echo "${PA_PASSWORD_REQUIRE_NUMBERS:-true}" | tr '[:upper:]' '[:lower:]')
-    local password_require_special=$(echo "${PA_PASSWORD_REQUIRE_SPECIAL:-false}" | tr '[:upper:]' '[:lower:]')
+    local password_rules_enabled;     password_rules_enabled=$(to_bool "${PA_PASSWORD_RULES_ENABLED:-true}")
+    local password_require_uppercase; password_require_uppercase=$(to_bool "${PA_PASSWORD_REQUIRE_UPPERCASE:-true}")
+    local password_require_lowercase; password_require_lowercase=$(to_bool "${PA_PASSWORD_REQUIRE_LOWERCASE:-true}")
+    local password_require_numbers;   password_require_numbers=$(to_bool "${PA_PASSWORD_REQUIRE_NUMBERS:-true}")
+    local password_require_special;   password_require_special=$(to_bool "${PA_PASSWORD_REQUIRE_SPECIAL:-false}")
 
-    # Convert account lockout boolean values to lowercase
-    local lockout_enabled=$(echo "${PA_LOCKOUT_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local lockout_track_ip=$(echo "${PA_LOCKOUT_TRACK_IP:-true}" | tr '[:upper:]' '[:lower:]')
-    local lockout_clear_on_success=$(echo "${PA_LOCKOUT_CLEAR_ON_SUCCESS:-true}" | tr '[:upper:]' '[:lower:]')
+    local lockout_enabled;            lockout_enabled=$(to_bool "${PA_LOCKOUT_ENABLED:-false}")
+    local lockout_track_ip;           lockout_track_ip=$(to_bool "${PA_LOCKOUT_TRACK_IP:-true}")
+    local lockout_clear_on_success;   lockout_clear_on_success=$(to_bool "${PA_LOCKOUT_CLEAR_ON_SUCCESS:-true}")
 
-    # Convert password reset/recovery boolean values to lowercase
-    local password_reset_enabled=$(echo "${PA_PASSWORD_RESET_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local username_recovery_enabled=$(echo "${PA_USERNAME_RECOVERY_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local password_reset_enabled;     password_reset_enabled=$(to_bool "${PA_PASSWORD_RESET_ENABLED:-false}")
+    local username_recovery_enabled;  username_recovery_enabled=$(to_bool "${PA_USERNAME_RECOVERY_ENABLED:-false}")
 
-    # Convert security boolean values to lowercase
-    local login_token_validation=$(echo "${PA_LOGIN_TOKEN_VALIDATION:-true}" | tr '[:upper:]' '[:lower:]')
-    local global_token_validation=$(echo "${PA_GLOBAL_TOKEN_VALIDATION:-true}" | tr '[:upper:]' '[:lower:]')
-    local mfa_enforced=$(echo "${PA_MFA_ENFORCED:-false}" | tr '[:upper:]' '[:lower:]')
+    local login_token_validation;     login_token_validation=$(to_bool "${PA_LOGIN_TOKEN_VALIDATION:-true}")
+    local global_token_validation;    global_token_validation=$(to_bool "${PA_GLOBAL_TOKEN_VALIDATION:-true}")
+    local mfa_enforced;               mfa_enforced=$(to_bool "${PA_MFA_ENFORCED:-false}")
 
-    # Convert notification boolean values to lowercase
-    local notification_zone_access=$(echo "${PA_NOTIFICATION_ZONE_ACCESS:-false}" | tr '[:upper:]' '[:lower:]')
+    local notification_zone_access;   notification_zone_access=$(to_bool "${PA_NOTIFICATION_ZONE_ACCESS:-false}")
 
-    # Convert user agreement boolean values to lowercase
-    local user_agreement_enabled=$(echo "${PA_USER_AGREEMENT_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local user_agreement_require_on_change=$(echo "${PA_USER_AGREEMENT_REQUIRE_ON_CHANGE:-true}" | tr '[:upper:]' '[:lower:]')
+    local user_agreement_enabled;            user_agreement_enabled=$(to_bool "${PA_USER_AGREEMENT_ENABLED:-false}")
+    local user_agreement_require_on_change;  user_agreement_require_on_change=$(to_bool "${PA_USER_AGREEMENT_REQUIRE_ON_CHANGE:-true}")
 
-    # Convert interface boolean values to lowercase
-    local show_add_record_form=$(echo "${PA_SHOW_ADD_RECORD_FORM:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_record_edit_button=$(echo "${PA_SHOW_RECORD_EDIT_BUTTON:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_record_delete_button=$(echo "${PA_SHOW_RECORD_DELETE_BUTTON:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_forward_zone_associations=$(echo "${PA_SHOW_FORWARD_ZONE_ASSOCIATIONS:-true}" | tr '[:upper:]' '[:lower:]')
+    local show_add_record_form;          show_add_record_form=$(to_bool "${PA_SHOW_ADD_RECORD_FORM:-false}")
+    local show_record_edit_button;       show_record_edit_button=$(to_bool "${PA_SHOW_RECORD_EDIT_BUTTON:-false}")
+    local show_record_delete_button;     show_record_delete_button=$(to_bool "${PA_SHOW_RECORD_DELETE_BUTTON:-false}")
+    local show_forward_zone_associations; show_forward_zone_associations=$(to_bool "${PA_SHOW_FORWARD_ZONE_ASSOCIATIONS:-true}")
 
-    # Convert mail boolean values to lowercase
-    local mail_auth=$(echo "${PA_SMTP_AUTH:-false}" | tr '[:upper:]' '[:lower:]')
+    local mail_auth;                  mail_auth=$(to_bool "${PA_SMTP_AUTH:-false}")
+    local ldap_debug;                 ldap_debug=$(to_bool "${PA_LDAP_DEBUG:-false}")
 
-    # Convert LDAP boolean values to lowercase
-    local ldap_debug=$(echo "${PA_LDAP_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_stats;              display_stats=$(to_bool "${PA_DISPLAY_STATS:-false}")
+    local record_comments_sync;       record_comments_sync=$(to_bool "${PA_RECORD_COMMENTS_SYNC:-false}")
+    local display_errors;             display_errors=$(to_bool "${PA_DISPLAY_ERRORS:-false}")
+    local show_generated_passwords;   show_generated_passwords=$(to_bool "${PA_SHOW_GENERATED_PASSWORDS:-true}")
 
-    # Convert misc boolean values to lowercase
-    local display_stats=$(echo "${PA_DISPLAY_STATS:-false}" | tr '[:upper:]' '[:lower:]')
-    local record_comments_sync=$(echo "${PA_RECORD_COMMENTS_SYNC:-false}" | tr '[:upper:]' '[:lower:]')
-    local display_errors=$(echo "${PA_DISPLAY_ERRORS:-false}" | tr '[:upper:]' '[:lower:]')
-    local show_generated_passwords=$(echo "${PA_SHOW_GENERATED_PASSWORDS:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_enabled;               oidc_enabled=$(to_bool "${PA_OIDC_ENABLED:-false}")
+    local oidc_auto_provision;        oidc_auto_provision=$(to_bool "${PA_OIDC_AUTO_PROVISION:-true}")
+    local oidc_link_by_email;         oidc_link_by_email=$(to_bool "${PA_OIDC_LINK_BY_EMAIL:-true}")
+    local oidc_sync_user_info;        oidc_sync_user_info=$(to_bool "${PA_OIDC_SYNC_USER_INFO:-true}")
+    local oidc_azure_enabled;         oidc_azure_enabled=$(to_bool "${PA_OIDC_AZURE_ENABLED:-false}")
+    local oidc_azure_auto_discovery;  oidc_azure_auto_discovery=$(to_bool "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}")
+    local oidc_google_enabled;        oidc_google_enabled=$(to_bool "${PA_OIDC_GOOGLE_ENABLED:-false}")
+    local oidc_google_auto_discovery; oidc_google_auto_discovery=$(to_bool "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}")
+    local oidc_generic_enabled;       oidc_generic_enabled=$(to_bool "${PA_OIDC_GENERIC_ENABLED:-false}")
+    local oidc_generic_auto_discovery; oidc_generic_auto_discovery=$(to_bool "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}")
 
-    # Convert OIDC boolean values to lowercase
-    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local oidc_auto_provision=$(echo "${PA_OIDC_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
-    local oidc_link_by_email=$(echo "${PA_OIDC_LINK_BY_EMAIL:-true}" | tr '[:upper:]' '[:lower:]')
-    local oidc_sync_user_info=$(echo "${PA_OIDC_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
-    local oidc_azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
-    local oidc_google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local oidc_google_auto_discovery=$(echo "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
-    local oidc_generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local oidc_generic_auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_enabled;               saml_enabled=$(to_bool "${PA_SAML_ENABLED:-false}")
+    local saml_auto_provision;        saml_auto_provision=$(to_bool "${PA_SAML_AUTO_PROVISION:-true}")
+    local saml_link_by_email;         saml_link_by_email=$(to_bool "${PA_SAML_LINK_BY_EMAIL:-true}")
+    local saml_sync_user_info;        saml_sync_user_info=$(to_bool "${PA_SAML_SYNC_USER_INFO:-true}")
+    local saml_azure_enabled;         saml_azure_enabled=$(to_bool "${PA_SAML_AZURE_ENABLED:-false}")
+    local saml_okta_enabled;          saml_okta_enabled=$(to_bool "${PA_SAML_OKTA_ENABLED:-false}")
+    local saml_auth0_enabled;         saml_auth0_enabled=$(to_bool "${PA_SAML_AUTH0_ENABLED:-false}")
+    local saml_keycloak_enabled;      saml_keycloak_enabled=$(to_bool "${PA_SAML_KEYCLOAK_ENABLED:-false}")
+    local saml_generic_enabled;       saml_generic_enabled=$(to_bool "${PA_SAML_GENERIC_ENABLED:-false}")
 
-    # Convert SAML boolean values to lowercase
-    local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local saml_auto_provision=$(echo "${PA_SAML_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
-    local saml_link_by_email=$(echo "${PA_SAML_LINK_BY_EMAIL:-true}" | tr '[:upper:]' '[:lower:]')
-    local saml_sync_user_info=$(echo "${PA_SAML_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
-    local saml_azure_enabled=$(echo "${PA_SAML_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local saml_okta_enabled=$(echo "${PA_SAML_OKTA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local saml_auth0_enabled=$(echo "${PA_SAML_AUTH0_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local saml_keycloak_enabled=$(echo "${PA_SAML_KEYCLOAK_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local saml_generic_enabled=$(echo "${PA_SAML_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mfa_enabled;                mfa_enabled=$(to_bool "${PA_MFA_ENABLED:-false}")
+    local mfa_app_enabled;            mfa_app_enabled=$(to_bool "${PA_MFA_APP_ENABLED:-true}")
+    local mfa_email_enabled;          mfa_email_enabled=$(to_bool "${PA_MFA_EMAIL_ENABLED:-true}")
 
-    # Convert MFA boolean values to lowercase
-    local mfa_enabled=$(echo "${PA_MFA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mfa_app_enabled=$(echo "${PA_MFA_APP_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
-    local mfa_email_enabled=$(echo "${PA_MFA_EMAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_csv_export_enabled;           mod_csv_export_enabled=$(to_bool "${PA_MODULE_CSV_EXPORT_ENABLED:-true}")
+    local mod_zone_import_export_enabled;   mod_zone_import_export_enabled=$(to_bool "${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}")
+    local mod_whois_enabled;                mod_whois_enabled=$(to_bool "${PA_MODULE_WHOIS_ENABLED:-false}")
+    local mod_whois_restrict_to_admin;      mod_whois_restrict_to_admin=$(to_bool "${PA_MODULE_WHOIS_RESTRICT_TO_ADMIN:-true}")
+    local mod_rdap_enabled;                 mod_rdap_enabled=$(to_bool "${PA_MODULE_RDAP_ENABLED:-false}")
+    local mod_rdap_restrict_to_admin;       mod_rdap_restrict_to_admin=$(to_bool "${PA_MODULE_RDAP_RESTRICT_TO_ADMIN:-true}")
+    local mod_email_previews_enabled;       mod_email_previews_enabled=$(to_bool "${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}")
+    local mod_email_previews_restrict_to_admin; mod_email_previews_restrict_to_admin=$(to_bool "${PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN:-true}")
+    local mod_dns_wizards_enabled;          mod_dns_wizards_enabled=$(to_bool "${PA_MODULE_DNS_WIZARDS_ENABLED:-false}")
 
-    # Convert module boolean values to lowercase
-    local mod_csv_export_enabled=$(echo "${PA_MODULE_CSV_EXPORT_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
-    local mod_zone_import_export_enabled=$(echo "${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mod_whois_enabled=$(echo "${PA_MODULE_WHOIS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mod_whois_restrict_to_admin=$(echo "${PA_MODULE_WHOIS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
-    local mod_rdap_enabled=$(echo "${PA_MODULE_RDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mod_rdap_restrict_to_admin=$(echo "${PA_MODULE_RDAP_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl;       db_ssl=$(to_bool "${DB_SSL:-false}")
+    local db_ssl_verify; db_ssl_verify=$(to_bool "${DB_SSL_VERIFY:-false}")
 
-    local mod_email_previews_enabled=$(echo "${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
-    local mod_email_previews_restrict_to_admin=$(echo "${PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
-    local mod_dns_wizards_enabled=$(echo "${PA_MODULE_DNS_WIZARDS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    # --- PHP-escaped values for safe embedding in single-quoted PHP strings ---
+    local esc_session_key;    esc_session_key=$(escape_php "${session_key}")
+    local esc_db_pass;        esc_db_pass=$(escape_php "${DB_PASS:-}")
+    local esc_smtp_password;  esc_smtp_password=$(escape_php "${PA_SMTP_PASSWORD:-}")
+    local esc_ldap_bind_pass; esc_ldap_bind_pass=$(escape_php "${PA_LDAP_BIND_PASSWORD:-}")
+    local esc_pdns_api_key;   esc_pdns_api_key=$(escape_php "${PA_PDNS_API_KEY:-}")
+    local esc_recaptcha_secret; esc_recaptcha_secret=$(escape_php "${PA_RECAPTCHA_SECRET_KEY:-}")
 
-    # Process DNS record types - convert comma-separated values to PHP array format or null
+    # --- DNS record type arrays ---
     local domain_record_types="null"
     if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
         domain_record_types="['$(echo "${PA_DNS_DOMAIN_RECORD_TYPES}" | sed "s/,/','/g")']"
@@ -747,35 +781,27 @@ generate_config() {
         reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
     fi
 
-    # Process dns_wizards available types - convert comma-separated values to PHP array format
     local dns_wizards_types="['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV']"
     if [ -n "${PA_MODULE_DNS_WIZARDS_TYPES}" ]; then
         dns_wizards_types="['$(echo "${PA_MODULE_DNS_WIZARDS_TYPES}" | sed "s/,/','/g")']"
     fi
 
-    # Process custom TLDs - convert comma-separated values to PHP array format or empty array
     local custom_tlds="[]"
     if [ -n "${PA_DNS_CUSTOM_TLDS}" ]; then
         custom_tlds="['$(echo "${PA_DNS_CUSTOM_TLDS}" | sed "s/,/','/g")']"
     fi
 
     # Helper: convert key=value or key:value mapping to PHP associative array
-    # Supports both = and : as delimiters (= preferred, : for backward compatibility)
-    # Pipe (|) in a value produces a PHP array literal so a single external group
-    # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
-    # Single quotes are escaped, whitespace around commas/delimiters is trimmed
     parse_mapping() {
         local input="$1"
         echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | sed 's/ *| */|/g' | \
             awk -F',' '{
                 for (i=1; i<=NF; i++) {
-                    # Try = first, then :
                     if (index($i, "=") > 0) {
                         split($i, a, "=")
                         key = a[1]
                         val = a[2]
                     } else {
-                        # Split on last : for backward compatibility with group:Template format
                         idx = 0
                         for (j=1; j<=length($i); j++) {
                             if (substr($i, j, 1) == ":") idx = j
@@ -804,48 +830,37 @@ generate_config() {
             }'
     }
 
-    # Process OIDC permission template mapping
     local oidc_permission_template_mapping="[]"
     if [ -n "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}" ]; then
         oidc_permission_template_mapping="[$(parse_mapping "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}")]"
     fi
 
-    # Process OIDC group mapping
     local oidc_group_mapping="[]"
     if [ -n "${PA_OIDC_GROUP_MAPPING}" ]; then
         oidc_group_mapping="[$(parse_mapping "${PA_OIDC_GROUP_MAPPING}")]"
     fi
 
-    # Process SAML permission template mapping
     local saml_permission_template_mapping="[]"
     if [ -n "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" ]; then
         saml_permission_template_mapping="[$(parse_mapping "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}")]"
     fi
 
-    # Process SAML group mapping
     local saml_group_mapping="[]"
     if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
         saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
     fi
 
-    # Process WHOIS custom servers mapping
     local whois_custom_servers="[]"
     if [ -n "${PA_MODULE_WHOIS_CUSTOM_SERVERS:-}" ]; then
         whois_custom_servers="[$(parse_mapping "${PA_MODULE_WHOIS_CUSTOM_SERVERS}")]"
     fi
 
-    # Process RDAP custom servers mapping
     local rdap_custom_servers="[]"
     if [ -n "${PA_MODULE_RDAP_CUSTOM_SERVERS:-}" ]; then
         rdap_custom_servers="[$(parse_mapping "${PA_MODULE_RDAP_CUSTOM_SERVERS}")]"
     fi
 
-    # Ensure parent directory exists for custom config paths
     mkdir -p "$(dirname "${CONFIG_FILE}")"
-
-    # Convert database SSL boolean values to lowercase
-    local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
-    local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
 
     cat > "${CONFIG_FILE}" << EOF
 <?php
@@ -856,7 +871,7 @@ return [
         'host' => '${DB_HOST:-}',
         'port' => '${DB_PORT:-}',
         'user' => '${DB_USER:-}',
-        'password' => '${DB_PASS:-}',
+        'password' => '${esc_db_pass}',
         'name' => '${DB_NAME:-}',
         'file' => '${DB_FILE:-/db/pdns.db}',
         'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
@@ -893,7 +908,7 @@ return [
         'debug' => ${dnssec_debug},
     ],
     'security' => [
-        'session_key' => '${session_key}',
+        'session_key' => '${esc_session_key}',
         'password_encryption' => '${PA_PASSWORD_ENCRYPTION:-bcrypt}',
         'password_cost' => ${PA_PASSWORD_COST:-12},
         'login_token_validation' => ${login_token_validation},
@@ -937,7 +952,7 @@ return [
         'recaptcha' => [
             'enabled' => ${recaptcha_enabled},
             'site_key' => '${PA_RECAPTCHA_SITE_KEY:-}',
-            'secret_key' => '${PA_RECAPTCHA_SECRET_KEY:-}',
+            'secret_key' => '${esc_recaptcha_secret}',
             'version' => '${PA_RECAPTCHA_VERSION:-v3}',
             'v3_threshold' => ${PA_RECAPTCHA_V3_THRESHOLD:-0.5},
         ],
@@ -948,7 +963,7 @@ return [
         'host' => '${PA_SMTP_HOST:-}',
         'port' => ${PA_SMTP_PORT:-587},
         'username' => '${PA_SMTP_USER:-}',
-        'password' => '${PA_SMTP_PASSWORD:-}',
+        'password' => '${esc_smtp_password}',
         'encryption' => '${PA_SMTP_ENCRYPTION:-tls}',
         'from' => '${PA_MAIL_FROM:-}',
         'from_name' => '${PA_MAIL_FROM_NAME:-}',
@@ -1006,7 +1021,7 @@ return [
     'pdns_api' => [
         'display_name' => '${PA_PDNS_DISPLAY_NAME:-PowerDNS}',
         'url' => '${PA_PDNS_API_URL:-}',
-        'key' => '${PA_PDNS_API_KEY:-}',
+        'key' => '${esc_pdns_api_key}',
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${PA_PDNS_WEBSERVER_PASSWORD:-}',
@@ -1017,7 +1032,7 @@ return [
         'uri' => '${PA_LDAP_URI:-}',
         'base_dn' => '${PA_LDAP_BASE_DN:-}',
         'bind_dn' => '${PA_LDAP_BIND_DN:-}',
-        'bind_password' => '${PA_LDAP_BIND_PASSWORD:-}',
+        'bind_password' => '${esc_ldap_bind_pass}',
         'user_attribute' => '${PA_LDAP_USER_ATTRIBUTE:-uid}',
         'protocol_version' => ${PA_LDAP_PROTOCOL_VERSION:-3},
         'search_filter' => '${PA_LDAP_SEARCH_FILTER:-}',
@@ -1050,14 +1065,13 @@ return [
         'providers' => [
 EOF
 
-    # Add Azure configuration if enabled
     if [ "${oidc_azure_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
                 'name' => '${PA_OIDC_AZURE_NAME:-Microsoft Azure AD}',
                 'display_name' => '${PA_OIDC_AZURE_DISPLAY_NAME:-Sign in with Microsoft}',
                 'client_id' => '${PA_OIDC_AZURE_CLIENT_ID:-}',
-                'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
+                'client_secret' => '$(escape_php "${PA_OIDC_AZURE_CLIENT_SECRET:-}")',
                 'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
                 'auto_discovery' => ${oidc_azure_auto_discovery},
                 'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
@@ -1075,14 +1089,13 @@ EOF
 EOF
     fi
 
-    # Add Google configuration if enabled
     if [ "${oidc_google_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'google' => [
                 'name' => '${PA_OIDC_GOOGLE_NAME:-Google}',
                 'display_name' => '${PA_OIDC_GOOGLE_DISPLAY_NAME:-Sign in with Google}',
                 'client_id' => '${PA_OIDC_GOOGLE_CLIENT_ID:-}',
-                'client_secret' => '${PA_OIDC_GOOGLE_CLIENT_SECRET:-}',
+                'client_secret' => '$(escape_php "${PA_OIDC_GOOGLE_CLIENT_SECRET:-}")',
                 'auto_discovery' => ${oidc_google_auto_discovery},
                 'metadata_url' => 'https://accounts.google.com/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
@@ -1098,14 +1111,13 @@ EOF
 EOF
     fi
 
-    # Add Generic OIDC configuration if enabled (for Authentik, Keycloak, Okta, etc.)
     if [ "${oidc_generic_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'generic' => [
                 'name' => '${PA_OIDC_GENERIC_NAME:-Generic OIDC}',
                 'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME:-Sign in with OIDC}',
                 'client_id' => '${PA_OIDC_GENERIC_CLIENT_ID:-}',
-                'client_secret' => '${PA_OIDC_GENERIC_CLIENT_SECRET:-}',
+                'client_secret' => '$(escape_php "${PA_OIDC_GENERIC_CLIENT_SECRET:-}")',
                 'auto_discovery' => ${oidc_generic_auto_discovery},
                 'metadata_url' => '${PA_OIDC_GENERIC_METADATA_URL:-}',
                 'authorize_url' => '${PA_OIDC_GENERIC_AUTHORIZE_URL:-}',
@@ -1141,7 +1153,6 @@ EOF
         'sp' => [
 EOF
 
-    # Add SP settings - use environment variables if set, otherwise auto-generate from PA_BASE_URL
     if [ -n "${PA_SAML_SP_ENTITY_ID}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'entity_id' => '${PA_SAML_SP_ENTITY_ID}',
@@ -1172,18 +1183,16 @@ EOF
 EOF
     fi
 
-    # Always include name_id_format, x509cert, and private_key (they have sensible defaults or can be empty)
     cat >> "${CONFIG_FILE}" << EOF
             'name_id_format' => '${PA_SAML_SP_NAME_ID_FORMAT:-urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress}',
             'x509cert' => '${PA_SAML_SP_X509_CERT:-}',
-            'private_key' => '${PA_SAML_SP_PRIVATE_KEY:-}',
+            'private_key' => '$(escape_php "${PA_SAML_SP_PRIVATE_KEY:-}")',
         ],
 
         // Provider configurations
         'providers' => [
 EOF
 
-    # Add Azure SAML configuration if enabled
     if [ "${saml_azure_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
@@ -1206,7 +1215,6 @@ EOF
 EOF
     fi
 
-    # Add Okta SAML configuration if enabled
     if [ "${saml_okta_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'okta' => [
@@ -1229,7 +1237,6 @@ EOF
 EOF
     fi
 
-    # Add Auth0 SAML configuration if enabled
     if [ "${saml_auth0_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'auth0' => [
@@ -1252,7 +1259,6 @@ EOF
 EOF
     fi
 
-    # Add Keycloak SAML configuration if enabled
     if [ "${saml_keycloak_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'keycloak' => [
@@ -1275,7 +1281,6 @@ EOF
 EOF
     fi
 
-    # Add Generic SAML configuration if enabled
     if [ "${saml_generic_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'generic' => [
@@ -1336,7 +1341,6 @@ EOF
 ];
 EOF
 
-    # Set proper permissions (root only - non-root already owns the file)
     if [ "$IS_ROOT" = true ]; then
         chmod 644 "${CONFIG_FILE}"
         chown www-data:www-data "${CONFIG_FILE}"
@@ -1388,28 +1392,21 @@ print_config_summary() {
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
     log "======================================="
-
 }
 
 # Set up proper file permissions for writable directories
 setup_permissions() {
     log "Setting up file permissions..."
 
-    # Fix ownership on writable volumes (entrypoint runs as root)
-    # This eliminates the need for volume pre-initialization
-
-    # Database directory
     if [ -d "${DB_DIR}" ]; then
         chown -R www-data:www-data "${DB_DIR}"
     fi
 
-    # Config directory (when using custom PA_CONFIG_PATH)
     config_dir=$(dirname "${CONFIG_FILE}")
     if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
         chown -R www-data:www-data "${config_dir}"
     fi
 
-    # Caddy data directory (may fail on read-only filesystem, that's OK)
     if [ -d "/var/caddy" ]; then
         chown -R www-data:www-data /var/caddy 2>/dev/null || true
     fi
@@ -1420,15 +1417,9 @@ setup_permissions() {
 main() {
     log "Poweradmin Docker Container Starting..."
 
-    # Configuration Priority:
-    # 1. PA_CONFIG_PATH (custom config file) - highest priority
-    # 2. Individual environment variables (with Docker secrets support) - fallback
-
-    # Process Docker secrets first (must run before using any secret-provided variables)
     log "Processing Docker secrets..."
     process_secret_files
 
-    # Detect root vs non-root execution
     if [ "$(id -u)" = '0' ]; then
         IS_ROOT=true
         log "Running as root - will drop privileges after setup"
@@ -1436,35 +1427,26 @@ main() {
         IS_ROOT=false
         log "Running as non-root (UID $(id -u)) - skipping privilege operations"
 
-        # Auto-switch to unprivileged port when running as non-root
         if [ -z "${SERVER_PORT:-}" ]; then
             export SERVER_PORT=8080
             log "Auto-configured SERVER_PORT=8080 for non-root execution"
         fi
     fi
 
-    # Persist SERVER_PORT for healthcheck early, before any long initialization.
-    # Healthcheck runs as a separate process and does not inherit entrypoint env vars.
     echo "${SERVER_PORT:-80}" > /tmp/.server_port
 
-    # Install custom CA certificate if provided (must run before any HTTPS calls)
     if [ "$IS_ROOT" = true ]; then
         install_trusted_ca
     elif [ -n "${TRUSTED_CA_FILE:-}" ]; then
         log "WARNING: TRUSTED_CA_FILE is set but container is not running as root - cannot install CA certificate"
     fi
 
-    # Configure trusted proxies in Caddyfile (must run after secrets are processed)
     configure_trusted_proxies
 
-    # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
     CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"
 
-    # Initialize SQLite database if needed (must run before admin user creation)
     init_sqlite_db
 
-    # Ensure settings.defaults.php exists in config directory
-    # When /app/config is a volume mount, the image's defaults file is hidden
     config_dir=$(dirname "${CONFIG_FILE}")
     defaults_file="${config_dir}/settings.defaults.php"
     if [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
@@ -1483,7 +1465,6 @@ main() {
     else
         log "No custom config found. Generating settings.php from environment variables..."
 
-        # Validate all configurations
         debug_log "Starting configuration validation..."
         validate_database_config
         debug_log "Database validation completed successfully"
@@ -1501,28 +1482,21 @@ main() {
         debug_log "OIDC validation completed successfully"
         log "Configuration validation completed successfully"
 
-        # Generate configuration
         generate_config
     fi
 
-    # Initialize MySQL/PostgreSQL schema on an empty database (SQLite is handled above)
     init_mysql_db
     init_pgsql_db
 
-    # Create admin user if requested (after database and config are ready)
     create_admin_user
 
-    # Print configuration summary
     print_config_summary
 
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
 
-    # Setup permissions and drop privileges (root only)
     if [ "$IS_ROOT" = true ]; then
         setup_permissions
-        # Restore capability to bind privileged ports (stripped in Dockerfile for rootless support).
-        # Only relevant when starting FrankenPHP server, not for maintenance/debug commands.
         if [ "$1" = "frankenphp" ]; then
             if ! setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp 2>/dev/null; then
                 if [ -n "${SERVER_PORT:-}" ] && [ "${SERVER_PORT}" -lt 1024 ] 2>/dev/null; then
@@ -1541,5 +1515,4 @@ main() {
     fi
 }
 
-# Run main function with all arguments
 main "$@"
