@@ -114,9 +114,11 @@ class SecondaryZoneImportController extends BaseController
         if ($zoneId <= 0) {
             return false;
         }
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+        if (
+            UserManager::verifyPermission($this->db, 'user_is_ueberuser')
             || UserManager::verifyPermission($this->db, 'zone_content_edit_others')
-            || UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
+            || UserManager::verifyPermission($this->db, 'zone_meta_edit_others')
+        ) {
             return true;
         }
         return UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
