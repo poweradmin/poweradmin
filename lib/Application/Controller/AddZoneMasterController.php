@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -209,7 +210,7 @@ class AddZoneMasterController extends BaseController
         if (!$hostnameValidator->isValid($zone_name)) {
             // Don't add a generic error as the validation method already sets a specific one
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone_name))) {
+        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {

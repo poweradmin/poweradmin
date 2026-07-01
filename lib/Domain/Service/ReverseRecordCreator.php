@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -127,7 +128,7 @@ class ReverseRecordCreator
             $content_array = preg_split("/\./", $content);
             return sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
         } elseif ($type === RecordType::AAAA) {
-            return DnsRecord::convertIPv6AddrToPtrRec($content);
+            return DomainUtility::convertIPv6AddrToPtrRec($content);
         }
         return null;
     }

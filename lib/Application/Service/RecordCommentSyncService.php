@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainUtility;
 
 class RecordCommentSyncService
 {
@@ -95,8 +96,8 @@ class RecordCommentSyncService
     ): void {
         if (in_array($newRecordInfo['type'], [RecordType::A, RecordType::AAAA])) {
             $ptrName = $newRecordInfo['type'] === RecordType::A
-                ? DnsRecord::convertIPv4AddrToPtrRec($newRecordInfo['content'])
-                : DnsRecord::convertIPv6AddrToPtrRec($newRecordInfo['content']);
+                ? DomainUtility::convertIPv4AddrToPtrRec($newRecordInfo['content'])
+                : DomainUtility::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->getBestMatchingZoneIdFromName($ptrName);
             if ($ptrZoneId !== -1) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);

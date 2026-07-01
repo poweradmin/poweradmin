@@ -36,6 +36,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -202,7 +203,7 @@ class AddZoneSlaveController extends BaseController
         if (!$hostnameValidator->isValid($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone))) {
+        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->domainExists($zone) || $dnsRecord->hasNonDelegationRecords($zone)) {

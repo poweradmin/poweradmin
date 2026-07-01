@@ -27,6 +27,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -177,7 +178,7 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
         $thirdLevelCheck = $this->config->get('dns', 'third_level_check', false);
-        if ($thirdLevelCheck && DnsRecord::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone))) {
+        if ($thirdLevelCheck && DomainUtility::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
             $this->setMessage('import', 'error', _('There is already a zone with this name.'));
             $this->showForm();
             return;

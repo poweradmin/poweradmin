@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Domain\Utility\DomainUtility;
 
 class BatchReverseRecordCreator
 {
@@ -188,7 +189,7 @@ class BatchReverseRecordCreator
                     $fqdn = $record['name'];
 
                     // Convert IP to reverse notation
-                    $reverseDomain = DnsRecord::convertIPv4AddrToPtrRec($ip);
+                    $reverseDomain = DomainUtility::convertIPv4AddrToPtrRec($ip);
 
                     // Get the right reverse zone ID
                     $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($reverseDomain);
@@ -260,7 +261,7 @@ class BatchReverseRecordCreator
                     }
 
                 // Convert IP to reverse notation
-                    $reverseDomain = DnsRecord::convertIPv4AddrToPtrRec($ip);
+                    $reverseDomain = DomainUtility::convertIPv4AddrToPtrRec($ip);
 
                 // For larger networks, we need to make sure we're using the right reverse zone ID
                 // because subnet boundaries can cross zone boundaries
@@ -425,7 +426,7 @@ class BatchReverseRecordCreator
         try {
             // Validate zone existence using a test IP
             $testIp = $networkPrefix . '::1';
-            $testReverseDomain = DnsRecord::convertIPv6AddrToPtrRec($testIp);
+            $testReverseDomain = DomainUtility::convertIPv6AddrToPtrRec($testIp);
             $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($testReverseDomain);
 
             if ($test_zone_rev_id === -1) {
@@ -438,7 +439,7 @@ class BatchReverseRecordCreator
                     $ip = $record['ip'];
                     $fqdn = $record['name'];
 
-                    $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
+                    $reverseDomain = DomainUtility::convertIPv6AddrToPtrRec($ip);
 
                     $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($reverseDomain);
                     if ($zone_rev_id === -1) {
@@ -502,7 +503,7 @@ class BatchReverseRecordCreator
                 }
 
                 // Convert IP to reverse notation with proper nibble expansion
-                $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
+                $reverseDomain = DomainUtility::convertIPv6AddrToPtrRec($ip);
 
                 // Check if ANY PTR record already exists for this IP (if configured)
                 $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);

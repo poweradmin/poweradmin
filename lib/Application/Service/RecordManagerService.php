@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -199,8 +200,8 @@ class RecordManagerService
     private function syncCommentToPtrRecord(string $type, string $content, string $comment, string $userlogin): void
     {
         $ptrName = $type === RecordType::A
-            ? DnsRecord::convertIPv4AddrToPtrRec($content)
-            : DnsRecord::convertIPv6AddrToPtrRec($content);
+            ? DomainUtility::convertIPv4AddrToPtrRec($content)
+            : DomainUtility::convertIPv6AddrToPtrRec($content);
 
         $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
