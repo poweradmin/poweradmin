@@ -47,7 +47,6 @@ class DnsRecord
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private DnsRecordValidationServiceInterface $validationService;
 
     // New service instances
     /** @var SOARecordManager */
@@ -71,9 +70,6 @@ class DnsRecord
         // Create backend provider once and pass to all dependencies
         $backendProvider = DnsBackendProviderFactory::create($db, $config);
 
-        $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config, $backendProvider);
-
-        // Initialize the new service instances
         $this->initializeDependencies($backendProvider);
     }
 
@@ -82,31 +78,16 @@ class DnsRecord
      */
     private function initializeDependencies(DnsBackendProvider $backendProvider): void
     {
-        // Create the new service instances with backend provider
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->config, $backendProvider);
+        // Repositories are read directly by this facade's delegating methods
         $repositoryFactory = new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $backendProvider);
         $this->domainRepository = $repositoryFactory->createDomainRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
 
-        // Create services with dependencies on repositories
-        $this->recordManager = new RecordManager(
-            $this->db,
-            $this->config,
-            $this->validationService,
-            $this->soaRecordManager,
-            $this->domainRepository,
-            $backendProvider
-        );
-
-        $this->domainManager = new DomainManager(
-            $this->db,
-            $this->config,
-            $this->soaRecordManager,
-            $this->domainRepository,
-            $backendProvider
-        );
-
-        $this->supermasterManager = new SupermasterManager($this->db, $this->config, $backendProvider);
+        // Managers are wired through the factory to keep construction in one place
+        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->config, $backendProvider);
+        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->config, $backendProvider);
+        $this->domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
+        $this->supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->config, $backendProvider);
     }
 
     /** Check if Zone ID exists

@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -100,27 +99,16 @@ class DnsServiceFactory
     }
 
     /**
-     * Create DomainRepository instance for the active backend
+     * Build the domain repository the record and domain managers depend on.
+     * Repository construction stays owned by RepositoryFactory.
      */
-    public static function createDomainRepository(
+    private static function createDomainRepository(
         PDO $db,
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
     ): DomainRepositoryInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return (new RepositoryFactory($db, $config, $backendProvider))->createDomainRepository();
-    }
-
-    /**
-     * Create RecordRepository instance for the active backend
-     */
-    public static function createRecordRepository(
-        PDO $db,
-        ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
-    ): RecordRepositoryInterface {
-        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
-        return (new RepositoryFactory($db, $config, $backendProvider))->createRecordRepository();
     }
 
     /**

@@ -24,8 +24,6 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -59,24 +57,6 @@ class DnsServiceFactoryTest extends TestCase
         $this->assertInstanceOf(
             SOARecordManagerInterface::class,
             DnsServiceFactory::createSOARecordManager($db, $this->makeConfig())
-        );
-    }
-
-    public function testCreatesDomainRepository(): void
-    {
-        $db = $this->createMock(PDO::class);
-        $this->assertInstanceOf(
-            DomainRepositoryInterface::class,
-            DnsServiceFactory::createDomainRepository($db, $this->makeConfig())
-        );
-    }
-
-    public function testCreatesRecordRepository(): void
-    {
-        $db = $this->createMock(PDO::class);
-        $this->assertInstanceOf(
-            RecordRepositoryInterface::class,
-            DnsServiceFactory::createRecordRepository($db, $this->makeConfig())
         );
     }
 
