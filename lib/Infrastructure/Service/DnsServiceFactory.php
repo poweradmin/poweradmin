@@ -22,8 +22,18 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
+use Poweradmin\Domain\Service\Dns\SupermasterManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
@@ -75,5 +85,90 @@ class DnsServiceFactory
             $zoneRepository,
             $dnsViolationValidator
         );
+    }
+
+    /**
+     * Create SOARecordManager instance with all dependencies
+     */
+    public static function createSOARecordManager(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): SOARecordManagerInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return new SOARecordManager($db, $config, $backendProvider);
+    }
+
+    /**
+     * Create DomainRepository instance for the active backend
+     */
+    public static function createDomainRepository(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): DomainRepositoryInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return (new RepositoryFactory($db, $config, $backendProvider))->createDomainRepository();
+    }
+
+    /**
+     * Create RecordRepository instance for the active backend
+     */
+    public static function createRecordRepository(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): RecordRepositoryInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return (new RepositoryFactory($db, $config, $backendProvider))->createRecordRepository();
+    }
+
+    /**
+     * Create RecordManager instance with all dependencies
+     */
+    public static function createRecordManager(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): RecordManagerInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return new RecordManager(
+            $db,
+            $config,
+            self::createDnsRecordValidationService($db, $config, $backendProvider),
+            self::createSOARecordManager($db, $config, $backendProvider),
+            self::createDomainRepository($db, $config, $backendProvider),
+            $backendProvider
+        );
+    }
+
+    /**
+     * Create DomainManager instance with all dependencies
+     */
+    public static function createDomainManager(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): DomainManagerInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return new DomainManager(
+            $db,
+            $config,
+            self::createSOARecordManager($db, $config, $backendProvider),
+            self::createDomainRepository($db, $config, $backendProvider),
+            $backendProvider
+        );
+    }
+
+    /**
+     * Create SupermasterManager instance with all dependencies
+     */
+    public static function createSupermasterManager(
+        PDO $db,
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
+    ): SupermasterManagerInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        return new SupermasterManager($db, $config, $backendProvider);
     }
 }
