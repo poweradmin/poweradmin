@@ -35,8 +35,8 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 class AddSupermasterController extends BaseController
 {
@@ -66,8 +66,8 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->addSupermaster($master_ip, $ns_name, $account)) {
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        if ($supermasterManager->addSupermaster($master_ip, $ns_name, $account)) {
             $auditService = new AuditService($this->db);
             $auditService->logSupermasterAdd($master_ip, $ns_name);
 

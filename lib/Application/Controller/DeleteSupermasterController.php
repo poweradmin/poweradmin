@@ -34,7 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class DeleteSupermasterController extends BaseController
@@ -91,12 +91,12 @@ class DeleteSupermasterController extends BaseController
             $this->redirect('/supermasters');
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->supermasterIpNameExists($master_ip, $ns_name)) {
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        if (!$supermasterManager->supermasterIpNameExists($master_ip, $ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
             $this->redirect('/supermasters');
         }
-        if ($dnsRecord->deleteSupermaster($master_ip, $ns_name)) {
+        if ($supermasterManager->deleteSupermaster($master_ip, $ns_name)) {
             $auditService = new AuditService($this->db);
             $auditService->logSupermasterDelete($master_ip, $ns_name);
 
@@ -108,8 +108,8 @@ class DeleteSupermasterController extends BaseController
     private function showDeleteSuperMaster(): void
     {
         $master_ip = htmlspecialchars($this->request->getQueryParam('master_ip'));
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $info = $dnsRecord->getSupermasterInfoFromIp($master_ip);
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
 
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,

@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteDomainsController extends BaseController
@@ -192,6 +193,7 @@ class DeleteDomainsController extends BaseController
     {
         $zones = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
         $userId = $this->userContextService->getLoggedInUserId();
 
@@ -219,7 +221,7 @@ class DeleteDomainsController extends BaseController
                 if ($slave_master) {
                     // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                     $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
-                    if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                    if ($master_ip && $supermasterManager->supermasterExists($master_ip)) {
                         $zones[$zone_id]['has_supermaster'] = true;
                     }
                 }

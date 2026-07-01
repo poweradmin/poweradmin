@@ -35,8 +35,8 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditSupermasterController extends BaseController
@@ -92,15 +92,15 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
-        if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
+        if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
             $this->redirect('/supermasters');
             return;
         }
 
-        if ($dnsRecord->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
+        if ($supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
             $auditService = new AuditService($this->db);
             $auditService->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
 
@@ -113,15 +113,15 @@ class EditSupermasterController extends BaseController
 
     private function showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip = null, $new_ns_name = null, $account = null): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
-        if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
+        if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
             $this->redirect('/supermasters');
             return;
         }
 
-        $info = $dnsRecord->getSupermasterInfoFromIp($old_master_ip);
+        $info = $supermasterManager->getSupermasterInfoFromIp($old_master_ip);
 
         // If POST didn't provide values, use the existing ones
         if ($new_master_ip === null) {

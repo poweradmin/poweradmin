@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -157,7 +158,8 @@ class DeleteDomainController extends BaseController
             if ($slave_master) {
                 // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                 $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
-                if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+                if ($master_ip && $supermasterManager->supermasterExists($master_ip)) {
                     $slave_master_exists = true;
                 }
             }
