@@ -37,7 +37,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
@@ -132,8 +131,7 @@ class SaveZoneAsTemplateController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $records = $dnsRecord->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
 
         $description = htmlspecialchars($this->request->getPostParam('templ_descr')) ?? '';
 

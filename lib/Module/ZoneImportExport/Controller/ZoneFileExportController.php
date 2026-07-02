@@ -24,7 +24,6 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Network\ProxyContext;
@@ -141,8 +140,7 @@ class ZoneFileExportController extends BaseController
 
     private function generateFromDb(int $zone_id, string $zone_name): ?string
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $records = $dnsRecord->getRecordsFromDomainId(
+        $records = $this->createRecordRepository()->getRecordsFromDomainId(
             $this->getConfig()->get('database', 'type', 'mysql'),
             $zone_id
         );

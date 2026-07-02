@@ -24,7 +24,6 @@ namespace Poweradmin\Module\CsvExport\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -65,8 +64,7 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $records = $dnsRecord->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));

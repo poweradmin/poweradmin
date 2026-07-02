@@ -23,21 +23,21 @@
 namespace Poweradmin\Module\Whois\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\Whois\Service\WhoisService;
 
 class WhoisController extends BaseController
 {
     private WhoisService $whoisService;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->whoisService = new WhoisService();
-        $this->dnsRecord = new DnsRecord($this->db, $this->config);
+        $this->domainRepository = $this->createDomainRepository();
 
         $timeout = $this->getModuleConfig('whois', 'socket_timeout', 10);
         $this->whoisService->setSocketTimeout($timeout);
@@ -84,10 +84,10 @@ class WhoisController extends BaseController
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;
