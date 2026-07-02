@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ iface_title }}</title>
+    <link rel="icon" href="{{ iface_favicon }}">
     <!-- CSS only -->
     <link href="{{ base_url_prefix }}/vendor/twbs/bootstrap/dist/css/{{ bootstrap_css|default('bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ base_url_prefix }}/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
@@ -33,7 +34,7 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-start">
             <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none">
-                <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="32">
+                <img class="me-2" src="{{ iface_logo }}" height="32">
                 <span class="fs-4">{{ iface_title }}</span>
             </a>
             <!-- No navigation menu intentionally -->
@@ -49,7 +50,7 @@
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
-                <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="32">
+                <img class="me-2" src="{{ iface_logo }}" height="32">
                 <span class="fs-4">{{ iface_title }}</span>
                 {% endif %}
             </a>
@@ -100,7 +101,7 @@
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
-                <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="24">
+                <img class="me-2" src="{{ iface_logo }}" height="24">
                 <span class="fs-5">{{ iface_title }}</span>
                 {% endif %}
             </a>
@@ -458,7 +459,7 @@
                         {% if custom_header %}
                         {% include ('custom/header.html') %}
                         {% else %}
-                        <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="32">
+                        <img class="me-2" src="{{ iface_logo }}" height="32">
                         <span class="fs-4">{{ iface_title }}</span>
                         {% endif %}
                     </a>
