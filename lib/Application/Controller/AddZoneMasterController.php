@@ -38,7 +38,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -206,22 +205,23 @@ class AddZoneMasterController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->createRecordRepository();
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($zone_name)) {
             // Don't add a generic error as the validation method already sets a specific one
             $this->showForm();
-        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
+        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {
+        } elseif ($domainRepository->domainExists($zone_name) || $recordRepository->recordNameExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
             $this->setMessage('add_zone_master', 'error', $overlapError);
             $this->showForm();
-        } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
-            $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
+        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+            $zone_id = $domainRepository->getZoneIdFromName($zone_name);
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',

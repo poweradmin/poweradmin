@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -198,15 +197,16 @@ class AddZoneSlaveController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->createRecordRepository();
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
+        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domainExists($zone) || $dnsRecord->hasNonDelegationRecords($zone)) {
+        } elseif ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
@@ -216,9 +216,8 @@ class AddZoneSlaveController extends BaseController
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            if ($dnsRecord->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups)) {
-                $zone_id = $dnsRecord->getZoneIdFromName($zone);
+            if ($this->createDomainManager()->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups)) {
+                $zone_id = $domainRepository->getZoneIdFromName($zone);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',

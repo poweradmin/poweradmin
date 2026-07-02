@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -192,18 +191,19 @@ class BulkRegistrationController extends BaseController
 
         $added_domains = [];
         $failed_domains = [];
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $domainManager = $this->createDomainManager();
         foreach ($domains as $domain) {
             $hostnameValidator = new HostnameValidator($this->config);
             if (!$hostnameValidator->isValid($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
-            } elseif ($dnsRecord->domainExists($domain)) {
+            } elseif ($domainRepository->domainExists($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
             } elseif (($overlapError = $this->getZoneOverlapError($domain)) !== null) {
                 $failed_domains[] = ['name' => $domain, 'reason' => $overlapError];
-            } elseif ($dnsRecord->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+            } elseif ($domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
                 $added_domains[] = $domain;
-                $zone_id = $dnsRecord->getZoneIdFromName($domain);
+                $zone_id = $domainRepository->getZoneIdFromName($domain);
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $this->ipAddressRetriever->getClientIp(),
