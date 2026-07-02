@@ -44,6 +44,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -246,7 +247,7 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        $dnsRecord->updateSOASerial($zid);
+        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zid);
 
         $new_record_info = $dnsRecord->getRecordFromId($rid);
         if ($new_record_info === null) {

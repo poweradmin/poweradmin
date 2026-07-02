@@ -40,6 +40,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -176,7 +177,7 @@ class DeleteRecordController extends BaseController
 
                 DnsRecord::deleteRecordZoneTempl($this->db, $record_id);
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->updateSOASerial($zid);
+                DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zid);
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
                 $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';

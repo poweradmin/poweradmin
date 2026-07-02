@@ -51,6 +51,8 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
@@ -69,6 +71,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -81,6 +84,7 @@ class EditController extends BaseController
     private FormStateService $formStateService;
     private LegacyLogger $auditLogger;
     private DnsRecord $dnsRecord;
+    private SOARecordManagerInterface $soaRecordManager;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -108,6 +112,7 @@ class EditController extends BaseController
         // Initialize services for record addition
         $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
 
         $this->recordManager = new RecordManagerService(
             $this->db,
@@ -335,7 +340,7 @@ class EditController extends BaseController
                 } else {
                     // Validation passed - proceed with signing
                     // Update SOA serial before signing
-                    $this->dnsRecord->updateSOASerial($zone_id);
+                    $this->soaRecordManager->updateSOASerial($zone_id);
 
                     // Try to secure the zone
                     $result = $dnssecProvider->secureZone($zone_name);
@@ -381,7 +386,7 @@ class EditController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $this->dnsRecord->updateSOASerial($zone_id);
+                        $this->soaRecordManager->updateSOASerial($zone_id);
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
                     } else {
                         $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
@@ -434,7 +439,7 @@ class EditController extends BaseController
         $records = $recordResult['records'];
         $total_filtered_count = $recordResult['total'];
 
-        $soa_record = $this->dnsRecord->getSOARecord($zone_id);
+        $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -503,7 +508,7 @@ class EditController extends BaseController
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
             'iface_record_comments' => $iface_record_comments,
             'iface_zone_comments' => $iface_zone_comments,
-            'serial' => DnsRecord::getSOASerial($soa_record),
+            'serial' => SOARecordManager::getSOASerial($soa_record),
             'file_version' => time(),
             'whois_actions' => $this->getWhoisActions($zone_id),
             'rdap_actions' => $this->getRdapActions($zone_id),
@@ -643,8 +648,8 @@ class EditController extends BaseController
         // The client omits unchanged rows but always sends form_complete, so treat
         // either as an edit-form save and run the stale-form serial check for both.
         if ($records !== null || $form_submitted) {
-            $soa_record = $this->dnsRecord->getSOARecord($zone_id);
-            $current_serial = DnsRecord::getSOASerial($soa_record);
+            $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
+            $current_serial = SOARecordManager::getSOASerial($soa_record);
 
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
@@ -730,7 +735,7 @@ class EditController extends BaseController
             $one_record_changed = $this->processZoneComment($zone_id, $this->dnsRecord, $one_record_changed);
         }
 
-        $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
+        $this->finalizeSave($error, $serial_mismatch, $zone_id, $one_record_changed, $zone_name);
     }
 
 
@@ -819,14 +824,14 @@ class EditController extends BaseController
      * @param string $zone_name
      * @return void
      */
-    public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name): void
+    public function finalizeSave(bool $error, bool $serial_mismatch, int $zone_id, bool $one_record_changed, string $zone_name): void
     {
         if ($error === false) {
             $experimental_edit_conflict_resolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
             if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                 $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
             } else {
-                $dnsRecord->updateSOASerial($zone_id);
+                $this->soaRecordManager->updateSOASerial($zone_id);
 
                 if ($one_record_changed) {
                     $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));

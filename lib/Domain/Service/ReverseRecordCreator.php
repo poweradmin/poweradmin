@@ -30,6 +30,7 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -195,7 +196,7 @@ class ReverseRecordCreator
             if ($dnsRecord->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
-                $dnsRecord->updateSOASerial($domainId);
+                DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
                     $zone_name = $dnsRecord->getDomainNameById($domainId);
@@ -310,7 +311,7 @@ class ReverseRecordCreator
             if ($dnsRecord->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
-                $dnsRecord->updateSOASerial($domainId);
+                DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
                     $zone_name = $dnsRecord->getDomainNameById($domainId);

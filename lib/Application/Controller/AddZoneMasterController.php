@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -251,7 +252,7 @@ class AddZoneMasterController extends BaseController
                     } else {
                         // Validation passed - proceed with signing
                         // Update SOA serial before signing
-                        $dnsRecord->updateSOASerial($zone_id);
+                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
 
                         $secureResult = $dnssecProvider->secureZone($zone_name);
                         $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';

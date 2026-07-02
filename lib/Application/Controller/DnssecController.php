@@ -43,6 +43,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -110,7 +111,7 @@ class DnssecController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $dnsRecord->updateSOASerial($zone_id);
+                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
                         $auditService = new AuditService($this->db);
                         $auditService->logDnssecUnsignZone($zone_id, (string)$zone_name);
                         $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
