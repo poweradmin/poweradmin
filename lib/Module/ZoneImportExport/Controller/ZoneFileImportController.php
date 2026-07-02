@@ -176,9 +176,9 @@ class ZoneFileImportController extends BaseController
         }
 
         // Auto-detect existing zone when importing from the menu
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($importMode === 'new' && $origin !== null && $dnsRecord->domainExists($origin)) {
-            $existingZoneId = $dnsRecord->getZoneIdFromName($origin) ?? 0;
+        $domainRepository = $this->createDomainRepository();
+        if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
+            $existingZoneId = $domainRepository->getZoneIdFromName($origin) ?? 0;
             if ($existingZoneId > 0) {
                 $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
                 if ($permEdit !== 'none') {
@@ -289,7 +289,7 @@ class ZoneFileImportController extends BaseController
         $ipRetriever = new IpAddressRetriever($_SERVER);
         $clientIp = $ipRetriever->getClientIp();
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
@@ -311,7 +311,7 @@ class ZoneFileImportController extends BaseController
             }
 
             // Secondary and Consumer zones replicate from a primary - records cannot be imported
-            if (ZoneType::isReadOnly($dnsRecord->getDomainType($existingZoneId))) {
+            if (ZoneType::isReadOnly($domainRepository->getDomainType($existingZoneId))) {
                 $this->showError(_('You cannot import records into a read-only zone.'));
                 return;
             }
@@ -337,7 +337,7 @@ class ZoneFileImportController extends BaseController
                 return;
             }
 
-            if ($dnsRecord->domainExists($zoneName)) {
+            if ($domainRepository->domainExists($zoneName)) {
                 $this->showError(_('A zone with this name already exists.'));
                 return;
             }
@@ -381,12 +381,12 @@ class ZoneFileImportController extends BaseController
                 $this->showError($overlapError);
                 return;
             }
-            if (!$dnsRecord->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
+            if (!$this->createDomainManager()->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
                 $this->showError(_('Failed to create zone.'));
                 return;
             }
 
-            $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
+            $zone_id = $domainRepository->getZoneIdFromName($zoneName);
             if (!$zone_id) {
                 $this->showError(_('Failed to retrieve created zone.'));
                 return;
@@ -412,6 +412,8 @@ class ZoneFileImportController extends BaseController
         $recordRepository = $repositoryFactory->createRecordRepository();
         $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);
+        // RecordManagerService still expects the facade; its own migration retires this instance
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $recordManager = new RecordManagerService(
             $this->db,
             $dnsRecord,
