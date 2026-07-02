@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -104,12 +103,12 @@ class DeleteDomainController extends BaseController
 
     private function deleteDomain(int $zone_id): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
         if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-            $zone_name = $dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $domainRepository->getDomainNameById($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
@@ -117,7 +116,7 @@ class DeleteDomainController extends BaseController
             }
         }
 
-        if ($dnsRecord->deleteDomain($zone_id)) {
+        if ($this->createDomainManager()->deleteDomain($zone_id)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
@@ -147,14 +146,13 @@ class DeleteDomainController extends BaseController
 
     private function showDeleteDomain(int $zone_id): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
         $zone_owners = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
+            $slave_master = $domainRepository->getDomainSlaveMaster($zone_id);
             if ($slave_master) {
                 // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                 $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);

@@ -38,7 +38,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -95,8 +94,8 @@ class DeleteDomainsController extends BaseController
 
     public function deleteDomains($zone_ids): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $deleted_zones = $dnsRecord->getZoneInfoFromIds($zone_ids);
+        $domainRepository = $this->createDomainRepository();
+        $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids);
 
         // Handle DNSSEC before deletion - PowerDNS API modifies records directly,
         // which would conflict with the deletion transaction
@@ -116,7 +115,7 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $delete_domains = $dnsRecord->deleteDomains($zone_ids);
+        $delete_domains = $this->createDomainManager()->deleteDomains($zone_ids);
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
@@ -192,14 +191,14 @@ class DeleteDomainsController extends BaseController
     private function getZoneInfo($zone_ids): array
     {
         $zones = [];
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
         $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
         $userId = $this->userContextService->getLoggedInUserId();
 
         // Fetch all zone details in one bulk call to avoid per-zone API round-trips
         $zoneInfos = [];
-        foreach ($dnsRecord->getZoneInfoFromIds($zone_ids) as $info) {
+        foreach ($domainRepository->getZoneInfoFromIds($zone_ids) as $info) {
             $zoneInfos[(int)($info['id'] ?? 0)] = $info;
         }
 
@@ -215,7 +214,7 @@ class DeleteDomainsController extends BaseController
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
+                $slave_master = $domainRepository->getDomainSlaveMaster($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
                 if ($slave_master) {
