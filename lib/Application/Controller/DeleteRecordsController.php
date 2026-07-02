@@ -180,8 +180,9 @@ class DeleteRecordsController extends BaseController
         }
 
         // Update SOA serials and rectify zones
+        $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
         foreach (array_keys($affected_zones) as $zone_id) {
-            DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
+            $soaRecordManager->updateSOASerial($zone_id);
 
             if ($this->config->get('dnssec', 'enabled', false)) {
                 $zone_name = $dnsRecord->getDomainNameById($zone_id);

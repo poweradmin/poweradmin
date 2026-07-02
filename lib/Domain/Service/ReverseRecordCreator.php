@@ -30,6 +30,7 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -42,6 +43,7 @@ class ReverseRecordCreator
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
+    private SOARecordManagerInterface $soaRecordManager;
     private ?RecordCommentService $recordCommentService;
     private ?DnsBackendProvider $backendProvider;
     private IpAddressRetriever $ipAddressRetriever;
@@ -61,6 +63,7 @@ class ReverseRecordCreator
         $this->dnsRecord = $dnsRecord;
         $this->recordCommentService = $recordCommentService;
         $this->backendProvider = $backendProvider;
+        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
     }
@@ -196,7 +199,7 @@ class ReverseRecordCreator
             if ($dnsRecord->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
-                DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($domainId);
+                $this->soaRecordManager->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
                     $zone_name = $dnsRecord->getDomainNameById($domainId);
@@ -311,7 +314,7 @@ class ReverseRecordCreator
             if ($dnsRecord->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
-                DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($domainId);
+                $this->soaRecordManager->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
                     $zone_name = $dnsRecord->getDomainNameById($domainId);

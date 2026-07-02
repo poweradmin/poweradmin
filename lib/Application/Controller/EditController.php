@@ -818,7 +818,6 @@ class EditController extends BaseController
      *
      * @param bool $error
      * @param bool $serial_mismatch
-     * @param DnsRecord $dnsRecord
      * @param int $zone_id
      * @param bool $one_record_changed
      * @param string $zone_name
