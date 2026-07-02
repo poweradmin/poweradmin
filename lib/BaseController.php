@@ -641,6 +641,22 @@ abstract class BaseController
     }
 
     /**
+     * Resolves a configurable branding asset (favicon, logo) to a usable URL.
+     *
+     * Absolute URLs (scheme or protocol-relative) are used as-is; site and
+     * app-relative paths are served from the application, so they get the
+     * subfolder prefix like every other internal URL.
+     */
+    private function brandingUrl(string $configKey, string $bundledPath, string $baseUrlPrefix): string
+    {
+        $path = $this->config->get('interface', $configKey, '') ?: $bundledPath;
+        if (preg_match('~^([a-z][a-z0-9+.-]*:|//)~i', $path)) {
+            return $path;
+        }
+        return $baseUrlPrefix . (str_starts_with($path, '/') ? $path : '/' . $path);
+    }
+
+    /**
      * Renders the header of the page.
      *
      * @param array|null $systemMessages System messages to be displayed
@@ -661,12 +677,16 @@ abstract class BaseController
         $customDarkExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_dark.css');
         $customThemeExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
 
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+
         $vars = [
             'iface_title' => $this->config->get('interface', 'title'),
             'iface_style' => $styleManager->getSelectedStyle(),
+            'iface_favicon' => $this->brandingUrl('favicon_path', '/favicon.ico', $baseUrlPrefix),
+            'iface_logo' => $this->brandingUrl('logo_path', '/assets/logo.png', $baseUrlPrefix),
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
+            'base_url_prefix' => $baseUrlPrefix,
             'file_version' => time(),
             'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
