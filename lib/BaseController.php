@@ -45,8 +45,13 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
@@ -524,6 +529,26 @@ abstract class BaseController
     protected function createZoneRepository(): ZoneRepositoryInterface
     {
         return $this->getRepositoryFactory()->createZoneRepository();
+    }
+
+    protected function createDomainRepository(): DomainRepositoryInterface
+    {
+        return $this->getRepositoryFactory()->createDomainRepository();
+    }
+
+    protected function createRecordRepository(): RecordRepositoryInterface
+    {
+        return $this->getRepositoryFactory()->createRecordRepository();
+    }
+
+    protected function createRecordManager(): RecordManagerInterface
+    {
+        return DnsServiceFactory::createRecordManager($this->db, $this->getConfig());
+    }
+
+    protected function createDomainManager(): DomainManagerInterface
+    {
+        return DnsServiceFactory::createDomainManager($this->db, $this->getConfig());
     }
 
     protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
