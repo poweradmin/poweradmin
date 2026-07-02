@@ -543,12 +543,12 @@ abstract class BaseController
 
     protected function createRecordManager(): RecordManagerInterface
     {
-        return DnsServiceFactory::createRecordManager($this->db, $this->getConfig());
+        return DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     protected function createDomainManager(): DomainManagerInterface
     {
-        return DnsServiceFactory::createDomainManager($this->db, $this->getConfig());
+        return DnsServiceFactory::createDomainManager($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory

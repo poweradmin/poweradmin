@@ -116,7 +116,6 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        $domainRepository = $this->createDomainRepository();
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         // Function to validate algorithm and bit combinations
         $validateAlgorithmBitCombination = function ($algorithm, $bits) {
