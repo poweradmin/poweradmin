@@ -38,7 +38,6 @@ use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
@@ -73,8 +72,8 @@ class DnssecAddKeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -117,8 +116,8 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
         // Function to validate algorithm and bit combinations
         $validateAlgorithmBitCombination = function ($algorithm, $bits) {
             // ECDSA algorithms should only use 256 or 384 bits

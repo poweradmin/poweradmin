@@ -39,7 +39,6 @@ use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -75,8 +74,8 @@ class DnssecDeleteKeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -86,7 +85,7 @@ class DnssecDeleteKeyController extends BaseController
             return;
         }
 
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {

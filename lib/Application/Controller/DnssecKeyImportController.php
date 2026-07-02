@@ -30,7 +30,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 
 /**
@@ -66,8 +65,8 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zoneIdInt)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zoneIdInt)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -109,7 +108,7 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        $domainName = $dnsRecord->getDomainNameById($zoneIdInt);
+        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         try {
