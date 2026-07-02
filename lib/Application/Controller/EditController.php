@@ -654,6 +654,7 @@ class EditController extends BaseController
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
+                $recordRepository = $this->createRecordRepository();
                 foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
@@ -670,7 +671,7 @@ class EditController extends BaseController
                         $record['name'] = DnsHelper::restoreZoneSuffix($record['name'], $zone_name);
                     }
 
-                    $log = new RecordLog($this->db, $this->getConfig());
+                    $log = new RecordLog($this->db, $this->getConfig(), $recordRepository);
 
                     if (isset($record['disabled']) && $record['disabled'] == 'on') {
                         $record["disabled"] = 1;

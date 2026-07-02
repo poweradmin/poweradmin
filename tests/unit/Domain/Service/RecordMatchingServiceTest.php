@@ -24,20 +24,20 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\RecordMatchingService;
 
 class RecordMatchingServiceTest extends TestCase
 {
     private function createService(?int $forwardDomainId, array $aaaaRecords): RecordMatchingService
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getDomainIdByName')->willReturn($forwardDomainId);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainIdByName')->willReturn($forwardDomainId);
 
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
         $recordRepository->method('getRecordsByDomainId')->willReturn($aaaaRecords);
 
-        return new RecordMatchingService($dnsRecord, $recordRepository);
+        return new RecordMatchingService($domainRepository, $recordRepository);
     }
 
     public function testMatchesRecordsRegardlessOfCompressionForm(): void

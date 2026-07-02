@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -38,13 +40,15 @@ class RecordLog
     private LegacyLogger $logger;
     private PDO $db;
     private ConfigurationManager $config;
+    private ?RecordRepositoryInterface $recordRepository;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?RecordRepositoryInterface $recordRepository = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->recordRepository = $recordRepository;
         $this->logger = new LegacyLogger($db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
@@ -78,8 +82,13 @@ class RecordLog
 
     protected function getRecord(int|string $rid): ?array
     {
-        $dnsRecord = new DnsRecord($this->db, $this->config);
-        return $dnsRecord->getRecordFromId($rid);
+        $this->recordRepository ??= (new RepositoryFactory(
+            $this->db,
+            $this->config,
+            DnsBackendProviderFactory::create($this->db, $this->config)
+        ))->createRecordRepository();
+
+        return $this->recordRepository->getRecordFromId($rid);
     }
 
     public function getRecordCopy(): array

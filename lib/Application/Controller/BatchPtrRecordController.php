@@ -30,7 +30,8 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
@@ -45,7 +46,7 @@ use Poweradmin\Domain\Model\Constants;
 class BatchPtrRecordController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -58,17 +59,19 @@ class BatchPtrRecordController extends BaseController
 
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordRepository = $repositoryFactory->createRecordRepository();
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
+        $recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $backendProvider);
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $recordManager,
             null,
             $recordRepository
         );
@@ -102,8 +105,8 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = (int)htmlspecialchars($id);
-            $zone_type = $this->dnsRecord->getDomainType($zone_id);
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $zone_type = $this->domainRepository->getDomainType($zone_id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $userId = $this->userContextService->getLoggedInUserId();
 
             // Check if this is a reverse zone
@@ -241,7 +244,7 @@ class BatchPtrRecordController extends BaseController
 
         if ($hasZoneId) {
             $zone_id = (int)htmlspecialchars($id);
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $preFillDomain = $zone_name;
 

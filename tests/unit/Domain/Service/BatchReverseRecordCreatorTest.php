@@ -5,7 +5,8 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -14,7 +15,8 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 class BatchReverseRecordCreatorTest extends TestCase
 {
     private function createService(
-        ?DnsRecord $dnsRecord = null,
+        ?DomainRepositoryInterface $domainRepository = null,
+        ?RecordManagerInterface $recordManager = null,
         ?ConfigurationManager $config = null,
         ?RecordRepositoryInterface $recordRepository = null
     ): BatchReverseRecordCreator {
@@ -34,25 +36,30 @@ class BatchReverseRecordCreatorTest extends TestCase
             });
         }
 
-        if ($dnsRecord === null) {
-            $dnsRecord = $this->createMock(DnsRecord::class);
+        if ($domainRepository === null) {
+            $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        }
+
+        if ($recordManager === null) {
+            $recordManager = $this->createMock(RecordManagerInterface::class);
         }
 
         $ipValidator = new IPAddressValidator();
 
-        return new BatchReverseRecordCreator($db, $config, $logger, $dnsRecord, $ipValidator, $recordRepository);
+        return new BatchReverseRecordCreator($db, $config, $logger, $domainRepository, $recordManager, $ipValidator, $recordRepository);
     }
 
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
 
         $createdRecords = [];
 
-        $dnsRecord->method('getBestMatchingZoneIdFromName')
+        $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(42);
 
-        $dnsRecord->method('addRecord')
+        $recordManager->method('addRecord')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$createdRecords) {
                 $createdRecords[] = ['name' => $name, 'content' => $content];
                 return true;
@@ -61,7 +68,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -112,11 +119,12 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkReturnsErrorWhenNoReverseZone(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(-1);
 
-        $service = $this->createService($dnsRecord);
+        $service = $this->createService($domainRepository, $recordManager);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -132,12 +140,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkSkipsNetworkAddress(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(42);
 
         $addedNames = [];
-        $dnsRecord->method('addRecord')
+        $recordManager->method('addRecord')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$addedNames) {
                 $addedNames[] = $name;
                 return true;
@@ -146,7 +155,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -172,12 +181,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkRespectsCountLimit(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(42);
 
         $addCount = 0;
-        $dnsRecord->method('addRecord')
+        $recordManager->method('addRecord')
             ->willReturnCallback(function () use (&$addCount) {
                 $addCount++;
                 return true;
@@ -186,7 +196,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -208,12 +218,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkMatchingModeCreatesPtrPerAaaaRecord(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
-        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $created = [];
-        $dnsRecord->method('addRecord')
+        $recordManager->method('addRecord')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$created) {
                 $created[] = ['name' => $name, 'content' => $content, 'ttl' => $ttl];
                 return true;
@@ -227,7 +238,7 @@ class BatchReverseRecordCreatorTest extends TestCase
             ['name' => 'other.example.com', 'content' => '2001:db8:2:2::9', 'ttl' => 7200, 'prio' => 0],
         ]);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -256,12 +267,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkMatchingModeReturnsErrorWhenNoMatches(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
-        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $addCount = 0;
-        $dnsRecord->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+        $recordManager->method('addRecord')->willReturnCallback(function () use (&$addCount) {
             $addCount++;
             return true;
         });
@@ -272,7 +284,7 @@ class BatchReverseRecordCreatorTest extends TestCase
             ['name' => 'other.example.com', 'content' => '2001:db8:2:2::9', 'ttl' => 7200, 'prio' => 0],
         ]);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
@@ -296,12 +308,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkMatchingModeHonorsPtrTtlOverride(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
-        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $ttls = [];
-        $dnsRecord->method('addRecord')
+        $recordManager->method('addRecord')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$ttls) {
                 $ttls[] = $ttl;
                 return true;
@@ -313,7 +326,7 @@ class BatchReverseRecordCreatorTest extends TestCase
             ['name' => 'host5.example.com', 'content' => '2001:db8:1:1::5', 'ttl' => 7200, 'prio' => 0],
         ]);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $args = ['2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 256, false, null, true];
 
@@ -330,12 +343,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
     public function testCreateIPv6NetworkMatchingModeSkipsDuplicatePtr(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
-        $dnsRecord->method('getDomainIdByName')->willReturn(7);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $addCount = 0;
-        $dnsRecord->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+        $recordManager->method('addRecord')->willReturnCallback(function () use (&$addCount) {
             $addCount++;
             return true;
         });
@@ -346,7 +360,7 @@ class BatchReverseRecordCreatorTest extends TestCase
             ['name' => 'host5.example.com', 'content' => '2001:db8:1:1::5', 'ttl' => 7200, 'prio' => 0],
         ]);
 
-        $service = $this->createService($dnsRecord, null, $recordRepo);
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
