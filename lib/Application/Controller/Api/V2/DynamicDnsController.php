@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
@@ -57,12 +57,12 @@ class DynamicDnsController extends PublicApiController
         $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
         $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $dnsRecord = new DnsRecord($this->db, $config);
         $backendProvider = DnsBackendProviderFactory::create($this->db, $config);
+        $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $config, $backendProvider);
 
         $repository = $backendProvider->isApiBackend()
-            ? new ApiDynamicDnsRepository($this->db, $dnsRecord, $backendProvider)
-            : new SqlDynamicDnsRepository($this->db, $dnsRecord, $recordsTable, $domainsTable);
+            ? new ApiDynamicDnsRepository($this->db, $soaRecordManager, $backendProvider)
+            : new SqlDynamicDnsRepository($this->db, $soaRecordManager, $recordsTable, $domainsTable);
 
         $userAuthService = new UserAuthenticationService(
             $config->get('security', 'password_encryption', 'bcrypt'),

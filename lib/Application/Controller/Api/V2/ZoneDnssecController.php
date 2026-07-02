@@ -39,7 +39,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -314,7 +314,7 @@ class ZoneDnssecController extends PublicApiController
      */
     protected function bumpSoaSerial(int $zoneId): void
     {
-        (new DnsRecord($this->db, $this->config))->updateSOASerial($zoneId);
+        DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($zoneId);
     }
 
     /**

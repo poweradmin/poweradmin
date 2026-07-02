@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
 /**
@@ -35,7 +35,7 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     public function __construct(
         private readonly PDO $db,
-        private readonly DnsRecord $dnsRecord,
+        private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly string $recordsTable,
         private readonly string $domainsTable
     ) {
@@ -157,6 +157,6 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function updateSOASerial(int $zoneId): void
     {
-        $this->dnsRecord->updateSOASerial($zoneId);
+        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 }
