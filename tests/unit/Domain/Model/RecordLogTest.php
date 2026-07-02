@@ -25,7 +25,7 @@ namespace unit\Domain\Model;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordLog;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use ReflectionMethod;
 
 /**
@@ -38,14 +38,14 @@ class RecordLogTest extends TestCase
     private function makeRecordLog(array $store): RecordLog
     {
         $db = $this->createMock(PDO::class);
-        $config = $this->createMock(ConfigurationManager::class);
+        $recordRepository = $this->createMock(RecordRepositoryInterface::class);
 
-        return new class ($db, $config, $store) extends RecordLog {
+        return new class ($db, $recordRepository, $store) extends RecordLog {
             private array $store;
 
-            public function __construct(PDO $db, ConfigurationManager $config, array $store)
+            public function __construct(PDO $db, RecordRepositoryInterface $recordRepository, array $store)
             {
-                parent::__construct($db, $config);
+                parent::__construct($db, $recordRepository);
                 $this->store = $store;
             }
 

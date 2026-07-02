@@ -84,6 +84,7 @@ abstract class BaseController
     private UserContextService $userContextService;
     private string $pageTitle = '';
     protected LoggerInterface $logger;
+    private ?DnsBackendProvider $dnsBackendProvider = null;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -513,11 +514,13 @@ abstract class BaseController
     /**
      * Create DnsBackendProvider for backend-aware DNS operations.
      *
+     * Providers are stateless, so one shared instance serves the whole request.
+     *
      * @return DnsBackendProvider
      */
     protected function createDnsBackendProvider(): DnsBackendProvider
     {
-        return DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
     }
 
     protected function createDnsDataService(): DnsDataService

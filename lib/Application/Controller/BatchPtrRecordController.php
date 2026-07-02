@@ -31,7 +31,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
@@ -60,11 +59,9 @@ class BatchPtrRecordController extends BaseController
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
 
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordRepository = $repositoryFactory->createRecordRepository();
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $backendProvider);
+        $recordRepository = $this->createRecordRepository();
+        $this->domainRepository = $this->createDomainRepository();
+        $recordManager = $this->createRecordManager();
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,

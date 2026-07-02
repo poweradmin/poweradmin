@@ -69,6 +69,15 @@ interface DomainManagerInterface
     public function changeZoneType(string $type, int $id): bool;
 
     /**
+     * Ask the backend to retrieve a slave zone from its master now
+     *
+     * @param int $id Zone ID
+     *
+     * @return bool true on success
+     */
+    public function retrieveZone(int $id): bool;
+
+    /**
      * Change Slave Zone's Master IP Address
      *
      * @param int $zone_id Zone ID

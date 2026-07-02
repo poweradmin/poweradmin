@@ -143,7 +143,6 @@ class DnssecController extends BaseController
         }
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-        $domainRepository = $this->createDomainRepository();
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);

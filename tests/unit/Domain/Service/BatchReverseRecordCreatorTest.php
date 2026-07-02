@@ -120,11 +120,10 @@ class BatchReverseRecordCreatorTest extends TestCase
     public function testCreateIPv6NetworkReturnsErrorWhenNoReverseZone(): void
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
-        $recordManager = $this->createMock(RecordManagerInterface::class);
         $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(-1);
 
-        $service = $this->createService($domainRepository, $recordManager);
+        $service = $this->createService($domainRepository);
 
         $result = $service->createIPv6Network(
             '2001:db8:1:1',
