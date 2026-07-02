@@ -26,7 +26,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -169,7 +168,9 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->createRecordRepository();
+        $domainManager = $this->createDomainManager();
         $hostnameValidator = new HostnameValidator($this->config);
 
         if (!$hostnameValidator->isValid($zone)) {
@@ -178,12 +179,12 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
         $thirdLevelCheck = $this->config->get('dns', 'third_level_check', false);
-        if ($thirdLevelCheck && DomainUtility::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
+        if ($thirdLevelCheck && DomainUtility::getDomainLevel($zone) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
             $this->setMessage('import', 'error', _('There is already a zone with this name.'));
             $this->showForm();
             return;
         }
-        if ($dnsRecord->domainExists($zone) || $dnsRecord->hasNonDelegationRecords($zone)) {
+        if ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
             $this->setMessage('import', 'error', _('There is already a zone with this name.'));
             $this->showForm();
             return;
@@ -199,13 +200,13 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        if (!$dnsRecord->addDomain($this->db, $zone, $owner, 'SLAVE', $master, 'none', $groups)) {
+        if (!$domainManager->addDomain($this->db, $zone, $owner, 'SLAVE', $master, 'none', $groups)) {
             $this->setMessage('import', 'error', _('Failed to create the secondary zone.'));
             $this->showForm();
             return;
         }
 
-        $zoneId = $dnsRecord->getZoneIdFromName($zone);
+        $zoneId = $domainRepository->getZoneIdFromName($zone);
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:import_secondary_zone zone:%s zone_master:%s',
             $this->ipAddressRetriever->getClientIp(),
@@ -215,7 +216,7 @@ class SecondaryZoneImportController extends BaseController
         ), $zoneId);
 
         // Ask PowerDNS to pull the zone now instead of waiting for the refresh.
-        $retrieved = $zoneId ? $dnsRecord->retrieveZone($zoneId) : false;
+        $retrieved = $zoneId ? $domainManager->retrieveZone($zoneId) : false;
 
         $this->showForm([
             'imported' => true,
@@ -242,8 +243,8 @@ class SecondaryZoneImportController extends BaseController
 
         // changeZoneType() enforces the metadata-edit permission and ownership
         // and writes its own audit entry, so no extra gating is needed here.
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->changeZoneType('NATIVE', $zoneId)) {
+        $domainManager = $this->createDomainManager();
+        if (!$domainManager->changeZoneType('NATIVE', $zoneId)) {
             $this->showForm();
             return;
         }

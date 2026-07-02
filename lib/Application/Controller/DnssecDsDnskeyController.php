@@ -37,7 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -67,8 +67,8 @@ class DnssecDsDnskeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -78,12 +78,12 @@ class DnssecDsDnskeyController extends BaseController
 
     public function showKeys(int $zone_id, $pdnssec_use): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
 
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
-        $domain_type = $dnsRecord->getDomainType($zone_id);
-        $record_count = $dnsRecord->countZoneRecords($zone_id);
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $domain_type = $domainRepository->getDomainType($zone_id);
+        $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
+        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);

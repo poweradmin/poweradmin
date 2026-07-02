@@ -42,7 +42,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -80,8 +80,8 @@ class DnssecController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -97,7 +97,7 @@ class DnssecController extends BaseController
             }
             $this->validateCsrfToken();
 
-            $zone_name = $dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $domainRepository->getDomainNameById($zone_id);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
@@ -134,8 +134,8 @@ class DnssecController extends BaseController
 
     public function showDnsSecKeys(int $zone_id): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
         if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($domain_name);
         } else {
@@ -143,7 +143,7 @@ class DnssecController extends BaseController
         }
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -152,12 +152,12 @@ class DnssecController extends BaseController
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'domain_type' => $dnsRecord->getDomainType($zone_id),
+            'domain_type' => $domainRepository->getDomainType($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
-            'record_count' => $dnsRecord->countZoneRecords($zone_id),
+            'record_count' => $this->createRecordRepository()->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
-            'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
+            'zone_template_id' => DomainManager::getZoneTemplate($this->db, $zone_id),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
