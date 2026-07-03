@@ -50,7 +50,9 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -84,8 +86,9 @@ class EditController extends BaseController
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private LegacyLogger $auditLogger;
-    private DnsRecord $dnsRecord;
     private SOARecordManagerInterface $soaRecordManager;
+    private RecordManagerInterface $dnsRecordManager;
+    private ?DomainManagerInterface $domainManager = null;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -114,14 +117,13 @@ class EditController extends BaseController
 
         // Initialize services for record addition
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
 
-        $dnsRecordManager = $this->createRecordManager();
+        $this->dnsRecordManager = $this->createRecordManager();
         $this->recordManager = new RecordManagerService(
             $this->db,
             $this->domainRepository,
-            $dnsRecordManager,
+            $this->dnsRecordManager,
             $this->recordCommentService,
             $this->commentSyncService,
             $this->auditLogger,
@@ -135,7 +137,7 @@ class EditController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $this->domainRepository,
-            $dnsRecordManager,
+            $this->dnsRecordManager,
             null,
             $this->reverseTtlResolver,
         );
@@ -145,7 +147,7 @@ class EditController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $this->domainRepository,
-            $dnsRecordManager,
+            $this->dnsRecordManager,
             $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
@@ -407,14 +409,14 @@ class EditController extends BaseController
         }
 
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
-        $record_count = $this->dnsRecord->countZoneRecords($zone_id);
+        $record_count = $this->recordRepository->countZoneRecords($zone_id);
         $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
         $types = ZoneType::getTypes();
 
         // Get zone templates
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $zone_templates = $zone_templates->getListZoneTempl($userId);
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
+        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
         $zone_comment = '';
@@ -533,17 +535,18 @@ class EditController extends BaseController
 
     private function handleZoneMetadataPost(int $zone_id): void
     {
+        $domainManager = $this->domainManager ??= $this->createDomainManager();
         $new_type = htmlspecialchars($this->request->getPostParam('newtype', ''));
         if ($this->request->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             $this->validateCsrfToken();
-            if ($this->dnsRecord->changeZoneType($new_type, $zone_id)) {
+            if ($domainManager->changeZoneType($new_type, $zone_id)) {
                 $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
             }
         }
 
         if ($this->request->getPostParam('slave_master_change') !== null) {
             $this->validateCsrfToken();
-            if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
+            if ($domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
                 $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
             }
         }
@@ -552,7 +555,7 @@ class EditController extends BaseController
             $this->validateCsrfToken();
 
             // Applying a template writes records, which read-only zones cannot accept
-            if (ZoneType::isReadOnly($this->dnsRecord->getDomainType($zone_id))) {
+            if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
                 $this->setMessage('edit', 'error', _('You cannot apply a template to a read-only zone.'));
                 return;
             }
@@ -562,7 +565,7 @@ class EditController extends BaseController
             $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
 
             if ($current_zone_template != $new_zone_template) {
-                $this->dnsRecord->updateZoneRecords(
+                $domainManager->updateZoneRecords(
                     $this->config->get('database', 'type', 'mysql'),
                     $this->config->get('dns', 'ttl', 86400),
                     $zone_id,
@@ -702,7 +705,7 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
-                    $edit_record = $this->dnsRecord->editRecord($record);
+                    $edit_record = $this->dnsRecordManager->editRecord($record);
                     if (false === $edit_record) {
                         $error = true;
                     } else {
@@ -739,7 +742,7 @@ class EditController extends BaseController
         }
 
         if (!$records_truncated && $this->config->get('interface', 'show_zone_comments', true)) {
-            $one_record_changed = $this->processZoneComment($zone_id, $this->dnsRecord, $one_record_changed);
+            $one_record_changed = $this->processZoneComment($zone_id, $one_record_changed);
         }
 
         $this->finalizeSave($error, $serial_mismatch, $zone_id, $one_record_changed, $zone_name);
@@ -805,11 +808,10 @@ class EditController extends BaseController
      * Process zone comment
      *
      * @param int $zone_id
-     * @param DnsRecord $dnsRecord
      * @param bool $one_record_changed
      * @return bool
      */
-    public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
+    public function processZoneComment(int $zone_id, bool $one_record_changed): bool
     {
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
         $zone_comment = $this->request->getPostParam('zone_comment', '');

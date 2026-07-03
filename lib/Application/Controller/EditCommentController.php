@@ -39,7 +39,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Validator;
 
 class EditCommentController extends BaseController
@@ -54,6 +54,7 @@ class EditCommentController extends BaseController
 
     public function run(): void
     {
+        $domainRepository = $this->createDomainRepository();
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         if (!$iface_zone_comments) {
@@ -74,13 +75,12 @@ class EditCommentController extends BaseController
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->getDomainType($zone_id);
+        $zone_type = $domainRepository->getDomainType($zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
         $is_admin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
-        // Permission check logic matches what's in DnsRecord->edit_zone_comment.
+        // Permission check logic matches what's in RecordManager->editZoneComment.
         // Read-only zones (Secondary, Consumer) block comment edits for everyone -
         // including admins - because RecordManager rejects the write. Otherwise a
         // user can edit if they are an admin, or have edit permission and own the zone.
@@ -100,12 +100,11 @@ class EditCommentController extends BaseController
                 $messageService = new MessageService();
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->editZoneComment($zone_id, $this->request->getPostParam('comment'));
+                $this->createRecordManager()->editZoneComment($zone_id, $this->request->getPostParam('comment'));
 
                 $zoneIdInt = (int)$zone_id;
                 $auditService = new AuditService($this->db);
-                $auditService->logZoneCommentEdit($zoneIdInt, $dnsRecord->getDomainNameById($zoneIdInt));
+                $auditService->logZoneCommentEdit($zoneIdInt, $domainRepository->getDomainNameById($zoneIdInt));
 
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
@@ -117,8 +116,8 @@ class EditCommentController extends BaseController
 
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->getDomainNameById($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $zone_name = $domainRepository->getDomainNameById($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -128,7 +127,7 @@ class EditCommentController extends BaseController
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => DnsRecord::getZoneComment($this->db, $zone_id),
+            'comment' => RecordManager::getZoneComment($this->db, $zone_id),
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

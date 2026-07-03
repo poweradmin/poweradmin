@@ -43,7 +43,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\PermissionService;
@@ -88,6 +87,8 @@ class EditRecordController extends BaseController
 
     public function run(): void
     {
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
         // Validate record ID parameter
         $record_id = $this->getSafeRequestValue('id');
         if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
@@ -97,10 +98,9 @@ class EditRecordController extends BaseController
         if (Validator::isNumber($record_id)) {
             $record_id = (int)$record_id;
         }
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first
-        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
+        $zid = $recordRepository->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
             $this->showError(_('Invalid record ID.'));
             return;
@@ -120,7 +120,7 @@ class EditRecordController extends BaseController
         }
 
         // Get zone type after permission validation
-        $zone_type = $dnsRecord->getDomainType($zid);
+        $zone_type = $domainRepository->getDomainType($zid);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($zone_type)) {
@@ -145,11 +145,12 @@ class EditRecordController extends BaseController
 
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->getDomainNameById($zid);
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
+        $zone_name = $domainRepository->getDomainNameById($zid);
 
         $recordTypes = $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
-        $record = $dnsRecord->getRecordFromId($record_id);
+        $record = $recordRepository->getRecordFromId($record_id);
         if ($record === null) {
             $this->showError(_('Record not found.'));
             return;
@@ -196,9 +197,10 @@ class EditRecordController extends BaseController
 
     public function saveRecord($zid): bool
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
         $rid = $this->request->getPostParam('rid');
-        $old_record_info = $dnsRecord->getRecordFromId($rid);
+        $old_record_info = $recordRepository->getRecordFromId($rid);
         if ($old_record_info === null) {
             $this->setMessage('edit', 'error', _('Record not found.'));
             return false;
@@ -229,7 +231,7 @@ class EditRecordController extends BaseController
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
         if (isset($postData['name'])) {
-            $zone_name = $dnsRecord->getDomainNameById($zid);
+            $zone_name = $domainRepository->getDomainNameById($zid);
             if ($zone_name === null) {
                 $this->setMessage('edit', 'error', _('Zone not found.'));
                 return false;
@@ -242,14 +244,14 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $ret_val = $dnsRecord->editRecord($postData);
+        $ret_val = $this->createRecordManager()->editRecord($postData);
         if (!$ret_val) {
             return false;
         }
 
         DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zid);
 
-        $new_record_info = $dnsRecord->getRecordFromId($rid);
+        $new_record_info = $recordRepository->getRecordFromId($rid);
         if ($new_record_info === null) {
             // In API mode the record ID changes when name/type/content/prio change,
             // so the old ID won't match. Use POST data for audit logging instead.
@@ -301,8 +303,7 @@ class EditRecordController extends BaseController
             );
 
             if ($this->config->get('misc', 'record_comments_sync')) {
-                $this->commentSyncService->updateRelatedRecordComments(
-                    $this->createDomainRepository(),
+                $this->commentSyncService->updateRelatedRecordComments(                    $domainRepository,
                     $new_record_info,
                     $commentValue,
                     $this->userContextService->getLoggedInUsername()
@@ -330,7 +331,7 @@ class EditRecordController extends BaseController
         }
 
         if ($this->config->get('dnssec', 'enabled', false)) {
-            $zone_name = $dnsRecord->getDomainNameById($zid);
+            $zone_name = $domainRepository->getDomainNameById($zid);
             if ($zone_name !== null) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                 $dnssecProvider->rectifyZone($zone_name);

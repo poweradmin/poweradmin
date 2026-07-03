@@ -17,7 +17,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditController;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
@@ -81,15 +82,15 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'newtype' => 'MASTER',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->once())
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())
             ->method('changeZoneType')
             ->with('MASTER', 42)
             ->willReturn(true);
-        $dnsRecord->expects($this->never())->method('changeZoneSlaveMaster');
-        $dnsRecord->expects($this->never())->method('updateZoneRecords');
+        $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
+        $domainManager->expects($this->never())->method('updateZoneRecords');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testTypeChangeIgnoresUnknownType(): void
@@ -99,10 +100,10 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'newtype' => 'BOGUS',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('changeZoneType');
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testSlaveMasterChangePostDispatchesChangeZoneSlaveMaster(): void
@@ -112,15 +113,15 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'new_master' => '192.0.2.10',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('changeZoneType');
-        $dnsRecord->expects($this->once())
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
+        $domainManager->expects($this->once())
             ->method('changeZoneSlaveMaster')
             ->with(42, '192.0.2.10')
             ->willReturn(true);
-        $dnsRecord->expects($this->never())->method('updateZoneRecords');
+        $domainManager->expects($this->never())->method('updateZoneRecords');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testTemplateChangePostDispatchesUpdateZoneRecords(): void
@@ -131,14 +132,14 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'current_zone_template' => '3',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('changeZoneType');
-        $dnsRecord->expects($this->never())->method('changeZoneSlaveMaster');
-        $dnsRecord->expects($this->once())
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
+        $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
+        $domainManager->expects($this->once())
             ->method('updateZoneRecords')
             ->with('mysql', 86400, 42, '7');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testTemplateChangeNoneIsTreatedAsZero(): void
@@ -149,12 +150,12 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'current_zone_template' => '3',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->once())
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())
             ->method('updateZoneRecords')
             ->with('mysql', 86400, 42, 0);
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testTemplateChangeSkippedWhenUnchanged(): void
@@ -165,30 +166,31 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'current_zone_template' => '3',
         ];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('updateZoneRecords');
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('updateZoneRecords');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
     public function testNoZoneMetaPostKeysIsNoop(): void
     {
         $_POST = ['unrelated_field' => 'foo'];
 
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('changeZoneType');
-        $dnsRecord->expects($this->never())->method('changeZoneSlaveMaster');
-        $dnsRecord->expects($this->never())->method('updateZoneRecords');
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
+        $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
+        $domainManager->expects($this->never())->method('updateZoneRecords');
 
-        $this->invokeHandler($dnsRecord, 42);
+        $this->invokeHandler($domainManager, 42);
     }
 
-    private function invokeHandler(DnsRecord $dnsRecord, int $zone_id): void
+    private function invokeHandler(DomainManagerInterface $domainManager, int $zone_id): void
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
         $this->setProperty($controller, 'request', new Request());
-        $this->setProperty($controller, 'dnsRecord', $dnsRecord);
+        $this->setProperty($controller, 'domainManager', $domainManager);
+        $this->setProperty($controller, 'domainRepository', $this->createMock(DomainRepositoryInterface::class));
 
         $config = $this->primeConfig();
         $this->setBaseProperty($controller, 'config', $config);
