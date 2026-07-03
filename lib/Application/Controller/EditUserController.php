@@ -108,13 +108,13 @@ class EditUserController extends BaseController
             return;
         }
 
-        if (!$this->validatePasswordPolicy()) {
+        if (!$this->validatePasswordPolicy($editId)) {
             $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
         try {
-            $params = $this->prepareUserData();
+            $params = $this->prepareUserData($editId);
         } catch (\InvalidArgumentException $e) {
             $this->setMessage('edit_user', 'error', $e->getMessage());
             $this->showUserEditForm($editId, $policyConfig);
@@ -200,16 +200,27 @@ class EditUserController extends BaseController
         return true;
     }
 
-    private function validatePasswordPolicy(): bool
+    private function validatePasswordPolicy(int $editId): bool
     {
         $password = $this->request->getPostParam('password');
-        if (empty($password) || $this->request->getPostParam('use_ldap')) {
+        if (empty($password)) {
+            return true;
+        }
+
+        // Judge by the use_ldap value that will be persisted, not the raw
+        // posted flag - a self-editor must not dodge the policy with use_ldap=1.
+        $user = $this->getUserDetails($editId);
+        $auth = self::resolveAuthFields(
+            $user,
+            $this->isRestrictedSelfEdit($editId),
+            '',
+            $this->request->getPostParam('use_ldap') === '1'
+        );
+        if ($auth['use_ldap']) {
             return true;
         }
 
         // Skip password validation for external auth users
-        $editId = (int)$this->request->getPostParam('number');
-        $user = $this->getUserDetails($editId);
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];
         if (in_array($user['auth_type'] ?? 'sql', $externalAuthMethods)) {
             return true;
@@ -243,9 +254,45 @@ class EditUserController extends BaseController
         }
     }
 
-    private function prepareUserData(): array
+    /**
+     * Whether this edit is a limited user maintaining their own account, in
+     * which case auth-critical fields (username, LDAP flag) are not editable.
+     */
+    private function isRestrictedSelfEdit(int $editId): bool
     {
-        $editId = (int)$this->request->getPostParam('number');
+        return $editId === $this->userContextService->getLoggedInUserId()
+            && !UserManager::verifyPermission($this->db, 'user_edit_others');
+    }
+
+    /**
+     * Resolve the username/use_ldap to persist for a user edit (#1327).
+     *
+     * On a restricted self-edit (own profile without user_edit_others) the
+     * stored username and LDAP flag win over the submitted values - they are
+     * auth-critical, not self-service. A row without a use_ldap column
+     * (LDAP disabled in config) keeps the submitted flag, as before.
+     *
+     * @return array{username: string, use_ldap: bool}
+     */
+    public static function resolveAuthFields(array $userData, bool $restrictedSelfEdit, string $submittedUsername, bool $submittedUseLdap): array
+    {
+        if (!$restrictedSelfEdit) {
+            return [
+                'username' => $submittedUsername,
+                'use_ldap' => $submittedUseLdap,
+            ];
+        }
+
+        return [
+            'username' => (string)($userData['username'] ?? ''),
+            'use_ldap' => array_key_exists('use_ldap', $userData)
+                ? (bool)$userData['use_ldap']
+                : $submittedUseLdap,
+        ];
+    }
+
+    private function prepareUserData(int $editId): array
+    {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
         $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
 
@@ -275,15 +322,24 @@ class EditUserController extends BaseController
             }
         }
 
+        // Keep stored username and LDAP flag on self-edit (#1327)
+        $userData = $userData ?? $this->getUserDetails($editId);
+        $auth = self::resolveAuthFields(
+            $userData,
+            $isOwnProfile && !$canEditOthers,
+            htmlspecialchars($this->request->getPostParam('username')),
+            $this->request->getPostParam('use_ldap') === '1'
+        );
+
         return [
-            'username' => htmlspecialchars($this->request->getPostParam('username')),
+            'username' => $auth['username'],
             'fullname' => htmlspecialchars($this->request->getPostParam('fullname')),
             'email' => htmlspecialchars($this->request->getPostParam('email')),
             'description' => htmlspecialchars($this->request->getPostParam('description')),
             'password' => $this->request->getPostParam('password', ''),
             'perm_templ' => $permTempl,
             'active' => $active,
-            'use_ldap' => $this->request->getPostParam('use_ldap') === '1'
+            'use_ldap' => $auth['use_ldap']
         ];
     }
 
@@ -352,6 +408,7 @@ class EditUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
+            'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
