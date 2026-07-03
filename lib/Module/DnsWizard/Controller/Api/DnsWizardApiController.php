@@ -31,7 +31,6 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
-
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;

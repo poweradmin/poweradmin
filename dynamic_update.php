@@ -6,7 +6,6 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
@@ -19,6 +18,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,11 +49,11 @@ $credentials = [
 
 $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
-$dnsRecord = new DnsRecord($db, $config);
 $backendProvider = DnsBackendProviderFactory::create($db, $config);
+$soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
 $repository = $backendProvider->isApiBackend()
-    ? new ApiDynamicDnsRepository($db, $dnsRecord, $backendProvider)
-    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table, $domains_table);
+    ? new ApiDynamicDnsRepository($db, $soaRecordManager, $backendProvider)
+    : new SqlDynamicDnsRepository($db, $soaRecordManager, $records_table, $domains_table);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption', 'bcrypt'),

@@ -303,7 +303,8 @@ class EditRecordController extends BaseController
             );
 
             if ($this->config->get('misc', 'record_comments_sync')) {
-                $this->commentSyncService->updateRelatedRecordComments(                    $domainRepository,
+                $this->commentSyncService->updateRelatedRecordComments(
+                    $domainRepository,
                     $new_record_info,
                     $commentValue,
                     $this->userContextService->getLoggedInUsername()
