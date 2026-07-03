@@ -1667,6 +1667,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\ValueObject\\DynamicDnsRequest' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/DynamicDnsRequest.php',
         'Poweradmin\\Domain\\ValueObject\\HostnameValue' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/HostnameValue.php',
         'Poweradmin\\Domain\\ValueObject\\IpAddressList' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/IpAddressList.php',
+        'Poweradmin\\Domain\\ValueObject\\LdapUserInfo' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/LdapUserInfo.php',
         'Poweradmin\\Domain\\ValueObject\\OidcUserInfo' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/OidcUserInfo.php',
         'Poweradmin\\Domain\\ValueObject\\RecordIdentifier' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/RecordIdentifier.php',
         'Poweradmin\\Domain\\ValueObject\\SamlUserInfo' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/SamlUserInfo.php',
