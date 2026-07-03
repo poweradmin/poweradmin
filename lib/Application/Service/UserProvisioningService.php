@@ -342,7 +342,7 @@ class UserProvisioningService extends LoggingService
             }
 
             // Only update auth_method if it's safe to do so (prevent overwriting LDAP/other methods)
-            $currentAuthMethod = $current['auth_method'] ?? null;
+            $currentAuthMethod = isset($current['auth_method']) ? (string)$current['auth_method'] : null;
             if ($currentAuthMethod !== $authMethod && $this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
                 $updateFields[] = 'auth_method = ?';
                 $updateValues[] = $authMethod;
