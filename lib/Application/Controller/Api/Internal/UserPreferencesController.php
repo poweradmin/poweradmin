@@ -27,7 +27,6 @@ use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
 class UserPreferencesController extends InternalApiController
 {
@@ -38,9 +37,7 @@ class UserPreferencesController extends InternalApiController
     {
         parent::__construct($request);
 
-        $db_type = $this->config->get('database', 'type');
-        $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        $this->userPreferenceService = new UserPreferenceService($repository, $this->config);
+        $this->userPreferenceService = $this->createUserPreferenceService();
         $this->userContextService = new UserContextService();
     }
 
