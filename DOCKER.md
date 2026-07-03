@@ -424,6 +424,11 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_SYNC_USER_INFO` | Sync fullname/email from LDAP on login | `false` | No |
 | `PA_LDAP_FULLNAME_ATTRIBUTE` | LDAP attribute for full name (`displayName` for AD, `cn` for OpenLDAP) | `displayName` | No |
 | `PA_LDAP_EMAIL_ATTRIBUTE` | LDAP attribute for email address | `mail` | No |
+| `PA_LDAP_AUTO_PROVISION` | Create missing users on first successful LDAP login | `false` | No |
+| `PA_LDAP_DEFAULT_PERMISSION_TEMPLATE` | Template for auto-provisioned users when no mapping matches | `Guest` | No |
+| `PA_LDAP_GROUPS_ATTRIBUTE` | LDAP attribute holding group memberships | `memberOf` | No |
+| `PA_LDAP_PERMISSION_TEMPLATE_MAPPING` | LDAP group to permission template mapping (`group1:Template1,group2:Template2`) | Empty | No |
+| `PA_LDAP_GROUP_MAPPING` | LDAP group to Poweradmin group mapping (`group1:PAGroup1,group2:PAGroup2`) | Empty | No |
 | `PA_LDAP_SESSION_CACHE_TIMEOUT` | Session cache timeout in seconds (0 to disable) | `300` | No |
 
 ### Custom CA Certificate

@@ -134,6 +134,10 @@ class LdapAuthenticator extends LoggingService
         $ldap_sync_user_info = (bool)$this->configManager->get('ldap', 'sync_user_info', false);
         $ldap_fullname_attribute = $this->configManager->get('ldap', 'fullname_attribute', 'displayName');
         $ldap_email_attribute = $this->configManager->get('ldap', 'email_attribute', 'mail');
+        $ldap_auto_provision = (bool)$this->configManager->get('ldap', 'auto_provision', false);
+        $ldap_groups_attribute = $this->configManager->get('ldap', 'groups_attribute', 'memberOf');
+        $ldap_group_sync = $this->configManager->get('ldap', 'permission_template_mapping', []) !== []
+            || $this->configManager->get('ldap', 'group_mapping', []) !== [];
 
         if (!$this->userContextService->hasSessionData(SessionKeys::USERLOGIN) || !$this->userContextService->hasSessionData(SessionKeys::USERPWD)) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
@@ -177,8 +181,11 @@ class LdapAuthenticator extends LoggingService
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
-        if ($ldap_sync_user_info) {
+        if ($ldap_sync_user_info || $ldap_auto_provision) {
             $attributes = array_merge($attributes, array_filter([$ldap_fullname_attribute, $ldap_email_attribute]));
+        }
+        if (($ldap_group_sync || $ldap_auto_provision) && $ldap_groups_attribute !== '') {
+            $attributes[] = $ldap_groups_attribute;
         }
 
         // Properly escape user input to prevent LDAP injection
@@ -240,11 +247,23 @@ class LdapAuthenticator extends LoggingService
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
+        $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
+        $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
+
         $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$rowObj && $ldap_auto_provision && $provisioningService->provisionUser($userInfo, 'ldap')) {
+            $stmt->execute(['username' => $username]);
+            $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->logInfo('Auto-provisioned LDAP user {username}', ['username' => $username]);
+        } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
+            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
+            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+        }
 
         if (!$rowObj) {
             $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
@@ -255,14 +274,6 @@ class LdapAuthenticator extends LoggingService
             $this->authenticationService->auth($sessionEntity);
             $this->logInfo('LDAP authentication process ended due to no active user found.');
             return;
-        }
-
-        if ($ldap_sync_user_info) {
-            $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute);
-            $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
-            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
-
-            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
         }
 
         session_regenerate_id(true);

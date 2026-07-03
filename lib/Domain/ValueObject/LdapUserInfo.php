@@ -40,13 +40,13 @@ class LdapUserInfo implements UserInfoInterface
      * Build from an ldap_get_entries() entry (attribute names lowercased,
      * multi-valued attributes as ['count' => n, 0 => ...] arrays).
      */
-    public static function fromLdapEntry(array $entry, string $username, string $fullnameAttribute, string $emailAttribute): self
+    public static function fromLdapEntry(array $entry, string $username, string $fullnameAttribute, string $emailAttribute, string $groupsAttribute = ''): self
     {
         return new self(
             $username,
             self::firstAttributeValue($entry, $emailAttribute),
             self::firstAttributeValue($entry, $fullnameAttribute),
-            [],
+            self::groupValues($entry, $groupsAttribute),
             (string)($entry['dn'] ?? '')
         );
     }
@@ -54,6 +54,22 @@ class LdapUserInfo implements UserInfoInterface
     private static function firstAttributeValue(array $entry, string $attribute): string
     {
         return (string)($entry[strtolower($attribute)][0] ?? '');
+    }
+
+    /**
+     * Raw values of the groups attribute, typically memberOf DNs. Short-name
+     * matching against mapping keys happens in UserProvisioningService.
+     */
+    private static function groupValues(array $entry, string $attribute): array
+    {
+        $groups = [];
+        foreach ((array)($entry[strtolower($attribute)] ?? []) as $key => $value) {
+            if (is_int($key)) {
+                $groups[] = (string)$value;
+            }
+        }
+
+        return $groups;
     }
 
     public function getUsername(): string

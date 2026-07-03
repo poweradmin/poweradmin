@@ -709,6 +709,7 @@ generate_config() {
     # Convert LDAP boolean values to lowercase
     local ldap_debug=$(echo "${PA_LDAP_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
     local ldap_sync_user_info=$(echo "${PA_LDAP_SYNC_USER_INFO:-false}" | tr '[:upper:]' '[:lower:]')
+    local ldap_auto_provision=$(echo "${PA_LDAP_AUTO_PROVISION:-false}" | tr '[:upper:]' '[:lower:]')
 
     # Convert misc boolean values to lowercase
     local display_stats=$(echo "${PA_DISPLAY_STATS:-false}" | tr '[:upper:]' '[:lower:]')
@@ -834,6 +835,17 @@ generate_config() {
     local oidc_group_mapping="[]"
     if [ -n "${PA_OIDC_GROUP_MAPPING}" ]; then
         oidc_group_mapping="[$(parse_mapping "${PA_OIDC_GROUP_MAPPING}")]"
+    fi
+
+    # Process LDAP permission template and group mappings
+    local ldap_permission_template_mapping="[]"
+    if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
+        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}")]"
+    fi
+
+    local ldap_group_mapping="[]"
+    if [ -n "${PA_LDAP_GROUP_MAPPING:-}" ]; then
+        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}")]"
     fi
 
     # Process SAML permission template mapping
@@ -1045,6 +1057,11 @@ return [
         'sync_user_info' => ${ldap_sync_user_info},
         'fullname_attribute' => '${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}',
         'email_attribute' => '${PA_LDAP_EMAIL_ATTRIBUTE:-mail}',
+        'auto_provision' => ${ldap_auto_provision},
+        'default_permission_template' => '${PA_LDAP_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
+        'groups_attribute' => '${PA_LDAP_GROUPS_ATTRIBUTE:-memberOf}',
+        'permission_template_mapping' => ${ldap_permission_template_mapping},
+        'group_mapping' => ${ldap_group_mapping},
         'session_cache_timeout' => ${PA_LDAP_SESSION_CACHE_TIMEOUT:-300},
     ],
     'logging' => [

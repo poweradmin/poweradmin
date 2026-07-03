@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
@@ -45,9 +44,11 @@ class UserProvisioningService extends LoggingService
     public const AUTH_METHOD_OIDC = 'oidc';
     public const AUTH_METHOD_SAML = 'saml';
 
+    /** Methods with an identity link table; LDAP identity is the username itself. */
+    private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
+
     private PDO $db;
     private ConfigurationManager $configManager;
-    private UserManager $userManager;
     private DbUserRepository $userRepository;
 
     public function __construct(
@@ -60,7 +61,6 @@ class UserProvisioningService extends LoggingService
 
         $this->db = $connection;
         $this->configManager = $configManager;
-        $this->userManager = new UserManager($connection, $configManager);
         $this->userRepository = new DbUserRepository($connection, $configManager);
     }
 
@@ -95,10 +95,13 @@ class UserProvisioningService extends LoggingService
         }
 
         try {
-            // First, try to find existing user by subject
-            $existingUserId = $authMethod === self::AUTH_METHOD_SAML
-                ? $this->findUserBySamlSubject($userInfo->getSubject(), $providerId)
-                : $this->findUserByOidcSubject($userInfo->getSubject(), $providerId);
+            // First, try to find existing user by subject (LDAP identity is the
+            // username itself - there is no separate link table)
+            $existingUserId = match ($authMethod) {
+                self::AUTH_METHOD_SAML => $this->findUserBySamlSubject($userInfo->getSubject(), $providerId),
+                self::AUTH_METHOD_LDAP => $this->findLdapUserByUsername($userInfo->getUsername()),
+                default => $this->findUserByOidcSubject($userInfo->getSubject(), $providerId),
+            };
 
             if ($existingUserId) {
                 $this->logInfo('Found existing user by {method} subject: {subject}', [
@@ -111,16 +114,12 @@ class UserProvisioningService extends LoggingService
 
             // Try to find by email if email linking is enabled
             $authConfig = $this->getAuthMethodConfig($authMethod);
-            if (($authConfig['link_by_email'] ?? true) && !empty($userInfo->getEmail())) {
+            if (in_array($authMethod, self::LINKABLE_AUTH_METHODS, true) && ($authConfig['link_by_email'] ?? true) && !empty($userInfo->getEmail())) {
                 $existingUserId = $this->findUserByEmail($userInfo->getEmail());
 
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
-                    if ($authMethod === self::AUTH_METHOD_SAML) {
-                        $this->linkSamlToExistingUser($existingUserId, $userInfo, $providerId);
-                    } else {
-                        $this->linkOidcToExistingUser($existingUserId, $userInfo, $providerId);
-                    }
+                    $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
                 }
@@ -186,6 +185,31 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    private function findLdapUserByUsername(string $username): ?int
+    {
+        $user = $this->userRepository->findByUsername($username);
+
+        return $user !== null && $user->isLdapUser() ? $user->getId() : null;
+    }
+
+    /**
+     * Record the external identity for methods that keep a link table.
+     * LDAP is a no-op: its identity is the username itself.
+     */
+    private function linkIdentity(int $userId, UserInfoInterface $userInfo, string $providerId, string $authMethod): void
+    {
+        if (!in_array($authMethod, self::LINKABLE_AUTH_METHODS, true)) {
+            return;
+        }
+
+        $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
+        if ($authMethod === self::AUTH_METHOD_SAML) {
+            $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
+        } else {
+            $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
+        }
+    }
+
     private function findUserByEmail(string $email): ?int
     {
         try {
@@ -218,8 +242,17 @@ class UserProvisioningService extends LoggingService
 
             $this->logInfo('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
 
-            // Generate a unique username if needed
-            $username = $this->ensureUniqueUsername($userInfo->getUsername());
+            // LDAP logins authenticate by exact username, so a suffixed variant
+            // would never be matched again - fail instead of uniquifying.
+            $username = $userInfo->getUsername();
+            if ($authMethod === self::AUTH_METHOD_LDAP) {
+                if ($this->usernameExists($username)) {
+                    $this->logError('Cannot auto-provision LDAP user {username}: username is taken by a local account', ['username' => $username]);
+                    return null;
+                }
+            } else {
+                $username = $this->ensureUniqueUsername($username);
+            }
             $this->logInfo('Final username for creation: {username}', ['username' => $username]);
 
             // Log all the data that will be inserted
@@ -249,8 +282,8 @@ class UserProvisioningService extends LoggingService
                 1, // Active
                 $permissionTemplateId,
                 $authMethod, // Template ownership: only this provider may revoke it later
-                0,  // use_ldap = 0 for external auth users
-                $authMethod  // auth_method (oidc, saml, etc.)
+                $authMethod === self::AUTH_METHOD_LDAP ? 1 : 0,
+                $authMethod  // auth_method (ldap, oidc, saml)
             ]);
 
             if (!$success) {
@@ -262,13 +295,7 @@ class UserProvisioningService extends LoggingService
             $userId = (int)$this->db->lastInsertId();
             $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
-            // Link identity to user
-            $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
-            if ($authMethod === self::AUTH_METHOD_SAML) {
-                $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
-            } else {
-                $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
-            }
+            $this->linkIdentity($userId, $userInfo, $providerId, $authMethod);
 
             // Apply group membership based on external groups
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
@@ -521,15 +548,14 @@ class UserProvisioningService extends LoggingService
 
     private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC, bool $useDefaultFallback = true): ?int
     {
-        $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
+        $this->logDebug('Determining permission template for groups: {groups}', ['groups' => $groups]);
 
         $permissionTemplateMapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
-        $this->logInfo('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
+        $this->logDebug('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
         // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
-            $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
-            if (in_array($groupName, $groups, true)) {
+            if ($this->groupMatches((string)$groupName, $groups)) {
                 $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
                 $templateId = $this->findPermissionTemplateByName($templateName);
                 if ($templateId) {
@@ -889,72 +915,74 @@ class UserProvisioningService extends LoggingService
         $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
 
         if (empty($groupMapping)) {
-            $this->logInfo('No group mapping configured for {method}, skipping group membership sync', [
+            $this->logDebug('No group mapping configured for {method}, skipping group membership sync', [
                 'method' => strtoupper($authMethod)
             ]);
             return;
         }
 
-        $this->logInfo('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
+        $this->logDebug('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
             'userId' => $userId,
             'method' => strtoupper($authMethod),
             'groups' => $externalGroups
         ]);
 
-        // Determine which Poweradmin groups the user should be in based on external groups.
-        // Each mapping value may be a single group name (legacy format) or a list of
-        // group names, letting one external group grant access to several Poweradmin groups.
-        $targetGroupIds = [];
-        $targetGroupNames = [];
-        foreach ($groupMapping as $externalGroupName => $mappedValue) {
-            if (!in_array($externalGroupName, $externalGroups, true)) {
-                continue;
-            }
+        // Resolve every mapped Poweradmin group name once (name => id). Each
+        // mapping value may be a single group name (legacy format) or a list.
+        $mappedGroupIds = [];
+        foreach ($groupMapping as $mappedValue) {
             foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
-                $groupId = $this->findGroupByName($poweradminGroupName);
-                if ($groupId) {
-                    $targetGroupIds[$groupId] = $groupId;
-                    $targetGroupNames[$groupId] = $poweradminGroupName;
-                } else {
-                    $this->logWarning('Poweradmin group {group} not found for mapping from external group {external}', [
+                if (array_key_exists($poweradminGroupName, $mappedGroupIds)) {
+                    continue;
+                }
+                $mappedGroupIds[$poweradminGroupName] = $this->findGroupByName($poweradminGroupName);
+                if ($mappedGroupIds[$poweradminGroupName] === null) {
+                    $this->logWarning('Poweradmin group {group} from {method} group_mapping not found', [
                         'group' => $poweradminGroupName,
-                        'external' => $externalGroupName
+                        'method' => strtoupper($authMethod)
                     ]);
                 }
             }
         }
-        $targetGroupIds = array_values($targetGroupIds);
+        $idToName = array_flip(array_filter($mappedGroupIds));
 
-        // Get all mapped Poweradmin group IDs (regardless of current external groups)
-        $allMappedGroupIds = [];
-        $allMappedGroupNames = [];
-        foreach ($groupMapping as $mappedValue) {
+        // Groups the user should be in, based on matching external groups
+        $targetGroupIds = [];
+        foreach ($groupMapping as $externalGroupName => $mappedValue) {
+            if (!$this->groupMatches((string)$externalGroupName, $externalGroups)) {
+                continue;
+            }
             foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
-                $groupId = $this->findGroupByName($poweradminGroupName);
-                if ($groupId) {
-                    $allMappedGroupIds[$groupId] = $groupId;
-                    $allMappedGroupNames[$groupId] = $poweradminGroupName;
+                if (!empty($mappedGroupIds[$poweradminGroupName])) {
+                    $targetGroupIds[] = $mappedGroupIds[$poweradminGroupName];
                 }
             }
         }
-        $allMappedGroupIds = array_values($allMappedGroupIds);
+        $targetGroupIds = array_values(array_unique($targetGroupIds));
 
-        // Remove user from mapped groups they should no longer be in
-        $groupsToRemove = array_diff($allMappedGroupIds, $targetGroupIds);
-        foreach ($groupsToRemove as $groupId) {
+        // Current memberships among mapped groups, so unchanged state costs no writes
+        $currentGroupIds = [];
+        $allMappedIds = array_keys($idToName);
+        if ($allMappedIds !== []) {
+            $placeholders = implode(',', array_fill(0, count($allMappedIds), '?'));
+            $stmt = $this->db->prepare("SELECT group_id FROM user_group_members WHERE user_id = ? AND group_id IN ($placeholders)");
+            $stmt->execute([$userId, ...$allMappedIds]);
+            $currentGroupIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        }
+
+        foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
             if ($this->removeUserFromGroup($userId, $groupId)) {
                 $this->logInfo('Removed user {userId} from group: {group} (no longer in external group)', [
                     'userId' => $userId,
-                    'group' => $allMappedGroupNames[$groupId] ?? $groupId
+                    'group' => $idToName[$groupId] ?? $groupId
                 ]);
             }
         }
 
-        // Add user to groups they should be in
         $addedGroups = [];
-        foreach ($targetGroupIds as $groupId) {
+        foreach (array_diff($targetGroupIds, $currentGroupIds) as $groupId) {
             if ($this->addUserToGroup($userId, $groupId)) {
-                $addedGroups[] = $targetGroupNames[$groupId];
+                $addedGroups[] = $idToName[$groupId] ?? $groupId;
             }
         }
 
@@ -963,9 +991,27 @@ class UserProvisioningService extends LoggingService
                 'userId' => $userId,
                 'groups' => implode(', ', $addedGroups)
             ]);
-        } else {
-            $this->logInfo('User {userId} not a member of any mapped groups', ['userId' => $userId]);
         }
+    }
+
+    /**
+     * True when a mapping key equals a group value exactly, or equals the first
+     * RDN value of a DN-shaped group (e.g. 'dns-admins' matches
+     * 'cn=dns-admins,ou=groups,dc=example,dc=com').
+     */
+    private function groupMatches(string $configKey, array $groups): bool
+    {
+        if (in_array($configKey, $groups, true)) {
+            return true;
+        }
+
+        foreach ($groups as $group) {
+            if (preg_match('/^[a-z0-9-]+=([^,]+)/i', (string)$group, $matches) && $matches[1] === $configKey) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

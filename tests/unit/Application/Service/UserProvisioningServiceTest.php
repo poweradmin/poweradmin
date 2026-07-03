@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use ReflectionClass;
@@ -376,6 +377,23 @@ class UserProvisioningServiceTest extends TestCase
         // Test SAML user info
         $result = $determineAuthMethod($samlUserInfo);
         $this->assertEquals(UserProvisioningService::AUTH_METHOD_SAML, $result, 'Should detect SAML from SamlUserInfo');
+
+        // Test LDAP user info
+        $result = $determineAuthMethod(new LdapUserInfo('test.user'));
+        $this->assertEquals(UserProvisioningService::AUTH_METHOD_LDAP, $result, 'Should detect LDAP from LdapUserInfo');
+    }
+
+    public function testGroupMatchesExactValueAndFirstRdn(): void
+    {
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+        $groups = ['cn=dns-admins,ou=groups,dc=example,dc=com', 'plain-group'];
+
+        $this->assertTrue($groupMatches('plain-group', $groups), 'Exact value matches');
+        $this->assertTrue($groupMatches('cn=dns-admins,ou=groups,dc=example,dc=com', $groups), 'Full DN matches');
+        $this->assertTrue($groupMatches('dns-admins', $groups), 'First RDN value of a DN matches');
+        $this->assertFalse($groupMatches('ou=groups', $groups), 'Later RDNs do not match');
+        $this->assertFalse($groupMatches('dns-operators', $groups));
+        $this->assertFalse($groupMatches('dns-admins', []), 'No groups, no match');
     }
 
     /**

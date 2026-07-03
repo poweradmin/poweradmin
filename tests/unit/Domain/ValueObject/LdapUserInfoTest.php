@@ -29,11 +29,16 @@ class LdapUserInfoTest extends TestCase
 {
     /** Entry shaped like ldap_get_entries() output: lowercased keys, count markers. */
     private const ENTRY = [
-        'count' => 3,
+        'count' => 4,
         'dn' => 'uid=jdoe,ou=users,dc=example,dc=com',
         'uid' => ['count' => 1, 0 => 'jdoe'],
         'displayname' => ['count' => 1, 0 => 'John Doe'],
         'mail' => ['count' => 2, 0 => 'jdoe@example.com', 1 => 'john@example.com'],
+        'memberof' => [
+            'count' => 2,
+            0 => 'cn=dns-admins,ou=groups,dc=example,dc=com',
+            1 => 'cn=dns-operators,ou=groups,dc=example,dc=com',
+        ],
     ];
 
     public function testFromLdapEntryReadsAttributesCaseInsensitively(): void
@@ -71,9 +76,27 @@ class LdapUserInfoTest extends TestCase
         $this->assertSame('ldap', $info->getProviderId());
         $this->assertSame('', $info->getFirstName());
         $this->assertSame('', $info->getLastName());
-        $this->assertSame([], $info->getGroups());
+        $this->assertSame([], $info->getGroups(), 'No groups attribute requested');
         $this->assertFalse($info->hasGroup('admins'));
         $this->assertSame([], $info->getRawData());
+    }
+
+    public function testGroupsExposeRawAttributeValues(): void
+    {
+        $info = LdapUserInfo::fromLdapEntry(self::ENTRY, 'jdoe', 'displayName', 'mail', 'memberOf');
+
+        $this->assertSame([
+            'cn=dns-admins,ou=groups,dc=example,dc=com',
+            'cn=dns-operators,ou=groups,dc=example,dc=com',
+        ], $info->getGroups(), 'Raw DNs, without count markers; short-name matching happens at mapping time');
+        $this->assertTrue($info->hasGroup('cn=dns-operators,ou=groups,dc=example,dc=com'));
+    }
+
+    public function testMissingGroupsAttributeYieldsNoGroups(): void
+    {
+        $info = LdapUserInfo::fromLdapEntry(self::ENTRY, 'jdoe', 'displayName', 'mail', 'memberUid');
+
+        $this->assertSame([], $info->getGroups());
     }
 
     public function testEmptyUsernameIsInvalid(): void
