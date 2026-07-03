@@ -40,6 +40,12 @@ class PermissionService
      *
      * @param UserRepository $userRepository User repository for database access
      */
+    /** @var array<int, array<string>> */
+    private array $permissionsCache = [];
+
+    /** @var array<int, bool> */
+    private array $adminCache = [];
+
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -54,25 +60,25 @@ class PermissionService
      */
     public function hasPermission(int $userId, string $permissionName): bool
     {
-        // Check if the user is an admin (has the "überuser" permission)
         if ($this->isAdmin($userId)) {
             return true;
         }
 
-        // Get user permissions and check if the specified permission exists
-        $permissions = $this->getUserPermissions($userId);
-        return in_array($permissionName, $permissions);
+        return in_array($permissionName, $this->getUserPermissions($userId));
     }
 
     /**
-     * Get all permissions for a specific user
+     * Get all permissions for a specific user (direct template and group-based)
+     *
+     * Permissions do not change within a request, so they are cached per user
+     * to keep repeated checks at a single query.
      *
      * @param int $userId User ID to get permissions for
      * @return array Array of permission names
      */
     public function getUserPermissions(int $userId): array
     {
-        return $this->userRepository->getUserPermissions($userId);
+        return $this->permissionsCache[$userId] ??= $this->userRepository->getUserPermissions($userId);
     }
 
     /**
@@ -83,7 +89,7 @@ class PermissionService
      */
     public function isAdmin(int $userId): bool
     {
-        return $this->userRepository->hasAdminPermission($userId);
+        return $this->adminCache[$userId] ??= $this->userRepository->hasAdminPermission($userId);
     }
 
     /**

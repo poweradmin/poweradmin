@@ -97,6 +97,7 @@ abstract class BaseController
     private string $pageTitle = '';
     protected LoggerInterface $logger;
     private ?DnsBackendProvider $dnsBackendProvider = null;
+    private ?PermissionService $permissionServiceInstance = null;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -563,7 +564,8 @@ abstract class BaseController
 
     protected function createPermissionService(): PermissionService
     {
-        return new PermissionService($this->createUserRepository());
+        // Shared instance so the per-user permission cache spans the whole request
+        return $this->permissionServiceInstance ??= new PermissionService($this->createUserRepository());
     }
 
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
