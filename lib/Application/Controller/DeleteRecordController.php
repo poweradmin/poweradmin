@@ -92,9 +92,6 @@ class DeleteRecordController extends BaseController
 
     public function run(): void
     {
-        $recordRepository = $this->createRecordRepository();
-        $recordManager = $this->createRecordManager();
-        $domainRepository = $this->createDomainRepository();
         $record_id = $this->getSafeRequestValue('id');
         if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -103,6 +100,10 @@ class DeleteRecordController extends BaseController
         if (Validator::isNumber($record_id)) {
             $record_id = (int)$record_id;
         }
+
+        $recordRepository = $this->createRecordRepository();
+        $recordManager = $this->createRecordManager();
+        $domainRepository = $this->createDomainRepository();
 
         // Get zone ID from record first
         $zid = $recordRepository->getZoneIdFromRecordId($record_id);
