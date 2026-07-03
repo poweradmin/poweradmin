@@ -61,6 +61,22 @@ interface UserRepository
     public function getUserById(int $userId): ?array;
 
     /**
+     * Get a user's full name by ID
+     *
+     * @param int $userId User ID to look up
+     * @return string|null Full name, or null if the user does not exist
+     */
+    public function getFullNameById(int $userId): ?string;
+
+    /**
+     * Get the full names of all owners of a zone, comma-separated
+     *
+     * @param int $domainId Domain/zone ID
+     * @return string Comma-separated owner full names, empty string if none
+     */
+    public function getZoneOwnerFullNames(int $domainId): string;
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for

@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
@@ -96,7 +95,7 @@ class ListZoneTemplController extends BaseController
         $this->render('list_zone_templ.html', [
             'perm_zone_templ_add' => $perm_zone_templ_add,
             'perm_zone_templ_edit' => $this->hasPermission('zone_templ_edit'),
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $userId) ?: $userName,
+            'user_name' => $this->createUserRepository()->getFullNameById($userId) ?: $userName,
             'zone_templates' => $templatesList,
             'sync_status' => $syncStatus,
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),

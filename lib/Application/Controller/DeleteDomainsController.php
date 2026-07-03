@@ -202,9 +202,10 @@ class DeleteDomainsController extends BaseController
             $zoneInfos[(int)($info['id'] ?? 0)] = $info;
         }
 
+        $userRepository = $this->createUserRepository();
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
-            $zones[$zone_id]['owner'] = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
+            $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);
             $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
             // Check zone-specific delete permission (includes group permissions)

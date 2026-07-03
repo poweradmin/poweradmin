@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -67,7 +66,7 @@ class AddZoneTemplController extends BaseController
     private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
+            'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
         ]);
     }
@@ -99,7 +98,7 @@ class AddZoneTemplController extends BaseController
             $this->redirect('/zones/templates');
         } else {
             $this->render('add_zone_templ.html', [
-                'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
+                'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
                 'templ_name' => htmlspecialchars($postParams['templ_name']),
                 'templ_descr' => htmlspecialchars($postParams['templ_descr']),
                 'perm_is_godlike' => $this->hasPermission('user_is_ueberuser')

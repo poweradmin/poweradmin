@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -102,7 +101,7 @@ class ListTemplateZonesController extends BaseController
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
+            'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
             'pagination' => $paginationHtml,
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage

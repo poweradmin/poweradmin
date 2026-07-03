@@ -122,7 +122,7 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = UserManager::getFullnameFromUserId($this->db, $uid);
+        $name = $this->createUserRepository()->getFullNameById($uid);
         if (!$name) {
             $name = UserEntity::getUserNameById($this->db, $uid);
         }

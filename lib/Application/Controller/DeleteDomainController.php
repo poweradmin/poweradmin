@@ -148,7 +148,7 @@ class DeleteDomainController extends BaseController
     {
         $domainRepository = $this->createDomainRepository();
         $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
-        $zone_owners = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
+        $zone_owners = $this->createUserRepository()->getZoneOwnerFullNames($zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {

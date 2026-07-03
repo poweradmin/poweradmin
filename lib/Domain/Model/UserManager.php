@@ -549,45 +549,6 @@ class UserManager
     }
 
     /**
-     * Get User FullName from User ID
-     *
-     * Get a fullname when you have an userid.
-     *
-     * @param int $id User ID
-     *
-     * @return string Full Name
-     */
-    public static function getFullnameFromUserId($db, int $id): string
-    {
-        $stmt = $db->prepare("SELECT fullname FROM users WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $r = $stmt->fetch();
-        return $r["fullname"];
-    }
-
-    /**
-     * Get Full Names of owners for a Domain ID
-     *
-     * @param int $id Domain ID
-     *
-     * @return string List of owners for domain as a comma-separated string
-     */
-    public static function getFullnamesOwnersFromFomainId($db, int $id)
-    {
-        $stmt = $db->prepare("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id = :id AND zones.owner = users.id ORDER by fullname");
-        $stmt->execute([':id' => $id]);
-        $response = $stmt;
-        if ($response) {
-            $names = array();
-            while ($r = $response->fetch()) {
-                $names [] = $r ['fullname'];
-            }
-            return implode(', ', $names);
-        }
-        return "";
-    }
-
-    /**
      * Verify User is Zone ID owner
      *
      * Checks if user owns the zone directly or via group membership

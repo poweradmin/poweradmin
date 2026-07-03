@@ -88,6 +88,26 @@ class DbUserRepository implements UserRepository
         return $userData ?: null;
     }
 
+    public function getFullNameById(int $userId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT fullname FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+        $fullname = $stmt->fetchColumn();
+        return $fullname !== false ? (string)$fullname : null;
+    }
+
+    public function getZoneOwnerFullNames(int $domainId): string
+    {
+        $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE zones.domain_id = :id AND zones.owner = users.id ORDER BY fullname");
+        $stmt->execute([':id' => $domainId]);
+
+        $names = [];
+        while ($row = $stmt->fetch()) {
+            $names[] = $row['fullname'];
+        }
+        return implode(', ', $names);
+    }
+
     /**
      * Get all permissions for a specific user
      *
