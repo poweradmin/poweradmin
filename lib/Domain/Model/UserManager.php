@@ -25,11 +25,12 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -349,12 +350,12 @@ class UserManager
 
             return false;
         } else {
-            $dnsRecord = new DnsRecord($this->db, $this->config);
+            $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
-                    $dnsRecord->deleteDomain($zone ['zid']);
+                    $domainManager->deleteDomain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    DnsRecord::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
+                    DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
                 }
             }
 

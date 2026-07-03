@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 
 class RecordCommentSyncService
@@ -89,7 +89,7 @@ class RecordCommentSyncService
     }
 
     public function updateRelatedRecordComments(
-        DnsRecord $dnsRecord,
+        DomainRepositoryInterface $domainRepository,
         array $newRecordInfo,
         string $comment,
         string $userLogin
@@ -98,7 +98,7 @@ class RecordCommentSyncService
             $ptrName = $newRecordInfo['type'] === RecordType::A
                 ? DomainUtility::convertIPv4AddrToPtrRec($newRecordInfo['content'])
                 : DomainUtility::convertIPv6AddrToPtrRec($newRecordInfo['content']);
-            $ptrZoneId = $dnsRecord->getBestMatchingZoneIdFromName($ptrName);
+            $ptrZoneId = $domainRepository->getBestMatchingZoneIdFromName($ptrName);
             if ($ptrZoneId !== -1) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
@@ -110,7 +110,7 @@ class RecordCommentSyncService
             while (count($parts) > 1) {
                 array_shift($parts);
                 $zoneName = implode('.', $parts);
-                $contentDomainId = $dnsRecord->getDomainIdByName($zoneName);
+                $contentDomainId = $domainRepository->getDomainIdByName($zoneName);
                 if ($contentDomainId !== null) {
                     break;
                 }

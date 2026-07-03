@@ -63,6 +63,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
@@ -94,6 +95,7 @@ class EditController extends BaseController
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
+    private DomainRepositoryInterface $domainRepository;
     private Request $request;
 
     public function __construct(array $request)
@@ -105,6 +107,7 @@ class EditController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = $repositoryFactory->createRecordRepository();
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
@@ -129,7 +132,8 @@ class EditController extends BaseController
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->createRecordManager(),
             null,
             $this->reverseTtlResolver,
         );
@@ -715,7 +719,7 @@ class EditController extends BaseController
 
                             if ($this->config->get('misc', 'record_comments_sync')) {
                                 $this->commentSyncService->updateRelatedRecordComments(
-                                    $this->dnsRecord,
+                                    $this->domainRepository,
                                     $record,
                                     $record['comment'] ?? '',
                                     $this->userContextService->getLoggedInUsername()

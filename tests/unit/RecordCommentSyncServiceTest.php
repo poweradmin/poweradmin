@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 class RecordCommentSyncServiceTest extends TestCase
 {
@@ -76,8 +76,8 @@ class RecordCommentSyncServiceTest extends TestCase
 
     public function testUpdateRelatedRecordCommentsUpdatesPtrRecordCommentForARecord()
     {
-        $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -85,13 +85,13 @@ class RecordCommentSyncServiceTest extends TestCase
             ->with(2, '1.2.0.192.in-addr.arpa', 'PTR', '1.2.0.192.in-addr.arpa', 'PTR', 'Updated comment', 'user');
 
         $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
     }
 
     public function testUpdateRelatedRecordCommentsUpdatesARecordCommentForPtrRecord()
     {
-        $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('getDomainIdByName')->willReturn(1);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')->willReturn(1);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -99,39 +99,39 @@ class RecordCommentSyncServiceTest extends TestCase
             ->with(1, 'ptr.example.com', 'A', 'ptr.example.com', 'A', 'Updated comment', 'user');
 
         $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
     }
 
     public function testUpdateRelatedRecordCommentsSkipsWhenPtrContentDomainNotFound()
     {
-        $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('getDomainIdByName')->willReturn(null);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')->willReturn(null);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->never())
             ->method('updateComment');
 
         $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
     }
 
     public function testUpdateRelatedRecordCommentsSkipsWhenPtrZoneNotFound()
     {
-        $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(-1);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(-1);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->never())
             ->method('updateComment');
 
         $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
     }
 
     public function testUpdateRelatedRecordCommentsWithEmptyDomainName()
     {
-        $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('getDomainIdByName')
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')
             ->with('')
             ->willReturn(null);
 
@@ -140,6 +140,6 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment');
 
         $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
     }
 }

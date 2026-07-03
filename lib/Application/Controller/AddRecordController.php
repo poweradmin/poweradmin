@@ -101,7 +101,8 @@ class AddRecordController extends BaseController
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->createDomainRepository(),
+            $this->createRecordManager(),
             null,
             $this->reverseTtlResolver,
         );

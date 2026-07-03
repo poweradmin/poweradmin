@@ -23,6 +23,8 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -33,7 +35,8 @@ class DomainRecordCreator
 {
     private ConfigurationManager $config;
     private LegacyLogger $logger;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
+    private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
     private ?ReverseTtlResolver $reverseTtlResolver;
 
@@ -43,13 +46,15 @@ class DomainRecordCreator
     public function __construct(
         ConfigurationManager $config,
         LegacyLogger $logger,
-        DnsRecord $dnsRecord,
+        DomainRepositoryInterface $domainRepository,
+        RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,
         ?ReverseTtlResolver $reverseTtlResolver = null,
     ) {
         $this->config = $config;
         $this->logger = $logger;
-        $this->dnsRecord = $dnsRecord;
+        $this->domainRepository = $domainRepository;
+        $this->recordManager = $recordManager;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->reverseTtlResolver = $reverseTtlResolver;
     }
@@ -75,7 +80,7 @@ class DomainRecordCreator
         }
 
         if ($name && $iface_add_domain_record && $type === 'PTR') {
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
             // Strip reverse zone suffix if caller passed FQDN instead of relative name
             if (str_ends_with($name, self::IPV4_SUFFIX) || str_ends_with($name, self::IPV6_SUFFIX)) {
@@ -117,12 +122,12 @@ class DomainRecordCreator
     private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
         // Get the actual zone name so we can derive the correct hostname
-        $zoneName = $this->dnsRecord->getDomainNameById($domainId);
+        $zoneName = $this->domainRepository->getDomainNameById($domainId);
         $domainName = DnsHelper::stripZoneSuffix(rtrim($content, '.'), $zoneName);
         $ttl = $this->reverseTtlResolver !== null
             ? $this->reverseTtlResolver->resolveTtlForType(RecordType::A, false)
             : $this->config->get('dns', 'ttl');
-        $result = $this->dnsRecord->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
+        $result = $this->recordManager->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
 
         if ($result) {
             return [
@@ -145,7 +150,7 @@ class DomainRecordCreator
         // Start from the first parent domain (skip the hostname itself)
         for ($i = 1; $i < count($parts); $i++) {
             $candidate = implode('.', array_slice($parts, $i));
-            $domainId = $this->dnsRecord->getDomainIdByName($candidate);
+            $domainId = $this->domainRepository->getDomainIdByName($candidate);
             if ($domainId !== null) {
                 return $domainId;
             }

@@ -23,12 +23,15 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -91,15 +94,17 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
         }
 
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
+        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
+
         // Check if domain already exists
-        $dnsRecord = new DnsRecord($this->db, $this->config);
-        if ($dnsRecord->domainExists($domain)) {
+        if ($repositoryFactory->createDomainRepository()->domainExists($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
-        if ($dnsRecord->hasNonDelegationRecords($domain)) {
+        if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
@@ -150,8 +155,8 @@ class ZoneManagementService
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
         );
 
-        // Create the domain using DnsRecord service for now (to maintain compatibility)
-        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
+        $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
+        $success = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to create zone', 'status' => 500];
