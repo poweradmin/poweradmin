@@ -236,6 +236,37 @@ class DbPermissionTemplateRepository
     }
 
     /**
+     * Get the permission template with the fewest permissions assigned.
+     * Useful for setting a secure default when creating new users or groups.
+     *
+     * @param string|null $templateType Restrict to 'user' or 'group' templates; null = no filter
+     * @return int|null Template ID with minimal permissions, or null if no templates exist
+     */
+    public function getMinimalPermissionTemplateId(?string $templateType = null): ?int
+    {
+        $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
+                  FROM perm_templ pt
+                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id";
+
+        if ($templateType !== null) {
+            $query .= " WHERE pt.template_type = :template_type";
+        }
+
+        $query .= " GROUP BY pt.id, pt.name
+                  ORDER BY perm_count ASC, pt.name ASC
+                  LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        if ($templateType !== null) {
+            $stmt->bindValue(':template_type', $templateType);
+        }
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    /**
      * Delete Permission Template ID
      *
      * @param int $id Permission template ID

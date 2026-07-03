@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Pagination;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
@@ -532,7 +531,7 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
                 $input,
-                UserManager::getMinimalPermissionTemplateId($this->db, 'user')
+                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user')
             );
             if ($templateGate !== null) {
                 return $templateGate;

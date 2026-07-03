@@ -127,7 +127,7 @@ class UsersController extends BaseController
 
         $this->render('users.html', [
             'permissions' => $permissions,
-            'perm_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
+            'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
             'users' => $users,
             'session_userid' => $_SESSION[SessionKeys::USERID],
             'perm_add_new' => $this->hasPermission('user_add_new'),

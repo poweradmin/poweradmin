@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 class ListPermTemplController extends BaseController
 {
@@ -53,14 +52,15 @@ class ListPermTemplController extends BaseController
         $showUser = $this->config->get('permissions', 'show_user_access_templates', true);
         $showGroup = $this->config->get('permissions', 'show_group_access_templates', true);
 
+        $permissionTemplateRepository = $this->createPermissionTemplateRepository();
         if ($showUser && $showGroup) {
-            $templates = UserManager::listPermissionTemplates($this->db);
+            $templates = $permissionTemplateRepository->listPermissionTemplates();
         } elseif ($showGroup) {
-            $templates = UserManager::listPermissionTemplates($this->db, 'group');
+            $templates = $permissionTemplateRepository->listPermissionTemplates('group');
         } elseif ($showUser) {
-            $templates = UserManager::listPermissionTemplates($this->db, 'user');
+            $templates = $permissionTemplateRepository->listPermissionTemplates('user');
         } else {
-            $templates = UserManager::listPermissionTemplates($this->db);
+            $templates = $permissionTemplateRepository->listPermissionTemplates();
         }
 
         $this->render('list_perm_templ.html', [

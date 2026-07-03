@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -80,7 +79,7 @@ class DeletePermTemplController extends BaseController
         $id = (int)$this->getSafeRequestValue('id');
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
-        if (UserManager::deletePermTempl($this->db, $id)) {
+        if ($this->permissionTemplate->deletePermissionTemplate($id)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_perm_template id:%s name:%s',
                 $this->ipAddressRetriever->getClientIp(),

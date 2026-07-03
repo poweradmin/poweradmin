@@ -37,7 +37,6 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -142,7 +141,7 @@ class EditGroupController extends BaseController
             }
             if ($oldGroup->getPermTemplId() !== $permTemplId) {
                 // Get permission template names for better logging (no filter - need to find any template type)
-                $permTemplates = UserManager::listPermissionTemplates($this->db);
+                $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
                 $oldTemplName = 'Unknown';
                 $newTemplName = 'Unknown';
                 foreach ($permTemplates as $template) {
@@ -205,7 +204,7 @@ class EditGroupController extends BaseController
             $members = $this->membershipService->listGroupMembers($groupId);
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
-            $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
+            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
 
             // Get member usernames
             $memberUsernames = [];

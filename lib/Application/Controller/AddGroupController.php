@@ -35,7 +35,6 @@ use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -115,7 +114,7 @@ class AddGroupController extends BaseController
             // Log group creation with template details
             $actorUsername = $this->getUserContextService()->getLoggedInUsername();
 
-            $permTemplates = UserManager::listPermissionTemplates($this->db);
+            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
                 if ($template['id'] == $permTemplId) {
@@ -146,10 +145,10 @@ class AddGroupController extends BaseController
 
     private function renderAddGroupForm(): void
     {
-        $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
+        $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
 
         // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db) ?? '1';
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '1';
 
         $this->render('add_group.html', [
             'name' => $this->request->getPostParam('name', ''),

@@ -120,7 +120,7 @@ class AddUserController extends BaseController
         // When user access templates are hidden, force minimal user template assignment
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         if (!$showUserAccessTemplates) {
-            $userParams['perm_templ'] = UserManager::getMinimalPermissionTemplateId($this->db, 'user') ?? '1';
+            $userParams['perm_templ'] = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '1';
         }
 
         // Validate that the template is a user template
@@ -202,14 +202,14 @@ class AddUserController extends BaseController
     private function renderAddUserForm(array $policyConfig): void
     {
         $user_edit_templ_perm = $this->hasPermission('user_edit_templ_perm');
-        $user_templates = UserManager::listPermissionTemplates($this->db, 'user');
+        $user_templates = $this->permissionTemplateRepository->listPermissionTemplates('user');
 
         $username = $this->request->getPostParam('username', '');
         $fullname = $this->request->getPostParam('fullname', '');
         $email = $this->request->getPostParam('email', '');
 
         // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db) ?? '1';
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '1';
         $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->request->getPostParam('descr', '');
