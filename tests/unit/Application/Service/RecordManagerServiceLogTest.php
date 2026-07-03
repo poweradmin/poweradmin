@@ -28,7 +28,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -44,16 +45,18 @@ class RecordManagerServiceLogTest extends TestCase
 {
     private function makeService(LegacyLogger $logger): RecordManagerService
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->method('getDomainNameById')->willReturn('example.com');
-        $dnsRecord->method('addRecordGetId')->willReturn(1);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->method('getDomainNameById')->willReturn('example.com');
+        $recordManager->method('addRecordGetId')->willReturn(1);
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturn(false);
 
         return new RecordManagerService(
             $this->createMock(PDO::class),
-            $dnsRecord,
+            $domainRepository,
+            $recordManager,
             $this->createMock(RecordCommentService::class),
             $this->createMock(RecordCommentSyncService::class),
             $logger,

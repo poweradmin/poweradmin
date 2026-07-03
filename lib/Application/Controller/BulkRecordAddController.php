@@ -41,7 +41,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BulkRecordAddController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
@@ -68,17 +68,18 @@ class BulkRecordAddController extends BaseController
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->createRecordManager(),
             $recordCommentService,
             $commentSyncService,
             $this->auditLogger,
@@ -96,7 +97,7 @@ class BulkRecordAddController extends BaseController
         $this->checkId();
 
         $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
         $userId = $this->userContextService->getLoggedInUserId();
 
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
@@ -166,7 +167,7 @@ class BulkRecordAddController extends BaseController
 
             // Normalize record name to full FQDN (always, regardless of display setting)
             // This converts @ to zone apex and ensures proper zone suffix
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if ($zone_name === null) {
                 $failed_records[] = $line . " - " . _('Zone not found.');
                 continue;
@@ -247,7 +248,7 @@ class BulkRecordAddController extends BaseController
     private function showBulkRecordAdditionForm(array $failed_records = []): void
     {
         $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // For internationalized domain names
         if (str_starts_with($zone_name, "xn--")) {

@@ -43,6 +43,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
@@ -60,6 +61,7 @@ class AddRecordController extends BaseController
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
@@ -84,10 +86,13 @@ class AddRecordController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
+        $dnsRecordManager = $this->createRecordManager();
 
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $recordCommentService,
             $commentSyncService,
             $this->auditLogger,
@@ -101,8 +106,8 @@ class AddRecordController extends BaseController
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->auditLogger,
-            $this->createDomainRepository(),
-            $this->createRecordManager(),
+            $this->domainRepository,
+            $dnsRecordManager,
             null,
             $this->reverseTtlResolver,
         );
@@ -125,7 +130,7 @@ class AddRecordController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         $this->checkCondition(ZoneType::isReadOnly($zone_type)
@@ -174,7 +179,7 @@ class AddRecordController extends BaseController
         $comment = $this->request->getPostParam('comment', '');
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -286,7 +291,7 @@ class AddRecordController extends BaseController
     private function showForm(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
@@ -463,7 +468,7 @@ class AddRecordController extends BaseController
             return;
         }
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;

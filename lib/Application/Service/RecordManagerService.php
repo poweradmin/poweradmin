@@ -25,7 +25,8 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -36,7 +37,8 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 class RecordManagerService
 {
     private PDO $db;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
+    private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private LegacyLogger $logger;
@@ -45,7 +47,8 @@ class RecordManagerService
 
     public function __construct(
         PDO $db,
-        DnsRecord $dnsRecord,
+        DomainRepositoryInterface $domainRepository,
+        RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
         RecordCommentSyncService $commentSyncService,
         LegacyLogger $logger,
@@ -53,7 +56,8 @@ class RecordManagerService
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
+        $this->domainRepository = $domainRepository;
+        $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
         $this->commentSyncService = $commentSyncService;
         $this->logger = $logger;
@@ -66,15 +70,15 @@ class RecordManagerService
         // Secondary and Consumer zones replicate from a primary - records are read-only.
         // The non-atomic path is already blocked by RecordManager, but the atomic
         // (disabled-record) path writes directly to the backend and must be guarded here.
-        if (ZoneType::isReadOnly($this->dnsRecord->getDomainType($zone_id))) {
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
             return false;
         }
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         $recordId = ($disabled && $this->backendProvider !== null)
             ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
-            : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+            : $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
         if ($recordId === null) {
             return false;
         }
@@ -203,7 +207,7 @@ class RecordManagerService
             ? DomainUtility::convertIPv4AddrToPtrRec($content)
             : DomainUtility::convertIPv6AddrToPtrRec($content);
 
-        $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
+        $ptrZoneId = $this->domainRepository->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
@@ -233,7 +237,7 @@ class RecordManagerService
         while (count($parts) > 1) {
             array_shift($parts);
             $zoneName = implode('.', $parts);
-            $contentDomainId = $this->dnsRecord->getDomainIdByName($zoneName);
+            $contentDomainId = $this->domainRepository->getDomainIdByName($zoneName);
             if ($contentDomainId !== null) {
                 break;
             }

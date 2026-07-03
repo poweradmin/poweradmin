@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -412,11 +411,11 @@ class ZoneFileImportController extends BaseController
         $recordRepository = $repositoryFactory->createRecordRepository();
         $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);
-        // RecordManagerService still expects the facade; its own migration retires this instance
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $dnsRecordManager = $this->createRecordManager();
         $recordManager = new RecordManagerService(
             $this->db,
-            $dnsRecord,
+            $repositoryFactory->createDomainRepository(),
+            $dnsRecordManager,
             $recordCommentService,
             $commentSyncService,
             $logger,
@@ -443,7 +442,7 @@ class ZoneFileImportController extends BaseController
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
-                            $dnsRecord->deleteRecord((int)$existing['id']);
+                            $dnsRecordManager->deleteRecord((int)$existing['id']);
                         }
                         $replacedRRSets[$rrsetKey] = true;
                     }

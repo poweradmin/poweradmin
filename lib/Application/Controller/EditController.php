@@ -117,9 +117,11 @@ class EditController extends BaseController
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
 
+        $dnsRecordManager = $this->createRecordManager();
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $this->recordCommentService,
             $this->commentSyncService,
             $this->auditLogger,
@@ -133,7 +135,7 @@ class EditController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $this->domainRepository,
-            $this->createRecordManager(),
+            $dnsRecordManager,
             null,
             $this->reverseTtlResolver,
         );

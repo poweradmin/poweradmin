@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
@@ -47,7 +47,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
  */
 class DnsWizardFormController extends BaseController
 {
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private WizardRegistry $wizardRegistry;
     private ZoneRepositoryInterface $zoneRepository;
     private RecordManagerService $recordManager;
@@ -57,7 +57,6 @@ class DnsWizardFormController extends BaseController
     {
         parent::__construct($request);
 
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
         $this->zoneRepository = $this->createZoneRepository();
         $this->formStateService = new FormStateService();
@@ -65,13 +64,15 @@ class DnsWizardFormController extends BaseController
         $logger = new LegacyLogger($this->db);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->createRecordManager(),
             $recordCommentService,
             $commentSyncService,
             $logger,
@@ -105,7 +106,7 @@ class DnsWizardFormController extends BaseController
         // Check permissions
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));

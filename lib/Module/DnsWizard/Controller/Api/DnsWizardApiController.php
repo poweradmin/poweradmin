@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsRecord;
+
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
@@ -361,8 +361,8 @@ class DnsWizardApiController extends InternalApiController
                 : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
             // Check user has permission to edit this zone
-            $dnsRecord = new DnsRecord($this->db, $this->config);
-            $zone_type = $dnsRecord->getDomainType($zone_id);
+            $domainRepository = $this->createDomainRepository();
+            $zone_type = $domainRepository->getDomainType($zone_id);
             $perm_edit = Permission::getEditPermission($this->db);
             $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -388,7 +388,8 @@ class DnsWizardApiController extends InternalApiController
             $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
             $recordManager = new RecordManagerService(
                 $this->db,
-                $dnsRecord,
+                $domainRepository,
+                $this->createRecordManager(),
                 $recordCommentService,
                 $commentSyncService,
                 $logger,
