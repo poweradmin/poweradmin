@@ -76,8 +76,8 @@ class UsersController extends BaseController
     private function updateUsers(): void
     {
         $success = false;
+        $legacyUsers = new UserManager($this->db, $this->getConfig());
         foreach ($this->request->getPostParam('user') as $user) {
-            $legacyUsers = new UserManager($this->db, $this->getConfig());
             $result = $legacyUsers->updateUserDetails($user);
             if ($result) {
                 $success = true;

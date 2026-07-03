@@ -76,6 +76,9 @@ class UnlinkZonesTemplController extends BaseController
     {
         $successful = 0;
         $failed = 0;
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $auditService = new AuditService($this->db);
+        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);
@@ -85,15 +88,12 @@ class UnlinkZonesTemplController extends BaseController
             }
 
             // Check if user has permission to edit this zone
-            $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
             if (!$perm_godlike && !UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id)) {
                 $failed++;
                 continue;
             }
 
-            $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             if ($zoneTemplate->unlinkZoneFromTemplate($zone_id)) {
-                $auditService = new AuditService($this->db);
                 $auditService->logZoneTemplateUnlink($zone_id);
                 $successful++;
             } else {

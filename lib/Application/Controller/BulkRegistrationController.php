@@ -193,8 +193,8 @@ class BulkRegistrationController extends BaseController
         $failed_domains = [];
         $domainRepository = $this->createDomainRepository();
         $domainManager = $this->createDomainManager();
+        $hostnameValidator = new HostnameValidator($this->config);
         foreach ($domains as $domain) {
-            $hostnameValidator = new HostnameValidator($this->config);
             if (!$hostnameValidator->isValid($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
             } elseif ($domainRepository->domainExists($domain)) {
