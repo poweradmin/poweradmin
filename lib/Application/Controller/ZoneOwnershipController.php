@@ -45,7 +45,6 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class ZoneOwnershipController extends BaseController
 {
@@ -122,7 +121,7 @@ class ZoneOwnershipController extends BaseController
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
 
         // Fetch groups - all for name lookup, filtered for dropdown
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
@@ -257,7 +256,7 @@ class ZoneOwnershipController extends BaseController
             // Validate group ID against user's allowed groups
             $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
             if (!$isAdmin) {
-                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $userGroupRepo = $this->createUserGroupRepository();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
                 $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
                 if (!in_array($groupId, $allowedGroupIds)) {

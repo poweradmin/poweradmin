@@ -44,10 +44,8 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -202,8 +200,8 @@ class ListForwardZonesController extends BaseController
 
         // Augment zones with group information
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
+        $memberRepo = $this->createUserGroupMemberRepository();
         $allGroups = $userGroupRepo->findAll();
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two

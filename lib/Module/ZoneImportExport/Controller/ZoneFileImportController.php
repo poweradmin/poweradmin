@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -229,7 +228,7 @@ class ZoneFileImportController extends BaseController
             // memberships at execute time.
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
@@ -349,7 +348,7 @@ class ZoneFileImportController extends BaseController
             $groupsForCreate = [];
             if ($ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])) {
                 $groupsForCreate = array_values(array_unique(array_map('intval', $_POST['groups'])));
-                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $userGroupRepo = $this->createUserGroupRepository();
                 $existing = $userGroupRepo->findExistingIds($groupsForCreate);
                 $unknown = array_values(array_diff($groupsForCreate, $existing));
                 if (!empty($unknown)) {

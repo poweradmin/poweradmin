@@ -38,7 +38,6 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -54,7 +53,7 @@ class GroupZonesController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->apiPermissionService = new ApiPermissionService($this->db);
         $this->zoneRepository = $this->createZoneRepository();

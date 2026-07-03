@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
@@ -135,7 +134,7 @@ class SecondaryZoneImportController extends BaseController
         if ($ownershipMode->isUserOwnerAllowed()) {
             return null;
         }
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before importing zones.');
@@ -278,7 +277,7 @@ class SecondaryZoneImportController extends BaseController
         $groupsInput = $this->request->getPostParam('groups');
         if ($ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput)) {
             $requested = array_values(array_unique(array_map('intval', $groupsInput)));
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $existing = $userGroupRepo->findExistingIds($requested);
             $unknown = array_values(array_diff($requested, $existing));
             if (!empty($unknown)) {
@@ -316,7 +315,7 @@ class SecondaryZoneImportController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         $sessionUserId = $this->userContextService->getLoggedInUserId();
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
 

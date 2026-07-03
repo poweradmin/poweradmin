@@ -44,9 +44,7 @@ use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -186,8 +184,8 @@ class ListReverseZonesController extends BaseController
 
         // Augment zones with group information and shorten IPv6 reverse zones
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
+        $memberRepo = $this->createUserGroupMemberRepository();
         $allGroups = $userGroupRepo->findAll();
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two

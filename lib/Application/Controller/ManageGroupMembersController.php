@@ -38,8 +38,6 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class ManageGroupMembersController extends BaseController
@@ -54,8 +52,8 @@ class ManageGroupMembersController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);

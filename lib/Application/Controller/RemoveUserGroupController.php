@@ -37,8 +37,6 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class RemoveUserGroupController extends BaseController
 {
@@ -49,8 +47,8 @@ class RemoveUserGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->auditLogger = new LegacyLogger($this->db);
     }
@@ -90,7 +88,7 @@ class RemoveUserGroupController extends BaseController
 
         try {
             // Get details before removal for logging
-            $groupRepository = new DbUserGroupRepository($this->db);
+            $groupRepository = $this->createUserGroupRepository();
             $groupService = new GroupService($groupRepository);
 
             $group = $groupRepository->findById($groupId);

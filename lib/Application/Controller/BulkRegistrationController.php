@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -91,7 +90,7 @@ class BulkRegistrationController extends BaseController
         if ($ownershipMode->isUserOwnerAllowed()) {
             return null;
         }
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
@@ -149,7 +148,7 @@ class BulkRegistrationController extends BaseController
             array_map('intval', $groups) : [];
 
         if (!empty($selected_groups)) {
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $existing = $userGroupRepo->findExistingIds($selected_groups);
             $unknown = array_values(array_diff($selected_groups, $existing));
             if (!empty($unknown)) {
@@ -231,7 +230,7 @@ class BulkRegistrationController extends BaseController
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 

@@ -40,9 +40,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -418,8 +416,8 @@ class EditUserController extends BaseController
         $isExternalAuth = in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true);
 
         // Fetch user's group memberships
-        $groupMemberRepo = new DbUserGroupMemberRepository($this->db);
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $groupMemberRepo = $this->createUserGroupMemberRepository();
+        $userGroupRepo = $this->createUserGroupRepository();
 
         $memberships = $groupMemberRepo->findByUserId($editId);
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -516,8 +514,8 @@ class EditUserController extends BaseController
         // Convert to integers
         $groupIds = array_map('intval', $groupIds);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
         $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
 
         // Get target user details for logging

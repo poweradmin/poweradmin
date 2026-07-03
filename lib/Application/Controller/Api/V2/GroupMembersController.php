@@ -34,8 +34,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -49,8 +47,8 @@ class GroupMembersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }

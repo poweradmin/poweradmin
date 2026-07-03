@@ -42,7 +42,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -93,7 +92,7 @@ class AddZoneSlaveController extends BaseController
         if ($ownershipMode->isUserOwnerAllowed()) {
             return null;
         }
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
@@ -174,7 +173,7 @@ class AddZoneSlaveController extends BaseController
 
         // Validate submitted group IDs against user's allowed groups
         if (!empty($selected_groups)) {
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $existing = $userGroupRepo->findExistingIds($selected_groups);
             $unknown = array_values(array_diff($selected_groups, $existing));
             if (!empty($unknown)) {
@@ -268,7 +267,7 @@ class AddZoneSlaveController extends BaseController
         $is_post_request = !empty($this->request->getPostParams());
 
         // Fetch groups for the dropdown - admins see all, others see only their own
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 

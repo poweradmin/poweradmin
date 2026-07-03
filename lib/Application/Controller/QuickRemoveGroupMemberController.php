@@ -36,8 +36,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class QuickRemoveGroupMemberController extends BaseController
 {
@@ -47,8 +45,8 @@ class QuickRemoveGroupMemberController extends BaseController
     {
         parent::__construct($request);
 
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
     }
 

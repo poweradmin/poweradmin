@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class ListGroupsController extends BaseController
 {
@@ -44,7 +43,7 @@ class ListGroupsController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
         $this->groupService = new GroupService($groupRepository);
     }
 

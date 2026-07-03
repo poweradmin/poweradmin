@@ -43,8 +43,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddUserController extends BaseController
@@ -77,8 +75,8 @@ class AddUserController extends BaseController
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
 
         // Initialize group repositories for group membership management
-        $this->groupRepository = new DbUserGroupRepository($this->db);
-        $this->memberRepository = new DbUserGroupMemberRepository($this->db);
+        $this->groupRepository = $this->createUserGroupRepository();
+        $this->memberRepository = $this->createUserGroupMemberRepository();
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);

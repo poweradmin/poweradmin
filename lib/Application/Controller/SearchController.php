@@ -42,8 +42,6 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Module\ModuleRegistry;
 
 class SearchController extends BaseController
@@ -359,8 +357,8 @@ class SearchController extends BaseController
         string $editPermission,
         string $deletePermission
     ): array {
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $userGroupRepo = $this->createUserGroupRepository();
+        $memberRepo = $this->createUserGroupMemberRepository();
         $hybridPermissions = new HybridPermissionService(
             $this->db,
             $userGroupRepo,

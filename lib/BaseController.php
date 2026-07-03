@@ -47,9 +47,13 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -555,6 +559,16 @@ abstract class BaseController
     protected function createPermissionService(): PermissionService
     {
         return new PermissionService($this->createUserRepository());
+    }
+
+    protected function createUserGroupRepository(): UserGroupRepositoryInterface
+    {
+        return new DbUserGroupRepository($this->db);
+    }
+
+    protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
+    {
+        return new DbUserGroupMemberRepository($this->db);
     }
 
     protected function createRecordManager(): RecordManagerInterface
