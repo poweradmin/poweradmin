@@ -3,7 +3,8 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -17,7 +18,7 @@ class ReverseRecordCreatorUpdateTest extends TestCase
      *        PTR-lookup SELECT inside deleteReverseRecord. Null means "no PDO mock" -
      *        used when the test does not expect deleteReverseRecord to run.
      */
-    private function createService(?DnsRecord $dnsRecord = null, ?array $deleteLookupRows = null): ReverseRecordCreator
+    private function createService(?DomainRepositoryInterface $domainRepository = null, ?RecordManagerInterface $recordManager = null, ?array $deleteLookupRows = null): ReverseRecordCreator
     {
         $db = $this->createMock(PDO::class);
         if ($deleteLookupRows !== null) {
@@ -36,21 +37,21 @@ class ReverseRecordCreatorUpdateTest extends TestCase
             return $default;
         });
 
-        if ($dnsRecord === null) {
-            $dnsRecord = $this->createMock(DnsRecord::class);
-        }
+        $domainRepository ??= $this->createMock(DomainRepositoryInterface::class);
+        $recordManager ??= $this->createMock(RecordManagerInterface::class);
 
-        return new ReverseRecordCreator($db, $config, $logger, $dnsRecord);
+        return new ReverseRecordCreator($db, $config, $logger, $domainRepository, $recordManager);
     }
 
     public function testUpdateReverseRecordSkipsWhenBothTypesAreNonAddress(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('getBestMatchingZoneIdFromName');
-        $dnsRecord->expects($this->never())->method('addRecord');
-        $dnsRecord->expects($this->never())->method('deleteRecord');
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->expects($this->never())->method('getBestMatchingZoneIdFromName');
+        $recordManager->expects($this->never())->method('addRecord');
+        $recordManager->expects($this->never())->method('deleteRecord');
 
-        $service = $this->createService($dnsRecord);
+        $service = $this->createService($domainRepository, $recordManager);
 
         $result = $service->updateReverseRecord(
             'CNAME',
@@ -72,11 +73,12 @@ class ReverseRecordCreatorUpdateTest extends TestCase
     {
         // TTL/priority-only edits must propagate to the PTR, so the service
         // always runs delete-then-recreate when newIsAddress is true.
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->atLeastOnce())->method('getBestMatchingZoneIdFromName')->willReturn(-1);
-        $dnsRecord->expects($this->never())->method('addRecord');
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->expects($this->atLeastOnce())->method('getBestMatchingZoneIdFromName')->willReturn(-1);
+        $recordManager->expects($this->never())->method('addRecord');
 
-        $service = $this->createService($dnsRecord, []);
+        $service = $this->createService($domainRepository, $recordManager, []);
 
         $result = $service->updateReverseRecord(
             'A',
@@ -99,13 +101,14 @@ class ReverseRecordCreatorUpdateTest extends TestCase
 
     public function testUpdateReverseRecordReportsMissingReverseZoneOnNewContent(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
         // Simulate "no matching reverse zone" for the new IP.
-        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(-1);
-        $dnsRecord->expects($this->never())->method('addRecord');
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(-1);
+        $recordManager->expects($this->never())->method('addRecord');
 
         // Old PTR lookup returns no rows - that's fine, delete is best-effort.
-        $service = $this->createService($dnsRecord, []);
+        $service = $this->createService($domainRepository, $recordManager, []);
 
         $result = $service->updateReverseRecord(
             'A',
@@ -125,12 +128,13 @@ class ReverseRecordCreatorUpdateTest extends TestCase
 
     public function testUpdateReverseRecordOnlyDeletesWhenNewTypeIsNotAddress(): void
     {
-        $dnsRecord = $this->createMock(DnsRecord::class);
-        $dnsRecord->expects($this->never())->method('getBestMatchingZoneIdFromName');
-        $dnsRecord->expects($this->never())->method('addRecord');
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $domainRepository->expects($this->never())->method('getBestMatchingZoneIdFromName');
+        $recordManager->expects($this->never())->method('addRecord');
 
         // Old PTR lookup returns no rows - delete is best-effort.
-        $service = $this->createService($dnsRecord, []);
+        $service = $this->createService($domainRepository, $recordManager, []);
 
         $result = $service->updateReverseRecord(
             'A',

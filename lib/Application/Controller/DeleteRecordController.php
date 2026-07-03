@@ -39,7 +39,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -75,12 +75,14 @@ class DeleteRecordController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $repositoryFactory->createDomainRepository();
+        $dnsRecordManager = $this->createRecordManager();
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $dnsRecord,
+            $domainRepository,
+            $dnsRecordManager,
             $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
@@ -92,6 +94,9 @@ class DeleteRecordController extends BaseController
 
     public function run(): void
     {
+        $recordRepository = $this->createRecordRepository();
+        $recordManager = $this->createRecordManager();
+        $domainRepository = $this->createDomainRepository();
         $record_id = $this->getSafeRequestValue('id');
         if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -100,10 +105,9 @@ class DeleteRecordController extends BaseController
         if (Validator::isNumber($record_id)) {
             $record_id = (int)$record_id;
         }
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first
-        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
+        $zid = $recordRepository->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
             $this->showError(_('Invalid record ID.'));
             return;
@@ -121,11 +125,11 @@ class DeleteRecordController extends BaseController
             return;
         }
 
-        $domain_id = $dnsRecord->recidToDomid($record_id);
+        $domain_id = $recordRepository->recidToDomid($record_id);
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $record_info = $dnsRecord->getRecordFromId($record_id);
+            $record_info = $recordRepository->getRecordFromId($record_id);
             if ($record_info === null) {
                 $this->showError(_('Record not found.'));
                 return;
@@ -151,7 +155,7 @@ class DeleteRecordController extends BaseController
                 $hasForwardRecord = true;
             }
 
-            if ($dnsRecord->deleteRecord($record_id)) {
+            if ($recordManager->deleteRecord($record_id)) {
                 if (isset($record_info['prio'])) {
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -175,8 +179,7 @@ class DeleteRecordController extends BaseController
                     ), $zid);
                 }
 
-                DnsRecord::deleteRecordZoneTempl($this->db, $record_id);
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                RecordManager::deleteRecordZoneTempl($this->db, $record_id);
                 DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zid);
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
@@ -199,7 +202,7 @@ class DeleteRecordController extends BaseController
                 }
 
                 if ($this->config->get('dnssec', 'enabled', false)) {
-                    $zone_name = $dnsRecord->getDomainNameById($zid);
+                    $zone_name = $domainRepository->getDomainNameById($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     $dnssecProvider->rectifyZone($zone_name);
                 }
@@ -208,7 +211,7 @@ class DeleteRecordController extends BaseController
                 $this->recordCommentService->deleteCommentByRecordId($record_id);
 
                 // For backward compatibility, also clean up RRset-based comments if no similar records remain
-                $hasSimilarRecords = $dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
+                $hasSimilarRecords = $recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
                 if (!$hasSimilarRecords) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                 }
@@ -245,8 +248,7 @@ class DeleteRecordController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->getZoneInfoFromId($zid);
+        $zone_info = $domainRepository->getZoneInfoFromId($zid);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($zone_info['type'])) {
@@ -260,8 +262,9 @@ class DeleteRecordController extends BaseController
 
     public function showQuestion(string $record_id, $zid, int $zone_id): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->getDomainNameById($zone_id);
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
+        $zone_name = $domainRepository->getDomainNameById($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -269,7 +272,7 @@ class DeleteRecordController extends BaseController
             $idn_zone_name = "";
         }
 
-        $record_info = $dnsRecord->getRecordFromId($record_id);
+        $record_info = $recordRepository->getRecordFromId($record_id);
 
         // Shorten IPv6 addresses in AAAA record content for display
         if ($record_info && $record_info['type'] === 'AAAA' && isset($record_info['content'])) {

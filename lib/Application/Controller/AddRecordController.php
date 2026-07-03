@@ -44,7 +44,6 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -60,7 +59,6 @@ class AddRecordController extends BaseController
 {
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
-    private DnsRecord $dnsRecord;
     private DomainRepositoryInterface $domainRepository;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
@@ -78,7 +76,6 @@ class AddRecordController extends BaseController
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->formStateService = new FormStateService();
 
         $backendProvider = $this->createDnsBackendProvider();
@@ -116,7 +113,8 @@ class AddRecordController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $recordCommentService,
             $this->createDnsBackendProvider()
         );

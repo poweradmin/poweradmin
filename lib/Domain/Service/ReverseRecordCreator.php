@@ -30,6 +30,8 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -42,7 +44,8 @@ class ReverseRecordCreator
     private PDO $db;
     private ConfigurationManager $config;
     private LegacyLogger $logger;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
+    private RecordManagerInterface $recordManager;
     private SOARecordManagerInterface $soaRecordManager;
     private ?RecordCommentService $recordCommentService;
     private ?DnsBackendProvider $backendProvider;
@@ -53,14 +56,16 @@ class ReverseRecordCreator
         PDO $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
-        DnsRecord $dnsRecord,
+        DomainRepositoryInterface $domainRepository,
+        RecordManagerInterface $recordManager,
         ?RecordCommentService $recordCommentService = null,
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
-        $this->dnsRecord = $dnsRecord;
+        $this->domainRepository = $domainRepository;
+        $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
         $this->backendProvider = $backendProvider;
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
@@ -90,13 +95,13 @@ class ReverseRecordCreator
         }
 
         $contentRev = $this->getContentRev($type, $content);
-        $zoneRevId = $this->dnsRecord->getBestMatchingZoneIdFromName($contentRev);
+        $zoneRevId = $this->domainRepository->getBestMatchingZoneIdFromName($contentRev);
 
         if ($zoneRevId === -1) {
             return $this->createErrorResponse(sprintf(_('There is no matching reverse-zone for: %s.'), $contentRev));
         }
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Check for duplicate PTR record before attempting to add
@@ -157,7 +162,7 @@ class ReverseRecordCreator
         }
 
         if ($this->isApiBackend()) {
-            $zoneRevId = $this->dnsRecord->getBestMatchingZoneIdFromName($contentRev);
+            $zoneRevId = $this->domainRepository->getBestMatchingZoneIdFromName($contentRev);
             if ($zoneRevId === -1) {
                 return false;
             }
@@ -165,10 +170,10 @@ class ReverseRecordCreator
             foreach ($records as $r) {
                 if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
                     $recordId = $r['id'] ?? 0;
-                    if (!empty($recordId) && $this->dnsRecord->deleteRecord($recordId)) {
+                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
                         if ($this->config->get('dnssec', 'enabled')) {
-                            $zone_name = $this->dnsRecord->getDomainNameById($zoneRevId);
+                            $zone_name = $this->domainRepository->getDomainNameById($zoneRevId);
                             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                             $dnssecProvider->rectifyZone($zone_name);
                         }
@@ -195,14 +200,13 @@ class ReverseRecordCreator
             $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
-            $dnsRecord = new DnsRecord($this->db, $this->config);
-            if ($dnsRecord->deleteRecord($recordId)) {
+            if ($this->recordManager->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
                 $this->soaRecordManager->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
-                    $zone_name = $dnsRecord->getDomainNameById($domainId);
+                    $zone_name = $this->domainRepository->getDomainNameById($domainId);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                     $dnssecProvider->rectifyZone($zone_name);
                 }
@@ -280,10 +284,10 @@ class ReverseRecordCreator
                 if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
                     $recordId = $r['id'] ?? 0;
                     $domainId = $r['domain_id'] ?? 0;
-                    if (!empty($recordId) && $this->dnsRecord->deleteRecord($recordId)) {
+                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
                         if ($this->config->get('dnssec', 'enabled') && !empty($domainId)) {
-                            $zone_name = $this->dnsRecord->getDomainNameById($domainId);
+                            $zone_name = $this->domainRepository->getDomainNameById($domainId);
                             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                             $dnssecProvider->rectifyZone($zone_name);
                         }
@@ -310,14 +314,13 @@ class ReverseRecordCreator
             $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
-            $dnsRecord = new DnsRecord($this->db, $this->config);
-            if ($dnsRecord->deleteRecord($recordId)) {
+            if ($this->recordManager->deleteRecord($recordId)) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
                 $this->soaRecordManager->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
-                    $zone_name = $dnsRecord->getDomainNameById($domainId);
+                    $zone_name = $this->domainRepository->getDomainNameById($domainId);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                     $dnssecProvider->rectifyZone($zone_name);
                 }
@@ -366,12 +369,12 @@ class ReverseRecordCreator
 
     private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        if ($this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+        if ($this->recordManager->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
             // Determine username for logging - API auth uses userid without userlogin
             $username = $this->userContextService->getLoggedInUsername() ?? 'api_user_' . ($this->userContextService->getLoggedInUserId() ?? 'unknown');
 

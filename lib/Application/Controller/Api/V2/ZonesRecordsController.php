@@ -42,7 +42,6 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -598,8 +597,7 @@ class ZonesRecordsController extends PublicApiController
             $ptrMessage = '';
             if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
                 try {
-                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService, $this->createDnsBackendProvider());
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
 
                     $ptrResult = $reverseRecordCreator->createReverseRecord(
                         $name,
@@ -859,8 +857,7 @@ class ZonesRecordsController extends PublicApiController
                     $newName = DnsHelper::restoreZoneSuffix($newName, $zoneName ?: '');
                     $newContent = $updatedRecord['content'] ?? $recordData['content'];
 
-                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService, $this->createDnsBackendProvider());
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
 
                     $ptrResult = $reverseRecordCreator->updateReverseRecord(
                         $oldType,

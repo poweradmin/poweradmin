@@ -144,7 +144,8 @@ class EditController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
