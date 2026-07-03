@@ -48,12 +48,14 @@ class EditZoneTemplController extends BaseController
 {
     private UserContextService $userContext;
     private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->request = new Request();
         $this->userContext = new UserContextService();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     public function run(): void
@@ -66,7 +68,7 @@ class EditZoneTemplController extends BaseController
 
         $zone_templ_id = (int)$id;
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
@@ -103,7 +105,7 @@ class EditZoneTemplController extends BaseController
     private function updateZoneTemplate(int $zone_templ_id): void
     {
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         if ($this->request->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
@@ -130,9 +132,8 @@ class EditZoneTemplController extends BaseController
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         // Get sync status
@@ -210,9 +211,8 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
+        $this->zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
         $auditService = new AuditService($this->db);
         $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
@@ -221,9 +221,8 @@ class EditZoneTemplController extends BaseController
 
     public function updateZoneRecords(int $zone_templ_id): void
     {
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $zones = $zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
+        $zones = $this->zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
         $domainManager = $this->createDomainManager();
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
@@ -268,8 +267,7 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
-        $templateExists = $zoneTemplate->zoneTemplNameExists($postParams['templ_name']);
+        $templateExists = $this->zoneTemplate->zoneTemplNameExists($postParams['templ_name']);
         $currentTemplate = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         if ($templateExists) {
@@ -293,7 +291,7 @@ class EditZoneTemplController extends BaseController
         }
 
         // Call the addZoneTemplSaveAs with the correct signature
-        $success = $zoneTemplate->addZoneTemplSaveAs(
+        $success = $this->zoneTemplate->addZoneTemplSaveAs(
             $postParams['templ_name'],
             $postParams['templ_descr'],
             $_SESSION[SessionKeys::USERID],

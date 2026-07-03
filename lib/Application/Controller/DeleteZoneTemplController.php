@@ -42,11 +42,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class DeleteZoneTemplController extends BaseController
 {
     private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->request = new Request();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
     public function run(): void
     {
@@ -64,7 +66,7 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
@@ -90,8 +92,7 @@ class DeleteZoneTemplController extends BaseController
 
         if ($this->doValidateRequest($this->requestData)) {
             $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->deleteZoneTempl($zone_templ_id);
+            $this->zoneTemplate->deleteZoneTempl($zone_templ_id);
 
             $auditService = new AuditService($this->db);
             $auditService->logZoneTemplateDelete((int)$zone_templ_id);

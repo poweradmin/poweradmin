@@ -43,11 +43,13 @@ use Poweradmin\Domain\Service\SessionKeys;
 class DeleteZoneTemplRecordController extends BaseController
 {
     private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->request = new Request();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     public function run(): void
@@ -70,15 +72,14 @@ class DeleteZoneTemplRecordController extends BaseController
             $confirm = $confirmParam;
         }
 
-        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 
         if ($confirm == '1') {
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
-            if ($zoneTemplate->deleteZoneTemplRecord($record_id)) {
+            if ($this->zoneTemplate->deleteZoneTemplRecord($record_id)) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);

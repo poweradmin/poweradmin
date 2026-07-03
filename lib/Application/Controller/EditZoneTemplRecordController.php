@@ -46,6 +46,7 @@ class EditZoneTemplRecordController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
     private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
@@ -53,6 +54,7 @@ class EditZoneTemplRecordController extends BaseController
         $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     public function run(): void
@@ -78,7 +80,7 @@ class EditZoneTemplRecordController extends BaseController
         $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
 
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));
@@ -96,9 +98,8 @@ class EditZoneTemplRecordController extends BaseController
         $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('edit_zone_templ_record.html', [
@@ -140,9 +141,7 @@ class EditZoneTemplRecordController extends BaseController
             return;
         }
 
-        $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
-
-        if ($template->editZoneTemplRecord($postParams)) {
+        if ($this->zoneTemplate->editZoneTemplRecord($postParams)) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
