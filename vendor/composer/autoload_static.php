@@ -1634,6 +1634,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\RecordTypeService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordTypeService.php',
         'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/ReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\ReverseTtlResolver' => __DIR__ . '/../..' . '/lib/Domain/Service/ReverseTtlResolver.php',
+        'Poweradmin\\Domain\\Service\\SelfEditFieldGuard' => __DIR__ . '/../..' . '/lib/Domain/Service/SelfEditFieldGuard.php',
         'Poweradmin\\Domain\\Service\\SessionKeys' => __DIR__ . '/../..' . '/lib/Domain/Service/SessionKeys.php',
         'Poweradmin\\Domain\\Service\\SessionService' => __DIR__ . '/../..' . '/lib/Domain/Service/SessionService.php',
         'Poweradmin\\Domain\\Service\\UserAgreementService' => __DIR__ . '/../..' . '/lib/Domain/Service/UserAgreementService.php',
