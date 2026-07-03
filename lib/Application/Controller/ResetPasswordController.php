@@ -31,7 +31,6 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -65,7 +64,7 @@ class ResetPasswordController extends BaseController
         // Create PasswordResetService with dependencies
         $configManager = ConfigurationManager::getInstance();
         $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
-        $userRepository = new DbUserRepository($this->db, $configManager);
+        $userRepository = $this->createUserRepository();
         $mailService = new MailService($configManager, null);
         $authService = new UserAuthenticationService(
             $configManager->get('security', 'password_encryption', 'bcrypt'),

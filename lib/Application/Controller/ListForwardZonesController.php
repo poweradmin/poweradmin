@@ -45,7 +45,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -281,7 +280,7 @@ class ListForwardZonesController extends BaseController
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $userRepository = $this->createUserRepository();
         $userService = new UserService($userRepository);
         $allow_view_others = $userService->canUserViewOthersContent($userId);
 

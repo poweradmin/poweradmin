@@ -42,11 +42,9 @@ use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -89,7 +87,7 @@ class BulkRecordAddController extends BaseController
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
-        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

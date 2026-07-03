@@ -45,13 +45,11 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class EditRecordController extends BaseController
@@ -82,7 +80,7 @@ class EditRecordController extends BaseController
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
-        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

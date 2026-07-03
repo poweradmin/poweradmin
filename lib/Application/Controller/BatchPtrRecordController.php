@@ -31,10 +31,8 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -74,7 +72,7 @@ class BatchPtrRecordController extends BaseController
         );
         $this->userContextService = new UserContextService();
         $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
-        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

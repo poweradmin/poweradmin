@@ -40,11 +40,9 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordsController extends BaseController
@@ -81,7 +79,7 @@ class DeleteRecordsController extends BaseController
             $this->createDnsBackendProvider()
         );
         $this->userContextService = new UserContextService();
-        $this->permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

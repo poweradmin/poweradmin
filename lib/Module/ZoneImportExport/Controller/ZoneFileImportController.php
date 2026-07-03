@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -35,7 +34,6 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -90,8 +88,7 @@ class ZoneFileImportController extends BaseController
             $zoneName = $zoneRepository->getDomainNameById((int)$_GET['zone_id']);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
-                $userRepository = new DbUserRepository($this->db, $this->getConfig());
-                $permissionService = new PermissionService($userRepository);
+                $permissionService = $this->createPermissionService();
                 $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, (int)$_GET['zone_id']);
                 if ($permEdit !== 'none') {
                     $targetZoneId = (int)$_GET['zone_id'];
@@ -162,8 +159,7 @@ class ZoneFileImportController extends BaseController
         $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
 
         $userId = $this->userContextService->getLoggedInUserId();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $permissionService = new PermissionService($userRepository);
+        $permissionService = $this->createPermissionService();
 
         // Verify permission when importing into an existing zone via POST
         if ($importMode === 'existing' && $existingZoneId > 0) {
@@ -300,8 +296,7 @@ class ZoneFileImportController extends BaseController
             }
 
             // Verify user has permission to edit this zone
-            $userRepository = new DbUserRepository($this->db, $this->getConfig());
-            $permissionService = new PermissionService($userRepository);
+            $permissionService = $this->createPermissionService();
             $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
 
             if ($permEdit === 'none') {

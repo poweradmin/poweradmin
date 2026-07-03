@@ -41,10 +41,8 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -63,8 +61,7 @@ class ZoneOwnershipController extends BaseController
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
 
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $this->permissionService = new PermissionService($userRepository);
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

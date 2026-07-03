@@ -30,7 +30,6 @@ use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -70,7 +69,7 @@ class ForgotUsernameController extends BaseController
 
         try {
             $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);
-            $userRepository = new DbUserRepository($this->db, $configManager);
+            $userRepository = $this->createUserRepository();
             $mailService = new MailService($configManager, null);
             $this->ipRetriever = new IpAddressRetriever($_SERVER);
             $this->userAgentService = new UserAgentService($_SERVER);

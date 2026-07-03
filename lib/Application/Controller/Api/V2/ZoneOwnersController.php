@@ -35,7 +35,6 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,7 +52,7 @@ class ZoneOwnersController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
-        $this->userRepository = new DbUserRepository($this->db, $this->config);
+        $this->userRepository = $this->createUserRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 

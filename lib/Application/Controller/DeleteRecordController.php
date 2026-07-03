@@ -41,7 +41,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
@@ -49,7 +48,6 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordController extends BaseController
@@ -88,8 +86,7 @@ class DeleteRecordController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $this->permissionService = new PermissionService($userRepository);
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void

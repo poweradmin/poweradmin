@@ -47,7 +47,10 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
@@ -542,6 +545,16 @@ abstract class BaseController
     protected function createRecordRepository(): RecordRepositoryInterface
     {
         return $this->getRepositoryFactory()->createRecordRepository();
+    }
+
+    protected function createUserRepository(): UserRepository
+    {
+        return new DbUserRepository($this->db, $this->getConfig());
+    }
+
+    protected function createPermissionService(): PermissionService
+    {
+        return new PermissionService($this->createUserRepository());
     }
 
     protected function createRecordManager(): RecordManagerInterface

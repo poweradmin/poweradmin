@@ -41,7 +41,6 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -75,7 +74,7 @@ class ChangePasswordController extends BaseController
             $passwordEncryption,
             $passwordEncryptionCost
         );
-        $userRepository = new DbUserRepository($this->db, $this->config);
+        $userRepository = $this->createUserRepository();
         $this->userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
         $this->auditLogger = new LegacyLogger($this->db);

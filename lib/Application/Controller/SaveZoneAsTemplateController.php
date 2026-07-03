@@ -39,8 +39,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 class SaveZoneAsTemplateController extends BaseController
 {
@@ -56,8 +54,7 @@ class SaveZoneAsTemplateController extends BaseController
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
 
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $this->permissionService = new PermissionService($userRepository);
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void
