@@ -30,7 +30,7 @@ use ReflectionClass;
  *
  * The test invokes the private method via reflection with the rest of the
  * controller's dependency graph stubbed - the goal is to confirm the
- * Request-based parameter extraction routes to the correct DnsRecord call,
+ * Request-based parameter extraction routes to the correct DomainManager call,
  * not to exercise the full run() pipeline.
  */
 class EditControllerZoneMetadataPostTest extends TestCase
