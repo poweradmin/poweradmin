@@ -1136,7 +1136,6 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsBackendProvider' => $baseDir . '/lib/Domain/Service/DnsBackendProvider.php',
     'Poweradmin\\Domain\\Service\\DnsFormatter' => $baseDir . '/lib/Domain/Service/DnsFormatter.php',
     'Poweradmin\\Domain\\Service\\DnsIdnService' => $baseDir . '/lib/Domain/Service/DnsIdnService.php',
-    'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
     'Poweradmin\\Domain\\Service\\DnsRecordValidationService' => $baseDir . '/lib/Domain/Service/DnsRecordValidationService.php',
     'Poweradmin\\Domain\\Service\\DnsRecordValidationServiceInterface' => $baseDir . '/lib/Domain/Service/DnsRecordValidationServiceInterface.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\AAAARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/AAAARecordValidator.php',
