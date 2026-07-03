@@ -1,6 +1,10 @@
 parameters:
   excludePaths:
     - vendor
+  # Global helpers loaded via require_once in entry points; lets targeted
+  # runs (single file, IDE) resolve them without analyzing all of lib/
+  scanFiles:
+    - lib/Application/Helpers/StartupHelpers.php
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # Ignore errors in test files related to mocking
