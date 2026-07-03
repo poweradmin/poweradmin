@@ -24,18 +24,24 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Psr\Log\LoggerInterface;
 
@@ -98,6 +104,20 @@ class RepositoryFactory
             return new ApiDomainRepository($this->db, $this->config, $this->backendProvider);
         }
         return new SqlDomainRepository($this->db, $this->config);
+    }
+
+    public function createDynamicDnsRepository(SOARecordManagerInterface $soaRecordManager): DynamicDnsRepositoryInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiDynamicDnsRepository($this->db, $soaRecordManager, $this->backendProvider);
+        }
+        $tableNameService = new TableNameService($this->config);
+        return new SqlDynamicDnsRepository(
+            $this->db,
+            $soaRecordManager,
+            $tableNameService->getTable(PdnsTable::RECORDS),
+            $tableNameService->getTable(PdnsTable::DOMAINS)
+        );
     }
 
     public function getBackendProvider(): DnsBackendProvider

@@ -5,6 +5,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
@@ -13,11 +14,7 @@ use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
-use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,10 +26,6 @@ $config->initialize();
 
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 initializeTimezone($config);
-
-$tableNameService = new TableNameService($config);
-$records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-$domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
 
 $credentials = [
     'db_host' => $config->get('database', 'host'),
@@ -51,9 +44,7 @@ $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
 $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
-$repository = $backendProvider->isApiBackend()
-    ? new ApiDynamicDnsRepository($db, $soaRecordManager, $backendProvider)
-    : new SqlDynamicDnsRepository($db, $soaRecordManager, $records_table, $domains_table);
+$repository = (new RepositoryFactory($db, $config, $backendProvider))->createDynamicDnsRepository($soaRecordManager);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption', 'bcrypt'),

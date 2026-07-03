@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
@@ -34,11 +33,7 @@ use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
-use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -53,16 +48,9 @@ class DynamicDnsController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $config = $this->getConfig();
-        $tableNameService = new TableNameService($config);
-        $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
-        $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $config);
+        $backendProvider = $this->createDnsBackendProvider();
         $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $config, $backendProvider);
-
-        $repository = $backendProvider->isApiBackend()
-            ? new ApiDynamicDnsRepository($this->db, $soaRecordManager, $backendProvider)
-            : new SqlDynamicDnsRepository($this->db, $soaRecordManager, $recordsTable, $domainsTable);
+        $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($soaRecordManager);
 
         $userAuthService = new UserAuthenticationService(
             $config->get('security', 'password_encryption', 'bcrypt'),
