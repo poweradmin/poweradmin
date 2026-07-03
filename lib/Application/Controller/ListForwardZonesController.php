@@ -42,7 +42,6 @@ use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -62,8 +61,8 @@ class ListForwardZonesController extends BaseController
 
     public function run(): void
     {
-        $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
-        $perm_view_zone_others = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $perm_view_zone_own = $this->hasPermission('zone_content_view_own');
+        $perm_view_zone_others = $this->hasPermission('zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -88,7 +87,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->setMessage('list_forward_zones', 'error', _('You do not have permission to sync zones from PowerDNS.'));
             $this->redirect('/zones/forward');
             return;
@@ -268,9 +267,9 @@ class ListForwardZonesController extends BaseController
             'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
-            'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-            'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
+            'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
         ]);
     }

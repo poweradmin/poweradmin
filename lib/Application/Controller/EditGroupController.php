@@ -80,7 +80,7 @@ class EditGroupController extends BaseController
         // Only admin (überuser) can edit groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to edit groups.'));
             $this->redirect('/groups');
             return;
@@ -127,7 +127,7 @@ class EditGroupController extends BaseController
             // Get current group details before update for change tracking
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $oldGroup = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
 
             // Track what changed
@@ -192,7 +192,7 @@ class EditGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

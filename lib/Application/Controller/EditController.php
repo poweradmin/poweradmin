@@ -485,8 +485,8 @@ class EditController extends BaseController
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
-            'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
+            'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
+            'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
@@ -748,7 +748,7 @@ class EditController extends BaseController
 
     private function getDnsWizardActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('dns_wizard', ['zone_id' => $zone_id], $isAdmin);
@@ -756,7 +756,7 @@ class EditController extends BaseController
 
     private function getWhoisActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id], $isAdmin);
@@ -764,7 +764,7 @@ class EditController extends BaseController
 
     private function getRdapActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('rdap_lookup', ['zone_id' => $zone_id], $isAdmin);

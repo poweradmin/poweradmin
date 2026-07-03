@@ -71,7 +71,7 @@ class AddGroupController extends BaseController
         // Only admin (überuser) can create groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to create groups.'));
             $this->redirect('/groups');
             return;

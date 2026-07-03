@@ -62,8 +62,8 @@ class DeleteUserController extends BaseController
 
     public function run(): void
     {
-        $perm_edit_others = UserManager::verifyPermission($this->db, 'user_edit_others');
-        $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_edit_others = $this->hasPermission('user_edit_others');
+        $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
         $uid = $this->getSafeRequestValue('id');
         if (!$uid || !Validator::isNumber($uid)) {
@@ -76,7 +76,7 @@ class DeleteUserController extends BaseController
         }
 
         // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $uid);
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin($uid);
 
         if ($targetIsSuperuser && !$perm_is_godlike) {
             $this->showError(_('You do not have permission to delete a superuser account.'));

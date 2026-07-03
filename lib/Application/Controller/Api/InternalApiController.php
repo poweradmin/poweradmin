@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -62,17 +61,6 @@ abstract class InternalApiController extends AbstractApiController
             $response->send();
             exit;
         }
-    }
-
-    /**
-     * Check if the user has the required permission
-     *
-     * @param string $permission The permission to check
-     * @return bool True if the user has the permission, false otherwise
-     */
-    protected function hasPermission(string $permission): bool
-    {
-        return UserManager::verifyPermission($this->db, $permission);
     }
 
     /**

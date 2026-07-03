@@ -36,7 +36,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -333,7 +332,7 @@ class SearchController extends BaseController
 
     private function getModuleActionPatterns(string $capability): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData($capability, [], $isAdmin);

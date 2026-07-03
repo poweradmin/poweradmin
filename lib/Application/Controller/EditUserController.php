@@ -160,8 +160,8 @@ class EditUserController extends BaseController
             }
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-            $canViewAllUsers = UserManager::verifyPermission($this->db, 'user_view_others');
-            $canEditAllUsers = UserManager::verifyPermission($this->db, 'user_edit_others');
+            $canViewAllUsers = $this->hasPermission('user_view_others');
+            $canEditAllUsers = $this->hasPermission('user_edit_others');
 
             if ($isOwnProfile && !$canViewAllUsers && !$canEditAllUsers) {
                 // Limited user edited their own profile - redirect to home
@@ -251,16 +251,16 @@ class EditUserController extends BaseController
     private function checkEditPermissions(int $editId): void
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-        $canEditOwn = UserManager::verifyPermission($this->db, 'user_edit_own');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canEditOwn = $this->hasPermission('user_edit_own');
+        $canEditOthers = $this->hasPermission('user_edit_others');
 
         if ((!$isOwnProfile || !$canEditOwn) && ($isOwnProfile || !$canEditOthers)) {
             $this->showError(_('You do not have the permission to edit this user.'));
         }
 
         // Prevent non-superusers from editing superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $editId);
-        $currentIsSuperuser = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin($editId);
+        $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
 
         if ($targetIsSuperuser && !$currentIsSuperuser) {
             $this->showError(_('You do not have permission to edit a superuser account.'));
@@ -274,13 +274,13 @@ class EditUserController extends BaseController
     private function isRestrictedSelfEdit(int $editId): bool
     {
         return $editId === $this->userContextService->getLoggedInUserId()
-            && !UserManager::verifyPermission($this->db, 'user_edit_others');
+            && !$this->hasPermission('user_edit_others');
     }
 
     private function prepareUserData(int $editId): array
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canEditOthers = $this->hasPermission('user_edit_others');
         $userData = null;
 
         // Force active state to true if user is editing their own profile
@@ -420,7 +420,7 @@ class EditUserController extends BaseController
         $userGroupRepo = $this->createUserGroupRepository();
 
         $memberships = $groupMemberRepo->findByUserId($editId);
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $currentUserId = $this->userContextService->getLoggedInUserId();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($currentUserId);
 
@@ -475,7 +475,7 @@ class EditUserController extends BaseController
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -486,9 +486,9 @@ class EditUserController extends BaseController
         $isCurrentUser = $this->userContextService->getLoggedInUserId() == $editId;
 
         return [
-            'edit_templ_perm' => UserManager::verifyPermission($this->db, 'user_edit_templ_perm'),
-            'passwd_edit_others' => UserManager::verifyPermission($this->db, 'user_passwd_edit_others'),
-            'edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
+            'edit_templ_perm' => $this->hasPermission('user_edit_templ_perm'),
+            'passwd_edit_others' => $this->hasPermission('user_passwd_edit_others'),
+            'edit_own' => $this->hasPermission('user_edit_own'),
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
                 && $isCurrentUser
         ];
@@ -497,7 +497,7 @@ class EditUserController extends BaseController
     private function handleAddToGroups(int $userId): void
     {
         // Only admins can manage group memberships
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
             $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
             return;

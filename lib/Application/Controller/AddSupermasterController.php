@@ -85,7 +85,7 @@ class AddSupermasterController extends BaseController
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
+            'perm_view_others' => $this->hasPermission('user_view_others'),
             'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }

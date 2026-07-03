@@ -40,9 +40,9 @@ class UnlinkZonesTemplController extends BaseController
 
     public function run(): void
     {
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_zone_edit = UserManager::verifyPermission($this->db, 'zone_content_edit_own') || UserManager::verifyPermission($this->db, 'zone_content_edit_others');
-        $perm_zone_meta_edit = UserManager::verifyPermission($this->db, 'zone_meta_edit_own') || UserManager::verifyPermission($this->db, 'zone_meta_edit_others');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_zone_edit = $this->hasPermission('zone_content_edit_own') || $this->hasPermission('zone_content_edit_others');
+        $perm_zone_meta_edit = $this->hasPermission('zone_meta_edit_own') || $this->hasPermission('zone_meta_edit_others');
 
         $this->checkCondition(!($perm_godlike || $perm_zone_edit || $perm_zone_meta_edit), _('You do not have permission to unlink zones from templates.'));
 
@@ -78,7 +78,7 @@ class UnlinkZonesTemplController extends BaseController
         $failed = 0;
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $auditService = new AuditService($this->db);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);

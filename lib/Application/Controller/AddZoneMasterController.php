@@ -97,7 +97,7 @@ class AddZoneMasterController extends BaseController
             return null;
         }
         $userGroupRepo = $this->createUserGroupRepository();
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->hasPermission('user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
             }
@@ -170,8 +170,8 @@ class AddZoneMasterController extends BaseController
         // Block assigning a zone to a different user without elevated permission
         $callerId = $this->userContext->getLoggedInUserId();
         if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
                 $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
                 $this->showForm();
                 return;
@@ -190,7 +190,7 @@ class AddZoneMasterController extends BaseController
             }
             $selected_groups = $existing;
 
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
             if (!$isAdmin) {
                 $userId = $this->userContext->getLoggedInUserId();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
@@ -295,7 +295,7 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = UserManager::verifyPermission($this->db, 'user_view_others');
+        $perm_view_others = $this->hasPermission('user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
@@ -365,7 +365,7 @@ class AddZoneMasterController extends BaseController
 
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = $this->createUserGroupRepository();
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
         // Fetch member counts for all groups in a single query

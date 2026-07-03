@@ -35,7 +35,6 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 class QuickRemoveGroupMemberController extends BaseController
 {
@@ -60,7 +59,7 @@ class QuickRemoveGroupMemberController extends BaseController
         // Only admin (überuser) can manage group membership
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('edit_group', 'error', _('You do not have permission to manage group members.'));
             $this->redirect('/groups');
             return;

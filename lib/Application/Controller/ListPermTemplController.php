@@ -64,7 +64,7 @@ class ListPermTemplController extends BaseController
         }
 
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
+            'templ_perm_add' => $this->hasPermission('templ_perm_add'),
             'permission_templates' => $templates,
             'show_user_access_templates' => $showUser,
             'show_group_access_templates' => $showGroup,

@@ -36,7 +36,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -72,7 +71,7 @@ class DeleteGroupController extends BaseController
         // Only admin (überuser) can delete groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to delete groups.'));
             $this->redirect('/groups');
             return;
@@ -111,7 +110,7 @@ class DeleteGroupController extends BaseController
             // Get group details and stats before deletion for logging
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -148,7 +147,7 @@ class DeleteGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

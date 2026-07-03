@@ -63,7 +63,7 @@ class RemoveUserGroupController extends BaseController
         // Only admin (überuser) can manage group membership
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
             $this->redirect('/users');
             return;

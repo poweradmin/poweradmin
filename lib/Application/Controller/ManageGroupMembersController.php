@@ -72,7 +72,7 @@ class ManageGroupMembersController extends BaseController
         // Only admin (überuser) can manage group membership
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage group members.'));
             $this->redirect('/groups');
             return;
@@ -128,7 +128,7 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before adding
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -204,7 +204,7 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before removing
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -268,7 +268,7 @@ class ManageGroupMembersController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

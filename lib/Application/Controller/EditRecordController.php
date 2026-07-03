@@ -111,7 +111,7 @@ class EditRecordController extends BaseController
 
         // Check view permission first (zone-aware for group support)
         $canView = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
-        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $canViewOthers = $this->hasPermission('zone_content_view_others');
 
         if (!$canViewOthers && !$canView) {
             $this->showError(_("You do not have permission to view this record."));

@@ -68,7 +68,7 @@ class AddZoneTemplController extends BaseController
     {
         $this->render('add_zone_templ.html', [
             'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
         ]);
     }
 
@@ -102,7 +102,7 @@ class AddZoneTemplController extends BaseController
                 'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
                 'templ_name' => htmlspecialchars($postParams['templ_name']),
                 'templ_descr' => htmlspecialchars($postParams['templ_descr']),
-                'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+                'perm_is_godlike' => $this->hasPermission('user_is_ueberuser')
             ]);
         }
     }

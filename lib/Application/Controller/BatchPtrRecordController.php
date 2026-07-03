@@ -27,7 +27,6 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -82,8 +81,8 @@ class BatchPtrRecordController extends BaseController
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
 
         // Check if user has permission to use this feature
-        $perm_edit_own = UserManager::verifyPermission($this->db, 'zone_content_edit_own');
-        $perm_edit_others = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+        $perm_edit_own = $this->hasPermission('zone_content_edit_own');
+        $perm_edit_others = $this->hasPermission('zone_content_edit_others');
         $this->checkCondition(
             !$perm_edit_own && !$perm_edit_others,
             _("You do not have permission to edit DNS records.")

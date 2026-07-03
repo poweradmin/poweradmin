@@ -35,7 +35,6 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupZoneService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 class QuickRemoveGroupZoneController extends BaseController
 {
@@ -60,7 +59,7 @@ class QuickRemoveGroupZoneController extends BaseController
         // Only admin (überuser) can manage group zones
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('edit_group', 'error', _('You do not have permission to manage group zones.'));
             $this->redirect('/groups');
             return;

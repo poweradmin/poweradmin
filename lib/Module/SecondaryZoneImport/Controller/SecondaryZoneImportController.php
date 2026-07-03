@@ -93,7 +93,7 @@ class SecondaryZoneImportController extends BaseController
         header('Content-Type: application/json');
 
         $zoneId = (int)$this->getSafeRequestValue('id');
-        if (!UserManager::verifyPermission($this->db, 'zone_slave_add') || !$this->userMayAccessZone($zoneId)) {
+        if (!$this->hasPermission('zone_slave_add') || !$this->userMayAccessZone($zoneId)) {
             http_response_code(403);
             echo json_encode(['ready' => false, 'records' => 0]);
             return;
@@ -114,9 +114,9 @@ class SecondaryZoneImportController extends BaseController
             return false;
         }
         if (
-            UserManager::verifyPermission($this->db, 'user_is_ueberuser')
-            || UserManager::verifyPermission($this->db, 'zone_content_edit_others')
-            || UserManager::verifyPermission($this->db, 'zone_meta_edit_others')
+            $this->hasPermission('user_is_ueberuser')
+            || $this->hasPermission('zone_content_edit_others')
+            || $this->hasPermission('zone_meta_edit_others')
         ) {
             return true;
         }
@@ -135,7 +135,7 @@ class SecondaryZoneImportController extends BaseController
             return null;
         }
         $userGroupRepo = $this->createUserGroupRepository();
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->hasPermission('user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before importing zones.');
             }
@@ -267,8 +267,8 @@ class SecondaryZoneImportController extends BaseController
 
         if (
             $owner !== null && $owner !== $callerId
-            && !UserManager::verifyPermission($this->db, 'user_is_ueberuser')
-            && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+            && !$this->hasPermission('user_is_ueberuser')
+            && !$this->hasPermission('zone_content_edit_others')
         ) {
             return [null, [], _('You do not have permission to create zones for other users.')];
         }
@@ -283,7 +283,7 @@ class SecondaryZoneImportController extends BaseController
             if (!empty($unknown)) {
                 return [null, [], sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown))];
             }
-            if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            if (!$this->hasPermission('user_is_ueberuser')) {
                 $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($callerId));
                 $disallowed = array_values(array_diff($existing, $allowedIds));
                 if (!empty($disallowed)) {
@@ -314,7 +314,7 @@ class SecondaryZoneImportController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         $sessionUserId = $this->userContextService->getLoggedInUserId();
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
@@ -328,7 +328,7 @@ class SecondaryZoneImportController extends BaseController
             'slave_master_value' => htmlspecialchars((string)$this->request->getPostParam('slave_master', '')),
             'users' => UserManager::showUsers($this->db),
             'session_user_id' => $sessionUserId,
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
+            'perm_view_others' => $this->hasPermission('user_view_others'),
             'owner_value' => $ownerInput !== null ? $ownerInput : $sessionUserId,
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,

@@ -36,7 +36,6 @@ use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
@@ -69,8 +68,8 @@ class EditZoneTemplController extends BaseController
         $zone_templ_id = (int)$id;
         $userId = $this->userContext->getLoggedInUserId();
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone templates."));
 
@@ -106,7 +105,7 @@ class EditZoneTemplController extends BaseController
     {
         $userId = $this->userContext->getLoggedInUserId();
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         if ($this->request->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
@@ -147,8 +146,8 @@ class EditZoneTemplController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'zones_linked_count' => $zones_linked_count,
             'unsynced_zones_count' => $unsynced_zones_count,
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
-            'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_zone_templ_add' => $this->hasPermission('zone_templ_add'),
         ]);
     }
 
@@ -243,8 +242,8 @@ class EditZoneTemplController extends BaseController
     {
         // Check if user has permission to add templates
         if (
-            !(UserManager::verifyPermission($this->db, 'zone_templ_add') ||
-              UserManager::verifyPermission($this->db, 'user_is_ueberuser'))
+            !($this->hasPermission('zone_templ_add') ||
+              $this->hasPermission('user_is_ueberuser'))
         ) {
             $this->showError(_('You do not have permission to create new zone templates.'));
             return;

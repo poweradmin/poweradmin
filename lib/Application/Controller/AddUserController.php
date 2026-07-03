@@ -201,7 +201,7 @@ class AddUserController extends BaseController
 
     private function renderAddUserForm(array $policyConfig): void
     {
-        $user_edit_templ_perm = UserManager::verifyPermission($this->db, 'user_edit_templ_perm');
+        $user_edit_templ_perm = $this->hasPermission('user_edit_templ_perm');
         $user_templates = UserManager::listPermissionTemplates($this->db, 'user');
 
         $username = $this->request->getPostParam('username', '');
@@ -249,7 +249,7 @@ class AddUserController extends BaseController
             'mail_enabled' => $mail_enabled,
             'available_groups' => $availableGroups,
             'selected_groups' => $selectedGroups,
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -317,7 +317,7 @@ class AddUserController extends BaseController
     private function assignUserToGroups(int $userId, array $groupIds, string $username): void
     {
         // Only admins can manage group memberships
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             return;
         }
 

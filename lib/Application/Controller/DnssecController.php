@@ -86,7 +86,7 @@ class DnssecController extends BaseController
             return;
         }
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        ($this->hasPermission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
         if ($this->request->getPostParam('unsign_zone') !== null) {

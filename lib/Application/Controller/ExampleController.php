@@ -76,7 +76,6 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -152,8 +151,8 @@ class ExampleController extends BaseController
         $exampleData = $this->getExampleData();
 
         // Example: Check additional permissions for conditional display
-        $canEdit = UserManager::verifyPermission($this->db, 'user_edit_others');
-        $canDelete = UserManager::verifyPermission($this->db, 'user_delete_others');
+        $canEdit = $this->hasPermission('user_edit_others');
+        $canDelete = $this->hasPermission('user_delete_others');
 
         // Prepare template variables
         $templateVars = [

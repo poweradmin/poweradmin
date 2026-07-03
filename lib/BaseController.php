@@ -568,6 +568,15 @@ abstract class BaseController
         return $this->permissionServiceInstance ??= new PermissionService($this->createUserRepository());
     }
 
+    /**
+     * Check if the logged-in user has the given permission
+     */
+    protected function hasPermission(string $permission): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createPermissionService()->hasPermission($userId, $permission);
+    }
+
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
     {
         return new DbUserGroupRepository($this->db);

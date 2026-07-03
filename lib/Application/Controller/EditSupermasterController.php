@@ -143,7 +143,7 @@ class EditSupermasterController extends BaseController
             'account' => htmlspecialchars($account),
             'old_master_ip' => htmlspecialchars($old_master_ip),
             'old_ns_name' => htmlspecialchars($old_ns_name),
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
+            'perm_view_others' => $this->hasPermission('user_view_others'),
             'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }

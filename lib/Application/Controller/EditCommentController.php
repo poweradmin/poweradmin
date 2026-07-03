@@ -78,7 +78,7 @@ class EditCommentController extends BaseController
         $zone_type = $domainRepository->getDomainType($zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
-        $is_admin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $is_admin = $this->hasPermission('user_is_ueberuser');
 
         // Permission check logic matches what's in RecordManager->editZoneComment.
         // Read-only zones (Secondary, Consumer) block comment edits for everyone -

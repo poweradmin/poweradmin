@@ -91,7 +91,7 @@ class BulkRegistrationController extends BaseController
             return null;
         }
         $userGroupRepo = $this->createUserGroupRepository();
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->hasPermission('user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
             }
@@ -159,7 +159,7 @@ class BulkRegistrationController extends BaseController
             $selected_groups = $existing;
 
             // Reject (don't silently drop) groups the caller is not a member of
-            if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            if (!$this->hasPermission('user_is_ueberuser')) {
                 $callerId = $this->userContextService->getLoggedInUserId();
                 $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($callerId));
                 $disallowed = array_values(array_diff($selected_groups, $allowedIds));
@@ -180,8 +180,8 @@ class BulkRegistrationController extends BaseController
         // Block assigning zones to a different user without elevated permission
         $callerId = $this->userContextService->getLoggedInUserId();
         if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
                 $this->setMessage('bulk_registration', 'error', _('You do not have permission to create zones for other users.'));
                 $this->showBulkRegistrationForm();
                 return;
@@ -231,11 +231,11 @@ class BulkRegistrationController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         $userGroupRepo = $this->createUserGroupRepository();
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         $callerId = $this->userContextService->getLoggedInUserId();
-        $canViewOthers = UserManager::verifyPermission($this->db, 'user_view_others');
+        $canViewOthers = $this->hasPermission('user_view_others');
         // Preserve the user's owner choice (including explicit "no user owner")
         // when re-rendering after a partial failure. Only honour foreign user
         // IDs when the caller is allowed to see other users; otherwise fall back
@@ -257,8 +257,8 @@ class BulkRegistrationController extends BaseController
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $owner_value,
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
+            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_edit_others' => $this->hasPermission('user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => array("MASTER", "NATIVE"),
             'users' => UserManager::showUsers($this->db),

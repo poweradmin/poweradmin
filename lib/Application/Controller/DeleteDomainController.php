@@ -86,7 +86,7 @@ class DeleteDomainController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
-        $canDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+        $canDeleteOthers = $this->hasPermission('zone_delete_others');
 
         $this->checkCondition(
             !$canDeleteOthers && !$canDelete,

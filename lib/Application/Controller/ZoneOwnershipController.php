@@ -122,7 +122,7 @@ class ZoneOwnershipController extends BaseController
         // Fetch groups - all for name lookup, filtered for dropdown
         $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
 
         // Filter out groups that are already owners (from user's visible groups)
@@ -253,7 +253,7 @@ class ZoneOwnershipController extends BaseController
             $groupId = (int)$newgroup;
 
             // Validate group ID against user's allowed groups
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
             if (!$isAdmin) {
                 $userGroupRepo = $this->createUserGroupRepository();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);

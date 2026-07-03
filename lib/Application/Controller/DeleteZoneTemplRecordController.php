@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
@@ -73,8 +72,8 @@ class DeleteZoneTemplRecordController extends BaseController
         }
 
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 

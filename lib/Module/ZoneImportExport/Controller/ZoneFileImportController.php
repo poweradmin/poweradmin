@@ -24,7 +24,6 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -67,7 +66,7 @@ class ZoneFileImportController extends BaseController
 
     private function checkImportPermission(): void
     {
-        $canAdd = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $canAdd = $this->hasPermission('zone_master_add');
         $perm_edit = Permission::getEditPermission($this->db);
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
@@ -229,7 +228,7 @@ class ZoneFileImportController extends BaseController
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
             $userGroupRepo = $this->createUserGroupRepository();
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
             // Short-circuit a dead-end preview: in groups_only with no assignable
@@ -320,7 +319,7 @@ class ZoneFileImportController extends BaseController
                 $zoneName
             ), $zone_id);
         } else {
-            if (!UserManager::verifyPermission($this->db, 'zone_master_add')) {
+            if (!$this->hasPermission('zone_master_add')) {
                 $this->showError(_('You do not have permission to add zones.'));
                 return;
             }
@@ -355,7 +354,7 @@ class ZoneFileImportController extends BaseController
                     $this->showError(sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
                     return;
                 }
-                if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+                if (!$this->hasPermission('user_is_ueberuser')) {
                     $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($userId));
                     $disallowed = array_values(array_diff($existing, $allowedIds));
                     if (!empty($disallowed)) {

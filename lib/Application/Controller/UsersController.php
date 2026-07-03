@@ -52,8 +52,8 @@ class UsersController extends BaseController
     public function run(): void
     {
         // Check if user has permission to view or edit other users before processing
-        $canViewOthers = UserManager::verifyPermission($this->db, 'user_view_others');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canViewOthers = $this->hasPermission('user_view_others');
+        $canEditOthers = $this->hasPermission('user_edit_others');
 
         // If user doesn't have permissions to view/edit others, redirect to home
         if (!$canViewOthers && !$canEditOthers) {
@@ -130,9 +130,9 @@ class UsersController extends BaseController
             'perm_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
             'users' => $users,
             'session_userid' => $_SESSION[SessionKeys::USERID],
-            'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
+            'perm_add_new' => $this->hasPermission('user_add_new'),
             'perm_is_godlike' => $permissions['user_is_ueberuser'],
-            'perm_user_logs_view' => UserManager::verifyPermission($this->db, 'user_logs_view'),
+            'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'pagination' => $paginationPresenter->present(),
             'total_users' => $totalUsers,

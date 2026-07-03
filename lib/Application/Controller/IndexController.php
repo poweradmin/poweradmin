@@ -208,12 +208,12 @@ class IndexController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {
-                return UserManager::verifyPermission($this->db, $item['permission']);
+                return $this->hasPermission($item['permission']);
             }
             return true;
         }));

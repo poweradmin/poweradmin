@@ -104,16 +104,16 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $canEditMetadata = UserManager::verifyPermission($this->db, 'zone_meta_edit_others')
+        $canEditMetadata = $this->hasPermission('zone_meta_edit_others')
             || (
-                UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+                $this->hasPermission('zone_meta_edit_own')
                 && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
             );
 
         $canViewMetadata = $canEditMetadata
-            || UserManager::verifyPermission($this->db, 'zone_content_view_others')
+            || $this->hasPermission('zone_content_view_others')
             || (
-                UserManager::verifyPermission($this->db, 'zone_content_view_own')
+                $this->hasPermission('zone_content_view_own')
                 && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
             );
 

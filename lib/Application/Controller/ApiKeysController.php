@@ -26,7 +26,6 @@ use DateTime;
 use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ApiKeyScope;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
@@ -82,8 +81,8 @@ class ApiKeysController extends BaseController
 
         // Allow ueberuser or users with api_manage_keys permission to manage API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->hasPermission('user_is_ueberuser') &&
+            !$this->hasPermission('api_manage_keys')
         ) {
             $this->showError(_('You do not have permission to manage API keys.'));
             return;
@@ -165,7 +164,7 @@ class ApiKeysController extends BaseController
             'api_keys' => $apiKeys,
             'max_keys_per_user' => $this->config->get('api', 'max_keys_per_user', 5),
             'current_keys_count' => $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]),
-            'can_add_more' => UserManager::verifyPermission($this->db, 'user_is_ueberuser') ||
+            'can_add_more' => $this->hasPermission('user_is_ueberuser') ||
                 $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]) < $this->config->get('api', 'max_keys_per_user', 5)
         ]);
     }
@@ -471,7 +470,7 @@ class ApiKeysController extends BaseController
     private function getAssignableZones(): array
     {
         $userId = $this->getUserContextService()->getLoggedInUserId();
-        $viewOthers = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $viewOthers = $this->hasPermission('user_is_ueberuser');
 
         $zones = $this->zoneRepository->listZones($userId, $viewOthers, [], 0, 100000);
 
