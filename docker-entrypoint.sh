@@ -626,6 +626,8 @@ generate_config() {
     local show_zone_comments=$(echo "${PA_SHOW_ZONE_COMMENTS:-true}" | tr '[:upper:]' '[:lower:]')
     local show_record_comments=$(echo "${PA_SHOW_RECORD_COMMENTS:-false}" | tr '[:upper:]' '[:lower:]')
     local display_serial_in_zone_list=$(echo "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_owner_in_zone_list=$(echo "${PA_DISPLAY_OWNER_IN_ZONE_LIST:-true}" | tr '[:upper:]' '[:lower:]')
+    local display_group_in_zone_list=$(echo "${PA_DISPLAY_GROUP_IN_ZONE_LIST:-true}" | tr '[:upper:]' '[:lower:]')
     local display_template_in_zone_list=$(echo "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
     local display_fullname_in_zone_list=$(echo "${PA_DISPLAY_FULLNAME_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
     local search_group_records=$(echo "${PA_SEARCH_GROUP_RECORDS:-false}" | tr '[:upper:]' '[:lower:]')
@@ -1014,6 +1016,8 @@ return [
         'show_record_comments' => ${show_record_comments},
         'display_serial_in_zone_list' => ${display_serial_in_zone_list},
         'display_template_in_zone_list' => ${display_template_in_zone_list},
+        'display_owner_in_zone_list' => ${display_owner_in_zone_list},
+        'display_group_in_zone_list' => ${display_group_in_zone_list},
         'display_fullname_in_zone_list' => ${display_fullname_in_zone_list},
         'search_group_records' => ${search_group_records},
         'reverse_zone_sort' => '${PA_REVERSE_ZONE_SORT:-natural}',

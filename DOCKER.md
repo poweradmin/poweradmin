@@ -356,6 +356,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
 | `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
 | `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |
+| `PA_DISPLAY_OWNER_IN_ZONE_LIST` | Display owner column in zone lists | `true` | No |
+| `PA_DISPLAY_GROUP_IN_ZONE_LIST` | Display group column in zone lists | `true` | No |
 | `PA_DISPLAY_FULLNAME_IN_ZONE_LIST` | Show user's full name in zone lists | `false` | No |
 | `PA_SEARCH_GROUP_RECORDS` | Group records in search results | `false` | No |
 | `PA_REVERSE_ZONE_SORT` | Reverse zone sorting: `natural` or `hierarchical` | `natural` | No |

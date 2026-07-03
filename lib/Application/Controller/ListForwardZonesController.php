@@ -163,17 +163,19 @@ class ListForwardZonesController extends BaseController
         $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
-        $isUserOwnerAllowed = $ownershipMode->isUserOwnerAllowed();
+        $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
+            && $this->config->get('interface', 'display_owner_in_zone_list', true);
         // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
         $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
-        $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
+        $showGroupColumn = $ownershipMode->isGroupOwnerAllowed()
+            && $this->config->get('interface', 'display_group_in_zone_list', true);
+        $isGroupSortSupported = $showGroupColumn && !$isApiBackend;
 
         $allowedSort = ['name', 'type'];
         if ($iface_zonelist_record_count) {
             $allowedSort[] = 'count_records';
         }
-        if ($isUserOwnerAllowed) {
+        if ($showOwnerColumn) {
             $allowedSort[] = 'owner';
         }
         if ($isGroupSortSupported) {
@@ -258,8 +260,8 @@ class ListForwardZonesController extends BaseController
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_record_count' => $iface_zonelist_record_count,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
-            'is_user_owner_allowed' => $isUserOwnerAllowed,
-            'is_group_owner_allowed' => $isGroupOwnerAllowed,
+            'show_owner_column' => $showOwnerColumn,
+            'show_group_column' => $showGroupColumn,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
             'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),
