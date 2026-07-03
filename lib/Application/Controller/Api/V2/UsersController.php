@@ -35,9 +35,11 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -68,7 +70,7 @@ class UsersController extends PublicApiController
 {
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
-    private DbUserRepository $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {

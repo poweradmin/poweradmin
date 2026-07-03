@@ -34,6 +34,14 @@ interface UserGroupRepositoryInterface
     public function findAll(): array;
 
     /**
+     * Return the subset of supplied IDs that actually exist in user_groups.
+     *
+     * @param array<int> $ids
+     * @return array<int, int>
+     */
+    public function findExistingIds(array $ids): array;
+
+    /**
      * Find groups by user ID (groups the user belongs to)
      *
      * @param int $userId

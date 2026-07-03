@@ -41,6 +41,9 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -50,8 +53,8 @@ class AddUserController extends BaseController
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-    private DbUserGroupRepository $groupRepository;
-    private DbUserGroupMemberRepository $memberRepository;
+    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupMemberRepositoryInterface $memberRepository;
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;

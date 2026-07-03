@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -37,6 +36,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 
