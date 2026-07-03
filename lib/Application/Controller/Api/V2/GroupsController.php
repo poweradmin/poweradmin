@@ -37,7 +37,6 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -332,7 +331,7 @@ class GroupsController extends PublicApiController
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
+            $permTemplateRepo = $this->createPermissionTemplateRepository();
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
             }
@@ -421,7 +420,7 @@ class GroupsController extends PublicApiController
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
+                $permTemplateRepo = $this->createPermissionTemplateRepository();
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }

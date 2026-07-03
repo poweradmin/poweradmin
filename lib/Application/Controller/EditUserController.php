@@ -41,7 +41,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
@@ -65,7 +64,7 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->auditService = new AuditService($this->db);

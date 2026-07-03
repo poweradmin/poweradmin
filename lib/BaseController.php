@@ -52,6 +52,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -569,6 +570,11 @@ abstract class BaseController
     protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
     {
         return new DbUserGroupMemberRepository($this->db);
+    }
+
+    protected function createPermissionTemplateRepository(): DbPermissionTemplateRepository
+    {
+        return new DbPermissionTemplateRepository($this->db, $this->getConfig());
     }
 
     protected function createRecordManager(): RecordManagerInterface

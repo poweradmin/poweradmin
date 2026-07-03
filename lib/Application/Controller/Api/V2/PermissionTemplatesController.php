@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -45,7 +44,7 @@ class PermissionTemplatesController extends PublicApiController
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
