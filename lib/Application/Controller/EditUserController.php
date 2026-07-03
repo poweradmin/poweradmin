@@ -194,8 +194,13 @@ class EditUserController extends BaseController
         // A user being converted to a local account (LDAP unchecked) is no longer
         // managed, so the email requirement applies again.
         $user = $this->getUserDetails($editId);
-        $useLdap = $this->request->getPostParam('use_ldap') === '1';
-        if (!self::isIdpManaged($user['auth_type'] ?? null, $useLdap)) {
+        $auth = self::resolveAuthFields(
+            $user,
+            $this->isRestrictedSelfEdit($editId),
+            '',
+            $this->request->getPostParam('use_ldap') === '1'
+        );
+        if (!self::isIdpManaged($user['auth_type'] ?? null, $auth['use_ldap'])) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -216,12 +221,22 @@ class EditUserController extends BaseController
     private function validatePasswordPolicy(int $editId): bool
     {
         $password = $this->request->getPostParam('password');
-        if (empty($password) || $this->request->getPostParam('use_ldap')) {
+        if (empty($password)) {
             return true;
         }
 
-        // Skip password validation for external auth users
+        // Judge by the use_ldap value that will be persisted, not the raw
+        // posted flag - a self-editor must not dodge the policy with use_ldap=1.
         $user = $this->getUserDetails($editId);
+        $auth = self::resolveAuthFields(
+            $user,
+            $this->isRestrictedSelfEdit($editId),
+            '',
+            $this->request->getPostParam('use_ldap') === '1'
+        );
+        if ($auth['use_ldap']) {
+            return true;
+        }
         if (in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true)) {
             return true;
         }
@@ -252,6 +267,16 @@ class EditUserController extends BaseController
         if ($targetIsSuperuser && !$currentIsSuperuser) {
             $this->showError(_('You do not have permission to edit a superuser account.'));
         }
+    }
+
+    /**
+     * Whether this edit is a limited user maintaining their own account, in
+     * which case auth-critical fields (username, LDAP flag) are not editable.
+     */
+    private function isRestrictedSelfEdit(int $editId): bool
+    {
+        return $editId === $this->userContextService->getLoggedInUserId()
+            && !UserManager::verifyPermission($this->db, 'user_edit_others');
     }
 
     private function prepareUserData(int $editId): array
@@ -286,26 +311,33 @@ class EditUserController extends BaseController
             }
         }
 
+        // Keep stored username and LDAP flag on self-edit (#1327)
+        $userData = $userData ?? $this->getUserDetails($editId);
+        $auth = self::resolveAuthFields(
+            $userData,
+            $isOwnProfile && !$canEditOthers,
+            htmlspecialchars($this->request->getPostParam('username')),
+            $this->request->getPostParam('use_ldap') === '1'
+        );
+
         // Externally authenticated users have their identity fields owned by the IdP
         // (overwritten on the next sync), so ignore any submitted changes to them.
-        $useLdap = $this->request->getPostParam('use_ldap') === '1';
-        $userData = $userData ?? $this->getUserDetails($editId);
         $identity = self::resolveIdentityFields(
             $userData,
-            $useLdap,
+            $auth['use_ldap'],
             htmlspecialchars($this->request->getPostParam('fullname')),
             htmlspecialchars($this->request->getPostParam('email'))
         );
 
         return [
-            'username' => htmlspecialchars($this->request->getPostParam('username')),
+            'username' => $auth['username'],
             'fullname' => $identity['fullname'],
             'email' => $identity['email'],
             'description' => htmlspecialchars($this->request->getPostParam('description')),
             'password' => $this->request->getPostParam('password', ''),
             'perm_templ' => $permTempl,
             'active' => $active,
-            'use_ldap' => $useLdap
+            'use_ldap' => $auth['use_ldap']
         ];
     }
 
@@ -335,6 +367,33 @@ class EditUserController extends BaseController
      * @param string $submittedEmail Email from the form
      * @return array{fullname: string, email: string}
      */
+    /**
+     * Resolve the username/use_ldap to persist for a user edit (#1327).
+     *
+     * On a restricted self-edit (own profile without user_edit_others) the
+     * stored username and LDAP flag win over the submitted values - they are
+     * auth-critical, not self-service. A row without a use_ldap column
+     * (LDAP disabled in config) keeps the submitted flag, as before.
+     *
+     * @return array{username: string, use_ldap: bool}
+     */
+    public static function resolveAuthFields(array $userData, bool $restrictedSelfEdit, string $submittedUsername, bool $submittedUseLdap): array
+    {
+        if (!$restrictedSelfEdit) {
+            return [
+                'username' => $submittedUsername,
+                'use_ldap' => $submittedUseLdap,
+            ];
+        }
+
+        return [
+            'username' => (string)($userData['username'] ?? ''),
+            'use_ldap' => array_key_exists('use_ldap', $userData)
+                ? (bool)$userData['use_ldap']
+                : $submittedUseLdap,
+        ];
+    }
+
     public static function resolveIdentityFields(array $userData, bool $useLdap, string $submittedFullname, string $submittedEmail): array
     {
         if (self::isIdpManaged($userData['auth_type'] ?? null, $useLdap)) {
@@ -414,6 +473,7 @@ class EditUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
+            'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,

@@ -2108,6 +2108,144 @@ cleanup_existing_perm_templ_test_users() {
     done
 }
 
+# Same as api_request_v2 but authenticates with HTTP basic auth instead of
+# the admin API key - used to exercise endpoints as a limited user.
+api_request_v2_basic() {
+    local method="$1"
+    local endpoint="$2"
+    local data="${3:-}"
+    local expected_status="${4:-200}"
+    local description="${5:-API v2 request}"
+    local username="$6"
+    local password="$7"
+
+    increment_test
+    print_test "$description"
+
+    local curl_opts=(
+        -s
+        -w "\n%{http_code}"
+        -u "${username}:${password}"
+        -H "Content-Type: application/json"
+        -H "Accept: application/json"
+        -X "$method"
+        --max-time 30
+    )
+
+    if [[ -n "$data" ]]; then
+        curl_opts+=(-d "$data")
+    fi
+
+    local response
+    local http_code
+    local body
+
+    response=$(curl "${curl_opts[@]}" "${API_BASE_URL}/api/v2${endpoint}")
+    http_code=$(echo "$response" | tail -1)
+    body=$(echo "$response" | sed '$d')
+
+    LAST_RESPONSE_BODY="$body"
+    LAST_RESPONSE_CODE="$http_code"
+
+    if [[ "$http_code" -eq "$expected_status" ]]; then
+        print_pass "$description (HTTP $http_code)"
+        return 0
+    else
+        print_fail "$description - Expected $expected_status, got $http_code"
+        echo "Response: $body"
+        return 1
+    fi
+}
+
+cleanup_existing_self_edit_test_data() {
+    local user_id
+    user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "self_edit_test_user" or .username == "self_edit_hijacked") | .user_id' 2>/dev/null)
+    if [[ -n "$user_id" ]]; then
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
+    fi
+
+    local templ_id
+    templ_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
+    if [[ -n "$templ_id" ]]; then
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/permission-templates/$templ_id" >/dev/null 2>&1 || true
+    fi
+}
+
+test_users_self_edit_guard() {
+    print_section "Users API - self-edit auth-field guard (gh #1327)"
+
+    cleanup_existing_self_edit_test_data
+
+    # Template with only user_edit_own (perm item 56 in the seed data), so the
+    # user may maintain their own contact fields but nothing auth-critical.
+    if ! api_request_v2 "POST" "/permission-templates" \
+        '{"name":"self_edit_test_templ","descr":"gh #1327 test","permissions":[56]}' \
+        201 "Create self-edit permission template"; then
+        print_fail "Failed to create self-edit template - skipping suite"
+        return 1
+    fi
+
+    # The create response carries no id - look it up by name.
+    api_request_v2 "GET" "/permission-templates" "" 200 "List templates to find self-edit template id"
+    local templ_id
+    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id')
+    if [[ -z "$templ_id" || "$templ_id" == "null" ]]; then
+        increment_test
+        print_fail "Could not resolve self_edit_test_templ id - skipping suite"
+        return 1
+    fi
+
+    local password="S3lfEdit#Pass1"
+    local create_data
+    create_data=$(jq -n --arg pw "$password" --argjson tpl "$templ_id" \
+        '{username: "self_edit_test_user", password: $pw, fullname: "Self Edit", email: "self_edit@example.com", perm_templ: $tpl, active: true}')
+    if ! api_request_v2 "POST" "/users" "$create_data" 201 "Create limited self-edit user"; then
+        print_fail "Failed to create self-edit user - skipping suite"
+        return 1
+    fi
+    local user_id
+    user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+    # Auth-critical fields must be rejected on self-edit.
+    api_request_v2_basic "PUT" "/users/${user_id}" '{"username":"self_edit_hijacked"}' \
+        403 "Self-edit username change rejected" "self_edit_test_user" "$password"
+    api_request_v2_basic "PUT" "/users/${user_id}" '{"use_ldap":true}' \
+        403 "Self-edit use_ldap change rejected" "self_edit_test_user" "$password"
+    api_request_v2_basic "PUT" "/users/${user_id}" '{"active":false}' \
+        403 "Self-edit active change rejected" "self_edit_test_user" "$password"
+    api_request_v2_basic "PUT" "/users/${user_id}" '{"use_ldap":null}' \
+        403 "Self-edit use_ldap null bypass rejected" "self_edit_test_user" "$password"
+    api_request_v2_basic "PUT" "/users/${user_id}" '{"active":"true"}' \
+        403 "Self-edit active string-true bypass rejected (persists as 0)" "self_edit_test_user" "$password"
+
+    # Contact fields stay self-service, and restating stored values must pass
+    # so GET->PUT round-tripping clients keep working.
+    api_request_v2_basic "PUT" "/users/${user_id}" \
+        '{"fullname":"Self Edit Updated","email":"self_edit_new@example.com"}' \
+        200 "Self-edit contact fields accepted" "self_edit_test_user" "$password"
+    api_request_v2_basic "PUT" "/users/${user_id}" \
+        '{"username":"self_edit_test_user","active":true,"description":"round trip"}' \
+        200 "Self-edit with unchanged auth fields accepted" "self_edit_test_user" "$password"
+
+    # Verify nothing auth-critical actually changed and contact edits landed.
+    api_request_v2 "GET" "/users/${user_id}" "" 200 "Get self-edit user after attempts"
+    assert_json "Username unchanged after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.username' "self_edit_test_user"
+    assert_json "Account still active after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.active' "true"
+    assert_json "Contact edit landed" "$LAST_RESPONSE_BODY" '.data.fullname' "Self Edit Updated"
+
+    # An admin (API key) still changes these fields freely.
+    api_request_v2 "PUT" "/users/${user_id}" '{"username":"self_edit_hijacked"}' \
+        200 "Admin rename of the same user accepted"
+
+    # Cleanup
+    api_request_v2 "DELETE" "/users/${user_id}" "" 200 "Delete self-edit test user"
+    api_request_v2 "DELETE" "/permission-templates/${templ_id}" "" 200 "Delete self-edit test template"
+}
+
 test_users_perm_templ_validation() {
     print_section "Users API - perm_templ validation (gh #1219)"
 
@@ -2416,6 +2554,7 @@ main() {
     test_zone_templates
     test_users_ldap_sync
     test_users_perm_templ_validation
+    test_users_self_edit_guard
     test_api_key_scopes
     test_zone_overlap_guard
 

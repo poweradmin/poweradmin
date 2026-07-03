@@ -37,6 +37,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
+use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,14 +70,15 @@ class UsersController extends PublicApiController
 {
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
+    private DbUserRepository $userRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $userRepository = new DbUserRepository($this->db, $this->config);
-        $permissionService = new PermissionService($userRepository);
-        $this->userManagementService = new UserManagementService($userRepository, $permissionService);
+        $this->userRepository = new DbUserRepository($this->db, $this->config);
+        $permissionService = new PermissionService($this->userRepository);
+        $this->userManagementService = new UserManagementService($this->userRepository, $permissionService);
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
@@ -721,6 +723,21 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null);
             if ($templateGate !== null) {
                 return $templateGate;
+            }
+
+            // Auth-critical fields are not self-service on self-edit (#1327)
+            $currentUser = $this->userRepository->getUserById($targetUserId);
+            if ($currentUser !== null) {
+                $selfEditGate = SelfEditFieldGuard::apply(
+                    $this->apiPermissionService,
+                    $currentUserId,
+                    $targetUserId,
+                    $currentUser,
+                    $input
+                );
+                if ($selfEditGate !== null) {
+                    return $this->returnApiError($selfEditGate, 403);
+                }
             }
 
             // Use the domain service to update user
