@@ -28,10 +28,10 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -44,7 +44,7 @@ class ApiKeysController extends BaseController
 {
     private ApiKeyService $apiKeyService;
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private DbZoneRepository $zoneRepository;
+    private ZoneRepositoryInterface $zoneRepository;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
 
@@ -64,7 +64,7 @@ class ApiKeysController extends BaseController
             $this->config,
             $this->messageService
         );
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->config);
+        $this->zoneRepository = $this->createZoneRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
