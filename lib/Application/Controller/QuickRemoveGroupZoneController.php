@@ -36,8 +36,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 class QuickRemoveGroupZoneController extends BaseController
 {
@@ -48,7 +46,7 @@ class QuickRemoveGroupZoneController extends BaseController
         parent::__construct($request);
 
         $groupRepository = $this->createUserGroupRepository();
-        $zoneRepository = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+        $zoneRepository = $this->createZoneGroupRepository();
         $this->groupZoneService = new GroupZoneService($zoneRepository, $groupRepository);
     }
 

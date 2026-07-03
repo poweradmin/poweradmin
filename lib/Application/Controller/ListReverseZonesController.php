@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
@@ -44,7 +43,6 @@ use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -183,7 +181,7 @@ class ListReverseZonesController extends BaseController
         };
 
         // Augment zones with group information and shorten IPv6 reverse zones
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+        $zoneGroupRepo = $this->createZoneGroupRepository();
         $userGroupRepo = $this->createUserGroupRepository();
         $memberRepo = $this->createUserGroupMemberRepository();
         $allGroups = $userGroupRepo->findAll();

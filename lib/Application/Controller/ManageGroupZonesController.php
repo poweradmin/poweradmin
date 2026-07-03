@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
@@ -41,7 +40,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -58,7 +56,7 @@ class ManageGroupZonesController extends BaseController
         parent::__construct($request);
 
         $groupRepository = $this->createUserGroupRepository();
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+        $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);

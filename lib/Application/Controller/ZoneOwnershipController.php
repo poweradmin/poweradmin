@@ -43,8 +43,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 class ZoneOwnershipController extends BaseController
 {
@@ -117,7 +115,7 @@ class ZoneOwnershipController extends BaseController
         }));
 
         // Fetch group ownership
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+        $zoneGroupRepo = $this->createZoneGroupRepository();
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
 
         // Fetch groups - all for name lookup, filtered for dropdown
@@ -202,7 +200,7 @@ class ZoneOwnershipController extends BaseController
             // with no remaining owners and no group ownership. The mode hint in
             // the message tells the operator what kind of replacement is allowed.
             $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+            $zoneGroupRepo = $this->createZoneGroupRepository();
             $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
             $deleteUserId = (int)$delete_owner;
             $isCurrentOwner = false;
@@ -265,7 +263,7 @@ class ZoneOwnershipController extends BaseController
                 }
             }
 
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+            $zoneGroupRepo = $this->createZoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
             $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
@@ -274,7 +272,7 @@ class ZoneOwnershipController extends BaseController
         // Delete group
         $delete_group = $this->request->getPostParam('delete_group');
         if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+            $zoneGroupRepo = $this->createZoneGroupRepository();
             // Orphan prevention: refuse if this deletion would leave the zone
             // with no remaining groups and no user owners. Applies in every
             // mode - the message hints what kind of replacement is allowed.

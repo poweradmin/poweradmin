@@ -32,10 +32,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -384,7 +382,7 @@ class ZoneOwnersController extends PublicApiController
 
             if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
                 $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+                $zoneGroupRepo = $this->createZoneGroupRepository();
                 $remainingGroups = count($zoneGroupRepo->findByDomainId($zoneId));
                 $wouldRemoveLast = $remainingOwners <= 1;
                 $ownershipMode = new ZoneOwnershipModeService($this->config);
