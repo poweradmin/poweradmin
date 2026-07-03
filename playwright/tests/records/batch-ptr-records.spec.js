@@ -293,7 +293,7 @@ test.describe('Batch PTR IPv6 Support (Issue #1110)', () => {
     await expect(ipv6Option).toContainText('IPv6');
   });
 
-  test('should disable matching-only checkbox when IPv6 is selected', async ({ page }) => {
+  test('should keep matching-only checkbox available when IPv6 is selected', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getForwardZoneId(page);
     if (!zoneId) {
@@ -303,15 +303,14 @@ test.describe('Batch PTR IPv6 Support (Issue #1110)', () => {
 
     await page.goto(`/zones/batch-ptr?id=${zoneId}`);
 
-    // Select IPv6
+    // Matching-only mode supports IPv6 since the nibble expansion fix
     await page.selectOption('#network_type', 'ipv6');
 
     const matchingCheckbox = page.locator('#only_matching_records');
-    await expect(matchingCheckbox).toBeDisabled();
-    await expect(matchingCheckbox).not.toBeChecked();
+    await expect(matchingCheckbox).toBeEnabled();
   });
 
-  test('should re-enable matching-only checkbox when switching back to IPv4', async ({ page }) => {
+  test('should keep matching-only checkbox available when switching back to IPv4', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getForwardZoneId(page);
     if (!zoneId) {
