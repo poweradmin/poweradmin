@@ -1229,6 +1229,7 @@ return array(
     'Poweradmin\\Domain\\Service\\RecordTypeService' => $baseDir . '/lib/Domain/Service/RecordTypeService.php',
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\ReverseTtlResolver' => $baseDir . '/lib/Domain/Service/ReverseTtlResolver.php',
+    'Poweradmin\\Domain\\Service\\SelfEditFieldGuard' => $baseDir . '/lib/Domain/Service/SelfEditFieldGuard.php',
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',
     'Poweradmin\\Domain\\Service\\UserAgreementService' => $baseDir . '/lib/Domain/Service/UserAgreementService.php',
     'Poweradmin\\Domain\\Service\\UserAvatarService' => $baseDir . '/lib/Domain/Service/UserAvatarService.php',
