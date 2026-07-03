@@ -34,9 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -64,18 +62,7 @@ class ZonesController extends PublicApiController
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $backendProvider);
-        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $this->recordManager = new RecordManager(
-            $this->db,
-            $this->getConfig(),
-            $validationService,
-            $soaRecordManager,
-            $domainRepository,
-            $backendProvider
-        );
+        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $backendProvider);
 
         // Initialize zone management service
         $this->zoneManagementService = new ZoneManagementService(
