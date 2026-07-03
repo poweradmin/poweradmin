@@ -336,6 +336,9 @@ return [
         'user_attribute' => 'uid',                      // User attribute (uid for OpenLDAP, sAMAccountName for Active Directory) (added in 2.1.7)
         'protocol_version' => 3,                        // LDAP protocol version (added in 2.1.7)
         'search_filter' => '',                          // Additional search filter (added in 2.1.7)
+        'sync_user_info' => false,                      // Sync fullname/email from LDAP on every login (added in 4.5.0)
+        'fullname_attribute' => 'displayName',          // LDAP attribute for full name (displayName for AD, cn for OpenLDAP) (added in 4.5.0)
+        'email_attribute' => 'mail',                    // LDAP attribute for email address (added in 4.5.0)
         'session_cache_timeout' => 300,                 // Session cache timeout in seconds (5 minutes). Set to 0 to disable caching. (added in 4.1.0)
         // Examples:
         // '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)'

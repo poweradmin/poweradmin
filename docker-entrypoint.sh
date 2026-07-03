@@ -708,6 +708,7 @@ generate_config() {
 
     # Convert LDAP boolean values to lowercase
     local ldap_debug=$(echo "${PA_LDAP_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
+    local ldap_sync_user_info=$(echo "${PA_LDAP_SYNC_USER_INFO:-false}" | tr '[:upper:]' '[:lower:]')
 
     # Convert misc boolean values to lowercase
     local display_stats=$(echo "${PA_DISPLAY_STATS:-false}" | tr '[:upper:]' '[:lower:]')
@@ -1041,6 +1042,9 @@ return [
         'user_attribute' => '${PA_LDAP_USER_ATTRIBUTE:-uid}',
         'protocol_version' => ${PA_LDAP_PROTOCOL_VERSION:-3},
         'search_filter' => '${PA_LDAP_SEARCH_FILTER:-}',
+        'sync_user_info' => ${ldap_sync_user_info},
+        'fullname_attribute' => '${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}',
+        'email_attribute' => '${PA_LDAP_EMAIL_ATTRIBUTE:-mail}',
         'session_cache_timeout' => ${PA_LDAP_SESSION_CACHE_TIMEOUT:-300},
     ],
     'logging' => [

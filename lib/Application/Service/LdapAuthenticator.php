@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -130,6 +131,9 @@ class LdapAuthenticator extends LoggingService
         $ldap_proto = $this->configManager->get('ldap', 'protocol_version', 3);
         $ldap_debug = $this->configManager->get('ldap', 'debug', false);
         $ldap_user_attribute = $this->configManager->get('ldap', 'user_attribute', 'uid');
+        $ldap_sync_user_info = (bool)$this->configManager->get('ldap', 'sync_user_info', false);
+        $ldap_fullname_attribute = $this->configManager->get('ldap', 'fullname_attribute', 'displayName');
+        $ldap_email_attribute = $this->configManager->get('ldap', 'email_attribute', 'mail');
 
         if (!$this->userContextService->hasSessionData(SessionKeys::USERLOGIN) || !$this->userContextService->hasSessionData(SessionKeys::USERPWD)) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
@@ -173,6 +177,9 @@ class LdapAuthenticator extends LoggingService
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
+        if ($ldap_sync_user_info) {
+            $attributes = array_merge($attributes, array_filter([$ldap_fullname_attribute, $ldap_email_attribute]));
+        }
 
         // Properly escape user input to prevent LDAP injection
         $escaped_userlogin = ldap_escape($this->userContextService->getLoggedInUsername(), '', LDAP_ESCAPE_FILTER);
@@ -248,6 +255,14 @@ class LdapAuthenticator extends LoggingService
             $this->authenticationService->auth($sessionEntity);
             $this->logInfo('LDAP authentication process ended due to no active user found.');
             return;
+        }
+
+        if ($ldap_sync_user_info) {
+            $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute);
+            $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
+            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
+
+            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
         }
 
         session_regenerate_id(true);

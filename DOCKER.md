@@ -421,6 +421,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_USER_ATTRIBUTE` | User attribute (`uid` for OpenLDAP, `sAMAccountName` for AD) | `uid` | No |
 | `PA_LDAP_PROTOCOL_VERSION` | LDAP protocol version | `3` | No |
 | `PA_LDAP_SEARCH_FILTER` | Additional LDAP search filter | Empty | No |
+| `PA_LDAP_SYNC_USER_INFO` | Sync fullname/email from LDAP on login | `false` | No |
+| `PA_LDAP_FULLNAME_ATTRIBUTE` | LDAP attribute for full name (`displayName` for AD, `cn` for OpenLDAP) | `displayName` | No |
+| `PA_LDAP_EMAIL_ATTRIBUTE` | LDAP attribute for email address | `mail` | No |
 | `PA_LDAP_SESSION_CACHE_TIMEOUT` | Session cache timeout in seconds (0 to disable) | `300` | No |
 
 ### Custom CA Certificate

@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
@@ -61,6 +62,16 @@ class UserProvisioningService extends LoggingService
         $this->configManager = $configManager;
         $this->userManager = new UserManager($connection, $configManager);
         $this->userRepository = new DbUserRepository($connection, $configManager);
+    }
+
+    /**
+     * Sync an already-matched user from external auth data. Identity fields,
+     * template mapping and group membership are driven by the auth method's
+     * config section; nothing is written when the data is unchanged.
+     */
+    public function syncExistingUser(int $userId, UserInfoInterface $userInfo): void
+    {
+        $this->updateExistingUser($userId, $userInfo, $this->determineAuthMethodFromUserInfo($userInfo));
     }
 
     public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
@@ -237,7 +248,7 @@ class UserProvisioningService extends LoggingService
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,
-                'sso', // Template assigned via SSO provisioning
+                $authMethod, // Template ownership: only this provider may revoke it later
                 0,  // use_ldap = 0 for external auth users
                 $authMethod  // auth_method (oidc, saml, etc.)
             ]);
@@ -283,23 +294,29 @@ class UserProvisioningService extends LoggingService
             $updateFields = [];
             $updateValues = [];
 
-            // Update user information if configured to sync
+            $stmt = $this->db->prepare("SELECT fullname, email, auth_method, perm_templ, perm_templ_source FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+            // Update user information if configured to sync, skipping unchanged values
             $authConfig = $this->getAuthMethodConfig($authMethod);
             if ($authConfig['sync_user_info'] ?? true) {
-                if (!empty($userInfo->getDisplayName())) {
+                $displayName = $userInfo->getDisplayName();
+                if (!empty($displayName) && $displayName !== ($current['fullname'] ?? null)) {
                     $updateFields[] = 'fullname = ?';
-                    $updateValues[] = $userInfo->getDisplayName();
+                    $updateValues[] = $displayName;
                 }
 
-                if (!empty($userInfo->getEmail())) {
+                $email = $userInfo->getEmail();
+                if (!empty($email) && $email !== ($current['email'] ?? null)) {
                     $updateFields[] = 'email = ?';
-                    $updateValues[] = $userInfo->getEmail();
+                    $updateValues[] = $email;
                 }
             }
 
             // Only update auth_method if it's safe to do so (prevent overwriting LDAP/other methods)
-            $currentAuthMethod = $this->getCurrentUserAuthMethod($userId);
-            if ($this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
+            $currentAuthMethod = $current['auth_method'] ?? null;
+            if ($currentAuthMethod !== $authMethod && $this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
                 $updateFields[] = 'auth_method = ?';
                 $updateValues[] = $authMethod;
                 $this->logInfo('Updating auth_method from {old} to {new} for user {userId}', [
@@ -307,7 +324,7 @@ class UserProvisioningService extends LoggingService
                     'new' => $authMethod,
                     'userId' => $userId
                 ]);
-            } else {
+            } elseif ($currentAuthMethod !== $authMethod) {
                 $this->logInfo('Preserving existing auth_method {current} for user {userId} (not overwriting with {new})', [
                     'current' => $currentAuthMethod,
                     'new' => $authMethod,
@@ -318,14 +335,17 @@ class UserProvisioningService extends LoggingService
             // Update permission template based on current groups
             $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod, false);
             if ($newPermissionTemplateId) {
-                $updateFields[] = 'perm_templ = ?';
-                $updateValues[] = $newPermissionTemplateId;
-                $updateFields[] = 'perm_templ_source = ?';
-                $updateValues[] = 'sso';
+                if ($newPermissionTemplateId !== (int)($current['perm_templ'] ?? 0) || ($current['perm_templ_source'] ?? '') !== $authMethod) {
+                    $updateFields[] = 'perm_templ = ?';
+                    $updateValues[] = $newPermissionTemplateId;
+                    $updateFields[] = 'perm_templ_source = ?';
+                    $updateValues[] = $authMethod;
+                }
             } else {
-                // No group mapping matched - check if we should revoke SSO-assigned template
-                $currentSource = $this->getPermTemplSource($userId);
-                if ($currentSource === 'sso') {
+                // Only the provider that assigned the template may revoke it
+                // ('sso' is the legacy label from before per-method sources)
+                $currentSource = $current['perm_templ_source'] ?? null;
+                if ($currentSource === $authMethod || $currentSource === 'sso') {
                     // User previously got template from SSO mapping but no longer matches any group
                     // Fall back to default permission template
                     $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
@@ -570,22 +590,6 @@ class UserProvisioningService extends LoggingService
         return $fallbackId;
     }
 
-    private function getPermTemplSource(int $userId): ?string
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT perm_templ_source FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetchColumn();
-            return $result ?: null;
-        } catch (\Exception $e) {
-            $this->logError('Error getting perm_templ_source for user {userId}: {error}', [
-                'userId' => $userId,
-                'error' => $e->getMessage()
-            ]);
-            return null;
-        }
-    }
-
     private function getDefaultPermissionTemplateId(string $authMethod): ?int
     {
         $defaultTemplateName = $this->configManager->get($authMethod, 'default_permission_template', '');
@@ -688,6 +692,9 @@ class UserProvisioningService extends LoggingService
         if ($userInfo instanceof OidcUserInfo) {
             return self::AUTH_METHOD_OIDC;
         }
+        if ($userInfo instanceof LdapUserInfo) {
+            return self::AUTH_METHOD_LDAP;
+        }
 
         // Fallback to OIDC for backward compatibility with unknown types
         return self::AUTH_METHOD_OIDC;
@@ -699,26 +706,6 @@ class UserProvisioningService extends LoggingService
     private function getAuthMethodConfig(string $authMethod): array
     {
         return $this->configManager->getGroup($authMethod);
-    }
-
-    /**
-     * Get the current auth_method for a user
-     */
-    private function getCurrentUserAuthMethod(int $userId): ?string
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? $result['auth_method'] : null;
-        } catch (\Exception $e) {
-            $this->logError('Error getting current auth method for user {userId}: {error}', [
-                'userId' => $userId,
-                'error' => $e->getMessage()
-            ]);
-            return null;
-        }
     }
 
     /**
