@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -47,11 +48,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -98,7 +97,7 @@ class AddRecordController extends BaseController
         );
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),

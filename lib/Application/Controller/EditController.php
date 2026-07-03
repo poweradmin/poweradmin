@@ -33,6 +33,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
@@ -59,8 +61,6 @@ use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
@@ -129,7 +129,7 @@ class EditController extends BaseController
             $backendProvider
         );
 
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),

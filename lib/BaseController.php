@@ -53,7 +53,9 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -582,6 +584,11 @@ abstract class BaseController
     protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface
     {
         return new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+    }
+
+    protected function createReverseTtlResolver(): ReverseTtlResolver
+    {
+        return new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
     }
 
     protected function createRecordManager(): RecordManagerInterface
