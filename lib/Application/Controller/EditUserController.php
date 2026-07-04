@@ -46,9 +46,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
 {
-    /** Auth methods whose identity/password fields are owned by an external provider. */
-    private const EXTERNAL_AUTH_METHODS = ['ldap', 'oidc', 'saml'];
-
     protected Request $request;
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
@@ -235,7 +232,7 @@ class EditUserController extends BaseController
         if ($auth['use_ldap']) {
             return true;
         }
-        if (in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true)) {
+        if (in_array($user['auth_type'] ?? 'sql', UserContextService::EXTERNAL_AUTH_METHODS, true)) {
             return true;
         }
 
@@ -413,7 +410,7 @@ class EditUserController extends BaseController
         $permissions = $this->getUserPermissions($editId);
 
         // Check if password changes should be disabled for external auth users
-        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true);
+        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', UserContextService::EXTERNAL_AUTH_METHODS, true);
 
         // Fetch user's group memberships
         $groupMemberRepo = $this->createUserGroupMemberRepository();

@@ -569,13 +569,15 @@ class MfaService
      * This checks:
      * 1. Global mfa.enabled setting (MFA feature must be available)
      * 2. Global mfa.enforced setting (enforcement must be enabled)
-     * 3. User or group has user_enforce_mfa permission
+     * 3. mfa.skip_for_external_auth exemption for external IdP logins
+     * 4. User or group has user_enforce_mfa permission
      *
      * @param int $userId The user ID
      * @param object $db Database connection for permission check
+     * @param string|null $authMethod How the user authenticated (session auth_used value), null if unknown
      * @return bool True if MFA is enforced for this user
      */
-    public function isMfaEnforced(int $userId, object $db): bool
+    public function isMfaEnforced(int $userId, object $db, ?string $authMethod = null): bool
     {
         // Check if MFA feature is enabled
         if (!$this->configManager->get('security', 'mfa.enabled', false)) {
@@ -584,6 +586,14 @@ class MfaService
 
         // Check if MFA enforcement is enabled globally
         if (!$this->configManager->get('security', 'mfa.enforced', false)) {
+            return false;
+        }
+
+        // External IdP logins may be exempt - the IdP is trusted to enforce MFA itself
+        if (
+            in_array($authMethod, UserContextService::EXTERNAL_AUTH_METHODS, true)
+            && $this->configManager->get('security', 'mfa.skip_for_external_auth', false)
+        ) {
             return false;
         }
 
@@ -640,12 +650,13 @@ class MfaService
      *
      * @param int $userId The user ID
      * @param object $db Database connection
+     * @param string|null $authMethod How the user authenticated (session auth_used value), null if unknown
      * @return bool True if MFA setup is required
      */
-    public function isMfaSetupRequired(int $userId, object $db): bool
+    public function isMfaSetupRequired(int $userId, object $db, ?string $authMethod = null): bool
     {
         // Check if MFA is enforced for this user
-        if (!$this->isMfaEnforced($userId, $db)) {
+        if (!$this->isMfaEnforced($userId, $db, $authMethod)) {
             return false;
         }
 

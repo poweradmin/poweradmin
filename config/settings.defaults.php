@@ -87,6 +87,7 @@ return [
         'mfa' => [
             'enabled' => false,                  // Enable MFA functionality
             'enforced' => false,                 // Enable MFA enforcement (requires user_enforce_mfa permission)
+            'skip_for_external_auth' => false,   // Skip MFA enforcement for LDAP/OIDC/SAML logins - the IdP is trusted to enforce MFA (added in 4.5.0)
             'app_enabled' => true,               // Enable authenticator app option
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate

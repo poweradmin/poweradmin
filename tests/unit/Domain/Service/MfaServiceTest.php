@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,6 +32,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use RuntimeException;
 
@@ -649,5 +652,82 @@ class MfaServiceTest extends TestCase
 
         $result = $this->service->verifyCode($userId, '123456');
         $this->assertFalse($result);
+    }
+
+    private function configureMfaEnforcementSettings(bool $enabled, bool $enforced, bool $skipForExternalAuth): void
+    {
+        $this->configManager->method('get')->willReturnMap([
+            ['security', 'mfa.enabled', false, $enabled],
+            ['security', 'mfa.enforced', false, $enforced],
+            ['security', 'mfa.skip_for_external_auth', false, $skipForExternalAuth],
+        ]);
+    }
+
+    private function createDbWithEnforcementPermission(bool $hasPermission): PDO
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn($hasPermission ? ['permission' => 'user_enforce_mfa'] : false);
+
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        return $db;
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedReturnsFalseWhenMfaDisabled(): void
+    {
+        $this->configureMfaEnforcementSettings(false, true, false);
+
+        $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass()));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedReturnsFalseWhenNotEnforcedGlobally(): void
+    {
+        $this->configureMfaEnforcementSettings(true, false, false);
+
+        $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass()));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedSkipsExternalAuthMethodsWhenConfigured(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, true);
+
+        // stdClass as db proves the permission query is never reached
+        foreach (UserContextService::EXTERNAL_AUTH_METHODS as $authMethod) {
+            $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass(), $authMethod));
+        }
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedDoesNotSkipInternalAuth(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, true);
+        $db = $this->createDbWithEnforcementPermission(true);
+
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'internal'));
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'basic_auth'));
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, null));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedDoesNotSkipExternalAuthWhenSettingDisabled(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, false);
+        $db = $this->createDbWithEnforcementPermission(true);
+
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'ldap'));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedReturnsFalseWithoutEnforcementPermission(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, false);
+        $db = $this->createDbWithEnforcementPermission(false);
+
+        $this->assertFalse($this->service->isMfaEnforced(1, $db, 'internal'));
     }
 }

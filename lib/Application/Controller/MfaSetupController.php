@@ -301,7 +301,7 @@ class MfaSetupController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if MFA is enforced for this user
-        if ($this->mfaService->isMfaEnforced($userId, $this->db)) {
+        if ($this->mfaService->isMfaEnforced($userId, $this->db, $this->userContextService->getAuthMethod())) {
             $this->addSystemMessage('error', _('MFA is required by your organization\'s security policy and cannot be disabled.'));
             $this->displayMfaSetup();
             return;
@@ -378,7 +378,7 @@ class MfaSetupController extends BaseController
         $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
 
         // Check if MFA is enforced for this user
-        $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db);
+        $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db, $this->userContextService->getAuthMethod());
 
         // Check if this is an enforced setup from login redirect
         $setupEnforced = isset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] === true;

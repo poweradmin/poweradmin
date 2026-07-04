@@ -307,7 +307,7 @@ class SessionAuthenticator extends LoggingService
         );
 
         // Check if MFA setup is required for this user
-        if ($mfaService->isMfaSetupRequired($userId, $this->db)) {
+        if ($mfaService->isMfaSetupRequired($userId, $this->db, $userContextService->getAuthMethod())) {
             $this->logInfo('MFA setup required for user {userid}', ['userid' => $userId]);
 
             // Set a session flag to indicate this is an enforced setup

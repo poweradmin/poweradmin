@@ -24,6 +24,10 @@ namespace Poweradmin\Domain\Service;
 
 class UserContextService
 {
+    // Auth methods delegated to an external IdP (shared by session auth_used and
+    // users.auth_method values); everything else validates against the local database
+    public const EXTERNAL_AUTH_METHODS = ['ldap', 'oidc', 'saml'];
+
     // Request-scoped fallback for stateless API requests. Web UI requests use
     // session-backed values directly; API requests authenticate via API key /
     // Basic auth and have no $_SESSION user, so PublicApiController seeds these
