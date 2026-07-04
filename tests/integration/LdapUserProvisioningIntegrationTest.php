@@ -255,7 +255,10 @@ class LdapUserProvisioningIntegrationTest extends TestCase
     {
         $stmt = $this->db->prepare('SELECT fullname, email, perm_templ, perm_templ_source, use_ldap FROM users WHERE username = ?');
         $stmt->execute([$username]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->assertIsArray($row, "User $username should exist");
+        /** @var array<string, scalar|null> $row */
+        return $row;
     }
 
     /** @return string[] */
