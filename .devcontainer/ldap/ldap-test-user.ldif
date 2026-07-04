@@ -35,3 +35,13 @@ gecos: Test User 2
 loginShell: /bin/bash
 homeDirectory: /home/testuser2
 mail: testuser2@poweradmin.org
+
+dn: ou=groups,dc=poweradmin,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=dns-admins,ou=groups,dc=poweradmin,dc=org
+objectClass: groupOfNames
+cn: dns-admins
+description: Maps to the Administrator template / Administrators group in Poweradmin
+member: uid=testuser,ou=users,dc=poweradmin,dc=org

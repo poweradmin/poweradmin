@@ -33,13 +33,33 @@ until docker exec mariadb mysqladmin ping -h localhost -uroot -puberuser >/dev/n
 done
 echo "MariaDB service is ready"
 
-# Add LDAP test user
+# Enable the memberof overlay so group memberships surface as `memberOf` on
+# user entries (Poweradmin's LDAP group mapping reads that attribute). Enabling
+# it before loading fixtures means the seeded membership is reflected. Both
+# steps are idempotent - re-running reports "already exists", which is fine.
 echo ""
-echo "Adding LDAP test user..."
+echo "Enabling memberof overlay..."
+docker exec ldap ldapmodify -Y EXTERNAL -H ldapi:/// 2>/dev/null <<'LDIF' || echo "  memberof overlay already enabled (non-fatal)"
+dn: olcOverlay=memberof,olcDatabase={1}mdb,cn=config
+changetype: add
+objectClass: olcConfig
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: top
+olcOverlay: memberof
+olcMemberOfRefInt: TRUE
+olcMemberOfGroupOC: groupOfNames
+olcMemberOfMemberAD: member
+olcMemberOfMemberOfAD: memberOf
+LDIF
+
+# Add LDAP test users and groups
+echo ""
+echo "Adding LDAP test users and groups..."
 if docker exec ldap ldapadd -x -D "cn=admin,dc=poweradmin,dc=org" -w poweradmin -f /ldap-test-user.ldif 2>/dev/null; then
-    echo "LDAP user created successfully"
+    echo "LDAP entries created successfully"
 else
-    echo "LDAP user might already exist or failed to create (non-fatal)"
+    echo "LDAP entries might already exist or failed to create (non-fatal)"
 fi
 
 # Check if Poweradmin schema exists before adding database users
