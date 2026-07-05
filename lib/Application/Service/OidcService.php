@@ -31,6 +31,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
@@ -44,6 +45,11 @@ use ReflectionClass;
 
 class OidcService extends LoggingService
 {
+    // Carries OIDC flow state across the IdP's cross-site POST when a provider
+    // uses response_mode=form_post, since the session cookie is SameSite=Lax.
+    private const FLOW_COOKIE_NAME = 'oidc_flow';
+    private const FLOW_COOKIE_TTL = 300;
+
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -182,12 +188,19 @@ class OidcService extends LoggingService
             $config = $this->oidcConfigurationService->getProviderConfig($providerId);
             $scopes = $config['scopes'] ?? 'openid profile email';
 
-            $authUrl = $provider->getAuthorizationUrl([
+            $authParams = [
                 'state' => $state,
                 'code_challenge' => $codeChallenge,
                 'code_challenge_method' => 'S256',
                 'scope' => $scopes,
-            ]);
+            ];
+
+            if ($this->shouldUseFormPost($config, $providerId)) {
+                $authParams['response_mode'] = 'form_post';
+                $this->setFlowCookie($state, $providerId, $codeVerifier);
+            }
+
+            $authUrl = $provider->getAuthorizationUrl($authParams);
 
             $this->logInfo('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
 
@@ -205,8 +218,17 @@ class OidcService extends LoggingService
     {
         $this->logInfo('Handling OIDC callback');
 
+        // A form_post callback is a cross-site POST, so the browser withholds the
+        // SameSite=Lax session cookie; recover the flow state from the flow cookie.
+        if ($this->request->getMethod() === 'POST') {
+            if ($this->getSessionValue('oidc_state') === null) {
+                $this->restoreFlowFromCookie();
+            }
+            $this->clearFlowCookie();
+        }
+
         // Validate state parameter
-        $receivedState = $this->request->getQueryParam('state');
+        $receivedState = $this->request->getParam('state');
         $sessionState = $this->getSessionValue('oidc_state');
 
         if (empty($receivedState) || $receivedState !== $sessionState) {
@@ -217,9 +239,9 @@ class OidcService extends LoggingService
         }
 
         // Check for error parameter from OIDC provider
-        $error = $this->request->getQueryParam('error');
+        $error = $this->request->getParam('error');
         if (!empty($error)) {
-            $errorDescription = $this->request->getQueryParam('error_description', 'Unknown error');
+            $errorDescription = $this->request->getParam('error_description', 'Unknown error');
             $this->logError('OIDC provider returned error: {error} - {description}', [
                 'error' => $error,
                 'description' => $errorDescription
@@ -229,7 +251,7 @@ class OidcService extends LoggingService
             return;
         }
 
-        $code = $this->request->getQueryParam('code');
+        $code = $this->request->getParam('code');
         if (empty($code)) {
             $this->logWarning('No authorization code in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: No authorization code'), 'danger');
@@ -593,6 +615,106 @@ class OidcService extends LoggingService
         if (isset($_SESSION[$key])) {
             unset($_SESSION[$key]);
         }
+    }
+
+    /**
+     * Flow cookie methods for response_mode=form_post support
+     */
+    private function shouldUseFormPost(array $config, string $providerId): bool
+    {
+        if (($config['response_mode'] ?? 'query') !== 'form_post') {
+            return false;
+        }
+
+        // SameSite=None cookies require a secure context, so form_post is
+        // HTTPS-only; localhost is allowed for development setups.
+        if ($this->detectScheme() !== 'https' && !$this->isLocalhostRequest()) {
+            $this->logWarning(
+                'OIDC provider {provider} is configured with response_mode=form_post but the request is not HTTPS; falling back to query',
+                ['provider' => $providerId]
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isLocalhostRequest(): bool
+    {
+        $host = $this->request->getServerParam('SERVER_NAME', '');
+
+        return in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true);
+    }
+
+    private function setFlowCookie(string $state, string $providerId, string $codeVerifier): void
+    {
+        $payload = json_encode([
+            'state' => $state,
+            'provider' => $providerId,
+            'verifier' => $codeVerifier,
+        ]);
+
+        setcookie(self::FLOW_COOKIE_NAME, $this->flowEncryptionService()->encrypt($payload), [
+            'expires' => time() + self::FLOW_COOKIE_TTL,
+            'path' => $this->getFlowCookiePath(),
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None',
+        ]);
+    }
+
+    private function restoreFlowFromCookie(): void
+    {
+        $rawCookie = $_COOKIE[self::FLOW_COOKIE_NAME] ?? '';
+        if ($rawCookie === '' || !str_contains($rawCookie, ':')) {
+            return;
+        }
+
+        try {
+            $payload = json_decode($this->flowEncryptionService()->decrypt($rawCookie), true);
+        } catch (\Throwable $e) {
+            $this->logWarning('Failed to decrypt OIDC flow cookie: {error}', ['error' => $e->getMessage()]);
+            return;
+        }
+
+        if (!is_array($payload) || empty($payload['state']) || empty($payload['provider'])) {
+            $this->logWarning('OIDC flow cookie has an invalid payload');
+            return;
+        }
+
+        $this->setSessionValue('oidc_state', $payload['state']);
+        $this->setSessionValue('oidc_provider', $payload['provider']);
+        if (!empty($payload['verifier'])) {
+            $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
+        }
+
+        $this->logInfo('Restored OIDC flow state from flow cookie for form_post callback');
+    }
+
+    private function clearFlowCookie(): void
+    {
+        if (!isset($_COOKIE[self::FLOW_COOKIE_NAME])) {
+            return;
+        }
+
+        unset($_COOKIE[self::FLOW_COOKIE_NAME]);
+        setcookie(self::FLOW_COOKIE_NAME, '', [
+            'expires' => time() - 3600,
+            'path' => $this->getFlowCookiePath(),
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None',
+        ]);
+    }
+
+    private function getFlowCookiePath(): string
+    {
+        return $this->configManager->get('interface', 'base_url_prefix', '') . '/oidc/callback';
+    }
+
+    private function flowEncryptionService(): PasswordEncryptionService
+    {
+        return new PasswordEncryptionService($this->configManager->get('security', 'session_key', ''));
     }
 
     /**

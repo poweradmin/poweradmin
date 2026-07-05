@@ -23,7 +23,7 @@ oidc_login:
 oidc_callback:
   path: /oidc/callback
   controller: Poweradmin\Application\Controller\OidcCallbackController::run
-  methods: [GET]
+  methods: [GET, POST]
 
 # SAML Authentication
 saml_login:

@@ -458,6 +458,7 @@ return [
                 'client_id' => '',                     // Application (client) ID from Azure
                 'client_secret' => '',                 // Client secret from Azure
                 'tenant' => 'common',                  // Tenant ID or 'common' for multi-tenant
+                'response_mode' => 'query',            // 'query' (default) or 'form_post' (HTTPS only, works with any provider; added in 4.5.0)
                 'auto_discovery' => true,
                 'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
                 'logout_url' => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/logout',

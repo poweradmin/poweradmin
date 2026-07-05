@@ -63,6 +63,19 @@ class Request
         return $this->postParams[$key] ?? $default;
     }
 
+    /**
+     * Returns a parameter from the POST body on POST requests, from the
+     * query string otherwise. For endpoints that accept both methods.
+     */
+    public function getParam(string $key, $default = null)
+    {
+        if ($this->getMethod() === 'POST') {
+            return $this->postParams[$key] ?? $default;
+        }
+
+        return $this->queryParams[$key] ?? $default;
+    }
+
     public function getServerParam(string $key, $default = null)
     {
         return $this->serverParams[$key] ?? $default;

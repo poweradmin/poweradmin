@@ -130,6 +130,37 @@ class RequestTest extends TestCase
         $this->assertSame(['10', '20', '30'], $request->getPostParam('groups'));
     }
 
+    public function testGetParamReadsQueryStringOnGetRequests(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_GET = ['code' => 'from-query'];
+        $_POST = ['code' => 'from-post'];
+        $request = new Request();
+
+        $this->assertSame('from-query', $request->getParam('code'));
+    }
+
+    public function testGetParamReadsPostBodyOnPostRequests(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_GET = ['code' => 'from-query'];
+        $_POST = ['code' => 'from-post'];
+        $request = new Request();
+
+        $this->assertSame('from-post', $request->getParam('code'));
+    }
+
+    public function testGetParamDoesNotFallBackAcrossSources(): void
+    {
+        // A POST request must not read values from the query string.
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_GET = ['state' => 'query-only'];
+        $request = new Request();
+
+        $this->assertNull($request->getParam('state'));
+        $this->assertSame('fallback', $request->getParam('state', 'fallback'));
+    }
+
     public function testGetServerParamReturnsValue(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
