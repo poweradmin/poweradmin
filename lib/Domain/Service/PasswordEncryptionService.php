@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ class PasswordEncryptionService
 
     public function decrypt(string $password): string
     {
-        if (empty($password)) {
+        // Malformed or tampered input decrypts to an empty string.
+        if (empty($password) || !str_contains($password, ':')) {
             return '';
         }
 
@@ -55,8 +56,13 @@ class PasswordEncryptionService
 
         list($encryptedPassword, $iv) = explode(':', $password, 2);
         $iv = base64_decode($iv);
+        if ($iv === false || strlen($iv) !== self::IV_LENGTH) {
+            return '';
+        }
 
-        return rtrim(openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv), "\0");
+        $decrypted = openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv);
+
+        return $decrypted === false ? '' : rtrim($decrypted, "\0");
     }
 
     private function computeKey(): string

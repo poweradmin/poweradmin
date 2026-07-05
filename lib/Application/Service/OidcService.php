@@ -220,12 +220,13 @@ class OidcService extends LoggingService
 
         // A form_post callback is a cross-site POST, so the browser withholds the
         // SameSite=Lax session cookie; recover the flow state from the flow cookie.
-        if ($this->request->getMethod() === 'POST') {
-            if ($this->getSessionValue('oidc_state') === null) {
-                $this->restoreFlowFromCookie();
-            }
-            $this->clearFlowCookie();
+        if ($this->request->getMethod() === 'POST' && $this->getSessionValue('oidc_state') === null) {
+            $this->restoreFlowFromCookie();
         }
+
+        // The flow cookie is single-use; this also drops a leftover cookie when
+        // an abandoned form_post attempt is later completed via the query flow.
+        $this->clearFlowCookie();
 
         // Validate state parameter
         $receivedState = $this->request->getParam('state');
@@ -654,19 +655,13 @@ class OidcService extends LoggingService
             'verifier' => $codeVerifier,
         ]);
 
-        setcookie(self::FLOW_COOKIE_NAME, $this->flowEncryptionService()->encrypt($payload), [
-            'expires' => time() + self::FLOW_COOKIE_TTL,
-            'path' => $this->getFlowCookiePath(),
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'None',
-        ]);
+        $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
     }
 
     private function restoreFlowFromCookie(): void
     {
         $rawCookie = $_COOKIE[self::FLOW_COOKIE_NAME] ?? '';
-        if ($rawCookie === '' || !str_contains($rawCookie, ':')) {
+        if ($rawCookie === '') {
             return;
         }
 
@@ -677,16 +672,14 @@ class OidcService extends LoggingService
             return;
         }
 
-        if (!is_array($payload) || empty($payload['state']) || empty($payload['provider'])) {
+        if (!is_array($payload) || empty($payload['state']) || empty($payload['provider']) || empty($payload['verifier'])) {
             $this->logWarning('OIDC flow cookie has an invalid payload');
             return;
         }
 
         $this->setSessionValue('oidc_state', $payload['state']);
         $this->setSessionValue('oidc_provider', $payload['provider']);
-        if (!empty($payload['verifier'])) {
-            $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
-        }
+        $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
 
         $this->logInfo('Restored OIDC flow state from flow cookie for form_post callback');
     }
@@ -697,9 +690,13 @@ class OidcService extends LoggingService
             return;
         }
 
-        unset($_COOKIE[self::FLOW_COOKIE_NAME]);
-        setcookie(self::FLOW_COOKIE_NAME, '', [
-            'expires' => time() - 3600,
+        $this->writeFlowCookie('', time() - 3600);
+    }
+
+    private function writeFlowCookie(string $value, int $expires): void
+    {
+        setcookie(self::FLOW_COOKIE_NAME, $value, [
+            'expires' => $expires,
             'path' => $this->getFlowCookiePath(),
             'secure' => true,
             'httponly' => true,
@@ -709,7 +706,11 @@ class OidcService extends LoggingService
 
     private function getFlowCookiePath(): string
     {
-        return $this->configManager->get('interface', 'base_url_prefix', '') . '/oidc/callback';
+        // Must match the real callback path or the browser won't return the
+        // cookie; getCallbackUrl() honors application_url and base_url_prefix.
+        $path = parse_url($this->getCallbackUrl(), PHP_URL_PATH);
+
+        return is_string($path) && $path !== '' ? $path : '/oidc/callback';
     }
 
     private function flowEncryptionService(): PasswordEncryptionService
