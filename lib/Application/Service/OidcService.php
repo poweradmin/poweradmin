@@ -628,10 +628,13 @@ class OidcService extends LoggingService
         }
 
         // SameSite=None cookies require a secure context, so form_post is
-        // HTTPS-only; localhost is allowed for development setups.
-        if ($this->detectScheme() !== 'https' && !$this->isLocalhostRequest()) {
+        // HTTPS-only; localhost is allowed for development setups. Judged by
+        // the browser-facing callback URL, which honors application_url on
+        // deployments where TLS terminates before PHP.
+        $callbackUrl = $this->getCallbackUrl();
+        if (parse_url($callbackUrl, PHP_URL_SCHEME) !== 'https' && !$this->isLocalhostUrl($callbackUrl)) {
             $this->logWarning(
-                'OIDC provider {provider} is configured with response_mode=form_post but the request is not HTTPS; falling back to query',
+                'OIDC provider {provider} is configured with response_mode=form_post but the callback URL is not HTTPS; falling back to query',
                 ['provider' => $providerId]
             );
             return false;
@@ -640,9 +643,9 @@ class OidcService extends LoggingService
         return true;
     }
 
-    private function isLocalhostRequest(): bool
+    private function isLocalhostUrl(string $url): bool
     {
-        $host = $this->request->getServerParam('SERVER_NAME', '');
+        $host = parse_url($url, PHP_URL_HOST);
 
         return in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true);
     }
