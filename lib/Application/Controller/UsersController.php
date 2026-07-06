@@ -76,8 +76,19 @@ class UsersController extends BaseController
     private function updateUsers(): void
     {
         $success = false;
+        $blocked = false;
+        $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
+        $permissionService = $this->createPermissionService();
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         foreach ($this->request->getPostParam('user') as $user) {
+            if (!is_array($user)) {
+                continue;
+            }
+            // A delegated admin (non-ueberuser) must not modify a superuser account.
+            if (!$currentIsSuperuser && $permissionService->isAdmin((int)$user['uid'])) {
+                $blocked = true;
+                continue;
+            }
             $result = $legacyUsers->updateUserDetails($user);
             if ($result) {
                 $success = true;
@@ -85,6 +96,9 @@ class UsersController extends BaseController
         }
         if ($success) {
             $this->setMessage('users', 'success', _('User details updated'));
+        }
+        if ($blocked) {
+            $this->setMessage('users', 'error', _('You do not have permission to edit a superuser account.'));
         }
     }
 
