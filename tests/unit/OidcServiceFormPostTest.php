@@ -152,9 +152,10 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $this->assertArrayNotHasKey('oidc_state', $_SESSION);
-        $this->assertArrayNotHasKey('oidc_provider', $_SESSION);
-        $this->assertArrayNotHasKey('oidc_code_verifier', $_SESSION);
+        $session = $_SESSION ?? [];
+        $this->assertArrayNotHasKey('oidc_state', $session);
+        $this->assertArrayNotHasKey('oidc_provider', $session);
+        $this->assertArrayNotHasKey('oidc_code_verifier', $session);
     }
 
     public function testRestoreFlowIgnoresPayloadWithMissingFields(): void
@@ -168,8 +169,9 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $this->assertArrayNotHasKey('oidc_state', $_SESSION);
-        $this->assertArrayNotHasKey('oidc_code_verifier', $_SESSION);
+        $session = $_SESSION ?? [];
+        $this->assertArrayNotHasKey('oidc_state', $session);
+        $this->assertArrayNotHasKey('oidc_code_verifier', $session);
     }
 
     public function testRestoreFlowIgnoresCookieEncryptedWithDifferentKey(): void
@@ -184,6 +186,7 @@ class OidcServiceFormPostTest extends TestCase
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
-        $this->assertArrayNotHasKey('oidc_state', $_SESSION);
+        $session = $_SESSION ?? [];
+        $this->assertArrayNotHasKey('oidc_state', $session);
     }
 }
