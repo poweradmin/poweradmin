@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,12 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->updatePermissionTemplateDetails($this->getRequest());
+        // Ensure perm_id is always present so an all-unchecked form clears the
+        // permission list rather than leaving it untouched.
+        $request = $this->getRequest();
+        $request['perm_id'] = $request['perm_id'] ?? [];
+        $this->permissionTemplate->updatePermissionTemplateDetails($request);
+
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('/permissions/templates');
     }
