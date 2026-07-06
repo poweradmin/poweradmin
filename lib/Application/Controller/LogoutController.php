@@ -99,7 +99,7 @@ class LogoutController extends BaseController
                 $returnUrl = $this->getBaseUrl() . '/login';
 
                 // Determine parameter name based on provider
-                $paramName = $this->getLogoutParameterName($logoutUrl, $providerConfig);
+                $paramName = $this->getLogoutParameterName($logoutUrl);
 
                 // Build logout URL
                 $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
@@ -174,20 +174,15 @@ class LogoutController extends BaseController
         }
     }
 
-    private function getLogoutParameterName(string $logoutUrl, array $config): string
+    private function getLogoutParameterName(string $logoutUrl): string
     {
-        // Auth0 uses 'returnTo', others use 'redirect_uri'
+        // Auth0 uses 'returnTo' instead of the standard parameter
         if (strpos($logoutUrl, 'auth0.com') !== false) {
             return 'returnTo';
         }
 
-        // Azure AD uses 'post_logout_redirect_uri'
-        if (strpos($logoutUrl, 'microsoftonline.com') !== false) {
-            return 'post_logout_redirect_uri';
-        }
-
-        // Default OIDC standard
-        return 'redirect_uri';
+        // OIDC RP-Initiated Logout standard; Keycloak 18+ rejects the legacy 'redirect_uri'
+        return 'post_logout_redirect_uri';
     }
 
     private function requiresClientIdInLogout(array $config): bool
