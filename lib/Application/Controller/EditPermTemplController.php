@@ -83,7 +83,11 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->updatePermissionTemplateDetails($this->getRequest());
+        // Ensure perm_id is always present so an all-unchecked form clears the
+        // permission list rather than leaving it untouched.
+        $request = $this->getRequest();
+        $request['perm_id'] = $request['perm_id'] ?? [];
+        $this->permissionTemplate->updatePermissionTemplateDetails($request);
 
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:edit_perm_template id:%s name:%s',
