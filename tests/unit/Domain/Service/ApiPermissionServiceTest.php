@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -440,13 +440,24 @@ class ApiPermissionServiceTest extends TestCase
     public function testCanEditUserWithEditOthersPermission(): void
     {
         // For canEditUser(2, 5): not editing self, so checks:
-        // 1. user_is_ueberuser -> false
-        // 2. (userId === targetUserId && user_edit_own) -> skipped since userId != targetUserId
-        // 3. user_edit_others -> true
-        $this->setupPermissionMock([0, 1]); // not ueberuser, has edit_others
+        // 1. user_is_ueberuser (actor) -> false
+        // 2. target user_is_ueberuser -> false
+        // 3. (userId === targetUserId && user_edit_own) -> skipped since userId != targetUserId
+        // 4. user_edit_others -> true
+        $this->setupPermissionMock([0, 0, 1]); // actor not ueberuser, target not ueberuser, has edit_others
 
         $result = $this->service->canEditUser(2, 5);
         $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditUserDeniesNonUberuserEditingUberuser(): void
+    {
+        // actor not ueberuser, target IS ueberuser -> denied
+        $this->setupPermissionMock([0, 1]);
+
+        $result = $this->service->canEditUser(2, 5);
+        $this->assertFalse($result);
     }
 
     #[Test]
@@ -479,10 +490,20 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanDeleteUserWithEditOthersPermission(): void
     {
-        $this->setupPermissionMock([0, 1]); // not ueberuser, has user_edit_others
+        $this->setupPermissionMock([0, 0, 1]); // actor not ueberuser, target not ueberuser, has user_edit_others
 
         $result = $this->service->canDeleteUser(2, 5);
         $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanDeleteUserDeniesNonUberuserDeletingUberuser(): void
+    {
+        // actor not ueberuser, target IS ueberuser -> denied
+        $this->setupPermissionMock([0, 1]);
+
+        $result = $this->service->canDeleteUser(2, 5);
+        $this->assertFalse($result);
     }
 
     #[Test]
