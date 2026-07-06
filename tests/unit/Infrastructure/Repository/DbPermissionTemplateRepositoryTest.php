@@ -139,4 +139,109 @@ class DbPermissionTemplateRepositoryTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    /**
+     * @param string[] $preparedSql captures each SQL string passed to prepare()
+     */
+    private function trackingStatement(array &$preparedSql): PDOStatement&MockObject
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$preparedSql, $stmt): PDOStatement {
+            $preparedSql[] = $sql;
+            return $stmt;
+        });
+        return $stmt;
+    }
+
+    #[Test]
+    public function testUpdatePreservesPermissionsWhenPermIdOmitted(): void
+    {
+        $preparedSql = [];
+        $this->trackingStatement($preparedSql);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+
+        $result = $this->repository->updatePermissionTemplateDetails([
+            'templ_id' => 5,
+            'templ_name' => 'Renamed',
+            'templ_descr' => 'Only a rename',
+            'template_type' => 'user',
+        ]);
+
+        $this->assertTrue($result);
+        $joined = implode(' ', $preparedSql);
+        $this->assertStringContainsString('UPDATE perm_templ', $joined);
+        $this->assertStringNotContainsString('DELETE FROM perm_templ_items', $joined);
+        $this->assertStringNotContainsString('INSERT INTO perm_templ_items', $joined);
+    }
+
+    #[Test]
+    public function testUpdateClearsPermissionsWhenPermIdEmpty(): void
+    {
+        $preparedSql = [];
+        $stmt = $this->trackingStatement($preparedSql);
+        // UPDATE + DELETE execute; the INSERT is prepared but never executed
+        // because there are no permission ids to insert.
+        $stmt->expects($this->exactly(2))->method('execute')->willReturn(true);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+
+        $result = $this->repository->updatePermissionTemplateDetails([
+            'templ_id' => 5,
+            'templ_name' => 'Cleared',
+            'templ_descr' => 'All perms removed',
+            'template_type' => 'user',
+            'perm_id' => [],
+        ]);
+
+        $this->assertTrue($result);
+        $this->assertStringContainsString('DELETE FROM perm_templ_items', implode(' ', $preparedSql));
+    }
+
+    #[Test]
+    public function testUpdateReplacesPermissionsWhenPermIdProvided(): void
+    {
+        $preparedSql = [];
+        $stmt = $this->trackingStatement($preparedSql);
+        // UPDATE + DELETE + one prepared INSERT executed once per perm id.
+        $stmt->expects($this->exactly(4))->method('execute')->willReturn(true);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+
+        $result = $this->repository->updatePermissionTemplateDetails([
+            'templ_id' => 5,
+            'templ_name' => 'Replaced',
+            'templ_descr' => 'New perms',
+            'template_type' => 'user',
+            'perm_id' => [1, 2],
+        ]);
+
+        $this->assertTrue($result);
+        $joined = implode(' ', $preparedSql);
+        $this->assertStringContainsString('DELETE FROM perm_templ_items', $joined);
+        $this->assertStringContainsString('INSERT INTO perm_templ_items', $joined);
+    }
+
+    #[Test]
+    public function testUpdateRollsBackWhenAStatementFails(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willThrowException(new RuntimeException('update failed'));
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->db->expects($this->once())->method('beginTransaction')->willReturn(true);
+        $this->db->expects($this->never())->method('commit');
+        $this->db->expects($this->once())->method('rollBack')->willReturn(true);
+
+        $this->expectException(RuntimeException::class);
+
+        $this->repository->updatePermissionTemplateDetails([
+            'templ_id' => 5,
+            'templ_name' => 'Broken',
+            'templ_descr' => 'fails',
+            'template_type' => 'user',
+            'perm_id' => [1],
+        ]);
+    }
 }

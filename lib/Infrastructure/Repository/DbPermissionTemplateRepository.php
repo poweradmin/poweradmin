@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -137,38 +137,40 @@ class DbPermissionTemplateRepository
      */
     public function updatePermissionTemplateDetails(array $details): bool
     {
-        // Fix permission template name, description, and type first.
         $template_type = $details['template_type'] ?? 'user';
 
-        $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
-        $stmt->execute([
-            ':name' => $details['templ_name'],
-            ':descr' => $details['templ_descr'],
-            ':template_type' => $template_type,
-            ':id' => $details['templ_id']
-        ]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
+            $stmt->execute([
+                ':name' => $details['templ_name'],
+                ':descr' => $details['templ_descr'],
+                ':template_type' => $template_type,
+                ':id' => $details['templ_id']
+            ]);
 
-        // Now, update list of permissions assigned to this template. We could do
-        // this The Correct Way [tm] by comparing the list of permissions that are
-        // currently assigned with a list of permissions that should be assigned and
-        // apply the difference between these two lists to the database. That sounds
-        // like too much work. Just delete all the permissions currently assigned to
-        // the template, then assign all the permissions the template should have.
+            // Only rewrite the permission list when the caller supplied it. An
+            // absent perm_id key means "leave permissions untouched" (e.g. a
+            // rename); an empty array means "remove all permissions".
+            if (array_key_exists('perm_id', $details)) {
+                $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :templ_id");
+                $stmt->execute([':templ_id' => $details['templ_id']]);
 
-        $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :templ_id");
-        $stmt->execute([':templ_id' => $details['templ_id']]);
-
-        if (isset($details['perm_id'])) {
-            $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
-            foreach ($details['perm_id'] as $perm_id) {
-                $stmt->execute([
-                    ':templ_id' => $details['templ_id'],
-                    ':perm_id' => $perm_id
-                ]);
+                $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
+                foreach ($details['perm_id'] as $perm_id) {
+                    $stmt->execute([
+                        ':templ_id' => $details['templ_id'],
+                        ':perm_id' => $perm_id
+                    ]);
+                }
             }
-        }
 
-        return true;
+            $this->db->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     /**
