@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,7 +67,17 @@ class UsersController extends BaseController
     private function updateUsers(): void
     {
         $success = false;
+        $blocked = false;
+        $currentIsSuperuser = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         foreach ($_POST['user'] as $user) {
+            if (!is_array($user)) {
+                continue;
+            }
+            // A delegated admin (non-ueberuser) must not modify a superuser account.
+            if (!$currentIsSuperuser && UserManager::isUserSuperuser($this->db, (int)$user['uid'])) {
+                $blocked = true;
+                continue;
+            }
             $legacyUsers = new UserManager($this->db, $this->getConfig());
             $result = $legacyUsers->updateUserDetails($user);
             if ($result) {
@@ -76,6 +86,9 @@ class UsersController extends BaseController
         }
         if ($success) {
             $this->setMessage('users', 'success', _('User details updated'));
+        }
+        if ($blocked) {
+            $this->setMessage('users', 'error', _('You do not have permission to edit a superuser account.'));
         }
     }
 
