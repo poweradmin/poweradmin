@@ -375,6 +375,11 @@ class ApiPermissionService
             return true;
         }
 
+        // A delegated admin (non-ueberuser) must not modify a ueberuser account.
+        if ($userId !== $targetUserId && $this->userHasPermission($targetUserId, 'user_is_ueberuser')) {
+            return false;
+        }
+
         // User can edit their own details with user_edit_own
         if ($userId === $targetUserId && $this->userHasPermission($userId, 'user_edit_own')) {
             return true;
@@ -417,6 +422,11 @@ class ApiPermissionService
         // Uberuser can delete users (except themselves - business logic check elsewhere)
         if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
             return true;
+        }
+
+        // A delegated admin (non-ueberuser) must not delete a ueberuser account.
+        if ($userId !== $targetUserId && $this->userHasPermission($targetUserId, 'user_is_ueberuser')) {
+            return false;
         }
 
         // User with user_edit_others can delete users (except themselves)
