@@ -432,8 +432,12 @@ class RecordManager implements RecordManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
 
         // Create RecordRepository to get record details
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
+        if (empty($record)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
