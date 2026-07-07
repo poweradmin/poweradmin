@@ -262,6 +262,10 @@ class ZoneSearch extends BaseSearch
             $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id'] = $userId;
             $params[':user_id_group'] = $userId;
+        } elseif ($permission_view != 'all') {
+            // Only 'all' and 'own' grant visibility; any other level matches
+            // nothing rather than falling through unfiltered.
+            $whereConditions .= ' AND 1=0';
         }
 
         return $whereConditions;
@@ -302,6 +306,10 @@ class ZoneSearch extends BaseSearch
             $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id_count'] = $userId;
             $params[':user_id_count_group'] = $userId;
+        } elseif ($permission_view != 'all') {
+            // Only 'all' and 'own' grant visibility; any other level matches
+            // nothing rather than falling through unfiltered.
+            $whereConditions .= ' AND 1=0';
         }
 
         return $whereConditions;
