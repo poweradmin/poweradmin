@@ -1018,10 +1018,30 @@ class UserManagementServiceTest extends TestCase
             ->willReturn(['id' => 1]);
 
         $this->userRepository->method('permissionTemplateExists')
-            ->with(999)
+            ->with(999, 'user')
             ->willReturn(false);
 
         $result = $this->service->assignPermissionTemplate(1, 999);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(404, $result['status']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        // Template id 6 exists only as a group template; the type=user filter rejects it,
+        // so a user cannot be assigned a group template (matches createUser/updateUser).
+        $this->userRepository->method('permissionTemplateExists')
+            ->with(6, 'user')
+            ->willReturn(false);
+        $this->userRepository->expects($this->never())->method('assignPermissionTemplate');
+
+        $result = $this->service->assignPermissionTemplate(1, 6);
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
@@ -1035,7 +1055,7 @@ class UserManagementServiceTest extends TestCase
             ->willReturn(['id' => 1]);
 
         $this->userRepository->method('permissionTemplateExists')
-            ->with(2)
+            ->with(2, 'user')
             ->willReturn(true);
 
         $this->userRepository->method('assignPermissionTemplate')
