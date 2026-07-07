@@ -545,8 +545,8 @@ class UserManagementService
             ];
         }
 
-        // Check if permission template exists
-        if (!$this->permissionTemplateExists($permTemplId)) {
+        // Reject group-type templates for users, matching createUser/updateUser.
+        if (!$this->permissionTemplateExists($permTemplId, 'user')) {
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
