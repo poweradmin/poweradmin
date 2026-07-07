@@ -965,6 +965,12 @@ class UsersController extends PublicApiController
             $currentUserId = $this->getAuthenticatedUserId();
             $targetUserId = (int)$this->pathParameters['id'];
 
+            // Authorize against the target user, not just the generic capability, so a
+            // delegated admin cannot retemplate a ueberuser account (matches updateUser).
+            if (!$this->apiPermissionService->canEditUser($currentUserId, $targetUserId)) {
+                return $this->returnApiError('You do not have permission to edit this user', 403);
+            }
+
             // Check if user has permission to edit permission templates
             if (!$this->apiPermissionService->canEditPermissionTemplates($currentUserId)) {
                 return $this->returnApiError('You do not have permission to edit permission templates', 403);
