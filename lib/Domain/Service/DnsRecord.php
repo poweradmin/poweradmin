@@ -669,6 +669,13 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission($this->db);
 
         $record = $this->get_record_details_from_record_id($rid);
+        if (empty($record)) {
+            $error = new ErrorMessage(_("Record not found."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
