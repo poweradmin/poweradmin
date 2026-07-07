@@ -49,7 +49,9 @@ class RecordLog
     public function logPrior($rid, $zid, $comment): void
     {
         $this->record_prior = $this->getRecord($rid);
-        $this->record_prior['zid'] = $zid;
+        // Log against the record's real zone, not a caller-supplied id that may
+        // point at a different zone the caller happens to own.
+        $this->record_prior['zid'] = $this->record_prior['domain_id'] ?? $zid;
         $this->record_prior['comment'] = $comment;
     }
 
