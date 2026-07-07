@@ -315,6 +315,16 @@ class RecordManager implements RecordManagerInterface
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
 
+        // Derive the zone from the record id; a caller-supplied zid could name an
+        // owned zone to pass the ownership check while editing another zone's record.
+        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordDetails = $recordRepository->getRecordDetailsFromRecordId((int)$record['rid']);
+        if (empty($recordDetails)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
+        $record['zid'] = (int)$recordDetails['zid'];
+
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
