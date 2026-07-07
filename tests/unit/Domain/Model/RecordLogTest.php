@@ -121,6 +121,30 @@ class RecordLogTest extends TestCase
         $this->assertSame([], $errors, 'hasChanged() must not emit warnings when either name is null');
     }
 
+    public function testLogPriorRecordsRecordsRealZoneNotSuppliedId(): void
+    {
+        // A caller may pass a zone id that differs from the record's real zone
+        // (an owned zone used to satisfy an ownership check). The audit entry
+        // must reflect the record's actual zone, taken from the record itself.
+        $log = $this->makeRecordLog(['old-id' => [
+            'domain_id' => 2,
+            'type' => 'A',
+            'name' => 'host.example.com',
+            'content' => '192.0.2.1',
+        ]]);
+        $log->logPrior('old-id', 999, '');
+
+        $this->assertSame(2, $log->getRecordCopy()['zid']);
+    }
+
+    public function testLogPriorFallsBackToSuppliedZoneWhenRecordMissing(): void
+    {
+        $log = $this->makeRecordLog([]);
+        $log->logPrior('missing-id', 7, '');
+
+        $this->assertSame(7, $log->getRecordCopy()['zid']);
+    }
+
     public function testLogAfterFallsBackToSubmittedRecordData(): void
     {
         $prior = [
