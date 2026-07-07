@@ -892,7 +892,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
         $stmt->execute();
-
+        $account = self::getZoneAccount($this->db, $zoneId);
+        if ($account !== null) {
+            $this->backendProvider->updateZoneAccount($zoneId, $account);
+        }
         return $stmt->rowCount() > 0;
     }
 
@@ -911,7 +914,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
-
+        $account = self::getZoneAccount($this->db, $zoneId);
+        if ($account !== null) {
+            $this->backendProvider->updateZoneAccount($zoneId, $account);
+        }
         return $stmt->rowCount() > 0;
     }
 
@@ -1335,5 +1341,19 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
+    }
+
+    private static function getZoneAccount(PDO $db, int $domainId): ?string
+    {
+        $stmt = $db->prepare("
+            SELECT u.username
+            FROM users u
+            INNER JOIN zones z ON z.owner = u.id
+            WHERE z.domain_id = ?
+            ORDER BY z.id
+            LIMIT 1
+        ");
+        $stmt->execute([$domainId]);
+        return $stmt->fetchColumn();
     }
 }
