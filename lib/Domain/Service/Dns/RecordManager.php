@@ -387,8 +387,12 @@ class RecordManager implements RecordManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
 
         // Create RecordRepository to get record details
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
+        if (empty($record)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
