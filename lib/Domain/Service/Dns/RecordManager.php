@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -294,6 +295,16 @@ class RecordManager implements RecordManagerInterface
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
+
+        // Derive the zone from the record id; a caller-supplied zid could name an
+        // owned zone to pass the ownership check while editing another zone's record.
+        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordDetails = $recordRepository->getRecordDetailsFromRecordId($record['rid']);
+        if (empty($recordDetails)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
+        $record['zid'] = (int)$recordDetails['zid'];
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
