@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
@@ -327,6 +328,16 @@ class RecordManager implements RecordManagerInterface
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
 
+        // Derive the zone from the record id; a caller-supplied zid could name an
+        // owned zone to pass the ownership check while editing another zone's record.
+        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordDetails = $recordRepository->getRecordDetailsFromRecordId($record['rid']);
+        if (empty($recordDetails)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
+        $record['zid'] = (int)$recordDetails['zid'];
+
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
@@ -344,14 +355,6 @@ class RecordManager implements RecordManagerInterface
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } else {
-            $beforeRecord = null;
-            try {
-                $recordRepositoryForBefore = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-                $beforeRecord = $recordRepositoryForBefore->getRecordDetailsFromRecordId($record['rid']);
-            } catch (Throwable $e) {
-                $this->logger->warning('Failed to fetch record before edit for change log: {error}', ['error' => $e->getMessage()]);
-            }
-
             // Normalize the name BEFORE validation
             $zone = $this->domainRepository->getDomainNameById($record['zid']);
             $hostnameValidator = new HostnameValidator($this->config);
@@ -392,24 +395,22 @@ class RecordManager implements RecordManagerInterface
                     return false;
                 }
 
-                if ($beforeRecord !== null) {
-                    $afterRecord = [
-                        'id' => $record['rid'],
-                        'name' => $name,
-                        'type' => $record['type'],
-                        'content' => $content,
-                        'ttl' => $validatedTtl,
-                        'prio' => $validatedPrio,
-                        'disabled' => $record['disabled'] ?? false,
-                        'zone_name' => is_string($zone) ? $zone : null,
-                    ];
-                    $beforeForLog = $beforeRecord;
-                    $beforeForLog['id'] = $record['rid'];
-                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
-                    $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
-                        $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, (int) $record['zid']);
-                    });
-                }
+                $afterRecord = [
+                    'id' => $record['rid'],
+                    'name' => $name,
+                    'type' => $record['type'],
+                    'content' => $content,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPrio,
+                    'disabled' => $record['disabled'] ?? false,
+                    'zone_name' => is_string($zone) ? $zone : null,
+                ];
+                $beforeForLog = $recordDetails;
+                $beforeForLog['id'] = $record['rid'];
+                $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+                $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
+                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, (int) $record['zid']);
+                });
 
                 return true;
             } else {
