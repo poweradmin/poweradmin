@@ -367,6 +367,18 @@ class DnsRecord
         $dns_hostmaster = $this->config->get('dns_hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
 
+        // Derive the zone from the record id; a caller-supplied zid could name an
+        // owned zone to pass the ownership check while editing another zone's record.
+        $record_details = $this->get_record_details_from_record_id((int)$record['rid']);
+        if (empty($record_details)) {
+            $error = new ErrorMessage(_("Record not found."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+        $record['zid'] = (int)$record_details['zid'];
+
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
         $zone_type = $this->get_domain_type($record['zid']);
 
@@ -643,7 +655,7 @@ class DnsRecord
         $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
 
         $response = $this->db->query($query);
-        return $response->fetch();
+        return $response->fetch() ?: [];
     }
 
     /** Delete a record by a given record id
