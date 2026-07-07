@@ -409,7 +409,7 @@ class RecordManager implements RecordManagerInterface
                 $beforeForLog['id'] = $record['rid'];
                 $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
                 $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
-                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, (int) $record['zid']);
+                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
                 });
 
                 return true;
