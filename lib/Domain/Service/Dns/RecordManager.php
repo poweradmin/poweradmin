@@ -409,6 +409,10 @@ class RecordManager implements RecordManagerInterface
         // Create RecordRepository to get record details
         $recordRepository = new RecordRepository($this->db, $this->config);
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
+        if (empty($record)) {
+            $this->messageService->addSystemError(_("Record not found."));
+            return false;
+        }
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
