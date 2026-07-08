@@ -360,6 +360,30 @@ class ApiPermissionService
     }
 
     /**
+     * Check if a user may set the password of a target account (stateless).
+     *
+     * Mirrors the web flow: changing another user's password requires the
+     * dedicated user_passwd_edit_others permission, not merely user_edit_others.
+     * Editing one's own account carries its own password rights.
+     *
+     * @param int $userId Acting user ID
+     * @param int $targetUserId User whose password would change
+     * @return bool True if the password may be changed
+     */
+    public function canEditUserPassword(int $userId, int $targetUserId): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        if ($userId === $targetUserId) {
+            return true;
+        }
+
+        return $this->userHasPermission($userId, 'user_passwd_edit_others');
+    }
+
+    /**
      * Check if user can create new users (stateless)
      *
      * @param int $userId User ID to check
