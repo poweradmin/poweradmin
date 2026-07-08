@@ -82,11 +82,28 @@ class DeleteDomainsController extends BaseController
             return;
         }
 
+        // Deleting a zone requires delete permission for every selected zone
+        // (direct or group ownership); matches the single-zone delete controller.
+        $this->verifyDeletePermission($zone_ids);
+
         if (isset($_POST['confirm'])) {
+            $this->validateCsrfToken();
             $this->deleteDomains($zone_ids);
         }
 
         $this->showDomains($zone_ids);
+    }
+
+    private function verifyDeletePermission($zone_ids): void
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        $canDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+
+        foreach ((array)$zone_ids as $zone_id) {
+            $canDelete = $canDeleteOthers
+                || UserManager::canUserPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
+            $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
+        }
     }
 
     public function deleteDomains($zone_ids): void
@@ -98,12 +115,12 @@ class DeleteDomainsController extends BaseController
         // which would conflict with the deletion transaction
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         if ($pdnssec_use) {
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_delete = Permission::getDeletePermission($this->db);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             foreach ($deleted_zones as $zone) {
                 if ($zone['type'] == 'MASTER' && !empty($zone['name'])) {
                     $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone['id']);
-                    if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+                    if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
                         if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
                             $dnssecProvider->unsecureZone($zone['name']);
                         }
