@@ -244,7 +244,7 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomain(int $id): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_delete = Permission::getDeletePermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
         $tableNameService = new TableNameService($this->config);
@@ -253,7 +253,7 @@ class DomainManager implements DomainManagerInterface
         $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
-        if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+        if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
             // Get zone_id before deleting zones record for sync cleanup
             $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
@@ -307,10 +307,10 @@ class DomainManager implements DomainManagerInterface
         $this->db->beginTransaction();
 
         foreach ($domains as $id) {
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_delete = Permission::getDeletePermission($this->db);
             $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
-            if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+            if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
                     // Get zone_id before deleting zones record for sync cleanup
                     $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
