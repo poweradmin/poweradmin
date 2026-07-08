@@ -96,6 +96,11 @@ class ZoneSearch extends BaseSearch
      */
     public function fetchZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
     {
+        // Only 'all' and 'own' grant visibility; anything else sees nothing.
+        if ($permission_view !== 'own' && $permission_view !== 'all') {
+            return [];
+        }
+
         $offset = ($page - 1) * $iface_rowamount;
 
         $pdns_db_name = $this->config->get('pdns_db_name');
@@ -168,6 +173,11 @@ class ZoneSearch extends BaseSearch
      */
     public function getFoundZones(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view): int
     {
+        // Only 'all' and 'own' grant visibility; anything else counts nothing.
+        if ($permission_view !== 'own' && $permission_view !== 'all') {
+            return 0;
+        }
+
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
