@@ -402,10 +402,10 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomain(int $id): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_delete = Permission::getDeletePermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
-        if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+        if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
             // Get zone name for backend deletion.
             $zoneName = $this->domainRepository->getDomainNameById($id);
 
@@ -489,10 +489,10 @@ class DomainManager implements DomainManagerInterface
         $allSucceeded = true;
 
         foreach ($domains as $id) {
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_delete = Permission::getDeletePermission($this->db);
             $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
-            if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+            if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
                 // Get zone name for backend deletion.
                 $zoneName = $this->domainRepository->getDomainNameById($id);
 
