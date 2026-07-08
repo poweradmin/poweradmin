@@ -470,6 +470,42 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditUserPasswordAsUberuser(): void
+    {
+        $this->setupPermissionMock([1]); // user_is_ueberuser = true
+
+        $this->assertTrue($this->service->canEditUserPassword(1, 5));
+    }
+
+    #[Test]
+    public function testCanEditUserPasswordForSelf(): void
+    {
+        // not ueberuser, editing own account -> allowed without passwd_edit_others
+        $this->setupPermissionMock([0]);
+
+        $this->assertTrue($this->service->canEditUserPassword(5, 5));
+    }
+
+    #[Test]
+    public function testCanEditUserPasswordForOthersWithPermission(): void
+    {
+        // not ueberuser, editing another user, has user_passwd_edit_others
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertTrue($this->service->canEditUserPassword(2, 5));
+    }
+
+    #[Test]
+    public function testCanEditUserPasswordForOthersDeniedWithoutPermission(): void
+    {
+        // not ueberuser, editing another user, lacks user_passwd_edit_others
+        // (even a user_edit_others holder must not reset another account's password)
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertFalse($this->service->canEditUserPassword(2, 5));
+    }
+
+    #[Test]
     public function testCanCreateUserAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
