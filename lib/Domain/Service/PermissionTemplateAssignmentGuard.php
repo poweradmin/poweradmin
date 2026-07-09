@@ -52,17 +52,20 @@ class PermissionTemplateAssignmentGuard
         int $callerId,
         array &$input
     ): ?string {
-        $canAssignTemplate = $permissionService->userHasPermission($callerId, 'user_is_ueberuser')
-            || $permissionService->userHasPermission($callerId, 'user_edit_templ_perm');
+        $providesTemplate = array_key_exists('perm_templ', $input) && $input['perm_templ'] !== null;
 
-        if ($canAssignTemplate) {
-            return null;
+        if ($providesTemplate) {
+            // An explicit template may only be set by callers allowed to assign one.
+            $canAssignTemplate = $permissionService->userHasPermission($callerId, 'user_is_ueberuser')
+                || $permissionService->userHasPermission($callerId, 'user_edit_templ_perm');
+
+            return $canAssignTemplate ? null : self::REJECT_MESSAGE;
         }
 
-        if (array_key_exists('perm_templ', $input) && $input['perm_templ'] !== null) {
-            return self::REJECT_MESSAGE;
-        }
-
+        // No template supplied: on the create path default to the minimal template
+        // rather than the repository's historical Administrator (id 1) fallback -
+        // otherwise a privileged caller omitting perm_templ silently creates a
+        // super admin. On the update path the default is null and nothing changes.
         if ($defaultUserTemplateId !== null) {
             $input['perm_templ'] = $defaultUserTemplateId;
         }

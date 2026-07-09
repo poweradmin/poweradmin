@@ -126,14 +126,41 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $this->assertArrayNotHasKey('perm_templ', $input);
     }
 
-    public function testInputUntouchedWhenCallerIsPrivilegedAndOmittedTemplate(): void
+    public function testPrivilegedCallerOmittingTemplateStillGetsMinimalDefault(): void
     {
+        // Omitting perm_templ must not fall through to the repository's Administrator
+        // (id 1) fallback, even for a privileged caller - that would silently create a
+        // super admin. The minimal template is injected instead (audit M4).
         $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
         $input = ['username' => 'x'];
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
 
         $this->assertNull($error);
-        $this->assertArrayNotHasKey('perm_templ', $input, 'No default injected for privileged callers - they may omit');
+        $this->assertSame(4, $input['perm_templ']);
+    }
+
+    public function testEditTemplPermHolderOmittingTemplateGetsMinimalDefault(): void
+    {
+        $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: true);
+        $input = ['username' => 'x'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+
+        $this->assertNull($error);
+        $this->assertSame(4, $input['perm_templ']);
+    }
+
+    public function testPrivilegedCallerOmittingTemplateOnUpdatePathIsUntouched(): void
+    {
+        // Update path passes a null default, so nothing is injected and the user's
+        // existing template is preserved.
+        $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
+        $input = ['email' => 'updated@example.com'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input);
+
+        $this->assertNull($error);
+        $this->assertArrayNotHasKey('perm_templ', $input);
     }
 }
