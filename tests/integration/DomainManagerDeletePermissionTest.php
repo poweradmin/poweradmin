@@ -14,16 +14,13 @@
 
 namespace Poweradmin\Tests\Integration;
 
-use PDO;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
  * Zone deletion must be gated on the DELETE permission, not the EDIT
@@ -31,11 +28,10 @@ use ReflectionClass;
  * checked zone_content_edit_*, which let an edit-only user delete zones
  * (too permissive) while blocking a delete-only user (too strict).
  *
- * Self-contained (no shared integration base) so it runs on every branch.
  * Each test runs in a fresh process because UserManager::verifyPermission
  * caches the first lookup in a static and reuses it across calls.
  */
-class DomainManagerDeletePermissionTest extends TestCase
+class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 {
     private const EDIT_ONLY_USER_ID = 110;
     private const DELETE_OWN_USER_ID = 111;
@@ -45,19 +41,10 @@ class DomainManagerDeletePermissionTest extends TestCase
     private const ZONE_DOMAIN_ID = 555;
     private const ZONES_PRIMARY_ID = 1;
 
-    private PDO $db;
-
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec('PRAGMA foreign_keys = ON');
+        parent::setUp();
 
-        $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
-        $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
-        $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER NOT NULL, perm_id INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, perm_templ INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER)");
-        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL)");
@@ -66,18 +53,13 @@ class DomainManagerDeletePermissionTest extends TestCase
         $this->seedUsers();
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['userid']);
-    }
-
     #[RunInSeparateProcess]
     public function testDeleteRefusedForOwnerWithOnlyEditPermission(): void
     {
         $this->seedZoneOwnedBy(self::EDIT_ONLY_USER_ID);
         $_SESSION['userid'] = self::EDIT_ONLY_USER_ID;
 
-        $backend = $this->dnsBackendStub();
+        $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('deleteZone');
 
         $manager = $this->makeDomainManager($backend);
@@ -94,7 +76,7 @@ class DomainManagerDeletePermissionTest extends TestCase
         $this->seedZoneOwnedBy(self::NON_PRIV_USER_ID);
         $_SESSION['userid'] = self::NON_PRIV_USER_ID;
 
-        $backend = $this->dnsBackendStub();
+        $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('deleteZone');
 
         $manager = $this->makeDomainManager($backend);
@@ -108,7 +90,7 @@ class DomainManagerDeletePermissionTest extends TestCase
         $this->seedZoneOwnedBy(self::DELETE_OWN_USER_ID);
         $_SESSION['userid'] = self::DELETE_OWN_USER_ID;
 
-        $backend = $this->dnsBackendStub();
+        $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
             ->method('deleteZone')
             ->with(self::ZONE_DOMAIN_ID, 'example.com')
@@ -126,7 +108,7 @@ class DomainManagerDeletePermissionTest extends TestCase
         $this->seedZoneOwnedBy(self::DELETE_OWN_USER_ID);
         $_SESSION['userid'] = self::DELETE_OTHERS_USER_ID;
 
-        $backend = $this->dnsBackendStub();
+        $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
             ->method('deleteZone')
             ->with(self::ZONE_DOMAIN_ID, 'example.com')
@@ -151,6 +133,7 @@ class DomainManagerDeletePermissionTest extends TestCase
 
     private function seedUsers(): void
     {
+        // Fresh perm_item ids that don't collide with the base class seed (47/53).
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
             (210, 'zone_content_edit_own'),
             (211, 'zone_delete_own'),
@@ -171,13 +154,6 @@ class DomainManagerDeletePermissionTest extends TestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES ($userId, '$username', $userId)");
     }
 
-    private function dnsBackendStub(): DnsBackendProvider&MockObject
-    {
-        $stub = $this->createMock(DnsBackendProvider::class);
-        $stub->method('isApiBackend')->willReturn(false);
-        return $stub;
-    }
-
     private function makeDomainManager(?object $backend = null): DomainManager
     {
         $config = $this->primeConfig();
@@ -190,7 +166,7 @@ class DomainManagerDeletePermissionTest extends TestCase
             $config,
             $soa,
             $repo,
-            $backend ?? $this->dnsBackendStub(),
+            $backend ?? $this->dnsBackendStub(false),
             null
         );
     }
