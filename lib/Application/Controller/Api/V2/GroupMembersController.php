@@ -203,7 +203,11 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Missing required field: user_id', 400);
             }
 
-            $userId = (int)$data['user_id'];
+            // Reject a non-scalar user_id; (int) would silently coerce an array to 1.
+            $userId = $this->inputInt($data, 'user_id');
+            if ($userId === null || $userId <= 0) {
+                return $this->returnApiError('Invalid user_id', 400);
+            }
             $this->membershipService->addUserToGroup($groupId, $userId);
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);

@@ -222,7 +222,11 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Missing required field: zone_id', 400);
             }
 
-            $zoneId = (int)$data['zone_id'];
+            // Reject a non-scalar zone_id; (int) would silently coerce an array to 1.
+            $zoneId = $this->inputInt($data, 'zone_id');
+            if ($zoneId === null || $zoneId <= 0) {
+                return $this->returnApiError('Invalid zone_id', 400);
+            }
 
             if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
                 return $scopeError;

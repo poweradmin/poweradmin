@@ -251,7 +251,11 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Missing required field: user_id or user_ids', 400);
             }
 
-            $userId = (int)$data['user_id'];
+            // Reject a non-scalar user_id; (int) would silently coerce an array to 1.
+            $userId = $this->inputInt($data, 'user_id');
+            if ($userId === null || $userId <= 0) {
+                return $this->returnApiError('Invalid user_id', 400);
+            }
 
             if ($this->userRepository->getUserById($userId) === null) {
                 return $this->returnApiError('User not found', 404);
@@ -283,6 +287,10 @@ class ZoneOwnersController extends PublicApiController
         $notFound = [];
 
         foreach ($userIds as $uid) {
+            // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.
+            if (!is_numeric($uid)) {
+                continue;
+            }
             $userId = (int)$uid;
 
             if ($this->userRepository->getUserById($userId) === null) {
