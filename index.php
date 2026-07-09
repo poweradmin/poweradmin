@@ -42,7 +42,10 @@ $router = new SymfonyRouter();
 try {
     // Process the request
     $router->process();
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
+    // array where a string is expected) is an Error, and must still yield the JSON
+    // 500 below instead of escaping as a blank/HTML fatal.
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
@@ -87,7 +90,7 @@ try {
             try {
                 $notFoundController = new NotFoundController([]);
                 $notFoundController->run();
-            } catch (Exception $notFoundError) {
+            } catch (Throwable $notFoundError) {
                 echo 'Page not found.';
             }
         } elseif ($configManager->get('misc', 'display_errors', false)) {
