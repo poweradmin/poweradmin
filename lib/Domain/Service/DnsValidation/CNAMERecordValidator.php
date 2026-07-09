@@ -214,11 +214,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE != 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }
@@ -306,11 +306,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE = 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }
