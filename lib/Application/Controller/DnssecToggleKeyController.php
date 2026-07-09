@@ -56,6 +56,14 @@ class DnssecToggleKeyController extends BaseController
         }
         $key_id = (int) $key_id;
 
+        // Toggling a signing key changes state, so require a CSRF-protected POST
+        // rather than a bare GET that could be triggered cross-site.
+        if (!$this->isPost()) {
+            $this->showError(_('This action requires a POST request.'));
+            return;
+        }
+        $this->validateCsrfToken();
+
         // Validate permissions
         $perm_view = Permission::getViewPermission($this->db);
         $perm_dnssec = Permission::getDnssecPermission($this->db);
