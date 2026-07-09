@@ -84,4 +84,81 @@ class DnsNameNormalizationTest extends TestCase
         $expected = "www.sub.example.com";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
     }
+
+    /**
+     * A name that ends with the zone string but not on a dot boundary must be
+     * treated as relative and get the zone suffix, otherwise it is stored as an
+     * out-of-zone record PowerDNS never serves.
+     */
+    public function testNormalizeRecordNameRequiresDotBoundary()
+    {
+        // "testexample.com" is NOT inside "example.com"
+        $this->assertEquals(
+            "testexample.com.example.com",
+            $this->validator->normalizeRecordName("testexample.com", "example.com")
+        );
+
+        // Case-insensitive variant of the same near-miss
+        $this->assertEquals(
+            "TESTEXAMPLE.COM.example.com",
+            $this->validator->normalizeRecordName("TESTEXAMPLE.COM", "example.com")
+        );
+
+        // Genuine dot-boundary subdomain stays untouched
+        $this->assertEquals(
+            "test.example.com",
+            $this->validator->normalizeRecordName("test.example.com", "example.com")
+        );
+
+        // Apex (name equals zone) stays untouched
+        $this->assertEquals(
+            "example.com",
+            $this->validator->normalizeRecordName("example.com", "example.com")
+        );
+    }
+
+    /**
+     * A trailing dot marks an absolute name, but it must still be qualified
+     * within the selected zone (not stored outside it once the dot is stripped).
+     * In the DNS root zone (".") the qualified name keeps its single trailing dot.
+     */
+    public function testNormalizeRecordNameHandlesAbsoluteNames()
+    {
+        // Absolute relative-name gets the zone suffix (dot stripped), not left outside it
+        $this->assertEquals(
+            "host.example.com",
+            $this->validator->normalizeRecordName("host.", "example.com")
+        );
+
+        // Absolute name already inside the zone keeps its (dotless) form
+        $this->assertEquals(
+            "mail.example.com",
+            $this->validator->normalizeRecordName("mail.example.com.", "example.com")
+        );
+
+        // Root zone: a relative name is qualified with a single trailing dot
+        $this->assertEquals(
+            "com.",
+            $this->validator->normalizeRecordName("com", ".")
+        );
+
+        // Root zone apex (empty name) is the root itself, not an empty string
+        $this->assertEquals(
+            ".",
+            $this->validator->normalizeRecordName("", ".")
+        );
+
+        // Root zone: an already-qualified name keeps its single trailing dot
+        $this->assertEquals(
+            "com.",
+            $this->validator->normalizeRecordName("com.", ".")
+        );
+
+        // Only one trailing dot is stripped: "host.." keeps an empty label so it
+        // still fails hostname validation downstream instead of being sanitized.
+        $this->assertEquals(
+            "host..example.com",
+            $this->validator->normalizeRecordName("host..", "example.com")
+        );
+    }
 }
