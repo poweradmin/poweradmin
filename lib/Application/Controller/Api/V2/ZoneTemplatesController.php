@@ -113,6 +113,11 @@ class ZoneTemplatesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $templates = $this->repository->listZoneTemplates($userId, $isUeberuser);
@@ -195,6 +200,11 @@ class ZoneTemplatesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $id = (int)$this->pathParameters['id'];

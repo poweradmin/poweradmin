@@ -76,6 +76,12 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     private function canViewTemplate(int $userId, int $templateId): bool
     {
+        // Viewing zone templates requires a zone-template permission (matches the
+        // web UI); global and own templates are then readable within that.
+        if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
+            return false;
+        }
+
         if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
             return true;
         }

@@ -506,6 +506,38 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneTemplatesAsUberuser(): void
+    {
+        $this->setupPermissionMock([1]); // user_is_ueberuser
+
+        $this->assertTrue($this->service->canViewZoneTemplates(1));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithAddPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_templ_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 1]); // not ueberuser, no add, has zone_templ_edit
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesDeniedWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0]);
+
+        $this->assertFalse($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
     public function testCanCreateUserAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
