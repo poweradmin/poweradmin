@@ -704,8 +704,10 @@ class UsersController extends PublicApiController
 
             // Setting another user's password requires user_passwd_edit_others,
             // matching the web flow; without it the password field is not writable.
-            if (!empty($input['password'])
-                && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)) {
+            if (
+                !empty($input['password'])
+                && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
+            ) {
                 return $this->returnApiError('You do not have permission to change this user\'s password', 403);
             }
 
