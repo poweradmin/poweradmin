@@ -167,7 +167,7 @@ class MailService implements MailServiceInterface
     ): bool {
         $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
         $fromName = $this->config->get('mail', 'from_name', '');
-        $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
+        $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -t -i');
 
         // Set up email headers
         $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
@@ -375,7 +375,7 @@ class MailService implements MailServiceInterface
 
         // For sendmail, check if the binary exists
         if ($transportType === 'sendmail') {
-            $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
+            $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -t -i');
             $sendmailBin = explode(' ', $sendmailPath)[0];
 
             if (!file_exists($sendmailBin) || !is_executable($sendmailBin)) {
