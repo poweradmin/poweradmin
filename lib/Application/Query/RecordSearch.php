@@ -74,11 +74,6 @@ class RecordSearch extends BaseSearch
      */
     public function fetchRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, string $record_sort_direction, int $iface_rowamount, bool $iface_record_comments, int $page): array
     {
-        // Only 'all' and 'own' grant visibility; anything else sees nothing.
-        if ($permission_view !== 'own' && $permission_view !== 'all') {
-            return [];
-        }
-
         $offset = ($page - 1) * $iface_rowamount;
 
         $pdns_db_name = $this->config->get('pdns_db_name');
@@ -198,11 +193,6 @@ class RecordSearch extends BaseSearch
      */
     public function getFoundRecords(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
-        // Only 'all' and 'own' grant visibility; anything else counts nothing.
-        if ($permission_view !== 'own' && $permission_view !== 'all') {
-            return 0;
-        }
-
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
