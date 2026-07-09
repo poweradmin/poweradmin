@@ -44,20 +44,30 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
-        // DDNS auth requires an explicit zone_content_edit_* grant; ueberuser bypass is
-        // deliberately omitted so admin credentials never have to live in ddclient.conf.
+        // DDNS auth requires an explicit zone_content_edit_* grant from either the
+        // user's direct template or any group they belong to (matching the web UI);
+        // ueberuser bypass is deliberately omitted so admin credentials never have
+        // to live in ddclient.conf.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
-            FROM users, perm_templ, perm_templ_items, perm_items
+            FROM users
             WHERE users.username = :username
                 AND users.active = 1
-                AND perm_templ.id = users.perm_templ
-                AND perm_templ_items.templ_id = perm_templ.id
-                AND perm_items.id = perm_templ_items.perm_id
                 AND (
-                    perm_items.name = 'zone_content_edit_own'
-                    OR perm_items.name = 'zone_content_edit_own_as_client'
-                    OR perm_items.name = 'zone_content_edit_others'
+                    EXISTS (
+                        SELECT 1 FROM perm_templ_items pti
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE pti.templ_id = users.perm_templ
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
+                    OR EXISTS (
+                        SELECT 1 FROM user_group_members ugm
+                        JOIN user_groups ug ON ug.id = ugm.group_id
+                        JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE ugm.user_id = users.id
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
                 )
         ");
 
@@ -78,17 +88,34 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
     public function getUserZones(User $user): array
     {
         // SQL stays inside Poweradmin-native tables; zone names come from the API.
+        // Edit permission is source-specific (matching the web permission model): a zone is
+        // only returned when the owner's template (the user's for direct ownership, or the
+        // owning group's) grants zone_content_edit_*.
         $query = $this->db->prepare("
             SELECT DISTINCT z.domain_id
             FROM zones z
+            INNER JOIN users u ON u.id = z.owner
             WHERE z.owner = :user_id
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = u.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
 
             UNION
 
             SELECT DISTINCT zg.domain_id
             FROM zones_groups zg
             INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            INNER JOIN user_groups ug ON ug.id = zg.group_id
             WHERE ugm.user_id = :user_id2
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = ug.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
         ");
         $query->execute([
             ':user_id' => $user->getId(),
