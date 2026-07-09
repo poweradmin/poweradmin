@@ -420,6 +420,19 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
+    public function templateGrantsUberuser(int $permTemplId): bool
+    {
+        $query = "SELECT COUNT(*)
+                  FROM perm_templ_items
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_templ_items.templ_id = :templId
+                  AND perm_items.name = 'user_is_ueberuser'";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':templId' => $permTemplId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function createUser(array $userData): ?int
     {
         $useLdap = (int)($userData['use_ldap'] ?? 0);

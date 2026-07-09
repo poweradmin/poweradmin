@@ -149,6 +149,14 @@ interface UserRepository
     public function isUberuser(int $userId): bool;
 
     /**
+     * Check whether a permission template grants the uberuser permission
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the template grants user_is_ueberuser
+     */
+    public function templateGrantsUberuser(int $permTemplId): bool;
+
+    /**
      * Create a new user
      *
      * @param array $userData User data containing username, password, email, etc.

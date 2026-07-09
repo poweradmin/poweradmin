@@ -1086,4 +1086,36 @@ class UserManagementServiceTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertEquals('Permission template assigned successfully', $result['message']);
     }
+
+    #[Test]
+    public function testAssignPermissionTemplateBlocksDemotingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
+        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+
+        // The last super admin must not be demoted via a template swap.
+        $this->userRepository->expects($this->never())->method('assignPermissionTemplate');
+
+        $result = $this->service->assignPermissionTemplate(1, 5);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(409, $result['status']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateAllowsDemotionWhenOtherUberusersExist(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
+        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(2);
+        $this->userRepository->method('assignPermissionTemplate')->with(1, 5)->willReturn(true);
+
+        $result = $this->service->assignPermissionTemplate(1, 5);
+
+        $this->assertTrue($result['success']);
+    }
 }

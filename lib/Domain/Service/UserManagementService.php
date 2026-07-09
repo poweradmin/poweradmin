@@ -565,6 +565,21 @@ class UserManagementService
             ];
         }
 
+        // Guard against demoting the last active super admin: if this user is the
+        // only remaining ueberuser and the new template drops that permission, the
+        // system would be left with zero super admins.
+        if (
+            $this->userRepository->isUberuser($userId)
+            && $this->userRepository->countUberusers() <= 1
+            && !$this->userRepository->templateGrantsUberuser($permTemplId)
+        ) {
+            return [
+                'success' => false,
+                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                'status' => 409
+            ];
+        }
+
         try {
             // Assign permission template
             if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
