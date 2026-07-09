@@ -81,7 +81,12 @@ class Dns
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);    // TODO check for return
 
-        if (!self::endsWith(strtolower($zone), strtolower($name))) {
+        // Only the apex or a dot-boundary suffix counts as already qualified;
+        // "testexample.com" is not inside "example.com" and must get the suffix,
+        // else PowerDNS stores an out-of-zone record it never serves.
+        $isQualified = strtolower($name) === strtolower($zone)
+            || self::endsWith('.' . strtolower($zone), strtolower($name));
+        if (!$isQualified) {
             if (isset($name) && $name != "") {
                 $name = $name . "." . $zone;
             } else {
