@@ -481,6 +481,17 @@ class UserManagementService
                     ];
                 }
 
+                // The target must differ from the user being deleted, otherwise the
+                // zones are transferred to an account that is deleted moments later
+                // and left orphaned (there is no FK from zones.owner to users.id).
+                if ($transferToUserId === $userId) {
+                    return [
+                        'success' => false,
+                        'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
+                        'status' => 400
+                    ];
+                }
+
                 // Check if transfer target user exists
                 if (!$this->userExists($transferToUserId)) {
                     return [

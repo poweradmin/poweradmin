@@ -941,6 +941,25 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testDeleteUserRejectsTransferToSelf(): void
+    {
+        $this->userRepository->method('getUserById')->with(1)->willReturn(['id' => 1]);
+        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 1]]);
+
+        // Transferring to the deleted user would orphan the zones - must be rejected
+        // before any transfer or deletion happens.
+        $this->userRepository->expects($this->never())->method('transferUserZones');
+        $this->userRepository->expects($this->never())->method('deleteUser');
+
+        $result = $this->service->deleteUser(1, 1);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+        $this->assertStringContainsString('being deleted', $result['message']);
+    }
+
+    #[Test]
     public function testDeleteUserWithZonesTransfersSuccessfully(): void
     {
         $this->userRepository->method('getUserById')
