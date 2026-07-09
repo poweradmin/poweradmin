@@ -324,7 +324,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MAIL_FROM_NAME` | Default "from" name | Empty | No |
 | `PA_MAIL_RETURN_PATH` | Default "Return-Path" address | `poweradmin@example.com` | No |
 | `PA_SMTP_AUTH` | Whether SMTP requires authentication | `false` | No |
-| `PA_SENDMAIL_PATH` | Path to sendmail binary | `/usr/sbin/sendmail -bs` | No |
+| `PA_SENDMAIL_PATH` | Path to sendmail binary | `/usr/sbin/sendmail -t -i` | No |
 
 ### Interface Settings
 
