@@ -270,18 +270,32 @@ class HostnameValidator
      */
     public function normalizeRecordName(string $name, string $zone): string
     {
-        // Check if name already ends with the zone name
-        if (!$this->endsWith(strtolower($zone), strtolower($name))) {
-            // Append zone name if not already there
-            if ($name !== "") {
-                return $name . "." . $zone;
-            } else {
-                return $zone;
-            }
+        // Strip at most one trailing dot (the absolute-name marker) so an absolute
+        // name is still qualified within its zone; repeated dots are left intact so
+        // malformed input like "host.." still fails validation downstream.
+        $name = preg_replace('/\.$/', '', $name);
+        $zone = preg_replace('/\.$/', '', $zone);
+
+        // Root zone: names carry a single trailing dot and the apex is ".".
+        if ($zone === "") {
+            return $name === "" ? "." : $name . ".";
         }
 
-        // Name already includes zone, return unchanged
-        return $name;
+        if ($name === "") {
+            return $zone;
+        }
+
+        $lowerName = strtolower($name);
+        $lowerZone = strtolower($zone);
+
+        // Already qualified only at the apex or on a dot boundary. "testexample.com"
+        // is not inside "example.com" and must get the suffix, else PowerDNS stores
+        // an out-of-zone record it never serves.
+        if ($lowerName === $lowerZone || str_ends_with($lowerName, '.' . $lowerZone)) {
+            return $name;
+        }
+
+        return $name . "." . $zone;
     }
 
     /**
