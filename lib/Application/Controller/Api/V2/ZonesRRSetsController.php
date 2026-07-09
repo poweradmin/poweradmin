@@ -512,6 +512,16 @@ class ZonesRRSetsController extends PublicApiController
                     $disabled = $this->inputIntFromBool($recordData, 'disabled', 0);
                     $priority = $this->inputInt($recordData, 'priority', 0);
 
+                    // Reject non-coercible disabled/priority here, before the RRSet is
+                    // deleted: on the API backend there is no transaction, so a later
+                    // typed-insert failure would leave the RRSet gone (audit H5).
+                    if ($disabled === null || $priority === null) {
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
+                        return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
+                    }
+
                     $content = $dnsFormatter->formatContent($type, $content);
 
                     if ($type === 'TXT') {
