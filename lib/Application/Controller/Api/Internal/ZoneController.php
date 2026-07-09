@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ZoneController extends InternalApiController
 {
@@ -61,22 +62,19 @@ class ZoneController extends InternalApiController
     {
         $action = $this->request->query->get('action', '');
 
-        switch ($action) {
-            case 'list':
-                $this->listZones();
-                break;
-            case 'get':
-                $this->getZone();
-                break;
-            default:
-                $this->returnErrorResponse('Unknown action', 400);
-        }
+        $response = match ($action) {
+            'list' => $this->listZones(),
+            'get' => $this->getZone(),
+            default => $this->returnErrorResponse('Unknown action', 400),
+        };
+
+        $response->send();
     }
 
     /**
      * List zones accessible to the current user
      */
-    private function listZones(): void
+    private function listZones(): JsonResponse
     {
         // Check if user can view zones
         $this->validatePermission('zone_content_view_own');
@@ -87,7 +85,7 @@ class ZoneController extends InternalApiController
         $viewOthers = $this->hasPermission('zone_content_view_others');
         $zones = $this->zoneRepository->listZones($userId, $viewOthers);
 
-        $this->returnJsonResponse([
+        return $this->returnJsonResponse([
             'success' => true,
             'message' => 'Zones retrieved successfully',
             'data' => [
@@ -102,33 +100,30 @@ class ZoneController extends InternalApiController
     /**
      * Get a specific zone by ID
      */
-    private function getZone(): void
+    private function getZone(): JsonResponse
     {
         // Validate required parameters
         $zoneId = (int)$this->request->query->get('id', 0);
 
         if ($zoneId <= 0) {
-            $this->returnErrorResponse('Missing or invalid zone ID', 400);
-            return;
+            return $this->returnErrorResponse('Missing or invalid zone ID', 400);
         }
 
         // Check if user can view this zone
         if (!$this->hasPermission('zone_content_view_others')) {
             // Verify that the zone belongs to the current user
             if (!$this->zoneRepository->zoneExists($zoneId, $_SESSION[SessionKeys::USERID])) {
-                $this->returnErrorResponse('Zone not found or access denied', 404);
-                return;
+                return $this->returnErrorResponse('Zone not found or access denied', 404);
             }
         }
 
         $zone = $this->zoneRepository->getZone($zoneId);
 
         if (!$zone) {
-            $this->returnErrorResponse('Zone not found', 404);
-            return;
+            return $this->returnErrorResponse('Zone not found', 404);
         }
 
-        $this->returnJsonResponse([
+        return $this->returnJsonResponse([
             'success' => true,
             'message' => 'Zone retrieved successfully',
             'data' => [
