@@ -258,7 +258,7 @@ return [
         'auth' => false,                           // Whether SMTP requires authentication
 
         // Sendmail settings
-        'sendmail_path' => '/usr/sbin/sendmail -bs', // Path to sendmail binary
+        'sendmail_path' => '/usr/sbin/sendmail -t -i', // Sendmail binary; -t reads recipients from headers (-bs is SMTP mode and drops piped messages)
 
         // Logger settings (for development/debugging)
         // When transport is set to 'logger', emails are logged to error_log and application logs

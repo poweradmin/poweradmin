@@ -989,7 +989,7 @@ return [
         'from_name' => '${PA_MAIL_FROM_NAME:-}',
         'return_path' => '${PA_MAIL_RETURN_PATH:-poweradmin@example.com}',
         'auth' => ${mail_auth},
-        'sendmail_path' => '${PA_SENDMAIL_PATH:-/usr/sbin/sendmail -bs}',
+        'sendmail_path' => '${PA_SENDMAIL_PATH:-/usr/sbin/sendmail -t -i}',
     ],
     'notifications' => [
         'zone_access_enabled' => ${notification_zone_access},
