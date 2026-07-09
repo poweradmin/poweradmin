@@ -502,29 +502,23 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
-        $match = 72;
-        $found_domain_id = -1;
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT name, id FROM $domains_table
                    WHERE name like :pattern
                    ORDER BY length(name) DESC");
         $stmt->execute([':pattern' => '%.arpa']);
-        $response = $stmt;
-        if ($response) {
-            while ($r = $response->fetch()) {
-                $pos = stripos($domain, $r["name"]);
-                if ($pos !== false) {
-                    if ($pos < $match) {
-                        $match = $pos;
-                        $found_domain_id = $r["id"];
-                    }
-                }
+
+        $lowerDomain = strtolower($domain);
+        while ($r = $stmt->fetch()) {
+            // The reverse zone must equal the record name or be a suffix on a label
+            // boundary; ORDER BY length DESC returns the most specific match first,
+            // so "12.0.192.in-addr.arpa" is not mistaken for "2.0.192.in-addr.arpa".
+            $zoneName = strtolower($r["name"]);
+            if ($lowerDomain === $zoneName || str_ends_with($lowerDomain, '.' . $zoneName)) {
+                return (int)$r["id"];
             }
-        } else {
-            return -1;
         }
-        return $found_domain_id;
+        return -1;
     }
 }

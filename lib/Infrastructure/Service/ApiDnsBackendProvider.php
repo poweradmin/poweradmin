@@ -698,17 +698,23 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
         $zones = $this->getZones();
-        $match = 72;
         $foundId = -1;
+        $bestLength = -1;
 
+        $lowerName = strtolower($reverseName);
         foreach ($zones as $zone) {
-            if (!str_ends_with($zone['name'], '.arpa')) {
+            $zoneName = strtolower($zone['name']);
+            if (!str_ends_with($zoneName, '.arpa')) {
                 continue;
             }
-            $pos = stripos($reverseName, $zone['name']);
-            if ($pos !== false && $pos < $match) {
-                $match = $pos;
-                $foundId = (int)$zone['id'];
+            // Match on a label boundary (apex or suffix) and keep the longest
+            // (most specific) zone, so a record is not dropped into a shorter
+            // zone that merely shares a trailing substring.
+            if ($lowerName === $zoneName || str_ends_with($lowerName, '.' . $zoneName)) {
+                if (strlen($zoneName) > $bestLength) {
+                    $bestLength = strlen($zoneName);
+                    $foundId = (int)$zone['id'];
+                }
             }
         }
         return $foundId;

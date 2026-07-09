@@ -472,22 +472,23 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $match = 72;
-        $foundId = -1;
 
         $stmt = $this->db->prepare(
             "SELECT name, id FROM $domainsTable WHERE name LIKE :pattern ORDER BY length(name) DESC"
         );
         $stmt->execute([':pattern' => '%.arpa']);
 
+        $lowerName = strtolower($reverseName);
         while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pos = stripos($reverseName, $r['name']);
-            if ($pos !== false && $pos < $match) {
-                $match = $pos;
-                $foundId = (int)$r['id'];
+            // Match the reverse zone on a label boundary (apex or suffix); ORDER BY
+            // length DESC yields the most specific zone first, so a record is not
+            // dropped into a shorter zone that only shares a substring.
+            $zoneName = strtolower($r['name']);
+            if ($lowerName === $zoneName || str_ends_with($lowerName, '.' . $zoneName)) {
+                return (int)$r['id'];
             }
         }
-        return $foundId;
+        return -1;
     }
 
     // ---------------------------------------------------------------
