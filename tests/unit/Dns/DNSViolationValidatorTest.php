@@ -90,4 +90,50 @@ class DNSViolationValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('conflicts with an existing CNAME record', $result->getFirstError());
     }
+
+    public function testDuplicateCNAMEDetectedRegardlessOfCase()
+    {
+        // DNS names are case-insensitive (RFC 4343): a differently-cased duplicate must still be caught.
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [['id' => 5, 'name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'other.example.com']];
+                }
+                return [];
+            });
+
+        $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'ALIAS.example.com', 'target.example.com');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Multiple CNAME records with the same name are not allowed', $result->getFirstError());
+    }
+
+    public function testCNAMEConflictWithOtherTypesDetectedRegardlessOfCase()
+    {
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [];
+                }
+                return [['id' => 10, 'name' => 'conflict.example.com', 'type' => 'A', 'content' => '1.2.3.4']];
+            });
+
+        $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'Conflict.Example.com', 'target.example.com');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('A CNAME record cannot coexist with other record types', $result->getFirstError());
+    }
+
+    public function testRecordConflictsWithExistingCNAMEDetectedRegardlessOfCase()
+    {
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [['id' => 123, 'name' => 'conflict.example.com', 'type' => 'CNAME', 'content' => 'other.example.com']];
+                }
+                return [];
+            });
+
+        $result = $this->validator->validate(-1, 1, RecordType::A, 'CONFLICT.example.com', '192.168.1.1');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('conflicts with an existing CNAME record', $result->getFirstError());
+    }
 }

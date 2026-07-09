@@ -203,7 +203,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
+                if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -214,11 +214,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE != 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }
@@ -295,7 +295,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
+                if (strcasecmp($r['name'], $name) === 0 && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }
             }
@@ -306,11 +306,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE name = LOWER(?) AND TYPE = 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }

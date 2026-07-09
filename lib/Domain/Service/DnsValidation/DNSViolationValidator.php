@@ -105,7 +105,7 @@ class DNSViolationValidator
     {
         $records = $this->recordRepository->getRecordsByDomainId($zoneId, 'CNAME');
         foreach ($records as $r) {
-            if ($r['name'] === $name && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                 return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
             }
         }
@@ -116,7 +116,7 @@ class DNSViolationValidator
     {
         $records = $this->recordRepository->getRecordsByDomainId($zoneId);
         foreach ($records as $r) {
-            if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                 return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']));
             }
         }
@@ -127,7 +127,7 @@ class DNSViolationValidator
     {
         $records = $this->recordRepository->getRecordsByDomainId($zoneId, 'CNAME');
         foreach ($records as $r) {
-            if ($r['name'] === $name && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                 return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'));
             }
         }
