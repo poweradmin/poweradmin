@@ -247,13 +247,18 @@ class GroupsController extends PublicApiController
             $members = $this->membershipService->listGroupMembers($groupId);
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
+            // Do not disclose zones outside a zone-scoped key's allowlist (matches
+            // GroupZonesController::listZones); keep the count consistent with it.
+            $scope = $this->getApiKeyScope();
+            $zones = array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
+
             $data = [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
-                'zone_count' => $details['zoneCount'],
+                'zone_count' => count($zones),
                 'members' => array_map(fn($m) => [
                     'user_id' => $m->getUserId(),
                     'username' => $m->getUsername(),
