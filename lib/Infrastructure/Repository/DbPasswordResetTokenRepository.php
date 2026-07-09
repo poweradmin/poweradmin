@@ -69,13 +69,14 @@ class DbPasswordResetTokenRepository
      */
     public function findActiveTokens(): array
     {
-        $db_type = $this->config->get('database', 'type');
-        $sql = "SELECT * FROM password_reset_tokens 
-                WHERE expires_at > " . DbCompat::now($db_type) . " 
+        // expires_at is written with PHP's clock, so compare against PHP's clock too;
+        // DbCompat::now() uses the DB session/UTC clock and skews by the tz offset.
+        $sql = "SELECT * FROM password_reset_tokens
+                WHERE expires_at > :now
                 ORDER BY created_at DESC";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -86,14 +87,16 @@ class DbPasswordResetTokenRepository
     public function findByToken(string $token): ?array
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "SELECT * FROM password_reset_tokens 
-                WHERE token = :token 
-                AND expires_at > " . DbCompat::now($db_type) . " 
-                AND used = " . DbCompat::boolFalse($db_type) . " 
+        // Compare expires_at against PHP's clock (it was written with PHP's), not
+        // DbCompat::now() whose DB/UTC clock skews the check by the tz offset.
+        $sql = "SELECT * FROM password_reset_tokens
+                WHERE token = :token
+                AND expires_at > :now
+                AND used = " . DbCompat::boolFalse($db_type) . "
                 LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':token' => $token]);
+        $stmt->execute([':token' => $token, ':now' => date('Y-m-d H:i:s')]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
@@ -184,12 +187,15 @@ class DbPasswordResetTokenRepository
     public function deleteExpired(): int
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "DELETE FROM password_reset_tokens 
-                WHERE expires_at < " . DbCompat::now($db_type) . " 
+        // expires_at is compared against PHP's clock (matching how it was written);
+        // the used-token retention window keys off DB-written created_at, so it stays
+        // on the DB clock via dateSubtract.
+        $sql = "DELETE FROM password_reset_tokens
+                WHERE expires_at < :now
                 OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
 
         return $stmt->rowCount();
     }
