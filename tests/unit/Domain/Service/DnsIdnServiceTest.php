@@ -90,6 +90,26 @@ class DnsIdnServiceTest extends TestCase
     }
 
     /**
+     * Malformed punycode makes idn_to_utf8 return false; toUtf8 must fall back to
+     * the original name (a string) instead of letting the bool escape and 500.
+     */
+    public function testToUtf8WithMalformedPunycodeReturnsOriginal(): void
+    {
+        $result = DnsIdnService::toUtf8('xn--a.com');
+        $this->assertIsString($result);
+        $this->assertEquals('xn--a.com', $result);
+    }
+
+    /**
+     * getFirstLetter must not fatal on a malformed-punycode zone name.
+     */
+    public function testGetFirstLetterWithMalformedPunycode(): void
+    {
+        $result = DnsIdnService::getFirstLetter('xn--a.com');
+        $this->assertEquals('x', $result);
+    }
+
+    /**
      * Test isIdn with ASCII domain
      */
     public function testIsIdnWithAsciiDomain(): void
