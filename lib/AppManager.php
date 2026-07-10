@@ -29,6 +29,7 @@ use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
+use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
@@ -72,7 +73,11 @@ class AppManager
 
         $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
         $theme = $this->configuration->get('interface', 'theme', 'default');
-        $theme_path = $theme_base_path . '/' . $theme;
+
+        // Resolve against the app root for the on-disk existence check only; the
+        // config value stays relative for use as a URL in templates.
+        $fs_base_path = ThemePathResolver::toFilesystemPath($theme_base_path);
+        $theme_path = $fs_base_path . '/' . $theme;
 
         // Validate theme directory exists, fallback to 'default' if not
         if (!is_dir($theme_path)) {
@@ -86,7 +91,7 @@ class AppManager
 
             // Fallback to default theme
             $theme = 'default';
-            $theme_path = $theme_base_path . '/' . $theme;
+            $theme_path = $fs_base_path . '/' . $theme;
 
             // If even default doesn't exist, this is a critical error
             if (!is_dir($theme_path)) {

@@ -23,11 +23,10 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use DirectoryIterator;
+use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 
 class StyleManager
 {
-    private string $themeBasePath;
-    private string $themeName;
     private const DEFAULT_STYLE = 'light';
 
     private string $selectedStyle;
@@ -39,14 +38,9 @@ class StyleManager
         string $themeBasePath = 'templates',
         string $themeName = 'default'
     ) {
-        $this->themeBasePath = $themeBasePath;
-        $this->themeName = $themeName;
-        $this->styleDir = $themeBasePath . '/' . $themeName . '/style';
-
-        // Make sure we're looking in the correct directory
-        if (!file_exists($this->styleDir) && $themeBasePath === 'templates' && $themeName === 'default') {
-            $this->styleDir = $themeBasePath . '/' . $themeName . '/style';
-        }
+        // Resolve against the app root so style discovery doesn't depend on the
+        // process working directory; the raw base path stays relative for URLs.
+        $this->styleDir = ThemePathResolver::toFilesystemPath($themeBasePath) . '/' . $themeName . '/style';
 
         $this->availableStyles = $this->getAvailableStyles();
 

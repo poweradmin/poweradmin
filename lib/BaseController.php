@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
@@ -763,10 +764,14 @@ abstract class BaseController
         $theme = $this->config->get('interface', 'theme', 'default');
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
 
+        // Resolve against the app root for on-disk asset checks (the config value
+        // stays relative for the template URL below).
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
+
         // Check for custom theme stylesheets
-        $customLightExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_light.css');
-        $customDarkExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_dark.css');
-        $customThemeExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
+        $customLightExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_light.css');
+        $customDarkExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_dark.css');
+        $customThemeExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
 
         $activeLocale = $this->resolveActiveLocale();
 
@@ -777,7 +782,7 @@ abstract class BaseController
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'file_version' => time(),
-            'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
+            'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
             'custom_dark_exists' => $customDarkExists,
             'custom_theme_exists' => $customThemeExists,
@@ -868,13 +873,14 @@ abstract class BaseController
         $theme = $this->config->get('interface', 'theme', 'default');
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
         $selected_style = $styleManager->getSelectedStyle();
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
 
         $display_stats = $this->config->get('misc', 'display_stats');
         $db_debug = $this->config->get('database', 'debug');
 
         $this->app->render('footer.html', [
             'version' => $this->userContextService->isAuthenticated() ? Version::VERSION : false,
-            'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/footer.html'),
+            'custom_footer' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
             'db_queries' => $db_debug ? $this->init->getDebugQueries() : false,
             'show_style_switcher' => in_array($selected_style, ['light', 'dark']),

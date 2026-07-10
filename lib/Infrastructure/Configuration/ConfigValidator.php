@@ -147,6 +147,15 @@ class ConfigValidator
     private function validateTheme(): void
     {
         $themeBasePath = $this->getSetting('interface', 'theme_base_path', 'templates');
+
+        if (!is_string($themeBasePath) || $themeBasePath === '') {
+            $this->errors['interface.theme_base_path'] = 'theme_base_path must be a non-empty string';
+            return;
+        }
+
+        // Resolve against the app root (not the process cwd) so the theme-exists
+        // check doesn't spuriously fail when invoked from another directory.
+        $themeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
         $theme = $this->getSetting('interface', 'theme', 'default');
 
         if (!is_string($theme) || empty($theme)) {
