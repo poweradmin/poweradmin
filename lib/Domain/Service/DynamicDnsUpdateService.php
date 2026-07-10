@@ -61,7 +61,10 @@ class DynamicDnsUpdateService
         }
 
         try {
-            $hostname = $this->validationService->createValidatedHostname($request->getHostname());
+            // Lowercase up front so record lookups/inserts are case-consistent with
+            // PowerDNS's lowercase storage; a mixed-case client otherwise creates a
+            // duplicate record on case-sensitive backends (pgsql/API).
+            $hostname = $this->validationService->createValidatedHostname(strtolower($request->getHostname()));
             $ipList = $this->validationService->createValidatedIpList($request->getIpv4(), $request->getIpv6());
 
             $updateResult = $this->updateUserZones($user, $hostname, $ipList, $request->isDualstackUpdate());

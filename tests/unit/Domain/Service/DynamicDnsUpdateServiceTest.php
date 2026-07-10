@@ -370,4 +370,32 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertEquals('dnserr', $result);
     }
+
+    public function testAMixedCaseHostnameFindsTheExistingLowercaseRecord(): void
+    {
+        // PowerDNS stores names lowercase; a mixed-case lookup missed the record and added a duplicate (gh #1686)
+        $request = new DynamicDnsRequest(
+            'user',
+            'pass',
+            'Test.Example.COM',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+        $hostname = new HostnameValue('test.example.com');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
+        $this->authService->method('getUserZones')->willReturn([1]);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedHostname')
+            ->with('test.example.com')
+            ->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 5]);
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+
+        $this->assertEquals('nochg', $this->service->processUpdate($request));
+    }
 }
