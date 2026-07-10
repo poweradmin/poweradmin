@@ -472,7 +472,13 @@ class ZonesController extends PublicApiController
             // Extract required parameters
             $domain = $this->inputString($input, 'name', '');
             $type = $this->inputString($input, 'type', 'MASTER');
-            $slaveMaster = $this->inputString($input, 'masters') ?? $this->inputString($input, 'master', '');
+            // Accept both a comma-separated string and the PowerDNS-style `masters`
+            // array; the array form was previously dropped, creating a masterless SLAVE.
+            if (isset($input['masters']) && is_array($input['masters'])) {
+                $slaveMaster = implode(',', array_map('strval', $input['masters']));
+            } else {
+                $slaveMaster = $this->inputString($input, 'masters') ?? $this->inputString($input, 'master', '');
+            }
             $enableDnssec = $this->inputBool($input, 'enable_dnssec', false);
             $description = $this->inputString($input, 'description', '');
             $account = $this->inputString($input, 'account', '');
@@ -495,6 +501,11 @@ class ZonesController extends PublicApiController
                     return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
                 }
                 $slaveMaster = $validation['normalized'];
+            }
+
+            // A SLAVE zone is meaningless without a master to replicate from.
+            if ($type === 'SLAVE' && trim($slaveMaster) === '') {
+                return $this->returnApiError('A SLAVE zone requires at least one master server', 400);
             }
 
             // Check if user has permission to create zones
