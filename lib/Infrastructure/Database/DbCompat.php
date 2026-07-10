@@ -343,4 +343,19 @@ final class DbCompat
             default => "$column REGEXP '^[0-9]+$'",
         };
     }
+
+    /**
+     * Escape LIKE wildcards (`%`, `_`) in a user-supplied value so it matches
+     * literally. Uses `!` as the escape character (a backslash escape clause is
+     * unsafe to embed as a string literal across MySQL/PostgreSQL/SQLite), so the
+     * query must pair this with `LIKE ? ESCAPE '!'`. Append/prepend `%` to the
+     * returned value for the intended wildcard positions.
+     *
+     * @param string $value The raw value to embed in a LIKE pattern
+     * @return string The value with `!`, `%` and `_` escaped by `!`
+     */
+    public static function escapeLike(string $value): string
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
+    }
 }

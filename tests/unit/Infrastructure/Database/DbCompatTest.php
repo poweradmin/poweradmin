@@ -219,4 +219,15 @@ class DbCompatTest extends TestCase
         $result = DbCompat::concat('pgsql', ["'hello'", "' '", "'world'"]);
         $this->assertSame("CONCAT('hello', ' ', 'world')", $result);
     }
+
+    public function testEscapeLikeEscapesWildcardsAndEscapeChar(): void
+    {
+        // %, _ and the escape char (!) must all be escaped with !.
+        $this->assertSame('a!_b!%c!!d', DbCompat::escapeLike('a_b%c!d'));
+    }
+
+    public function testEscapeLikeLeavesPlainTextUnchanged(): void
+    {
+        $this->assertSame('host.example.com', DbCompat::escapeLike('host.example.com'));
+    }
 }

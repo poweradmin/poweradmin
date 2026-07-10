@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -190,10 +191,10 @@ class ReverseRecordCreator
         // Look for a PTR record pointing to this name
         $query = "SELECT id, domain_id FROM $records_table
                   WHERE type = 'PTR' AND name = ?
-                  AND (content = ? OR content LIKE ?)";
+                  AND (content = ? OR content LIKE ? ESCAPE '!')";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$contentRev, $name, "$name.%"]);
+        $stmt->execute([$contentRev, $name, DbCompat::escapeLike($name) . '.%']);
 
         $result = $stmt->fetch();
         if ($result) {
@@ -304,10 +305,10 @@ class ReverseRecordCreator
         // Look for A or AAAA record with matching hostname and IP address
         $query = "SELECT id, domain_id FROM $records_table
                   WHERE type = ? AND content = ?
-                  AND (name = ? OR name LIKE ?)";
+                  AND (name = ? OR name LIKE ? ESCAPE '!')";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$recordType, $ipAddress, $hostname, "$hostname.%"]);
+        $stmt->execute([$recordType, $ipAddress, $hostname, DbCompat::escapeLike($hostname) . '.%']);
 
         $result = $stmt->fetch();
         if ($result) {
