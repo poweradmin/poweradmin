@@ -145,7 +145,7 @@ class AddUserController extends BaseController
             // Handle generated password and email sending
             if (!empty($generatedPassword)) {
                 $configManager = ConfigurationManager::getInstance();
-                $showGeneratedPasswords = $configManager->get('interface', 'show_generated_passwords', false);
+                $showGeneratedPasswords = $configManager->get('misc', 'show_generated_passwords', true);
 
                 // Display the generated password to the admin if allowed by configuration
                 if ($showGeneratedPasswords) {
