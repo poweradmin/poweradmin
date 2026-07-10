@@ -66,11 +66,6 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             // Log the error and rethrow it to be handled by the calling code
             $this->logger->error('DbUserMfaRepository::findByUserId failed: {error}', ['error' => $e->getMessage()]);
 
-            // Only return null for "table not found" error, otherwise rethrow
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                return null;
-            }
-
             throw $e;
         }
     }
@@ -96,11 +91,6 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             // Log the error and rethrow it to be handled by the calling code
             $this->logger->error('DbUserMfaRepository::findById failed: {error}', ['error' => $e->getMessage()]);
 
-            // Only return null for "table not found" error, otherwise rethrow
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                return null;
-            }
-
             throw $e;
         }
     }
@@ -116,12 +106,6 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
         } catch (PDOException $e) {
             // Log the error
             $this->logger->error('DbUserMfaRepository::save failed: {error}', ['error' => $e->getMessage()]);
-
-            // If the table doesn't exist, we want to fail gracefully
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                $this->logger->warning('MFA table not found, operations will be skipped');
-                return $userMfa;
-            }
 
             // A concurrent insert may already have created the row (unique user_id).
             // Return it if present; otherwise this was a different failure - rethrow.
