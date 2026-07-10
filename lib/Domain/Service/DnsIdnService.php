@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,8 +39,11 @@ class DnsIdnService
             return '';
         }
 
-        // Convert punycode (xn--) to UTF-8
-        return idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII);
+        // Convert punycode (xn--) to UTF-8. idn_to_utf8 returns false for inputs
+        // it cannot decode (e.g. malformed punycode like "xn--a.com"); fall back
+        // to the original name so display code never gets a bool.
+        $result = idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII);
+        return $result !== false ? $result : $domainName;
     }
 
     /**
