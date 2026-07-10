@@ -59,6 +59,46 @@ class MailServiceTest extends TestCase
         $this->assertStringContainsString("--{$boundary}--", $messageBody);
     }
 
+    private function buildDsn(string $encryption, int $port): string
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnMap([
+            ['mail', 'host', 'localhost', 'smtp.example.com'],
+            ['mail', 'port', 25, $port],
+            ['mail', 'encryption', '', $encryption],
+            ['mail', 'username', '', ''],
+            ['mail', 'password', '', ''],
+            ['mail', 'auth', false, false],
+        ]);
+        $service = new MailService($config, $this->logger);
+        $method = new \ReflectionMethod($service, 'buildSmtpDsn');
+        $method->setAccessible(true);
+        return $method->invoke($service);
+    }
+
+    public function testTlsEncryptionEnforcesStartTls(): void
+    {
+        // encryption=tls must enforce STARTTLS via require_tls (Symfony ignores a
+        // bare ?encryption param, which would leave the session opportunistic).
+        $dsn = $this->buildDsn('tls', 587);
+        $this->assertStringStartsWith('smtp://smtp.example.com:587', $dsn);
+        $this->assertStringContainsString('require_tls=true', $dsn);
+        $this->assertStringNotContainsString('encryption=tls', $dsn);
+    }
+
+    public function testSslEncryptionUsesSmtpsScheme(): void
+    {
+        $dsn = $this->buildDsn('ssl', 465);
+        $this->assertStringStartsWith('smtps://smtp.example.com:465', $dsn);
+        $this->assertStringNotContainsString('require_tls', $dsn);
+    }
+
+    public function testNoEncryptionHasNoTlsOptions(): void
+    {
+        $dsn = $this->buildDsn('', 25);
+        $this->assertEquals('smtp://smtp.example.com:25', $dsn);
+    }
+
     public function testSinglePartEmailNoBoundary(): void
     {
         // Use reflection to access private methods

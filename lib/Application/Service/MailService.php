@@ -426,10 +426,12 @@ class MailService implements MailServiceInterface
 
         $dsn .= $host . ':' . $port;
 
-        // Add encryption parameters
+        // Enforce STARTTLS when tls is configured. Symfony ignores a bare
+        // ?encryption param, so use require_tls: the connection then fails instead
+        // of silently falling back to a plaintext session (credentials, reset links).
         $options = [];
         if ($encryption === 'tls') {
-            $options['encryption'] = 'tls';
+            $options['require_tls'] = 'true';
         }
 
         if (!empty($options)) {
