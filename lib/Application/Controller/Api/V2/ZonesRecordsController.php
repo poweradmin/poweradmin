@@ -38,7 +38,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -495,17 +494,8 @@ class ZonesRecordsController extends PublicApiController
             $hostnameValidator = new HostnameValidator($this->getConfig());
             $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
 
-            // Format content using DnsFormatter, with V2 API always auto-quoting TXT records
-            $dnsFormatter = new DnsFormatter($this->getConfig());
-            $content = $dnsFormatter->formatContent($type, $content);
-
-            // V2 API always auto-quotes TXT records, even when txt_auto_quote config is false
-            if ($type === 'TXT') {
-                $content = trim($content);
-                if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
-                    $content = '"' . $content . '"';
-                }
-            }
+            // Format content, with V2 API always auto-quoting TXT records
+            $content = $this->formatV2RecordContent($type, $content);
 
             // Validate the record
             $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
@@ -794,6 +784,10 @@ class ZonesRecordsController extends PublicApiController
             $oldContent = (string)$existingRecord['content'];
             $oldName = (string)$existingRecord['name'];
 
+            // Format content the same way create does so TXT records round-trip
+            // (GET strips the quotes V2 adds; a PUT echoing GET output must re-quote).
+            $content = $this->formatV2RecordContent($type, $content);
+
             $recordData = [
                 'rid' => $recordId,
                 'zid' => $zoneId,
@@ -813,6 +807,28 @@ class ZonesRecordsController extends PublicApiController
             // Validate disabled field
             if ($recordData['disabled'] !== 0 && $recordData['disabled'] !== 1) {
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
+            }
+
+            // Pre-validate here so a rejected record returns 400 with the specific
+            // reason. editRecord() otherwise swallows the validation message and the
+            // caller can only report a generic 500.
+            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
+            $editZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+            $editHostnameValidator = new HostnameValidator($this->getConfig());
+            $normalizedEditName = $editHostnameValidator->normalizeRecordName($recordData['name'], $editZoneName);
+            $editValidation = $validationService->validateRecord(
+                $recordId,
+                $zoneId,
+                $recordData['type'],
+                $recordData['content'],
+                $normalizedEditName,
+                $recordData['prio'],
+                $recordData['ttl'],
+                $this->getConfig()->get('dns', 'hostmaster'),
+                (int)$this->getConfig()->get('dns', 'ttl')
+            );
+            if (!$editValidation->isValid()) {
+                return $this->returnApiError($editValidation->getFirstError(), 400);
             }
 
             // Use RecordManager to edit the record

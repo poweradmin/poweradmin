@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -439,6 +440,26 @@ abstract class PublicApiController extends AbstractApiController
      * @param int $statusCode HTTP status code
      * @return JsonResponse JSON error response
      */
+    /**
+     * Apply V2 record-content formatting.
+     *
+     * V2 always quotes single-string TXT records, even when dns.txt_auto_quote is
+     * off, so records round-trip: create quotes, read strips, update must re-quote.
+     * Used by create and update paths alike so stored content stays consistent.
+     */
+    protected function formatV2RecordContent(string $type, string $content): string
+    {
+        $type = strtoupper($type);
+        $content = (new DnsFormatter($this->getConfig()))->formatContent($type, $content);
+        if ($type === 'TXT') {
+            $content = trim($content);
+            if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
+                $content = '"' . $content . '"';
+            }
+        }
+        return $content;
+    }
+
     protected function handleException(\Throwable $e, string $context, string $userMessage = 'An error occurred', int $statusCode = 500): JsonResponse
     {
         // Log detailed error information for debugging
