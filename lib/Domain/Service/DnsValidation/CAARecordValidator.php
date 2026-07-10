@@ -193,13 +193,14 @@ class CAARecordValidator implements DnsRecordValidatorInterface
                 return ValidationResult::failure(_('Empty value is not allowed. Use ";" to allow all CAs.'));
             }
 
-            // Check for parameters using ASCII Control characters
-            if ($tag === 'issue' && strpos($unquoted, ';') !== false) {
-                // After validating domain, check for parameters
+            // Validate the CA domain whether or not parameters follow: a bare
+            // `issue "not a domain"` (no `;`) must still be rejected. explode()
+            // yields the whole value as segment 0 when there is no `;`.
+            if ($tag === 'issue') {
                 $segments = explode(';', $unquoted);
                 $domain = $segments[0];
 
-                // Domain part must be a valid hostname
+                // Domain part must be a valid hostname (empty = ';...' allows all)
                 if (!empty($domain) && !$this->hostnameValidator->isValid($domain)) {
                     return ValidationResult::failure(_('Invalid CA domain in issue tag.'));
                 }

@@ -63,6 +63,15 @@ class CAARecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
     }
 
+    public function testValidateRejectsInvalidIssueDomainWithoutParameters()
+    {
+        // A bare issue value with no `;` parameters must still validate the domain.
+        $content = '0 issue "not a valid domain"';
+        $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
     public function testValidateWithValidIssuewildData()
     {
         $content = '0 issuewild "ca.example.org"';
