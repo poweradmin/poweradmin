@@ -7,6 +7,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
@@ -27,18 +28,9 @@ $config->initialize();
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 initializeTimezone($config);
 
-$credentials = [
-    'db_host' => $config->get('database', 'host'),
-    'db_port' => $config->get('database', 'port'),
-    'db_user' => $config->get('database', 'user'),
-    'db_pass' => $config->get('database', 'password'),
-    'db_name' => $config->get('database', 'name'),
-    'db_charset' => $config->get('database', 'charset'),
-    'db_collation' => $config->get('database', 'collation'),
-    'db_type' => $config->get('database', 'type'),
-    'db_file' => $config->get('database', 'file'),
-    'db_debug' => $config->get('database', 'debug'),
-];
+// Use the shared credential mapper so DDNS honors the same db_ssl* settings as the
+// web app; a hand-built array here silently dropped them and connected in plaintext.
+$credentials = DatabaseCredentialMapper::mapCredentials($config);
 
 $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
 
