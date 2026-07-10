@@ -201,7 +201,7 @@ class SearchController extends BaseController
                 $parameters['content_filter'] = '';
             }
 
-            $zones_page = (int)$this->request->getPostParam('zones_page', 1);
+            $zones_page = max(1, (int)$this->request->getPostParam('zones_page', 1));
 
             $permission_view = Permission::getViewPermission($this->db);
 
@@ -219,7 +219,7 @@ class SearchController extends BaseController
 
             $totalZones = $dnsDataService->searchZonesTotalCount($parameters, $permission_view);
 
-            $records_page = (int)$this->request->getPostParam('records_page', 1);
+            $records_page = max(1, (int)$this->request->getPostParam('records_page', 1));
 
             $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
             $searchResultRecords = $dnsDataService->searchRecords(

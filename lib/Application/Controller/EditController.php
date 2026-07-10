@@ -206,7 +206,7 @@ class EditController extends BaseController
         $row_start = 0;
         $start = $this->request->getQueryParam('start');
         if ($start !== null) {
-            $row_start = ((int)$start - 1) * $iface_rowamount;
+            $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);

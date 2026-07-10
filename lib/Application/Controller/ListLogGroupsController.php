@@ -103,7 +103,7 @@ class ListLogGroupsController extends BaseController
         $start = $this->httpRequest->getQueryParam('start');
         if ($start !== null) {
             is_numeric($start) ? $selected_page = (int)$start : die("Unknown page.");
-            if ($selected_page < 0) {
+            if ($selected_page < 1) {
                 die('Unknown page.');
             }
         }
