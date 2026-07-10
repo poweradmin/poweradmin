@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,7 +49,7 @@ class GroupMembershipServiceTest extends TestCase
     {
         $this->groupRepo->method('findById')->with(999)->willReturn(null);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(GroupNotFoundException::class);
         $this->expectExceptionMessage('Group not found');
 
         $this->service->addUserToGroup(999, 5);
@@ -82,7 +83,7 @@ class GroupMembershipServiceTest extends TestCase
     {
         $this->groupRepo->method('findById')->with(999)->willReturn(null);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(GroupNotFoundException::class);
         $this->expectExceptionMessage('Group not found');
 
         $this->service->removeUserFromGroup(999, 5);

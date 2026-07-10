@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -58,7 +59,7 @@ class GroupZoneService
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         // Check if ownership already exists
@@ -84,7 +85,7 @@ class GroupZoneService
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         return $this->zoneRepository->remove($domainId, $groupId);
@@ -102,7 +103,7 @@ class GroupZoneService
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         return $this->zoneRepository->findByGroupId($groupId);
@@ -131,7 +132,7 @@ class GroupZoneService
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         $results = [
@@ -167,7 +168,7 @@ class GroupZoneService
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         $results = [

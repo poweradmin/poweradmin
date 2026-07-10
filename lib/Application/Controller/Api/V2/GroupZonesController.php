@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -149,6 +150,8 @@ class GroupZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -239,6 +242,8 @@ class GroupZonesController extends PublicApiController
             $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
 
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -361,6 +366,8 @@ class GroupZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Zone unassigned successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

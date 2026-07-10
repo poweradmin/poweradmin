@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -139,6 +140,8 @@ class GroupMembersController extends PublicApiController
             ], $members);
 
             return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -211,6 +214,8 @@ class GroupMembersController extends PublicApiController
             $this->membershipService->addUserToGroup($groupId, $userId);
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -280,6 +285,8 @@ class GroupMembersController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Member removed successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

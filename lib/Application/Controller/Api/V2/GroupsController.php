@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupService;
@@ -151,6 +152,8 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(['groups' => $enrichedGroups], true, 'Groups retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -271,6 +274,8 @@ class GroupsController extends PublicApiController
             ];
 
             return $this->returnApiResponse(['group' => $data], true, 'Group retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -350,6 +355,8 @@ class GroupsController extends PublicApiController
                 'id' => $group->getId(),
                 'name' => $group->getName(),
             ]], true, 'Group created successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -448,6 +455,8 @@ class GroupsController extends PublicApiController
                 'created_at' => $group->getCreatedAt(),
                 'updated_at' => $group->getUpdatedAt(),
             ]], true, 'Group updated successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -503,6 +512,8 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Group deleted successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
