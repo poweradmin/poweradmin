@@ -101,6 +101,24 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
     }
 
+    public function testValidateAllowsUtf8Content()
+    {
+        // Multi-byte UTF-8 (accents, CJK, emoji) must be accepted, not rejected as
+        // "invalid characters" the way the old byte-wise [[:print:]] check did.
+        $content = '"héllo wörld 日本 😀"';
+        $result = $this->validator->validate($content, 'txt.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateRejectsControlCharacters()
+    {
+        $content = "\"bad\x01content\"";
+        $result = $this->validator->validate($content, 'txt.example.com', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
     /**
      * Test validation with RFC 7208 compliant multi-string TXT record
      */

@@ -219,7 +219,7 @@ class SOARecordManager implements SOARecordManagerInterface
             if ($zoneName === null) {
                 return false;
             }
-            $soa_ttl = (int)$this->config->get('dns', 'soa_rec_default_ttl', 86400);
+            $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
             return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
         }
 

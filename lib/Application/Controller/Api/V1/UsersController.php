@@ -369,7 +369,7 @@ class UsersController extends PublicApiController
                         'current_page' => $page,
                         'per_page' => $perPage,
                         'total' => $totalCount,
-                        'last_page' => ceil($totalCount / $perPage)
+                        'last_page' => (int)ceil($totalCount / $perPage)
                     ],
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
