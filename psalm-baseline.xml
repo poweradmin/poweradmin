@@ -149,11 +149,6 @@
       <code><![CDATA[(bool)$result]]></code>
     </RedundantCast>
   </file>
-  <file src="lib/Domain/Service/DnsIdnService.php">
-    <FalsableReturnStatement>
-      <code><![CDATA[idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII)]]></code>
-    </FalsableReturnStatement>
-  </file>
   <file src="lib/Domain/Service/DnsRecordValidationService.php">
     <TypeDoesNotContainNull>
       <code><![CDATA[$validator === null]]></code>
