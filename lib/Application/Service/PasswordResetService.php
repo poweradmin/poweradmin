@@ -213,9 +213,9 @@ class PasswordResetService
             return false;
         }
 
-        // Check minimum time between requests
-        $lastAttempt = $this->tokenRepository->getLastAttemptTime($email);
-        if ($lastAttempt && (time() - strtotime($lastAttempt)) < $minTime) {
+        // Minimum time between requests, checked DB-side like the rate-limit windows
+        // above so a PHP-vs-DB clock/timezone difference can't skew the throttle.
+        if ($this->tokenRepository->countRecentAttempts($email, $minTime) > 0) {
             return false;
         }
 
