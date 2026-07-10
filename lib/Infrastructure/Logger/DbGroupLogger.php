@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class DbGroupLogger
@@ -63,9 +64,9 @@ class DbGroupLogger
                     FROM log_groups
                     INNER JOIN user_groups
                     ON user_groups.id = log_groups.group_id
-                    WHERE user_groups.name LIKE :search_by
+                    WHERE user_groups.name LIKE :search_by ESCAPE '!'
         ");
-        $name = "%$groupName%";
+        $name = "%" . DbCompat::escapeLike($groupName) . "%";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -96,12 +97,12 @@ class DbGroupLogger
         $stmt = $this->db->prepare("
             SELECT log_groups.id, log_groups.event, log_groups.created_at, user_groups.name FROM log_groups
             INNER JOIN user_groups ON user_groups.id = log_groups.group_id
-            WHERE user_groups.name LIKE :search_by
+            WHERE user_groups.name LIKE :search_by ESCAPE '!'
             ORDER BY log_groups.created_at DESC
             LIMIT :limit
             OFFSET :offset");
 
-        $groupName = "%$groupName%";
+        $groupName = "%" . DbCompat::escapeLike($groupName) . "%";
         $stmt->bindValue(':search_by', $groupName, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -190,8 +191,8 @@ class DbGroupLogger
     {
         if (!empty($filters['name'])) {
             $query = str_replace('FROM log_groups', 'FROM log_groups INNER JOIN user_groups ON user_groups.id = log_groups.group_id', $query);
-            $conditions[] = "user_groups.name LIKE :search_by";
-            $params[':search_by'] = ["%" . $filters['name'] . "%", PDO::PARAM_STR];
+            $conditions[] = "user_groups.name LIKE :search_by ESCAPE '!'";
+            $params[':search_by'] = ["%" . DbCompat::escapeLike($filters['name']) . "%", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {
