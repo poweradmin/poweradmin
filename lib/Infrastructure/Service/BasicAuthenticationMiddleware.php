@@ -246,13 +246,22 @@ class BasicAuthenticationMiddleware
      */
     private function sqlAuthenticatorApiAuth(User $userModel, string $password): bool
     {
+        $hashedPassword = $userModel->getHashedPassword();
+
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying
+        // against an empty hash would throw (unknown algorithm), surfacing a 500 and
+        // skipping the caller's failed-attempt recording; treat it as a clean failure.
+        if ($hashedPassword === '') {
+            return false;
+        }
+
         $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
         $passwordCost = $this->config->get('security', 'password_cost', 12);
 
         $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
         // Verify the password directly without going through the full authentication flow
-        return $authService->verifyPassword($password, $userModel->getHashedPassword());
+        return $authService->verifyPassword($password, $hashedPassword);
     }
 
     /**
