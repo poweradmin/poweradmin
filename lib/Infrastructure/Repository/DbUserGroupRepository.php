@@ -172,7 +172,7 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
             ':created_by' => $group->getCreatedBy()
         ]);
 
-        $id = (int)$this->db->lastInsertId();
+        $id = (int)$this->db->lastInsertId('user_groups_id_seq');
 
         return new UserGroup(
             $id,

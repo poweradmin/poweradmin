@@ -102,7 +102,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $stmt->bindValue(':master', $slaveMaster);
         $stmt->execute();
 
-        $zonesId = (int)$this->db->lastInsertId();
+        $zonesId = (int)$this->db->lastInsertId('zones_id_seq');
 
         // Set domain_id = zones.id so existing code that uses domain_id works
         $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");

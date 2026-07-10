@@ -194,7 +194,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
         ];
 
         $stmt->execute($params);
-        $id = (int) $this->db->lastInsertId();
+        $id = (int) $this->db->lastInsertId('user_mfa_id_seq');
 
         return $this->findById($id);
     }

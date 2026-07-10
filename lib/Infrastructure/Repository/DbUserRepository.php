@@ -454,7 +454,7 @@ class DbUserRepository implements UserRepository
         ]);
 
         if ($result) {
-            return (int)$this->db->lastInsertId();
+            return (int)$this->db->lastInsertId('users_id_seq');
         }
 
         return null;

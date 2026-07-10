@@ -1077,7 +1077,7 @@ class UserManager
         $stmt->bindValue(':auth_method', $auth_method);
         $stmt->execute();
 
-        return (int)$this->db->lastInsertId();
+        return (int)$this->db->lastInsertId('users_id_seq');
     }
 
     /**

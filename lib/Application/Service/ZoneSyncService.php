@@ -207,7 +207,7 @@ class ZoneSyncService
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
                 if ($insertStmt->execute()) {
                     // Set domain_id = id (self-referencing for API mode compatibility)
-                    $id = $this->db->lastInsertId();
+                    $id = $this->db->lastInsertId('zones_id_seq');
                     $updateStmt->execute([':did' => $id, ':id' => $id]);
                     $count++;
                 }

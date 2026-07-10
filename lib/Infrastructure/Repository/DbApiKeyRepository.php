@@ -244,7 +244,7 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         $stmt->execute();
 
         if ($apiKey->getId() === null) {
-            $id = $this->db->lastInsertId();
+            $id = $this->db->lastInsertId('api_keys_id_seq');
             $apiKey->setId((int) $id);
         }
 

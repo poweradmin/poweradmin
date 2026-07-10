@@ -80,7 +80,7 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
             ':user_id' => $userId
         ]);
 
-        $id = (int)$this->db->lastInsertId();
+        $id = (int)$this->db->lastInsertId('user_group_members_id_seq');
 
         return new UserGroupMember($id, $groupId, $userId, null);
     }

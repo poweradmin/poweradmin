@@ -99,7 +99,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             ':group_id' => $groupId
         ]);
 
-        $id = (int)$this->db->lastInsertId();
+        $id = (int)$this->db->lastInsertId('zones_groups_id_seq');
 
         return new ZoneGroup($id, $domainId, $groupId, null, null, null);
     }

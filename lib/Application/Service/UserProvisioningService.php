@@ -292,7 +292,7 @@ class UserProvisioningService extends LoggingService
                 throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $errorInfo));
             }
 
-            $userId = (int)$this->db->lastInsertId();
+            $userId = (int)$this->db->lastInsertId('users_id_seq');
             $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
             $this->linkIdentity($userId, $userInfo, $providerId, $authMethod);
