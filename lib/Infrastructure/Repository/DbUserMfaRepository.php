@@ -97,18 +97,17 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
 
     public function save(UserMfa $userMfa): UserMfa
     {
-        try {
-            if ($userMfa->getId() === 0) {
-                return $this->insert($userMfa);
-            }
-
+        if ($userMfa->getId() !== 0) {
             return $this->update($userMfa);
-        } catch (PDOException $e) {
-            // Log the error
-            $this->logger->error('DbUserMfaRepository::save failed: {error}', ['error' => $e->getMessage()]);
+        }
 
-            // A concurrent insert may already have created the row (unique user_id).
-            // Return it if present; otherwise this was a different failure - rethrow.
+        try {
+            return $this->insert($userMfa);
+        } catch (PDOException $e) {
+            $this->logger->error('DbUserMfaRepository::save insert failed: {error}', ['error' => $e->getMessage()]);
+
+            // A concurrent insert may already have created this user's row (unique
+            // user_id). Return it if so; otherwise this was a real failure - rethrow.
             $existingUserMfa = $this->findByUserId($userMfa->getUserId());
             if ($existingUserMfa) {
                 return $existingUserMfa;
