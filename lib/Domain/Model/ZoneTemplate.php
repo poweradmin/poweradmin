@@ -1214,10 +1214,12 @@ class ZoneTemplate
      *
      * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
      * @param string $domain domain to substitute for '[ZONE]'
+     * @param string|null $recordType record type of $val; when given it authoritatively
+     *        decides SOA-timer completion. Legacy 2-arg callers fall back to a heuristic.
      *
      * @return string interpolated/parsed string
      */
-    public function parseTemplateValue(string $val, string $domain): string
+    public function parseTemplateValue(string $val, string $domain, ?string $recordType = null): string
     {
         $dns_ns1 = $this->config->get('dns', 'ns1');
         $dns_ns2 = $this->config->get('dns', 'ns2');
@@ -1255,16 +1257,16 @@ class ZoneTemplate
         $val = str_replace('[SOA_EXPIRE]', $soa_expire, $val);
         $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
 
-        // Check if this is an SOA record that should have SOA parameters
-        if (str_contains($val, 'SOA')) {
-            // Extract all parts of the string
-            $parts = explode(' ', $val);
-
-            // Check if the SOA parameters are already included
-            // SOA record should have at least 7 parts:
-            // domain IN SOA ns hostmaster serial refresh retry expire minimum
-            if (count($parts) < 7) {
-                // Append the SOA parameters if they're missing
+        // Only SOA content gets timer completion. With an explicit record type we
+        // decide precisely; without one (legacy 2-arg callers) we keep the old
+        // substring heuristic so behavior is unchanged for them.
+        $isSoaValue = $recordType !== null
+            ? $recordType === RecordType::SOA
+            : str_contains($val, 'SOA');
+        if ($isSoaValue) {
+            // A complete SOA rdata has at least 7 fields:
+            // primary hostmaster serial refresh retry expire minimum
+            if (count(explode(' ', $val)) < 7) {
                 $val .= " $soa_refresh $soa_retry $soa_expire $soa_minimum";
             }
         }

@@ -302,7 +302,7 @@ class DomainManager implements DomainManagerInterface
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
-                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                                         $ttl = $r["ttl"];
                                         $prio = intval($r["prio"]);
 
@@ -939,10 +939,10 @@ class DomainManager implements DomainManagerInterface
 
                                 $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                                 if ($content == "") {
-                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                                 }
                             } else {
-                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                             }
 
                             $ttl = $r["ttl"];

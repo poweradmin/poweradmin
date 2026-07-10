@@ -127,6 +127,37 @@ class ZoneTemplateParsingTest extends TestCase
     }
 
     /**
+     * A TXT record whose content merely contains the substring "SOA" must not
+     * get SOA timers appended when the record type is passed explicitly.
+     */
+    public function testTxtContentContainingSoaGetsNoSoaTimers(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('"SOA monitor"', 'example.com', 'TXT');
+        $this->assertEquals('"SOA monitor"', $result);
+        $this->assertStringNotContainsString('28800 7200 604800 86400', $result);
+    }
+
+    /**
+     * An SOA record with missing timers still gets them appended when the type
+     * is passed explicitly.
+     */
+    public function testSoaContentGetsTimersWhenTypePassedExplicitly(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('[NS1] [HOSTMASTER] [SERIAL]', 'example.com', 'SOA');
+        $this->assertStringContainsString('28800 7200 604800 86400', $result);
+    }
+
+    /**
+     * Legacy 2-arg callers keep the substring heuristic: a value containing
+     * "SOA" with fewer than 7 fields still gets timers appended.
+     */
+    public function testLegacyTwoArgFormRetainsSoaHeuristic(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('IN SOA [NS1] [HOSTMASTER] [SERIAL]', 'example.com');
+        $this->assertStringContainsString('28800 7200 604800 86400', $result);
+    }
+
+    /**
      * Test that dots in TLD are preserved when using [TLD] placeholder
      */
     public function testDotsInTldPreserved(): void
