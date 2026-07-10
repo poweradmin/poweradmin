@@ -772,20 +772,28 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         }
         $cid = (int)$canonical['id'];
 
+        // Mirror the change into the local zones cache only when PowerDNS accepted
+        // it; updating unconditionally would diverge local state from the API.
         $success = true;
         if (isset($updates['type'])) {
-            $success = $this->backendProvider->updateZoneType($zoneId, $updates['type']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
-            $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
-            $stmt->execute();
+            if ($this->backendProvider->updateZoneType($zoneId, $updates['type'])) {
+                $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
+                $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
+                $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
+                $stmt->execute();
+            } else {
+                $success = false;
+            }
         }
-        if (isset($updates['master'])) {
-            $success = $success && $this->backendProvider->updateZoneMaster($zoneId, $updates['master']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
-            $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
-            $stmt->execute();
+        if ($success && isset($updates['master'])) {
+            if ($this->backendProvider->updateZoneMaster($zoneId, $updates['master'])) {
+                $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
+                $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
+                $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
+                $stmt->execute();
+            } else {
+                $success = false;
+            }
         }
         return $success;
     }
