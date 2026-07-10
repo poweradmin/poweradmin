@@ -180,10 +180,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
-        if ($letterstart == '_') {
-            $letterstart = '\_';
-        }
-
         $sql_add = '';
         if ($perm != "own" && $perm != "all") {
             return [];

@@ -110,8 +110,12 @@ class ZoneCountService
                 $db_type = $this->config->get('database', 'type');
                 $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
             } else {
-                $conditions[] = "$domains_table.name LIKE ?";
-                $params[] = $letterstart . "%";
+                // Exact first-character match, mirroring the zone list query, so a
+                // filter of `_` (e.g. _dmarc zones) matches literally instead of the
+                // unescaped LIKE `_%` treating `_` as a single-char wildcard.
+                $db_type = $this->config->get('database', 'type');
+                $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) = ?";
+                $params[] = $letterstart;
             }
         }
 
