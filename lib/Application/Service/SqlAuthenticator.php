@@ -160,8 +160,15 @@ class SqlAuthenticator extends LoggingService
             UserManager::updateUserPassword($this->connection, $rowObj["id"], $sessionPassword);
         }
 
-        session_regenerate_id(true);
-        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+        // Regenerate the session id only at actual login (credentials just posted),
+        // not on every authenticated request. SQL auth runs on every request (no
+        // auth cache like LDAP), so regenerating each time destroyed the previous id
+        // and bounced overlapping requests to login. Login-time regeneration still
+        // protects against session fixation.
+        if (isset($_POST['authenticate'])) {
+            session_regenerate_id(true);
+            $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+        }
 
         $this->csrfTokenService->ensureTokenExists();
         $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
