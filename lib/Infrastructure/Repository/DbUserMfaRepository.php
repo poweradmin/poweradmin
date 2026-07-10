@@ -123,18 +123,11 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
                 return $userMfa;
             }
 
-            // Check for duplicate key error (integrity constraint violation)
-            if (
-                strpos($e->getMessage(), "Integrity constraint violation") !== false &&
-                strpos($e->getMessage(), "idx_user_mfa_user_id") !== false
-            ) {
-                $this->logger->warning('Duplicate user_id in user_mfa table, retrieving existing record');
-
-                // Try to get the existing record
-                $existingUserMfa = $this->findByUserId($userMfa->getUserId());
-                if ($existingUserMfa) {
-                    return $existingUserMfa;
-                }
+            // A concurrent insert may already have created the row (unique user_id).
+            // Return it if present; otherwise this was a different failure - rethrow.
+            $existingUserMfa = $this->findByUserId($userMfa->getUserId());
+            if ($existingUserMfa) {
+                return $existingUserMfa;
             }
 
             throw $e;
