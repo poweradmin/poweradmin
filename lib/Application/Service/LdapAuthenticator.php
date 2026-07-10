@@ -250,7 +250,7 @@ class LdapAuthenticator extends LoggingService
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
         $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
 
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
@@ -279,6 +279,13 @@ class LdapAuthenticator extends LoggingService
         session_regenerate_id(true);
         $this->logInfo('Session ID regenerated for user {username}', ['username' => $username]);
 
+        // Email for MFA delivery. Only trust the LDAP directory's mail when user-info
+        // sync is on; otherwise the Poweradmin account email is authoritative so a
+        // self-editable directory attribute can't redirect MFA codes. A just
+        // auto-provisioned user already has users.email set from LDAP, so the DB
+        // fallback covers them without trusting LDAP for existing accounts.
+        $sessionEmail = ($ldap_sync_user_info ? $userInfo->getEmail() : '') ?: ($rowObj['email'] ?? '');
+
         if (!$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
             $this->userContextService->setSessionData(SessionKeys::CSRF_TOKEN, $this->csrfTokenService->generateToken());
             $this->logInfo('CSRF token generated for user {username}', ['username' => $username]);
@@ -297,6 +304,7 @@ class LdapAuthenticator extends LoggingService
             // This prevents API requests from bypassing MFA by checking isAuthenticated()
             $this->userContextService->setSessionData(SessionKeys::PENDING_USERID, $rowObj['id']);
             $this->userContextService->setSessionData(SessionKeys::PENDING_NAME, $rowObj['fullname']);
+            $this->userContextService->setSessionData(SessionKeys::PENDING_EMAIL, $sessionEmail);
             $this->userContextService->setSessionData(SessionKeys::PENDING_AUTH_USED, 'ldap');
 
             // Use our centralized MFA session manager to set MFA required
@@ -325,6 +333,7 @@ class LdapAuthenticator extends LoggingService
             // NOW it's safe to set userid since MFA is not required
             $this->userContextService->setSessionData(SessionKeys::USERID, $rowObj['id']);
             $this->userContextService->setSessionData(SessionKeys::NAME, $rowObj['fullname']);
+            $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
             $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
             $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
             $this->userContextService->setSessionData(SessionKeys::MFA_REQUIRED, false);
