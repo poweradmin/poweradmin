@@ -33,12 +33,12 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\GroupZoneService;
+use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 
 class QuickRemoveGroupZoneController extends BaseController
 {
-    private GroupZoneService $groupZoneService;
+    private ZoneGroupService $zoneGroupService;
 
     public function __construct(array $request)
     {
@@ -46,7 +46,7 @@ class QuickRemoveGroupZoneController extends BaseController
 
         $groupRepository = $this->createUserGroupRepository();
         $zoneRepository = $this->createZoneGroupRepository();
-        $this->groupZoneService = new GroupZoneService($zoneRepository, $groupRepository);
+        $this->zoneGroupService = new ZoneGroupService($zoneRepository, $groupRepository);
     }
 
     public function run(): void
@@ -83,7 +83,7 @@ class QuickRemoveGroupZoneController extends BaseController
         }
 
         try {
-            $success = $this->groupZoneService->removeZoneFromGroup($groupId, $zoneId);
+            $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
 
             if ($success) {
                 $auditService = new AuditService($this->db);
