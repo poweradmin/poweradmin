@@ -139,12 +139,20 @@ abstract class BaseController
             $this->tryApiKeyAuthentication();
         }
 
-        // Check for MFA requirement for regular controllers using our centralized manager
-        if ($authenticate && !$this->isApiRequest() && $this->userContextService->isAuthenticated()) {
+        // Enforce pending MFA before serving an authenticated request. Web pages are
+        // redirected to the verification form; API requests get a JSON 403 instead of
+        // an HTML redirect they cannot follow (but are still blocked, not skipped).
+        if ($authenticate && $this->userContextService->isAuthenticated()) {
             $currentPage = $request['page'] ?? '';
 
-            // Use our centralized MFA session manager to check if verification is required
             if (MfaSessionManager::isMfaRequired() && $currentPage !== 'mfa_verify') {
+                if ($this->isApiRequest()) {
+                    http_response_code(403);
+                    header('Content-Type: application/json');
+                    echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
+                    exit;
+                }
+
                 // Ensure session is written before redirecting
                 session_write_close();
 
@@ -164,8 +172,17 @@ abstract class BaseController
      */
     protected function isApiRequest(): bool
     {
-        $page = $this->requestData['page'] ?? '';
-        return str_starts_with($page, 'api/');
+        // Match the real routed path, not requestData['page']: the router only sets
+        // 'page' for web routes, and trusting it would let ?page=api/... spoof detection.
+        return preg_match('#/api/(internal|v\d+)(/|$)#', $this->getRoutedPath()) === 1;
+    }
+
+    /**
+     * Path portion of the current request, with the query string stripped.
+     */
+    private function getRoutedPath(): string
+    {
+        return parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
     }
 
     /**
@@ -212,8 +229,7 @@ abstract class BaseController
      */
     protected function isInternalApiRoute(): bool
     {
-        $page = $this->requestData['page'] ?? '';
-        return str_starts_with($page, 'api/internal/');
+        return preg_match('#/api/internal(/|$)#', $this->getRoutedPath()) === 1;
     }
 
     /**
@@ -223,22 +239,7 @@ abstract class BaseController
      */
     protected function isPublicApiRoute(): bool
     {
-        $page = $this->requestData['page'] ?? '';
-
-        // Check if this is an API route
-        if (!str_starts_with($page, 'api/')) {
-            return false;
-        }
-
-        // Extract the API version from the route
-        $parts = explode('/', $page);
-        if (count($parts) < 2) {
-            return false;
-        }
-
-        // Check if the second part is a version indicator (v1, v2, etc.)
-        $versionPart = $parts[1] ?? '';
-        return preg_match('/^v\d+$/i', $versionPart) === 1;
+        return preg_match('#/api/v\d+(/|$)#i', $this->getRoutedPath()) === 1;
     }
 
     /**
