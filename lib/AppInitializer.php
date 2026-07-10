@@ -108,10 +108,12 @@ class AppInitializer
      */
     private function loadLocale(): void
     {
+        // Re-reading the same key with a default does not help when it is present
+        // but empty (`enabled_languages => ''`), which would explode() to ['']; fall
+        // back to a real default instead.
         $enabledLanguages = $this->configManager->get('interface', 'enabled_languages');
-        if (!$enabledLanguages) {
-            // Fallback to legacy config key
-            $enabledLanguages = $this->configManager->get('interface', 'enabled_languages', 'en_EN');
+        if (empty($enabledLanguages)) {
+            $enabledLanguages = 'en_EN';
         }
 
         $supportedLocales = explode(',', $enabledLanguages);
