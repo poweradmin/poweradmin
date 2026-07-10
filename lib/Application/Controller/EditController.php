@@ -433,7 +433,7 @@ class EditController extends BaseController
         $recordResult = $dnsDataService->getZoneRecords(
             $zone_id,
             $zone_name,
-            (int)$row_start,
+            $row_start,
             $iface_rowamount,
             $record_sort_by,
             $sort_direction,
