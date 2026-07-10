@@ -259,14 +259,28 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         // Remove scope rows explicitly: the ON DELETE CASCADE is only present on
         // databases built from the SQL structure files, not on installer-created
         // schemas, so we cannot rely on it alone.
-        $zones = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :id");
-        $zones->bindValue(':id', $id, PDO::PARAM_INT);
-        $zones->execute();
+        //
+        // Wrap both deletes in one transaction: deleting the scope rows first and
+        // then failing to delete the key would leave a key with no scope, i.e. an
+        // unrestricted key. On failure everything rolls back.
+        $this->db->beginTransaction();
 
-        $stmt = $this->db->prepare("DELETE FROM api_keys WHERE id = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        try {
+            $zones = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :id");
+            $zones->bindValue(':id', $id, PDO::PARAM_INT);
+            $zones->execute();
 
-        return $stmt->execute() && $stmt->rowCount() > 0;
+            $stmt = $this->db->prepare("DELETE FROM api_keys WHERE id = :id");
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $deleted = $stmt->rowCount() > 0;
+
+            $this->db->commit();
+            return $deleted;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     /**
