@@ -1027,48 +1027,37 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function deleteZone(int $zoneId): bool
     {
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        // Delete records first
-        $query = "DELETE FROM $records_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete group ownership associations
-        $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete from zones table
-        $query = "DELETE FROM zones WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete PowerDNS domain metadata
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-        $query = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete PowerDNS crypto keys
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $query = "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
 
-        // Delete from domains table
-        $query = "DELETE FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        // Wrap the dependent deletes in one transaction so a mid-sequence failure
+        // rolls back instead of leaving a half-deleted zone.
+        $this->db->beginTransaction();
 
-        return $stmt->execute();
+        try {
+            foreach (
+                [
+                    "DELETE FROM $records_table WHERE domain_id = :domain_id",
+                    "DELETE FROM zones_groups WHERE domain_id = :domain_id",
+                    "DELETE FROM zones WHERE domain_id = :domain_id",
+                    "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id",
+                    "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id",
+                    "DELETE FROM $domains_table WHERE id = :domain_id",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     /**

@@ -84,19 +84,30 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
-        $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
+        // Callers run this before opening their own transaction, so wrapping the
+        // dependent deletes here makes the backend cleanup atomic: a mid-sequence
+        // failure rolls back instead of leaving a half-deleted zone.
+        $this->db->beginTransaction();
 
-        $stmt = $this->db->prepare("DELETE FROM $domainmetadataTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
+        try {
+            foreach (
+                [
+                    "DELETE FROM $recordsTable WHERE domain_id = :id",
+                    "DELETE FROM $domainmetadataTable WHERE domain_id = :id",
+                    "DELETE FROM $cryptokeysTable WHERE domain_id = :id",
+                    "DELETE FROM $domainsTable WHERE id = :id",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':id' => $domainId]);
+            }
 
-        $stmt = $this->db->prepare("DELETE FROM $cryptokeysTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
-
-        $stmt = $this->db->prepare("DELETE FROM $domainsTable WHERE id = :id");
-        $stmt->execute([':id' => $domainId]);
-
-        return true;
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     public function updateZoneType(int $domainId, string $type): bool
