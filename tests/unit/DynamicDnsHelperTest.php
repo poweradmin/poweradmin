@@ -60,8 +60,7 @@ class DynamicDnsHelperTest extends TestCase
 
         $test_cases = [
             'badagent' => 'Your user agent is not valid.',
-            'badauth' => 'No username available.',
-            'badauth2' => 'Invalid username or password.  Authentication failed.',
+            'badauth' => 'Invalid username or password.  Authentication failed.',
             'notfqdn' => 'The hostname you specified was not valid.',
             'dnserr' => 'A DNS error has occurred on our end.  We apologize for any inconvenience.',
             '!yours' => 'The specified hostname does not belong to you.',

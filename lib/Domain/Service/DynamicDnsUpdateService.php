@@ -54,7 +54,7 @@ class DynamicDnsUpdateService
 
         $user = $this->authService->authenticateUser($request);
         if (!$user) {
-            return 'badauth2';
+            return 'badauth';
         }
 
         try {
@@ -63,8 +63,12 @@ class DynamicDnsUpdateService
 
             $updateResult = $this->updateUserZones($user, $hostname, $ipList, $request->isDualstackUpdate());
 
-            // Return 'good' if update was successful OR if the requested IPs already match existing records
-            return $updateResult['wasUpdated'] || $updateResult['hasValidRecords'] ? 'good' : '!yours';
+            if ($updateResult['wasUpdated']) {
+                return 'good';
+            }
+
+            // Records already matched the supplied addresses - dyndns2 expects 'nochg', not 'good'.
+            return $updateResult['hasValidRecords'] ? 'nochg' : '!yours';
         } catch (\Exception $e) {
             return 'dnserr';
         }

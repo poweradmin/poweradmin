@@ -94,7 +94,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('good', $result);
     }
 
-    public function testProcessUpdateReturnsGoodWhenNoUpdateNeeded(): void
+    public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void
     {
         $request = new DynamicDnsRequest(
             'user',
@@ -152,7 +152,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $result = $this->service->processUpdate($request);
 
-        $this->assertEquals('good', $result); // Should return 'good' when IP matches existing record
+        $this->assertEquals('nochg', $result); // dyndns2 returns 'nochg' when records already match
     }
 
     public function testProcessUpdateWithDualstackClearsOppositeRecords(): void
@@ -290,7 +290,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('!yours', $result);
     }
 
-    public function testProcessUpdateReturnsBadauth2WhenUserNotAuthenticated(): void
+    public function testProcessUpdateReturnsBadauthWhenUserNotAuthenticated(): void
     {
         $request = new DynamicDnsRequest(
             'user',
@@ -316,7 +316,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $result = $this->service->processUpdate($request);
 
-        $this->assertEquals('badauth2', $result);
+        $this->assertEquals('badauth', $result);
     }
 
     public function testProcessUpdateReturnsValidationErrorWhenRequestInvalid(): void
