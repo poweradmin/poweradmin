@@ -150,6 +150,17 @@ class PasswordResetService
             return true; // Return true to not reveal if email exists
         }
 
+        // Multiple accounts share this email, so we can't tell which one to reset;
+        // decline rather than risk targeting the wrong account.
+        if ($this->userRepository->countUsersByEmail($email) > 1) {
+            $this->logger->warning('Password reset declined for email shared by multiple accounts', [
+                'email' => $email,
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true; // Return true to not reveal account details
+        }
+
         // Check if user's authentication method allows password reset
         // OIDC, SAML, and LDAP users should only authenticate through their external providers
         $authMethod = $user['auth_method'] ?? 'sql';
@@ -291,6 +302,15 @@ class PasswordResetService
 
         $user = $this->userRepository->getUserByEmail($tokenData['email']);
         if (!$user) {
+            return null;
+        }
+
+        // Refuse if the email now maps to more than one account - we can't be sure
+        // this token belongs to the returned row.
+        if ($this->userRepository->countUsersByEmail($tokenData['email']) > 1) {
+            $this->logger->warning('Password reset token rejected: email shared by multiple accounts', [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
             return null;
         }
 

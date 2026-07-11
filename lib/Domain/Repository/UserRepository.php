@@ -181,6 +181,14 @@ interface UserRepository
     public function getUserByEmail(string $email): ?array;
 
     /**
+     * Count how many users share the given email address.
+     *
+     * @param string $email Email to search for
+     * @return int Number of matching users
+     */
+    public function countUsersByEmail(string $email): int;
+
+    /**
      * Update a user's information
      *
      * @param int $userId User ID to update
