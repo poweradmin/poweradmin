@@ -197,6 +197,22 @@ class DbUserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
+    // ========== countUsersByEmail tests ==========
+
+    #[Test]
+    public function testCountUsersByEmailReturnsCount(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(2);
+
+        $this->db->method('prepare')
+            ->with($this->stringContains('SELECT COUNT(*) FROM users WHERE email'))
+            ->willReturn($stmt);
+
+        $this->assertSame(2, $this->repository->countUsersByEmail('shared@example.com'));
+    }
+
     // ========== updatePassword tests ==========
 
     #[Test]

@@ -461,6 +461,15 @@ class DbUserRepository implements UserRepository
         return $result ?: null;
     }
 
+    public function countUsersByEmail(string $email): int
+    {
+        $query = "SELECT COUNT(*) FROM users WHERE email = :email";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':email' => $email]);
+
+        return (int)$stmt->fetchColumn();
+    }
+
     public function updateUser(int $userId, array $userData): bool
     {
         // Build dynamic update query based on provided fields
