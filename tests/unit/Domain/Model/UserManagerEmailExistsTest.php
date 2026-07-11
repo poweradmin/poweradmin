@@ -35,10 +35,14 @@ class UserManagerEmailExistsTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetchColumn')->willReturn(5);
 
+        // Case-insensitive comparison so different casing still counts as a duplicate.
         $db = $this->createMock(PDO::class);
         $db->expects($this->once())
             ->method('prepare')
-            ->with($this->logicalNot($this->stringContains('exclude_id')))
+            ->with($this->logicalAnd(
+                $this->stringContains('LOWER(email) = LOWER(:email)'),
+                $this->logicalNot($this->stringContains('exclude_id'))
+            ))
             ->willReturn($stmt);
 
         $this->assertTrue(UserManager::emailExists($db, 'taken@example.com'));
