@@ -144,14 +144,58 @@ class IpListMatchingTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testIpv6Addresses()
+    public function testIpv6ExactMatch()
     {
-        // Note: Our implementation currently doesn't handle IPv6 addresses
-        // This test verifies the current behavior, which should return false
         $result = $this->isIpInListMethod->invoke(
             $this->loginAttemptService,
             '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
             ['2001:0db8:85a3:0000:0000:8a2e:0370:7334']
+        );
+        $this->assertTrue($result);
+    }
+
+    public function testIpv6ExactMatchAcrossEquivalentSpellings()
+    {
+        // A compressed list entry must match the same address in expanded form.
+        $result = $this->isIpInListMethod->invoke(
+            $this->loginAttemptService,
+            '2001:0db8:0000:0000:0000:0000:0000:0001',
+            ['2001:db8::1']
+        );
+        $this->assertTrue($result);
+    }
+
+    public function testIpv6CidrMatch()
+    {
+        $result = $this->isIpInListMethod->invoke(
+            $this->loginAttemptService,
+            '2001:db8:85a3::8a2e:370:7334',
+            ['2001:db8::/32']
+        );
+        $this->assertTrue($result);
+
+        $result = $this->isIpInListMethod->invoke(
+            $this->loginAttemptService,
+            '2001:db9::1',
+            ['2001:db8::/32']
+        );
+        $this->assertFalse($result);
+    }
+
+    public function testIpv4AndIpv6CidrDoNotCrossMatch()
+    {
+        // An IPv4 address must not match an IPv6 range (or vice versa).
+        $result = $this->isIpInListMethod->invoke(
+            $this->loginAttemptService,
+            '192.168.1.5',
+            ['2001:db8::/32']
+        );
+        $this->assertFalse($result);
+
+        $result = $this->isIpInListMethod->invoke(
+            $this->loginAttemptService,
+            '2001:db8::1',
+            ['192.168.1.0/24']
         );
         $this->assertFalse($result);
     }

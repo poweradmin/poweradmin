@@ -132,40 +132,80 @@ class LoginAttemptService
             return false;
         }
 
-        // Convert the IP to a long integer for faster comparison
-        $ip = ip2long($ipAddress);
-        if ($ip === false) {
+        // inet_pton accepts both IPv4 and IPv6; the packed form lets CIDR ranges
+        // match either family (ip2long alone silently dropped every IPv6 address).
+        $binaryIp = @inet_pton($ipAddress);
+        if ($binaryIp === false) {
             return false; // Invalid IP address
         }
 
         foreach ($ipList as $listItem) {
-            // Exact match
-            if ($listItem === $ipAddress) {
+            // Exact match - compare packed forms so equivalent IPv6 spellings still
+            // match (e.g. 2001:db8::1 vs 2001:0db8:0000:0000:0000:0000:0000:0001).
+            $listBinary = @inet_pton($listItem);
+            if ($listItem === $ipAddress || ($listBinary !== false && $listBinary === $binaryIp)) {
                 return true;
             }
 
-            // CIDR notation (e.g., 192.168.1.0/24)
-            if (str_contains($listItem, '/')) {
-                list($subnet, $bits) = explode('/', $listItem);
-                $subnet = ip2long($subnet);
-                if ($subnet !== false) {
-                    $mask = -1 << (32 - (int)$bits);
-                    if (($ip & $mask) === ($subnet & $mask)) {
-                        return true;
-                    }
-                }
+            // CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
+            if (str_contains($listItem, '/') && $this->ipMatchesCidr($binaryIp, $listItem)) {
+                return true;
             }
 
             // Wildcard notation (e.g., 192.168.1.*)
-            if (str_contains($listItem, '*')) {
-                $pattern = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $listItem) . '$/';
-                if (preg_match($pattern, $ipAddress)) {
-                    return true;
-                }
+            if (str_contains($listItem, '*') && $this->ipMatchesWildcard($ipAddress, $listItem)) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Match a packed IP against a CIDR range, comparing only the network-prefix bits.
+     * Works for both IPv4 and IPv6; a family mismatch between the two never matches.
+     *
+     * @param string $binaryIp The candidate IP already packed via inet_pton()
+     * @param string $cidr CIDR string such as 192.168.1.0/24 or 2001:db8::/32
+     */
+    private function ipMatchesCidr(string $binaryIp, string $cidr): bool
+    {
+        [$subnet, $bits] = explode('/', $cidr, 2);
+
+        $binarySubnet = @inet_pton($subnet);
+        if ($binarySubnet === false || strlen($binaryIp) !== strlen($binarySubnet)) {
+            return false;
+        }
+
+        if (!ctype_digit($bits)) {
+            return false;
+        }
+        $prefixBits = (int)$bits;
+        if ($prefixBits > strlen($binaryIp) * 8) {
+            return false;
+        }
+
+        $wholeBytes = intdiv($prefixBits, 8);
+        if ($wholeBytes > 0 && substr($binaryIp, 0, $wholeBytes) !== substr($binarySubnet, 0, $wholeBytes)) {
+            return false;
+        }
+
+        $remainingBits = $prefixBits % 8;
+        if ($remainingBits === 0) {
+            return true;
+        }
+
+        $mask = 0xff << (8 - $remainingBits) & 0xff;
+        return (ord($binaryIp[$wholeBytes]) & $mask) === (ord($binarySubnet[$wholeBytes]) & $mask);
+    }
+
+    /**
+     * Match an IPv4 address against a dotted wildcard pattern such as 192.168.1.*.
+     */
+    private function ipMatchesWildcard(string $ipAddress, string $pattern): bool
+    {
+        $regex = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $pattern) . '$/';
+        return (bool)preg_match($regex, $ipAddress);
     }
 
     private function getUserId(string $username): ?int
