@@ -338,7 +338,9 @@ class UserManager
      */
     public static function emailExists($db, string $email, ?int $excludeUserId = null): bool
     {
-        $query = "SELECT id FROM users WHERE email = :email";
+        // Compare case-insensitively so User@x and user@x are treated as the same
+        // address; PostgreSQL and SQLite match case-sensitively by default.
+        $query = "SELECT id FROM users WHERE LOWER(email) = LOWER(:email)";
         $params = [':email' => $email];
         if ($excludeUserId !== null) {
             $query .= " AND id != :exclude_id";
