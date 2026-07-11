@@ -660,4 +660,27 @@ class PasswordResetSecurityTest extends TestCase
         $result = $this->passwordResetService->canUserResetPassword('nonexistent@example.com');
         $this->assertTrue($result['allowed']);
     }
+
+    /**
+     * A shared email must stay neutral in the preflight even when the first row is
+     * an external-auth account, so it doesn't leak the auth method and is left for
+     * createResetRequest() to decline.
+     */
+    public function testCanUserResetPasswordNeutralForSharedEmail(): void
+    {
+        $email = 'shared@example.com';
+
+        $this->userRepository->method('getUserByEmail')
+            ->with($email)
+            ->willReturn(['id' => 1, 'email' => $email, 'auth_method' => 'oidc']);
+
+        $this->userRepository->method('countUsersByEmail')
+            ->with($email)
+            ->willReturn(2);
+
+        $result = $this->passwordResetService->canUserResetPassword($email);
+
+        $this->assertTrue($result['allowed']);
+        $this->assertArrayNotHasKey('auth_method', $result);
+    }
 }
