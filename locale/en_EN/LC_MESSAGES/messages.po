@@ -3552,6 +3552,10 @@ msgstr "Enter a valid email address."
 msgid "Username exist already, please choose another one."
 msgstr "Username exist already, please choose another one."
 
+#: lib/Domain/Model/UserManager.php
+msgid "Email address already exists, please choose another one."
+msgstr "Email address already exists, please choose another one."
+
 #: lib/Domain/Model/UserManager.php:1058
 msgid "Enter a valid user name."
 msgstr "Enter a valid user name."
