@@ -328,6 +328,27 @@ class UserManager
     }
 
     /**
+     * Check whether an email address is already assigned to a user.
+     *
+     * @param object $db PDO database connection
+     * @param string $email Email address to look for
+     * @param int|null $excludeUserId User to ignore (the account being edited)
+     * @return bool True if another user already has this email
+     */
+    public static function emailExists($db, string $email, ?int $excludeUserId = null): bool
+    {
+        $query = "SELECT id FROM users WHERE email = :email";
+        $params = [':email' => $email];
+        if ($excludeUserId !== null) {
+            $query .= " AND id != :exclude_id";
+            $params[':exclude_id'] = $excludeUserId;
+        }
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /**
      * Delete User ID
      *
      * Delete a user from the system. Will also delete zones owned by user or
@@ -460,6 +481,14 @@ class UserManager
 
                     return false;
                 }
+            }
+
+            // Reject an email already used by a different account (blank stays allowed
+            // for external-auth users whose address is managed by their provider).
+            if ($email !== '' && self::emailExists($this->db, $email, $id)) {
+                $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
+
+                return false;
             }
 
             // So, user doesn't want to change username or, if he wants, there is not
@@ -927,6 +956,12 @@ class UserManager
                 return false;
             }
 
+            if (self::emailExists($this->db, $details['email'], (int)$details['uid'])) {
+                $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
+
+                return false;
+            }
+
             if (!isset($details['active']) || $details['active'] != "on") {
                 $active = 0;
             } else {
@@ -1065,6 +1100,10 @@ class UserManager
             return false;
         } elseif (!$validation->isValidEmail($details['email'])) {
             $this->messageService->addSystemError(_('Enter a valid email address.'));
+
+            return false;
+        } elseif (self::emailExists($this->db, $details['email'])) {
+            $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
 
             return false;
         }
