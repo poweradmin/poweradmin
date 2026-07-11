@@ -471,6 +471,17 @@ class DbUserRepository implements UserRepository
         return $result ?: null;
     }
 
+    public function countUsersByEmail(string $email): int
+    {
+        // Matched like getUserByEmail(), so the count covers exactly the rows a lookup could return
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $query = "SELECT COUNT(*) FROM users WHERE $match";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':email' => $email]);
+
+        return (int)$stmt->fetchColumn();
+    }
+
     public function updateUser(int $userId, array $userData): bool
     {
         // Build dynamic update query based on provided fields
