@@ -53,7 +53,7 @@ class DynamicDnsUpdateService
         $clientIp = $this->ipRetriever?->getClientIp() ?? '';
         $user = $this->authService->authenticateUser($request, $clientIp);
         if (!$user) {
-            return 'badauth2';
+            return 'badauth';
         }
 
         try {
@@ -72,9 +72,11 @@ class DynamicDnsUpdateService
             return $result['status'];
         }
 
-        // dyndns2 clients expect "good <ip>" so they can confirm which address was accepted.
+        // dyndns2 clients expect "nochg <ip>" when the address already matched and
+        // "good <ip>" when a record was written, so they can confirm the accepted address.
+        $prefix = $result['changed'] ? 'good' : 'nochg';
         $primaryIp = $result['applied_ipv4'][0] ?? $result['applied_ipv6'][0] ?? '';
-        return $primaryIp === '' ? 'good' : 'good ' . $primaryIp;
+        return $primaryIp === '' ? $prefix : $prefix . ' ' . $primaryIp;
     }
 
     /**
