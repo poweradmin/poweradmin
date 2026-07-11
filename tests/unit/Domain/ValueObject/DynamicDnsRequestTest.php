@@ -64,6 +64,42 @@ class DynamicDnsRequestTest extends TestCase
         $this->assertFalse($dynamicDnsRequest->isDualstackUpdate());
     }
 
+    public function testFromHttpRequestRoutesIpv6InMyipToIpv6Slot(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        // A client that only knows the standard `myip` param sends its IPv6 there.
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '2001:db8::1',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testFromHttpRequestKeepsExplicitMyip6WhenMyipIsIpv6(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        // An explicit myip6 stays authoritative; the v6-in-myip value is left in place.
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '2001:db8::1',
+            'myip6' => '2001:db8::2',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('2001:db8::2', $dynamicDnsRequest->getIpv6());
+    }
+
     public function testFromHttpRequestWithWhatIsMyIpv4(): void
     {
         $_SERVER['REMOTE_ADDR'] = '203.0.113.1';

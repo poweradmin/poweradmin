@@ -49,6 +49,13 @@ class DynamicDnsRequest
         $dualstackUpdate = $request->query->get('dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
+        // The standard dyndns2 `myip` parameter carries either address family. Route an
+        // IPv6 value to the v6 slot so it isn't rejected as an invalid IPv4 (`dnserr`).
+        if ($ipv4 !== '' && $ipv4 !== 'whatismyip' && $ipv6 === '' && str_contains($ipv4, ':')) {
+            $ipv6 = $ipv4;
+            $ipv4 = '';
+        }
+
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
             $ipRetriever = new IpAddressRetriever($_SERVER);
             $clientIp = $ipRetriever->getClientIp();
