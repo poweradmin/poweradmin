@@ -81,6 +81,12 @@ class PasswordResetService
             return ['allowed' => true];
         }
 
+        // Keep the preflight neutral for an email shared by multiple accounts;
+        // createResetRequest() declines it rather than acting on an arbitrary row.
+        if ($this->userRepository->countUsersByEmail($email) > 1) {
+            return ['allowed' => true];
+        }
+
         $authMethod = $user['auth_method'] ?? 'sql';
         $blockedMethods = ['oidc', 'saml', 'ldap'];
 
