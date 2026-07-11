@@ -175,6 +175,47 @@ class PasswordResetSecurityTest extends TestCase
     }
 
     /**
+     * Test that a reset is declined when the email is shared by multiple accounts,
+     * since we cannot safely tell which account the request is for.
+     */
+    public function testSharedEmailDeclinesResetRequest(): void
+    {
+        $email = 'shared@example.com';
+
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+
+        $this->userRepository->method('getUserByEmail')
+            ->with($email)
+            ->willReturn([
+                'id' => 1,
+                'username' => 'first-user',
+                'email' => $email,
+                'fullname' => 'First User',
+                'auth_method' => 'sql'
+            ]);
+
+        $this->userRepository->method('countUsersByEmail')
+            ->with($email)
+            ->willReturn(2);
+
+        $this->logger->expects($this->once())
+            ->method('warning')
+            ->with(
+                'Password reset declined for email shared by multiple accounts',
+                $this->callback(fn ($context) => $context['email'] === $email)
+            );
+
+        // No token minted and no email sent for an ambiguous address.
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        // Returns true so the response doesn't reveal the shared-email condition.
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    /**
      * Test that SAML users cannot request password reset
      */
     public function testSamlUserCannotResetPassword(): void
