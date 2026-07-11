@@ -305,7 +305,7 @@ test_response "Missing User-Agent" "badagent" "-H 'User-Agent:' -u '$TEST_USERNA
 test_without_auth "Missing Authentication" "badauth" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.1'"
 
 # Test 3: Invalid Credentials
-test_with_auth "Invalid Credentials" "badauth2" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.1'" "$TEST_USERNAME" "wrongpassword"
+test_with_auth "Invalid Credentials" "badauth" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.1'" "$TEST_USERNAME" "wrongpassword"
 
 # Test 4: Missing Hostname
 test_with_auth "Missing Hostname" "notfqdn" "-d 'myip=192.168.1.1'"
