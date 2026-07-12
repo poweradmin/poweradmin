@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -516,8 +517,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             // The reverse zone must equal the record name or be a suffix on a label
             // boundary; ORDER BY length DESC returns the most specific match first,
             // so "12.0.192.in-addr.arpa" is not mistaken for "2.0.192.in-addr.arpa".
-            $zoneName = strtolower($r["name"]);
-            if ($lowerDomain === $zoneName || str_ends_with($lowerDomain, '.' . $zoneName)) {
+            if (DnsHelper::isWithinZone($lowerDomain, $r["name"])) {
                 return (int)$r["id"];
             }
         }

@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -734,7 +735,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             // Match on a label boundary (apex or suffix) and keep the longest
             // (most specific) zone, so a record is not dropped into a shorter
             // zone that merely shares a trailing substring.
-            if ($lowerName === $zoneName || str_ends_with($lowerName, '.' . $zoneName)) {
+            if (DnsHelper::isWithinZone($lowerName, $zoneName)) {
                 if (strlen($zoneName) > $bestLength) {
                     $bestLength = strlen($zoneName);
                     $foundId = (int)$zone['id'];

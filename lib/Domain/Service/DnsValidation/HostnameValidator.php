@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\TopLevelDomain;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -268,13 +269,10 @@ class HostnameValidator
             return $zone;
         }
 
-        $lowerName = strtolower($name);
-        $lowerZone = strtolower($zone);
-
         // Already qualified only at the apex or on a dot boundary. "testexample.com"
         // is not inside "example.com" and must get the suffix, else PowerDNS stores
         // an out-of-zone record it never serves.
-        if ($lowerName === $lowerZone || str_ends_with($lowerName, '.' . $lowerZone)) {
+        if (DnsHelper::isWithinZone($name, $zone)) {
             return $name;
         }
 

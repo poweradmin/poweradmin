@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -504,8 +505,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
             // Match the reverse zone on a label boundary (apex or suffix); ORDER BY
             // length DESC yields the most specific zone first, so a record is not
             // dropped into a shorter zone that only shares a substring.
-            $zoneName = strtolower($r['name']);
-            if ($lowerName === $zoneName || str_ends_with($lowerName, '.' . $zoneName)) {
+            if (DnsHelper::isWithinZone($lowerName, $r['name'])) {
                 return (int)$r['id'];
             }
         }

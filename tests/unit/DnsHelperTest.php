@@ -113,6 +113,36 @@ class DnsHelperTest extends TestCase
         $this->assertEquals('example', DnsHelper::getSubDomainName('example.co.uk'));
     }
 
+    // Tests for isWithinZone
+
+    public function testIsWithinZoneMatchesApexAndSubdomains(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'example.com'), 'The zone apex is within the zone.');
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com', 'example.com'), 'A direct subdomain is within the zone.');
+        $this->assertTrue(DnsHelper::isWithinZone('a.b.example.com', 'example.com'), 'A deep subdomain is within the zone.');
+    }
+
+    public function testIsWithinZoneRejectsOutOfZoneNames(): void
+    {
+        $this->assertFalse(DnsHelper::isWithinZone('testexample.com', 'example.com'), 'A label-boundary substring is not within the zone.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.com', 'www.example.com'), 'A parent is not within a child zone.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.org', 'example.com'), 'A different zone is not a match.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.com.evil.com', 'example.com'), 'A suffix in the middle is not a match.');
+    }
+
+    public function testIsWithinZoneIsCaseInsensitive(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('WWW.Example.COM', 'example.com'), 'Comparison is case-insensitive.');
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'EXAMPLE.COM'), 'The zone name comparison is case-insensitive.');
+    }
+
+    public function testIsWithinZoneComparesNamesAsGiven(): void
+    {
+        // Trailing dots are not normalized here; callers pass already-normalized names.
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.com.', 'example.com'), 'A trailing dot on the name is not trimmed, so it does not match.');
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.com', 'example.com.'), 'A trailing dot on the zone is not trimmed, so it does not match.');
+    }
+
     // Tests for stripZoneSuffix
 
     public function testStripZoneSuffixWithZoneApex(): void

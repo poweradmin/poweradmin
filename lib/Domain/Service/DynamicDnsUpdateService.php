@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -181,7 +182,7 @@ class DynamicDnsUpdateService
         $bestLength = -1;
         foreach ($userZones as $zoneId => $zoneName) {
             $zone = strtolower($zoneName);
-            $isMatch = $fqdn === $zone || str_ends_with($fqdn, '.' . $zone);
+            $isMatch = DnsHelper::isWithinZone($fqdn, $zone);
             if ($isMatch && strlen($zone) > $bestLength) {
                 $bestZoneId = $zoneId;
                 $bestLength = strlen($zone);

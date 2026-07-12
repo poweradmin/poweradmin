@@ -73,6 +73,26 @@ class DnsHelper
     }
 
     /**
+     * Tell whether a record name falls within a zone: the zone apex itself or any
+     * name under it. Comparison is case-insensitive and anchored on a label
+     * boundary, so "testexample.com" is not treated as inside "example.com".
+     *
+     * Names are compared as given (no trailing-dot normalization); callers that
+     * accept FQDN-dotted input must normalize it before matching.
+     *
+     * @param string $name Record name or hostname to test
+     * @param string $zoneName Zone name
+     * @return bool True if $name is the zone apex or a subdomain of the zone
+     */
+    public static function isWithinZone(string $name, string $zoneName): bool
+    {
+        $name = strtolower($name);
+        $zoneName = strtolower($zoneName);
+
+        return $name === $zoneName || str_ends_with($name, '.' . $zoneName);
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts
@@ -169,11 +189,8 @@ class DnsHelper
             return $zoneName;
         }
 
-        // If hostname already contains zone name (case-insensitive), return as-is
-        $lowerHostname = strtolower($hostname);
-        $lowerZoneName = strtolower($zoneName);
-
-        if ($lowerHostname === $lowerZoneName || str_ends_with($lowerHostname, '.' . $lowerZoneName)) {
+        // If hostname is already within the zone (case-insensitive), return as-is
+        if (self::isWithinZone($hostname, $zoneName)) {
             return $hostname;
         }
 
