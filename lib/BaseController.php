@@ -187,6 +187,17 @@ abstract class BaseController
     }
 
     /**
+     * Whether the current request targets the v2 public API. Matches on the URL path
+     * only (query string ignored) so the v2 error-wrapper decision is not swayed by an
+     * unrelated URL that merely mentions /api/v2/ in its query string.
+     */
+    public static function isV2ApiRequest(): bool
+    {
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+        return preg_match('#/api/v2(/|$)#', $path) === 1;
+    }
+
+    /**
      * Checks if the current request expects a JSON response
      * This is more comprehensive than just checking the route
      *

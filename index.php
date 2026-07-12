@@ -36,6 +36,13 @@ $configManager->initialize();
 initializeTimezone($configManager);
 initializeSession();
 
+// A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
+// so buffer the response and drop its body: HEAD must return headers only. The
+// callback runs when the response flushes its own output buffers during send().
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && \Poweradmin\BaseController::isV2ApiRequest()) {
+    ob_start(static fn(): string => '');
+}
+
 // Create and process routes
 $router = new SymfonyRouter();
 
@@ -60,28 +67,41 @@ try {
     if ($expectsJson) {
         header('Content-Type: application/json');
 
+        // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
+        $isV2Api = \Poweradmin\BaseController::isV2ApiRequest();
+
         if ($e->getCode() === 404) {
             http_response_code(404);
-            echo json_encode([
-                'error' => true,
-                'message' => 'Endpoint not found'
-            ]);
+            echo json_encode($isV2Api
+                ? ['success' => false, 'data' => null, 'message' => 'Endpoint not found']
+                : ['error' => true, 'message' => 'Endpoint not found']);
         } elseif ($e->getCode() === 405) {
             http_response_code(405);
-            echo json_encode([
-                'error' => true,
-                'message' => 'Method not allowed'
-            ]);
+            echo json_encode($isV2Api
+                ? ['success' => false, 'data' => null, 'message' => 'Method not allowed']
+                : ['error' => true, 'message' => 'Method not allowed']);
         } else {
             http_response_code(500);
             $showDebug = $configManager->get('misc', 'display_errors', false);
-            echo json_encode([
-                'error' => true,
-                'message' => $showDebug ? $e->getMessage() : 'Internal server error',
-                'file' => $showDebug ? $e->getFile() : null,
-                'line' => $showDebug ? $e->getLine() : null,
-                'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
-            ]);
+            if ($isV2Api) {
+                echo json_encode([
+                    'success' => false,
+                    'data' => $showDebug ? [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => explode("\n", $e->getTraceAsString()),
+                    ] : null,
+                    'message' => $showDebug ? $e->getMessage() : 'Internal server error',
+                ]);
+            } else {
+                echo json_encode([
+                    'error' => true,
+                    'message' => $showDebug ? $e->getMessage() : 'Internal server error',
+                    'file' => $showDebug ? $e->getFile() : null,
+                    'line' => $showDebug ? $e->getLine() : null,
+                    'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
+                ]);
+            }
         }
     } else {
         // HTML error response

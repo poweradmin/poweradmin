@@ -927,9 +927,20 @@ test_zone_status_codes() {
     fi
     api_request_v2 "POST" "/zones" "$dup_zone" 409 "Reject duplicate zone name (already exists)"
 
-    # Operations on a non-existent zone return 404
+    # Operations on a non-existent zone return 404 (existence checked before permission)
     api_request_v2 "PUT" "/zones/999999" '{"type":"NATIVE"}' 404 "Update non-existent zone returns 404"
+    assert_json "Update 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
     api_request_v2 "DELETE" "/zones/999999" "" 404 "Delete non-existent zone returns 404"
+    assert_json "Delete 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
+
+    # HEAD is scoped like GET and must reach the read handler, not fall through to 405
+    if [[ -n "$dup_zone_id" ]]; then
+        api_request_v2 "HEAD" "/zones/$dup_zone_id" "" 200 "HEAD on existing zone returns 200 (not 405)"
+    fi
+
+    # Unknown v2 endpoints return 404 in the v2 {success:false} wrapper, not the v1 shape
+    api_request_v2 "GET" "/this-endpoint-does-not-exist" "" 404 "Unknown v2 endpoint returns 404"
+    assert_json "Unknown-endpoint 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
 
     # Clean up the zone created for the duplicate test
     if [[ -n "$dup_zone_id" ]]; then
@@ -2426,6 +2437,7 @@ test_api_key_scopes() {
 
     # Read-only key: view allowed, every write rejected with 403.
     api_request_v2_with_key "$ro_secret" "GET" "/zones/${zone_a}" "" 200 "Read-only key may GET a zone"
+    api_request_v2_with_key "$ro_secret" "HEAD" "/zones/${zone_a}" "" 200 "Read-only key may HEAD a zone (routed to GET, not 405)"
     api_request_v2_with_key "$ro_secret" "POST" "/zones" '{"name":"ro-denied.example.com","type":"MASTER"}' 403 "Read-only key may not POST"
     api_request_v2_with_key "$ro_secret" "PUT" "/zones/${zone_a}" '{"type":"NATIVE"}' 403 "Read-only key may not PUT"
     api_request_v2_with_key "$ro_secret" "DELETE" "/zones/${zone_b}" "" 403 "Read-only key may not DELETE"

@@ -96,6 +96,13 @@ abstract class PublicApiController extends AbstractApiController
         // Enforce the API key's read-only / operation scope before any handler runs
         $this->enforceApiKeyMethodScope();
 
+        // HEAD passes the read-only scope check above; route it to the GET handler so
+        // each v2 controller answers it instead of falling through to a 405. The
+        // bootstrap buffers away the GET body so the client still gets headers only.
+        if ($this->isV2Controller() && strtoupper($this->request->getMethod()) === 'HEAD') {
+            $this->request->setMethod('GET');
+        }
+
         // Log deprecation warning for V1 API requests
         if (!$this->isV2Controller()) {
             $this->logger->warning('Deprecated API v1 request: {method} {path} from {ip}', [

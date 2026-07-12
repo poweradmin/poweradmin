@@ -74,4 +74,35 @@ class BaseControllerApiDetectionTest extends TestCase
         $this->assertFalse($this->detect('isApiRequest', '/settings/api/logs'));
         $this->assertFalse($this->detect('isInternalApiRoute', '/settings/api/logs'));
     }
+
+    public function testV2ApiRequestDetected(): void
+    {
+        $this->assertV2('/api/v2/zones');
+        $this->assertV2('/api/v2/zones/1/records');
+        $this->assertV2('/poweradmin/api/v2/zones');
+        // Bare collection root with no trailing slash still counts as v2.
+        $this->assertV2('/api/v2');
+    }
+
+    public function testV2ApiRequestRejectsNonV2AndSpoofedQuery(): void
+    {
+        $this->assertNotV2('/api/v1/zones');
+        $this->assertNotV2('/api/internal/zones');
+        $this->assertNotV2('/zones');
+        // A query string that merely mentions the v2 path must not flip detection.
+        $this->assertNotV2('/index.php?return=/api/v2/zones');
+        $this->assertNotV2('/settings/api/v2things');
+    }
+
+    private function assertV2(string $requestUri): void
+    {
+        $_SERVER['REQUEST_URI'] = $requestUri;
+        $this->assertTrue(BaseController::isV2ApiRequest(), "Expected v2 for $requestUri");
+    }
+
+    private function assertNotV2(string $requestUri): void
+    {
+        $_SERVER['REQUEST_URI'] = $requestUri;
+        $this->assertFalse(BaseController::isV2ApiRequest(), "Expected non-v2 for $requestUri");
+    }
 }

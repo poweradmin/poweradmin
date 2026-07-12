@@ -715,6 +715,11 @@ class ZonesController extends PublicApiController
                 return $scopeError;
             }
 
+            // Confirm existence before permission, matching getZone()'s 404-before-403 order.
+            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
+            }
+
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
@@ -762,11 +767,6 @@ class ZonesController extends PublicApiController
 
             if (empty($updates) && !$hasDescriptionUpdate) {
                 return $this->returnApiError('No valid fields provided for update', 400);
-            }
-
-            // Verify zone exists before making any changes
-            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
-                return $this->returnApiError('Zone not found', 404);
             }
 
             // Use the zone management service to update zone (domains table fields)
@@ -860,6 +860,11 @@ class ZonesController extends PublicApiController
 
             if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
                 return $scopeError;
+            }
+
+            // Confirm existence before permission, matching getZone()'s 404-before-403 order.
+            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
             }
 
             // Check if user has permission to delete this zone
