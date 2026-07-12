@@ -193,6 +193,25 @@ class UserManager
     }
 
     /**
+     * Check whether an email address is already assigned to a user.
+     *
+     * @param object $db Database connection
+     * @param string $email Email address to look for
+     * @param int|null $exclude_user_id User to ignore (the account being edited)
+     * @return bool True if another user already has this email
+     */
+    public static function email_exists($db, string $email, ?int $exclude_user_id = null): bool
+    {
+        // Compare case-insensitively so User@x and user@x are treated as the same
+        // address; PostgreSQL and SQLite match case-sensitively by default.
+        $query = "SELECT id FROM users WHERE LOWER(email) = LOWER(" . $db->quote($email, 'text') . ")";
+        if ($exclude_user_id !== null) {
+            $query .= " AND id != " . $db->quote($exclude_user_id, 'integer');
+        }
+        return (bool)$db->queryOne($query);
+    }
+
+    /**
      * Delete User ID
      *
      * Delete a user from the system. Will also delete zones owned by user or
@@ -326,6 +345,15 @@ class UserManager
 
                     return false;
                 }
+            }
+
+            // Reject an email already used by a different account.
+            if ($email !== '' && self::email_exists($this->db, $email, $id)) {
+                $error = new ErrorMessage(_('Email address already exists, please choose another one.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
+                return false;
             }
 
             // So, user doesn't want to change username or, if he wants, there is not
@@ -647,6 +675,14 @@ class UserManager
                 return false;
             }
 
+            if (self::email_exists($this->db, $details['email'], (int)$details['uid'])) {
+                $error = new ErrorMessage(_('Email address already exists, please choose another one.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
+                return false;
+            }
+
             if (!isset($details['active']) || $details['active'] != "on") {
                 $active = 0;
             } else {
@@ -782,6 +818,12 @@ class UserManager
             return false;
         } elseif (!$validation->is_valid_email($details['email'])) {
             $error = new ErrorMessage(_('Enter a valid email address.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        } elseif (self::email_exists($this->db, $details['email'])) {
+            $error = new ErrorMessage(_('Email address already exists, please choose another one.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
