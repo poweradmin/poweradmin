@@ -121,9 +121,14 @@ api_request_v2() {
         -H "X-API-Key: $API_KEY"
         -H "Content-Type: application/json"
         -H "Accept: application/json"
-        -X "$method"
         --max-time 30
     )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
 
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
@@ -1361,7 +1366,7 @@ test_zone_templates() {
 cleanup_existing_test_owner_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "zone_owner_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "zone_owner_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
             "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -1873,7 +1878,7 @@ test_users_crud() {
 
     increment_test
     local user_count
-    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)
+    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.users | length' 2>/dev/null)
     if [[ "$user_count" -ge 1 ]]; then
         print_pass "Users list contains at least 1 user ($user_count)"
     else
@@ -1893,7 +1898,7 @@ test_users_crud() {
 
         increment_test
         local username
-        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.username' 2>/dev/null)
+        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.username' 2>/dev/null)
         if [[ "$username" == "api_crud_test_user" ]]; then
             print_pass "User data matches (username: $username)"
         else
@@ -1911,7 +1916,7 @@ test_users_crud() {
 
         increment_test
         local fullname
-        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.fullname' 2>/dev/null)
+        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.fullname' 2>/dev/null)
         if [[ "$fullname" == "API CRUD Updated" ]]; then
             print_pass "User fullname updated correctly"
         else
@@ -1944,7 +1949,7 @@ test_users_crud() {
 cleanup_existing_test_crud_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "api_crud_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "api_crud_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
@@ -2066,7 +2071,7 @@ cleanup_existing_test_zones() {
 cleanup_existing_ldap_test_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "ldap_sync_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "ldap_sync_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
             "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -2111,7 +2116,7 @@ cleanup_existing_perm_templ_test_users() {
     for uname in "${usernames[@]}"; do
         local user_id
         user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r ".data[]? | select(.username == \"${uname}\") | .user_id" 2>/dev/null)
+            "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r ".data.users[]? | select(.username == \"${uname}\") | .user_id" 2>/dev/null)
         if [[ -n "$user_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
                 "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -2139,9 +2144,14 @@ api_request_v2_basic() {
         -u "${username}:${password}"
         -H "Content-Type: application/json"
         -H "Accept: application/json"
-        -X "$method"
         --max-time 30
     )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
 
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
@@ -2171,7 +2181,7 @@ api_request_v2_basic() {
 cleanup_existing_self_edit_test_data() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "self_edit_test_user" or .username == "self_edit_hijacked") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "self_edit_test_user" or .username == "self_edit_hijacked") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
@@ -2179,7 +2189,7 @@ cleanup_existing_self_edit_test_data() {
 
     local templ_id
     templ_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
     if [[ -n "$templ_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/permission-templates/$templ_id" >/dev/null 2>&1 || true
@@ -2203,7 +2213,7 @@ test_users_self_edit_guard() {
     # The create response carries no id - look it up by name.
     api_request_v2 "GET" "/permission-templates" "" 200 "List templates to find self-edit template id"
     local templ_id
-    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id')
+    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id')
     if [[ -z "$templ_id" || "$templ_id" == "null" ]]; then
         increment_test
         print_fail "Could not resolve self_edit_test_templ id - skipping suite"
@@ -2244,9 +2254,9 @@ test_users_self_edit_guard() {
 
     # Verify nothing auth-critical actually changed and contact edits landed.
     api_request_v2 "GET" "/users/${user_id}" "" 200 "Get self-edit user after attempts"
-    assert_json "Username unchanged after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.username' "self_edit_test_user"
-    assert_json "Account still active after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.active' "true"
-    assert_json "Contact edit landed" "$LAST_RESPONSE_BODY" '.data.fullname' "Self Edit Updated"
+    assert_json "Username unchanged after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.user.username' "self_edit_test_user"
+    assert_json "Account still active after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.user.active' "true"
+    assert_json "Contact edit landed" "$LAST_RESPONSE_BODY" '.data.user.fullname' "Self Edit Updated"
 
     # An admin (API key) still changes these fields freely.
     api_request_v2 "PUT" "/users/${user_id}" '{"username":"self_edit_hijacked"}' \
@@ -2295,7 +2305,7 @@ test_users_perm_templ_validation() {
 
     # Listing must include the freshly created user (the JOIN fix surfaces broken rows too).
     api_request_v2 "GET" "/users" "" 200 "List users after create"
-    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
+    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data.users[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
         increment_test
         print_fail "Created user not present in GET /users response"
     fi
@@ -2375,9 +2385,14 @@ api_request_v2_with_key() {
         -H "X-API-Key: $key"
         -H "Content-Type: application/json"
         -H "Accept: application/json"
-        -X "$method"
         --max-time 30
     )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
     fi
