@@ -369,6 +369,19 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCreateUserRejectsOverlongUsername(): void
+    {
+        $result = $this->service->createUser([
+            'username' => str_repeat('a', 65),
+            'password' => 'secret123'
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+        $this->assertStringContainsString('Username', $result['message']);
+    }
+
+    #[Test]
     public function testCreateUserFailsWhenUsernameExists(): void
     {
         $this->userRepository->method('getUserByUsername')

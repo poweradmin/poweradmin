@@ -257,6 +257,10 @@ class UserManagementService
             ];
         }
 
+        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+            return $lengthError;
+        }
+
         // Check if username already exists
         if ($this->userRepository->getUserByUsername($userData['username'])) {
             return [
@@ -333,6 +337,10 @@ class UserManagementService
                 'message' => 'User not found',
                 'status' => 404
             ];
+        }
+
+        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+            return $lengthError;
         }
 
         // Check if username already exists (exclude current user)
@@ -613,6 +621,29 @@ class UserManagementService
     private function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
         return $this->userRepository->permissionTemplateExists($permTemplId, $templateType);
+    }
+
+    /**
+     * Reject field values longer than their database column so an over-long value
+     * returns a clear 400 instead of surfacing as a database truncation 500.
+     * Returns a service error array on the first offending field, or null.
+     *
+     * @param array $userData
+     * @return array|null
+     */
+    private function validateFieldLengths(array $userData): ?array
+    {
+        $limits = ['username' => 64, 'fullname' => 255, 'email' => 255, 'description' => 1024];
+        foreach ($limits as $field => $max) {
+            if (isset($userData[$field]) && is_string($userData[$field]) && mb_strlen($userData[$field]) > $max) {
+                return [
+                    'success' => false,
+                    'message' => ucfirst($field) . " must not exceed $max characters",
+                    'status' => 400
+                ];
+            }
+        }
+        return null;
     }
 
     /**
