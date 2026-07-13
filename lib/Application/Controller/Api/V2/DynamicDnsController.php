@@ -127,8 +127,9 @@ class DynamicDnsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 400, description: 'Invalid hostname or IP payload')]
-    #[OA\Response(response: 403, description: 'Authenticated user lacks DDNS permission')]
+    #[OA\Response(response: 403, description: 'User lacks DDNS permission, the API key cannot access the zone, or the zone is read-only')]
     #[OA\Response(response: 404, description: 'No owned zone contains this hostname')]
+    #[OA\Response(response: 409, description: 'No matching records exist to update')]
     private function updateRecord(): JsonResponse
     {
         if (!$this->userCanUseDdns($this->getAuthenticatedUserId())) {
@@ -185,6 +186,7 @@ class DynamicDnsController extends PublicApiController
             ], true, $result['changed'] ? 'Dynamic DNS record updated' : 'Records already match supplied addresses'),
             'forbidden' => $this->returnApiError('Forbidden: this API key does not have access to the requested zone', 403),
             'nohost' => $this->returnApiError('Hostname is not contained in any zone the user owns', 404),
+            'readonly' => $this->returnApiError('Records in Secondary and Consumer zones are read-only; they replicate from a primary', 403),
             '!yours' => $this->returnApiError('Update did not produce any change and no matching records exist', 409),
             default => $this->returnApiError('Failed to apply dynamic DNS update', 500),
         };

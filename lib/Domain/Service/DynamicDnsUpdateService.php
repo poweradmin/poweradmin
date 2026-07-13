@@ -70,7 +70,8 @@ class DynamicDnsUpdateService
         $result = $this->applyForUser($user, $request->getUsername(), $hostname, $ipList, $request->isDualstackUpdate());
 
         if ($result['status'] !== 'good') {
-            return $result['status'];
+            // The dyndns2 text protocol has no read-only status; report it as not the client's.
+            return $result['status'] === 'readonly' ? '!yours' : $result['status'];
         }
 
         // dyndns2 clients expect "nochg <ip>" when the address already matched and
@@ -108,7 +109,7 @@ class DynamicDnsUpdateService
 
         // Secondary and Consumer zones replicate from a primary - records are read-only
         if (ZoneType::isReadOnly($this->repository->getZoneType($zoneId))) {
-            return $this->emptyResult('!yours', $zoneId);
+            return $this->emptyResult('readonly', $zoneId);
         }
 
         try {

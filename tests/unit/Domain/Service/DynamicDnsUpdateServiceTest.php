@@ -128,6 +128,25 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('!yours', $result);
     }
 
+    public function testApplyForUserReturnsReadonlyStatusForSecondaryZone(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        // Secondary/Consumer zones replicate from a primary - the v2 front end maps this to 403
+        $this->repository->method('getZoneType')->with(1)->willReturn('SLAVE');
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $this->service->applyForUser($user, 'user', $hostname, $ipList, false);
+
+        $this->assertSame('readonly', $result['status']);
+        $this->assertSame(1, $result['zone_id']);
+        $this->assertFalse($result['changed']);
+    }
+
     public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void
     {
         $request = new DynamicDnsRequest(
