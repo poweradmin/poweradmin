@@ -124,7 +124,10 @@ class DatabaseSchemaService
             $hasDefault = isset($arr['default'])
                 && ($arr['default'] != '0' || !empty($arr['emit_default']));
             if ($hasDefault) {
-                if (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
+                if ($db_type == 'pgsql' && $arr['type'] == 'boolean') {
+                    // PostgreSQL rejects integer literals as boolean defaults; emit true/false.
+                    $line .= ' DEFAULT ' . ($arr['default'] ? 'true' : 'false');
+                } elseif (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
                     $line .= ' DEFAULT ' . $this->db->quote($arr['default']);
                 } else {
                     $line .= ' DEFAULT ' . $arr['default'];

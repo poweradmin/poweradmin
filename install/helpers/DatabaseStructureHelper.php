@@ -460,10 +460,12 @@ class DatabaseStructureHelper
                         'table' => 'zone_templ',
                         'flags' => ''
                     ),
+                    // emit_default forces DEFAULT 0; zone_templ INSERTs omit is_default, so a bare NOT NULL breaks MySQL-strict/SQLite.
                     'is_default' => array
                     (
                         'notnull' => 1,
                         'default' => 0,
+                        'emit_default' => true,
                         'type' => 'boolean',
                         'name' => 'is_default',
                         'table' => 'zone_templ',
