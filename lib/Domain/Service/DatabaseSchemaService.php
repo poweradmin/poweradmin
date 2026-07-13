@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -121,9 +121,13 @@ class DatabaseSchemaService
                 $line .= ' PRIMARY KEY';
             }
 
-            if (isset($arr['default']) && $arr['default'] != '0') {
-                // Quote string defaults for text/varchar fields
-                if (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
+            $hasDefault = isset($arr['default'])
+                && ($arr['default'] != '0' || !empty($arr['emit_default']));
+            if ($hasDefault) {
+                if ($db_type == 'pgsql' && $arr['type'] == 'boolean') {
+                    // PostgreSQL rejects integer literals as boolean defaults; emit true/false.
+                    $line .= ' DEFAULT ' . ($arr['default'] ? 'true' : 'false');
+                } elseif (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
                     $line .= ' DEFAULT ' . $this->db->quote($arr['default']);
                 } else {
                     $line .= ' DEFAULT ' . $arr['default'];
