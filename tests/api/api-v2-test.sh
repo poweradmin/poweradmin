@@ -1502,7 +1502,8 @@ test_zone_owners() {
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
-    if [[ "$http_code" == "201" ]]; then
+    # Nothing added (all already assigned) is a plain 200, not a 201 Created.
+    if [[ "$http_code" == "200" ]]; then
         local skipped=$(echo "$body" | jq -r '.data.skipped | length')
         local added=$(echo "$body" | jq -r '.data.added | length')
         if [[ "$added" == "0" && "$skipped" -ge 1 ]]; then
@@ -1511,7 +1512,7 @@ test_zone_owners() {
             print_fail "Expected 0 added and skipped >= 1, got added=$added skipped=$skipped"
         fi
     else
-        print_fail "Expected 201 for batch add, got HTTP $http_code"
+        print_fail "Expected 200 for batch add with nothing added, got HTTP $http_code"
     fi
 
     # Test 8d: Batch add with non-existent users (reports not_found)
@@ -1521,7 +1522,8 @@ test_zone_owners() {
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
-    if [[ "$http_code" == "201" ]]; then
+    # All users not found means nothing was created: expect 200, not 201.
+    if [[ "$http_code" == "200" ]]; then
         local not_found=$(echo "$body" | jq -r '.data.not_found | length')
         if [[ "$not_found" == "2" ]]; then
             print_pass "Non-existent users correctly reported in not_found ($not_found)"
@@ -1529,7 +1531,7 @@ test_zone_owners() {
             print_fail "Expected 2 not_found, got $not_found"
         fi
     else
-        print_fail "Expected 201 for batch add, got HTTP $http_code"
+        print_fail "Expected 200 for batch add with nothing added, got HTTP $http_code"
     fi
 
     # Test 9: Remove owner from zone

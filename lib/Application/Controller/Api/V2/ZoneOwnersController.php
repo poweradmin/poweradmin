@@ -210,10 +210,12 @@ class ZoneOwnersController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped or not found)')]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
     #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only)')]
+    #[OA\Response(response: 500, description: 'Failed to add owner due to a server error')]
     private function addOwner(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -269,7 +271,8 @@ class ZoneOwnersController extends PublicApiController
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 400);
+            // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
+            return $this->returnApiError($e->getMessage(), 500);
         }
     }
 
@@ -315,11 +318,12 @@ class ZoneOwnersController extends PublicApiController
             $message .= ', ' . count($notFound) . ' not found';
         }
 
+        // 201 only when something was actually created; a batch that added nothing is a plain 200.
         return $this->returnApiResponse(
             ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound],
             true,
             $message,
-            201
+            empty($added) ? 200 : 201
         );
     }
 
