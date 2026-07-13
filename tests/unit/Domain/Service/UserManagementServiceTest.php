@@ -479,7 +479,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -497,7 +497,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -514,7 +514,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -532,7 +532,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -572,7 +572,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -781,7 +781,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -796,7 +796,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -810,7 +810,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -843,7 +843,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -858,7 +858,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     // ========== deleteUser tests ==========
@@ -1044,7 +1044,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
@@ -1064,7 +1064,7 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertEquals('Permission template not found', $result['message']);
-        $this->assertSame(404, $result['status']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]

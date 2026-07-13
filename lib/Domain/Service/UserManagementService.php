@@ -283,7 +283,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Permission template not found',
-                    'status' => 404
+                    'status' => 400
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -369,7 +369,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Permission template not found',
-                    'status' => 404
+                    'status' => 400
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -561,7 +561,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
-                'status' => 404
+                'status' => 400
             ];
         }
 

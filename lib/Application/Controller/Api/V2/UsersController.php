@@ -491,17 +491,6 @@ class UsersController extends PublicApiController
         )
     )]
     #[OA\Response(
-        response: 404,
-        description: 'Not found - permission template does not exist',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: false),
-                new OA\Property(property: 'message', type: 'string', example: 'Permission template not found'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
-    )]
-    #[OA\Response(
         response: 409,
         description: 'Conflict - username or email already exists',
         content: new OA\JsonContent(
@@ -679,7 +668,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 404,
-        description: 'Not found - user or permission template does not exist',
+        description: 'Not found - user does not exist',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
