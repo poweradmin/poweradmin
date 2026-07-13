@@ -37,7 +37,6 @@ class BaseControllerApiDetectionTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = $requestUri;
         $ref = new ReflectionMethod(BaseController::class, $method);
-        $ref->setAccessible(true);
         return $ref->invoke($this->controller);
     }
 
