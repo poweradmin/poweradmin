@@ -324,7 +324,6 @@ trait DatabaseValidationTrait
             return;
         }
 
-        $collation = strtolower($collation);
         $input = $context->getRoot();
         $dbType = $input['db_type'];
 
@@ -339,7 +338,9 @@ trait DatabaseValidationTrait
             return;
         }
 
-        if (!in_array($collation, $validCollations, true)) {
+        // PostgreSQL locale names are case-sensitive (e.g. en_US.utf8), so match case-insensitively.
+        $validCollationsLower = array_map('strtolower', $validCollations);
+        if (!in_array(strtolower($collation), $validCollationsLower, true)) {
             $context->buildViolation('Invalid database collation')
                 ->addViolation();
         }
