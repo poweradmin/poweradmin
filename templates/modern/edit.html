@@ -411,7 +411,8 @@
                     </thead>
                     <tbody>
         {% for r in records %}
-        {% set record_locked = zone_is_read_only(domain_type) or (r['type'] == "SOA" and perm_edit != "all") or (r['type'] == "NS" and perm_edit == "own_as_client") %}
+        {% set ns_record_locked = r['type'] == "NS" and perm_edit == "own_as_client" and not (perm_edit_ns_subzone and r['name']|lower != zone_name|lower) %}
+        {% set record_locked = zone_is_read_only(domain_type) or (r['type'] == "SOA" and perm_edit != "all") or ns_record_locked %}
 
         {% if not record_locked %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
@@ -487,7 +488,7 @@
             {% if iface_show_record_edit_button or iface_show_record_delete_button %}
                 {% if zone_is_read_only(domain_type) or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
                 <td>&nbsp;</td>
-                {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
+                {% elseif r['type'] == "SOA" and perm_edit != "all" or ns_record_locked %}
                 <td>&nbsp;</td>
                 {% else %}
                 <td class="text-center" style="width: 100px;">

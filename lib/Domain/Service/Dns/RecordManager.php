@@ -122,7 +122,13 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+        // Normalize the name first so the apex comparison below sees the FQDN
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
+
+        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
             throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
@@ -135,11 +141,6 @@ class RecordManager implements RecordManagerInterface
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Normalize the name BEFORE validation
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name using the validation service
         $validationResult = $this->validationService->validateRecord(
@@ -228,7 +229,13 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+        // Normalize the name first so the apex comparison below sees the FQDN
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
+
+        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
             throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
 
@@ -241,11 +248,6 @@ class RecordManager implements RecordManagerInterface
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Normalize the name BEFORE validation
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name using the validation service
         $validationResult = $this->validationService->validateRecord(
@@ -341,7 +343,18 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
-        if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
+        // Normalize the posted name first so the apex comparison below sees the FQDN
+        $zone = $this->domainRepository->getDomainNameById($record['zid']);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
+
+        // Both the stored record and the posted state must pass: a client-level
+        // editor may neither touch a restricted record nor turn a record into one.
+        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        if (
+            Permission::isRecordRestrictedForClient($recordDetails['type'], $perm_edit, $recordDetails['name'], $zone, $canEditSubzoneNs)
+            || Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)
+        ) {
             $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'edit'));
 
             return false;
@@ -355,11 +368,6 @@ class RecordManager implements RecordManagerInterface
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } else {
-            // Normalize the name BEFORE validation
-            $zone = $this->domainRepository->getDomainNameById($record['zid']);
-            $hostnameValidator = new HostnameValidator($this->config);
-            $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
-
             // Now validate the input with normalized name using the validation service
             $validationResult = $this->validationService->validateRecord(
                 $record['rid'],
@@ -447,7 +455,9 @@ class RecordManager implements RecordManagerInterface
         }
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
-            if (Permission::isRecordTypeRestrictedForClient($record['type'], $perm_edit)) {
+            $zone = $this->domainRepository->getDomainNameById($record['zid']);
+            $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+            if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
                 $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
                 return false;
             }

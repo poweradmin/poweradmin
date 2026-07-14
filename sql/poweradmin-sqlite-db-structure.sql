@@ -69,6 +69,7 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (71,	'zone_logs_view_own
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (73,	'user_logs_view',	'User is allowed to view the user activity logs.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 

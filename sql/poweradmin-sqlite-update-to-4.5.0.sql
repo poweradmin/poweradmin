@@ -111,6 +111,13 @@ INSERT INTO perm_items (name, descr)
 SELECT 'group_logs_view', 'User is allowed to view the group activity logs.'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'group_logs_view');
 
+-- Register zone_content_edit_ns_subzone so client-level editors can manage
+-- delegation NS records below the zone apex. Existing templates are NOT
+-- auto-granted the new permission; admins opt in via the permission template editor.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_content_edit_ns_subzone', 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_content_edit_ns_subzone');
+
 -- password_reset_tokens.token VARCHAR is advisory in SQLite; existing rows
 -- accept the wider sha256$<64hex> value without ALTER. The structure file is
 -- updated to keep declarations consistent across databases.

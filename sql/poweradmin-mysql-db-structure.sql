@@ -138,7 +138,8 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.'),
                                                      (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.'),
                                                      (73,	'user_logs_view',	'User is allowed to view the user activity logs.'),
-                                                     (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
+                                                     (74,	'group_logs_view',	'User is allowed to view the group activity logs.'),
+                                                     (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,

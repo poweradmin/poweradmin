@@ -96,6 +96,13 @@ INSERT INTO perm_items (name, descr)
 SELECT 'group_logs_view', 'User is allowed to view the group activity logs.'
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'group_logs_view');
 
+-- Register zone_content_edit_ns_subzone so client-level editors can manage
+-- delegation NS records below the zone apex. Existing templates are NOT
+-- auto-granted the new permission; admins opt in via the permission template editor.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_content_edit_ns_subzone', 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_content_edit_ns_subzone');
+
 -- Widen password_reset_tokens.token so the new sha256$<64hex> storage format fits.
 -- Plaintext rows issued before this upgrade naturally expire within the
 -- token_lifetime (1 hour default) and remain unreadable to the new validator;

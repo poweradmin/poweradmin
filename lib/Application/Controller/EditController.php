@@ -45,6 +45,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
@@ -483,6 +484,7 @@ class EditController extends BaseController
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
+            'perm_edit_ns_subzone' => $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE),
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
             'can_manage_dnssec' => $can_manage_dnssec,

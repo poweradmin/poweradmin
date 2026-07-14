@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 use PDO;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Class Permission
@@ -35,6 +36,11 @@ class Permission
      * Record types that holders of zone_content_edit_own_as_client may not modify.
      */
     public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS'];
+
+    /**
+     * Permission that lets client-level editors manage NS records below the zone apex.
+     */
+    public const PERM_EDIT_NS_SUBZONE = 'zone_content_edit_ns_subzone';
 
     /**
      * Check whether the given record type is off-limits for a client-level editor.
@@ -52,6 +58,43 @@ class Permission
         }
 
         return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+    }
+
+    /**
+     * Check whether a specific record is off-limits for a client-level editor.
+     *
+     * Same gate as isRecordTypeRestrictedForClient(), except that holders of
+     * zone_content_edit_ns_subzone may manage NS records below the zone apex.
+     * SOA and apex NS records stay restricted regardless of that permission.
+     *
+     * @param string $type DNS record type (e.g. "A", "SOA", "NS")
+     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string|null $recordName Record name (FQDN); null keeps the type-only restriction
+     * @param string|null $zoneName Zone name; null keeps the type-only restriction
+     * @param bool $canEditSubzoneNs Whether the user holds zone_content_edit_ns_subzone
+     */
+    public static function isRecordRestrictedForClient(
+        string $type,
+        string $permEdit,
+        ?string $recordName = null,
+        ?string $zoneName = null,
+        bool $canEditSubzoneNs = false
+    ): bool {
+        if (!self::isRecordTypeRestrictedForClient($type, $permEdit)) {
+            return false;
+        }
+
+        if (
+            strtoupper($type) === 'NS'
+            && $canEditSubzoneNs
+            && $recordName !== null
+            && $zoneName !== null
+            && !DnsHelper::isZoneApex($recordName, $zoneName)
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

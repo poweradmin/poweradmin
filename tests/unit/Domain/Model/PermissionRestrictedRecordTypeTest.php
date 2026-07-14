@@ -114,4 +114,68 @@ class PermissionRestrictedRecordTypeTest extends TestCase
             Permission::restrictedRecordTypeMessage('ns', 'add')
         );
     }
+
+    public function testSubzoneNsIsPermittedWithSubzonePermission(): void
+    {
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', 'example.com', true)
+        );
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('ns', 'own_as_client', 'SUB.EXAMPLE.COM', 'example.com', true)
+        );
+    }
+
+    public function testApexNsStaysRestrictedDespiteSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'example.com', 'example.com', true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'EXAMPLE.COM.', 'example.com', true),
+            'Trailing dot and case must not bypass the apex check'
+        );
+    }
+
+    public function testSoaStaysRestrictedDespiteSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('SOA', 'own_as_client', 'sub.example.com', 'example.com', true)
+        );
+    }
+
+    public function testSubzoneNsStaysRestrictedWithoutSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', 'example.com', false)
+        );
+    }
+
+    public function testMissingNamesKeepTypeOnlyRestriction(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', null, null, true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', null, true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', null, 'example.com', true)
+        );
+    }
+
+    public function testStrongerEditorsAreNeverRestrictedByRecordCheck(): void
+    {
+        foreach (['all', 'own', 'none'] as $permEdit) {
+            $this->assertFalse(
+                Permission::isRecordRestrictedForClient('NS', $permEdit, 'example.com', 'example.com', false)
+            );
+        }
+    }
+
+    public function testNonRestrictedTypesArePermittedByRecordCheck(): void
+    {
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('A', 'own_as_client', 'example.com', 'example.com', false)
+        );
+    }
 }

@@ -94,6 +94,20 @@ class DnsHelper
     }
 
     /**
+     * Check whether a record name is the zone apex.
+     *
+     * Comparison is case-insensitive and ignores a trailing dot on either side.
+     *
+     * @param string $recordName Record name (FQDN)
+     * @param string $zoneName Zone name
+     * @return bool True if the record name equals the zone apex
+     */
+    public static function isZoneApex(string $recordName, string $zoneName): bool
+    {
+        return strtolower(rtrim($recordName, '.')) === strtolower(rtrim($zoneName, '.'));
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts

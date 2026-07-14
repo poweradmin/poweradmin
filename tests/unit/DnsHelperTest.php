@@ -328,4 +328,20 @@ class DnsHelperTest extends TestCase
         $this->assertNull(DnsHelper::resolveReverseZoneName('0-63.1.168.192.in-addr.arpa'));
         $this->assertNull(DnsHelper::resolveReverseZoneName('abc.in-addr.arpa'));
     }
+
+    public function testIsZoneApexPositiveCases(): void
+    {
+        $this->assertTrue(DnsHelper::isZoneApex('example.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isZoneApex('EXAMPLE.COM', 'example.com'), 'Comparison is case-insensitive.');
+        $this->assertTrue(DnsHelper::isZoneApex('example.com.', 'example.com'), 'A trailing dot on the record name is ignored.');
+        $this->assertTrue(DnsHelper::isZoneApex('example.com', 'example.com.'), 'A trailing dot on the zone name is ignored.');
+    }
+
+    public function testIsZoneApexNegativeCases(): void
+    {
+        $this->assertFalse(DnsHelper::isZoneApex('sub.example.com', 'example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('example.com', 'sub.example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('other.org', 'example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('testexample.com', 'example.com'), 'A suffix match without a dot boundary is not the apex.');
+    }
 }
