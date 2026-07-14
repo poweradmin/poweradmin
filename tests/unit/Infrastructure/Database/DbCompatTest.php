@@ -230,4 +230,17 @@ class DbCompatTest extends TestCase
     {
         $this->assertSame('host.example.com', DbCompat::escapeLike('host.example.com'));
     }
+
+    public function testBinaryCollationMySQL(): void
+    {
+        $this->assertSame(' COLLATE utf8mb4_bin', DbCompat::binaryCollation('mysql'));
+        $this->assertSame(' COLLATE utf8mb4_bin', DbCompat::binaryCollation('mysqli'));
+    }
+
+    public function testBinaryCollationByteExactByDefault(): void
+    {
+        // PostgreSQL and SQLite compare strings byte-exact already, so no clause.
+        $this->assertSame('', DbCompat::binaryCollation('pgsql'));
+        $this->assertSame('', DbCompat::binaryCollation('sqlite'));
+    }
 }

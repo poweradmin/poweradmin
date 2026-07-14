@@ -358,4 +358,25 @@ final class DbCompat
     {
         return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
     }
+
+    /**
+     * Returns a collation clause that forces a byte-exact string comparison,
+     * to be appended to a column reference in a WHERE clause (e.g.
+     * "oidc_subject" . self::binaryCollation($db_type) . " = ?").
+     *
+     * MySQL/MariaDB default to case- and accent-insensitive collations, so
+     * external identity values (OIDC/SAML subjects) that must match one-for-one
+     * need an explicit binary collation. PostgreSQL and SQLite compare strings
+     * byte-exact by default and need no clause.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The collation clause, or an empty string when not needed.
+     */
+    public static function binaryCollation(string $db_type): string
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli' => ' COLLATE utf8mb4_bin',
+            default => '',
+        };
+    }
 }

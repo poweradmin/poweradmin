@@ -131,3 +131,14 @@ CREATE TABLE IF NOT EXISTS `api_key_zones` (
     KEY `idx_api_key_zones_zone_id` (`zone_id`),
     CONSTRAINT `fk_api_key_zones_api_key` FOREIGN KEY (`api_key_id`) REFERENCES `api_keys` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- OIDC/SAML external subject identifiers must match one-for-one. The default
+-- utf8mb4_unicode_ci collation is case- and accent-insensitive, so distinct
+-- subjects such as "victim" and "victím" compare as equal and resolve to the
+-- same local account. Force a binary collation on the identity columns.
+ALTER TABLE `oidc_user_links`
+    MODIFY COLUMN `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin,
+    MODIFY COLUMN `oidc_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin;
+ALTER TABLE `saml_user_links`
+    MODIFY COLUMN `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin,
+    MODIFY COLUMN `saml_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin;
