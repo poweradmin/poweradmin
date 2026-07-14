@@ -28,6 +28,7 @@ use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -50,6 +51,9 @@ class UserProvisioningService extends LoggingService
     private UserManager $userManager;
     private DbUserRepository $userRepository;
 
+    /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
+    private string $binaryCollation;
+
     public function __construct(
         PDOCommon $connection,
         ConfigurationManager $configManager,
@@ -62,6 +66,7 @@ class UserProvisioningService extends LoggingService
         $this->configManager = $configManager;
         $this->userManager = new UserManager($connection, $configManager);
         $this->userRepository = new DbUserRepository($connection, $configManager);
+        $this->binaryCollation = DbCompat::binaryCollation($connection->getAttribute(PDO::ATTR_DRIVER_NAME));
     }
 
     public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
@@ -145,7 +150,7 @@ class UserProvisioningService extends LoggingService
 
             $stmt = $this->db->prepare("
                 SELECT user_id FROM oidc_user_links
-                WHERE oidc_subject = ? AND provider_id = ?
+                WHERE oidc_subject{$this->binaryCollation} = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$subject, $providerId]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -401,7 +406,7 @@ class UserProvisioningService extends LoggingService
 
             $stmt = $this->db->prepare("
                 SELECT user_id FROM saml_user_links
-                WHERE saml_subject = ? AND provider_id = ?
+                WHERE saml_subject{$this->binaryCollation} = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$subject, $providerId]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -784,7 +789,7 @@ class UserProvisioningService extends LoggingService
                 SELECT sul.id, sul.user_id
                 FROM saml_user_links sul
                 LEFT JOIN users u ON sul.user_id = u.id
-                WHERE sul.saml_subject = ? AND sul.provider_id = ? AND u.id IS NULL
+                WHERE sul.saml_subject{$this->binaryCollation} = ? AND sul.provider_id{$this->binaryCollation} = ? AND u.id IS NULL
             ");
             $stmt->execute([$subject, $providerId]);
             $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -820,7 +825,7 @@ class UserProvisioningService extends LoggingService
                 SELECT oul.id, oul.user_id
                 FROM oidc_user_links oul
                 LEFT JOIN users u ON oul.user_id = u.id
-                WHERE oul.oidc_subject = ? AND oul.provider_id = ? AND u.id IS NULL
+                WHERE oul.oidc_subject{$this->binaryCollation} = ? AND oul.provider_id{$this->binaryCollation} = ? AND u.id IS NULL
             ");
             $stmt->execute([$subject, $providerId]);
             $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
