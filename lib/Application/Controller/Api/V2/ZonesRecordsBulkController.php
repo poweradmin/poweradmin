@@ -483,12 +483,12 @@ class ZonesRecordsBulkController extends PublicApiController
         if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
+        // Block changing the record into one the user may not manage, e.g.
+        // retyping to SOA/NS or renaming a subzone NS onto the zone apex
         $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
-        if ($newType !== strtoupper((string)$existingRecord['type'])) {
-            $newName = $hostnameValidator->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), $zoneName);
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
-                throw new ApiErrorException('You do not have permission to edit this record type', 403);
-            }
+        $newName = $hostnameValidator->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), (string)$zoneName);
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
         // Prepare record data for update
