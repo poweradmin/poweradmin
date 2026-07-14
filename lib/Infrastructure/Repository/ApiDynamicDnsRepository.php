@@ -44,10 +44,9 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
-        // DDNS auth requires an explicit zone_content_edit_* grant from either the
-        // user's direct template or any group they belong to (matching the web UI);
-        // ueberuser bypass is deliberately omitted so admin credentials never have
-        // to live in ddclient.conf.
+        // DDNS auth needs an explicit zone_content_edit_* grant (own template or a group),
+        // matching the web UI. Admin/ueberuser is intentionally not auto-authorized: DDNS
+        // passwords sit in plaintext client configs, so use a scoped user - do not add a bypass.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
             FROM users
