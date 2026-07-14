@@ -165,6 +165,96 @@ class DatabaseSchemaService
     }
 
     /**
+     * Create the secondary indexes declared for a table.
+     *
+     * Accepts both structure-array shapes: nested (`['fields' => ['col' => []], 'type' => 'unique']`)
+     * and flat (`['col1', 'col2', 'unique' => true]`). On PostgreSQL/SQLite index names are
+     * schema-global, so a name that doesn't already carry the table name is prefixed with it to
+     * avoid collisions between the generic names the structure array reuses across tables.
+     *
+     * @param string $tableName
+     * @param array $indexes Map of index name => definition
+     */
+    public function createIndexes(string $tableName, array $indexes): void
+    {
+        $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $namesAreGlobal = in_array($db_type, ['pgsql', 'sqlite'], true);
+
+        foreach ($indexes as $indexName => $definition) {
+            $definition = (array)$definition;
+            $unique = !empty($definition['unique']) || (($definition['type'] ?? null) === 'unique');
+
+            if (isset($definition['fields']) && is_array($definition['fields'])) {
+                $columns = array_keys($definition['fields']);
+            } else {
+                $columns = array_values(array_filter(
+                    $definition,
+                    static fn($value, $key) => is_int($key) && is_string($value),
+                    ARRAY_FILTER_USE_BOTH
+                ));
+            }
+
+            if (empty($columns)) {
+                continue;
+            }
+
+            $emitName = ($namesAreGlobal && !str_contains($indexName, $tableName))
+                ? $tableName . '_' . $indexName
+                : $indexName;
+
+            $uniqueClause = $unique ? 'UNIQUE ' : '';
+            $query = "CREATE {$uniqueClause}INDEX $emitName ON $tableName (" . implode(', ', $columns) . ')';
+
+            try {
+                $this->db->exec($query);
+            } catch (PDOException $e) {
+                // Index may already exist on reinstall; a duplicate is not fatal.
+            }
+        }
+    }
+
+    /**
+     * Add the foreign keys declared for a table via ALTER TABLE. Call after every table exists.
+     *
+     * SQLite is skipped: it can only declare foreign keys inline at CREATE TABLE time (no
+     * ALTER TABLE ADD CONSTRAINT), matching the installer's long-standing behavior there.
+     *
+     * @param string $tableName
+     * @param array $foreignKeys Map of constraint name => ['table' => ref, 'fields' => [local => ref], 'ondelete'?, 'onupdate'?]
+     */
+    public function createForeignKeys(string $tableName, array $foreignKeys): void
+    {
+        $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($db_type === 'sqlite') {
+            return;
+        }
+
+        foreach ($foreignKeys as $constraintName => $definition) {
+            if (empty($definition['table']) || empty($definition['fields']) || !is_array($definition['fields'])) {
+                continue;
+            }
+
+            $localColumns = implode(', ', array_keys($definition['fields']));
+            $referencedColumns = implode(', ', array_values($definition['fields']));
+            $query = "ALTER TABLE $tableName ADD CONSTRAINT $constraintName "
+                . "FOREIGN KEY ($localColumns) REFERENCES {$definition['table']} ($referencedColumns)";
+
+            if (!empty($definition['ondelete'])) {
+                $query .= ' ON DELETE ' . $definition['ondelete'];
+            }
+            if (!empty($definition['onupdate'])) {
+                $query .= ' ON UPDATE ' . $definition['onupdate'];
+            }
+
+            try {
+                $this->db->exec($query);
+            } catch (PDOException $e) {
+                // Constraint may already exist on reinstall; a duplicate is not fatal.
+            }
+        }
+    }
+
+    /**
      * Execute multiple prepared statement operations with different parameter sets
      *
      * @param PDOStatement $stmt Prepared statement

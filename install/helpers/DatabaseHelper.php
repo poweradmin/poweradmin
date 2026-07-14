@@ -103,20 +103,8 @@ class DatabaseHelper
                 }
                 $this->schemaService->createTable($table['table_name'], $table['fields'], $options);
 
-                // Create unique index on zone_name for API-mode zone identification
-                if ($table['table_name'] === 'zones') {
-                    $dbType = $this->databaseCredentials['db_type'];
-                    try {
-                        if ($dbType === 'mysql') {
-                            $this->db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
-                        } elseif ($dbType === 'pgsql') {
-                            $this->db->exec('CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)');
-                        } elseif ($dbType === 'sqlite') {
-                            $this->db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
-                        }
-                    } catch (\Exception $e) {
-                        // Index may already exist
-                    }
+                if (!empty($table['indexes'])) {
+                    $this->schemaService->createIndexes($table['table_name'], $table['indexes']);
                 }
 
                 // Set default value for the 'type' column in user_mfa table
@@ -135,6 +123,13 @@ class DatabaseHelper
                             // We'll need to ensure new rows have this value explicitly set
                             break;
                     }
+                }
+            }
+
+            // Foreign keys go in a second pass so every referenced table already exists.
+            foreach ($def_tables as $table) {
+                if (!empty($table['foreign_keys'])) {
+                    $this->schemaService->createForeignKeys($table['table_name'], $table['foreign_keys']);
                 }
             }
         } finally {

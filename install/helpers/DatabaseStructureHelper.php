@@ -1164,7 +1164,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_api_keys_secret_key' => array('secret_key'),
+                    'idx_api_keys_secret_key' => array('secret_key', 'unique' => true),
                     'idx_api_keys_created_by' => array('created_by'),
                     'idx_api_keys_disabled' => array('disabled')
                 ),
@@ -1207,7 +1207,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_api_key_zones_unique' => array('api_key_id', 'zone_id'),
+                    'idx_api_key_zones_unique' => array('api_key_id', 'zone_id', 'unique' => true),
                     'idx_api_key_zones_api_key_id' => array('api_key_id'),
                     'idx_api_key_zones_zone_id' => array('zone_id')
                 ),
@@ -1308,7 +1308,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_user_mfa_user_id' => array('user_id'),
+                    'idx_user_mfa_user_id' => array('user_id', 'unique' => true),
                     'idx_user_mfa_enabled' => array('enabled')
                 ),
                 'foreign_keys' => array(
@@ -1359,7 +1359,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_user_preferences_user_key' => array('user_id', 'preference_key'),
+                    'idx_user_preferences_user_key' => array('user_id', 'preference_key', 'unique' => true),
                     'idx_user_preferences_user_id' => array('user_id')
                 ),
                 'foreign_keys' => array(
@@ -1440,7 +1440,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_zone_template_unique' => array('zone_id', 'zone_templ_id'),
+                    'idx_zone_template_unique' => array('zone_id', 'zone_templ_id', 'unique' => true),
                     'idx_zone_templ_id' => array('zone_templ_id'),
                     'idx_needs_sync' => array('needs_sync')
                 ),
@@ -1513,7 +1513,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_agreement' => array('user_id', 'agreement_version'),
+                    'unique_user_agreement' => array('user_id', 'agreement_version', 'unique' => true),
                     'idx_user_agreements_user_id' => array('user_id'),
                     'idx_user_agreements_version' => array('agreement_version')
                 ),
@@ -1592,7 +1592,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_password_reset_tokens_token' => array('token'),
+                    'idx_password_reset_tokens_token' => array('token', 'unique' => true),
                     'idx_password_reset_tokens_email' => array('email'),
                     'idx_password_reset_tokens_expires' => array('expires_at')
                 )
@@ -1718,8 +1718,8 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_provider' => array('user_id', 'provider_id'),
-                    'unique_subject_provider' => array('oidc_subject', 'provider_id'),
+                    'unique_user_provider' => array('user_id', 'provider_id', 'unique' => true),
+                    'unique_subject_provider' => array('oidc_subject', 'provider_id', 'unique' => true),
                     'idx_oidc_provider_id' => array('provider_id'),
                     'idx_oidc_subject' => array('oidc_subject')
                 ),
@@ -1806,8 +1806,8 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_provider' => array('user_id', 'provider_id'),
-                    'unique_subject_provider' => array('saml_subject', 'provider_id'),
+                    'unique_user_provider' => array('user_id', 'provider_id', 'unique' => true),
+                    'unique_subject_provider' => array('saml_subject', 'provider_id', 'unique' => true),
                     'idx_saml_provider_id' => array('provider_id'),
                     'idx_saml_subject' => array('saml_subject')
                 ),
@@ -1884,7 +1884,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_name' => array('name'),
+                    'unique_name' => array('name', 'unique' => true),
                     'idx_perm_templ' => array('perm_templ'),
                     'idx_created_by' => array('created_by'),
                     'idx_name' => array('name')
@@ -1940,7 +1940,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_member' => array('group_id', 'user_id'),
+                    'unique_member' => array('group_id', 'user_id', 'unique' => true),
                     'idx_user_id' => array('user_id'),
                     'idx_group_id' => array('group_id')
                 ),
@@ -1996,7 +1996,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_zone_group' => array('domain_id', 'group_id'),
+                    'unique_zone_group' => array('domain_id', 'group_id', 'unique' => true),
                     'idx_domain_id' => array('domain_id'),
                     'idx_group_id' => array('group_id')
                 ),
@@ -2031,7 +2031,91 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_record_comment_links_comment' => array('comment_id')
+                    'idx_record_comment_links_comment' => array('comment_id', 'unique' => true)
+                )
+            ),
+            array(
+                'table_name' => 'record_type_defaults',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'record_type' => array(
+                        'type' => 'text',
+                        'length' => 20,
+                        'notnull' => 1,
+                        'name' => 'record_type',
+                        'table' => 'record_type_defaults',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'ttl' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'ttl',
+                        'table' => 'record_type_defaults',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'record_type_defaults',
+                        'flags' => ''
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'record_type_defaults',
+                        'flags' => ''
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'app_settings',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'setting_key' => array(
+                        'type' => 'text',
+                        'length' => 128,
+                        'notnull' => 1,
+                        'name' => 'setting_key',
+                        'table' => 'app_settings',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'setting_value' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'name' => 'setting_value',
+                        'table' => 'app_settings',
+                        'flags' => 'not_null'
+                    ),
+                    'value_type' => array(
+                        'type' => 'text',
+                        'length' => 16,
+                        'notnull' => 1,
+                        'default' => 'string',
+                        'name' => 'value_type',
+                        'table' => 'app_settings',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'app_settings',
+                        'flags' => ''
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'app_settings',
+                        'flags' => ''
+                    )
                 )
             )
         );
