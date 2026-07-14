@@ -760,9 +760,9 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Block changing the record into a restricted type
+            $hostnameValidator = new HostnameValidator($this->getConfig());
             $newType = strtoupper(trim((string)($input['type'] ?? $existingRecord['type'])));
             if ($newType !== strtoupper((string)$existingRecord['type'])) {
-                $hostnameValidator = new HostnameValidator($this->getConfig());
                 $newName = $hostnameValidator->normalizeRecordName(trim((string)($input['name'] ?? $existingRecord['name'])), (string)$zone['name']);
                 if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
                     return $this->returnApiError('You do not have permission to edit this record type', 403);
@@ -814,9 +814,7 @@ class ZonesRecordsController extends PublicApiController
             // reason. editRecord() otherwise swallows the validation message and the
             // caller can only report a generic 500.
             $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-            $editZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
-            $editHostnameValidator = new HostnameValidator($this->getConfig());
-            $normalizedEditName = $editHostnameValidator->normalizeRecordName($recordData['name'], $editZoneName);
+            $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], (string)$zone['name']);
             $editValidation = $validationService->validateRecord(
                 $recordId,
                 $zoneId,

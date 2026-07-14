@@ -101,6 +101,29 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * Resolve the zone name, normalize the record name against it, and reject
+     * record types a client-level editor may not add.
+     *
+     * Normalization happens first so the apex comparison sees the FQDN.
+     *
+     * @return array{0: string, 1: string} Zone name and normalized record name
+     * @throws Exception When the record type is restricted for the user
+     */
+    private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
+    {
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
+
+        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
+            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
+        }
+
+        return [$zone, $name];
+    }
+
+    /**
      * Add a record
      *
      * This function validates it if correct it inserts it into the database.
@@ -122,15 +145,7 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        // Normalize the name first so the apex comparison below sees the FQDN
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
-
-        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
-        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
-            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
-        }
+        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
@@ -229,15 +244,7 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        // Normalize the name first so the apex comparison below sees the FQDN
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
-
-        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
-        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
-            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
-        }
+        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
@@ -465,16 +472,11 @@ class RecordManager implements RecordManagerInterface
             $deleted = $this->backendProvider->deleteRecord($rid);
 
             if ($deleted) {
-                $this->captureChange(function () use ($record, $rid): void {
+                $this->captureChange(function () use ($record, $rid, $zone): void {
                     $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
-                    $zoneName = null;
-                    if ($zoneId !== null) {
-                        $name = $this->domainRepository->getDomainNameById($zoneId);
-                        $zoneName = is_string($name) ? $name : null;
-                    }
                     $beforeForLog = $record;
                     $beforeForLog['id'] = $rid;
-                    $beforeForLog['zone_name'] = $zoneName;
+                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
                     $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
                 });
             }

@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Stateless permission service for API requests
@@ -290,10 +289,7 @@ class ApiPermissionService
             return true;
         }
 
-        return strtoupper($recordType) === 'NS'
-            && $recordName !== null
-            && $zoneName !== null
-            && !DnsHelper::isZoneApex($recordName, $zoneName)
+        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
             && $this->userHasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
     }
 

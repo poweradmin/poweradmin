@@ -268,7 +268,7 @@ class ZonesRecordsBulkController extends PublicApiController
                     try {
                         switch ($action) {
                             case 'create':
-                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['created']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -276,7 +276,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'update':
-                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['updated']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -284,7 +284,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'delete':
-                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['deleted']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -355,7 +355,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was created
      * @throws Exception If operation fails
      */
-    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         // Validate required fields
         $requiredFields = ['name', 'type', 'content'];
@@ -370,10 +370,6 @@ class ZonesRecordsBulkController extends PublicApiController
         $type = strtoupper(trim($this->inputString($operation, 'type', '')));
         $content = trim($this->inputString($operation, 'content', ''));
 
-        // Get zone name (needed up-front so the TTL fallback can be type-aware).
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $zoneName = $domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             throw new ApiErrorException('Zone not found', 404);
         }
@@ -442,7 +438,6 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         try {
-            $zoneName = $this->backendProvider->getZoneNameById($zoneId);
             $this->changeLogger->logRecordCreate([
                 'id' => $newRecordId,
                 'name' => $normalizedName,
@@ -451,7 +446,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 'ttl' => $validatedTtl,
                 'prio' => $validatedPriority,
                 'disabled' => (bool) $disabled,
-                'zone_name' => is_string($zoneName) ? $zoneName : null,
+                'zone_name' => $zoneName,
             ], $zoneId);
         } catch (\Throwable $e) {
             $this->logger->warning('Failed to write bulk record create log: {error}', ['error' => $e->getMessage()]);
@@ -468,7 +463,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was updated
      * @throws Exception If operation fails
      */
-    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
@@ -484,14 +479,14 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
         $userId = $this->getAuthenticatedUserId();
-        $editZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
-        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $editZoneName)) {
+        $hostnameValidator = new HostnameValidator($this->getConfig());
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
         $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
         if ($newType !== strtoupper((string)$existingRecord['type'])) {
-            $newName = (new HostnameValidator($this->getConfig()))->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), $editZoneName);
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $editZoneName)) {
+            $newName = $hostnameValidator->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), $zoneName);
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
                 throw new ApiErrorException('You do not have permission to edit this record type', 403);
             }
         }
@@ -523,7 +518,7 @@ class ZonesRecordsBulkController extends PublicApiController
         // Pre-validate so a rejected record reports the specific reason as 400.
         // editRecord() otherwise swallows the validation message, leaving only a 500.
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $normalizedEditName = (new HostnameValidator($this->getConfig()))->normalizeRecordName($recordData['name'], $editZoneName);
+        $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], $zoneName);
         $editValidation = $validationService->validateRecord(
             $recordId,
             $zoneId,
@@ -555,7 +550,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was deleted
      * @throws Exception If operation fails
      */
-    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
@@ -573,8 +568,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $recordType = $existingRecord['type'];
 
         // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-        $deleteZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $deleteZoneName)) {
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 

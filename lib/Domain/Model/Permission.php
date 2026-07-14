@@ -84,17 +84,25 @@ class Permission
             return false;
         }
 
-        if (
-            strtoupper($type) === 'NS'
-            && $canEditSubzoneNs
+        return !($canEditSubzoneNs && self::isSubzoneNsRecord($type, $recordName, $zoneName));
+    }
+
+    /**
+     * Check whether a record is an NS record below the zone apex.
+     *
+     * This is the record shape zone_content_edit_ns_subzone applies to; the
+     * caller supplies the permission check. Unknown names never qualify.
+     *
+     * @param string $type DNS record type
+     * @param string|null $recordName Record name (FQDN); null never qualifies
+     * @param string|null $zoneName Zone name; null never qualifies
+     */
+    public static function isSubzoneNsRecord(string $type, ?string $recordName, ?string $zoneName): bool
+    {
+        return strtoupper($type) === 'NS'
             && $recordName !== null
             && $zoneName !== null
-            && !DnsHelper::isZoneApex($recordName, $zoneName)
-        ) {
-            return false;
-        }
-
-        return true;
+            && !DnsHelper::isZoneApex($recordName, $zoneName);
     }
 
     /**
