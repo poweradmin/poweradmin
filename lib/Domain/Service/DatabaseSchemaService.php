@@ -240,10 +240,11 @@ class DatabaseSchemaService
                 continue;
             }
 
+            $referencedTable = (string)$definition['table'];
             $localColumns = implode(', ', array_keys($definition['fields']));
             $referencedColumns = implode(', ', array_values($definition['fields']));
             $query = "ALTER TABLE $tableName ADD CONSTRAINT $constraintName "
-                . "FOREIGN KEY ($localColumns) REFERENCES {$definition['table']} ($referencedColumns)";
+                . "FOREIGN KEY ($localColumns) REFERENCES $referencedTable ($referencedColumns)";
 
             if (!empty($definition['ondelete'])) {
                 $query .= ' ON DELETE ' . $definition['ondelete'];
