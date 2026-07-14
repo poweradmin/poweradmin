@@ -109,6 +109,11 @@ class DatabaseSchemaService
                 $line .= ' CHARACTER SET ' . $arr['charset'];
             }
 
+            // Per-column collation (e.g. utf8mb4_bin for case-sensitive keys); MySQL infers the charset from it.
+            if ($db_type == 'mysql' && isset($arr['collation'])) {
+                $line .= ' COLLATE ' . $arr['collation'];
+            }
+
             // Autoincrement is excluded because pgsql SERIAL and mysql AUTO_INCREMENT already imply NOT NULL.
             if (isset($arr['notnull']) && $arr['notnull'] && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';

@@ -2080,6 +2080,8 @@ class DatabaseStructureHelper
                         'type' => 'text',
                         'length' => 128,
                         'notnull' => 1,
+                        // Binary collation keeps setting-key lookups case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
                         'name' => 'setting_key',
                         'table' => 'app_settings',
                         'flags' => 'primary_keynot_null'
