@@ -395,12 +395,6 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
-            // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
-            $requestedType = strtoupper(trim((string)($input['type'] ?? '')));
-            if ($requestedType !== '' && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $requestedType, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
-            }
-
             // Validate required fields
             $requiredFields = ['name', 'type', 'content'];
             foreach ($requiredFields as $field) {
@@ -449,6 +443,12 @@ class ZonesRecordsController extends PublicApiController
             // Normalize the hostname
             $hostnameValidator = new HostnameValidator($this->getConfig());
             $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
+
+            // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
+            // checked after normalization so the subzone NS exemption sees the FQDN
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $normalizedName, $zoneName)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            }
 
             // Validate the record
             $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
@@ -625,7 +625,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zone['type'] ?? null)) {
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
@@ -636,11 +636,12 @@ class ZonesRecordsController extends PublicApiController
 
             // Block changing the record into a restricted type
             $newType = strtoupper(trim((string)($input['type'] ?? $existingRecord['type'])));
-            if (
-                $newType !== strtoupper((string)$existingRecord['type'])
-                && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null)
-            ) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            if ($newType !== strtoupper((string)$existingRecord['type'])) {
+                $hostnameValidator = new HostnameValidator($this->getConfig());
+                $newName = $hostnameValidator->normalizeRecordName(trim((string)($input['name'] ?? $existingRecord['name'])), (string)$zone['name']);
+                if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
+                    return $this->returnApiError('You do not have permission to edit this record type', 403);
+                }
             }
 
             // Prepare record data for update - use existing values if not provided
@@ -773,7 +774,7 @@ class ZonesRecordsController extends PublicApiController
             $recordType = $existingRecord['type'];
 
             // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$recordType, $zone['type'] ?? null)) {
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$recordType, $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
                 return $this->returnApiError('You do not have permission to delete this record type', 403);
             }
 

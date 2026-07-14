@@ -387,11 +387,6 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('Fields ttl, priority, and disabled must be numeric', 400);
         }
 
-        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType)) {
-            throw new ApiErrorException('You do not have permission to edit this record type', 403);
-        }
-
         // Validate TTL
         if ($ttl < 1) {
             throw new ApiErrorException('TTL must be greater than 0', 400);
@@ -403,6 +398,12 @@ class ZonesRecordsBulkController extends PublicApiController
         // Normalize the hostname
         $hostnameValidator = new HostnameValidator($this->getConfig());
         $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
+
+        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
+        // checked after normalization so the subzone NS exemption sees the FQDN
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType, $normalizedName, $zoneName)) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
+        }
 
         // Format content, with V2 API always auto-quoting TXT records
         $content = $this->formatV2RecordContent($type, $content);
@@ -483,15 +484,16 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
         $userId = $this->getAuthenticatedUserId();
-        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType)) {
+        $editZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $editZoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
         $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
-        if (
-            $newType !== strtoupper((string)$existingRecord['type'])
-            && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType)
-        ) {
-            throw new ApiErrorException('You do not have permission to edit this record type', 403);
+        if ($newType !== strtoupper((string)$existingRecord['type'])) {
+            $newName = (new HostnameValidator($this->getConfig()))->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), $editZoneName);
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $editZoneName)) {
+                throw new ApiErrorException('You do not have permission to edit this record type', 403);
+            }
         }
 
         // Prepare record data for update
@@ -521,7 +523,6 @@ class ZonesRecordsBulkController extends PublicApiController
         // Pre-validate so a rejected record reports the specific reason as 400.
         // editRecord() otherwise swallows the validation message, leaving only a 500.
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $editZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
         $normalizedEditName = (new HostnameValidator($this->getConfig()))->normalizeRecordName($recordData['name'], $editZoneName);
         $editValidation = $validationService->validateRecord(
             $recordId,
@@ -572,7 +573,8 @@ class ZonesRecordsBulkController extends PublicApiController
         $recordType = $existingRecord['type'];
 
         // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType)) {
+        $deleteZoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $deleteZoneName)) {
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 

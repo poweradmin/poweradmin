@@ -436,12 +436,6 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
-            // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client
-            $rrsetTypeRaw = strtoupper(trim((string)($input['type'] ?? '')));
-            if ($rrsetTypeRaw !== '' && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $rrsetTypeRaw, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
-            }
-
             // Validate required fields
             $requiredFields = ['name', 'type', 'records'];
             foreach ($requiredFields as $field) {
@@ -483,6 +477,12 @@ class ZonesRRSetsController extends PublicApiController
 
             // Convert name to FQDN
             $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+
+            // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client;
+            // checked after FQDN conversion so the subzone NS exemption sees the full name
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            }
 
             // Start transaction (SQL backend only).
             // API backend polls the DB for new record IDs after HTTP calls;
@@ -737,11 +737,6 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
-            // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to delete this record type', 403);
-            }
-
             // Get zone name
             $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
             $domainRepository = $repositoryFactory->createDomainRepository();
@@ -749,6 +744,12 @@ class ZonesRRSetsController extends PublicApiController
 
             // Convert name to FQDN
             $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+
+            // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client;
+            // checked after FQDN conversion so the subzone NS exemption sees the full name
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+                return $this->returnApiError('You do not have permission to delete this record type', 403);
+            }
 
             // Get all records matching this name and type
             $records = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);

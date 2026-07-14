@@ -278,6 +278,56 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditZoneRecordAllowsSubzoneNsWithSubzonePermission(): void
+    {
+        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // NS branch: canEditZone(0,0,0) false, non-apex name -> zone_content_edit_ns_subzone=1
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0, 1]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', 'example.com');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksApexNsDespiteSubzonePermission(): void
+    {
+        // Apex name fails the subzone check before the permission is even queried
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSubzoneNsWithoutSubzonePermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSoaDespiteSubzonePermission(): void
+    {
+        // SOA is never exempted regardless of names or the subzone permission
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'SOA', null, 'sub.example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksNsWhenNamesOmitted(): void
+    {
+        // Callers that do not pass names keep the strict type-only behavior
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', null);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testCanEditZoneRecordAllowsSOAForEditOwn(): void
     {
         // canEditZoneContent: canEditZone(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true

@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Stateless permission service for API requests
@@ -259,6 +260,9 @@ class ApiPermissionService
      * Mirrors the web UI behavior in RecordManager: users holding only
      * zone_content_edit_own_as_client may edit records in their own zones except
      * for SOA and NS records, which require zone_content_edit_own (or higher).
+     * Holders of zone_content_edit_ns_subzone may additionally manage NS records
+     * below the zone apex; pass the record and zone names (FQDN) to enable that
+     * exemption - when either is omitted, the type-only restriction applies.
      * Read-only zones (Secondary, Consumer) are rejected outright (when $zoneType
      * is provided) so API create paths that bypass RecordManager keep the same
      * restriction as the UI.
@@ -267,9 +271,11 @@ class ApiPermissionService
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
      * @param string $recordType DNS record type (e.g. "A", "TXT", "SOA", "NS")
      * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @param string|null $recordName Record name (FQDN) when known
+     * @param string|null $zoneName Zone name when known
      * @return bool True if user can edit records of this type in this zone
      */
-    public function canEditZoneRecord(int $userId, int $zoneId, string $recordType, ?string $zoneType = null): bool
+    public function canEditZoneRecord(int $userId, int $zoneId, string $recordType, ?string $zoneType = null, ?string $recordName = null, ?string $zoneName = null): bool
     {
         if (!$this->canEditZoneContent($userId, $zoneId, $zoneType)) {
             return false;
@@ -280,7 +286,15 @@ class ApiPermissionService
         }
 
         // SOA/NS edits require a stronger permission than own_as_client
-        return $this->canEditZone($userId, $zoneId);
+        if ($this->canEditZone($userId, $zoneId)) {
+            return true;
+        }
+
+        return strtoupper($recordType) === 'NS'
+            && $recordName !== null
+            && $zoneName !== null
+            && !DnsHelper::isZoneApex($recordName, $zoneName)
+            && $this->userHasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
     }
 
     /**
