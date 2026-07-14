@@ -179,6 +179,57 @@ class ZoneDnssecControllerTest extends TestCase
         $this->assertSame([1], $controller->soaBumps);
     }
 
+    public function testGetStatusIncludesPresignedFlag(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canViewZone')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        // Presigned zones report secured without any local cryptokeys.
+        $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
+        $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->apiClient->method('getZoneKeys')->willReturn([]);
+
+        $response = $this->createController()->callGetStatus();
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertTrue($content['data']['enabled']);
+        $this->assertTrue($content['data']['presigned']);
+    }
+
+    public function testEnableRejectsPresignedZone(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
+        $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->dnssecProvider->expects($this->never())->method('secureZone');
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => true]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(409, $response->getStatusCode());
+        $this->assertStringContainsString('presigned', json_decode($response->getContent(), true)['message']);
+    }
+
+    public function testDisableRejectsPresignedZone(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
+        $this->dnssecProvider->expects($this->never())->method('unsecureZone');
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => false]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(409, $response->getStatusCode());
+        $this->assertStringContainsString('presigned', json_decode($response->getContent(), true)['message']);
+    }
+
     public function testSetStatusRejectsMissingEnabled(): void
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);

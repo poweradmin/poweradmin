@@ -118,6 +118,7 @@ class ZoneDnssecController extends PublicApiController
                     property: 'data',
                     properties: [
                         new OA\Property(property: 'enabled', type: 'boolean', example: true),
+                        new OA\Property(property: 'presigned', type: 'boolean', description: 'Whether the zone is presigned (DNSSEC managed at the primary server)', example: false),
                         new OA\Property(
                             property: 'ds_records',
                             type: 'array',
@@ -210,6 +211,7 @@ class ZoneDnssecController extends PublicApiController
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
     #[OA\Response(response: 500, description: 'Failed to update DNSSEC status')]
     #[OA\Response(response: 501, description: 'DNSSEC management requires the PowerDNS API')]
     protected function setStatus(): JsonResponse
@@ -246,6 +248,10 @@ class ZoneDnssecController extends PublicApiController
         try {
             if ($enabled && !$this->dnssecProvider->isDnssecEnabled()) {
                 return $this->returnApiError('DNSSEC is not enabled on the server', 400);
+            }
+
+            if ($this->dnssecProvider->isZonePresigned($zoneName)) {
+                return $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409);
             }
 
             // No-op when the zone is already in the requested state: return the current
@@ -331,9 +337,9 @@ class ZoneDnssecController extends PublicApiController
     }
 
     /**
-     * Build the DNSSEC status payload (enabled flag, DS records, DNSKEY) for a zone.
+     * Build the DNSSEC status payload (enabled flag, presigned flag, DS records, DNSKEY) for a zone.
      *
-     * @return array{enabled: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}
+     * @return array{enabled: bool, presigned: bool, ds_records: array<int, array{key_tag: int, algorithm: int, digest_type: int, digest: string}>, dnskey: ?string}
      */
     private function buildStatus(string $zoneName): array
     {
@@ -360,6 +366,7 @@ class ZoneDnssecController extends PublicApiController
 
         return [
             'enabled' => $enabled,
+            'presigned' => $this->dnssecProvider->isZonePresigned($zoneName),
             'ds_records' => $dsRecords,
             'dnskey' => $dnskey,
         ];
