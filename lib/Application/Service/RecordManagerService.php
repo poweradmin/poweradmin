@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -67,18 +66,11 @@ class RecordManagerService
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
     {
-        // Secondary and Consumer zones replicate from a primary - records are read-only.
-        // The non-atomic path is already blocked by RecordManager, but the atomic
-        // (disabled-record) path writes directly to the backend and must be guarded here.
-        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
-            return false;
-        }
-
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
-        $recordId = ($disabled && $this->backendProvider !== null)
-            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
-            : $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+        // All creates go through RecordManager so permission gates and record
+        // validation apply to disabled records as well.
+        $recordId = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled);
         if ($recordId === null) {
             return false;
         }

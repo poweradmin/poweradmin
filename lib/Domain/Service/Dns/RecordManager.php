@@ -233,11 +233,12 @@ class RecordManager implements RecordManagerInterface
      * @param string $content Content of record
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
+     * @param int $disabled Whether the record is created in disabled state (0 or 1)
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -288,13 +289,20 @@ class RecordManager implements RecordManagerInterface
         }
 
         try {
-            $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+            // Disabled records need the disabled flag persisted atomically with the
+            // insert; the regular insert path has no disabled support.
+            $recordId = $disabled
+                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
+                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
             return null;
         }
+        if ($recordId === null) {
+            return null;
+        }
 
-        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
+        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $this->changeLogger->logRecordCreate([
                 'id' => is_int($recordId) ? $recordId : (is_string($recordId) ? $recordId : null),
@@ -303,6 +311,7 @@ class RecordManager implements RecordManagerInterface
                 'content' => $content,
                 'ttl' => $validatedTtl,
                 'prio' => $validatedPrio,
+                'disabled' => (bool)$disabled,
                 'zone_name' => is_string($zone_name) ? $zone_name : null,
             ], $zone_id);
         });
