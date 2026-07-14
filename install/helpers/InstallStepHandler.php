@@ -159,6 +159,22 @@ class InstallStepHandler
         $messages = [];
         $dbError = null;
 
+        // Built up front so both the success and DB-error renders can repopulate the form fields.
+        $inputData = [
+            'pa_db_user' => $this->input->request->get('pa_db_user'),
+            'pa_db_pass' => $this->input->request->get('pa_db_pass'),
+            'dns_hostmaster' => $this->input->request->get('dns_hostmaster'),
+            'dns_ns1' => $this->input->request->get('dns_ns1'),
+            'dns_ns2' => $this->input->request->get('dns_ns2'),
+            'dns_ns3' => $this->input->request->get('dns_ns3'),
+            'dns_ns4' => $this->input->request->get('dns_ns4'),
+            'pdns_db_name' => $this->input->request->get('pdns_db_name'),
+            'pdns_api_backend' => $this->input->request->get('pdns_api_backend', ''),
+            'pdns_api_url' => $this->input->request->get('pdns_api_url', ''),
+            'pdns_api_key' => $this->input->request->get('pdns_api_key', ''),
+            'pdns_api_server_name' => $this->input->request->get('pdns_api_server_name', 'localhost'),
+        ];
+
         try {
             $databaseConnection = new PDODatabaseConnection();
             $databaseService = new DatabaseService($databaseConnection);
@@ -238,29 +254,14 @@ class InstallStepHandler
             ];
 
             // Skip rendering the rest of the template
-            $this->renderTemplate('step5.html.twig', [
+            $this->renderTemplate('step5.html.twig', array_merge([
                 'current_step' => $this->currentStep,
                 'language' => $this->input->request->get('language'),
                 'db_error' => $dbError,
                 'errors' => $errors,
-            ]);
+            ], $credentials, $inputData));
             return;
         }
-
-        $inputData = [
-            'pa_db_user' => $this->input->request->get('pa_db_user'),
-            'pa_db_pass' => $this->input->request->get('pa_db_pass'),
-            'dns_hostmaster' => $this->input->request->get('dns_hostmaster'),
-            'dns_ns1' => $this->input->request->get('dns_ns1'),
-            'dns_ns2' => $this->input->request->get('dns_ns2'),
-            'dns_ns3' => $this->input->request->get('dns_ns3'),
-            'dns_ns4' => $this->input->request->get('dns_ns4'),
-            'pdns_db_name' => $this->input->request->get('pdns_db_name'),
-            'pdns_api_backend' => $this->input->request->get('pdns_api_backend', ''),
-            'pdns_api_url' => $this->input->request->get('pdns_api_url', ''),
-            'pdns_api_key' => $this->input->request->get('pdns_api_key', ''),
-            'pdns_api_server_name' => $this->input->request->get('pdns_api_server_name', 'localhost'),
-        ];
 
         $this->renderTemplate('step5.html.twig', array_merge([
             'current_step' => $this->currentStep,
@@ -428,8 +429,8 @@ class InstallStepHandler
         $dbType = $this->input->request->get('db_type');
         $pdnsDbName = $this->input->request->get('pdns_db_name');
 
-        // Only allow pdns_db_name for MySQL
-        return ($dbType === 'mysql') ? $pdnsDbName : '';
+        // Only allow pdns_db_name for MySQL; coalesce so an absent field never breaks the string return type.
+        return ($dbType === 'mysql') ? ($pdnsDbName ?? '') : '';
     }
 
     /**
