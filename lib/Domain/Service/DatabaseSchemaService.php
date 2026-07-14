@@ -109,7 +109,8 @@ class DatabaseSchemaService
                 $line .= ' CHARACTER SET ' . $arr['charset'];
             }
 
-            if (isset($arr['notnull']) && $arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
+            // Autoincrement is excluded because pgsql SERIAL and mysql AUTO_INCREMENT already imply NOT NULL.
+            if (isset($arr['notnull']) && $arr['notnull'] && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';
             }
 
@@ -274,7 +275,10 @@ class DatabaseSchemaService
      */
     public function dropTable(string $name): void
     {
-        $query = "DROP TABLE $name";
+        $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        // PostgreSQL refuses to drop a table other tables still FK-reference; CASCADE drops the
+        // dependent constraints (not the referencing tables) so a reinstall can replace users et al.
+        $query = $db_type === 'pgsql' ? "DROP TABLE $name CASCADE" : "DROP TABLE $name";
         $this->db->exec($query);
     }
 }
