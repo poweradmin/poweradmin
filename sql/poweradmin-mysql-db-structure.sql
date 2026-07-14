@@ -340,8 +340,8 @@ CREATE TABLE `user_agreements` (
 CREATE TABLE `oidc_user_links` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
-  `provider_id` VARCHAR(50) NOT NULL,
-  `oidc_subject` VARCHAR(255) NOT NULL,
+  `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin,
+  `oidc_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
   `username` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -357,8 +357,8 @@ CREATE TABLE `oidc_user_links` (
 CREATE TABLE `saml_user_links` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
-  `provider_id` VARCHAR(50) NOT NULL,
-  `saml_subject` VARCHAR(255) NOT NULL,
+  `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin,
+  `saml_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
   `username` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
