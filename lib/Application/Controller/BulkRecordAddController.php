@@ -177,7 +177,7 @@ class BulkRecordAddController extends BaseController
             // capabilities so bulk import matches the add/edit dropdowns -
             // otherwise users would get the same SVCB/HTTPS/WALLET line
             // accepted here and rejected by PowerDNS later.
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
             $caps = $this->getRecordTypeCapabilities();
             $valid_types = $isReverseZone
@@ -263,7 +263,7 @@ class BulkRecordAddController extends BaseController
             'failed_records' => $failed_records,
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
-            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),
             'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
                 $this->userContextService->getLoggedInUserId()
             ),

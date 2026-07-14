@@ -377,7 +377,7 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($zoneName === null) {
             throw new ApiErrorException('Zone not found', 404);
         }
-        $isReverseZone = DnsHelper::isReverseZone($zoneName);
+        $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
 
         $ttl = $this->inputInt($operation, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
         $priority = $this->inputInt($operation, 'priority', 0);

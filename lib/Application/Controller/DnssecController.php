@@ -161,7 +161,7 @@ class DnssecController extends BaseController
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'can_manage_dnssec' => $can_manage_dnssec,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

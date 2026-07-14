@@ -134,7 +134,7 @@ class DeleteDomainController extends BaseController
             }
 
             // Check if the zone is a reverse zone and redirect accordingly
-            if (!empty($zone_info['name']) && DnsHelper::isReverseZone($zone_info['name'])) {
+            if (!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name'])) {
                 $this->setMessage('list_reverse_zones', 'success', _('Zone has been deleted successfully.'));
                 $this->redirect('/zones/reverse');
             } else {
@@ -175,7 +175,7 @@ class DeleteDomainController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_owners' => $zone_owners,
             'slave_master_exists' => $slave_master_exists,
-            'is_reverse_zone' => DnsHelper::isReverseZone($zone_info['name']),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),
         ]);
     }
 }

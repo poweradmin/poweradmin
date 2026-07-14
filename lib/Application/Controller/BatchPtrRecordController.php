@@ -104,7 +104,7 @@ class BatchPtrRecordController extends BaseController
             $userId = $this->userContextService->getLoggedInUserId();
 
             // Check if this is a reverse zone
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
             $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
@@ -239,7 +239,7 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $zone_id = (int)htmlspecialchars($id);
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $preFillDomain = $zone_name;
 
             if (str_starts_with($zone_name, "xn--")) {

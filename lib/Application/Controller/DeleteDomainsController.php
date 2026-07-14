@@ -162,7 +162,7 @@ class DeleteDomainsController extends BaseController
             // Determine if we should redirect to reverse or forward zones page
             $all_reverse = true;
             foreach ($deleted_zones as $zone) {
-                if (empty($zone['name']) || !DnsHelper::isReverseZone($zone['name'])) {
+                if (empty($zone['name']) || !DnsHelper::isReverseZoneName($zone['name'])) {
                     $all_reverse = false;
                     break;
                 }
@@ -188,7 +188,7 @@ class DeleteDomainsController extends BaseController
         $all_forward = true;
 
         foreach ($zones as $zone) {
-            $is_reverse = DnsHelper::isReverseZone($zone['name']);
+            $is_reverse = DnsHelper::isReverseZoneName($zone['name']);
             if ($is_reverse) {
                 $all_forward = false;
             } else {

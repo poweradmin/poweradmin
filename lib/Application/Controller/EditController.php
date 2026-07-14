@@ -237,7 +237,7 @@ class EditController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
         // Form pre-fill stays on dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
         // for PTR selections so display tracks what's persisted.
         $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
@@ -905,7 +905,7 @@ class EditController extends BaseController
             ];
             return false;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name_for_record);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name_for_record);
         $ttl = $this->request->getPostParam('ttl');
         $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);

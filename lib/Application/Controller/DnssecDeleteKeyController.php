@@ -145,7 +145,7 @@ class DnssecDeleteKeyController extends BaseController
             'key_info' => $key_info,
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'zone_id' => $zone_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

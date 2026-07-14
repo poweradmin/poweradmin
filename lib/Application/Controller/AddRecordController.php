@@ -181,7 +181,7 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
         $ttl = $this->request->getPostParam('ttl');
         $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
@@ -289,7 +289,7 @@ class AddRecordController extends BaseController
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
 
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
         // when the user selects PTR on a reverse zone, keeping the form consistent with
@@ -470,7 +470,7 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
 
         foreach ($records as $record) {
             // Skip non-array or incomplete records

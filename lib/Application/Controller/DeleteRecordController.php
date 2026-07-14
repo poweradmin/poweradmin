@@ -292,7 +292,7 @@ class DeleteRecordController extends BaseController
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'record_info' => $record_info,
-            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
         ]);
     }
 }

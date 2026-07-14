@@ -155,7 +155,7 @@ class ZoneOwnershipController extends BaseController
         $this->render('zone-ownership.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
-            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),
             'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,

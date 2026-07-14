@@ -52,8 +52,9 @@ class DnsHelperTest extends TestCase
     /**
      * RFC 2317 classless names carry no parsable network, so the strict
      * isReverseZone() rejects them, but they still belong to the reverse
-     * namespace and must be classified as reverse for listing and the
-     * overlap guard. This pins that divergence.
+     * namespace and must be classified as reverse for listing, the overlap
+     * guard, the post-create redirect and the record UI. This pins that
+     * divergence.
      */
     public function testIsReverseZoneNameAcceptsRfc2317ClasslessNames(): void
     {

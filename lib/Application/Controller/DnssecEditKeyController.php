@@ -126,7 +126,7 @@ class DnssecEditKeyController extends BaseController
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_id' => $zone_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

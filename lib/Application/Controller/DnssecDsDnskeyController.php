@@ -105,7 +105,7 @@ class DnssecDsDnskeyController extends BaseController
             'record_count' => $record_count,
             'zone_id' => $zone_id,
             'zone_template_id' => $zone_template_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

@@ -242,7 +242,7 @@ class DnsWizardFormController extends BaseController
         $type = $recordData['type'] ?? '';
         $content = $recordData['content'] ?? '';
         $reverseTtlResolver = $this->createReverseTtlResolver();
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
         $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== ''
             ? (int)$recordData['ttl']
             : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);

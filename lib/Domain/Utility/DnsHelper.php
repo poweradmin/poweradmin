@@ -36,8 +36,9 @@ class DnsHelper
      * Tell whether a network can be derived from a reverse zone name.
      *
      * This is the strict test: the name must be a structured in-addr.arpa or
-     * ip6.arpa name (it powers the reverse-zone form redirect). For plain
-     * "is this a reverse zone at all" classification use isReverseZoneName().
+     * ip6.arpa name. It gates network derivation on the add-zone form via
+     * resolveReverseZoneName(). For plain "is this a reverse zone at all"
+     * classification use isReverseZoneName().
      */
     public static function isReverseZone(string $zoneName): bool
     {
@@ -100,10 +101,10 @@ class DnsHelper
      * Returns null when the input is neither, so the caller can reject it
      * instead of silently creating a forward zone.
      *
-     * Pass-through is gated on isReverseZone() (not a looser .arpa suffix) so
-     * every accepted value is one the post-create redirect and zone lists also
-     * classify as reverse. RFC 2317 range-style names fall outside that and are
-     * rejected; the user enters the parent zone instead.
+     * Pass-through is gated on isReverseZone() (not a looser .arpa suffix)
+     * because form input must be a canonical numeric reverse name or a parsable
+     * network. RFC 2317 range-style names carry no network to derive and are
+     * rejected here; the user enters the parent zone instead.
      */
     public static function resolveReverseZoneName(string $input): ?string
     {

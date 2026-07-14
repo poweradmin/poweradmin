@@ -189,7 +189,7 @@ class EditRecordController extends BaseController
             'user_is_zone_owner' => $user_is_zone_owner,
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
-            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
             'display_hostname_only' => $display_hostname_only,
         ]);
     }

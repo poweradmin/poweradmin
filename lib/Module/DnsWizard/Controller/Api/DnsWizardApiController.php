@@ -352,7 +352,7 @@ class DnsWizardApiController extends InternalApiController
             }
 
             $reverseTtlResolver = $this->createReverseTtlResolver();
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $ttl = isset($data['ttl']) && $data['ttl'] !== ''
                 ? (int)$data['ttl']
                 : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);

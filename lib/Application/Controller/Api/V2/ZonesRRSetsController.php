@@ -469,7 +469,7 @@ class ZonesRRSetsController extends PublicApiController
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
-            $isReverseZone = DnsHelper::isReverseZone($zoneName);
+            $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
 
             $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
             if ($ttl === null) {

@@ -244,7 +244,7 @@ class AddZoneMasterController extends BaseController
                     if (!$validation['valid']) {
                         // Show validation errors to user
                         $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
-                        $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
                         $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
                         $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
                         $dnssecMessageSet = true;
@@ -254,7 +254,7 @@ class AddZoneMasterController extends BaseController
                         DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
 
                         $secureResult = $dnssecProvider->secureZone($zone_name);
-                        $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
 
                         if (!$secureResult) {
                             $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
@@ -279,7 +279,7 @@ class AddZoneMasterController extends BaseController
             }
 
             // Check if the zone is a reverse zone and redirect accordingly
-            if (DnsHelper::isReverseZone($zone_name)) {
+            if (DnsHelper::isReverseZoneName($zone_name)) {
                 if (!$dnssecMessageSet) {
                     $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
                 }
