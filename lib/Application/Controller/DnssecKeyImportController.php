@@ -83,6 +83,15 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
+        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        if ($dnssecProvider->isZonePresigned($domainName)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zoneId . '/dnssec');
+            return;
+        }
+
         $this->validateCsrfToken();
 
         $keyType = $this->getSafeRequestValue('key_type');
@@ -107,9 +116,6 @@ class DnssecKeyImportController extends BaseController
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
-
-        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         try {
             if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $privateKeyPem)) {

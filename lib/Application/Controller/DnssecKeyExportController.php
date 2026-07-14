@@ -79,6 +79,12 @@ class DnssecKeyExportController extends BaseController
         $domainName = $domainRepository->getDomainNameById($zoneIdInt);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
+        if ($dnssecProvider->isZonePresigned($domainName)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zoneId . '/dnssec');
+            return;
+        }
+
         try {
             $pem = $dnssecProvider->exportZoneKeyPem($domainName, (int) $keyId);
         } catch (Exception $e) {

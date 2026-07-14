@@ -316,6 +316,8 @@ class EditController extends BaseController
             $this->handleZoneMetadataPost($zone_id);
         }
 
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
         if ($this->request->getPostParam('sign_zone') !== null) {
             $this->validateCsrfToken();
 
@@ -325,11 +327,11 @@ class EditController extends BaseController
                 return;
             }
 
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
             // Check if DNSSEC is enabled on the server
             if (!$dnssecProvider->isDnssecEnabled()) {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
+            } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('edit', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
             } elseif ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 // Check if zone is already secured
                 $this->setMessage('edit', 'info', _('Zone is already signed with DNSSEC.'));
@@ -379,10 +381,10 @@ class EditController extends BaseController
                 return;
             }
 
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
             // Check if zone is secured before attempting to unsecure
-            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+            if ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('edit', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
@@ -448,7 +450,9 @@ class EditController extends BaseController
         $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $is_secured = $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
+        // Presigned zones always report secured, so unsigned zones skip the metadata lookup
+        $is_presigned = $is_secured && $dnssecProvider->isZonePresigned($zone_name);
 
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
@@ -494,7 +498,8 @@ class EditController extends BaseController
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($total_filtered_count, $iface_rowamount, $zone_id, $paginationService),
             'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
+            'is_secured' => $is_secured,
+            'is_presigned' => $is_presigned,
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $defaultTtl,
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),

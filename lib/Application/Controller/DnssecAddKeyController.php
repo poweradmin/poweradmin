@@ -83,6 +83,15 @@ class DnssecAddKeyController extends BaseController
             return;
         }
 
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
+
         $key_type = "";
         if ($this->request->getPostParam('key_type') !== null) {
             $key_type = $this->request->getPostParam('key_type');
@@ -116,7 +125,6 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        $domain_name = $domainRepository->getDomainNameById($zone_id);
         // Function to validate algorithm and bit combinations
         $validateAlgorithmBitCombination = function ($algorithm, $bits) {
             // ECDSA algorithms should only use 256 or 384 bits
@@ -160,7 +168,6 @@ class DnssecAddKeyController extends BaseController
                     $this->setMessage('dnssec_add_key', 'error', $validation['message']);
                     // Don't redirect, let the form display again with the error message
                 } else {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     try {
                         if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
                             $auditService = new AuditService($this->db);

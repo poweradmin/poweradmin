@@ -1,3 +1,5 @@
+{% set can_edit_keys = can_manage_dnssec and not is_presigned %}
+
 <!-- Unsign Zone Confirmation Modal -->
 <div class="modal fade" id="unsignZoneModal" tabindex="-1" aria-labelledby="unsignZoneModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -47,6 +49,12 @@
     </ol>
 </nav>
 
+{% if is_presigned %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>{% trans %}This zone is presigned; DNSSEC keys are managed at the primary server.{% endtrans %}
+</div>
+{% endif %}
+
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong>
@@ -58,7 +66,7 @@
             {% endif %}
         </strong>
         <div>
-            {% if can_manage_dnssec %}
+            {% if can_edit_keys %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add new key{% endtrans %}
             </a>
@@ -66,7 +74,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
-            {% if can_manage_dnssec %}
+            {% if can_edit_keys %}
             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#unsignZoneModal">
                 <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
             </button>
@@ -118,7 +126,7 @@
                         </td>
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if can_manage_dnssec %}
+                                {% if can_edit_keys %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
@@ -142,7 +150,7 @@
     </div>
 </div>
 
-{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and can_manage_dnssec %}
+{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and can_edit_keys %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
         <strong><i class="bi bi-upload me-2"></i>{% trans %}Import key from PEM{% endtrans %}</strong>

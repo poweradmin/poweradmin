@@ -101,7 +101,11 @@ class DnssecController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if ($zone_name === false || !$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+            if ($zone_name === false) {
+                $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
+            } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
@@ -161,6 +165,7 @@ class DnssecController extends BaseController
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'can_manage_dnssec' => $can_manage_dnssec,
+            'is_presigned' => $dnssecProvider->isZonePresigned($domain_name),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }

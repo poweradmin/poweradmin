@@ -95,6 +95,12 @@ class DnssecToggleKeyController extends BaseController
             return;
         }
 
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
+
         // Get current key information
         try {
             $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);

@@ -99,6 +99,12 @@ class DnssecEditKeyController extends BaseController
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
+
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
             return;

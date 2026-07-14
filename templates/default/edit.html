@@ -860,6 +860,9 @@
                         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-shield-lock me-1 text-primary"></i>{% trans %}Manage DNSSEC{% endtrans %}
                         </a>
+                        {% if is_presigned %}
+                        <span class="badge bg-info align-middle" title="{% trans %}DNSSEC keys are managed at the primary server{% endtrans %}">{% trans %}Presigned{% endtrans %}</span>
+                        {% endif %}
                         {% else %}
                             {% if can_manage_dnssec %}
                             <form method="post" action="" class="d-inline">

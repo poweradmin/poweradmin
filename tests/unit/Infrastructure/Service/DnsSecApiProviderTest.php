@@ -297,6 +297,45 @@ class DnsSecApiProviderTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    public function testIsZonePresignedReturnsTrueWhenMetadataIsOne(): void
+    {
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneMetadataKind')
+            ->with($this->isInstanceOf(Zone::class), 'PRESIGNED')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => ['1']]);
+
+        $this->assertTrue($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseWhenMetadataMissing(): void
+    {
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => []]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseOnApiError(): void
+    {
+        // getZoneMetadataKind returns [] when the API call fails
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn([]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseWhenMetadataNotOne(): void
+    {
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => ['0']]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
     /**
      * Helper method to create mock CryptoKey with specific ID
      */
