@@ -108,8 +108,8 @@ class Installer
             $currentStep--;
         }
 
-        $installToken = $this->csrfTokenService->generateToken();
-        $_SESSION[SessionKeys::INSTALL_TOKEN] = $installToken;
+        // Keep one token for the whole install session so back/refresh/duplicate-tab don't fail on a rotated token.
+        $this->csrfTokenService->ensureTokenExists(SessionKeys::INSTALL_TOKEN);
 
         $currentLanguage = $this->initializeLocaleHandler();
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
