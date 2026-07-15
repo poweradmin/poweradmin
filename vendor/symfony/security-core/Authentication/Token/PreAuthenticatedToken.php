@@ -49,8 +49,11 @@ class PreAuthenticatedToken extends AbstractToken
 
     public function __unserialize(array $data): void
     {
+        if (($data[1] ?? null) instanceof \Stringable) {
+            throw new \BadMethodCallException('Cannot unserialize '.self::class);
+        }
+
         [, $this->firewallName, $parentData] = $data;
-        $parentData = \is_array($parentData) ? $parentData : unserialize($parentData);
         parent::__unserialize($parentData);
     }
 }

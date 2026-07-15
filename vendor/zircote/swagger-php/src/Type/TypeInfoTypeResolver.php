@@ -9,7 +9,7 @@ namespace OpenApi\Type;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
-use OpenApi\Generator;
+use OpenApi\Undefined;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
@@ -24,6 +24,7 @@ use Radebatz\TypeInfoExtras\Type\IntRangeType;
 use Radebatz\TypeInfoExtras\TypeResolver\StringTypeResolver;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\ArrayShapeType;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\Type\CollectionType;
 use Symfony\Component\TypeInfo\Type\CompositeTypeInterface;
@@ -36,14 +37,16 @@ use Symfony\Component\TypeInfo\TypeResolver\ReflectionTypeResolver;
 
 class TypeInfoTypeResolver extends AbstractTypeResolver
 {
-    /** @inheritdoc */
+    /**
+     * @inheritdoc
+     */
     protected function doAugment(Analysis $analysis, OA\Schema $schema, \Reflector $reflector, string $sourceClass = OA\Schema::class): void
     {
         $docblockType = $this->getDocblockType($reflector);
         $reflectionType = $this->getReflectionType($reflector);
 
         // we only consider nullable hints if the type is explicitly set
-        if (Generator::isDefault($schema->nullable)
+        if (Undefined::isDefault($schema->nullable)
             && (($docblockType && $docblockType->isNullable())
                 || ($reflectionType && $reflectionType->isNullable()))
         ) {
@@ -53,7 +56,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
         $docblockType = $docblockType instanceof NullableType ? $docblockType->getWrappedType() : $docblockType;
         $reflectionType = $reflectionType instanceof NullableType ? $reflectionType->getWrappedType() : $reflectionType;
 
-        if (Generator::isDefault($schema->type, $schema->oneOf, $schema->allOf, $schema->anyOf) && ($docblockType || $reflectionType)) {
+        if (Undefined::isDefault($schema->type, $schema->oneOf, $schema->allOf, $schema->anyOf) && ($docblockType || $reflectionType)) {
             $this->setSchemaType($schema, $docblockType ?? $reflectionType, $analysis, $sourceClass);
         }
 
@@ -63,15 +66,15 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
             $schema->type = 'array';
         }
 
-        if (!Generator::isDefault($schema->const) && Generator::isDefault($schema->type)) {
+        if (!Undefined::isDefault($schema->const) && Undefined::isDefault($schema->type)) {
             if (!$this->mapNativeType($schema, gettype($schema->const))) {
-                $schema->type = Generator::UNDEFINED;
+                $schema->type = Undefined::UNDEFINED;
             }
         }
 
         // final sanity check
-        if (!Generator::isDefault($schema->type) && !$this->mapNativeType($schema, $schema->type)) {
-            $schema->type = Generator::UNDEFINED;
+        if (!Undefined::isDefault($schema->type) && !$this->mapNativeType($schema, $schema->type)) {
+            $schema->type = Undefined::UNDEFINED;
         }
     }
 
@@ -84,15 +87,17 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
 
             if ($isNonZeroInt) {
                 $schema->type = 'int';
-                $schema->not = $schema->_context->isVersion('3.0.x')
-                    ? ['enum' => [0]]
-                    : ['const' => 0];
+                $schema->not = ['const' => 0];
             } else {
                 $allBuiltin = array_reduce($types, static fn ($carry, $t): bool => $carry && $t instanceof BuiltinType, true);
 
                 if ($type instanceof UnionType) {
                     if ($allBuiltin) {
-                        $schema->type = array_map(static fn (Type $t): string => (string) $t, $types);
+                        $mappableTypes = array_values(array_filter(
+                            array_map(static fn (Type $t): string => (string) $t, $types),
+                            $this->hasOpenApiType(...),
+                        ));
+                        $schema->type = [] === $mappableTypes ? Undefined::UNDEFINED : $mappableTypes;
                     } else {
                         $builtinTypes = array_filter($types, static fn (Type $t): bool => $t instanceof BuiltinType);
                         $otherTypes = array_filter($types, static fn (Type $t): bool => !$t instanceof BuiltinType);
@@ -102,10 +107,10 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                             return $schema;
                         }
 
-                        $schema->type = Generator::UNDEFINED;
+                        $schema->type = Undefined::UNDEFINED;
                         $schema->oneOf = [];
 
-                        if ($builtinTypes) {
+                        if ($builtinTypes !== []) {
                             $schema->oneOf[] = $builtinSchema = new OA\Schema([
                                 'type' => array_values(array_map(static fn (Type $t): string => (string) $t, $builtinTypes)),
                                 '_context' => new Context(['generated' => true], $schema->_context),
@@ -124,7 +129,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                         }
                     }
                 } elseif ($type instanceof IntersectionType) {
-                    $schema->type = Generator::UNDEFINED;
+                    $schema->type = Undefined::UNDEFINED;
                     $schema->allOf = [];
 
                     foreach ($types as $intersectionType) {
@@ -138,7 +143,11 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 }
             }
         } else {
-            if ($type instanceof BuiltinType || $type instanceof ObjectType) {
+            if ($type instanceof BuiltinType) {
+                if ($this->hasOpenApiType((string) $type)) {
+                    $schema->type = (string) $type;
+                }
+            } elseif ($type instanceof ObjectType) {
                 $schema->type = (string) $type;
             } elseif ($type instanceof IntRangeType) {
                 $schema->type = $type->getTypeIdentifier()->value;
@@ -147,32 +156,23 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 $schema->maximum = $type->getTo();
             } elseif ($type instanceof ExplicitType) {
                 $schema->type = $type->getTypeIdentifier()->value;
+            } elseif ($type instanceof ArrayShapeType && [] !== $type->getShape()) {
+                // array{a: int, b?: string} → object with named properties; array{0: T, 1: U} → positional array
+                $this->setSchemaTypeFromArrayShape($schema, $type, $analysis);
             } elseif ($type instanceof CollectionType) {
                 if ($type->isList() || $type->getCollectionKeyType() instanceof UnionType) {
                     // list<T>, array<T>, T[] → ordered list
-                    $schema->type = 'array';
-
-                    if (Generator::isDefault($schema->items)) {
-                        $schema->items = new OA\Items(['_context' => new Context(['generated' => true], $schema->_context)]);
-                        $this->setSchemaType($schema->items, $type->getCollectionValueType(), $analysis);
-                        $this->type2ref($schema->items, $analysis);
-                        $analysis->addAnnotation($schema->items, $schema->items->_context);
-                    } elseif (Generator::isDefault($schema->items->type, $schema->items->oneOf, $schema->items->allOf, $schema->items->anyOf)) {
-                        $this->setSchemaType($schema->items, $type->getCollectionValueType(), $analysis);
-                        $this->type2ref($schema->items, $analysis);
-                    }
-
-                    $this->mapNativeType($schema->items, $schema->items->type);
+                    $this->setListSchema($schema, $type->getCollectionValueType(), $analysis);
                 } else {
                     // explicit key type (e.g. array<string, string>) → map
                     $schema->type = 'object';
 
-                    if (Generator::isDefault($schema->additionalProperties)) {
+                    if (Undefined::isDefault($schema->additionalProperties)) {
                         $schema->additionalProperties = new OA\AdditionalProperties(['_context' => new Context(['generated' => true], $schema->_context)]);
                         $this->setSchemaType($schema->additionalProperties, $type->getCollectionValueType(), $analysis);
                         $this->type2ref($schema->additionalProperties, $analysis);
                         $analysis->addAnnotation($schema->additionalProperties, $schema->additionalProperties->_context);
-                    } elseif (Generator::isDefault($schema->additionalProperties->type, $schema->additionalProperties->oneOf, $schema->additionalProperties->allOf, $schema->additionalProperties->anyOf)) {
+                    } elseif (Undefined::isDefault($schema->additionalProperties->type, $schema->additionalProperties->oneOf, $schema->additionalProperties->allOf, $schema->additionalProperties->anyOf)) {
                         $this->setSchemaType($schema->additionalProperties, $type->getCollectionValueType(), $analysis);
                         $this->type2ref($schema->additionalProperties, $analysis);
                     }
@@ -185,7 +185,92 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
         return $schema;
     }
 
-    /**645 1050272  02 1268 0026220 00
+    protected function setSchemaTypeFromArrayShape(OA\Schema $schema, ArrayShapeType $type, Analysis $analysis): void
+    {
+        $shape = $type->getShape();
+
+        // A list-shaped array (array{T, U} or array{0: T, 1: U}) is a positional list, not a keyed object.
+        if (array_is_list($shape)) {
+            $this->setListSchema($schema, $type->getCollectionValueType(), $analysis);
+
+            return;
+        }
+
+        $schema->type = 'object';
+
+        $properties = [];
+        $required = [];
+        foreach ($shape as $name => $member) {
+            $propertyName = (string) $name;
+            $property = new OA\Property([
+                'property' => $propertyName,
+                '_context' => new Context(['generated' => true], $schema->_context),
+            ]);
+            $this->setSchemaType($property, $member['type'], $analysis);
+            $this->type2ref($property, $analysis);
+            $this->mapNativeType($property, $property->type);
+            $analysis->addAnnotation($property, $property->_context);
+
+            $properties[] = $property;
+
+            if (!($member['optional'] ?? false)) {
+                $required[] = $propertyName;
+            }
+        }
+
+        $schema->properties = $properties;
+
+        if ([] !== $required) {
+            $schema->required = $required;
+        }
+
+        /*
+         * An unsealed shape permits extra entries.
+         * For example array{a: int, ...} or array{a: int, ...<T>}.
+         * The schema therefore allows additional properties.
+         *
+         * The rest value type (...<T>) is left open, not emitted.
+         * Symfony's type-info resolves it inconsistently across versions.
+         * The same ...<string> comes back as string, int|string, or unresolved.
+         * Emitting it would be unstable and sometimes invalid.
+         *
+         * A sealed shape has a null extra value type.
+         * A non-null one means the shape is open.
+         */
+        if ($type->getExtraValueType() instanceof Type) {
+            $schema->additionalProperties = new OA\AdditionalProperties(['_context' => new Context(['generated' => true], $schema->_context)]);
+            $analysis->addAnnotation($schema->additionalProperties, $schema->additionalProperties->_context);
+        }
+    }
+
+    /**
+     * Emits an ordered-list schema (type: array) whose items resolve from the given value type.
+     *
+     * Used for both collection lists (list<T>, array<T>, T[]) and positional array shapes (array{0: T, 1: U}).
+     */
+    protected function setListSchema(OA\Schema $schema, Type $valueType, Analysis $analysis): void
+    {
+        $schema->type = 'array';
+
+        if (Undefined::isDefault($schema->items)) {
+            $schema->items = new OA\Items(['_context' => new Context(['generated' => true], $schema->_context)]);
+            $this->setSchemaType($schema->items, $valueType, $analysis);
+            $this->type2ref($schema->items, $analysis);
+            $analysis->addAnnotation($schema->items, $schema->items->_context);
+        } elseif (Undefined::isDefault($schema->items->type, $schema->items->oneOf, $schema->items->allOf, $schema->items->anyOf)) {
+            $this->setSchemaType($schema->items, $valueType, $analysis);
+            $this->type2ref($schema->items, $analysis);
+        }
+
+        $this->mapNativeType($schema->items, $schema->items->type);
+    }
+
+    protected function hasOpenApiType(string $native): bool
+    {
+        return $this->typeMapper->hasOpenApiType($native);
+    }
+
+    /**
      * @param \ReflectionParameter|\ReflectionProperty|\ReflectionMethod $reflector
      */
     protected function getReflectionType(\Reflector $reflector): ?Type

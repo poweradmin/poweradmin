@@ -97,6 +97,21 @@ class Analysis
         }
     }
 
+    public function removeAnnotation(OA\AbstractAnnotation $annotation): void
+    {
+        if ($this->annotations->offsetExists($annotation)) {
+            $context = $this->annotations->offsetGet($annotation);
+            $this->annotations->offsetUnset($annotation);
+
+            if ($context->is('annotations') !== false) {
+                $index = array_search($annotation, $context->annotations, true);
+                if ($index !== false) {
+                    array_splice($context->annotations, $index, 1);
+                }
+            }
+        }
+    }
+
     /**
      * @param list<OA\AbstractAnnotation> $annotations
      */
@@ -105,6 +120,31 @@ class Analysis
         foreach ($annotations as $annotation) {
             $this->addAnnotation($annotation, $context);
         }
+    }
+
+    /**
+     * Merge annotations into a parent and register any new ones in the analysis.
+     *
+     * Combines the tree-structural operation (AbstractAnnotation::merge) with
+     * registry registration (addAnnotation) so callers don't need to handle
+     * both separately.
+     *
+     * @param list<OA\AbstractAnnotation> $annotations
+     * @param bool                        $ignore      Ignore unmerged annotations
+     *
+     * @return list<OA\AbstractAnnotation> The unmerged annotations
+     */
+    public function mergeAnnotations(OA\AbstractAnnotation $parent, array $annotations, bool $ignore = false): array
+    {
+        $unmerged = $parent->merge($annotations, $ignore);
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof OA\AbstractAnnotation) {
+                $this->addAnnotation($annotation, $annotation->_context);
+            }
+        }
+
+        return $unmerged;
     }
 
     public function addClassDefinition(array $definition): void
@@ -414,7 +454,7 @@ class Analysis
         $annotations = [$root];
 
         foreach (get_object_vars($root) as $field => $value) {
-            if (null === $value || Generator::isDefault($value) || is_scalar($value) || in_array($field, $root::$_blacklist)) {
+            if (null === $value || Undefined::isDefault($value) || is_scalar($value) || in_array($field, $root::$_blacklist)) {
                 continue;
             }
 

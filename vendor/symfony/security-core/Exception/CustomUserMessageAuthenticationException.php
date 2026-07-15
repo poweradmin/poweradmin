@@ -61,8 +61,11 @@ class CustomUserMessageAuthenticationException extends AuthenticationException
 
     public function __unserialize(array $data): void
     {
+        if (($data[1] ?? null) instanceof \Stringable) {
+            throw new \BadMethodCallException('Cannot unserialize '.self::class);
+        }
+
         [$parentData, $this->messageKey, $this->messageData] = $data;
-        $parentData = \is_array($parentData) ? $parentData : unserialize($parentData);
         parent::__unserialize($parentData);
     }
 }

@@ -28,7 +28,7 @@ final class ProxyEnvironment
      */
     public static function getProxyForScheme(string $scheme): ?string
     {
-        $scheme = \strtolower($scheme);
+        $scheme = \strtr($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
         $candidates = [$scheme.'_proxy'];
         if ($scheme !== 'http') {
             // Uppercase HTTP_PROXY is deliberately never consulted: a CGI
@@ -77,7 +77,13 @@ final class ProxyEnvironment
     {
         $entries = [];
 
-        foreach (\preg_split('/[\s,]+/', $noProxy) ?: [] as $entry) {
+        $split = \preg_split('/[\s,]+/', $noProxy);
+
+        if ($split === false) {
+            throw new \RuntimeException('Unable to split the no_proxy value: '.\preg_last_error_msg());
+        }
+
+        foreach ($split as $entry) {
             if ($entry !== '' && $entry[0] === '.') {
                 $entry = \substr($entry, 1);
             }
