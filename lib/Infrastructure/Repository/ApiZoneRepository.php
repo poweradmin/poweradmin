@@ -650,14 +650,20 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return false;
         }
+        $cid = (int)$canonical['id'];
+
         $stmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id)
              VALUES (:domain_id, :owner, :zone_templ_id)"
         );
-        $stmt->bindValue(':domain_id', (int)$canonical['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
         $stmt->execute();
+        $account = self::getZoneAccount($this->db, $cid);
+        if ($account !== null) {
+            $this->backendProvider->updateZoneAccount($cid, $account);
+        }
         return $stmt->rowCount() > 0;
     }
 
@@ -677,7 +683,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
-
+        $account = self::getZoneAccount($this->db, $cid);
+        if ($account !== null) {
+            $this->backendProvider->updateZoneAccount($cid, $account);
+        }
         if ($stmt->rowCount() > 0) {
             return true;
         }
@@ -689,6 +698,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
+        $account = self::getZoneAccount($this->db, $cid);
+        if ($account !== null) {
+            $this->backendProvider->updateZoneAccount($cid, $account);
+        }
         return $stmt->rowCount() > 0;
     }
 
@@ -955,5 +968,19 @@ class ApiZoneRepository implements ZoneRepositoryInterface
     {
         // TODO: Implement via PowerDNS API metadata endpoints
         return false;
+    }
+
+    private static function getZoneAccount(PDO $db, int $domainId): ?string
+    {
+        $stmt = $db->prepare("
+            SELECT u.username
+            FROM users u
+            INNER JOIN zones z ON z.owner = u.id
+            WHERE z.domain_id = ?
+            ORDER BY z.id
+            LIMIT 1
+        ");
+        $stmt->execute([$domainId]);
+        return $stmt->fetchColumn();
     }
 }
