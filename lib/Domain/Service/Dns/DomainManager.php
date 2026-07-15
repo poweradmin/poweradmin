@@ -156,8 +156,11 @@ class DomainManager implements DomainManagerInterface
                         $zone_id = $db->lastInsertId();
                     }
 
-                    $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
-                    $accountSync->syncZoneAccount($domain_id);
+                    // Ownerless zones keep their default empty account; no push needed on create
+                    if ($owner !== null) {
+                        $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
+                        $accountSync->syncZoneAccount($domain_id);
+                    }
 
                     // Create sync tracking record if using a template
                     if ($zone_template != "none" && is_numeric($zone_template)) {
@@ -862,6 +865,9 @@ class DomainManager implements DomainManagerInterface
     private static function syncZoneAccountStatic(PDO $db, int $domainId): void
     {
         $config = ConfigurationManager::getInstance();
+        if (!$config->get('dns', 'sync_zone_owner_to_account', false)) {
+            return;
+        }
         $backendProvider = DnsBackendProviderFactory::create($db, $config);
         $accountSync = new ZoneAccountSyncService($db, $config, $backendProvider);
         $accountSync->syncZoneAccount($domainId);

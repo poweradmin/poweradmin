@@ -894,8 +894,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $this->syncZoneAccount($zoneId);
-        return $stmt->rowCount() > 0;
+        $added = $stmt->rowCount() > 0;
+        if ($added) {
+            $this->syncZoneAccount($zoneId);
+        }
+        return $added;
     }
 
     /**
@@ -914,8 +917,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $this->syncZoneAccount($zoneId);
-        return $stmt->rowCount() > 0;
+        $removed = $stmt->rowCount() > 0;
+        if ($removed) {
+            $this->syncZoneAccount($zoneId);
+        }
+        return $removed;
     }
 
     /**

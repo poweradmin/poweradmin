@@ -29,7 +29,6 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
@@ -38,7 +37,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         private readonly PDO $db,
         private readonly DnsBackendProvider $backendProvider,
         private readonly string $dbType,
-        private readonly ?ConfigurationInterface $config = null
+        private readonly ConfigurationInterface $config
     ) {
     }
 
@@ -665,8 +664,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
         $stmt->execute();
 
-        $this->syncZoneAccount($cid);
-        return $stmt->rowCount() > 0;
+        $added = $stmt->rowCount() > 0;
+        if ($added) {
+            $this->syncZoneAccount($cid);
+        }
+        return $added;
     }
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
@@ -698,8 +700,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $this->syncZoneAccount($cid);
-        return $stmt->rowCount() > 0;
+        $removed = $stmt->rowCount() > 0;
+        if ($removed) {
+            $this->syncZoneAccount($cid);
+        }
+        return $removed;
     }
 
     public function isUserZoneOwner(int $zoneId, int $userId): bool
@@ -969,8 +974,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     private function syncZoneAccount(int $cid): void
     {
-        $config = $this->config ?? ConfigurationManager::getInstance();
-        $accountSync = new ZoneAccountSyncService($this->db, $config, $this->backendProvider);
+        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
         if (!$accountSync->isEnabled()) {
             return;
         }
