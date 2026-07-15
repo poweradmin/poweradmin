@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -892,10 +893,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
         $stmt->execute();
-        $account = self::getZoneAccount($this->db, $zoneId);
-        if ($account !== null) {
-            $this->backendProvider->updateZoneAccount($zoneId, $account);
-        }
+
+        $this->syncZoneAccount($zoneId);
         return $stmt->rowCount() > 0;
     }
 
@@ -914,10 +913,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        $account = self::getZoneAccount($this->db, $zoneId);
-        if ($account !== null) {
-            $this->backendProvider->updateZoneAccount($zoneId, $account);
-        }
+
+        $this->syncZoneAccount($zoneId);
         return $stmt->rowCount() > 0;
     }
 
@@ -1343,17 +1340,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $result ?: null;
     }
 
-    private static function getZoneAccount(PDO $db, int $domainId): ?string
+    private function syncZoneAccount(int $domainId): void
     {
-        $stmt = $db->prepare("
-            SELECT u.username
-            FROM users u
-            INNER JOIN zones z ON z.owner = u.id
-            WHERE z.domain_id = ?
-            ORDER BY z.id
-            LIMIT 1
-        ");
-        $stmt->execute([$domainId]);
-        return $stmt->fetchColumn();
+        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $accountSync->syncZoneAccount($domainId);
     }
 }

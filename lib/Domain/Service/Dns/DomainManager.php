@@ -32,6 +32,7 @@ use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -155,10 +156,8 @@ class DomainManager implements DomainManagerInterface
                         $zone_id = $db->lastInsertId();
                     }
 
-                    $account = self::getZoneAccount($db, $domain_id);
-                    if ($account !== null) {
-                        $this->backendProvider->updateZoneAccount($domain_id, $account);
-                    }
+                    $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
+                    $accountSync->syncZoneAccount($domain_id);
 
                     // Create sync tracking record if using a template
                     if ($zone_template != "none" && is_numeric($zone_template)) {
@@ -553,10 +552,7 @@ class DomainManager implements DomainManagerInterface
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(?, ?, ?)");
                     $stmt->execute([$zone_id, $user_id, $zone_templ_id]);
 
-                    $account = self::getZoneAccount($db, $zone_id);
-                    if ($account !== null) {
-                        $this->backendProvider->updateZoneAccount($zone_id, $account);
-                    }
+                    self::syncZoneAccountStatic($db, $zone_id);
                     return true;
                 } else {
                     $messageService = new MessageService();
@@ -591,10 +587,7 @@ class DomainManager implements DomainManagerInterface
                     $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
                     $stmt->execute([$user_id, $zone_id]);
 
-                    $account = self::getZoneAccount($db, $zone_id);
-                    if ($account !== null) {
-                        $this->backendProvider->updateZoneAccount($zone_id, $account);
-                    }
+                    self::syncZoneAccountStatic($db, $zone_id);
                     return true;
                 } else {
                     $messageService = new MessageService();
@@ -865,17 +858,12 @@ class DomainManager implements DomainManagerInterface
         return stripos($domain, 'in-addr.arpa') !== false;
     }
 
-    private static function getZoneAccount(PDO $db, int $domainId): ?string
+    /** Account sync entry point for the static owner-management methods */
+    private static function syncZoneAccountStatic(PDO $db, int $domainId): void
     {
-        $stmt = $db->prepare("
-            SELECT u.username
-            FROM users u
-            INNER JOIN zones z ON z.owner = u.id
-            WHERE z.domain_id = ?
-            ORDER BY z.id
-            LIMIT 1
-        ");
-        $stmt->execute([$domainId]);
-        return $stmt->fetchColumn();
+        $config = ConfigurationManager::getInstance();
+        $backendProvider = DnsBackendProviderFactory::create($db, $config);
+        $accountSync = new ZoneAccountSyncService($db, $config, $backendProvider);
+        $accountSync->syncZoneAccount($domainId);
     }
 }
