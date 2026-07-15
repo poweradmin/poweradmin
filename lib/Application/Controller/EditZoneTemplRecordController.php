@@ -137,7 +137,7 @@ class EditZoneTemplRecordController extends BaseController
 
         $template = new ZoneTemplate($this->db, $this->getConfig());
 
-        if ($template->editZoneTemplRecord($_POST)) {
+        if ($template->editZoneTemplRecord($_POST, $zone_templ_id)) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
             $syncService->markTemplateAsModified($zone_templ_id);

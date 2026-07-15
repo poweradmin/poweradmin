@@ -67,7 +67,7 @@ class DeleteZoneTemplRecordController extends BaseController
 
         if ($confirm == '1') {
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            if ($zoneTemplate->deleteZoneTemplRecord($record_id)) {
+            if ($zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id)) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
                 $syncService->markTemplateAsModified($zone_templ_id);
