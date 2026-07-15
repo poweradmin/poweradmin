@@ -50,6 +50,46 @@ class PowerdnsApiClientExtendedTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testGetZoneWithoutRrsetsRequestsMetadataOnly(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false')
+            ->willReturn([
+                'responseCode' => 200,
+                'data' => ['name' => 'example.com.', 'serial' => 2024010101, 'edited_serial' => 2024010199],
+            ]);
+
+        $result = $this->apiClient->getZone('example.com.', false);
+
+        $this->assertNotNull($result);
+        $this->assertEquals(2024010199, $result['edited_serial']);
+    }
+
+    // ---------------------------------------------------------------
+    // getAllZoneStats
+    // ---------------------------------------------------------------
+
+    public function testGetAllZoneStatsParsesEditedSerial(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn([
+                'responseCode' => 200,
+                'data' => [
+                    ['name' => 'signed.com.', 'rrset_count' => 5, 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+                    ['name' => 'legacy.com.', 'rrset_count' => 3, 'dnssec' => false, 'serial' => 2024010101],
+                ],
+            ]);
+
+        $stats = $this->apiClient->getAllZoneStats();
+
+        $this->assertSame(2024010199, $stats['signed.com.']['edited_serial']);
+        $this->assertSame(2024010101, $stats['signed.com.']['serial']);
+        $this->assertNull($stats['legacy.com.']['edited_serial']);
+    }
+
     // ---------------------------------------------------------------
     // createZoneWithData
     // ---------------------------------------------------------------

@@ -62,6 +62,7 @@ return [
         'add_reverse_record' => true,
         'search_group_records' => true,
         'show_add_record_form' => true,
+        'display_signed_serial_in_zone_list' => true,
     ],
 
     /**

@@ -8,6 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getColumnIndex } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -22,13 +23,6 @@ async function setListPreferences(page, { serial, template }) {
     document.querySelector('button[type="submit"]')?.click();
   }, { serial, template });
   await page.waitForLoadState('networkidle');
-}
-
-async function getColumnIndex(page, headerText) {
-  return page.evaluate((target) => {
-    const headers = Array.from(document.querySelectorAll('thead th'));
-    return headers.findIndex(h => h.innerText.trim() === target);
-  }, headerText);
 }
 
 test.describe('Reverse Zone List Columns (Issue #1186)', () => {

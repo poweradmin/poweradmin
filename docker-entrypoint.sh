@@ -643,6 +643,7 @@ generate_config() {
     local show_zone_comments=$(to_php_bool "${PA_SHOW_ZONE_COMMENTS:-true}")
     local show_record_comments=$(to_php_bool "${PA_SHOW_RECORD_COMMENTS:-false}")
     local display_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}")
+    local display_signed_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST:-false}")
     local display_owner_in_zone_list=$(to_php_bool "${PA_DISPLAY_OWNER_IN_ZONE_LIST:-true}")
     local display_group_in_zone_list=$(to_php_bool "${PA_DISPLAY_GROUP_IN_ZONE_LIST:-true}")
     local display_template_in_zone_list=$(to_php_bool "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}")
@@ -1048,6 +1049,7 @@ return [
         'show_zone_comments' => ${show_zone_comments},
         'show_record_comments' => ${show_record_comments},
         'display_serial_in_zone_list' => ${display_serial_in_zone_list},
+        'display_signed_serial_in_zone_list' => ${display_signed_serial_in_zone_list},
         'display_template_in_zone_list' => ${display_template_in_zone_list},
         'display_owner_in_zone_list' => ${display_owner_in_zone_list},
         'display_group_in_zone_list' => ${display_group_in_zone_list},

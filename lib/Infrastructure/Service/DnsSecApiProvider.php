@@ -207,6 +207,16 @@ class DnsSecApiProvider implements DnssecProvider
         return false;
     }
 
+    public function getEditedSerial(string $zoneName): ?int
+    {
+        $zoneData = $this->client->getZone(rtrim($zoneName, '.') . '.', false);
+        // Unsigned zones serve the plain serial, so there is no signed serial to report
+        if (!($zoneData['dnssec'] ?? false) || !isset($zoneData['edited_serial'])) {
+            return null;
+        }
+        return (int)$zoneData['edited_serial'];
+    }
+
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
     {
         $zone = new Zone($zoneName);

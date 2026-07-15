@@ -113,4 +113,51 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $this->assertFalse($result['unsigned.example.com']['is_disabled']);
         $this->assertTrue($result['unsigned.example.com']['is_missing_soa']);
     }
+
+    #[Test]
+    public function getZonesMapsSignedSerialWhenSettingEnabled(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null) => ($group === 'interface' && $key === 'display_signed_serial_in_zone_list') ? true : $default
+        );
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com',   'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
+            ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([
+            'signed.example.com.' => ['rrset_count' => 5, 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+            'unsigned.example.com.' => ['rrset_count' => 3, 'dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101],
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
+
+        $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
+        // Unsigned zones serve the plain serial; the signed-serial column stays blank for them
+        $this->assertSame('', $result['unsigned.example.com']['signed_serial']);
+        // Unsigned-serial column stays off unless its own setting is enabled
+        $this->assertArrayNotHasKey('serial', $result['signed.example.com']);
+    }
+
+    #[Test]
+    public function getZonesOmitsSignedSerialWhenSettingDisabled(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
+
+        $this->assertArrayNotHasKey('signed_serial', $result['signed.example.com']);
+    }
 }

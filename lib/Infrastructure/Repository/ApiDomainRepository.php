@@ -129,6 +129,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         }
 
         $iface_zonelist_serial = $showSerial ?? $this->config->get('interface', 'display_serial_in_zone_list');
+        $iface_zonelist_signed_serial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
 
         // Sync local zones table with PowerDNS API before listing
@@ -179,7 +180,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
         }
 
-        $zoneStats = $iface_zonelist_serial ? $this->backendProvider->getZoneStats() : [];
+        $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial) ? $this->backendProvider->getZoneStats() : [];
         $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
 
         // Convert to expected output shape (keyed by domain name)
@@ -213,6 +214,12 @@ class ApiDomainRepository implements DomainRepositoryInterface
             if ($iface_zonelist_serial) {
                 $serial = $zoneStats[$name . '.']['serial'] ?? 0;
                 $result[$name]['serial'] = $serial > 0 ? (string)$serial : '';
+            }
+
+            if ($iface_zonelist_signed_serial) {
+                // Unsigned zones serve the plain serial, so the column stays blank for them
+                $signedSerial = $result[$name]['secured'] ? ($zoneStats[$name . '.']['edited_serial'] ?? null) : null;
+                $result[$name]['signed_serial'] = $signedSerial > 0 ? (string)$signedSerial : '';
             }
 
             if ($iface_zonelist_template) {

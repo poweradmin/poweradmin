@@ -105,6 +105,11 @@ class NullDnssecProvider implements DnssecProvider
         return false;
     }
 
+    public function getEditedSerial(string $zoneName): ?int
+    {
+        return null;
+    }
+
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
     {
         return false;

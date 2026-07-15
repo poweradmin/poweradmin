@@ -355,6 +355,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_SHOW_ZONE_COMMENTS` | Show zone comments | `true` | No |
 | `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
 | `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
+| `PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST` | Display serial served by PowerDNS (SOA-EDIT applied) in zone list; requires API backend | `false` | No |
 | `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |
 | `PA_DISPLAY_OWNER_IN_ZONE_LIST` | Display owner column in zone lists | `true` | No |
 | `PA_DISPLAY_GROUP_IN_ZONE_LIST` | Display group column in zone lists | `true` | No |

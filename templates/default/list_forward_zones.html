@@ -117,6 +117,10 @@
                         <th>{% trans %}Serial{% endtrans %}</th>
                         {% endif %}
 
+                        {% if iface_zonelist_signed_serial %}
+                        <th title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}</th>
+                        {% endif %}
+
                         {% if iface_zonelist_template %}
                         <th>{% trans %}Template{% endtrans %}</th>
                         {% endif %}
@@ -214,6 +218,10 @@
 
                         {% if iface_zonelist_serial %}
                         <td>{{ zone["serial"] }}</td>
+                        {% endif %}
+
+                        {% if iface_zonelist_signed_serial %}
+                        <td>{{ zone["signed_serial"] }}</td>
                         {% endif %}
 
                         {% if iface_zonelist_template %}

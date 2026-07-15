@@ -124,6 +124,10 @@ class ListForwardZonesController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        // Signed serial data comes from the PowerDNS API zone list, so SQL backend cannot provide it
+        $iface_zonelist_signed_serial = $isApiBackend
+            && $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
         $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
@@ -166,7 +170,6 @@ class ListForwardZonesController extends BaseController
         $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
             && $this->config->get('interface', 'display_owner_in_zone_list', true);
         // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
         $showGroupColumn = $ownershipMode->isGroupOwnerAllowed()
             && $this->config->get('interface', 'display_group_in_zone_list', true);
         $isGroupSortSupported = $showGroupColumn && !$isApiBackend;
@@ -257,6 +260,7 @@ class ListForwardZonesController extends BaseController
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
+            'iface_zonelist_signed_serial' => $iface_zonelist_signed_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_record_count' => $iface_zonelist_record_count,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
@@ -272,7 +276,7 @@ class ListForwardZonesController extends BaseController
             'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
             'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
-            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            'is_api_backend' => $isApiBackend,
         ]);
     }
 

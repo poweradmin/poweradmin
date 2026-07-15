@@ -140,7 +140,7 @@ class PowerdnsApiClient
     /**
      * Get zone stats (record count, DNSSEC, serial) for all zones in a single API call.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int}>
+     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int, edited_serial: int|null}>
      */
     public function getAllZoneStats(): array
     {
@@ -155,6 +155,8 @@ class PowerdnsApiClient
                     'rrset_count' => (int)($zoneData['rrset_count'] ?? 0),
                     'dnssec' => (bool)($zoneData['dnssec'] ?? false),
                     'serial' => (int)($zoneData['serial'] ?? 0),
+                    // Serial as served by PowerDNS (SOA-EDIT applied); null on servers without the field
+                    'edited_serial' => isset($zoneData['edited_serial']) ? (int)$zoneData['edited_serial'] : null,
                 ];
             }
         }
@@ -638,12 +640,13 @@ class PowerdnsApiClient
      * Get a single zone with its RRsets
      *
      * @param string $zoneName Zone name (with trailing dot)
+     * @param bool $includeRrsets Set false to fetch zone metadata only (skips records on large zones)
      * @return array|null Zone data or null if not found
      */
-    public function getZone(string $zoneName): ?array
+    public function getZone(string $zoneName, bool $includeRrsets = true): ?array
     {
         try {
-            $endpoint = $this->buildZoneEndpoint($zoneName);
+            $endpoint = $this->buildZoneEndpoint($zoneName, $includeRrsets ? '' : '?rrsets=false');
             $response = $this->httpClient->makeRequest('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {

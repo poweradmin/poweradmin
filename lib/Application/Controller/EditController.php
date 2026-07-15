@@ -454,6 +454,8 @@ class EditController extends BaseController
         $is_secured = $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
         // Presigned zones always report secured, so unsigned zones skip the metadata lookup
         $is_presigned = $is_secured && $dnssecProvider->isZonePresigned($zone_name);
+        // Serial as served by PowerDNS (SOA-EDIT applied); only relevant for signed zones
+        $signed_serial = ($isDnsSecEnabled && $is_secured) ? $dnssecProvider->getEditedSerial($zone_name) : null;
 
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
@@ -502,6 +504,7 @@ class EditController extends BaseController
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $is_secured,
             'is_presigned' => $is_presigned,
+            'signed_serial' => $signed_serial,
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $defaultTtl,
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),

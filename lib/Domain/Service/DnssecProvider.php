@@ -46,6 +46,12 @@ interface DnssecProvider
     public function isDnssecEnabled(): bool;
 
     /**
+     * Serial as served by PowerDNS with SOA-EDIT applied (the "signed" serial),
+     * or null when the server does not expose it or the zone cannot be read.
+     */
+    public function getEditedSerial(string $zoneName): ?int;
+
+    /**
      * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS
      * 4.7+; older servers should return false. Implementations that do not
      * back onto the PowerDNS API may also return false.

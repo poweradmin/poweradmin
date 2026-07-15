@@ -55,6 +55,10 @@
 </div>
 {% endif %}
 
+{% if signed_serial is not null %}
+<p class="text-muted small mb-3" title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}: <code>{{ signed_serial }}</code></p>
+{% endif %}
+
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong>

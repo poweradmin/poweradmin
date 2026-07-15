@@ -422,5 +422,19 @@ export async function ensureAnyZoneExists(page) {
   return await ensureTestZoneExists(page, 'manager');
 }
 
+/**
+ * Find a zone list column index by its exact header text
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} headerText - Exact header text to match
+ * @returns {Promise<number>} - Column index, or -1 when the column is absent
+ */
+export async function getColumnIndex(page, headerText) {
+  return page.evaluate((target) => {
+    const headers = Array.from(document.querySelectorAll('thead th'));
+    return headers.findIndex(h => h.innerText.trim() === target);
+  }, headerText);
+}
+
 // Export zones fixture for direct access
 export { zones };

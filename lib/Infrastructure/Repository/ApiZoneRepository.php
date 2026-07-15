@@ -185,6 +185,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zoneStats = $this->backendProvider->getZoneStats();
+        $showSignedSerial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $zones = [];
         foreach ($results as $row) {
             $name = (string)$row['name'];
@@ -215,6 +216,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 if ($showSerial) {
                     $serial = (int)($stats['serial'] ?? 0);
                     $zones[$name]['serial'] = $serial > 0 ? (string)$serial : '';
+                }
+                if ($showSignedSerial) {
+                    // Unsigned zones serve the plain serial, so the column stays blank for them
+                    $signedSerial = $zones[$name]['secured'] ? ($stats['edited_serial'] ?? null) : null;
+                    $zones[$name]['signed_serial'] = $signedSerial > 0 ? (string)$signedSerial : '';
                 }
                 if ($showTemplate) {
                     $zones[$name]['template'] = $this->resolveTemplateName((int)$row['id']);

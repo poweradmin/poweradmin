@@ -158,6 +158,7 @@ return [
         'show_zone_comments' => true,         // Show or hide zone comments (added in 2.2.3)
         'show_record_comments' => false,      // Show or hide record comments (added in 3.9.0)
         'display_serial_in_zone_list' => false,
+        'display_signed_serial_in_zone_list' => false, // Show serial served by PowerDNS (SOA-EDIT applied); requires API backend (added in 4.5.0)
         'display_template_in_zone_list' => false,
         'display_owner_in_zone_list' => true,      // Show owner column in zone lists (added in 4.5.0)
         'display_group_in_zone_list' => true,      // Show group column in zone lists (added in 4.5.0)

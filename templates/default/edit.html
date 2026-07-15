@@ -864,6 +864,9 @@
                         {% if is_presigned %}
                         <span class="badge bg-info align-middle" title="{% trans %}DNSSEC keys are managed at the primary server{% endtrans %}">{% trans %}Presigned{% endtrans %}</span>
                         {% endif %}
+                        {% if signed_serial is not null %}
+                        <p class="text-muted small mt-2 mb-0" title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}: <code>{{ signed_serial }}</code></p>
+                        {% endif %}
                         {% else %}
                             {% if can_manage_dnssec %}
                             <form method="post" action="" class="d-inline">
