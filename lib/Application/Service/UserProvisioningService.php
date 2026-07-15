@@ -660,7 +660,9 @@ class UserProvisioningService extends LoggingService
     private function findPermissionTemplateByName(string $templateName): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE name = ?");
+            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
+            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
+            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
             $stmt->execute([$templateName]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -1060,7 +1062,9 @@ class UserProvisioningService extends LoggingService
     private function findGroupByName(string $groupName): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE name = ?");
+            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike group.
+            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
+            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE $match");
             $stmt->execute([$groupName]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
