@@ -247,7 +247,8 @@ class GroupsController extends PublicApiController
             }
 
             $details = $this->groupService->getGroupDetails($groupId);
-            $members = $this->membershipService->listGroupMembers($groupId);
+            // Only administrators see the member roster, matching listMembers and the web UI.
+            $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
             // Do not disclose zones outside a zone-scoped key's allowlist (matches
