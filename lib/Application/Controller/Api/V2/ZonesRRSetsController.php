@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -904,29 +904,5 @@ class ZonesRRSetsController extends PublicApiController
             $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
             return null;
         }
-    }
-
-    /**
-     * Strip quotes from single-string TXT records for V2 API responses
-     *
-     * @param string $content The TXT record content from database
-     * @param string $type The record type
-     * @return string The formatted content
-     */
-    private function stripTxtQuotes(string $content, string $type): string
-    {
-        if ($type !== 'TXT') {
-            return $content;
-        }
-
-        $content = trim($content);
-        $isMultiString = strpos($content, '" "') !== false;
-
-        // Only strip quotes for single-string TXT records
-        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
-            return substr($content, 1, -1);
-        }
-
-        return $content;
     }
 }

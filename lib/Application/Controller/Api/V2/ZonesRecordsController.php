@@ -1100,32 +1100,4 @@ class ZonesRecordsController extends PublicApiController
     {
         $this->soaRecordManager->updateSOASerial($zoneId);
     }
-
-    /**
-     * Strip quotes from single-string TXT records for V2 API responses
-     *
-     * V2 API automatically quotes TXT records on creation, but strips quotes when reading
-     * to provide a clean API experience. Multi-string TXT records (e.g., "part1" "part2")
-     * are preserved as-is since they represent long values split across multiple strings.
-     *
-     * @param string $content The TXT record content from database
-     * @param string $type The record type
-     * @return string The formatted content (quotes stripped for single-string TXT records)
-     */
-    private function stripTxtQuotes(string $content, string $type): string
-    {
-        if ($type !== 'TXT') {
-            return $content;
-        }
-
-        $content = trim($content);
-        $isMultiString = strpos($content, '" "') !== false;
-
-        // Only strip quotes for single-string TXT records
-        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
-            return substr($content, 1, -1);
-        }
-
-        return $content;
-    }
 }

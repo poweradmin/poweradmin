@@ -1299,6 +1299,28 @@ test_zone_templates() {
         api_request_v2 "PUT" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${TEST_ZONE_TEMPLATE_RECORD_ID}" "$update_record_data" 200 "Update template record"
     fi
 
+    # Test 7b: TXT template record round-trip returns unquoted content (issue #1373)
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local txt_record_id=""
+        local txt_record_data='{"name": "[ZONE]", "type": "TXT", "content": "\"v=spf1 -all\"", "ttl": 3600, "priority": 0}'
+        if api_request_v2 "POST" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "$txt_record_data" 201 "Add TXT record to zone template"; then
+            txt_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+        fi
+
+        if [[ -n "$txt_record_id" ]]; then
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${txt_record_id}" "" 200 "Get TXT template record"
+            assert_json "TXT template record content is unquoted on get" "$LAST_RESPONSE_BODY" ".data.record.content" "v=spf1 -all"
+
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "" 200 "List records with TXT template record"
+            assert_json "TXT template record content is unquoted on list" "$LAST_RESPONSE_BODY" ".data.records[] | select(.id == ${txt_record_id}) | .content" "v=spf1 -all"
+
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}" "" 200 "Get template details with TXT record"
+            assert_json "TXT template record content is unquoted in template details" "$LAST_RESPONSE_BODY" ".data.template.records[] | select(.id == ${txt_record_id}) | .content" "v=spf1 -all"
+
+            api_request_v2 "DELETE" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${txt_record_id}" "" 200 "Delete TXT template record"
+        fi
+    fi
+
     # Test 8: Update zone template
     if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
         local update_data='{"name": "Updated API Test Template", "description": "Updated via API test"}'

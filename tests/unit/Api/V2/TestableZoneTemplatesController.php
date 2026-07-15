@@ -100,16 +100,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
 
             $records = $this->testRepository->getZoneTemplateRecords($id);
 
-            $formattedRecords = array_map(function (array $record): array {
-                return [
-                    'id' => (int)$record['id'],
-                    'name' => $record['name'],
-                    'type' => $record['type'],
-                    'content' => $record['content'],
-                    'ttl' => (int)$record['ttl'],
-                    'priority' => (int)$record['prio'],
-                ];
-            }, $records);
+            $formattedRecords = array_map([$this, 'formatTemplateRecord'], $records);
 
             return $this->returnApiResponse(['template' => [
                 'id' => (int)$template['id'],

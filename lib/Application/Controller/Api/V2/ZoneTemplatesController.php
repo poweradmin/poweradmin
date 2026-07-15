@@ -221,16 +221,7 @@ class ZoneTemplatesController extends PublicApiController
 
             $records = $this->repository->getZoneTemplateRecords($id);
 
-            $formattedRecords = array_map(function (array $record): array {
-                return [
-                    'id' => (int)$record['id'],
-                    'name' => $record['name'],
-                    'type' => $record['type'],
-                    'content' => $record['content'],
-                    'ttl' => (int)$record['ttl'],
-                    'priority' => (int)$record['prio'],
-                ];
-            }, $records);
+            $formattedRecords = array_map([$this, 'formatTemplateRecord'], $records);
 
             return $this->returnApiResponse(['template' => [
                 'id' => (int)$template['id'],
@@ -243,6 +234,18 @@ class ZoneTemplatesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::getZoneTemplate', 'Failed to fetch zone template');
         }
+    }
+
+    protected function formatTemplateRecord(array $record): array
+    {
+        return [
+            'id' => (int)$record['id'],
+            'name' => $record['name'],
+            'type' => $record['type'],
+            'content' => $this->stripTxtQuotes($record['content'], $record['type']),
+            'ttl' => (int)$record['ttl'],
+            'priority' => (int)$record['prio'],
+        ];
     }
 
     #[OA\Post(

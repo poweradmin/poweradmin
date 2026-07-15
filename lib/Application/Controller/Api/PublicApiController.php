@@ -435,19 +435,6 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Handle exception and return JSON error response
-     *
-     * Catches all throwables (Exception, TypeError, Error, etc.) and returns a proper JSON
-     * error response instead of letting PHP display HTML errors. Logs detailed error
-     * information for debugging.
-     *
-     * @param \Throwable $e The exception/error to handle
-     * @param string $context Context description (e.g., method name)
-     * @param string $userMessage User-friendly error message
-     * @param int $statusCode HTTP status code
-     * @return JsonResponse JSON error response
-     */
-    /**
      * Apply V2 record-content formatting.
      *
      * V2 always quotes single-string TXT records, even when dns.txt_auto_quote is
@@ -467,6 +454,48 @@ abstract class PublicApiController extends AbstractApiController
         return $content;
     }
 
+    /**
+     * Strip quotes from single-string TXT records for V2 API responses
+     *
+     * V2 responses present single-string TXT content unquoted regardless of stored
+     * form (zone records are force-quoted on write, template records only when
+     * dns.txt_auto_quote is on). Multi-string TXT records (e.g., "part1" "part2")
+     * are preserved as-is since they represent long values split across multiple strings.
+     *
+     * @param string $content The TXT record content from database
+     * @param string $type The record type
+     * @return string The formatted content (quotes stripped for single-string TXT records)
+     */
+    protected function stripTxtQuotes(string $content, string $type): string
+    {
+        if ($type !== 'TXT') {
+            return $content;
+        }
+
+        $content = trim($content);
+        $isMultiString = str_contains($content, '" "');
+
+        // Only strip quotes for single-string TXT records
+        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
+            return substr($content, 1, -1);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Handle exception and return JSON error response
+     *
+     * Catches all throwables (Exception, TypeError, Error, etc.) and returns a proper JSON
+     * error response instead of letting PHP display HTML errors. Logs detailed error
+     * information for debugging.
+     *
+     * @param \Throwable $e The exception/error to handle
+     * @param string $context Context description (e.g., method name)
+     * @param string $userMessage User-friendly error message
+     * @param int $statusCode HTTP status code
+     * @return JsonResponse JSON error response
+     */
     protected function handleException(\Throwable $e, string $context, string $userMessage = 'An error occurred', int $statusCode = 500): JsonResponse
     {
         // Log detailed error information for debugging

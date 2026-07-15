@@ -118,7 +118,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             'id' => (int)$record['id'],
             'name' => $record['name'],
             'type' => $record['type'],
-            'content' => $record['content'],
+            'content' => $this->stripTxtQuotes($record['content'], $record['type']),
             'ttl' => (int)$record['ttl'],
             'priority' => (int)($record['prio'] ?? 0),
         ];
