@@ -442,6 +442,23 @@ test_ptr_autocreation() {
 # Test: PTR sync on record update (issue #1255)
 ##############################################################################
 
+# Remove PTR records by name from the shared reverse zone. The reverse zone
+# survives between runs when it wasn't created by this suite, so leftover PTRs
+# from a previous run would make PTR creation fail with "already exists".
+cleanup_stale_ptr_records() {
+    local records
+    records=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zones/${TEST_REVERSE_ZONE_ID}/records" 2>/dev/null)
+
+    local name id
+    for name in "$@"; do
+        for id in $(echo "$records" | jq -r ".data.records[]? | select(.type == \"PTR\" and .name == \"$name\") | .id" 2>/dev/null); do
+            curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+                "${API_BASE_URL}/api/v2/zones/${TEST_REVERSE_ZONE_ID}/records/${id}" >/dev/null 2>&1 || true
+        done
+    done
+}
+
 test_ptr_update() {
     print_section "PTR Update Tests"
 
@@ -449,6 +466,8 @@ test_ptr_update() {
         print_info "Skipping PTR update tests - PTR auto-creation didn't run"
         return 0
     fi
+
+    cleanup_stale_ptr_records "200.2.0.192.in-addr.arpa" "201.2.0.192.in-addr.arpa" "202.2.0.192.in-addr.arpa"
 
     # Seed an A record with PTR so we have something to update.
     local seed='{
@@ -553,6 +572,7 @@ test_ttl_defaults() {
 
     # Create a PTR record on the reverse zone without a ttl field.
     # The server resolves dns.ttl_reverse (when set) or dns.ttl otherwise.
+    cleanup_stale_ptr_records "51.2.0.192.in-addr.arpa"
     local ptr_no_ttl='{
         "name": "51.2.0.192.in-addr.arpa",
         "type": "PTR",
