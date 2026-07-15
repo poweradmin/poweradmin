@@ -3,6 +3,160 @@
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
 
+## 7.14.2 - 2026-07-14
+
+### Security
+
+- Prevent first-class and proxy URL credentials from reaching origins (GHSA-94pj-82f3-465w)
+
+
+## 7.14.1 - 2026-07-13
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.12.5`
+
+### Fixed
+
+- Fail closed when a proxy tunnel isolation cURL option cannot be applied
+- Normalize Stringable proxy credential values before computing connection-reuse section signatures
+- Restore conservative credential redaction for unparseable proxies with multiple `@` separators
+- Redact request URI credentials from the stream handler connection error message
+- Reject enabled response streaming (`stream => true`) on cap-configured stream handlers
+- Distinguish CurlMultiHandler and StreamHandler outcomes in connection-cap custom-handler guidance
+- Reject raw cURL options that conflict with explicit multiplexing guarantees
+- Stop explicit multiplexing conflict checks faulting on non-array cURL multi `options` values
+- Reject required multiplexing when the final `CURLOPT_HTTPAUTH` mask permits NTLM
+- Require an integer `CURLMOPT_PIPELINING` when combined with explicit multiplexing
+- Check the required multiplexing cleartext proxy rule against the final cURL configuration
+- Bound cURL multi handler blocking selects by the earliest pending request delay
+- Stop synchronous cURL multi handler waits blocking on other transfers once the target has settled
+- Stop cURL multi completion processing double-settling promises canceled from completion callbacks
+- Run ready promise queue tasks before sleeping for delayed cURL multi requests
+- Avoid integer overflow in cURL multi delay timing on 32-bit platforms
+- Roll back failed cURL multi handle attachment instead of leaving requests pending
+- Release the cURL easy handle when the `on_stats` callback throws
+- Normalize response trailer field names to lowercase with values in wire order
+- Retain response trailers only when an `on_trailers` callback is configured
+- Validate the `on_trailers` callback before starting a cURL transfer
+- Reject the `on_trailers` request option on the stream handler, which cannot observe trailers
+- Match cookies, proxy schemes, auth types, and header names with locale-independent ASCII folding
+- Reject proxy option values that Guzzle cannot classify identically to ext-curl
+
+
+## 7.14.0 - 2026-07-08
+
+### Added
+
+- Added the `on_trailers` request option to expose parsed HTTP response trailers
+- Added the `multiplex` request option with `Multiplexing::*` modes to control or require HTTP/2 multiplexing
+- Added rejection of explicit `multiplex` requests when `CURLMOPT_PIPELINING` disables multiplexing
+- Added the `max_host_connections` and `max_total_connections` client and cURL multi handler options
+
+### Changed
+
+- Redirects that discard the request body no longer require it to be rewindable
+- Synchronous cURL multi handler requests no longer wait for other queued transfers
+- Section SOCKS proxy connections by credentials on libcurl before 7.69.0
+- Reject request-level `CURLOPT_SHARE` when combined with authenticated SOCKS proxy configuration
+- Redact proxy userinfo containing raw control bytes in cURL errors
+- Check linked curl/libcurl NTLM support before applying NTLM auth
+- Clarify that NTLM is deprecated by both Guzzle and curl/libcurl
+- Remove deprecation for the raw cURL `CURLOPT_CERTINFO` option
+- Warn when a cURL multi option cannot be applied
+
+### Deprecated
+
+- Deprecate the raw `CURLOPT_PIPEWAIT` cURL option in favour of the `multiplex` request option
+- Deprecate unknown handler constructor options
+- Deprecate invalid `select_timeout` cURL multi handler option values
+- Deprecate raw cURL multi connection cap options in favour of the named options
+
+
+## 7.13.3 - 2026-07-08
+
+### Changed
+
+- Adjusted `guzzlehttp/promises` version constraint to `^2.5.1`
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.12.4`
+- Pass explicit trim characters ahead of the PHP 8.6 trim default change
+
+### Fixed
+
+- Stop matching cookie domains against hosts with a trailing newline
+- Reject HTTP status codes and certificate type extensions with a trailing newline
+- Treat PCRE engine failures as invalid cookie names during cookie validation
+- Report PCRE engine failures when formatting log messages
+- Report PCRE engine failures when splitting `no_proxy` values
+
+
+## 7.13.2 - 2026-07-05
+
+### Fixed
+
+- Stop the cURL multi handler busy-waiting on request delays shorter than one second
+- Stop cURL HEAD requests with request bodies hanging on responses that declare a content length
+- The cURL handler no longer transmits request bodies on HEAD requests
+- Preserve response headers when a response includes HTTP trailers
+- Harden cURL response header block detection when HTTP trailers are received
+- Corrected the PSR-7 class names in the Pool iterator exception
+- Redirect body rewind failures no longer leak a bare `RuntimeException`
+
+
+## 7.13.1 - 2026-06-29
+
+### Fixed
+
+- Allow middleware to rewrite partial URIs before transports validate them
+
+
+## 7.13.0 - 2026-06-29
+
+### Added
+
+- Added the `crypto_method_max` request option to cap the maximum TLS protocol version
+- Added HTTP QUERY redirect support, preserving method and body on 301 and 302
+
+### Changed
+
+- Section proxy tunnel connection reuse by credential so distinct credentials never share a tunnel
+- Isolate concurrent foreign cURL proxy tunnels added while another owner's tunnel is active
+- Route credentialed HTTP(S) proxy Proxy-Authorization headers through cURL proxy header handling
+- Reject request-level `CURLOPT_SHARE` when combined with authenticated HTTP/HTTPS proxy tunnel configuration
+- Remove deprecation for raw cURL `CURLOPT_PREREQFUNCTION` callbacks when defined by PHP cURL
+- Route TLS 1.2 `crypto_method` requests to the stream handler when cURL cannot select TLS 1.2
+- Reject final request URIs missing a scheme or host before transfer
+
+### Deprecated
+
+- Deprecate invalid protocols, force_ip_resolve, delay, cookies, and allow_redirects values
+
+
+## 7.12.3 - 2026-06-23
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.12.3`
+
+### Security
+
+- Treat IP and numeric cookie domains as exact-match-only (GHSA-g446-98w2-8p5w)
+
+
+## 7.12.2 - 2026-06-23
+
+### Fixed
+
+- Clamp out-of-range `Max-Age` so a very large value no longer overflows to an already-expired timestamp
+- Use strict comparison in `CookieJar` conflict resolution so distinct numeric-string names don't overwrite
+- Store a cookie whose `Domain` has a trailing dot on the origin host instead of silently discarding it
+- Fix `StreamHandler` hard-failing on bracketed IPv6 literal hosts when `force_ip_resolve` is set
+- Use strict cookie `Path` comparison so `CookieJar::clear()` with a numeric path keeps a distinct-path cookie
+- Fixed cookie handling for falsey `Domain`, `Max-Age`, path, and name values
+- Fixed `decode_content` handling for falsey string values
+- Fixed deprecated request option values reaching built-in handlers before normalization
+
+
 ## 7.12.1 - 2026-06-18
 
 ### Changed
