@@ -73,12 +73,14 @@ class PasswordEncryptionServiceTest extends TestCase
         $this->assertSame('', $this->service->decrypt('AAAAAAAAAAAAAAAAAAAAAA==:' . $iv));
     }
 
-    public function testDecryptWithWrongKeyReturnsEmpty(): void
+    public function testDecryptWithWrongKeyNeverRecoversPlaintext(): void
     {
         $encrypted = $this->service->encrypt('secret-value-123');
         $otherService = new PasswordEncryptionService('a-different-key');
 
-        $this->assertSame('', $otherService->decrypt($encrypted));
+        // Unauthenticated CBC cannot reject a wrong key reliably: about 1 in 256
+        // attempts hits valid padding by chance and yields garbage instead of ''
+        $this->assertNotSame('secret-value-123', $otherService->decrypt($encrypted));
     }
 
     public function testEncryptEmptyStringReturnsEmpty(): void
