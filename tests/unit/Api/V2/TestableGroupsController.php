@@ -23,21 +23,15 @@
 namespace Poweradmin\Tests\Unit\Api\V2;
 
 use Poweradmin\Application\Controller\Api\V2\GroupsController;
-use Poweradmin\Domain\Model\ApiKeyScope;
 
 /**
  * Drives the real GroupsController::getGroup() with injected mocks. The parent
- * constructor (DB + service wiring) is skipped and the API-key scope is stubbed
- * to allow every zone so the test exercises the genuine roster-gating logic.
+ * constructor (DB + service wiring) is skipped so the test exercises the genuine
+ * roster-gating logic with mocked services set via reflection.
  */
 class TestableGroupsController extends GroupsController
 {
     public function __construct()
     {
-    }
-
-    protected function getApiKeyScope(): ApiKeyScope
-    {
-        return ApiKeyScope::unrestricted();
     }
 }
