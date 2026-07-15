@@ -369,14 +369,37 @@ final class DbCompat
      * need an explicit binary collation. PostgreSQL and SQLite compare strings
      * byte-exact by default and need no clause.
      *
-     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
      * @return string The collation clause, or an empty string when not needed.
      */
-    public static function binaryCollation(string $db_type): string
+    public static function binaryCollation(?string $db_type): string
     {
         return match ($db_type) {
             'mysql', 'mysqli' => ' COLLATE utf8mb4_bin',
             default => '',
+        };
+    }
+
+    /**
+     * Builds an equality predicate for an identity value (username, email, an
+     * SSO-mapped group/template name) that must match case-insensitively yet
+     * accent-exact. MySQL/MariaDB fold accents in their default collation, so
+     * case is folded explicitly and the result compared byte-for-byte. The column
+     * is converted to utf8mb4 first so the binary collation is valid even on older
+     * installs whose columns are still latin1 or utf8mb3. PostgreSQL and SQLite
+     * already compare byte-exact, so their existing comparison is left unchanged -
+     * the fix is a no-op there because they were never affected.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string $column The column reference to compare
+     * @param string $placeholder The bound-parameter placeholder (e.g. "?" or ":name")
+     * @return string The WHERE-clause predicate
+     */
+    public static function accentSensitiveEquals(?string $db_type, string $column, string $placeholder = '?'): string
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli' => "LOWER(CONVERT($column USING utf8mb4)) COLLATE utf8mb4_bin = LOWER($placeholder)",
+            default => "$column = $placeholder",
         };
     }
 }

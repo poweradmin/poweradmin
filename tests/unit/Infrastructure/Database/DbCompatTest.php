@@ -242,5 +242,26 @@ class DbCompatTest extends TestCase
         // PostgreSQL and SQLite compare strings byte-exact already, so no clause.
         $this->assertSame('', DbCompat::binaryCollation('pgsql'));
         $this->assertSame('', DbCompat::binaryCollation('sqlite'));
+        $this->assertSame('', DbCompat::binaryCollation(null));
+    }
+
+    public function testAccentSensitiveEqualsMySQLFoldsCaseAndForcesBinary(): void
+    {
+        $this->assertSame(
+            'LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(?)',
+            DbCompat::accentSensitiveEquals('mysql', 'email')
+        );
+        $this->assertSame(
+            'LOWER(CONVERT(username USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:username)',
+            DbCompat::accentSensitiveEquals('mysqli', 'username', ':username')
+        );
+    }
+
+    public function testAccentSensitiveEqualsLeavesByteExactBackendsUnchanged(): void
+    {
+        // PostgreSQL and SQLite are byte-exact already; keep their existing comparison.
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('pgsql', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('sqlite', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals(null, 'email'));
     }
 }
