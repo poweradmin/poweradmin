@@ -17,6 +17,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
 /**
@@ -46,7 +47,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
     {
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('updateZoneType')->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql');
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
 
         $this->assertTrue($repo->updateZone(1, ['type' => 'MASTER']));
         $this->assertSame('MASTER', $this->zoneType());
@@ -56,7 +57,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
     {
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('updateZoneType')->willReturn(false);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql');
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER']));
         // The API rejected the change, so local state must stay as it was.
@@ -70,7 +71,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('updateZoneType')->willReturn(false);
         $backend->expects($this->never())->method('updateZoneMaster');
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql');
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER', 'master' => '192.0.2.1']));
         $this->assertSame('', (string) $this->db->query("SELECT zone_master FROM zones WHERE id = 1")->fetchColumn());

@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -897,7 +898,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->rowCount() > 0;
+        $added = $stmt->rowCount() > 0;
+        if ($added) {
+            $this->syncZoneAccount($zoneId);
+        }
+        return $added;
     }
 
     /**
@@ -916,7 +921,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->rowCount() > 0;
+        $removed = $stmt->rowCount() > 0;
+        if ($removed) {
+            $this->syncZoneAccount($zoneId);
+        }
+        return $removed;
     }
 
     /**
@@ -1299,5 +1308,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
+    }
+
+    private function syncZoneAccount(int $domainId): void
+    {
+        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $accountSync->syncZoneAccount($domainId);
     }
 }

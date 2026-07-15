@@ -27,6 +27,8 @@ use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
@@ -34,7 +36,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
     public function __construct(
         private readonly PDO $db,
         private readonly DnsBackendProvider $backendProvider,
-        private readonly string $dbType
+        private readonly string $dbType,
+        private readonly ConfigurationInterface $config
     ) {
     }
 
@@ -651,15 +654,22 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return false;
         }
+        $cid = (int)$canonical['id'];
+
         $stmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id)
              VALUES (:domain_id, :owner, :zone_templ_id)"
         );
-        $stmt->bindValue(':domain_id', (int)$canonical['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->rowCount() > 0;
+
+        $added = $stmt->rowCount() > 0;
+        if ($added) {
+            $this->syncZoneAccount($cid);
+        }
+        return $added;
     }
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
@@ -678,8 +688,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
-
         if ($stmt->rowCount() > 0) {
+            $this->syncZoneAccount($cid);
             return true;
         }
 
@@ -690,7 +700,12 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->rowCount() > 0;
+
+        $removed = $stmt->rowCount() > 0;
+        if ($removed) {
+            $this->syncZoneAccount($cid);
+        }
+        return $removed;
     }
 
     public function isUserZoneOwner(int $zoneId, int $userId): bool
@@ -958,5 +973,35 @@ class ApiZoneRepository implements ZoneRepositoryInterface
     {
         // TODO: Implement via PowerDNS API metadata endpoints
         return false;
+    }
+
+    private function syncZoneAccount(int $cid): void
+    {
+        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        if (!$accountSync->isEnabled()) {
+            return;
+        }
+        $accountSync->pushZoneAccount($cid, $this->getOldestOwnerUsername($cid));
+    }
+
+    /**
+     * Oldest owner across the canonical zone row and extra ownership rows
+     */
+    private function getOldestOwnerUsername(int $cid): ?string
+    {
+        $stmt = $this->db->prepare(
+            "SELECT u.username
+             FROM zones z
+             INNER JOIN users u ON z.owner = u.id
+             WHERE z.id = :cid
+                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)
+             ORDER BY z.id
+             LIMIT 1"
+        );
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->execute();
+        $username = $stmt->fetchColumn();
+        return $username === false ? null : (string)$username;
     }
 }

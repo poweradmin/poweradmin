@@ -82,7 +82,7 @@ class RepositoryFactory
     {
         if ($this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type');
-            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType);
+            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config);
         }
         return new DbZoneRepository($this->db, $this->config, $this->backendProvider);
     }

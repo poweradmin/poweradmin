@@ -33,6 +33,7 @@ use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -201,6 +202,12 @@ class DomainManager implements DomainManagerInterface
 
                         // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
                         $zone_id = $db->lastInsertId('zones_id_seq');
+                    }
+
+                    // Ownerless zones keep their default empty account; no push needed on create
+                    if ($owner !== null) {
+                        $accountSync = new ZoneAccountSyncService($db, $this->config, $this->backendProvider);
+                        $accountSync->syncZoneAccount($domain_id);
                     }
 
                     // Create sync tracking record if using a template
@@ -745,6 +752,8 @@ class DomainManager implements DomainManagerInterface
                     }
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(?, ?, ?)");
                     $stmt->execute([$zone_id, $user_id, $zone_templ_id]);
+
+                    self::syncZoneAccountStatic($db, $zone_id);
                     return true;
                 } else {
                     $messageService = new MessageService();
@@ -778,6 +787,8 @@ class DomainManager implements DomainManagerInterface
                 if ($stmt->fetchColumn() > 1) {
                     $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
                     $stmt->execute([$user_id, $zone_id]);
+
+                    self::syncZoneAccountStatic($db, $zone_id);
                     return true;
                 } else {
                     $messageService = new MessageService();
@@ -1173,5 +1184,17 @@ class DomainManager implements DomainManagerInterface
     private static function isIpv4ReverseZone(string $domain): bool
     {
         return stripos($domain, 'in-addr.arpa') !== false;
+    }
+
+    /** Account sync entry point for the static owner-management methods */
+    private static function syncZoneAccountStatic(PDO $db, int $domainId): void
+    {
+        $config = ConfigurationManager::getInstance();
+        if (!$config->get('dns', 'sync_zone_owner_to_account', false)) {
+            return;
+        }
+        $backendProvider = DnsBackendProviderFactory::create($db, $config);
+        $accountSync = new ZoneAccountSyncService($db, $config, $backendProvider);
+        $accountSync->syncZoneAccount($domainId);
     }
 }
