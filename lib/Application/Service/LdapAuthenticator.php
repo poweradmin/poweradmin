@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -50,6 +51,9 @@ class LdapAuthenticator extends LoggingService
     private UserContextService $userContextService;
     private array $serverParams;
     private ?MfaService $mfaService = null;
+
+    /** Database driver name, used to build the LDAP username-match predicate. */
+    private string $dbType = '';
 
     public function __construct(
         PDO $connection,
@@ -73,6 +77,7 @@ class LdapAuthenticator extends LoggingService
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
         $this->serverParams = $serverParams ?: $_SERVER;
+        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         // Initialize MFA service
         $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
@@ -250,7 +255,9 @@ class LdapAuthenticator extends LoggingService
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
         $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
 
-        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
@@ -475,7 +482,8 @@ class LdapAuthenticator extends LoggingService
      */
     private function validateUserActiveStatus(string $username): bool
     {
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute(['username' => $username]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 

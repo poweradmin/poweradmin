@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbUserRepository implements UserRepository
 {
@@ -56,7 +57,9 @@ class DbUserRepository implements UserRepository
 
     public function findByUsername(string $username): ?User
     {
-        $stmt = $this->db->prepare('SELECT id, password, use_ldap FROM users WHERE username = ?');
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username');
+        $stmt = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE $match");
         $stmt->execute([$username]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -45,6 +45,7 @@ class DbUserRepositoryTest extends TestCase
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
+        $this->db->method('getAttribute')->willReturn('mysql');
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbUserRepository($this->db, $this->config);
     }
