@@ -614,19 +614,41 @@ class ZoneTemplate
     }
 
     /**
+     * Confirm a template record actually lives in the given template.
+     *
+     * @param int $rid template record id
+     * @param int $zone_templ_id template the caller is authorized to edit
+     *
+     * @return boolean true when the record belongs to the template
+     */
+    private function recordBelongsToTemplate(int $rid, int $zone_templ_id): bool
+    {
+        $record = self::getZoneTemplRecordFromId($this->db, $rid);
+
+        return !empty($record) && (int)$record['zone_templ_id'] === $zone_templ_id;
+    }
+
+    /**
      * Modify zone template record
      *
      * Edit a record for a zone template.
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record zone record array
+     * @param int $zone_templ_id template the caller is authorized to edit
      *
      * @return boolean true on success, false otherwise
      */
-    public function editZoneTemplRecord(array $record): bool
+    public function editZoneTemplRecord(array $record, int $zone_templ_id): bool
     {
         if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+            return false;
+        }
+
+        // Reject a record id that lives in another template, even when the caller owns this one.
+        if (!$this->recordBelongsToTemplate((int)($record['rid'] ?? 0), $zone_templ_id)) {
+            $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
             return false;
         }
 
@@ -675,23 +697,30 @@ class ZoneTemplate
      * Delete a record for a zone template by a given id
      *
      * @param int $rid template record id
+     * @param int $zone_templ_id template the caller is authorized to edit
      *
      * @return boolean true on success, false otherwise
      */
-    public function deleteZoneTemplRecord(int $rid): bool
+    public function deleteZoneTemplRecord(int $rid, int $zone_templ_id): bool
     {
         if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
-        } else {
-            try {
-                $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE id = :id");
-                $stmt->execute([':id' => $rid]);
-                return true;
-            } catch (Exception $e) {
-                $this->messageService->addSystemError(_('Error deleting zone template record: ') . $e->getMessage());
-                return false;
-            }
+        }
+
+        // Reject a record id that lives in another template, even when the caller owns this one.
+        if (!$this->recordBelongsToTemplate($rid, $zone_templ_id)) {
+            $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
+            return false;
+        }
+
+        try {
+            $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE id = :id");
+            $stmt->execute([':id' => $rid]);
+            return true;
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error deleting zone template record: ') . $e->getMessage());
+            return false;
         }
     }
 
