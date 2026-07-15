@@ -20,10 +20,20 @@ use Psr\Clock\ClockInterface;
 
 /**
  * PSR-20 Clock implementation.
+ *
+ * Provides a PSR-20 compatible clock that returns Chronos instances.
+ * Useful for dependency injection and testing scenarios where you need
+ * to control the current time.
+ *
+ * Example:
+ * ```
+ * $clock = new ClockFactory('UTC');
+ * $now = $clock->now(); // Returns Chronos instance
+ * ```
  */
 class ClockFactory implements ClockInterface
 {
-    private DateTimeZone|string|null $timezone;
+    private readonly DateTimeZone|string|null $timezone;
 
     /**
      * Constructor.
@@ -36,9 +46,12 @@ class ClockFactory implements ClockInterface
     }
 
     /**
-     * Returns the current time object.
+     * Returns the current time as a Chronos instance.
      *
-     * @return \Cake\Chronos\Chronos The current time
+     * The return type is DateTimeImmutable for PSR-20 compatibility,
+     * but the actual returned instance is always Chronos.
+     *
+     * @return \Cake\Chronos\Chronos
      */
     public function now(): DateTimeImmutable
     {

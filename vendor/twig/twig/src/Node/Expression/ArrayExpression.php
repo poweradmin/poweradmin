@@ -12,11 +12,12 @@
 namespace Twig\Node\Expression;
 
 use Twig\Compiler;
+use Twig\Error\SyntaxError;
+use Twig\Node\CoercesChildrenToStringInterface;
 use Twig\Node\Expression\Unary\SpreadUnary;
 use Twig\Node\Expression\Unary\StringCastUnary;
-use Twig\Node\Expression\Variable\ContextVariable;
 
-class ArrayExpression extends AbstractExpression implements SupportDefinedTestInterface, ReturnArrayInterface
+class ArrayExpression extends AbstractExpression implements SupportDefinedTestInterface, ReturnArrayInterface, CoercesChildrenToStringInterface
 {
     use SupportDefinedTestTrait;
 
@@ -60,6 +61,31 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
         return false;
     }
 
+    /**
+     * Checks if the array is a sequence (keys are sequential integers starting from 0).
+     *
+     * @internal
+     */
+    public function isSequence(): bool
+    {
+        foreach ($this->getKeyValuePairs() as $i => $pair) {
+            $key = $pair['key'];
+            if ($key instanceof TempNameExpression) {
+                $keyValue = $key->getAttribute('name');
+            } elseif ($key instanceof ConstantExpression) {
+                $keyValue = $key->getAttribute('value');
+            } else {
+                return false;
+            }
+
+            if ($keyValue !== $i) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function addElement(AbstractExpression $value, ?AbstractExpression $key = null): void
     {
         if (null === $key) {
@@ -67,6 +93,24 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
         }
 
         array_push($this->nodes, $key, $value);
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // dynamic mapping keys (computed at runtime) are coerced to string;
+        // static keys (constants or sequence indexes) are emitted as PHP
+        // literals by compile() and never trigger a __toString() call
+        $names = [];
+        foreach (array_chunk($this->nodes, 2) as $i => $pair) {
+            $key = $pair[0];
+            if ($key instanceof ConstantExpression || $key instanceof TempNameExpression) {
+                continue;
+            }
+
+            $names[] = (string) ($i * 2);
+        }
+
+        return $names;
     }
 
     public function compile(Compiler $compiler): void
@@ -77,6 +121,13 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
             return;
         }
 
+        // Check for empty expressions which are only allowed in destructuring
+        foreach ($this->getKeyValuePairs() as $pair) {
+            if ($pair['value'] instanceof EmptyExpression) {
+                throw new SyntaxError('Empty array elements are only allowed in destructuring assignments.', $pair['value']->getTemplateLine(), $this->getSourceContext());
+            }
+        }
+
         $compiler->raw('[');
         $isSequence = true;
         foreach ($this->getKeyValuePairs() as $i => $pair) {
@@ -85,13 +136,15 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
             }
 
             $key = null;
-            if ($pair['key'] instanceof ContextVariable) {
-                $pair['key'] = new StringCastUnary($pair['key'], $pair['key']->getTemplateLine());
-            } elseif ($pair['key'] instanceof TempNameExpression) {
+            if ($pair['key'] instanceof TempNameExpression) {
                 $key = $pair['key']->getAttribute('name');
                 $pair['key'] = new ConstantExpression($key, $pair['key']->getTemplateLine());
             } elseif ($pair['key'] instanceof ConstantExpression) {
                 $key = $pair['key']->getAttribute('value');
+            } else {
+                // dynamic key: cast to string so PHP accepts it as an array offset
+                // (the sandbox visitor has already wrapped it with a __toString policy check)
+                $pair['key'] = new StringCastUnary($pair['key'], $pair['key']->getTemplateLine());
             }
 
             if ($key !== $i) {

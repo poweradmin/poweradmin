@@ -57,15 +57,11 @@ class ChronosDate implements Stringable
 
     /**
      * Format to use for __toString method when type juggling occurs.
-     *
-     * @var string
      */
     protected static string $toStringFormat = self::DEFAULT_TO_STRING_FORMAT;
 
     /**
      * Names of days of the week.
-     *
-     * @var array
      */
     protected static array $days = [
         Chronos::MONDAY => 'Monday',
@@ -79,21 +75,14 @@ class ChronosDate implements Stringable
 
     /**
      * Instance of the diff formatting object.
-     *
-     * @var \Cake\Chronos\DifferenceFormatterInterface|null
      */
     protected static ?DifferenceFormatterInterface $diffFormatter = null;
 
     /**
      * Errors from last time createFromFormat() was called.
-     *
-     * @var array|false
      */
     protected static array|false $lastErrors = false;
 
-    /**
-     * @var \DateTimeImmutable
-     */
     protected DateTimeImmutable $native;
 
     /**
@@ -137,7 +126,7 @@ class ChronosDate implements Stringable
         $timezone = $timezone instanceof DateTimeZone ? $timezone : new DateTimeZone($timezone);
 
         $testNow = Chronos::getTestNow();
-        if ($testNow === null) {
+        if (!$testNow instanceof Chronos) {
             $time = new DateTimeImmutable($time, $timezone);
 
             return new DateTimeImmutable($time->format('Y-m-d 00:00:00'));
@@ -290,8 +279,8 @@ class ChronosDate implements Stringable
      */
     public static function diffFormatter(?DifferenceFormatterInterface $formatter = null): DifferenceFormatterInterface
     {
-        if ($formatter === null) {
-            if (static::$diffFormatter === null) {
+        if (!$formatter instanceof DifferenceFormatterInterface) {
+            if (!static::$diffFormatter instanceof DifferenceFormatterInterface) {
                 static::$diffFormatter = new DifferenceFormatter();
             }
 
@@ -624,7 +613,7 @@ class ChronosDate implements Stringable
      */
     public function addDays(int $value): static
     {
-        return $this->modify("$value days");
+        return $this->modify($value . ' days');
     }
 
     /**
@@ -670,7 +659,7 @@ class ChronosDate implements Stringable
      */
     public function addWeeks(int $value): static
     {
-        return $this->modify("$value week");
+        return $this->modify($value . ' week');
     }
 
     /**
@@ -733,7 +722,7 @@ class ChronosDate implements Stringable
     {
         $year = $this->year - $this->year % Chronos::YEARS_PER_DECADE;
 
-        return $this->modify("first day of january $year");
+        return $this->modify('first day of january ' . $year);
     }
 
     /**
@@ -745,7 +734,7 @@ class ChronosDate implements Stringable
     {
         $year = $this->year - $this->year % Chronos::YEARS_PER_DECADE + Chronos::YEARS_PER_DECADE - 1;
 
-        return $this->modify("last day of december $year");
+        return $this->modify('last day of december ' . $year);
     }
 
     /**
@@ -759,7 +748,7 @@ class ChronosDate implements Stringable
             ->year($this->year - 1 - ($this->year - 1) % Chronos::YEARS_PER_CENTURY + 1)
             ->year;
 
-        return $this->modify("first day of january $year");
+        return $this->modify('first day of january ' . $year);
     }
 
     /**
@@ -778,7 +767,7 @@ class ChronosDate implements Stringable
             ->year($y)
             ->year;
 
-        return $this->modify("last day of december $year");
+        return $this->modify('last day of december ' . $year);
     }
 
     /**
@@ -790,7 +779,7 @@ class ChronosDate implements Stringable
     {
         $dateTime = $this;
         if ($dateTime->dayOfWeek !== Chronos::getWeekStartsAt()) {
-            $dateTime = $dateTime->previous(Chronos::getWeekStartsAt());
+            return $dateTime->previous(Chronos::getWeekStartsAt());
         }
 
         return $dateTime;
@@ -805,7 +794,7 @@ class ChronosDate implements Stringable
     {
         $dateTime = $this;
         if ($dateTime->dayOfWeek !== Chronos::getWeekEndsAt()) {
-            $dateTime = $dateTime->next(Chronos::getWeekEndsAt());
+            return $dateTime->next(Chronos::getWeekEndsAt());
         }
 
         return $dateTime;
@@ -817,7 +806,8 @@ class ChronosDate implements Stringable
      * of the current day of the week.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function next(?int $dayOfWeek = null): static
@@ -828,7 +818,7 @@ class ChronosDate implements Stringable
 
         $day = static::$days[$dayOfWeek];
 
-        return $this->modify("next $day");
+        return $this->modify('next ' . $day);
     }
 
     /**
@@ -837,7 +827,8 @@ class ChronosDate implements Stringable
      * of the current day of the week.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function previous(?int $dayOfWeek = null): static
@@ -848,7 +839,7 @@ class ChronosDate implements Stringable
 
         $day = static::$days[$dayOfWeek];
 
-        return $this->modify("last $day");
+        return $this->modify('last ' . $day);
     }
 
     /**
@@ -857,14 +848,15 @@ class ChronosDate implements Stringable
      * first day of the current month.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function firstOfMonth(?int $dayOfWeek = null): static
     {
         $day = $dayOfWeek === null ? 'day' : static::$days[$dayOfWeek];
 
-        return $this->modify("first $day of this month");
+        return $this->modify(sprintf('first %s of this month', $day));
     }
 
     /**
@@ -873,31 +865,40 @@ class ChronosDate implements Stringable
      * last day of the current month.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function lastOfMonth(?int $dayOfWeek = null): static
     {
         $day = $dayOfWeek === null ? 'day' : static::$days[$dayOfWeek];
 
-        return $this->modify("last $day of this month");
+        return $this->modify(sprintf('last %s of this month', $day));
     }
 
     /**
-     * Modify to the given occurrence of a given day of the week
-     * in the current month. If the calculated occurrence is outside the scope
-     * of the current month, then return false and no modifications are made.
-     * Use the supplied consts to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
+     * Get the nth occurrence of a day of the week in the current month.
      *
-     * @param int $nth The offset to use.
-     * @param int $dayOfWeek The day of the week to move to.
-     * @return static|false
+     * Returns false if the requested occurrence doesn't exist in the month.
+     * For example, requesting the 5th Monday will return false for months
+     * that only have 4 Mondays.
+     *
+     * Example:
+     * ```
+     * $date = new ChronosDate('2024-01-15');
+     * $date->nthOfMonth(2, Chronos::TUESDAY); // 2nd Tuesday of January
+     * $date->nthOfMonth(5, Chronos::MONDAY);  // false if no 5th Monday
+     * ```
+     *
+     * @param int $nth The occurrence number (1 = first, 2 = second, etc.).
+     * @param int $dayOfWeek The day of the week (use Chronos::MONDAY, etc.).
+     * @return static|false The date of the nth occurrence, or false if it doesn't exist.
      */
     public function nthOfMonth(int $nth, int $dayOfWeek): static|false
     {
         $dateTime = $this->firstOfMonth();
         $check = $dateTime->format('Y-m');
-        $dateTime = $dateTime->modify("+$nth " . static::$days[$dayOfWeek]);
+        $dateTime = $dateTime->modify(sprintf('+%d ', $nth) . static::$days[$dayOfWeek]);
 
         return $dateTime->format('Y-m') === $check ? $dateTime : false;
     }
@@ -908,7 +909,8 @@ class ChronosDate implements Stringable
      * first day of the current quarter.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function firstOfQuarter(?int $dayOfWeek = null): static
@@ -925,7 +927,8 @@ class ChronosDate implements Stringable
      * last day of the current quarter.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function lastOfQuarter(?int $dayOfWeek = null): static
@@ -937,21 +940,27 @@ class ChronosDate implements Stringable
     }
 
     /**
-     * Modify to the given occurrence of a given day of the week
-     * in the current quarter. If the calculated occurrence is outside the scope
-     * of the current quarter, then return false and no modifications are made.
-     * Use the supplied consts to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
+     * Get the nth occurrence of a day of the week in the current quarter.
      *
-     * @param int $nth The offset to use.
-     * @param int $dayOfWeek The day of the week to move to.
-     * @return static|false
+     * Returns false if the requested occurrence doesn't exist in the quarter.
+     * Quarters are: Q1 (Jan-Mar), Q2 (Apr-Jun), Q3 (Jul-Sep), Q4 (Oct-Dec).
+     *
+     * Example:
+     * ```
+     * $date = new ChronosDate('2024-02-15'); // Q1
+     * $date->nthOfQuarter(5, Chronos::FRIDAY); // 5th Friday of Q1
+     * ```
+     *
+     * @param int $nth The occurrence number (1 = first, 2 = second, etc.).
+     * @param int $dayOfWeek The day of the week (use Chronos::MONDAY, etc.).
+     * @return static|false The date of the nth occurrence, or false if it doesn't exist.
      */
     public function nthOfQuarter(int $nth, int $dayOfWeek): static|false
     {
         $dateTime = $this->day(1)->month($this->quarter * Chronos::MONTHS_PER_QUARTER);
         $lastMonth = $dateTime->month;
         $year = $dateTime->year;
-        $dateTime = $dateTime->firstOfQuarter()->modify("+$nth" . static::$days[$dayOfWeek]);
+        $dateTime = $dateTime->firstOfQuarter()->modify('+' . $nth . static::$days[$dayOfWeek]);
 
         return $lastMonth < $dateTime->month || $year !== $dateTime->year ? false : $dateTime;
     }
@@ -962,14 +971,15 @@ class ChronosDate implements Stringable
      * first day of the current year.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function firstOfYear(?int $dayOfWeek = null): static
     {
         $day = $dayOfWeek === null ? 'day' : static::$days[$dayOfWeek];
 
-        return $this->modify("first $day of january");
+        return $this->modify(sprintf('first %s of january', $day));
     }
 
     /**
@@ -978,29 +988,37 @@ class ChronosDate implements Stringable
      * last day of the current year.  Use the supplied consts
      * to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
      *
-     * @param int|null $dayOfWeek The day of the week to move to.
+     * @param int|null $dayOfWeek The day of the week (use Chronos::MONDAY through
+     *   Chronos::SUNDAY), or null for a sensible default.
      * @return static
      */
     public function lastOfYear(?int $dayOfWeek = null): static
     {
         $day = $dayOfWeek === null ? 'day' : static::$days[$dayOfWeek];
 
-        return $this->modify("last $day of december");
+        return $this->modify(sprintf('last %s of december', $day));
     }
 
     /**
-     * Modify to the given occurrence of a given day of the week
-     * in the current year. If the calculated occurrence is outside the scope
-     * of the current year, then return false and no modifications are made.
-     * Use the supplied consts to indicate the desired dayOfWeek, ex. Chronos::MONDAY.
+     * Get the nth occurrence of a day of the week in the current year.
      *
-     * @param int $nth The offset to use.
-     * @param int $dayOfWeek The day of the week to move to.
-     * @return static|false
+     * Returns false if the requested occurrence doesn't exist in the year
+     * (e.g., requesting the 53rd Monday in a year with only 52).
+     *
+     * Example:
+     * ```
+     * $date = new ChronosDate('2024-06-15');
+     * $date->nthOfYear(1, Chronos::MONDAY);  // First Monday of the year
+     * $date->nthOfYear(52, Chronos::FRIDAY); // 52nd Friday of the year
+     * ```
+     *
+     * @param int $nth The occurrence number (1 = first, 2 = second, etc.).
+     * @param int $dayOfWeek The day of the week (use Chronos::MONDAY, etc.).
+     * @return static|false The date of the nth occurrence, or false if it doesn't exist.
      */
     public function nthOfYear(int $nth, int $dayOfWeek): static|false
     {
-        $dateTime = $this->firstOfYear()->modify("+$nth " . static::$days[$dayOfWeek]);
+        $dateTime = $this->firstOfYear()->modify(sprintf('+%d ', $nth) . static::$days[$dayOfWeek]);
 
         return $this->year === $dateTime->year ? $dateTime : false;
     }
@@ -1412,14 +1430,31 @@ class ChronosDate implements Stringable
     }
 
     /**
-     * Get the difference by the given interval using a filter callable
+     * Get the difference by the given interval using a filter callback.
      *
-     * @param \DateInterval $interval An interval to traverse by
-     * @param callable $callback The callback to use for filtering.
-     * @param \Cake\Chronos\ChronosDate|null $other The instance to difference from.
-     * @param bool $absolute Get the absolute of the difference
+     * Iterates through the date range at the given interval and counts
+     * how many times the callback returns true.
+     *
+     * Example:
+     * ```
+     * // Count weekdays between two dates
+     * $start = new ChronosDate('2024-01-01');
+     * $end = new ChronosDate('2024-01-31');
+     * $weekdays = $start->diffFiltered(
+     *     new DateInterval('P1D'),
+     *     fn($date) => !$date->isWeekend(),
+     *     $end
+     * );
+     * ```
+     *
+     * @param \DateInterval $interval An interval to traverse by (e.g., P1D for daily).
+     * @param callable $callback Filter function that receives each date in the range.
+     *   Should return true to count the date, false to skip it.
+     *   Signature: `function(ChronosDate $date): bool`
+     * @param \Cake\Chronos\ChronosDate|null $other The end date. Defaults to today.
+     * @param bool $absolute Get the absolute of the difference.
      * @param int $options DatePeriod options, {@see https://www.php.net/manual/en/class.dateperiod.php}
-     * @return int
+     * @return int The count of intervals where the callback returned true.
      */
     public function diffFiltered(
         DateInterval $interval,
@@ -1534,7 +1569,7 @@ class ChronosDate implements Stringable
      */
     public function diffInWeekdays(?ChronosDate $other = null, bool $absolute = true, int $options = 0): int
     {
-        return $this->diffInDaysFiltered(function (ChronosDate $date) {
+        return $this->diffInDaysFiltered(function (ChronosDate $date): bool {
             return $date->isWeekday();
         }, $other, $absolute, $options);
     }
@@ -1549,7 +1584,7 @@ class ChronosDate implements Stringable
      */
     public function diffInWeekendDays(?ChronosDate $other = null, bool $absolute = true, int $options = 0): int
     {
-        return $this->diffInDaysFiltered(function (ChronosDate $date) {
+        return $this->diffInDaysFiltered(function (ChronosDate $date): bool {
             return $date->isWeekend();
         }, $other, $absolute, $options);
     }
@@ -1609,6 +1644,20 @@ class ChronosDate implements Stringable
     }
 
     /**
+     * Returns the date as an associative array.
+     *
+     * @return array{year: int, month: int, day: int}
+     */
+    public function toArray(): array
+    {
+        return [
+            'year' => $this->year,
+            'month' => $this->month,
+            'day' => $this->day,
+        ];
+    }
+
+    /**
      * Get a part of the object
      *
      * @param string $name The property name to read.
@@ -1628,28 +1677,15 @@ class ChronosDate implements Stringable
             'daysInMonth' => 't',
         ];
 
-        switch (true) {
-            case isset($formats[$name]):
-                return (int)$this->format($formats[$name]);
-
-            case $name === 'dayOfWeekName':
-                return $this->format('l');
-
-            case $name === 'weekOfMonth':
-                return (int)ceil($this->day / Chronos::DAYS_PER_WEEK);
-
-            case $name === 'age':
-                return $this->diffInYears();
-
-            case $name === 'quarter':
-                return (int)ceil($this->month / 3);
-
-            case $name === 'half':
-                return $this->month <= 6 ? 1 : 2;
-
-            default:
-                throw new InvalidArgumentException(sprintf('Unknown getter `%s`', $name));
-        }
+        return match (true) {
+            isset($formats[$name]) => (int)$this->format($formats[$name]),
+            $name === 'dayOfWeekName' => $this->format('l'),
+            $name === 'weekOfMonth' => (int)ceil($this->day / Chronos::DAYS_PER_WEEK),
+            $name === 'age' => $this->diffInYears(),
+            $name === 'quarter' => (int)ceil($this->month / 3),
+            $name === 'half' => $this->month <= 6 ? 1 : 2,
+            default => throw new InvalidArgumentException(sprintf('Unknown getter `%s`', $name)),
+        };
     }
 
     /**
@@ -1662,7 +1698,7 @@ class ChronosDate implements Stringable
     {
         try {
             $this->__get($name);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             return false;
         }
 
@@ -1676,11 +1712,9 @@ class ChronosDate implements Stringable
      */
     public function __debugInfo(): array
     {
-        $properties = [
+        return [
             'hasFixedNow' => Chronos::hasTestNow(),
             'date' => $this->format('Y-m-d'),
         ];
-
-        return $properties;
     }
 }

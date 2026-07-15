@@ -37,6 +37,7 @@ final class DotExpressionParser extends AbstractExpressionParser implements Infi
 
     public function parse(Parser $parser, AbstractExpression $expr, Token $token): AbstractExpression
     {
+        $nullSafe = '?.' === $token->getValue();
         $stream = $parser->getStream();
         $token = $stream->getCurrent();
         $lineno = $token->getLine();
@@ -55,7 +56,7 @@ final class DotExpressionParser extends AbstractExpressionParser implements Infi
             ) {
                 $attribute = new ConstantExpression($token->getValue(), $token->getLine());
             } else {
-                throw new SyntaxError(\sprintf('Expected name or number, got value "%s" of type %s.', $token->getValue(), $token->toEnglish()), $token->getLine(), $stream->getSourceContext());
+                throw new SyntaxError(\sprintf('Expected name or number, got value "%s" of type "%s".', $token->getValue(), $token->toEnglish()), $token->getLine(), $stream->getSourceContext());
             }
         }
 
@@ -64,22 +65,36 @@ final class DotExpressionParser extends AbstractExpressionParser implements Infi
             $arguments = $this->parseCallableArguments($parser, $token->getLine());
         }
 
-        if (
-            $expr instanceof NameExpression
+        $isMacroTarget = $expr instanceof NameExpression
             && (
                 null !== $parser->getImportedSymbol('template', $expr->getAttribute('name'))
-                || '_self' === $expr->getAttribute('name') && $attribute instanceof ConstantExpression
-            )
+                || '_self' === $expr->getAttribute('name')
+            );
+
+        if (
+            $isMacroTarget
+            && $attribute instanceof ConstantExpression
+            && \is_string($name = $attribute->getAttribute('value'))
+            && preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#D', $name)
         ) {
-            return new MacroReferenceExpression(new TemplateVariable($expr->getAttribute('name'), $expr->getTemplateLine()), 'macro_'.$attribute->getAttribute('value'), $arguments, $expr->getTemplateLine());
+            return new MacroReferenceExpression(new TemplateVariable($expr->getAttribute('name'), $expr->getTemplateLine()), 'macro_'.$name, $arguments, $expr->getTemplateLine());
         }
 
-        return new GetAttrExpression($expr, $attribute, $arguments, $type, $lineno);
+        if ($isMacroTarget && !$attribute instanceof ConstantExpression) {
+            return new MacroReferenceExpression(new TemplateVariable($expr->getAttribute('name'), $expr->getTemplateLine()), $attribute, $arguments, $expr->getTemplateLine());
+        }
+
+        return new GetAttrExpression($expr, $attribute, $arguments, $type, $lineno, $nullSafe);
     }
 
     public function getName(): string
     {
         return '.';
+    }
+
+    public function getAliases(): array
+    {
+        return ['?.'];
     }
 
     public function getDescription(): string
