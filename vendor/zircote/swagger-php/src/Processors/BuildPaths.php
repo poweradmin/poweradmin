@@ -9,7 +9,7 @@ namespace OpenApi\Processors;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
-use OpenApi\Generator;
+use OpenApi\Undefined;
 
 /**
  * Build the openapi->paths using the detected <code>@OA\PathItem</code> and <code>@OA\Operation</code> (<code>@OA\Get</code>, etc).
@@ -20,13 +20,13 @@ class BuildPaths
     {
         $paths = [];
         // Merge @OA\PathItems with the same path.
-        if (!Generator::isDefault($analysis->openapi->paths)) {
+        if (!Undefined::isDefault($analysis->openapi->paths)) {
             foreach ($analysis->openapi->paths as $annotation) {
                 if (empty($annotation->path)) {
                     $annotation->_context->logger->warning($annotation->identity() . ' is missing required property "path" in ' . $annotation->_context);
                 } elseif (isset($paths[$annotation->path])) {
                     $paths[$annotation->path]->mergeProperties($annotation);
-                    $analysis->annotations->offsetUnset($annotation);
+                    $analysis->removeAnnotation($annotation);
                 } else {
                     $paths[$annotation->path] = $annotation;
                 }
@@ -45,12 +45,12 @@ class BuildPaths
                         ]);
                     $analysis->addAnnotation($pathItem, $pathItem->_context);
                 }
-                if ($paths[$operation->path]->merge([$operation])) {
+                if ($analysis->mergeAnnotations($paths[$operation->path], [$operation])) {
                     $operation->_context->logger->warning('Unable to merge ' . $operation->identity() . ' in ' . $operation->_context);
                 }
             }
         }
-        if ($paths) {
+        if ($paths !== []) {
             $analysis->openapi->paths = array_values($paths);
         }
     }

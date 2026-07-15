@@ -6,7 +6,8 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Generator;
+use OpenApi\Analysis;
+use OpenApi\Undefined;
 
 /**
  * The definition of input and output data types.
@@ -32,14 +33,14 @@ class Schema extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Generator::UNDEFINED;
+    public $ref = Undefined::UNDEFINED;
 
     /**
      * The key into Components->schemas array.
      *
      * @var string
      */
-    public $schema = Generator::UNDEFINED;
+    public $schema = Undefined::UNDEFINED;
 
     /**
      * Can be used to decorate a user interface with information about the data produced by this user interface.
@@ -48,14 +49,14 @@ class Schema extends AbstractAnnotation
      *
      * @var string
      */
-    public $title = Generator::UNDEFINED;
+    public $title = Undefined::UNDEFINED;
 
     /**
      * A description will provide explanation about the purpose of the instance described by this schema.
      *
      * @var string
      */
-    public $description = Generator::UNDEFINED;
+    public $description = Undefined::UNDEFINED;
 
     /**
      * The maximum number of properties allowed in an object instance.
@@ -64,7 +65,7 @@ class Schema extends AbstractAnnotation
      *
      * @var int
      */
-    public $maxProperties = Generator::UNDEFINED;
+    public $maxProperties = Undefined::UNDEFINED;
 
     /**
      * The minimum number of properties allowed in an object instance.
@@ -73,7 +74,7 @@ class Schema extends AbstractAnnotation
      *
      * @var int
      */
-    public $minProperties = Generator::UNDEFINED;
+    public $minProperties = Undefined::UNDEFINED;
 
     /**
      * An object instance is valid against this property if its property set contains all elements in this property's
@@ -81,7 +82,7 @@ class Schema extends AbstractAnnotation
      *
      * @var list<string>
      */
-    public $required = Generator::UNDEFINED;
+    public $required = Undefined::UNDEFINED;
 
     /**
      * A collection of properties to define for an object.
@@ -90,7 +91,7 @@ class Schema extends AbstractAnnotation
      *
      * @var list<Property>
      */
-    public $properties = Generator::UNDEFINED;
+    public $properties = Undefined::UNDEFINED;
 
     /**
      * The type of the schema/property.
@@ -101,7 +102,7 @@ class Schema extends AbstractAnnotation
      *
      * @var string|non-empty-array<string>
      */
-    public $type = Generator::UNDEFINED;
+    public $type = Undefined::UNDEFINED;
 
     /**
      * The extending format for the previously mentioned type.
@@ -110,14 +111,14 @@ class Schema extends AbstractAnnotation
      *
      * @var string
      */
-    public $format = Generator::UNDEFINED;
+    public $format = Undefined::UNDEFINED;
 
     /**
      * Required if type is "array". Describes the type of items in the array.
      *
      * @var Items
      */
-    public $items = Generator::UNDEFINED;
+    public $items = Undefined::UNDEFINED;
 
     /**
      * Determines the format of the array if type array is used.
@@ -133,14 +134,14 @@ class Schema extends AbstractAnnotation
      *
      * @var string
      */
-    public $collectionFormat = Generator::UNDEFINED;
+    public $collectionFormat = Undefined::UNDEFINED;
 
     /**
      * A string instance is considered valid if the regular expression matches the instance successfully.
      *
      * @var string
      */
-    public $pattern = Generator::UNDEFINED;
+    public $pattern = Undefined::UNDEFINED;
 
     /**
      * A numeric instance is valid against "multipleOf" if the result of the division of the instance by this
@@ -148,7 +149,7 @@ class Schema extends AbstractAnnotation
      *
      * @var int|float
      */
-    public $multipleOf = Generator::UNDEFINED;
+    public $multipleOf = Undefined::UNDEFINED;
 
     /**
      * Adds support for polymorphism.
@@ -158,7 +159,7 @@ class Schema extends AbstractAnnotation
      *
      * @var Discriminator
      */
-    public $discriminator = Generator::UNDEFINED;
+    public $discriminator = Undefined::UNDEFINED;
 
     /**
      * Declares the property as "read only".
@@ -172,7 +173,7 @@ class Schema extends AbstractAnnotation
      *
      * @var bool
      */
-    public $readOnly = Generator::UNDEFINED;
+    public $readOnly = Undefined::UNDEFINED;
 
     /**
      * Declares the property as "write only".
@@ -185,7 +186,7 @@ class Schema extends AbstractAnnotation
      *
      * @var bool
      */
-    public $writeOnly = Generator::UNDEFINED;
+    public $writeOnly = Undefined::UNDEFINED;
 
     /**
      * This may be used only on properties schemas.
@@ -195,22 +196,24 @@ class Schema extends AbstractAnnotation
      *
      * @var Xml
      */
-    public $xml = Generator::UNDEFINED;
+    public $xml = Undefined::UNDEFINED;
 
     /**
      * Additional external documentation for this schema.
      *
      * @var ExternalDocumentation
      */
-    public $externalDocs = Generator::UNDEFINED;
+    public $externalDocs = Undefined::UNDEFINED;
 
     /**
      * A free-form property to include an example of an instance for this schema.
      *
      * To represent examples that cannot naturally be represented in JSON or YAML, a string value can be used to
      * contain the example with escaping where necessary.
+     *
+     * @var mixed
      */
-    public $example = Generator::UNDEFINED;
+    public $example = Undefined::UNDEFINED;
 
     /**
      * Examples of the schema.
@@ -222,7 +225,7 @@ class Schema extends AbstractAnnotation
      * @since OpenAPI 3.1.0
      * @var array<Examples>
      */
-    public $examples = Generator::UNDEFINED;
+    public $examples = Undefined::UNDEFINED;
 
     /**
      * Allows sending a null value for the defined schema.
@@ -235,7 +238,7 @@ class Schema extends AbstractAnnotation
      *
      * @see https://www.openapis.org/blog/2021/02/16/migrating-from-openapi-3-0-to-3-1-0
      */
-    public $nullable = Generator::UNDEFINED;
+    public $nullable = Undefined::UNDEFINED;
 
     /**
      * Specifies that a schema is deprecated and should be transitioned out of usage.
@@ -243,7 +246,7 @@ class Schema extends AbstractAnnotation
      *
      * @var bool
      */
-    public $deprecated = Generator::UNDEFINED;
+    public $deprecated = Undefined::UNDEFINED;
 
     /**
      * An instance validates successfully against this property if it validates successfully against all schemas
@@ -251,7 +254,7 @@ class Schema extends AbstractAnnotation
      *
      * @var array<Schema|\OpenApi\Attributes\Schema>
      */
-    public $allOf = Generator::UNDEFINED;
+    public $allOf = Undefined::UNDEFINED;
 
     /**
      * An instance validates successfully against this property if it validates successfully against at least one
@@ -259,7 +262,7 @@ class Schema extends AbstractAnnotation
      *
      * @var array<Schema|\OpenApi\Attributes\Schema>
      */
-    public $anyOf = Generator::UNDEFINED;
+    public $anyOf = Undefined::UNDEFINED;
 
     /**
      * An instance validates successfully against this property if it validates successfully against exactly one schema
@@ -267,7 +270,7 @@ class Schema extends AbstractAnnotation
      *
      * @var array<Schema|\OpenApi\Attributes\Schema>
      */
-    public $oneOf = Generator::UNDEFINED;
+    public $oneOf = Undefined::UNDEFINED;
 
     /**
      * https://spec.openapis.org/oas/v3.1.0.html#considerations-for-file-uploads
@@ -275,7 +278,7 @@ class Schema extends AbstractAnnotation
      *
      * @var string
      */
-    public $contentEncoding = Generator::UNDEFINED;
+    public $contentEncoding = Undefined::UNDEFINED;
 
     /**
      * https://spec.openapis.org/oas/v3.1.0.html#considerations-for-file-uploads
@@ -283,7 +286,7 @@ class Schema extends AbstractAnnotation
      *
      * @var string
      */
-    public $contentMediaType = Generator::UNDEFINED;
+    public $contentMediaType = Undefined::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -344,7 +347,7 @@ class Schema extends AbstractAnnotation
      */
     public function isNullable(): bool
     {
-        return !Generator::isDefault($this->nullable) && $this->nullable;
+        return !Undefined::isDefault($this->nullable) && $this->nullable;
     }
 
     /**
@@ -352,7 +355,7 @@ class Schema extends AbstractAnnotation
      */
     public function hasType(string $type): bool
     {
-        return in_array($type, (array) $this->type, true);
+        return in_array($type, (array) $this->type, strict: true);
     }
 
     public function jsonSerialize(): \stdClass
@@ -365,30 +368,32 @@ class Schema extends AbstractAnnotation
                 $data->enum = [$data->const];
                 unset($data->const);
             }
+            if (isset($data->not) && is_array($data->not) && array_key_exists('const', $data->not)) {
+                $data->not = ['enum' => [$data->not['const']]];
+            }
         }
 
         return $data;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
+    #[\Override]
+    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
     {
-        if ($this->hasType('array') && Generator::isDefault($this->items)) {
+        $isValid = parent::validate($analysis, $version, $context);
+
+        if ($this->hasType('array') && Undefined::isDefault($this->items)) {
             $this->_context->logger->warning('@OA\\Items() is required when ' . $this->identity() . ' has type "array" in ' . $this->_context);
 
-            return false;
+            $isValid = false;
         }
 
-        if ($this->_context->isVersion('3.0.x')) {
-            if (!Generator::isDefault($this->examples)) {
-                $this->_context->logger->warning($this->identity() . ' is only allowed as of 3.1.0');
-
-                return false;
+        if (OpenApi::versionMatch($version, '3.0.x')) {
+            if (!Undefined::isDefault($this->examples)) {
+                $this->_context->logger->warning(static::shorten(static::class) . '::examples is only allowed as of 3.1.0 in ' . $this->_context);
+                $isValid = false;
             }
         }
 
-        return parent::validate($stack, $skip, $ref, $context);
+        return $isValid;
     }
 }

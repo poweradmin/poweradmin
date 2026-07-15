@@ -9,7 +9,7 @@ namespace OpenApi\Processors\Concerns;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
-use OpenApi\Generator;
+use OpenApi\Undefined;
 
 /**
  * Steps:
@@ -24,7 +24,7 @@ trait MergePropertiesTrait
 {
     protected function inheritFrom(Analysis $analysis, OA\Schema $schema, OA\Schema $from, string $refPath, Context $context): void
     {
-        if (Generator::isDefault($schema->allOf)) {
+        if (Undefined::isDefault($schema->allOf)) {
             $schema->allOf = [];
         }
         // merging other properties into allOf is done in the AugmentSchemas processor
@@ -40,7 +40,7 @@ trait MergePropertiesTrait
         foreach ($from['properties'] as $context) {
             if (is_iterable($context->annotations)) {
                 foreach ($context->annotations as $annotation) {
-                    if ($annotation instanceof OA\Property && !in_array($annotation->_context->property, $existing, true)) {
+                    if ($annotation instanceof OA\Property && !in_array($annotation->_context->property, $existing, strict: true)) {
                         $existing[] = $annotation->_context->property;
                         $schema->merge([$annotation], true);
                     }
@@ -54,7 +54,7 @@ trait MergePropertiesTrait
         foreach ($from['methods'] as $context) {
             if (is_iterable($context->annotations)) {
                 foreach ($context->annotations as $annotation) {
-                    if ($annotation instanceof OA\Property && !in_array($annotation->_context->property, $existing, true)) {
+                    if ($annotation instanceof OA\Property && !in_array($annotation->_context->property, $existing, strict: true)) {
                         $existing[] = $annotation->_context->property;
                         $schema->merge([$annotation], true);
                     }

@@ -73,7 +73,7 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
                             /** @var OA\Property|OAT\Parameter|OA\RequestBody $instance */
                             $instance = $attribute->newInstance();
                             $instance->_context = new Context([
-                                'nested' => false,
+                                'nested' => null,
                                 'property' => $rp->getName(),
                                 'reflector' => $rp,
                             ], $context);
@@ -95,7 +95,14 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
                                 } else {
                                     $instance->_context->property = $rp->getName();
                                 }
+                            } elseif ($instance instanceof OAT\Parameter) {
+                                if (method_exists($rp, 'getDocComment')) {
+                                    if ($comment = $rp->getDocComment()) {
+                                        $instance->_context->comment = $comment;
+                                    }
+                                }
                             }
+
                             $annotations[] = $instance;
                         }
                     }

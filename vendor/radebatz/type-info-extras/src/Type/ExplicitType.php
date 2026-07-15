@@ -3,6 +3,7 @@
 namespace Radebatz\TypeInfoExtras\Type;
 
 use Symfony\Component\TypeInfo\Type;
+use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
@@ -29,6 +30,14 @@ class ExplicitType extends Type
     public function getTypeIdentifier(): TypeIdentifier
     {
         return $this->typeIdentifier;
+    }
+
+    /**
+     * Get the underlying builtin type.
+     */
+    public function getBuiltinType(): BuiltinType
+    {
+        return Type::builtin($this->typeIdentifier);
     }
 
     public function getExplicitType(): string

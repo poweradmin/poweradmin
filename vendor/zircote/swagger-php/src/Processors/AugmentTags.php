@@ -8,7 +8,7 @@ namespace OpenApi\Processors;
 
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
-use OpenApi\Generator;
+use OpenApi\Undefined;
 
 /**
  * Ensures that all tags used on operations also exist in the global <code>tags</code> list.
@@ -52,33 +52,35 @@ class AugmentTags
 
         $usedTagNames = [];
         foreach ($operations as $operation) {
-            if (!Generator::isDefault($operation->tags)) {
+            if (!Undefined::isDefault($operation->tags)) {
                 $usedTagNames = array_merge($usedTagNames, $operation->tags);
             }
         }
         $usedTagNames = array_unique($usedTagNames);
 
         $declaredTags = [];
-        if (!Generator::isDefault($analysis->openapi->tags)) {
+        if (!Undefined::isDefault($analysis->openapi->tags)) {
             foreach ($analysis->openapi->tags as $tag) {
-                $declaredTags[$tag->name] = $tag;
+                if (!empty($tag->name)) {
+                    $declaredTags[$tag->name] = $tag;
+                }
             }
         }
-        if ($declaredTags) {
+        if ($declaredTags !== []) {
             // last one wins
             $analysis->openapi->tags = array_values($declaredTags);
         }
 
         // Add a tag for each tag that is used in operations but not declared in the global tags
-        if ($usedTagNames) {
+        if ($usedTagNames !== []) {
             $declatedTagNames = array_keys($declaredTags);
             foreach ($usedTagNames as $tagName) {
                 if (!in_array($tagName, $declatedTagNames)) {
-                    $analysis->openapi->merge([new OA\Tag([
+                    $analysis->mergeAnnotations($analysis->openapi, [new OA\Tag([
                         'name' => $tagName,
                         'description' => $this->withDescription
                             ? $tagName
-                            : Generator::UNDEFINED,
+                            : Undefined::UNDEFINED,
                     ])]);
                 }
             }
@@ -87,7 +89,7 @@ class AugmentTags
         // clear invalid parents
         foreach ($declaredTags as $tag) {
             if (!array_key_exists($tag->parent, $declaredTags)) {
-                $tag->parent = Generator::UNDEFINED;
+                $tag->parent = Undefined::UNDEFINED;
             }
         }
 
@@ -104,7 +106,7 @@ class AugmentTags
         foreach ($declaredTags as $tag) {
             if (!in_array($tag->name, $tagsToKeep)) {
                 if (false !== $index = array_search($tag, $analysis->openapi->tags, true)) {
-                    $analysis->annotations->offsetUnset($tag);
+                    $analysis->removeAnnotation($tag);
                     unset($analysis->openapi->tags[$index]);
                     $analysis->openapi->tags = array_values($analysis->openapi->tags);
                 }

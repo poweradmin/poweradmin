@@ -71,7 +71,7 @@ class Analysis
                 $context->annotations = [];
             }
 
-            if (in_array($annotation, $context->annotations, true) === false) {
+            if (in_array($annotation, $context->annotations, strict: true) === false) {
                 $context->annotations[] = $annotation;
             }
         }
@@ -97,6 +97,21 @@ class Analysis
         }
     }
 
+    public function removeAnnotation(OA\AbstractAnnotation $annotation): void
+    {
+        if ($this->annotations->offsetExists($annotation)) {
+            $context = $this->annotations->offsetGet($annotation);
+            $this->annotations->offsetUnset($annotation);
+
+            if ($context->is('annotations') !== false) {
+                $index = array_search($annotation, $context->annotations, true);
+                if ($index !== false) {
+                    array_splice($context->annotations, $index, 1);
+                }
+            }
+        }
+    }
+
     /**
      * @param list<OA\AbstractAnnotation> $annotations
      */
@@ -105,6 +120,31 @@ class Analysis
         foreach ($annotations as $annotation) {
             $this->addAnnotation($annotation, $context);
         }
+    }
+
+    /**
+     * Merge annotations into a parent and register any new ones in the analysis.
+     *
+     * Combines the tree-structural operation (AbstractAnnotation::merge) with
+     * registry registration (addAnnotation) so callers don't need to handle
+     * both separately.
+     *
+     * @param list<OA\AbstractAnnotation> $annotations
+     * @param bool                        $ignore      Ignore unmerged annotations
+     *
+     * @return list<OA\AbstractAnnotation> The unmerged annotations
+     */
+    public function mergeAnnotations(OA\AbstractAnnotation $parent, array $annotations, bool $ignore = false): array
+    {
+        $unmerged = $parent->merge($annotations, $ignore);
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof OA\AbstractAnnotation) {
+                $this->addAnnotation($annotation, $annotation->_context);
+            }
+        }
+
+        return $unmerged;
     }
 
     public function addClassDefinition(array $definition): void
@@ -388,12 +428,47 @@ class Analysis
 
     public function validate(): bool
     {
-        if ($this->openapi instanceof OA\OpenApi) {
-            return $this->openapi->validate();
+        if (!$this->openapi instanceof OA\OpenApi) {
+            $this->context->logger->warning('No openapi target set. Run the MergeIntoOpenApi processor before validate()');
+
+            return false;
         }
 
-        $this->context->logger->warning('No openapi target set. Run the MergeIntoOpenApi processor before validate()');
+        $isValid = true;
+        $version = $this->openapi->openapi;
+        $context = new \stdClass();
 
-        return false;
+        foreach ($this->collectAnnotations($this->openapi) as $annotation) {
+            $isValid = $annotation->validate($this, $version, $context) && $isValid;
+        }
+
+        return $isValid;
+
+    }
+
+    /**
+     * @return array<OA\AbstractAnnotation>
+     */
+    protected function collectAnnotations(OA\AbstractAnnotation $root): array
+    {
+        $annotations = [$root];
+
+        foreach (get_object_vars($root) as $field => $value) {
+            if (null === $value || Undefined::isDefault($value) || is_scalar($value) || in_array($field, $root::$_blacklist)) {
+                continue;
+            }
+
+            if ($value instanceof OA\AbstractAnnotation) {
+                $annotations = array_merge($annotations, $this->collectAnnotations($value));
+            } elseif (is_array($value)) {
+                foreach ($value as $item) {
+                    if ($item instanceof OA\AbstractAnnotation) {
+                        $annotations = array_merge($annotations, $this->collectAnnotations($item));
+                    }
+                }
+            }
+        }
+
+        return $annotations;
     }
 }
