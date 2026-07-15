@@ -78,7 +78,7 @@ final class MultipartStream implements StreamInterface
             $str .= "{$key}: {$value}\r\n";
         }
 
-        return "--{$this->boundary}\r\n".trim($str)."\r\n\r\n";
+        return "--{$this->boundary}\r\n".trim($str, " \n\r\t\0\x0B")."\r\n\r\n";
     }
 
     /**
@@ -227,9 +227,9 @@ final class MultipartStream implements StreamInterface
      */
     private static function getHeader(array $headers, string $key): ?string
     {
-        $lowercaseHeader = strtolower($key);
+        $lowercaseHeader = strtr($key, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
         foreach ($headers as $k => $v) {
-            if (strtolower((string) $k) === $lowercaseHeader) {
+            if (strtr((string) $k, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') === $lowercaseHeader) {
                 return $v;
             }
         }

@@ -64,8 +64,8 @@ class EnvPlaceholderParameterBag extends ParameterBag
     public function getEnvPlaceholderUniquePrefix(): string
     {
         if (!isset($this->envPlaceholderUniquePrefix)) {
-            $reproducibleEntropy = unserialize(serialize($this->parameters));
-            array_walk_recursive($reproducibleEntropy, function (&$v) { $v = null; });
+            $reproducibleEntropy = unserialize(serialize($this->parameters), ['allowed_classes' => true]);
+            array_walk_recursive($reproducibleEntropy, static function (&$v) { $v = null; });
             $this->envPlaceholderUniquePrefix = 'env_'.substr(hash('xxh128', serialize($reproducibleEntropy)), -16);
         }
 

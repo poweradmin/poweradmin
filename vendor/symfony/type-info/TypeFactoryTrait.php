@@ -200,11 +200,9 @@ trait TypeFactoryTrait
      */
     public static function arrayShape(array $shape, bool $sealed = true, ?Type $extraKeyType = null, ?Type $extraValueType = null): ArrayShapeType
     {
-        $shape = array_map(static function (array|Type $item): array {
-            return $item instanceof Type
+        $shape = array_map(static fn (array|Type $item): array => $item instanceof Type
                 ? ['type' => $item, 'optional' => false]
-                : ['type' => $item['type'], 'optional' => $item['optional'] ?? false];
-        }, $shape);
+                : ['type' => $item['type'], 'optional' => $item['optional'] ?? false], $shape);
 
         if ($extraKeyType || $extraValueType) {
             $sealed = false;
@@ -294,7 +292,7 @@ trait TypeFactoryTrait
         $unionTypes = [];
 
         $nullableUnion = false;
-        $isNullable = fn (Type $type): bool => $type instanceof BuiltinType && TypeIdentifier::NULL === $type->getTypeIdentifier();
+        $isNullable = static fn (Type $type): bool => $type instanceof BuiltinType && TypeIdentifier::NULL === $type->getTypeIdentifier();
 
         foreach ($types as $type) {
             if ($type instanceof NullableType) {
