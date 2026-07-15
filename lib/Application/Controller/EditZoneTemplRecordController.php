@@ -140,7 +140,7 @@ class EditZoneTemplRecordController extends BaseController
             return;
         }
 
-        if ($this->zoneTemplate->editZoneTemplRecord($postParams)) {
+        if ($this->zoneTemplate->editZoneTemplRecord($postParams, $zone_templ_id)) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
