@@ -128,7 +128,10 @@ class ZoneTemplate
                 $parts[1] = '[HOSTMASTER]';
             }
 
-            if (preg_match('/\d{10}/', $parts[2])) {
+            // Any numeric serial becomes [SERIAL]; a literal serial in a template
+            // would only stamp stale values into zones created from it. Serial 0
+            // is kept: it means autoserial and getNextSerial() preserves it.
+            if (isset($parts[2]) && ctype_digit($parts[2]) && $parts[2] !== '0') {
                 $parts[2] = '[SERIAL]';
             }
 
@@ -1260,7 +1263,7 @@ class ZoneTemplate
     /**
      * Parse string and substitute domain and serial
      *
-     * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
+     * @param string $val string to parse containing tokens like '[ZONE]', '[SERIAL]', '[UNIXTIME]' or '[COUNTER]'
      * @param string $domain domain to substitute for '[ZONE]'
      * @param string|null $recordType record type of $val; when given it authoritatively
      *        decides SOA-timer completion. Legacy 2-arg callers fall back to a heuristic.
@@ -1293,6 +1296,10 @@ class ZoneTemplate
         $val = str_replace('[DOMAIN]', $domainName, $val);
         $val = str_replace('[TLD]', $tld, $val);
         $val = str_replace('[SERIAL]', $serial, $val);
+        // Alternative SOA serial formats: both stay below 1979999999, so
+        // getNextSerial() treats them as plain counters and bumps them by 1.
+        $val = str_replace('[UNIXTIME]', (string)time(), $val);
+        $val = str_replace('[COUNTER]', '1', $val);
         $val = str_replace('[NS1]', $dns_ns1, $val);
         $val = str_replace('[NS2]', $dns_ns2, $val);
         $val = str_replace('[NS3]', $dns_ns3, $val);

@@ -158,6 +158,44 @@ class ZoneTemplateParsingTest extends TestCase
     }
 
     /**
+     * [UNIXTIME] resolves to the current Unix timestamp and still gets SOA timers appended
+     */
+    public function testParseUnixtimePlaceholder(): void
+    {
+        $before = time();
+        $result = $this->zoneTemplate->parseTemplateValue('[NS1] [HOSTMASTER] [UNIXTIME]', 'example.com', 'SOA');
+        $after = time();
+
+        $serial = (int)explode(' ', $result)[2];
+        $this->assertGreaterThanOrEqual($before, $serial);
+        $this->assertLessThanOrEqual($after, $serial);
+        $this->assertStringContainsString('28800 7200 604800 86400', $result);
+    }
+
+    /**
+     * [COUNTER] resolves to the initial counter value 1
+     */
+    public function testParseCounterPlaceholder(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('[NS1] [HOSTMASTER] [COUNTER]', 'example.com', 'SOA');
+
+        $this->assertStringStartsWith('ns1.example.com hostmaster.example.com 1 ', $result);
+        $this->assertStringContainsString('28800 7200 604800 86400', $result);
+    }
+
+    /**
+     * Serial placeholders are substituted in non-SOA content too, like [SERIAL]
+     */
+    public function testUnixtimeAndCounterReplacedInNonSoaContent(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('"counter [COUNTER] time [UNIXTIME]"', 'example.com', 'TXT');
+
+        $this->assertStringNotContainsString('[UNIXTIME]', $result);
+        $this->assertStringNotContainsString('[COUNTER]', $result);
+        $this->assertStringContainsString('"counter 1 time ', $result);
+    }
+
+    /**
      * Test that dots in TLD are preserved when using [TLD] placeholder
      */
     public function testDotsInTldPreserved(): void

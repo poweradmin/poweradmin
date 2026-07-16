@@ -215,11 +215,12 @@ class EditRecordController extends BaseController
             $postData['content'] = DnsIdnService::convertContentToPunycode($postData['type'], $postData['content']);
         }
 
-        // Let users type [SERIAL] in the SOA form; updateSOASerial() below bumps it from the current value.
+        // Let users type a serial placeholder like [SERIAL] in the SOA form;
+        // non-placeholder content passes through unchanged and updateSOASerial()
+        // below bumps the resolved value.
         if (
             ($postData['type'] ?? '') === RecordType::SOA
             && isset($postData['content'])
-            && str_contains($postData['content'], '[SERIAL]')
         ) {
             $postData['content'] = SOARecordManager::expandSerialPlaceholder(
                 $postData['content'],

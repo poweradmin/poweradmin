@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,29 +91,42 @@ class SOARecordManager implements SOARecordManagerInterface
     }
 
     /**
-     * Replace a literal "[SERIAL]" in the serial field of a submitted SOA
-     * record with the current serial from the existing SOA record. The
-     * subsequent updateSOASerial() bump (see EditRecordController) then
-     * advances the value, preserving RFC 1982 monotonicity even if today's
-     * serial has already been incremented several times.
+     * Replace a literal "[SERIAL]", "[UNIXTIME]" or "[COUNTER]" in the serial
+     * field of a submitted SOA record with a numeric value. The subsequent
+     * updateSOASerial() bump (see EditRecordController) then advances the
+     * value, preserving RFC 1982 monotonicity even if today's serial has
+     * already been incremented several times.
      *
-     * Falls back to today's YYYYMMDD00 when no existing serial is available.
+     * The resolved value never drops below the existing serial - slaves only
+     * transfer when the serial increases, so a format switch cannot rewind it.
      *
      * @param string $newContent SOA content as submitted by the user
      * @param string $oldContent Current SOA content from the zone (may be empty)
-     * @return string SOA content with [SERIAL] resolved to a numeric value
+     * @return string SOA content with the placeholder resolved to a numeric value
      */
     public static function expandSerialPlaceholder(string $newContent, string $oldContent): string
     {
         $fields = preg_split('/\s+/', trim($newContent));
-        if ($fields === false || !isset($fields[2]) || $fields[2] !== '[SERIAL]') {
+        if ($fields === false || !isset($fields[2])) {
             return $newContent;
         }
 
         $oldSerial = self::getSOASerial($oldContent);
-        $fields[2] = ($oldSerial !== null && is_numeric($oldSerial))
-            ? $oldSerial
-            : date('Ymd') . '00';
+        $hasOldSerial = $oldSerial !== null && is_numeric($oldSerial);
+
+        switch ($fields[2]) {
+            case '[SERIAL]':
+                $fields[2] = $hasOldSerial ? $oldSerial : date('Ymd') . '00';
+                break;
+            case '[UNIXTIME]':
+                $fields[2] = (string)($hasOldSerial ? max(time(), (int)$oldSerial) : time());
+                break;
+            case '[COUNTER]':
+                $fields[2] = $hasOldSerial ? $oldSerial : '1';
+                break;
+            default:
+                return $newContent;
+        }
 
         return implode(' ', $fields);
     }

@@ -175,6 +175,79 @@ class SOARecordManagerTest extends TestCase
         $this->assertSame($newContent, $result);
     }
 
+    public static function unixtimeOldContentProvider(): array
+    {
+        return [
+            'no old serial' => [''],
+            'smaller old serial' => ['ns1.example.com hostmaster.example.com 5 7200 1800 1209600 86400'],
+        ];
+    }
+
+    #[DataProvider('unixtimeOldContentProvider')]
+    public function testExpandUnixtimePlaceholderResolvesToCurrentTime(string $oldContent): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [UNIXTIME] 7200 1800 1209600 86400';
+
+        $before = time();
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+        $after = time();
+
+        $serial = (int)SOARecordManager::getSOASerial($result);
+        $this->assertGreaterThanOrEqual($before, $serial);
+        $this->assertLessThanOrEqual($after, $serial);
+    }
+
+    public function testExpandUnixtimePlaceholderNeverLowersDateBasedSerial(): void
+    {
+        // A YYYYMMDDNN serial is numerically larger than the current Unix time;
+        // dropping to it would stop zone transfers (RFC 1982).
+        $newContent = 'ns1.example.com hostmaster.example.com [UNIXTIME] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        $this->assertSame(
+            'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400',
+            $result
+        );
+    }
+
+    public function testExpandCounterPlaceholderUsesCurrentSerial(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [COUNTER] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 41 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        // Like [SERIAL]: keep the existing value; the post-write updateSOASerial() bump adds one.
+        $this->assertSame(
+            'ns1.example.com hostmaster.example.com 41 7200 1800 1209600 86400',
+            $result
+        );
+    }
+
+    public function testExpandCounterPlaceholderStartsAtOneWithoutOldSerial(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [COUNTER] 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, '');
+
+        $this->assertSame(
+            'ns1.example.com hostmaster.example.com 1 7200 1800 1209600 86400',
+            $result
+        );
+    }
+
+    public function testExpandSerialPlaceholderIgnoresLowercaseUnixtime(): void
+    {
+        $newContent = 'ns1.example.com hostmaster.example.com [unixtime] 7200 1800 1209600 86400';
+        $oldContent = 'ns1.example.com hostmaster.example.com 2026052405 7200 1800 1209600 86400';
+
+        $result = SOARecordManager::expandSerialPlaceholder($newContent, $oldContent);
+
+        $this->assertSame($newContent, $result);
+    }
+
     public function testExpandSerialPlaceholderOnlyReplacesSerialField(): void
     {
         // [SERIAL] appearing in primary NS / hostmaster is left alone here - the validator catches it.
