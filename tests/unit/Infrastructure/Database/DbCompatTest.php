@@ -233,6 +233,26 @@ class DbCompatTest extends TestCase
         $this->assertSame('', DbCompat::binaryCollation('sqlite'));
     }
 
+    public function testAccentSensitiveEqualsMySQLFoldsCaseAndForcesBinary(): void
+    {
+        $this->assertSame(
+            'LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(?)',
+            DbCompat::accentSensitiveEquals('mysql', 'email')
+        );
+        $this->assertSame(
+            'LOWER(CONVERT(username USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:username)',
+            DbCompat::accentSensitiveEquals('mysqli', 'username', ':username')
+        );
+    }
+
+    public function testAccentSensitiveEqualsLeavesByteExactBackendsUnchanged(): void
+    {
+        // PostgreSQL and SQLite are byte-exact already; keep their existing comparison.
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('pgsql', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('sqlite', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals(null, 'email'));
+    }
+
     public function testCastToStringUsesAsciiCharsetOnMySQL(): void
     {
         // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison
