@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -310,7 +310,9 @@ final class DbCompat
     }
 
     /**
-     * Returns the expression to cast an integer column to string for comparison.
+     * Returns the expression to cast a record ID column to string for comparison
+     * against record_comment_links.record_id. Only for ASCII-safe values (record IDs);
+     * non-ASCII characters would be mangled on MySQL/MariaDB.
      *
      * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
      * @param string $column The column to cast
@@ -321,7 +323,9 @@ final class DbCompat
         return match ($db_type) {
             'sqlite' => "CAST($column AS TEXT)",
             'pgsql' => "CAST($column AS VARCHAR)",
-            default => "CAST($column AS CHAR)",
+            // ascii matches record_comment_links.record_id; a bare CAST takes the connection
+            // collation, which MariaDB 11.6+ uca1400 defaults refuse to compare with ascii
+            default => "CAST($column AS CHAR CHARACTER SET ascii)",
         };
     }
 
