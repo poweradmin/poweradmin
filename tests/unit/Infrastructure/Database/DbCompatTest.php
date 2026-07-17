@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -263,5 +263,18 @@ class DbCompatTest extends TestCase
         $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('pgsql', 'email'));
         $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('sqlite', 'email'));
         $this->assertSame('email = ?', DbCompat::accentSensitiveEquals(null, 'email'));
+    }
+
+    public function testCastToStringUsesAsciiCharsetOnMySQL(): void
+    {
+        // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison
+        $this->assertSame('CAST(records.id AS CHAR CHARACTER SET ascii)', DbCompat::castToString('mysql', 'records.id'));
+        $this->assertSame('CAST(records.id AS CHAR CHARACTER SET ascii)', DbCompat::castToString('mysqli', 'records.id'));
+    }
+
+    public function testCastToStringOnOtherBackends(): void
+    {
+        $this->assertSame('CAST(records.id AS TEXT)', DbCompat::castToString('sqlite', 'records.id'));
+        $this->assertSame('CAST(records.id AS VARCHAR)', DbCompat::castToString('pgsql', 'records.id'));
     }
 }
