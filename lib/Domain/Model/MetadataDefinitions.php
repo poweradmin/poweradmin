@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+
 /**
  * Built-in PowerDNS domain metadata kind definitions.
  *
@@ -30,7 +32,7 @@ namespace Poweradmin\Domain\Model;
 class MetadataDefinitions
 {
     /**
-     * @var array<string, array<string, bool|string>>
+     * @var array<string, array<string, bool|string|array<int, string>>>
      */
     public const DEFINITIONS = [
         'ALLOW-AXFR-FROM' => [
@@ -108,10 +110,11 @@ class MetadataDefinitions
         'SOA-EDIT-DNSUPDATE' => [
             'label' => 'SOA-EDIT-DNSUPDATE',
             'multi' => false,
-            'placeholder' => 'INCEPTION-INCREMENT',
+            'placeholder' => 'DEFAULT',
             'help' => 'SOA serial policy applied after DNS updates.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'options' => ['DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE'],
         ],
         'TSIG-ALLOW-AXFR' => [
             'label' => 'TSIG-ALLOW-AXFR',
@@ -208,8 +211,9 @@ class MetadataDefinitions
             'label' => 'SOA-EDIT',
             'multi' => false,
             'placeholder' => 'INCEPTION-INCREMENT',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'SOA serial policy applied when the zone is served (DNSSEC). Stored via the zone object, not the metadata endpoint.',
             'api_write' => false,
+            'options' => ['INCEPTION-INCREMENT', 'INCREMENT-WEEKS', 'EPOCH', 'INCEPTION-EPOCH', 'NONE'],
         ],
         'API-RECTIFY' => [
             'label' => 'API-RECTIFY',
@@ -229,16 +233,17 @@ class MetadataDefinitions
             'label' => 'SOA-EDIT-API',
             'multi' => false,
             'placeholder' => 'DEFAULT',
-            'help' => 'SOA serial update policy for API changes. Options: DEFAULT, INCREASE, EPOCH, SOA-EDIT, SOA-EDIT-INCREASE, OFF.',
+            'help' => 'SOA serial update policy for API changes. Remove the row to fall back to the server default.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'options' => ['DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE'],
         ],
     ];
 
     /**
      * Get the definition for a specific metadata kind.
      *
-     * @return array<string, bool|string>|null
+     * @return array<string, bool|string|array<int, string>>|null
      */
     public static function get(string $kind): ?array
     {
@@ -255,6 +260,85 @@ class MetadataDefinitions
             return true; // Custom kinds are writable
         }
         return (bool)($definition['api_write'] ?? true);
+    }
+
+    /**
+     * Config keys (dns group) that narrow the offered values per kind.
+     */
+    public const OPTION_CONFIG_KEYS = [
+        'SOA-EDIT-API' => 'soa_edit_api_options',
+        'SOA-EDIT-DNSUPDATE' => 'soa_edit_api_options',
+        'SOA-EDIT' => 'soa_edit_options',
+    ];
+
+    /**
+     * Kinds PowerDNS rejects on the /metadata endpoint; they are stored as
+     * fields on the zone object instead (kind => zone property).
+     */
+    public const ZONE_PROPERTY_KINDS = [
+        'SOA-EDIT-API' => 'soa_edit_api',
+        'SOA-EDIT' => 'soa_edit',
+    ];
+
+    /**
+     * Zone-creation choice that explicitly disables SOA-EDIT-API (stored as
+     * an empty value, distinct from leaving the server default in place).
+     */
+    public const SOA_EDIT_API_OFF = 'OFF';
+
+    /**
+     * Get the allowed values for a metadata kind, or null when any value is accepted.
+     *
+     * @return array<int, string>|null
+     */
+    public static function getOptions(string $kind): ?array
+    {
+        $definition = self::get($kind);
+        if ($definition === null || !isset($definition['options'])) {
+            return null;
+        }
+        return $definition['options'];
+    }
+
+    /**
+     * Get the values offered by the UI for a kind, narrowed by the matching
+     * dns.* config list when set. An empty result means the kind's options
+     * are all disabled by configuration; null means free-form input.
+     *
+     * @return array<int, string>|null
+     */
+    public static function getOfferedOptions(string $kind, ConfigurationInterface $config): ?array
+    {
+        $options = self::getOptions($kind);
+        $configKey = self::OPTION_CONFIG_KEYS[$kind] ?? null;
+        if ($options === null || $configKey === null) {
+            return $options;
+        }
+
+        $configured = $config->get('dns', $configKey);
+        if (!is_array($configured)) {
+            return $options;
+        }
+
+        return array_values(array_intersect($options, $configured));
+    }
+
+    /**
+     * SOA-EDIT-API choices for zone creation: the metadata values plus 'OFF',
+     * narrowed by the dns.soa_edit_api_options config list when set.
+     *
+     * @return array<int, string>
+     */
+    public static function getSoaEditApiChoices(ConfigurationInterface $config): array
+    {
+        $choices = array_merge(self::getOptions('SOA-EDIT-API'), [self::SOA_EDIT_API_OFF]);
+
+        $configured = $config->get('dns', self::OPTION_CONFIG_KEYS['SOA-EDIT-API']);
+        if (!is_array($configured)) {
+            return $choices;
+        }
+
+        return array_values(array_intersect($choices, $configured));
     }
 
     /**

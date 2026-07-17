@@ -202,6 +202,10 @@ return [
         'soa_retry' => 7200,                       // 2 hours
         'soa_expire' => 604800,                    // 1 week
         'soa_minimum' => 86400,                    // 24 hours (SOA settings added in 2.2.3)
+        'soa_edit' => '',                          // SOA-EDIT metadata for new zones, e.g. 'INCEPTION-INCREMENT'; empty = not set (added in 4.5.0)
+        'soa_edit_api' => '',                      // SOA-EDIT-API metadata for new zones, e.g. 'EPOCH'; 'OFF' disables, empty = server default (added in 4.5.0)
+        'soa_edit_api_options' => null,            // SOA-EDIT-API values offered in the add-zone selector and metadata editor; null = all, [] hides them (added in 4.5.0)
+        'soa_edit_options' => null,                // SOA-EDIT values offered in the metadata editor; null = all, [] hides the kind (added in 4.5.0)
 
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)

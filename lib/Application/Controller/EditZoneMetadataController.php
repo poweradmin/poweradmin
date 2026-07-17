@@ -191,12 +191,14 @@ class EditZoneMetadataController extends BaseController
         $this->setCurrentPage('zone_metadata');
         $this->setPageTitle($canEdit ? _('Edit Zone Metadata') : _('Zone Metadata'));
 
+        $definitions = $this->getMetadataDefinitionsForTemplate();
+
         $this->render('edit_zone_metadata.html', [
             'zone_id' => $zoneId,
             'zone' => $zone,
             'idn_zone_name' => $idnZoneName,
-            'metadata_rows' => $this->prepareRowsForTemplate($metadataRows),
-            'metadata_definitions' => $this->getMetadataDefinitionsForTemplate(),
+            'metadata_rows' => $this->prepareRowsForTemplate($metadataRows, array_column($definitions, 'kind')),
+            'metadata_definitions' => $definitions,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone['name']),
             'can_edit_metadata' => $canEdit,
         ]);
@@ -229,15 +231,23 @@ class EditZoneMetadataController extends BaseController
         $rows = [];
         foreach ($apiMetadata as $entry) {
             $kind = $entry['kind'] ?? '';
+            // Zone-object-backed kinds may also appear in the /metadata
+            // listing; the zone object below is their single source.
+            if (isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
+                continue;
+            }
             foreach (($entry['metadata'] ?? []) as $value) {
                 $rows[] = ['kind' => $kind, 'content' => (string) $value];
             }
         }
 
-        // SOA-EDIT-API is stored on the zone object, not in /metadata
         $zoneData = $this->apiClient->getZone($apiName);
-        if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
-            $rows[] = ['kind' => 'SOA-EDIT-API', 'content' => $zoneData['soa_edit_api']];
+        if ($zoneData !== null) {
+            foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
+                if (!empty($zoneData[$property])) {
+                    $rows[] = ['kind' => $kind, 'content' => (string) $zoneData[$property]];
+                }
+            }
         }
 
         usort($rows, fn($a, $b) => strcmp($a['kind'], $b['kind']));
@@ -265,8 +275,9 @@ class EditZoneMetadataController extends BaseController
     /**
      * Save metadata via the PowerDNS API.
      *
-     * Groups rows by kind and uses PUT per kind. Handles SOA-EDIT-API specially
-     * via the zone properties endpoint. Deletes kinds that were removed.
+     * Groups rows by kind and uses PUT per kind. Zone-object-backed kinds
+     * (SOA-EDIT, SOA-EDIT-API) go through the zone properties endpoint.
+     * Deletes kinds that were removed.
      *
      * @param array<int, array<string, string>> $metadataRows
      * @return array<string, bool|string>
@@ -290,17 +301,23 @@ class EditZoneMetadataController extends BaseController
 
         $success = true;
 
-        // Handle SOA-EDIT-API via zone properties endpoint
-        if (isset($grouped['SOA-EDIT-API'])) {
-            $soaEditApi = $grouped['SOA-EDIT-API'][0] ?? '';
-            $success = $this->apiClient->updateZoneProperties($zoneName, ['soa_edit_api' => $soaEditApi]);
-            unset($grouped['SOA-EDIT-API']);
-        } else {
-            // SOA-EDIT-API was removed from the form - clear it via zone properties
-            $zoneData = $this->apiClient->getZone($zoneName);
-            if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
-                $this->apiClient->updateZoneProperties($zoneName, ['soa_edit_api' => '']);
+        // Zone-object-backed kinds are set (or cleared, when removed from the
+        // form) through a single zone properties update.
+        $properties = [];
+        $zoneData = null;
+        foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
+            if (isset($grouped[$kind])) {
+                $properties[$property] = $grouped[$kind][0] ?? '';
+                unset($grouped[$kind]);
+            } else {
+                $zoneData ??= $this->apiClient->getZone($zoneName);
+                if ($zoneData !== null && !empty($zoneData[$property])) {
+                    $properties[$property] = '';
+                }
             }
+        }
+        if ($properties !== []) {
+            $success = $this->apiClient->updateZoneProperties($zoneName, $properties);
         }
 
         // Update or create each metadata kind
@@ -315,7 +332,7 @@ class EditZoneMetadataController extends BaseController
 
         // Delete kinds that were removed
         foreach ($currentKinds as $kind) {
-            if ($kind !== '' && !isset($grouped[$kind]) && $kind !== 'SOA-EDIT-API') {
+            if ($kind !== '' && !isset($grouped[$kind]) && !isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
                 $definition = $this->getMetadataDefinition($kind);
                 if (isset($definition['api_write']) && $definition['api_write'] === false) {
                     continue;
@@ -395,6 +412,18 @@ class EditZoneMetadataController extends BaseController
             if (!$definition['multi'] && $countsByKind[$kind] > 1) {
                 $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
             }
+
+            // PowerDNS accepts unknown policy strings silently, so enforce the
+            // allowed values here. A configured restriction narrows the set;
+            // an empty (hidden-kind) restriction still accepts any valid value
+            // so pre-existing rows keep saving.
+            $options = MetadataDefinitions::getOfferedOptions($kind, $this->getConfig());
+            if ($options === []) {
+                $options = MetadataDefinitions::getOptions($kind);
+            }
+            if ($options !== null && !in_array($row['content'], $options, true)) {
+                $errors[] = sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $options));
+            }
         }
 
         return array_values(array_unique($errors));
@@ -420,6 +449,12 @@ class EditZoneMetadataController extends BaseController
                 continue;
             }
 
+            // An empty configured option list disables the kind in the editor
+            $options = MetadataDefinitions::getOfferedOptions($kind, $this->getConfig());
+            if ($options === []) {
+                continue;
+            }
+
             $definitions[] = [
                 'kind' => $kind,
                 'label' => $definition['label'],
@@ -429,6 +464,7 @@ class EditZoneMetadataController extends BaseController
                 'badges' => $this->buildBadgeDescriptors($kind, $definition),
                 'disabled' => $support === 'unsupported_known',
                 'min_version' => $definition['min_version'] ?? null,
+                'options' => $options,
             ];
         }
 
@@ -439,21 +475,26 @@ class EditZoneMetadataController extends BaseController
      * Expand stored metadata rows with UI-specific fields used by the editor template.
      *
      * @param array<int, array<string, string>> $rows
+     * @param array<int, string> $offeredKinds Kinds present in the kind dropdown
      * @return array<int, array<string, mixed>>
      */
-    private function prepareRowsForTemplate(array $rows): array
+    private function prepareRowsForTemplate(array $rows, array $offeredKinds): array
     {
         $preparedRows = [];
 
         foreach ($rows as $row) {
             $definition = $this->getMetadataDefinition($row['kind']);
             $isKnownKind = isset(MetadataDefinitions::DEFINITIONS[$row['kind']]);
+            // A kind absent from the kind dropdown (hidden by config or
+            // unsupported by the server) must go through the custom-kind path,
+            // or the browser would submit a different kind and rewrite the row.
+            $isOffered = in_array($row['kind'], $offeredKinds, true);
 
             $preparedRows[] = [
                 'kind' => $row['kind'],
                 'content' => $row['content'],
-                'kind_key' => $isKnownKind ? $row['kind'] : self::CUSTOM_KIND,
-                'custom_kind' => $isKnownKind ? '' : $row['kind'],
+                'kind_key' => $isOffered ? $row['kind'] : self::CUSTOM_KIND,
+                'custom_kind' => $isOffered ? '' : $row['kind'],
                 'kind_help' => $isKnownKind
                     ? _($definition['help'])
                     : $this->getCustomMetadataKindHelpText(),

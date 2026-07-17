@@ -447,4 +447,16 @@ interface DnsBackendProvider
      * Returns false for SQL backends (not applicable).
      */
     public function hasSoaEditApi(int $domainId): bool;
+
+    /**
+     * Set the zone's SOA serial policy metadata.
+     *
+     * Keys are the zone-object property names from
+     * MetadataDefinitions::ZONE_PROPERTY_KINDS. An empty string clears the
+     * policy. API backend updates the zone object; SQL backend replaces the
+     * matching domainmetadata rows.
+     *
+     * @param array<string, string> $properties
+     */
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool;
 }

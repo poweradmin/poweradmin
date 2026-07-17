@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -755,6 +756,36 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function hasSoaEditApi(int $domainId): bool
     {
         return false;
+    }
+
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool
+    {
+        $kindMap = array_flip(MetadataDefinitions::ZONE_PROPERTY_KINDS);
+        $properties = array_intersect_key($properties, $kindMap);
+        if ($properties === []) {
+            return true;
+        }
+
+        $table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $delete = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id AND kind = :kind");
+        $insert = $this->db->prepare("INSERT INTO $table (domain_id, kind, content) VALUES (:domain_id, :kind, :content)");
+
+        foreach ($properties as $property => $value) {
+            $kind = $kindMap[$property];
+
+            $delete->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+            $delete->bindValue(':kind', $kind);
+            $delete->execute();
+
+            if ($value !== '') {
+                $insert->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+                $insert->bindValue(':kind', $kind);
+                $insert->bindValue(':content', $value);
+                $insert->execute();
+            }
+        }
+
+        return true;
     }
 
     // ---------------------------------------------------------------

@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -138,10 +139,12 @@ class DomainManager implements DomainManagerInterface
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
      * @param string $slave_master Master server hostname for domain
      * @param int|string $zone_template ID of zone template ['none' or int]
+     * @param array $groupIds Group IDs to assign as zone owners
+     * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
     {
         $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
@@ -179,6 +182,10 @@ class DomainManager implements DomainManagerInterface
                     // delete an existing zone with the same name.
                     $this->messageService->addSystemError(_('Failed to create zone in DNS backend.'));
                     return false;
+                }
+
+                if ($type != "SLAVE") {
+                    $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
                 }
 
                 $db->beginTransaction();
@@ -568,6 +575,54 @@ class DomainManager implements DomainManagerInterface
         }
 
         return $allSucceeded;
+    }
+
+    /**
+     * Apply the SOA serial policy (SOA-EDIT / SOA-EDIT-API) to a new zone.
+     *
+     * The per-zone SOA-EDIT-API choice wins over the dns.soa_edit_api config
+     * default; 'OFF' explicitly disables the policy (in API mode this clears
+     * the server-applied default). SOA-EDIT comes from dns.soa_edit only.
+     * Values are validated against the same choice sets the UI offers, so
+     * config restrictions hold everywhere. Failures are logged but never
+     * fail zone creation.
+     */
+    private function applySerialPolicy(int $domainId, string $domain, ?string $soaEditApi): void
+    {
+        if ($soaEditApi === null || $soaEditApi === '') {
+            $soaEditApi = (string)$this->config->get('dns', 'soa_edit_api', '');
+        }
+        $soaEdit = (string)$this->config->get('dns', 'soa_edit', '');
+
+        $properties = [];
+
+        if ($soaEditApi !== '') {
+            if (in_array($soaEditApi, MetadataDefinitions::getSoaEditApiChoices($this->config), true)) {
+                $properties['soa_edit_api'] = $soaEditApi === MetadataDefinitions::SOA_EDIT_API_OFF ? '' : $soaEditApi;
+            } else {
+                $this->logger->warning('Ignoring invalid or not offered SOA-EDIT-API value: {value}', ['value' => $soaEditApi]);
+            }
+        }
+
+        if ($soaEdit !== '') {
+            if (in_array($soaEdit, MetadataDefinitions::getOfferedOptions('SOA-EDIT', $this->config) ?? [], true)) {
+                $properties['soa_edit'] = $soaEdit;
+            } else {
+                $this->logger->warning('Ignoring invalid or not offered dns.soa_edit value: {value}', ['value' => $soaEdit]);
+            }
+        }
+
+        if ($properties === []) {
+            return;
+        }
+
+        try {
+            if (!$this->backendProvider->setZoneSerialPolicy($domainId, $domain, $properties)) {
+                $this->logger->warning('Failed to set SOA serial policy on new zone {id}', ['id' => $domainId]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to set SOA serial policy on new zone {id}: {error}', ['id' => $domainId, 'error' => $e->getMessage()]);
+        }
     }
 
     /**

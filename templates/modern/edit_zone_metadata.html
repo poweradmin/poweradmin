@@ -75,6 +75,7 @@
                             </td>
                             <td class="align-top">
                                 <input type="text" class="form-control form-control-sm font-monospace metadata-content" value="{{ row.content }}" placeholder="{{ row.kind_placeholder ?: ('Value'|trans) }}" {{ not can_edit_metadata ? 'readonly' : '' }}>
+                                <select class="form-select form-select-sm font-monospace metadata-content-select d-none" {{ not can_edit_metadata ? 'disabled' : '' }}></select>
                                 <div class="metadata-kind-hint small text-muted mt-2">
                                     {% if row.kind_help %}
                                     {{ row.kind_help }}
@@ -134,6 +135,7 @@
         </td>
         <td class="align-top">
             <input type="text" class="form-control form-control-sm font-monospace metadata-content" placeholder="Value">
+            <select class="form-select form-select-sm font-monospace metadata-content-select d-none"></select>
             <div class="metadata-kind-hint small text-muted mt-2"></div>
             <div class="metadata-kind-badges mt-2 d-flex flex-wrap gap-1"></div>
         </td>
@@ -160,7 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
         multi: {{ definition.multi ? 'true' : 'false' }},
         placeholder: {{ definition.placeholder|json_encode|raw }},
         help: {{ definition.help|json_encode|raw }},
-        badges: {{ definition.badges|json_encode|raw }}
+        badges: {{ definition.badges|json_encode|raw }},
+        options: {{ definition.options|json_encode|raw }}
     };
     {% endfor %}
 
@@ -168,7 +171,13 @@ document.addEventListener('DOMContentLoaded', function () {
         rows.querySelectorAll('tr').forEach(function (row, index) {
             row.querySelector('.metadata-kind-select').name = 'metadata[' + index + '][kind_key]';
             row.querySelector('.metadata-custom-kind').name = 'metadata[' + index + '][custom_kind]';
-            row.querySelector('.metadata-content').name = 'metadata[' + index + '][content]';
+            const input = row.querySelector('.metadata-content');
+            const select = row.querySelector('.metadata-content-select');
+            const useSelect = !select.classList.contains('d-none');
+            input.name = 'metadata[' + index + '][content]';
+            input.disabled = useSelect;
+            select.name = 'metadata[' + index + '][content]';
+            select.disabled = !useSelect;
         });
     }
 
@@ -176,11 +185,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const select = row.querySelector('.metadata-kind-select');
         const customWrapper = row.querySelector('.metadata-custom-kind-wrapper');
         const content = row.querySelector('.metadata-content');
+        const contentSelect = row.querySelector('.metadata-content-select');
         const hint = row.querySelector('.metadata-kind-hint');
         const badgeContainer = row.querySelector('.metadata-kind-badges');
         const definition = definitions[select.value] || null;
 
         customWrapper.classList.toggle('d-none', select.value !== '__CUSTOM__');
+
+        // Kinds with a fixed value list get a select; a stored value outside
+        // the list stays in the text input so it remains visible and fixable.
+        const current = contentSelect.classList.contains('d-none') ? content.value : contentSelect.value;
+        const options = definition && definition.options;
+        const useSelect = !!(options && (current === '' || options.indexOf(current) !== -1));
+        if (useSelect) {
+            contentSelect.innerHTML = options.map(function (option) {
+                return '<option value="' + option + '"' + (option === current ? ' selected' : '') + '>' + option + '</option>';
+            }).join('');
+            content.value = contentSelect.value;
+        }
+        contentSelect.classList.toggle('d-none', !useSelect);
+        content.classList.toggle('d-none', useSelect);
 
         if (definition) {
             content.placeholder = definition.placeholder || defaultValueLabel;
@@ -199,14 +223,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (rows.querySelectorAll('tr').length === 0) {
             const clone = template.content.firstElementChild.cloneNode(true);
             rows.appendChild(clone);
-            refreshNames();
             updateRowUi(clone);
+            refreshNames();
         }
     }
 
     function rebuild() {
-        refreshNames();
+        // updateRowUi decides which content control is visible; refreshNames
+        // must run after it so the hidden control ends up disabled.
         rows.querySelectorAll('tr').forEach(updateRowUi);
+        refreshNames();
     }
 
     addButton.addEventListener('click', function () {

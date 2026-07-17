@@ -57,6 +57,36 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertEquals(42, $result);
     }
 
+    public function testSetZoneSerialPolicyReplacesMetadataRows(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue');
+        $stmt->method('execute')->willReturn(true);
+
+        $preparedSql = [];
+        $this->mockDb->method('prepare')->willReturnCallback(function (string $sql) use (&$preparedSql, $stmt) {
+            $preparedSql[] = $sql;
+            return $stmt;
+        });
+
+        $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', [
+            'soa_edit_api' => 'EPOCH',
+            'soa_edit' => '',
+        ]));
+
+        // Set value: DELETE then INSERT; empty value: DELETE only
+        $this->assertCount(2, $preparedSql);
+        $this->assertStringContainsString('DELETE FROM domainmetadata', $preparedSql[0]);
+        $this->assertStringContainsString('INSERT INTO domainmetadata', $preparedSql[1]);
+    }
+
+    public function testSetZoneSerialPolicyIgnoresUnknownProperties(): void
+    {
+        $this->mockDb->expects($this->never())->method('prepare');
+
+        $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', ['account' => 'evil']));
+    }
+
     public function testCreateSlaveZoneSetsMaster(): void
     {
         $stmtInsert = $this->createMock(PDOStatement::class);

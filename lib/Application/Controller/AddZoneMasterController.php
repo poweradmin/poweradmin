@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -35,6 +35,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -57,6 +58,9 @@ class AddZoneMasterController extends BaseController
     private UserContextService $userContext;
     private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
+
+    /** @var array<int, string>|null */
+    private ?array $soaEditApiChoices = null;
 
     public function __construct(array $request)
     {
@@ -156,6 +160,7 @@ class AddZoneMasterController extends BaseController
         $ownerInput = $this->request->getPostParam('owner');
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
         $zone_template = $this->request->getPostParam('zone_template', 'none');
+        $soa_edit_api = $this->sanitizeSoaEditApiInput($this->request->getPostParam('soa_edit_api'));
         $groupsInput = $this->request->getPostParam('groups');
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
             array_map('intval', $groupsInput) : [];
@@ -219,7 +224,7 @@ class AddZoneMasterController extends BaseController
         } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
             $this->setMessage('add_zone_master', 'error', $overlapError);
             $this->showForm();
-        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups, $soa_edit_api)) {
             $zone_id = $domainRepository->getZoneIdFromName($zone_name);
 
             $this->auditLogger->logInfo(sprintf(
@@ -291,6 +296,30 @@ class AddZoneMasterController extends BaseController
                 $this->redirect('/zones/forward');
             }
         }
+    }
+
+    /**
+     * SOA-EDIT-API values offered by the add-zone selector; an empty list
+     * hides the selector.
+     *
+     * @return array<int, string>
+     */
+    private function getSoaEditApiChoices(): array
+    {
+        return $this->soaEditApiChoices ??= MetadataDefinitions::getSoaEditApiChoices($this->config);
+    }
+
+    /**
+     * Keep only offered SOA-EDIT-API choices from the form; null means
+     * "server default" (the dns.soa_edit_api config default applies).
+     */
+    private function sanitizeSoaEditApiInput(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return in_array($value, $this->getSoaEditApiChoices(), true) ? $value : null;
     }
 
     private function showForm(): void
@@ -405,6 +434,11 @@ class AddZoneMasterController extends BaseController
             'selected_groups' => $selected_groups,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
+            'soa_edit_api_options' => $this->getSoaEditApiChoices(),
+            // Preselect the submitted value on error re-render, else the config default
+            'soa_edit_api_value' => $this->sanitizeSoaEditApiInput(
+                $this->request->getPostParam('soa_edit_api') ?? $this->config->get('dns', 'soa_edit_api', '')
+            ) ?? '',
             // Don't pass raw POST data to the template for security
         ]);
     }

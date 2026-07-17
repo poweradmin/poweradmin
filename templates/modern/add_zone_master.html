@@ -64,6 +64,19 @@
                 </div>
                 {% endif %}
 
+                {% if soa_edit_api_options is not empty %}
+                <div class="mb-3">
+                    <label for="soa_edit_api" class="form-label">{% trans %}SOA serial policy{% endtrans %}</label>
+                    <select data-testid="soa-edit-api-select" class="form-select form-select-sm" id="soa_edit_api" name="soa_edit_api">
+                        <option value="" {% if soa_edit_api_value == '' %}selected{% endif %}>{% trans %}Server default{% endtrans %}</option>
+                        {% for option in soa_edit_api_options %}
+                        <option value="{{ option }}" {% if soa_edit_api_value == option %}selected{% endif %}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{% trans %}SOA-EDIT-API metadata: how the SOA serial is updated on later changes. Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the initial serial.{% endtrans %}</small>
+                </div>
+                {% endif %}
+
                 {% if pdnssec_use %}
                 <div class="mb-3">
                     <div class="form-check">

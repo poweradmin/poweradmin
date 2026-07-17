@@ -1115,6 +1115,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $zoneData !== null && !empty($zoneData['soa_edit_api']);
     }
 
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool
+    {
+        if ($properties === []) {
+            return true;
+        }
+
+        return $this->client->updateZoneProperties(self::ensureTrailingDot($zoneName), $properties);
+    }
+
     // ---------------------------------------------------------------
     // Helper methods
     // ---------------------------------------------------------------
