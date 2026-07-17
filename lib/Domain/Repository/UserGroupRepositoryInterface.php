@@ -50,6 +50,14 @@ interface UserGroupRepositoryInterface
     public function findByUserId(int $userId): array;
 
     /**
+     * Get the IDs of the groups the user belongs to
+     *
+     * @param int $userId
+     * @return array<int, int>
+     */
+    public function getGroupIdsForUser(int $userId): array;
+
+    /**
      * Find a group by ID
      *
      * @param int $id

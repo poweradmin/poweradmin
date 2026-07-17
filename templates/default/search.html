@@ -166,14 +166,20 @@
                                 {% endif %}
                             </a>
                         </th>
+                        {% if show_zone_owners %}
                         <th>
+                            {% if is_owner_sort_supported %}
                             <a href="javascript:zone_sort_by('fullname');" class="d-flex align-items-center text-decoration-none">
                                 <span class="me-2">{% trans %}Owner{% endtrans %}</span>
                                 {% if zone_sort_by == 'fullname' %}
                                     <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
                                 {% endif %}
                             </a>
+                            {% else %}
+                            {% trans %}Owner{% endtrans %}
+                            {% endif %}
                         </th>
+                        {% endif %}
                         {% if iface_zone_comments %}
                         <th>
                             {% trans %}Comment{% endtrans %}
@@ -195,6 +201,7 @@
                         <td>{{ zone['name'] }}</td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
                         <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
+                        {% if show_zone_owners %}
                         <td>
                             {% if zone['owner_fullnames'] is defined %}
                                 {% for key, fullname in zone['owner_fullnames'] %}
@@ -209,6 +216,7 @@
                                 {{ zone['fullname'] }}
                             {% endif %}
                         </td>
+                        {% endif %}
                         {% if iface_zone_comments %}
                             <td>{{ zone['comment'] }}</td>
                         {% endif %}

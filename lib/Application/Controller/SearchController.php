@@ -81,9 +81,20 @@ class SearchController extends BaseController
         $searchResultRecords = [];
         $records_page = 1;
 
+        // Sorting by owner data the user cannot fully see would leak ownership
+        // through row order, so it needs "all" scope, or "own" scope with
+        // results already limited to owned zones.
+        $ownershipViewPermission = Permission::getZoneOwnershipViewPermission($this->db);
+        $ownerSortAllowed = $ownershipViewPermission === 'all'
+            || ($ownershipViewPermission === 'own' && Permission::getViewPermission($this->db) === 'own');
+        $allowedZoneSort = ['name', 'type', 'count_records'];
+        if ($ownerSortAllowed) {
+            $allowedZoneSort[] = 'fullname';
+        }
+
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
             'zone_sort_by',
-            ['name', 'type', 'count_records', 'fullname'],
+            $allowedZoneSort,
             SessionKeys::SEARCH_ZONE_SORT_BY
         );
         list($record_sort_by, $record_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
@@ -249,7 +260,8 @@ class SearchController extends BaseController
             $searchResultRecords,
             $userId,
             $editPermission,
-            $deletePermission
+            $deletePermission,
+            $ownershipViewPermission
         );
 
         $this->showSearchForm(
@@ -269,7 +281,9 @@ class SearchController extends BaseController
             $iface_zone_comments,
             $iface_record_comments,
             $editPermission,
-            $deletePermission
+            $deletePermission,
+            $ownershipViewPermission,
+            $ownerSortAllowed
         );
     }
 
@@ -290,7 +304,9 @@ class SearchController extends BaseController
         $iface_zone_comments,
         $iface_record_comments,
         string $editPermission,
-        string $deletePermission
+        string $deletePermission,
+        string $ownershipViewPermission,
+        bool $ownerSortAllowed
     ): void {
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
@@ -324,6 +340,8 @@ class SearchController extends BaseController
             'edit_permission' => $editPermission,
             'delete_permission' => $deletePermission,
             'user_id' => $_SESSION[SessionKeys::USERID],
+            'show_zone_owners' => $ownershipViewPermission !== 'none',
+            'is_owner_sort_supported' => $ownerSortAllowed,
             'whois_action_patterns' => $this->getModuleActionPatterns('whois_lookup'),
             'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
             'record_types' => $recordTypes,
@@ -354,7 +372,8 @@ class SearchController extends BaseController
         array $records,
         int $userId,
         string $editPermission,
-        string $deletePermission
+        string $deletePermission,
+        string $ownershipViewPermission
     ): array {
         $userGroupRepo = $this->createUserGroupRepository();
         $memberRepo = $this->createUserGroupMemberRepository();
@@ -384,6 +403,10 @@ class SearchController extends BaseController
         $zoneGroupMap = $this->fetchZoneGroupOwnership($zoneIds);
         $zoneOwnerMap = $this->fetchDirectZoneOwners($zoneIds);
 
+        $userGroupIds = $ownershipViewPermission === 'own' && !empty($zones)
+            ? $userGroupRepo->getGroupIdsForUser($userId)
+            : [];
+
         foreach ($zones as &$zone) {
             $domainId = (int)($zone['id'] ?? 0);
             $zone['user_can_edit'] = $this->canActOnZone(
@@ -402,6 +425,17 @@ class SearchController extends BaseController
                 $zoneOwnerMap,
                 $zoneGroupMap
             );
+
+            // At the "own" ownership view level, owner cells stay visible only
+            // for zones the user owns directly or via a group.
+            if ($ownershipViewPermission === 'own') {
+                $ownsDirect = in_array($userId, $zoneOwnerMap[$domainId] ?? [], true);
+                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupMap[$domainId] ?? []));
+                if (!$ownsDirect && !$ownsViaGroup) {
+                    unset($zone['owner_fullnames'], $zone['owner_usernames']);
+                    $zone['fullname'] = '';
+                }
+            }
         }
         unset($zone);
 

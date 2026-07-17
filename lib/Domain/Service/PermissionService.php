@@ -214,6 +214,62 @@ class PermissionService
     }
 
     /**
+     * Get zone metadata view permission level for a user
+     *
+     * Holders of zone_meta_edit_* may always see what they are allowed to edit.
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's metadata view permission
+     */
+    public function getZoneMetadataViewPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (
+            in_array('zone_metadata_view_others', $permissions)
+            || in_array('zone_meta_edit_others', $permissions)
+            || $this->isAdmin($userId)
+        ) {
+            return 'all';
+        } elseif (
+            in_array('zone_metadata_view_own', $permissions)
+            || in_array('zone_meta_edit_own', $permissions)
+        ) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
+     * Get zone ownership view permission level for a user
+     *
+     * Holders of zone_meta_edit_* may always see what they are allowed to edit.
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's ownership view permission
+     */
+    public function getZoneOwnershipViewPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (
+            in_array('zone_ownership_view_others', $permissions)
+            || in_array('zone_meta_edit_others', $permissions)
+            || $this->isAdmin($userId)
+        ) {
+            return 'all';
+        } elseif (
+            in_array('zone_ownership_view_own', $permissions)
+            || in_array('zone_meta_edit_own', $permissions)
+        ) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
      * Check if user can view other users' content
      *
      * @param int $userId User ID to check

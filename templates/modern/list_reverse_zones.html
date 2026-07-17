@@ -118,10 +118,14 @@
                         {% endif %}
                         {% if show_owner_column %}
                         <th>
+                            {% if is_owner_sort_supported %}
                             <a href="{{ base_url_prefix }}/zones/reverse?zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Owner{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
+                            {% else %}
+                            {% trans %}Owner{% endtrans %}
+                            {% endif %}
                         </th>
                         {% endif %}
                         {% if show_group_column %}

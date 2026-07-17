@@ -144,3 +144,60 @@ CREATE TABLE IF NOT EXISTS api_key_zones (
 
 CREATE INDEX IF NOT EXISTS idx_api_key_zones_api_key_id ON api_key_zones(api_key_id);
 CREATE INDEX IF NOT EXISTS idx_api_key_zones_zone_id ON api_key_zones(zone_id);
+
+-- Register dedicated view permissions for zone metadata and zone ownership,
+-- split out of zone_content_view (closes #1354). Unlike opt-in permissions,
+-- templates holding zone_content_view_* ARE auto-granted the matching new
+-- permissions below: metadata and ownership were visible to content viewers
+-- before this release, so upgrades keep what users could already see. Admins
+-- revoke the new permissions per template to hide those sections.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_metadata_view_own', 'User is allowed to see the meta data of zones he owns.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_metadata_view_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_metadata_view_others', 'User is allowed to see the meta data of zones he does not own.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_metadata_view_others');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_ownership_view_own', 'User is allowed to see the owners of zones he owns.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_ownership_view_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_ownership_view_others', 'User is allowed to see the owners of zones he does not own.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_ownership_view_others');
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pti.templ_id, np.id
+FROM perm_templ_items pti
+JOIN perm_items cp ON cp.id = pti.perm_id AND cp.name = 'zone_content_view_own'
+JOIN perm_items np ON np.name = 'zone_metadata_view_own'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items x WHERE x.templ_id = pti.templ_id AND x.perm_id = np.id);
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pti.templ_id, np.id
+FROM perm_templ_items pti
+JOIN perm_items cp ON cp.id = pti.perm_id AND cp.name = 'zone_content_view_own'
+JOIN perm_items np ON np.name = 'zone_ownership_view_own'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items x WHERE x.templ_id = pti.templ_id AND x.perm_id = np.id);
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pti.templ_id, np.id
+FROM perm_templ_items pti
+JOIN perm_items cp ON cp.id = pti.perm_id AND cp.name = 'zone_content_view_others'
+JOIN perm_items np ON np.name = 'zone_metadata_view_others'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items x WHERE x.templ_id = pti.templ_id AND x.perm_id = np.id);
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pti.templ_id, np.id
+FROM perm_templ_items pti
+JOIN perm_items cp ON cp.id = pti.perm_id AND cp.name = 'zone_content_view_others'
+JOIN perm_items np ON np.name = 'zone_ownership_view_others'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items x WHERE x.templ_id = pti.templ_id AND x.perm_id = np.id);
+
+-- Content view no longer covers metadata; keep the catalog text accurate.
+UPDATE perm_items SET descr = 'User is allowed to see the content of zones he owns.'
+WHERE name = 'zone_content_view_own';
+
+UPDATE perm_items SET descr = 'User is allowed to see the content of zones he does not own.'
+WHERE name = 'zone_content_view_others';

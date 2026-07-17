@@ -77,12 +77,12 @@ class ZoneOwnershipController extends BaseController
 
         // Check permissions
         $userId = $this->userContextService->getLoggedInUserId();
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
         $perm_view_others = $this->permissionService->canViewOthersContent($userId);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if ($perm_view !== "all" && !$user_is_zone_owner) {
+        if ($perm_ownership_view !== "all" && !($perm_ownership_view === "own" && $user_is_zone_owner)) {
             $this->showError(_('You do not have permission to access this zone.'));
             return;
         }

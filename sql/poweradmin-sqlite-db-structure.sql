@@ -38,10 +38,10 @@ CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, desc
 
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (41,	'zone_master_add',	'User is allowed to add new master zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (42,	'zone_slave_add',	'User is allowed to add new slave zones.');
-INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.');
-INSERT INTO "perm_items" ("id", "name", "descr") VALUES (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (46,	'zone_content_view_others',	'User is allowed to see the content of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (49,	'search',	'User is allowed to perform searches.');
@@ -70,6 +70,10 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (72,	'zone_logs_view_oth
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (73,	'user_logs_view',	'User is allowed to view the user activity logs.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
@@ -133,6 +137,18 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (41,	4,	71);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (42,	7,	71);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (43,	8,	71);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (44,	9,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (45,	2,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (46,	3,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (47,	4,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (48,	7,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (49,	8,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (50,	9,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (51,	2,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (52,	3,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (53,	4,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (54,	7,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (55,	8,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (56,	9,	78);
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 

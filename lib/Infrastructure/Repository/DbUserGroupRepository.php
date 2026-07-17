@@ -59,6 +59,11 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
     }
 
+    public function getGroupIdsForUser(int $userId): array
+    {
+        return array_map(fn($group) => $group->getId(), $this->findByUserId($userId));
+    }
+
     public function findById(int $id): ?UserGroup
     {
         $query = "SELECT * FROM user_groups WHERE id = :id";

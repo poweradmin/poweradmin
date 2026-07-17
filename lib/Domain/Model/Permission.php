@@ -150,6 +150,57 @@ class Permission
     }
 
     /**
+     * Get zone metadata view permission.
+     *
+     * Determines whose zone metadata (zone type, master, template, PowerDNS
+     * metadata) the user may see. Holders of zone_meta_edit_* may always see
+     * what they are allowed to edit.
+     *
+     * @return string Returns "all", "own", or "none".
+     */
+    public static function getZoneMetadataViewPermission($db): string
+    {
+        if (
+            UserManager::verifyPermission($db, 'zone_metadata_view_others')
+            || UserManager::verifyPermission($db, 'zone_meta_edit_others')
+        ) {
+            return "all";
+        } elseif (
+            UserManager::verifyPermission($db, 'zone_metadata_view_own')
+            || UserManager::verifyPermission($db, 'zone_meta_edit_own')
+        ) {
+            return "own";
+        } else {
+            return "none";
+        }
+    }
+
+    /**
+     * Get zone ownership view permission.
+     *
+     * Determines whose zone owner lists the user may see. Holders of
+     * zone_meta_edit_* may always see what they are allowed to edit.
+     *
+     * @return string Returns "all", "own", or "none".
+     */
+    public static function getZoneOwnershipViewPermission($db): string
+    {
+        if (
+            UserManager::verifyPermission($db, 'zone_ownership_view_others')
+            || UserManager::verifyPermission($db, 'zone_meta_edit_others')
+        ) {
+            return "all";
+        } elseif (
+            UserManager::verifyPermission($db, 'zone_ownership_view_own')
+            || UserManager::verifyPermission($db, 'zone_meta_edit_own')
+        ) {
+            return "own";
+        } else {
+            return "none";
+        }
+    }
+
+    /**
      * Get edit permission.
      *
      * This method determines the user's permission to edit content.

@@ -26,6 +26,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -104,18 +105,13 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
+        $isOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
         $canEditMetadata = $this->hasPermission('zone_meta_edit_others')
-            || (
-                $this->hasPermission('zone_meta_edit_own')
-                && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
-            );
+            || ($this->hasPermission('zone_meta_edit_own') && $isOwner);
 
-        $canViewMetadata = $canEditMetadata
-            || $this->hasPermission('zone_content_view_others')
-            || (
-                $this->hasPermission('zone_content_view_own')
-                && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
-            );
+        // The helper folds meta-edit in, so editors always retain view access.
+        $permMetadataView = Permission::getZoneMetadataViewPermission($this->db);
+        $canViewMetadata = $permMetadataView === 'all' || ($permMetadataView === 'own' && $isOwner);
 
         $this->checkCondition(!$canViewMetadata, _('You do not have the permission to view zone metadata.'));
 

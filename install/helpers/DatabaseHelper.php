@@ -225,7 +225,8 @@ class DatabaseHelper
             'user_is_ueberuser', 'zone_master_add', 'zone_slave_add', 'zone_content_view_own',
             'zone_content_edit_own', 'zone_meta_edit_own', 'search', 'user_edit_own',
             'zone_templ_add', 'zone_templ_edit', 'api_manage_keys', 'zone_delete_own',
-            'zone_content_edit_own_as_client', 'zone_dnssec_manage_own', 'zone_logs_view_own'
+            'zone_content_edit_own_as_client', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+            'zone_metadata_view_own', 'zone_ownership_view_own'
         ];
 
         $permissionIds = [];
@@ -240,9 +241,11 @@ class DatabaseHelper
             'Administrator' => ['user_is_ueberuser'],
             'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own'],
-            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own'],
-            'Viewer' => ['zone_content_view_own', 'search', 'zone_logs_view_own'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+                               'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
+                         'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Viewer' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
             'Guest' => []
         ];
 
@@ -292,9 +295,11 @@ class DatabaseHelper
             'Administrators' => ['user_is_ueberuser'],
             'Zone Managers' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own'],
-            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own'],
-            'Viewers' => ['zone_content_view_own', 'search', 'zone_logs_view_own'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+                               'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
+                          'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Viewers' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
             'Guests' => [],
         ];
 

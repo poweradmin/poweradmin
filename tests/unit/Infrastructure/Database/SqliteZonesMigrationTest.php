@@ -57,11 +57,17 @@ class SqliteZonesMigrationTest extends TestCase
             VALUES (1, 100, 5, 'first', 0, 'example.com', 'MASTER', NULL),
                    (2, 101, 6, NULL, 7, 'example.org', 'SLAVE', '192.0.2.1')");
 
-        // Migration also writes perm_items; satisfy that statement's table dep.
+        // Migration also writes perm_items and perm_templ_items; satisfy those
+        // statements' table deps.
         $this->db->exec("CREATE TABLE perm_items (
             id integer PRIMARY KEY,
             name VARCHAR(64) NOT NULL,
             descr VARCHAR(1024) NOT NULL
+        )");
+        $this->db->exec("CREATE TABLE perm_templ_items (
+            id integer PRIMARY KEY,
+            templ_id integer NOT NULL,
+            perm_id integer NOT NULL
         )");
 
         // Migration ALTERs login_attempts to add the attempt_type column.

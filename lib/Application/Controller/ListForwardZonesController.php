@@ -167,18 +167,29 @@ class ListForwardZonesController extends BaseController
         $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
+        $perm_ownership_view = Permission::getZoneOwnershipViewPermission($this->db);
+        // The full-name column also lists zone owners, so it follows the same gate
+        $iface_zonelist_fullname = $iface_zonelist_fullname && $perm_ownership_view !== 'none';
         $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
-            && $this->config->get('interface', 'display_owner_in_zone_list', true);
+            && $this->config->get('interface', 'display_owner_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
         // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
         $showGroupColumn = $ownershipMode->isGroupOwnerAllowed()
-            && $this->config->get('interface', 'display_group_in_zone_list', true);
-        $isGroupSortSupported = $showGroupColumn && !$isApiBackend;
+            && $this->config->get('interface', 'display_group_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
+        // Sorting by owner/group data the user cannot fully see would leak
+        // ownership through row order, so it needs "all" scope, or "own" scope
+        // with a list that already contains only owned zones.
+        $ownershipSortAllowed = $perm_ownership_view === 'all'
+            || ($perm_ownership_view === 'own' && $perm_view === 'own');
+        $isOwnerSortSupported = $showOwnerColumn && $ownershipSortAllowed;
+        $isGroupSortSupported = $showGroupColumn && !$isApiBackend && $ownershipSortAllowed;
 
         $allowedSort = ['name', 'type'];
         if ($iface_zonelist_record_count) {
             $allowedSort[] = 'count_records';
         }
-        if ($showOwnerColumn) {
+        if ($isOwnerSortSupported) {
             $allowedSort[] = 'owner';
         }
         if ($isGroupSortSupported) {
@@ -216,6 +227,10 @@ class ListForwardZonesController extends BaseController
             : ['has_direct' => false, 'group_ids' => []];
         $username = $_SESSION[SessionKeys::USERLOGIN];
 
+        $userGroupIds = $perm_ownership_view === 'own'
+            ? $userGroupRepo->getGroupIdsForUser($userId)
+            : [];
+
         foreach ($zones as &$zone) {
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
             $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
@@ -242,6 +257,18 @@ class ListForwardZonesController extends BaseController
             } else {
                 $zone['user_can_delete'] = false;
             }
+
+            // At the "own" ownership view level, owner and group cells stay
+            // visible only for zones the user owns directly or via a group.
+            if ($perm_ownership_view === 'own') {
+                $ownsDirect = in_array($username, $zone['users'] ?? [], true);
+                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupIds));
+                if (!$ownsDirect && !$ownsViaGroup) {
+                    $zone['owners'] = [];
+                    $zone['full_names'] = [];
+                    $zone['groups'] = [];
+                }
+            }
         }
         unset($zone); // Break the reference
 
@@ -266,6 +293,7 @@ class ListForwardZonesController extends BaseController
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'show_owner_column' => $showOwnerColumn,
             'show_group_column' => $showGroupColumn,
+            'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
             'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),

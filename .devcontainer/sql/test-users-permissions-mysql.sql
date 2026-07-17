@@ -48,19 +48,22 @@ INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
 SELECT 2, `id` FROM `perm_items` WHERE `name` IN (
     'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
     'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-    'api_manage_keys', 'zone_delete_own', 'zone_logs_view_own'
+    'api_manage_keys', 'zone_delete_own', 'zone_logs_view_own',
+    'zone_metadata_view_own', 'zone_ownership_view_own'
 ) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 2 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Recreate DNS Editor permissions (template 3)
 INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
 SELECT 3, `id` FROM `perm_items` WHERE `name` IN (
-    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own'
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
+    'zone_metadata_view_own', 'zone_ownership_view_own'
 ) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 3 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Recreate Read Only permissions (template 4)
 INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
 SELECT 4, `id` FROM `perm_items` WHERE `name` IN (
-    'zone_content_view_own', 'search', 'zone_logs_view_own'
+    'zone_content_view_own', 'search', 'zone_logs_view_own',
+    'zone_metadata_view_own', 'zone_ownership_view_own'
 ) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 4 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Template 5 (No Access) has no permissions

@@ -305,6 +305,11 @@ class EditController extends BaseController
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
         $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner == "1");
 
+        $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
+        $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
+        $metadata_view = $perm_metadata_view === 'all' || ($perm_metadata_view === 'own' && $user_is_zone_owner == "1");
+        $ownership_view = $perm_ownership_view === 'all' || ($perm_ownership_view === 'own' && $user_is_zone_owner == "1");
+
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
         }
@@ -489,6 +494,8 @@ class EditController extends BaseController
             'perm_edit_ns_subzone' => $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE),
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
+            'metadata_view' => $metadata_view,
+            'ownership_view' => $ownership_view,
             'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),

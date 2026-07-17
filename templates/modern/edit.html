@@ -219,10 +219,12 @@
             </a>
             {% endfor %}
             {% endif %}
+            {% if ownership_view %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="btn btn-secondary btn-sm">
                 <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>
-            {% if meta_edit or perm_view != "none" %}
+            {% endif %}
+            {% if metadata_view %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/metadata" class="btn btn-secondary btn-sm">
                 <i class="bi bi-database-gear me-1 text-white"></i>{% if meta_edit %}{% trans %}Metadata{% endtrans %}{% else %}{% trans %}View Metadata{% endtrans %}{% endif %}
             </a>
@@ -763,6 +765,7 @@
 {% endif %}
 
 <!-- Zone Configuration -->
+{% if metadata_view or pdnssec_use %}
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm mb-4">
@@ -773,6 +776,7 @@
             <div class="collapse" id="zone-config-body">
             <div class="card-body">
                 <div class="row">
+                    {% if metadata_view %}
                     <!-- Zone Type -->
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
@@ -852,6 +856,7 @@
                         </p>
                         {% endif %}
                     </div>
+                    {% endif %}
 
                     <!-- DNSSEC -->
                     {% if pdnssec_use %}
@@ -887,6 +892,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <style>
     [data-bs-target="#zone-config-body"] .collapse-icon-config {

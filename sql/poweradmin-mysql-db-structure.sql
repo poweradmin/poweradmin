@@ -108,10 +108,10 @@ CREATE TABLE `perm_items` (
 INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
                                                      (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
-                                                     (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.'),
+                                                     (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.'),
                                                      (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.'),
                                                      (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.'),
-                                                     (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.'),
+                                                     (46,	'zone_content_view_others',	'User is allowed to see the content of zones he does not own.'),
                                                      (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.'),
                                                      (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.'),
                                                      (49,	'search',	'User is allowed to perform searches.'),
@@ -139,7 +139,11 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.'),
                                                      (73,	'user_logs_view',	'User is allowed to view the user activity logs.'),
                                                      (74,	'group_logs_view',	'User is allowed to view the group activity logs.'),
-                                                     (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.');
+                                                     (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'),
+                                                     (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.'),
+                                                     (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
+                                                     (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
+                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -214,7 +218,19 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (41,	4,	71),
     (42,	7,	71),
     (43,	8,	71),
-    (44,	9,	71);
+    (44,	9,	71),
+    (45,	2,	76),
+    (46,	3,	76),
+    (47,	4,	76),
+    (48,	7,	76),
+    (49,	8,	76),
+    (50,	9,	76),
+    (51,	2,	78),
+    (52,	3,	78),
+    (53,	4,	78),
+    (54,	7,	78),
+    (55,	8,	78),
+    (56,	9,	78);
 
 CREATE TABLE `records_zone_templ` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
