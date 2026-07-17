@@ -773,6 +773,94 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneMetadataViaMetaEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_meta_edit_others
+
+        $result = $this->service->canViewZoneMetadata(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataWithViewOthersPermission(): void
+    {
+        // not ueberuser, not meta_edit_others, not meta_edit_own, has zone_metadata_view_others
+        $this->setupPermissionMock([0, 0, 0, 1]);
+
+        $result = $this->service->canViewZoneMetadata(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataWithViewOwnPermissionAndOwnership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            // not ueberuser, not meta_edit_others, not meta_edit_own,
+            // not metadata_view_others, has metadata_view_own, owns zone
+            $results = [0, 0, 0, 0, 1, 1];
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->canViewZoneMetadata(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataReturnsFalseWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 0]); // no permissions
+
+        $result = $this->service->canViewZoneMetadata(4, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipViaMetaEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_meta_edit_others
+
+        $result = $this->service->canViewZoneOwnership(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipWithViewOwnPermissionAndOwnership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            // not ueberuser, not meta_edit_others, not meta_edit_own,
+            // not ownership_view_others, has ownership_view_own, owns zone
+            $results = [0, 0, 0, 0, 1, 1];
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->canViewZoneOwnership(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipReturnsFalseWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 0]); // no permissions
+
+        $result = $this->service->canViewZoneOwnership(4, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testGetUserGroupIdsReturnsIntegerList(): void
     {
         $stmt = $this->createMock(PDOStatement::class);

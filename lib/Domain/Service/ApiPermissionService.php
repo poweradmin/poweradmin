@@ -634,6 +634,58 @@ class ApiPermissionService
     }
 
     /**
+     * Check if user can view zone metadata (stateless)
+     *
+     * Editors of zone metadata always retain view access.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @return bool True if user can view zone metadata
+     */
+    public function canViewZoneMetadata(int $userId, int $zoneId): bool
+    {
+        if ($this->canEditZoneMeta($userId, $zoneId)) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_metadata_view_others')) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_metadata_view_own')) {
+            return $this->userOwnsZone($userId, $zoneId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user can view zone owners (stateless)
+     *
+     * Editors of zone metadata always retain view access.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @return bool True if user can view zone owners
+     */
+    public function canViewZoneOwnership(int $userId, int $zoneId): bool
+    {
+        if ($this->canEditZoneMeta($userId, $zoneId)) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_ownership_view_others')) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_ownership_view_own')) {
+            return $this->userOwnsZone($userId, $zoneId);
+        }
+
+        return false;
+    }
+
+    /**
      * Get all zone IDs that the user is allowed to view (stateless)
      *
      * @param int $userId User ID to check

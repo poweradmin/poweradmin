@@ -133,8 +133,8 @@ class ZoneOwnersController extends PublicApiController
             return $this->returnApiError('Zone not found', 404);
         }
 
-        if (!$this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId)) {
-            return $this->returnApiError('You do not have permission to view this zone', 403);
+        if (!$this->apiPermissionService->canViewZoneOwnership($this->authenticatedUserId, $zoneId)) {
+            return $this->returnApiError('You do not have permission to view zone owners', 403);
         }
 
         try {
