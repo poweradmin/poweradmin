@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -160,10 +161,11 @@ class SupermasterManager implements SupermasterManagerInterface
         }
 
         $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
+        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 's.account', 'u.username');
 
         $result = $this->db->query("SELECT s.ip, s.nameserver, s.account, u.fullname
                                      FROM $supermasters_table s
-                                     LEFT JOIN users u ON s.account = u.username");
+                                     LEFT JOIN users u ON $accountMatch");
 
         $supermasters = array();
 
@@ -205,10 +207,11 @@ class SupermasterManager implements SupermasterManagerInterface
         }
 
         $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
+        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 's.account', 'u.username');
 
         $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
                                      FROM $supermasters_table s
-                                     LEFT JOIN users u ON s.account = u.username
+                                     LEFT JOIN users u ON $accountMatch
                                      WHERE s.ip = :master_ip");
         $stmt->execute([':master_ip' => $master_ip]);
         $result = $stmt->fetch();
