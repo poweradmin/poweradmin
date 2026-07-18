@@ -8825,8 +8825,8 @@ msgid "Optional information about this group"
 msgstr "Informacione personale rreth këtij grupi"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Modeli i hyrjes"
+msgid "Permission template"
+msgstr "Modeli i lejeve"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8834,8 +8834,8 @@ msgid ""
 msgstr "Anëtarët e grupit trashëgojnë këto të drejta vetëm për zonat në pronësi të këtij grupi"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Zgjidh"
+msgid "Select a permission template"
+msgstr "Zgjidhni një model lejesh"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9979,8 +9979,8 @@ msgid "User Permissions"
 msgstr "Të drejtat e përdoruesit"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "nga."
+msgid "This user has been assigned the permission template"
+msgstr "Këtij përdoruesi i është caktuar modeli i lejeve"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10091,16 +10091,12 @@ msgid "Yes, unlink these zones"
 msgstr "Po, zbërthe këto zona"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Modeli i hyrjes"
+msgid "Permission templates"
+msgstr "Modelet e lejeve"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Shto"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Shto Shabllon e hyrjes"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10137,19 +10133,22 @@ msgid "Add Template"
 msgstr "Shto Shabllon"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Informacione"
+msgid "About Permission Templates"
+msgstr "Rreth modeleve të lejeve"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Çfarë janë kopjet e hyrjes?"
+msgid "What are Permission Templates?"
+msgstr "Çfarë janë modelet e lejeve?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Modelet e hyrjes përcaktojnë se cilat veprime mund të kryejnë përdoruesit dhe grupet në Poweradmin. Ato sigurojnë një mënyrë të shpejtë për të dhënë kombinime të përbashkëta të lejeve."
+msgstr ""
+"Modelet e lejeve përcaktojnë grupe veprimesh që përdoruesit dhe grupet mund "
+"të kryejnë në Poweradmin. Ato ofrojnë një mënyrë të shpejtë për të caktuar "
+"kombinime të zakonshme lejesh."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10476,12 +10475,12 @@ msgid "Create a new record for this zone template"
 msgstr "Krijo a i ri për"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Elemino Shabllon"
+msgid "Delete Permission Template"
+msgstr "Fshi modelin e lejeve"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "nga elemino"
+msgid "You are about to delete the permission template"
+msgstr "Jeni duke fshirë modelin e lejeve"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12560,10 +12559,6 @@ msgstr "Po, elemino këtë kyç API"
 msgid "No, keep this API key"
 msgstr "Jo, mbaje këtë çelës API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Ndrysho Shabllon"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Modeli i përdoruesit"
@@ -12678,20 +12673,16 @@ msgid ""
 msgstr "Pasi të krijoni grupin, mund t'i shtoni anëtarët dhe t'i përcaktoni zonat. Të gjithë anëtarët do të kenë automatikisht qasje në zonat e grupit."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Modeli i hyrjes"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Grupi Modeli:"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Shto"
+msgid "Add permission template"
+msgstr "Shto model lejesh"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nuk u gjet asnjë model hyrjeje"
+msgid "No permission templates found"
+msgstr "Nuk u gjet asnjë model lejesh"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13610,3 +13601,9 @@ msgstr "Nuk mund të lidhet me bazën e të dhënave PowerDNS \"%s\": %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Ndihmës i rekordeve"
+
+msgid "List permission templates"
+msgstr "Lista e modeleve të lejeve"
+
+msgid "Permissions"
+msgstr "Lejet"

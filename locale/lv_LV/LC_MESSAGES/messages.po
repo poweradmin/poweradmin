@@ -9020,8 +9020,8 @@ msgid "Optional information about this group"
 msgstr "Neobligāta informācija par grupu"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Piekļuves veidne"
+msgid "Permission template"
+msgstr "Atļauju veidne"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9029,8 +9029,8 @@ msgid ""
 msgstr "Grupas dalībnieki manto šīs atļaujas tikai šīs grupas zonām"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Atlasiet piekļuves veidni"
+msgid "Select a permission template"
+msgstr "Atlasiet atļauju veidni"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10202,8 +10202,8 @@ msgid "User Permissions"
 msgstr "Lietotāja atļaujas"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Šim lietotājam ir piešķirta piekļuves veidne"
+msgid "This user has been assigned the permission template"
+msgstr "Šim lietotājam ir piešķirta atļauju veidne"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10316,16 +10316,12 @@ msgid "Yes, unlink these zones"
 msgstr "Jā, atsaistīt šīs zonas"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "piekļuves veidnes"
+msgid "Permission templates"
+msgstr "Atļauju veidnes"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Pievienot"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Pievienot piekļuves veidni"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10362,19 +10358,22 @@ msgid "Add Template"
 msgstr "Pievienot veidni"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Par piekļuves veidnēm"
+msgid "About Permission Templates"
+msgstr "Par atļauju veidnēm"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Kas ir piekļuves veidnes?"
+msgid "What are Permission Templates?"
+msgstr "Kas ir atļauju veidnes?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Piekļuves veidnes nosaka lietotāju un grupu darbības."
+msgstr ""
+"Atļauju veidnes nosaka darbību kopas, ko lietotāji un grupas var veikt "
+"Poweradmin. Tās nodrošina ātru veidu, kā piešķirt izplatītas atļauju "
+"kombinācijas."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10710,12 +10709,12 @@ msgid "Create a new record for this zone template"
 msgstr "Izveidot jaunu ierakstu šai zonas veidnei"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Dzēst piekļuves veidni"
+msgid "Delete Permission Template"
+msgstr "Dzēst atļauju veidni"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Jūs gatavojaties dzēst piekļuves veidni"
+msgid "You are about to delete the permission template"
+msgstr "Jūs gatavojaties dzēst atļauju veidni"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12838,10 +12837,6 @@ msgstr "Jā, dzēst šo API atslēgu"
 msgid "No, keep this API key"
 msgstr "Nē, paturēt šo API atslēgu"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Rediģēt piekļuves veidni"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informācija par veidnes lietošanu"
@@ -12957,20 +12952,16 @@ msgid ""
 msgstr "Pēc grupas izveides pievienojiet dalībniekus un zonas."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Piekļuves veidnes"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Grupu veidnes"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "pievienot piekļuves veidni"
+msgid "Add permission template"
+msgstr "Pievienot atļauju veidni"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nav atrastu piekļuves veidņu"
+msgid "No permission templates found"
+msgstr "Nav atrastu atļauju veidņu"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13941,3 +13932,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Atļauju veidņu saraksts"
+
+msgid "Permissions"
+msgstr "Atļaujas"

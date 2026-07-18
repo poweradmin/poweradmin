@@ -9658,8 +9658,8 @@ msgid "Optional information about this group"
 msgstr "Thuật toán cân bằng tải không hợp lệ."
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Cấu hình firewall không hợp lệ."
+msgid "Permission template"
+msgstr "Mẫu quyền hạn"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9667,8 +9667,8 @@ msgid ""
 msgstr "Firewall bị chặn."
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Quy tắc firewall không hợp lệ."
+msgid "Select a permission template"
+msgstr "Chọn mẫu quyền hạn"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10867,8 +10867,8 @@ msgid "User Permissions"
 msgstr "Quyền hạn người dùng"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Người dùng này đã được gán mẫu truy cập"
+msgid "This user has been assigned the permission template"
+msgstr "Người dùng này đã được gán mẫu quyền hạn"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10983,16 +10983,12 @@ msgid "Yes, unlink these zones"
 msgstr "Có, hủy liên kết các vùng này"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Mẫu truy cập"
+msgid "Permission templates"
+msgstr "Mẫu quyền hạn"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Thêm"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Thêm mẫu truy cập"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11031,20 +11027,20 @@ msgid "Add Template"
 msgstr "Thêm mẫu"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Giới thiệu về mẫu truy cập"
+msgid "About Permission Templates"
+msgstr "Giới thiệu về mẫu quyền hạn"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Mẫu truy cập là gì?"
+msgid "What are Permission Templates?"
+msgstr "Mẫu quyền hạn là gì?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Mẫu truy cập định nghĩa các tập hợp hành động mà người dùng và nhóm có thể "
+"Mẫu quyền hạn định nghĩa các tập hợp hành động mà người dùng và nhóm có thể "
 "thực hiện trong Poweradmin. Chúng cung cấp cách nhanh chóng để gán các kết "
 "hợp quyền hạn phổ biến."
 
@@ -11396,12 +11392,12 @@ msgid "Create a new record for this zone template"
 msgstr "Tạo một bản ghi mới cho mẫu vùng này"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Xóa mẫu truy cập"
+msgid "Delete Permission Template"
+msgstr "Xóa mẫu quyền hạn"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Bạn sắp xóa mẫu truy cập"
+msgid "You are about to delete the permission template"
+msgstr "Bạn sắp xóa mẫu quyền hạn"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -13586,10 +13582,6 @@ msgstr "Có, xóa khóa API này"
 msgid "No, keep this API key"
 msgstr "Không, giữ khóa API này"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Sửa mẫu truy cập"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Thông tin sử dụng mẫu"
@@ -13722,20 +13714,16 @@ msgstr ""
 "thành viên sẽ tự động được quyền truy cập vào các vùng của nhóm."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Mẫu truy cập"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Mẫu nhóm"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Thêm mẫu truy cập"
+msgid "Add permission template"
+msgstr "Thêm mẫu quyền hạn"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Không tìm thấy mẫu truy cập"
+msgid "No permission templates found"
+msgstr "Không tìm thấy mẫu quyền hạn"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -14710,3 +14698,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Danh sách mẫu quyền hạn"
+
+msgid "Permissions"
+msgstr "Quyền hạn"

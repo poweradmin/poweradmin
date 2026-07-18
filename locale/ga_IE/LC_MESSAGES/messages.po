@@ -8861,8 +8861,8 @@ msgid "Optional information about this group"
 msgstr "Faisnéis roghnach faoin ngrúpa seo"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "An teimpléad rochtana"
+msgid "Permission template"
+msgstr "Teimpléad ceadanna"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8870,8 +8870,8 @@ msgid ""
 msgstr "baill Ghrúpa hoidhreacht na ceadanna ach amháin le haghaidh criosanna úinéireacht ag an ngrúpa"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Roghnaigh teimpléad rochtana"
+msgid "Select a permission template"
+msgstr "Roghnaigh teimpléad ceadanna"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10015,8 +10015,8 @@ msgid "User Permissions"
 msgstr "Ceadúnas Madraí ar Líne"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Sannadh an t-úsáideoir seo an teimpléad rochtana"
+msgid "This user has been assigned the permission template"
+msgstr "Sannadh an teimpléad ceadanna don úsáideoir seo"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10127,16 +10127,12 @@ msgid "Yes, unlink these zones"
 msgstr "Sea, unlink na criosanna"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Teimpléid rochtana"
+msgid "Permission templates"
+msgstr "Teimpléid ceadanna"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Déan teagmháil linn"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Plean Gníomhaíochta don Oideachas"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10173,19 +10169,22 @@ msgid "Add Template"
 msgstr "Roghnaigh gach rud"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Plean Gníomhaíochta don Oideachas"
+msgid "About Permission Templates"
+msgstr "Maidir le teimpléid ceadanna"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Cad iad na Teimpléid Rochtana?"
+msgid "What are Permission Templates?"
+msgstr "Cad iad teimpléid ceadanna?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "teimpléid rochtana sainmhíniú ar shraitheanna gníomhaíochtaí gur féidir le húsáideoirí agus grúpaí a dhéanamh i Poweradmin. Soláthraíonn siad ar bhealach tapa a shannadh comhcheangail cead."
+msgstr ""
+"Sainmhíníonn teimpléid ceadanna tacair gníomhartha is féidir le húsáideoirí "
+"agus grúpaí a dhéanamh in Poweradmin. Soláthraíonn siad bealach tapa chun "
+"teaglamaí coitianta ceadanna a shannadh."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10512,12 +10511,12 @@ msgid "Create a new record for this zone template"
 msgstr "Cruthaigh taifead nua don teimpléad crios"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Plean Gníomhaíochta don Oideachas"
+msgid "Delete Permission Template"
+msgstr "Scrios teimpléad ceadanna"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Tá tú ar tí an teimpléad rochtana a scriosadh"
+msgid "You are about to delete the permission template"
+msgstr "Tá tú ar tí an teimpléad ceadanna a scriosadh"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12596,10 +12595,6 @@ msgstr "Sea, scrios an eochair API"
 msgid "No, keep this API key"
 msgstr "Uimh, a choinneáil ar an eochair API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Plean Gníomhaíochta don Oideachas"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Plean Gníomhaíochta don Oideachas"
@@ -12714,20 +12709,16 @@ msgid ""
 msgstr "Tar éis an grúpa a chruthú, is féidir leat comhaltaí a chur leis agus criosanna a shannadh dó. Gheobhaidh gach ball rochtain go huathoibríoch ar chriosanna an ghrúpa."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Plean Gníomhaíochta don Oideachas"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Plean Gníomhaíochta don Oideachas"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Cuir teimpléad rochtana"
+msgid "Add permission template"
+msgstr "Cuir teimpléad ceadanna leis"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Níor aimsíodh aon teimpléid rochtana"
+msgid "No permission templates found"
+msgstr "Níor aimsíodh aon teimpléid ceadanna"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13646,3 +13637,9 @@ msgstr "Ní féidir ceangal le bunachar sonraí PowerDNS \"%s\": %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Treoraí Taifead"
+
+msgid "List permission templates"
+msgstr "Liostaigh teimpléid ceadanna"
+
+msgid "Permissions"
+msgstr "Ceadanna"

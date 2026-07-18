@@ -8894,8 +8894,8 @@ msgid "Optional information about this group"
 msgstr "Opcionális információk a csoportról"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Hozzáférési sablon"
+msgid "Permission template"
+msgstr "Engedélysablon"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8903,8 +8903,8 @@ msgid ""
 msgstr "Csoport tagjai csak a csoport zónáira kapják a jogokat"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Válasszon hozzáférési sablont"
+msgid "Select a permission template"
+msgstr "Válasszon engedélysablont"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10069,8 +10069,8 @@ msgid "User Permissions"
 msgstr "Felhasználói engedélyek"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Ehhez a felhasználóhoz hozzáférési sablon van rendelve"
+msgid "This user has been assigned the permission template"
+msgstr "Ehhez a felhasználóhoz engedélysablon van rendelve"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10182,16 +10182,12 @@ msgid "Yes, unlink these zones"
 msgstr "Igen, zónák leválasztása"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "hozzáférési sablonok"
+msgid "Permission templates"
+msgstr "Engedélysablonok"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Hozzáadás"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Hozzáférési sablon hozzáadása"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10228,19 +10224,22 @@ msgid "Add Template"
 msgstr "Sablon hozzáadása"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Hozzáférési sablonokról"
+msgid "About Permission Templates"
+msgstr "Az engedélysablonokról"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Mik a hozzáférési sablonok?"
+msgid "What are Permission Templates?"
+msgstr "Mik azok az engedélysablonok?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Access sablon: user/group akciók."
+msgstr ""
+"Az engedélysablonok műveletek halmazait határozzák meg, amelyeket a "
+"felhasználók és csoportok végrehajthatnak a Poweradminban. Gyors módot "
+"kínálnak a gyakori engedélykombinációk hozzárendelésére."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10567,12 +10566,12 @@ msgid "Create a new record for this zone template"
 msgstr "Új rekord létrehozása ehhez a zóna sablonhoz"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Hozzáférési sablon törlése"
+msgid "Delete Permission Template"
+msgstr "Engedélysablon törlése"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Hamarosan törli a hozzáférési sablont"
+msgid "You are about to delete the permission template"
+msgstr "Az engedélysablon törlésére készül"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12689,10 +12688,6 @@ msgstr "Igen, töröljem az API-kulcsot"
 msgid "No, keep this API key"
 msgstr "Nem, API-kulcs megtartása"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Hozzáférési sablon szerkesztése"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Sablonhasználati információ"
@@ -12807,20 +12802,16 @@ msgid ""
 msgstr "Csoport után tagok + zónák."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Hozzáférési sablonok"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Csoport sablonok"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "hozzáférési sablon hozzáadása"
+msgid "Add permission template"
+msgstr "Engedélysablon hozzáadása"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nincs hozzáférési sablon"
+msgid "No permission templates found"
+msgstr "Nem található engedélysablon"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13793,3 +13784,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Engedélysablonok listája"
+
+msgid "Permissions"
+msgstr "Engedélyek"

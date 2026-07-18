@@ -8873,8 +8873,8 @@ msgid "Optional information about this group"
 msgstr "معلومات بشأن هذه المجموعة"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "نموذج الوصول"
+msgid "Permission template"
+msgstr "نموذج الأذونات"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8882,8 +8882,8 @@ msgid ""
 msgstr "ويرث أعضاء المجموعة هذه التصاريح فقط للمناطق التي تملكها هذه المجموعة"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "اختيار نموذج الدخول"
+msgid "Select a permission template"
+msgstr "اختيار نموذج الأذونات"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10027,8 +10027,8 @@ msgid "User Permissions"
 msgstr "أذون الاستخدام"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "تم تعيين هذا المستخدم في نموذج الدخول"
+msgid "This user has been assigned the permission template"
+msgstr "تم تعيين نموذج الأذونات لهذا المستخدم"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10139,16 +10139,12 @@ msgid "Yes, unlink these zones"
 msgstr "نعم، فك هذه المناطق"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "نماذج الوصول"
+msgid "Permission templates"
+msgstr "نماذج الأذونات"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "مضاف"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "إضافة نموذج الدخول"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10185,19 +10181,22 @@ msgid "Add Template"
 msgstr "إضافة"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "بشأن نماذج الدخول"
+msgid "About Permission Templates"
+msgstr "حول نماذج الأذونات"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "ما هي نماذج الدخول؟"
+msgid "What are Permission Templates?"
+msgstr "ما هي نماذج الأذونات؟"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "وتحدد نماذج الوصول مجموعات من الإجراءات التي يمكن للمستعملين والمجموعات القيام بها في باورسادمين. وهي توفر وسيلة سريعة لتعيين مزيج من الأذن المشتركة."
+msgstr ""
+"تحدد نماذج الأذونات مجموعات من الإجراءات التي يمكن للمستخدمين والمجموعات "
+"القيام بها في Poweradmin. وهي توفر وسيلة سريعة لتعيين مجموعات الأذونات "
+"الشائعة."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10524,12 +10523,12 @@ msgid "Create a new record for this zone template"
 msgstr "إنشاء سجل جديد لهذا النموذج"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "يحذف نموذج الدخول"
+msgid "Delete Permission Template"
+msgstr "حذف نموذج الأذونات"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "أنت على وشك حذف نموذج الدخول"
+msgid "You are about to delete the permission template"
+msgstr "أنت على وشك حذف نموذج الأذونات"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12608,10 +12607,6 @@ msgstr "نعم، حذف هذا المفتاح"
 msgid "No, keep this API key"
 msgstr "لا، احتفظ بمفتاح \"إم آي\""
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "نموذج الوصول إلى التعليم"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "نموذج معلومات الاستخدام"
@@ -12726,20 +12721,16 @@ msgid ""
 msgstr "بعد إنشاء المجموعة، يمكنك إضافة أعضاء وتعيين مناطق لها. جميع الأعضاء سيصلون تلقائياً إلى مناطق المجموعة"
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "نماذج الدخول"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "النماذج الجماعية"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "إضافة نموذج الدخول"
+msgid "Add permission template"
+msgstr "إضافة نموذج الأذونات"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "لم يتم العثور على قوالب وصول"
+msgid "No permission templates found"
+msgstr "لم يتم العثور على نماذج أذونات"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13658,3 +13649,9 @@ msgstr "لا يمكن الاتصال بقاعدة بيانات PowerDNS \"%s\": 
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "معالج السجلات"
+
+msgid "List permission templates"
+msgstr "قائمة نماذج الأذونات"
+
+msgid "Permissions"
+msgstr "الأذونات"

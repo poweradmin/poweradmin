@@ -8994,7 +8994,7 @@ msgid "Optional information about this group"
 msgstr "Valinnaiset tiedot tästä ryhmästä"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
+msgid "Permission template"
 msgstr "Käyttöoikeusmalli"
 
 #: templates/default/edit_group.html:47
@@ -9003,7 +9003,7 @@ msgid ""
 msgstr "Ryhmän jäsenet perivät oikeudet vain ryhmän omistamille alueille"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
+msgid "Select a permission template"
 msgstr "Valitse käyttöoikeusmalli"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
@@ -10172,7 +10172,7 @@ msgid "User Permissions"
 msgstr "Käyttäjän oikeudet"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
+msgid "This user has been assigned the permission template"
 msgstr "Tälle käyttäjälle on määritetty käyttöoikeusmalli"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
@@ -10284,16 +10284,12 @@ msgid "Yes, unlink these zones"
 msgstr "Kyllä, poista näiden alueiden linkitys"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "käyttöoikeusmallit"
+msgid "Permission templates"
+msgstr "Käyttöoikeusmallit"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Lisää"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Lisää käyttöoikeusmalli"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10330,19 +10326,22 @@ msgid "Add Template"
 msgstr "Lisää malli"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
+msgid "About Permission Templates"
 msgstr "Käyttöoikeusmalleista"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
+msgid "What are Permission Templates?"
 msgstr "Mitä käyttöoikeusmallit ovat?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Käyttöoikeusmallit määrittävät käyttäjien ja ryhmien toiminnot."
+msgstr ""
+"Käyttöoikeusmallit määrittävät toiminnot, joita käyttäjät ja ryhmät voivat "
+"suorittaa Poweradminissa. Ne tarjoavat nopean tavan määrittää yleisiä "
+"käyttöoikeusyhdistelmiä."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10673,11 +10672,11 @@ msgid "Create a new record for this zone template"
 msgstr "Luo uusi tietue tälle aluemallille"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
+msgid "Delete Permission Template"
 msgstr "Poista käyttöoikeusmalli"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
+msgid "You are about to delete the permission template"
 msgstr "Olet poistamassa käyttöoikeusmallia"
 
 #: templates/modern/delete_perm_templ.html:23
@@ -12798,10 +12797,6 @@ msgstr "Kyllä, poista tämä API-avain"
 msgid "No, keep this API key"
 msgstr "Ei, säilytä tämä API-avain"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Muokkaa käyttöoikeusmallia"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Mallin käyttötiedot"
@@ -12917,19 +12912,15 @@ msgid ""
 msgstr "Ryhmän luonnin jälkeen lisää jäsenet ja alueet."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Käyttöoikeusmallit"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Ryhmämallit"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "lisää käyttöoikeusmalli"
+msgid "Add permission template"
+msgstr "Lisää käyttöoikeusmalli"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
+msgid "No permission templates found"
 msgstr "Käyttöoikeusmalleja ei löytynyt"
 
 #: templates/modern/list_perm_templ.html:75
@@ -13902,3 +13893,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Käyttöoikeusmallien luettelo"
+
+msgid "Permissions"
+msgstr "Käyttöoikeudet"

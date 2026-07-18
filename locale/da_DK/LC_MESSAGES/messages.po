@@ -8825,8 +8825,8 @@ msgid "Optional information about this group"
 msgstr "Valgfrie oplysninger om denne gruppe"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Adgangsskabelon"
+msgid "Permission template"
+msgstr "Tilladelsesskabelon"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8834,8 +8834,8 @@ msgid ""
 msgstr "Gruppemedlemmer arver kun disse tilladelser for zoner, der ejes af denne gruppe"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Vælg en adgangsskabelon"
+msgid "Select a permission template"
+msgstr "Vælg en tilladelsesskabelon"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9979,8 +9979,8 @@ msgid "User Permissions"
 msgstr "Brugerrettigheder"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Denne bruger er blevet tildelt adgang skabelon"
+msgid "This user has been assigned the permission template"
+msgstr "Denne bruger er blevet tildelt tilladelsesskabelonen"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10091,16 +10091,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, afled disse zoner"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Adgangsskabeloner"
+msgid "Permission templates"
+msgstr "Tilladelsesskabeloner"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Tilføj"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Tilføj adgangsskabelon"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10137,19 +10133,22 @@ msgid "Add Template"
 msgstr "Tilføj skabelon"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Om adgangsskabeloner"
+msgid "About Permission Templates"
+msgstr "Om tilladelsesskabeloner"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Hvad er Access skabeloner?"
+msgid "What are Permission Templates?"
+msgstr "Hvad er tilladelsesskabeloner?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Adgang skabeloner definere sæt af handlinger, som brugere og grupper kan udføre i Poweradmin. De giver en hurtig måde at tildele fælles tilladelser kombinationer."
+msgstr ""
+"Tilladelsesskabeloner definerer sæt af handlinger, som brugere og grupper "
+"kan udføre i Poweradmin. De giver en hurtig måde at tildele almindelige "
+"kombinationer af tilladelser."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10476,12 +10475,12 @@ msgid "Create a new record for this zone template"
 msgstr "Opret en ny rekord for denne zoneskabelon"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Slet adgangsskabelon"
+msgid "Delete Permission Template"
+msgstr "Slet tilladelsesskabelon"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Du er ved at slette adgangskabelonen"
+msgid "You are about to delete the permission template"
+msgstr "Du er ved at slette tilladelsesskabelonen"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12560,10 +12559,6 @@ msgstr "Ja, slet denne API nøgle"
 msgid "No, keep this API key"
 msgstr "Nej, behold denne API nøgle"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Redigér adgangsskabelon"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Skabelonbrugerinformation"
@@ -12678,20 +12673,16 @@ msgid ""
 msgstr "Efter at have oprettet gruppen, kan du tilføje medlemmer og tildele zoner til det. Alle medlemmer får automatisk adgang til gruppens zoner."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Adgangsskabeloner"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Gruppeskabeloner"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Tilføj adgangsskabelon"
+msgid "Add permission template"
+msgstr "Tilføj tilladelsesskabelon"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Ingen adgangskabeloner fundet"
+msgid "No permission templates found"
+msgstr "Ingen tilladelsesskabeloner fundet"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13610,3 +13601,9 @@ msgstr "Kan ikke forbinde til PowerDNS database %s: %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Postguide"
+
+msgid "List permission templates"
+msgstr "Liste over tilladelsesskabeloner"
+
+msgid "Permissions"
+msgstr "Tilladelser"

@@ -8896,8 +8896,8 @@ msgid "Optional information about this group"
 msgstr "Voliteľné informácie o skupine"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Šablóna prístupu"
+msgid "Permission template"
+msgstr "Šablóna oprávnení"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8905,8 +8905,8 @@ msgid ""
 msgstr "Členovia skupiny dedia tieto oprávnenia iba pre zóny tejto skupiny"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Vyberte šablónu prístupu"
+msgid "Select a permission template"
+msgstr "Vyberte šablónu oprávnení"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10071,8 +10071,8 @@ msgid "User Permissions"
 msgstr "Oprávnenia používateľa"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Tomuto používateľovi bola priradená šablóna prístupu"
+msgid "This user has been assigned the permission template"
+msgstr "Tomuto používateľovi bola priradená šablóna oprávnení"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10183,16 +10183,12 @@ msgid "Yes, unlink these zones"
 msgstr "Áno, odpojiť tieto zóny"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "šablóny prístupu"
+msgid "Permission templates"
+msgstr "Šablóny oprávnení"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Pridať"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Pridať šablónu prístupu"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10229,19 +10225,22 @@ msgid "Add Template"
 msgstr "Pridať šablónu"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "O šablónach prístupu"
+msgid "About Permission Templates"
+msgstr "O šablónach oprávnení"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Čo sú šablóny prístupu?"
+msgid "What are Permission Templates?"
+msgstr "Čo sú šablóny oprávnení?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Access šablóny: akcie."
+msgstr ""
+"Šablóny oprávnení definujú sady akcií, ktoré môžu používatelia a skupiny "
+"vykonávať v Poweradmin. Poskytujú rýchly spôsob priradenia bežných "
+"kombinácií oprávnení."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10569,12 +10568,12 @@ msgid "Create a new record for this zone template"
 msgstr "Vytvoriť nový záznam pre túto šablónu zóny"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Odstrániť šablónu prístupu"
+msgid "Delete Permission Template"
+msgstr "Odstrániť šablónu oprávnení"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Chystáte sa vymazať šablónu prístupu"
+msgid "You are about to delete the permission template"
+msgstr "Chystáte sa vymazať šablónu oprávnení"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12690,10 +12689,6 @@ msgstr "Áno, vymazať tento API kľúč"
 msgid "No, keep this API key"
 msgstr "Nie, ponechať tento API kľúč"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Upraviť šablónu prístupu"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informácie o použití šablóny"
@@ -12808,20 +12803,16 @@ msgid ""
 msgstr "Po skupine pridajte členov a zóny."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Šablóny prístupu"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Šablóny skupín"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "pridať šablónu prístupu"
+msgid "Add permission template"
+msgstr "Pridať šablónu oprávnení"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nenašli sa šablóny prístupu"
+msgid "No permission templates found"
+msgstr "Nenašli sa šablóny oprávnení"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13791,3 +13782,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Zoznam šablón oprávnení"
+
+msgid "Permissions"
+msgstr "Oprávnenia"

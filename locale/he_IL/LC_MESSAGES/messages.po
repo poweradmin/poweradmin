@@ -8825,8 +8825,8 @@ msgid "Optional information about this group"
 msgstr "מידע על הקבוצה"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "תבנית Access"
+msgid "Permission template"
+msgstr "תבנית הרשאות"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8834,8 +8834,8 @@ msgid ""
 msgstr "חברי הקבוצה יורשים את הרשאות האלה רק לאזורים בבעלות הקבוצה"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "בחר תבנית גישה"
+msgid "Select a permission template"
+msgstr "בחר תבנית הרשאות"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9979,8 +9979,8 @@ msgid "User Permissions"
 msgstr "הרשאות משתמש"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "משתמש זה הוצב תבנית הגישה"
+msgid "This user has been assigned the permission template"
+msgstr "למשתמש זה הוקצתה תבנית ההרשאות"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10091,16 +10091,12 @@ msgid "Yes, unlink these zones"
 msgstr "כן, בלי קישורים לאזורים האלה"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "תבניות Access"
+msgid "Permission templates"
+msgstr "תבניות הרשאות"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "הוסף"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "הוספת תבנית Access"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10137,19 +10133,21 @@ msgid "Add Template"
 msgstr "הוספת תבנית"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "אודות Access תבניות"
+msgid "About Permission Templates"
+msgstr "אודות תבניות הרשאות"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "מהם תבניות גישה?"
+msgid "What are Permission Templates?"
+msgstr "מהן תבניות הרשאות?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "תבניות גישה מגדירות קבוצות של פעולות שמשתמשים וקבוצות יכולות להופיע ב-Poweradmin. הם מספקים דרך מהירה להקצות שילובי הרשאות משותפים."
+msgstr ""
+"תבניות הרשאות מגדירות קבוצות של פעולות שמשתמשים וקבוצות יכולים לבצע "
+"ב-Poweradmin. הן מספקות דרך מהירה להקצות שילובי הרשאות נפוצים."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10476,12 +10474,12 @@ msgid "Create a new record for this zone template"
 msgstr "יצירת שיא חדש עבור תבנית זו"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "תבנית Access"
+msgid "Delete Permission Template"
+msgstr "מחיקת תבנית הרשאות"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "אתה עומד למחוק את תבנית הגישה"
+msgid "You are about to delete the permission template"
+msgstr "אתה עומד למחוק את תבנית ההרשאות"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12560,10 +12558,6 @@ msgstr "כן, למחוק מפתח API זה"
 msgid "No, keep this API key"
 msgstr "לשמור על מפתח ה- API הזה"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "תבנית Access"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "ארכיון מידע"
@@ -12678,20 +12672,16 @@ msgid ""
 msgstr "לאחר יצירת הקבוצה, באפשרותך להוסיף חברים ולהקצות לאזורים. כל החברים יקבלו באופן אוטומטי גישה לאזורי הקבוצה."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "תבניות Access"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "תבניות קבוצות"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "הוספת תבנית גישה"
+msgid "Add permission template"
+msgstr "הוספת תבנית הרשאות"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "לא נמצאו תבניות גישה"
+msgid "No permission templates found"
+msgstr "לא נמצאו תבניות הרשאות"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13610,3 +13600,9 @@ msgstr "לא ניתן להתחבר למסד הנתונים PowerDNS \"%s\": %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "אשף רשומות"
+
+msgid "List permission templates"
+msgstr "רשימת תבניות הרשאות"
+
+msgid "Permissions"
+msgstr "הרשאות"

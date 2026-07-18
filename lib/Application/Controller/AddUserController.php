@@ -117,7 +117,7 @@ class AddUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
 
-        // When user access templates are hidden, force minimal user template assignment
+        // When user permission templates are hidden, force minimal user template assignment
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         if (!$showUserAccessTemplates) {
             $userParams['perm_templ'] = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '1';

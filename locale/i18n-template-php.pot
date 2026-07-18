@@ -8819,7 +8819,7 @@ msgid "Optional information about this group"
 msgstr ""
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
+msgid "Permission template"
 msgstr ""
 
 #: templates/default/edit_group.html:47
@@ -8828,7 +8828,7 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
+msgid "Select a permission template"
 msgstr ""
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
@@ -9956,7 +9956,7 @@ msgid "User Permissions"
 msgstr ""
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
+msgid "This user has been assigned the permission template"
 msgstr ""
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
@@ -10068,15 +10068,11 @@ msgid "Yes, unlink these zones"
 msgstr ""
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
+msgid "Permission templates"
 msgstr ""
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
-msgstr ""
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
 msgstr ""
 
 #: templates/modern/edit_perm_templ.html:27
@@ -10114,17 +10110,17 @@ msgid "Add Template"
 msgstr ""
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
+msgid "About Permission Templates"
 msgstr ""
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
+msgid "What are Permission Templates?"
 msgstr ""
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in "
-"Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
 
@@ -10452,11 +10448,11 @@ msgid "Create a new record for this zone template"
 msgstr ""
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
+msgid "Delete Permission Template"
 msgstr ""
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
+msgid "You are about to delete the permission template"
 msgstr ""
 
 #: templates/modern/delete_perm_templ.html:23
@@ -12517,10 +12513,6 @@ msgstr ""
 msgid "No, keep this API key"
 msgstr ""
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr ""
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr ""
@@ -12635,19 +12627,15 @@ msgid ""
 msgstr ""
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr ""
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr ""
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
+msgid "Add permission template"
 msgstr ""
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
+msgid "No permission templates found"
 msgstr ""
 
 #: templates/modern/list_perm_templ.html:75
@@ -13560,4 +13548,7 @@ msgstr ""
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
+
+msgid "List permission templates"
 msgstr ""

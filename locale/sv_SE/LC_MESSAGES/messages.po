@@ -9436,8 +9436,8 @@ msgid "Optional information about this group"
 msgstr "Kunde inte återställa säkerhetskopia"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Är du säker på att du vill återställa från denna säkerhetskopia?"
+msgid "Permission template"
+msgstr "Behörighetsmall"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9445,8 +9445,8 @@ msgid ""
 msgstr "Ladda ner säkerhetskopia"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Säkerhetskopia nedladdad"
+msgid "Select a permission template"
+msgstr "Välj en behörighetsmall"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10647,8 +10647,8 @@ msgid "User Permissions"
 msgstr "Användarbehörigheter"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Denna användare har tilldelats åtkomstmallen"
+msgid "This user has been assigned the permission template"
+msgstr "Denna användare har tilldelats behörighetsmallen"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10766,16 +10766,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, ta bort länken för dessa zoner"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Åtkomstmallar"
+msgid "Permission templates"
+msgstr "Behörighetsmallar"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Lägg till"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Lägg till åtkomstmall"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10813,21 +10809,21 @@ msgid "Add Template"
 msgstr "Lägg till mall"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Om åtkomstmallar"
+msgid "About Permission Templates"
+msgstr "Om behörighetsmallar"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Vad är åtkomstmallar?"
+msgid "What are Permission Templates?"
+msgstr "Vad är behörighetsmallar?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Åtkomstmallar definierar uppsättningar av åtgärder som användare och grupper"
-" kan utföra i Poweradmin. De ger ett snabbt sätt att tilldela vanliga "
+"Behörighetsmallar definierar uppsättningar av åtgärder som användare och "
+"grupper kan utföra i Poweradmin. De ger ett snabbt sätt att tilldela vanliga "
 "behörighetskombinationer."
 
 #: templates/modern/add_perm_templ.html:77
@@ -11178,12 +11174,12 @@ msgid "Create a new record for this zone template"
 msgstr "Skapa en ny post för denna zonmall"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Ta bort åtkomstmall"
+msgid "Delete Permission Template"
+msgstr "Ta bort behörighetsmall"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Du är på väg att ta bort åtkomstmallen"
+msgid "You are about to delete the permission template"
+msgstr "Du är på väg att ta bort behörighetsmallen"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -13383,10 +13379,6 @@ msgstr "Ja, ta bort denna API-nyckel"
 msgid "No, keep this API key"
 msgstr "Nej, behåll denna API-nyckel"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Redigera åtkomstmall"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Information om mallanvändning"
@@ -13519,20 +13511,16 @@ msgstr ""
 "den."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Åtkomstmallar"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Gruppmallar"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Lägg till åtkomstmall"
+msgid "Add permission template"
+msgstr "Lägg till behörighetsmall"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Inga åtkomstmallar hittades"
+msgid "No permission templates found"
+msgstr "Inga behörighetsmallar hittades"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -14511,3 +14499,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Lista behörighetsmallar"
+
+msgid "Permissions"
+msgstr "Behörigheter"

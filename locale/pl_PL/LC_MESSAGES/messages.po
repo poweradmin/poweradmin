@@ -10183,8 +10183,8 @@ msgid "Optional information about this group"
 msgstr "Opcjonalne informacje o tej grupie"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Szablon dostępu"
+msgid "Permission template"
+msgstr "Szablon uprawnień"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10194,8 +10194,8 @@ msgstr ""
 "własnością tej grupy"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Wybierz szablon dostępu"
+msgid "Select a permission template"
+msgstr "Wybierz szablon uprawnień"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11413,8 +11413,8 @@ msgid "User Permissions"
 msgstr "Uprawnienia użytkownika"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Ten użytkownik został przypisany do szablonu dostępu"
+msgid "This user has been assigned the permission template"
+msgstr "Ten użytkownik ma przypisany szablon uprawnień"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11529,16 +11529,12 @@ msgid "Yes, unlink these zones"
 msgstr "Tak, odłącz te strefy"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Szablony dostępu"
+msgid "Permission templates"
+msgstr "Szablony uprawnień"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Dodaj"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Dodaj szablon dostępu"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11577,20 +11573,20 @@ msgid "Add Template"
 msgstr "Dodaj szablon"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "O szablonach dostępu"
+msgid "About Permission Templates"
+msgstr "O szablonach uprawnień"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Czym są szablony dostępu?"
+msgid "What are Permission Templates?"
+msgstr "Czym są szablony uprawnień?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Szablony dostępu definiują zestawy akcji, które użytkownicy i grupy mogą "
+"Szablony uprawnień definiują zestawy akcji, które użytkownicy i grupy mogą "
 "wykonywać w Poweradmin. Zapewniają szybki sposób przypisywania typowych "
 "kombinacji uprawnień."
 
@@ -11944,12 +11940,12 @@ msgid "Create a new record for this zone template"
 msgstr "Utwórz nowy rekord dla tego szablonu strefy"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Usuń szablon dostępu"
+msgid "Delete Permission Template"
+msgstr "Usuń szablon uprawnień"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Zamierzasz usunąć szablon dostępu"
+msgid "You are about to delete the permission template"
+msgstr "Zamierzasz usunąć szablon uprawnień"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -14156,10 +14152,6 @@ msgstr "Tak, usuń ten klucz API"
 msgid "No, keep this API key"
 msgstr "Nie, zachowaj ten klucz API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Edytuj szablon dostępu"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informacje o użyciu szablonu"
@@ -14292,20 +14284,16 @@ msgstr ""
 "Wszyscy członkowie automatycznie uzyskają dostęp do stref grupy."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Szablony dostępu"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Szablony grup"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Dodaj szablon dostępu"
+msgid "Add permission template"
+msgstr "Dodaj szablon uprawnień"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nie znaleziono szablonów dostępu"
+msgid "No permission templates found"
+msgstr "Nie znaleziono szablonów uprawnień"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15280,3 +15268,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Lista szablonów uprawnień"
+
+msgid "Permissions"
+msgstr "Uprawnienia"

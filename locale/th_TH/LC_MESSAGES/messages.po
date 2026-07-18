@@ -8813,8 +8813,8 @@ msgid "Optional information about this group"
 msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับกลุ่มนี้"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "ต้นแบบการเข้าใช้งาน"
+msgid "Permission template"
+msgstr "ต้นแบบสิทธิ์"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8822,8 +8822,8 @@ msgid ""
 msgstr "สมาชิกกลุ่มที่ได้รับสิทธิ์นี้เป็นมรดกเท่านั้นสําหรับโซนที่เป็นเจ้าของโดยกลุ่มนี้"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "เลือกแม่แบบสําหรับใช้งาน"
+msgid "Select a permission template"
+msgstr "เลือกต้นแบบสิทธิ์"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9967,8 +9967,8 @@ msgid "User Permissions"
 msgstr "สิทธิ์ที่ผู้ใช้อนุญาต"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "ผู้ใช้นี้ได้รับการกําหนดให้ใช้ต้นแบบ"
+msgid "This user has been assigned the permission template"
+msgstr "ผู้ใช้นี้ได้รับการกำหนดต้นแบบสิทธิ์"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10079,16 +10079,12 @@ msgid "Yes, unlink these zones"
 msgstr "ใช่ ยกเลิกการเชื่อมโยงไปยังพื้นที่เหล่านี้"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "ต้นแบบการเข้าใช้งาน"
+msgid "Permission templates"
+msgstr "ต้นแบบสิทธิ์"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "เพิ่ม"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "เพิ่มต้นแบบการเข้าใช้งาน"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10125,19 +10121,21 @@ msgid "Add Template"
 msgstr "เพิ่มแม่แบบ"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "เกี่ยวกับต้นแบบการเข้าใช้งาน"
+msgid "About Permission Templates"
+msgstr "เกี่ยวกับต้นแบบสิทธิ์"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "แม่แบบใช้อะไร?"
+msgid "What are Permission Templates?"
+msgstr "ต้นแบบสิทธิ์คืออะไร?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "ต้นแบบการเข้าใช้ กําหนดชุดการกระทําที่ผู้ใช้และกลุ่มสามารถกระทําได้ใน Poweradmin พวกเขาจัดรูปแบบการอนุญาตร่วมกันอย่างรวดเร็ว"
+msgstr ""
+"ต้นแบบสิทธิ์กำหนดชุดการกระทำที่ผู้ใช้และกลุ่มสามารถทำได้ใน Poweradmin "
+"ซึ่งช่วยให้กำหนดชุดสิทธิ์ที่ใช้บ่อยได้อย่างรวดเร็ว"
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10464,12 +10462,12 @@ msgid "Create a new record for this zone template"
 msgstr "ที่อยู่ติดต่อใหม่... @ info: whatsthis"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "ลบต้นแบบการเข้าใช้งาน"
+msgid "Delete Permission Template"
+msgstr "ลบต้นแบบสิทธิ์"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "คุณกําลังจะลบแม่แบบการเข้าใช้"
+msgid "You are about to delete the permission template"
+msgstr "คุณกำลังจะลบต้นแบบสิทธิ์"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12548,10 +12546,6 @@ msgstr "ลบปุ่มพิมพ์ APPI นี้"
 msgid "No, keep this API key"
 msgstr "ไม่ เก็บกุญแจ API นี้"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "แก้ไขต้นแบบการเข้าใช้งาน"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "ข้อมูลการใช้แม่แบบ"
@@ -12666,20 +12660,16 @@ msgid ""
 msgstr "หลังจากสร้างกลุ่มแล้ว คุณสามารถเพิ่มสมาชิก และกําหนดพื้นที่ให้มัน สมาชิกทุกคนจะได้รับสิทธิ์ในการเข้าสู่โซนของกลุ่มโดยอัตโนมัติ"
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "ต้นแบบการเข้าใช้งาน"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "แม่แบบกลุ่ม"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "เพิ่มต้นแบบการเข้าใช้งาน"
+msgid "Add permission template"
+msgstr "เพิ่มต้นแบบสิทธิ์"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "ไม่พบต้นแบบการเข้าใช้งาน"
+msgid "No permission templates found"
+msgstr "ไม่พบต้นแบบสิทธิ์"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13598,3 +13588,9 @@ msgstr "ไม่สามารถเชื่อมต่อกับฐาน
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "ตัวช่วยสร้างเรกคอร์ด"
+
+msgid "List permission templates"
+msgstr "รายการต้นแบบสิทธิ์"
+
+msgid "Permissions"
+msgstr "สิทธิ์"

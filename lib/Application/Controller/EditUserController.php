@@ -286,7 +286,7 @@ class EditUserController extends BaseController
         // Determine permission template
         $permTempl = $this->request->getPostParam('perm_templ');
 
-        // When user access templates are hidden, always preserve existing template
+        // When user permission templates are hidden, always preserve existing template
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         if (!$showUserAccessTemplates) {
             $userData = $this->getUserDetails($editId);

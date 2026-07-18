@@ -10226,8 +10226,8 @@ msgid "Optional information about this group"
 msgstr "Informação opcional sobre este grupo"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Modelo de acesso"
+msgid "Permission template"
+msgstr "Modelo de permissões"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10237,8 +10237,8 @@ msgstr ""
 "este grupo"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Selecione um modelo de acesso"
+msgid "Select a permission template"
+msgstr "Selecione um modelo de permissões"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11453,8 +11453,8 @@ msgid "User Permissions"
 msgstr "Permissões do Usuário"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Este usuário foi atribuído ao modelo de acesso"
+msgid "This user has been assigned the permission template"
+msgstr "Este usuário foi atribuído ao modelo de permissões"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11571,16 +11571,12 @@ msgid "Yes, unlink these zones"
 msgstr "Sim, desligar estas zonas"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Modelos de acesso"
+msgid "Permission templates"
+msgstr "Modelos de permissões"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Adicionar"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Adicionar Modelo de Acesso"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11619,21 +11615,21 @@ msgid "Add Template"
 msgstr "Adicionar Modelo"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Sobre Modelos de Acesso"
+msgid "About Permission Templates"
+msgstr "Sobre Modelos de Permissões"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "O que são Modelos de Acesso?"
+msgid "What are Permission Templates?"
+msgstr "O que são Modelos de Permissões?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Modelos de acesso definem conjuntos de ações que usuários e grupos podem"
-" realizar em Poweradmin. Fornecem uma forma rápida de atribuir combinações "
+"Modelos de permissões definem conjuntos de ações que usuários e grupos podem "
+"realizar no Poweradmin. Fornecem uma forma rápida de atribuir combinações "
 "comuns de permissões."
 
 #: templates/modern/add_perm_templ.html:77
@@ -11988,12 +11984,12 @@ msgid "Create a new record for this zone template"
 msgstr "Criar um novo registro para este modelo de zona"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Excluir Modelo de Acesso"
+msgid "Delete Permission Template"
+msgstr "Excluir Modelo de Permissões"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Está prestes a excluir o modelo de acesso"
+msgid "You are about to delete the permission template"
+msgstr "Está prestes a excluir o modelo de permissões"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -14207,10 +14203,6 @@ msgstr "Sim, excluir esta chave API"
 msgid "No, keep this API key"
 msgstr "Não, manter esta chave API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Editar Modelo de Acesso"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informação de Utilização do Modelo"
@@ -14344,20 +14336,16 @@ msgstr ""
 "os membros terão automaticamente acesso às zonas do grupo."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Modelos de Acesso"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Modelos de grupos"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Adicionar modelo de acesso"
+msgid "Add permission template"
+msgstr "Adicionar modelo de permissões"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nenhum modelo de acesso encontrado"
+msgid "No permission templates found"
+msgstr "Nenhum modelo de permissões encontrado"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15345,3 +15333,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Não é possível ligar à base de dados PowerDNS \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Listar modelos de permissões"
+
+msgid "Permissions"
+msgstr "Permissões"

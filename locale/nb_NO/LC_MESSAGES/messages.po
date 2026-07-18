@@ -10001,8 +10001,8 @@ msgid "Optional information about this group"
 msgstr "Valgfri informasjon om denne gruppen"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Tilgangsmal"
+msgid "Permission template"
+msgstr "Tillatelsesmal"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10011,8 +10011,8 @@ msgstr ""
 "Gruppemedlemmer arver disse tillatelsene kun for soner eid av denne gruppen"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Velg en tilgangsmal"
+msgid "Select a permission template"
+msgstr "Velg en tillatelsesmal"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11218,8 +11218,8 @@ msgid "User Permissions"
 msgstr "Brukertillatelser"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Denne brukeren har fått tilordnet tilgangsmalen"
+msgid "This user has been assigned the permission template"
+msgstr "Denne brukeren har fått tilordnet tillatelsesmalen"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11335,16 +11335,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, koble fra disse sonene"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Tilgangsmaler"
+msgid "Permission templates"
+msgstr "Tillatelsesmaler"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Legg til"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Legg til tilgangsmal"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11382,20 +11378,20 @@ msgid "Add Template"
 msgstr "Legg til mal"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Om tilgangsmaler"
+msgid "About Permission Templates"
+msgstr "Om tillatelsesmaler"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Hva er tilgangsmaler?"
+msgid "What are Permission Templates?"
+msgstr "Hva er tillatelsesmaler?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Tilgangsmaler definerer sett med handlinger som brukere og grupper kan "
+"Tillatelsesmaler definerer sett med handlinger som brukere og grupper kan "
 "utføre i Poweradmin. De gir en rask måte å tilordne vanlige "
 "tillatelseskombinasjoner."
 
@@ -11748,12 +11744,12 @@ msgid "Create a new record for this zone template"
 msgstr "Opprett en ny post for denne sonemalen"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Slett tilgangsmal"
+msgid "Delete Permission Template"
+msgstr "Slett tillatelsesmal"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Du er i ferd med å slette tilgangsmalen"
+msgid "You are about to delete the permission template"
+msgstr "Du er i ferd med å slette tillatelsesmalen"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -13951,10 +13947,6 @@ msgstr "Ja, slett denne API-nøkkelen"
 msgid "No, keep this API key"
 msgstr "Nei, behold denne API-nøkkelen"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Rediger tilgangsmal"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informasjon om malbruk"
@@ -14086,20 +14078,16 @@ msgstr ""
 "den."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Tilgangsmaler"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Gruppemaler"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Legg til tilgangsmal"
+msgid "Add permission template"
+msgstr "Legg til tillatelsesmal"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Ingen tilgangsmaler funnet"
+msgid "No permission templates found"
+msgstr "Ingen tillatelsesmaler funnet"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15077,3 +15065,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "List tillatelsesmaler"
+
+msgid "Permissions"
+msgstr "Tillatelser"

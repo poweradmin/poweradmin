@@ -10115,8 +10115,8 @@ msgid "Optional information about this group"
 msgstr "Papildoma informacija apie šią grupę"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Prieigos šablonas"
+msgid "Permission template"
+msgstr "Leidimų šablonas"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10125,8 +10125,8 @@ msgstr ""
 "Grupės nariai paveldi šias teises tik zonoms, priklausančioms šiai grupei"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Pasirinkite prieigos šabloną"
+msgid "Select a permission template"
+msgstr "Pasirinkite leidimų šabloną"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11325,8 +11325,8 @@ msgid "User Permissions"
 msgstr "Naudotojo leidimai"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Šiam vartotojui priskirtas prieigos šablonas"
+msgid "This user has been assigned the permission template"
+msgstr "Šiam vartotojui priskirtas leidimų šablonas"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11442,16 +11442,12 @@ msgid "Yes, unlink these zones"
 msgstr "Taip, atjungti šias zonas"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Prieigos šablonai"
+msgid "Permission templates"
+msgstr "Leidimų šablonai"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Pridėti"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Pridėti prieigos šabloną"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11490,21 +11486,21 @@ msgid "Add Template"
 msgstr "Pridėti šabloną"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Apie prieigos šablonus"
+msgid "About Permission Templates"
+msgstr "Apie leidimų šablonus"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Kas yra prieigos šablonai?"
+msgid "What are Permission Templates?"
+msgstr "Kas yra leidimų šablonai?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Prieigos šablonai apibrėžia veiksmų rinkinius, kuriuos vartotojai ir grupės "
-"gali atlikti Poweradmin. Jie suteikia greitą būdą priskirti bendrus leidimų "
+"Leidimų šablonai apibrėžia veiksmų rinkinius, kuriuos vartotojai ir grupės "
+"gali atlikti Poweradmin. Jie suteikia greitą būdą priskirti dažnus leidimų "
 "derinius."
 
 #: templates/modern/add_perm_templ.html:77
@@ -11856,12 +11852,12 @@ msgid "Create a new record for this zone template"
 msgstr "Sukurti naują įrašą šiam zonos šablonui"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Ištrinti prieigos šabloną"
+msgid "Delete Permission Template"
+msgstr "Ištrinti leidimų šabloną"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Ketinate ištrinti prieigos šabloną"
+msgid "You are about to delete the permission template"
+msgstr "Ketinate ištrinti leidimų šabloną"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -14060,10 +14056,6 @@ msgstr "Taip, ištrinti šį API raktą"
 msgid "No, keep this API key"
 msgstr "Ne, palikti šį API raktą"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Redaguoti prieigos šabloną"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Šablono naudojimo informacija"
@@ -14196,20 +14188,16 @@ msgstr ""
 "automatiškai gaus prieigą prie grupės zonų."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Prieigos šablonai"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Grupių šablonai"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Pridėti prieigos šabloną"
+msgid "Add permission template"
+msgstr "Pridėti leidimų šabloną"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Prieigos šablonų nerasta"
+msgid "No permission templates found"
+msgstr "Leidimų šablonų nerasta"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15187,3 +15175,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Rodyti leidimų šablonus"
+
+msgid "Permissions"
+msgstr "Leidimai"

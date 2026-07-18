@@ -9488,8 +9488,8 @@ msgid "Optional information about this group"
 msgstr "Zone memiliki peringatan."
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Verification errors"
+msgid "Permission template"
+msgstr "Templat izin"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9497,8 +9497,8 @@ msgid ""
 msgstr "Error verifikasi"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Verification warnings"
+msgid "Select a permission template"
+msgstr "Pilih templat izin"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10697,8 +10697,8 @@ msgid "User Permissions"
 msgstr "Izin Pengguna"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Pengguna ini telah ditugaskan templat akses"
+msgid "This user has been assigned the permission template"
+msgstr "Pengguna ini telah ditugaskan templat izin"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10813,16 +10813,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ya, lepaskan zona-zona ini"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Templat akses"
+msgid "Permission templates"
+msgstr "Templat izin"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Tambah"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Tambah Templat Akses"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10861,22 +10857,22 @@ msgid "Add Template"
 msgstr "Tambah Templat"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Tentang Templat Akses"
+msgid "About Permission Templates"
+msgstr "Tentang Templat Izin"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Apa itu Templat Akses?"
+msgid "What are Permission Templates?"
+msgstr "Apa itu Templat Izin?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Templat akses mendefinisikan set tindakan yang dapat dilakukan pengguna dan "
-"grup di Poweradmin. Mereka menyediakan cara cepat untuk menetapkan kombinasi"
-" izin umum."
+"Templat izin mendefinisikan set tindakan yang dapat dilakukan pengguna dan "
+"grup di Poweradmin. Templat ini menyediakan cara cepat untuk menetapkan "
+"kombinasi izin umum."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -11225,12 +11221,12 @@ msgid "Create a new record for this zone template"
 msgstr "Buat rekod baru untuk templat zona ini"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Hapus Templat Akses"
+msgid "Delete Permission Template"
+msgstr "Hapus Templat Izin"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Anda akan menghapus templat akses"
+msgid "You are about to delete the permission template"
+msgstr "Anda akan menghapus templat izin"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -13430,10 +13426,6 @@ msgstr "Ya, hapus kunci API ini"
 msgid "No, keep this API key"
 msgstr "Tidak, pertahankan kunci API ini"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Edit Templat Akses"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informasi Penggunaan Templat"
@@ -13567,20 +13559,16 @@ msgstr ""
 "grup.kepadanya."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Templat Akses"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Template Grup"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Tambah templat akses"
+msgid "Add permission template"
+msgstr "Tambah templat izin"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Tidak ada templat akses yang ditemukan"
+msgid "No permission templates found"
+msgstr "Tidak ada templat izin yang ditemukan"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -14559,3 +14547,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Daftar templat izin"
+
+msgid "Permissions"
+msgstr "Izin"

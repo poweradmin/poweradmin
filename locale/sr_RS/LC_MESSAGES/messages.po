@@ -9074,8 +9074,8 @@ msgid "Optional information about this group"
 msgstr "Опционе информације о групи"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Шаблон приступа"
+msgid "Permission template"
+msgstr "Шаблон дозвола"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9083,8 +9083,8 @@ msgid ""
 msgstr "Чланови групе наслеђују ове дозволе само за зоне ове групе"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Изаберите шаблон приступа"
+msgid "Select a permission template"
+msgstr "Изаберите шаблон дозвола"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10256,8 +10256,8 @@ msgid "User Permissions"
 msgstr "Дозволе корисника"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Овом кориснику је додељен шаблон приступа"
+msgid "This user has been assigned the permission template"
+msgstr "Овом кориснику је додељен шаблон дозвола"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10368,16 +10368,12 @@ msgid "Yes, unlink these zones"
 msgstr "Да, одвежи ове зоне"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "шаблони приступа"
+msgid "Permission templates"
+msgstr "Шаблони дозвола"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Додај"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Додај шаблон приступа"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10416,19 +10412,22 @@ msgid "Add Template"
 msgstr "Додај шаблон"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "О шаблонима приступа"
+msgid "About Permission Templates"
+msgstr "О шаблонима дозвола"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Шта су шаблони приступа?"
+msgid "What are Permission Templates?"
+msgstr "Шта су шаблони дозвола?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Шаблони приступа дефинишу скупове акција за кориснике и групе."
+msgstr ""
+"Шаблони дозвола дефинишу скупове акција које корисници и групе могу изводити "
+"у Poweradmin-у. Омогућавају брз начин доделе уобичајених комбинација "
+"дозвола."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10762,12 +10761,12 @@ msgid "Create a new record for this zone template"
 msgstr "Креирај нови запис за овај шаблон зоне"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Обриши шаблон приступа"
+msgid "Delete Permission Template"
+msgstr "Обриши шаблон дозвола"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Уклонићете шаблон приступа"
+msgid "You are about to delete the permission template"
+msgstr "Уклонићете шаблон дозвола"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12905,10 +12904,6 @@ msgstr "Да, обриши овај АПИ кључ"
 msgid "No, keep this API key"
 msgstr "Не, задржи овај АПИ кључ"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Уреди шаблон приступа"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Информације о употреби шаблона"
@@ -13027,20 +13022,16 @@ msgstr ""
 "Након креирања групе додајте чланове и зоне. Сви чланови добијају приступ."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Шаблони приступа"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Шаблони групе"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "додај шаблон приступа"
+msgid "Add permission template"
+msgstr "Додај шаблон дозвола"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Нема пронађених шаблона приступа"
+msgid "No permission templates found"
+msgstr "Нема пронађених шаблона дозвола"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -14012,3 +14003,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Листа шаблона дозвола"
+
+msgid "Permissions"
+msgstr "Дозволе"

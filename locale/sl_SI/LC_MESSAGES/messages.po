@@ -8849,8 +8849,8 @@ msgid "Optional information about this group"
 msgstr "Neobvezne informacije o tej skupini"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Predloga za dostop"
+msgid "Permission template"
+msgstr "Predloga dovoljenj"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8858,8 +8858,8 @@ msgid ""
 msgstr "Člani skupine podedujejo ta dovoljenja samo za območja, ki so v lasti te skupine"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Izberite predlogo za dostop"
+msgid "Select a permission template"
+msgstr "Izberite predlogo dovoljenj"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10003,8 +10003,8 @@ msgid "User Permissions"
 msgstr "Uporabniška dovoljenja"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Temu uporabniku je bila dodeljena predloga za dostop"
+msgid "This user has been assigned the permission template"
+msgstr "Temu uporabniku je bila dodeljena predloga dovoljenj"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10115,16 +10115,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, odveži ta območja."
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Predloge za dostop"
+msgid "Permission templates"
+msgstr "Predloge dovoljenj"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Dodaj"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Dodaj predlogo za dostop"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10161,19 +10157,22 @@ msgid "Add Template"
 msgstr "Dodaj predlogo"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "O predlogah dostopa"
+msgid "About Permission Templates"
+msgstr "O predlogah dovoljenj"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Kaj so predloge za dostop?"
+msgid "What are Permission Templates?"
+msgstr "Kaj so predloge dovoljenj?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Predloge za dostop določajo sklope ukrepov, ki jih lahko uporabniki in skupine izvajajo v Poweradminu. Zagotavljajo hiter način za dodelitev skupnih kombinacij dovoljenj."
+msgstr ""
+"Predloge dovoljenj določajo sklope dejanj, ki jih lahko uporabniki in "
+"skupine izvajajo v Poweradminu. Zagotavljajo hiter način za dodelitev "
+"pogostih kombinacij dovoljenj."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10500,12 +10499,12 @@ msgid "Create a new record for this zone template"
 msgstr "Ustvari nov zapis za to cono predloge"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Zbriši predlogo za dostop"
+msgid "Delete Permission Template"
+msgstr "Zbriši predlogo dovoljenj"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Izbrisali boste predlogo za dostop"
+msgid "You are about to delete the permission template"
+msgstr "Izbrisali boste predlogo dovoljenj"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12584,10 +12583,6 @@ msgstr "Da, zbriši ta API ključ"
 msgid "No, keep this API key"
 msgstr "Ne, obdrži ta API ključ"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Uredi predlogo dostopa"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Podatki o uporabi predloge"
@@ -12702,20 +12697,16 @@ msgid ""
 msgstr "Po oblikovanju skupine lahko dodate člane in mu dodelite cone. Vsi člani bodo samodejno dobili dostop do con skupine."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Predloge za dostop"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Skupinske predloge"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Dodaj predlogo za dostop"
+msgid "Add permission template"
+msgstr "Dodaj predlogo dovoljenj"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Ni najdenih predlog za dostop"
+msgid "No permission templates found"
+msgstr "Ni najdenih predlog dovoljenj"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13634,3 +13625,9 @@ msgstr "Ni se moč povezati s podatkovno bazo PowerDNS \"%s\": %s"
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Pomočnik za zapise"
+
+msgid "List permission templates"
+msgstr "Seznam predlog dovoljenj"
+
+msgid "Permissions"
+msgstr "Dovoljenja"

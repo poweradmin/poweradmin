@@ -10293,8 +10293,8 @@ msgid "Optional information about this group"
 msgstr "Optionale Informationen über diese Gruppe"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Zugriffsvorlage"
+msgid "Permission template"
+msgstr "Berechtigungsvorlage"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10304,8 +10304,8 @@ msgstr ""
 "Gruppe gehören"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Zugriffsvorlage auswählen"
+msgid "Select a permission template"
+msgstr "Berechtigungsvorlage auswählen"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11529,8 +11529,8 @@ msgid "User Permissions"
 msgstr "Benutzer Berechtigungen"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Diesem Benutzer wurde die Zugriffsvorlage zugewiesen"
+msgid "This user has been assigned the permission template"
+msgstr "Diesem Benutzer wurde die Berechtigungsvorlage zugewiesen"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11648,16 +11648,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, diese Zonen trennen"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Zugriffsvorlagen"
+msgid "Permission templates"
+msgstr "Berechtigungsvorlagen"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Hinzufügen"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Zugriffsvorlage hinzufügen"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11696,21 +11692,21 @@ msgid "Add Template"
 msgstr "Vorlage hinzufügen"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Über Zugriffsvorlagen"
+msgid "About Permission Templates"
+msgstr "Über Berechtigungsvorlagen"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Was sind Zugriffsvorlagen?"
+msgid "What are Permission Templates?"
+msgstr "Was sind Berechtigungsvorlagen?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Zugriffsvorlagen definieren Aktionen, die Benutzer und Gruppen in Poweradmin"
-" ausführen können. Sie bieten eine schnelle Möglichkeit, gängige "
+"Berechtigungsvorlagen definieren Aktionen, die Benutzer und Gruppen in "
+"Poweradmin ausführen können. Sie bieten eine schnelle Möglichkeit, gängige "
 "Berechtigungskombinationen zuzuweisen."
 
 #: templates/modern/add_perm_templ.html:77
@@ -12066,12 +12062,12 @@ msgid "Create a new record for this zone template"
 msgstr "Erzeugen Sie einen neuen Eintrag für diese Zonenvorlage"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Zugriffsvorlage löschen"
+msgid "Delete Permission Template"
+msgstr "Berechtigungsvorlage löschen"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Sie sind dabei, die Zugriffsvorlage zu löschen"
+msgid "You are about to delete the permission template"
+msgstr "Sie sind dabei, die Berechtigungsvorlage zu löschen"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -14307,10 +14303,6 @@ msgstr "Ja, diesen API-Schlüssel löschen"
 msgid "No, keep this API key"
 msgstr "Nein, diesen API-Schlüssel behalten"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Zugriffsvorlage bearbeiten"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Vorlagen-Nutzungsinformationen"
@@ -14444,20 +14436,16 @@ msgstr ""
 "der Gruppe."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Zugriffsvorlagen"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Gruppenvorlagen"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Zugriffsvorlage hinzufügen"
+msgid "Add permission template"
+msgstr "Berechtigungsvorlage hinzufügen"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Keine Zugriffsvorlagen gefunden"
+msgid "No permission templates found"
+msgstr "Keine Berechtigungsvorlagen gefunden"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15450,3 +15438,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Verbindung zur PowerDNS-Datenbank \"%s\" fehlgeschlagen: %s"
+
+msgid "List permission templates"
+msgstr "Berechtigungsvorlagen auflisten"
+
+msgid "Permissions"
+msgstr "Berechtigungen"

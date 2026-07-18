@@ -8825,8 +8825,8 @@ msgid "Optional information about this group"
 msgstr "Незадължителна информация за тази група"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Образец за достъп"
+msgid "Permission template"
+msgstr "Шаблон за разрешения"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8834,8 +8834,8 @@ msgid ""
 msgstr "Членовете на групата наследяват тези разрешения само за зони, притежавани от тази група"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Избор на шаблон за достъп"
+msgid "Select a permission template"
+msgstr "Изберете шаблон за разрешения"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9979,8 +9979,8 @@ msgid "User Permissions"
 msgstr "Потребителски права"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "На този потребител е даден шаблона за достъп"
+msgid "This user has been assigned the permission template"
+msgstr "На този потребител е даден шаблонът за разрешения"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10091,16 +10091,12 @@ msgid "Yes, unlink these zones"
 msgstr "Да, развържете тези зони."
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Шаблони за достъп"
+msgid "Permission templates"
+msgstr "Шаблони за разрешения"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Добавяне"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Добавяне на шаблон за достъп"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10137,19 +10133,22 @@ msgid "Add Template"
 msgstr "Добавяне на шаблон"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "За шаблоните за достъп"
+msgid "About Permission Templates"
+msgstr "За шаблоните за разрешения"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Какви са шаблоните за достъп?"
+msgid "What are Permission Templates?"
+msgstr "Какво представляват шаблоните за разрешения?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Шаблоните за достъп определят набори от действия, които потребителите и групите могат да изпълняват в Poweradmin. Те осигуряват бърз начин за определяне на общи комбинации от разрешения."
+msgstr ""
+"Шаблоните за разрешения определят набори от действия, които потребителите и "
+"групите могат да изпълняват в Poweradmin. Те осигуряват бърз начин за "
+"задаване на често срещани комбинации от разрешения."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10476,12 +10475,12 @@ msgid "Create a new record for this zone template"
 msgstr "Създаване на нов запис за шаблона на зоната"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Изтриване на шаблона за достъп"
+msgid "Delete Permission Template"
+msgstr "Изтриване на шаблона за разрешения"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "На път сте да изтриете шаблона за достъп"
+msgid "You are about to delete the permission template"
+msgstr "На път сте да изтриете шаблона за разрешения"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12560,10 +12559,6 @@ msgstr "Да, изтрийте този API ключ"
 msgid "No, keep this API key"
 msgstr "Не, задръж този API ключ."
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Редактиране на шаблона за достъп"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Информация за използването на шаблона"
@@ -12678,20 +12673,16 @@ msgid ""
 msgstr "След създаване на групата, можете да добавите членове и да определите зони към нея. Всички членове автоматично ще получат достъп до зоните на групата."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Шаблони за достъп"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Групови шаблони"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Добавяне на шаблон за достъп"
+msgid "Add permission template"
+msgstr "Добавяне на шаблон за разрешения"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Не са открити шаблони за достъп"
+msgid "No permission templates found"
+msgstr "Не са открити шаблони за разрешения"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13610,3 +13601,9 @@ msgstr "Грешка при свързване към базата данни н
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Помощник за записи"
+
+msgid "List permission templates"
+msgstr "Списък на шаблоните за разрешения"
+
+msgid "Permissions"
+msgstr "Разрешения"

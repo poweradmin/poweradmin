@@ -8825,8 +8825,8 @@ msgid "Optional information about this group"
 msgstr "Προαιρετικές πληροφορίες για αυτή την ομάδα"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Πρότυπο πρόσβασης"
+msgid "Permission template"
+msgstr "Πρότυπο αδειών"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8834,8 +8834,8 @@ msgid ""
 msgstr "Τα μέλη της ομάδας κληρονομούν αυτές τις άδειες μόνο για ζώνες που ανήκουν σε αυτή την ομάδα"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Επιλέξτε ένα πρότυπο πρόσβασης"
+msgid "Select a permission template"
+msgstr "Επιλέξτε ένα πρότυπο αδειών"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -9979,8 +9979,8 @@ msgid "User Permissions"
 msgstr "Άδειες χρήσης"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Σε αυτόν τον χρήστη έχει ανατεθεί το πρότυπο πρόσβασης"
+msgid "This user has been assigned the permission template"
+msgstr "Σε αυτόν τον χρήστη έχει ανατεθεί το πρότυπο αδειών"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10091,16 +10091,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ναι, βγάλτε τις ζώνες."
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Πρότυπα πρόσβασης"
+msgid "Permission templates"
+msgstr "Πρότυπα αδειών"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Προσθήκη"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Προσθήκη προτύπου πρόσβασης"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10137,19 +10133,22 @@ msgid "Add Template"
 msgstr "Προσθήκη προτύπου"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Σχετικά με τα πρότυπα πρόσβασης"
+msgid "About Permission Templates"
+msgstr "Σχετικά με τα πρότυπα αδειών"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Τι είναι τα πρότυπα πρόσβασης;"
+msgid "What are Permission Templates?"
+msgstr "Τι είναι τα πρότυπα αδειών;"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Τα πρότυπα πρόσβασης καθορίζουν σύνολα ενεργειών που οι χρήστες και οι ομάδες μπορούν να εκτελέσουν στο Poweradmin. Παρέχουν ένα γρήγορο τρόπο για να εκχωρήσετε κοινούς συνδυασμούς αδειών."
+msgstr ""
+"Τα πρότυπα αδειών καθορίζουν σύνολα ενεργειών που οι χρήστες και οι ομάδες "
+"μπορούν να εκτελέσουν στο Poweradmin. Παρέχουν έναν γρήγορο τρόπο για να "
+"εκχωρήσετε κοινούς συνδυασμούς αδειών."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10476,12 +10475,12 @@ msgid "Create a new record for this zone template"
 msgstr "Δημιουργία νέας εγγραφής για αυτό το πρότυπο ζώνης"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Διαγραφή προτύπου πρόσβασης"
+msgid "Delete Permission Template"
+msgstr "Διαγραφή προτύπου αδειών"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Πρόκειται να διαγράψετε το πρότυπο πρόσβασης"
+msgid "You are about to delete the permission template"
+msgstr "Πρόκειται να διαγράψετε το πρότυπο αδειών"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12560,10 +12559,6 @@ msgstr "Ναι, διαγραφή αυτού του κλειδιού API"
 msgid "No, keep this API key"
 msgstr "Όχι, κράτα αυτό το κλειδί API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Επεξεργασία προτύπου πρόσβασης"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Πληροφορίες χρήσης προτύπου"
@@ -12678,20 +12673,16 @@ msgid ""
 msgstr "Μετά τη δημιουργία της ομάδας, μπορείτε να προσθέσετε μέλη και να ορίσετε ζώνες σε αυτήν. Όλα τα μέλη θα έχουν αυτόματα πρόσβαση στις ζώνες της ομάδας."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Πρότυπα πρόσβασης"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Πρότυπα ομάδας"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Προσθήκη προτύπου πρόσβασης"
+msgid "Add permission template"
+msgstr "Προσθήκη προτύπου αδειών"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Δε βρέθηκαν πρότυπα πρόσβασης"
+msgid "No permission templates found"
+msgstr "Δε βρέθηκαν πρότυπα αδειών"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13610,3 +13601,9 @@ msgstr "Αδυναμία σύνδεσης με βάση δεδομένων Power
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
 msgstr "Οδηγός εγγραφών"
+
+msgid "List permission templates"
+msgstr "Λίστα προτύπων αδειών"
+
+msgid "Permissions"
+msgstr "Άδειες"

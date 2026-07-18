@@ -10178,8 +10178,8 @@ msgid "Optional information about this group"
 msgstr "Optionele informatie over deze groep"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Toegangssjabloon"
+msgid "Permission template"
+msgstr "Machtigingssjabloon"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -10189,8 +10189,8 @@ msgstr ""
 "deze groep"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Selecteer een toegangssjabloon"
+msgid "Select a permission template"
+msgstr "Selecteer een machtigingssjabloon"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -11411,8 +11411,8 @@ msgid "User Permissions"
 msgstr "Gebruiker Machtigingen"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Deze gebruiker heeft de toegangssjabloon toegewezen gekregen"
+msgid "This user has been assigned the permission template"
+msgstr "Deze gebruiker heeft het machtigingssjabloon toegewezen gekregen"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11531,16 +11531,12 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, deze zones ontkoppelen"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "Toegangssjablonen"
+msgid "Permission templates"
+msgstr "Machtigingssjablonen"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Toevoegen"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Toegangssjabloon toevoegen"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -11579,20 +11575,20 @@ msgid "Add Template"
 msgstr "Sjabloon Toevoegen"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Over toegangssjablonen"
+msgid "About Permission Templates"
+msgstr "Over machtigingssjablonen"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Wat zijn toegangssjablonen?"
+msgid "What are Permission Templates?"
+msgstr "Wat zijn machtigingssjablonen?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Toegangssjablonen definiëren sets acties die gebruikers en groepen kunnen "
+"Machtigingssjablonen definiëren sets acties die gebruikers en groepen kunnen "
 "uitvoeren in Poweradmin. Ze bieden een snelle manier om veelvoorkomende "
 "machtigingscombinaties toe te wijzen."
 
@@ -11948,12 +11944,12 @@ msgid "Create a new record for this zone template"
 msgstr "Maak een nieuw record aan voor dit zone sjabloon"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Toegangssjabloon verwijderen"
+msgid "Delete Permission Template"
+msgstr "Machtigingssjabloon verwijderen"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "U staat op het punt de toegangssjabloon te verwijderen"
+msgid "You are about to delete the permission template"
+msgstr "U staat op het punt het machtigingssjabloon te verwijderen"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -14170,10 +14166,6 @@ msgstr "Ja, deze API sleutel verwijderen"
 msgid "No, keep this API key"
 msgstr "Nee, deze API sleutel behouden"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Toegangssjabloon bewerken"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Sjabloon Gebruiksinformatie"
@@ -14306,20 +14298,16 @@ msgstr ""
 "toewijzen. Alle leden krijgen automatisch toegang tot de zones van de groep."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Toegangssjablonen"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Groepssjablonen"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "Toegangssjabloon toevoegen"
+msgid "Add permission template"
+msgstr "Machtigingssjabloon toevoegen"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Geen toegangssjablonen gevonden"
+msgid "No permission templates found"
+msgstr "Geen machtigingssjablonen gevonden"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -15306,3 +15294,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Machtigingssjablonen weergeven"
+
+msgid "Permissions"
+msgstr "Machtigingen"

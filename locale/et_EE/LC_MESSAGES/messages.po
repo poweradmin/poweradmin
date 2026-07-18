@@ -9054,8 +9054,8 @@ msgid "Optional information about this group"
 msgstr "Valikuline teave selle grupi kohta"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Juurdepääsu mall"
+msgid "Permission template"
+msgstr "Õiguste mall"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9063,8 +9063,8 @@ msgid ""
 msgstr "Grupi liikmed pärivad need õigused ainult selle grupi tsoonidele"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Valige juurdepääsu mall"
+msgid "Select a permission template"
+msgstr "Valige õiguste mall"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10236,8 +10236,8 @@ msgid "User Permissions"
 msgstr "Kasutaja õigused"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Sellele kasutajale on määratud juurdepääsu mall"
+msgid "This user has been assigned the permission template"
+msgstr "Sellele kasutajale on määratud õiguste mall"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10348,16 +10348,12 @@ msgid "Yes, unlink these zones"
 msgstr "Jah, eemalda need tsoonid"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "juurdepääsu mallid"
+msgid "Permission templates"
+msgstr "Õiguste mallid"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Lisa"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Lisa juurdepääsu mall"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10395,19 +10391,22 @@ msgid "Add Template"
 msgstr "Lisa mall"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Juurdepääsu mallidest"
+msgid "About Permission Templates"
+msgstr "Õiguste mallidest"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Mis on juurdepääsu mallid?"
+msgid "What are Permission Templates?"
+msgstr "Mis on õiguste mallid?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Juurdepääsu mallid määravad kasutajate ja gruppide tegevused."
+msgstr ""
+"Õiguste mallid määravad tegevused, mida kasutajad ja grupid saavad "
+"Poweradminis teha. Need võimaldavad kiiresti määrata levinud õiguste "
+"kombinatsioone."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10737,12 +10736,12 @@ msgid "Create a new record for this zone template"
 msgstr "Loo uus kirje selle tsooni mallile"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Kustuta juurdepääsu mall"
+msgid "Delete Permission Template"
+msgstr "Kustuta õiguste mall"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Kavatsete kustutada juurdepääsu malli"
+msgid "You are about to delete the permission template"
+msgstr "Kavatsete kustutada õiguste malli"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12870,10 +12869,6 @@ msgstr "Jah, kustuta see API võti"
 msgid "No, keep this API key"
 msgstr "Ei, säilita see API võti"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Muuda juurdepääsu malli"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Malli kasutamise teave"
@@ -12990,20 +12985,16 @@ msgid ""
 msgstr "Pärast grupi loomist lisage liikmed ja tsoonid."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Juurdepääsu mallid"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Grupi mallid"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "lisa juurdepääsu mall"
+msgid "Add permission template"
+msgstr "Lisa õiguste mall"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Juurdepääsu malle ei leitud"
+msgid "No permission templates found"
+msgstr "Õiguste malle ei leitud"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13974,3 +13965,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Õiguste mallide loend"
+
+msgid "Permissions"
+msgstr "Õigused"

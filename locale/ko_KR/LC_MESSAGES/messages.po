@@ -9000,8 +9000,8 @@ msgid "Optional information about this group"
 msgstr "픽스처를 언로드할 수 없습니다."
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "테스트를 실행할 수 없습니다."
+msgid "Permission template"
+msgstr "권한 템플릿"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9009,8 +9009,8 @@ msgid ""
 msgstr "테스트에 실패했습니다."
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "어설션에 실패했습니다."
+msgid "Select a permission template"
+msgstr "권한 템플릿 선택"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10176,8 +10176,8 @@ msgid "User Permissions"
 msgstr "사용자 권한"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "이 사용자에게 액세스 템플릿이 할당되었습니다"
+msgid "This user has been assigned the permission template"
+msgstr "이 사용자에게 권한 템플릿이 할당되었습니다"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10288,16 +10288,12 @@ msgid "Yes, unlink these zones"
 msgstr "네, 이러한 존의 연결을 해제합니다"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "액세스 템플릿"
+msgid "Permission templates"
+msgstr "권한 템플릿"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "추가"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "액세스 템플릿 추가"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10334,20 +10330,20 @@ msgid "Add Template"
 msgstr "템플릿 추가"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "액세스 템플릿 정보"
+msgid "About Permission Templates"
+msgstr "권한 템플릿 정보"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "액세스 템플릿이란?"
+msgid "What are Permission Templates?"
+msgstr "권한 템플릿이란?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"액세스 템플릿은 사용자와 그룹이 Poweradmin에서 수행할 수 있는 작업 집합을 정의합니다. 일반적인 권한 조합을 빠르게 할당할 수 "
+"권한 템플릿은 사용자와 그룹이 Poweradmin에서 수행할 수 있는 작업 집합을 정의합니다. 일반적인 권한 조합을 빠르게 할당할 수 "
 "있는 방법을 제공합니다."
 
 #: templates/modern/add_perm_templ.html:77
@@ -10677,12 +10673,12 @@ msgid "Create a new record for this zone template"
 msgstr "이 존 템플릿에 대한 새 레코드 생성"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "액세스 템플릿 삭제"
+msgid "Delete Permission Template"
+msgstr "권한 템플릿 삭제"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "다음 액세스 템플릿을 삭제하려고 합니다"
+msgid "You are about to delete the permission template"
+msgstr "권한 템플릿을 삭제하려고 합니다"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12810,10 +12806,6 @@ msgstr "네, 이 API 키를 삭제합니다"
 msgid "No, keep this API key"
 msgstr "아니요, 이 API 키를 유지합니다"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "액세스 템플릿 편집"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "템플릿 사용 정보"
@@ -12932,20 +12924,16 @@ msgid ""
 msgstr "그룹을 생성한 후 멤버를 추가하고 존을 할당할 수 있습니다. 모든 멤버는 자동으로 그룹의 존에 접근할 수 있습니다."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "액세스 템플릿"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "그룹 템플릿"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "액세스 템플릿 추가"
+msgid "Add permission template"
+msgstr "권한 템플릿 추가"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "액세스 템플릿을 찾을 수 없습니다"
+msgid "No permission templates found"
+msgstr "권한 템플릿을 찾을 수 없습니다"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13915,3 +13903,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "권한 템플릿 목록"
+
+msgid "Permissions"
+msgstr "권한"

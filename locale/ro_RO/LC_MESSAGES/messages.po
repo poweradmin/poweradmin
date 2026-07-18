@@ -8901,8 +8901,8 @@ msgid "Optional information about this group"
 msgstr "Informații opționale despre grup"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-msgid "Access template"
-msgstr "Șablon acces"
+msgid "Permission template"
+msgstr "Șablon de permisiuni"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8910,8 +8910,8 @@ msgid ""
 msgstr "Grupul moștenește."
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
-msgid "Select an access template"
-msgstr "Selectați un șablon acces"
+msgid "Select a permission template"
+msgstr "Selectați un șablon de permisiuni"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10076,8 +10076,8 @@ msgid "User Permissions"
 msgstr "Permisiuni utilizator"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
-msgid "This user has been assigned the access template"
-msgstr "Utilizatorului i-a fost atribuit șablonul"
+msgid "This user has been assigned the permission template"
+msgstr "Utilizatorului i-a fost atribuit șablonul de permisiuni"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -10188,16 +10188,12 @@ msgid "Yes, unlink these zones"
 msgstr "Da, deconectează aceste zone"
 
 #: templates/modern/list_perm_templ.html:5
-msgid "Access templates"
-msgstr "șabloane de acces"
+msgid "Permission templates"
+msgstr "Șabloane de permisiuni"
 
 #: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Adaugă"
-
-#: templates/modern/add_perm_templ.html:18
-msgid "Add Access Template"
-msgstr "Adaugă șablon acces"
 
 #: templates/modern/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
@@ -10234,19 +10230,22 @@ msgid "Add Template"
 msgstr "Adaugă șablon"
 
 #: templates/modern/add_perm_templ.html:68
-msgid "About Access Templates"
-msgstr "Despre șabloanele de acces"
+msgid "About Permission Templates"
+msgstr "Despre șabloanele de permisiuni"
 
 #: templates/modern/add_perm_templ.html:73
-msgid "What are Access Templates?"
-msgstr "Ce sunt șabloanele de acces?"
+msgid "What are Permission Templates?"
+msgstr "Ce sunt șabloanele de permisiuni?"
 
 #: templates/modern/add_perm_templ.html:74
 msgid ""
-"Access templates define sets of actions that users and groups can perform in"
-" Poweradmin. They provide a quick way to assign common permission "
+"Permission templates define sets of actions that users and groups can "
+"perform in Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "Access templates."
+msgstr ""
+"Șabloanele de permisiuni definesc seturi de acțiuni pe care utilizatorii și "
+"grupurile le pot efectua în Poweradmin. Ele oferă o modalitate rapidă de a "
+"atribui combinații uzuale de permisiuni."
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -10573,12 +10572,12 @@ msgid "Create a new record for this zone template"
 msgstr "Creează înregistrare nouă pentru șablon"
 
 #: templates/modern/delete_perm_templ.html:12
-msgid "Delete Access Template"
-msgstr "Șterge șablonul de acces"
+msgid "Delete Permission Template"
+msgstr "Șterge șablonul de permisiuni"
 
 #: templates/modern/delete_perm_templ.html:17
-msgid "You are about to delete the access template"
-msgstr "Sunteți pe cale să ștergeți șablonul acces"
+msgid "You are about to delete the permission template"
+msgstr "Sunteți pe cale să ștergeți șablonul de permisiuni"
 
 #: templates/modern/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -12695,10 +12694,6 @@ msgstr "Da, șterge această cheie API"
 msgid "No, keep this API key"
 msgstr "Nu, păstrează cheia API"
 
-#: templates/modern/edit_perm_templ.html:19
-msgid "Edit Access Template"
-msgstr "Editează șablon acces"
-
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
 msgstr "Informații despre utilizarea șablonului"
@@ -12813,20 +12808,16 @@ msgid ""
 msgstr "After create."
 
 #: templates/modern/list_perm_templ.html:11
-msgid "Access Templates"
-msgstr "Șabloane de acces"
-
-#: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
 msgstr "Șabloane grup"
 
 #: templates/modern/list_perm_templ.html:14
-msgid "Add access template"
-msgstr "adaugă șablon acces"
+msgid "Add permission template"
+msgstr "Adaugă șablon de permisiuni"
 
 #: templates/modern/list_perm_templ.html:41
-msgid "No access templates found"
-msgstr "Nu s-au găsit șabloane de acces"
+msgid "No permission templates found"
+msgstr "Nu s-au găsit șabloane de permisiuni"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13800,3 +13791,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+msgid "List permission templates"
+msgstr "Listă șabloane de permisiuni"
+
+msgid "Permissions"
+msgstr "Permisiuni"
