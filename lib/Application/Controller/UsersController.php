@@ -124,7 +124,10 @@ class UsersController extends BaseController
         $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId());
 
         // Get total count and paginated users
-        $totalUsers = UserManager::countUsers($this->db);
+        $userRepository = $this->createUserRepository();
+        $totalUsers = $this->hasPermission('user_view_others')
+            ? $userRepository->getTotalUserCount()
+            : $userRepository->getTotalUserCount($this->getCurrentUserId() ?? 0);
         $offset = ($currentPage - 1) * $rowsPerPage;
         $users = UserManager::getUserDetailList(
             $this->db,

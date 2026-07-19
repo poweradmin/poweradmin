@@ -113,9 +113,10 @@ interface UserRepository
     /**
      * Get total count of users in the system
      *
+     * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
      * @return int Total number of users
      */
-    public function getTotalUserCount(): int;
+    public function getTotalUserCount(?int $restrictToUserId = null): int;
 
     /**
      * Delete a user by ID

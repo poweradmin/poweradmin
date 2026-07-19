@@ -563,45 +563,6 @@ class UserManager
     }
 
     /**
-     * Count total users for pagination
-     *
-     * @param object $db Database connection
-     * @param int|null $specific User ID (optional)
-     *
-     * @return int Total number of users
-     */
-    public static function countUsers($db, ?int $specific = null): int
-    {
-        $userid = $_SESSION[SessionKeys::USERID];
-
-        if ($specific) {
-            $sql_add = "AND users.id = :specific";
-        } elseif (self::verifyPermission($db, 'user_view_others')) {
-            $sql_add = "";
-        } else {
-            $sql_add = "AND users.id = :userid";
-        }
-
-        // Restrict the join to user-type templates so users assigned to a group
-        // template (legacy state) are still counted, falling under the broken-row branch.
-        $query = "SELECT COUNT(*) FROM users
-                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
-                       AND perm_templ.template_type = 'user'
-                  WHERE 1=1 " . $sql_add;
-
-        $stmt = $db->prepare($query);
-
-        if ($specific) {
-            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
-        } elseif (!self::verifyPermission($db, 'user_view_others')) {
-            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
-        }
-
-        $stmt->execute();
-        return (int) $stmt->fetchColumn();
-    }
-
-    /**
      * Get User Details
      *
      * Gets an array of all users and their details

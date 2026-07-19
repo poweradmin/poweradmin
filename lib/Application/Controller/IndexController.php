@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Module\ModuleRegistry;
 
@@ -150,7 +149,10 @@ class IndexController extends BaseController
 
     private function getDashboardStats(): array
     {
-        $userCount = UserManager::countUsers($this->db);
+        $userRepository = $this->createUserRepository();
+        $userCount = $this->hasPermission('user_view_others')
+            ? $userRepository->getTotalUserCount()
+            : $userRepository->getTotalUserCount($this->getCurrentUserId() ?? 0);
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {

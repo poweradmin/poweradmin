@@ -290,12 +290,19 @@ class DbUserRepository implements UserRepository
     /**
      * Get total count of users in the system
      *
+     * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
      * @return int Total number of users
      */
-    public function getTotalUserCount(): int
+    public function getTotalUserCount(?int $restrictToUserId = null): int
     {
-        $query = "SELECT COUNT(*) FROM users";
-        $stmt = $this->db->query($query);
+        if ($restrictToUserId !== null) {
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE id = :id");
+            $stmt->bindValue(':id', $restrictToUserId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int)$stmt->fetchColumn();
+        }
+
+        $stmt = $this->db->query("SELECT COUNT(*) FROM users");
         return (int)$stmt->fetchColumn();
     }
 
