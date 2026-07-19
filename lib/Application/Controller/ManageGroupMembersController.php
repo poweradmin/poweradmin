@@ -132,12 +132,7 @@ class ManageGroupMembersController extends BaseController
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
-            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
-            $userMap = [];
-            foreach ($allUsers as $user) {
-                $userMap[$user['uid']] = $user['username'];
-            }
+            $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
             $results = $this->membershipService->bulkAddUsers($groupId, $userIds);
 
@@ -209,12 +204,7 @@ class ManageGroupMembersController extends BaseController
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
-            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
-            $userMap = [];
-            foreach ($allUsers as $user) {
-                $userMap[$user['uid']] = $user['username'];
-            }
+            $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
             $results = $this->membershipService->bulkRemoveUsers($groupId, $userIds);
 
@@ -294,8 +284,7 @@ class ManageGroupMembersController extends BaseController
             }
 
             // Get all users for selection
-            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
-            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
+            $allUsers = $this->getVisibleUsers();
 
             // Filter out current members from available users
             $availableUsers = array_filter($allUsers, function ($user) use ($memberIds) {
@@ -311,5 +300,15 @@ class ManageGroupMembersController extends BaseController
             $this->setMessage('list_groups', 'error', $e->getMessage());
             $this->redirect('/groups');
         }
+    }
+
+    /**
+     * Users visible to the current account: everyone with the view-others
+     * permission, otherwise only the account itself
+     */
+    private function getVisibleUsers(): array
+    {
+        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        return $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
     }
 }

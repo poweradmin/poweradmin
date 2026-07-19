@@ -204,7 +204,6 @@ class DbUserRepository implements UserRepository
     public function hasAdminPermission(int $userId): bool
     {
         // Check both direct user permissions and group permissions
-        // Uses same logic as UserManager::isUserSuperuser for consistency
         // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission

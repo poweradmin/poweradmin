@@ -104,60 +104,6 @@ class UserManager
     }
 
     /**
-     * Check if a specific user has superuser permission
-     *
-     * Function to check if a specific user ID has the "user_is_ueberuser" permission
-     * from either their direct user template or from any groups they belong to.
-     *
-     * This function checks both:
-     * 1. Direct user permissions (from user's perm_templ)
-     * 2. Group permissions (from user_groups via user_group_members)
-     *
-     * @param PDO $db Database connection
-     * @param int $userId User ID to check
-     *
-     * @return bool true if user is superuser, false otherwise
-     */
-    public static function isUserSuperuser(PDO $db, int $userId): bool
-    {
-        // Superuser status does not change within a request, so memoize per user to
-        // avoid repeat queries when bulk-record loops check the same user many times.
-        static $cache = [];
-        if (isset($cache[$userId])) {
-            return $cache[$userId];
-        }
-
-        // Check both direct user permissions and group permissions
-        // Uses same logic as verifyPermission for consistency
-        $query = $db->prepare("
-            SELECT perm_items.name AS permission
-            FROM perm_templ_items
-            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-            INNER JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = ?
-                AND perm_items.name = 'user_is_ueberuser'
-                AND perm_items.name IS NOT NULL
-
-            UNION
-
-            SELECT pi.name AS permission
-            FROM user_group_members ugm
-            INNER JOIN user_groups ug ON ugm.group_id = ug.id
-            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
-            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
-            INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE ugm.user_id = ?
-                AND pi.name = 'user_is_ueberuser'
-                AND pi.name IS NOT NULL
-        ");
-        $query->execute([$userId, $userId]);
-        $result = $query->fetch();
-
-        return $cache[$userId] = ($result !== false);
-    }
-
-    /**
      * Get a list of all available permission templates
      *
      * @return array array of templates [id, name, descr]
@@ -184,41 +130,6 @@ class UserManager
             );
         }
         return $template_list;
-    }
-
-    /**
-     * Get the permission template with the minimum number of permissions
-     * Useful for setting a secure default when creating new users
-     *
-     * @param object $db Database connection
-     * @param string|null $templateType Restrict to 'user' or 'group' templates; null = no filter
-     * @return int|null Template ID with minimal permissions, or null if no templates exist
-     */
-    public static function getMinimalPermissionTemplateId($db, ?string $templateType = null): ?int
-    {
-        // Find the template with the fewest permissions assigned
-        // If multiple templates have the same number of permissions, prefer by name order
-        // This query returns the template with 0 or minimal permissions
-        $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
-                  FROM perm_templ pt
-                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id";
-
-        if ($templateType !== null) {
-            $query .= " WHERE pt.template_type = :template_type";
-        }
-
-        $query .= " GROUP BY pt.id, pt.name
-                  ORDER BY perm_count ASC, pt.name ASC
-                  LIMIT 1";
-
-        $stmt = $db->prepare($query);
-        if ($templateType !== null) {
-            $stmt->bindValue(':template_type', $templateType);
-        }
-        $stmt->execute();
-        $result = $stmt->fetch();
-
-        return $result ? (int)$result['id'] : null;
     }
 
     /**
@@ -487,7 +398,6 @@ class UserManager
         ]);
     }
 
-
     /**
      * Resolve auth_method value, preserving external auth types (oidc, saml).
      *
@@ -507,7 +417,6 @@ class UserManager
 
         return 'sql';
     }
-
 
     /**
      * Get List of Permissions

@@ -109,7 +109,7 @@ class EditRecordController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check view permission first (zone-aware for group support)
-        $canView = $this->createPermissionService()->canPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
+        $canView = $this->permissionService->canPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
         $canViewOthers = $this->hasPermission('zone_content_view_others');
 
         if (!$canViewOthers && !$canView) {

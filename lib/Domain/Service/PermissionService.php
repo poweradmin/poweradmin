@@ -134,7 +134,7 @@ class PermissionService
     private function getZonePermissions(\PDO $db, int $userId, int $domainId): array
     {
         $zonePermissions = $this->getHybridPermissionService($db)->getUserPermissionsForZone($userId, $domainId);
-        return $zonePermissions['permissions'] ?? [];
+        return $zonePermissions['permissions'];
     }
 
     private function getHybridPermissionService(\PDO $db): HybridPermissionService
