@@ -23,13 +23,10 @@
 namespace Poweradmin\Domain\Model;
 
 use PDO;
-use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -772,81 +769,4 @@ class UserManager
         return (int)$this->db->lastInsertId('users_id_seq');
     }
 
-    /**
-     * Check if user can perform a specific action on a zone using hybrid permissions
-     *
-     * This method validates both ownership (direct or via group) AND that the user's
-     * permission template (or group's template) grants the required permission.
-     *
-     * @param PDO $db Database connection
-     * @param int $userId User ID
-     * @param int $domainId Domain/Zone ID
-     * @param string $permissionName Permission name (e.g., 'zone_content_edit_own')
-     * @return bool True if user has the permission for this zone
-     */
-    public static function canUserPerformZoneAction($db, int $userId, int $domainId, string $permissionName): bool
-    {
-        // Check if user is überuser - they have all permissions
-        if (self::isUserSuperuser($db, $userId)) {
-            return true;
-        }
-
-        // Use HybridPermissionService for granular permission checking
-        static $hybridPermissionService = null;
-        if ($hybridPermissionService === null) {
-            $groupRepository = new DbUserGroupRepository($db);
-            $memberRepository = new DbUserGroupMemberRepository($db);
-
-            $hybridPermissionService = new HybridPermissionService(
-                $db,
-                $groupRepository,
-                $memberRepository
-            );
-        }
-
-        return $hybridPermissionService->canUserPerformAction($userId, $domainId, $permissionName);
-    }
-
-    /**
-     * Get all permissions a user has for a specific zone
-     *
-     * Returns an array with permissions from all sources (direct ownership + group memberships).
-     * Useful for debugging and displaying effective permissions in the UI.
-     *
-     * @param PDO $db Database connection
-     * @param int $userId User ID
-     * @param int $domainId Domain/Zone ID
-     * @return array{permissions: string[], sources: array} Permissions and their sources
-     */
-    public static function getUserZonePermissions($db, int $userId, int $domainId): array
-    {
-        // Check if user is überuser
-        if (self::isUserSuperuser($db, $userId)) {
-            return [
-                'permissions' => ['user_is_ueberuser'], // All permissions implied
-                'sources' => [
-                    [
-                        'type' => 'überuser',
-                        'id' => $userId,
-                        'permissions' => ['user_is_ueberuser']
-                    ]
-                ]
-            ];
-        }
-
-        // Use HybridPermissionService
-        static $hybridPermissionService = null;
-        if ($hybridPermissionService === null) {
-            $groupRepository = new DbUserGroupRepository($db);
-            $memberRepository = new DbUserGroupMemberRepository($db);
-
-            $hybridPermissionService = new HybridPermissionService(
-                $db,
-                $groupRepository,
-                $memberRepository
-            );
-        }
-
-        return $hybridPermissionService->getUserPermissionsForZone($userId, $domainId);
-    }
 }

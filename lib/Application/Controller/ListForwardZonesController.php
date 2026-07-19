@@ -220,7 +220,7 @@ class ListForwardZonesController extends BaseController
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two
         // queries up front lets the per-row decision below stay in PHP, instead of
-        // running canUserPerformZoneAction once per rendered zone.
+        // running canPerformZoneAction once per rendered zone.
         $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo);
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')

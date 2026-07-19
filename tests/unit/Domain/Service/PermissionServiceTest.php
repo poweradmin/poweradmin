@@ -118,6 +118,22 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanPerformZoneActionShortCircuitsForAdmin(): void
+    {
+        $userId = 1;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $db = $this->createMock(\PDO::class);
+
+        // Admin short-circuit must not touch the hybrid permission query path
+        $db->expects($this->never())->method('prepare');
+        $this->assertTrue($this->service->canPerformZoneAction($db, $userId, 100, 'zone_delete_own'));
+    }
+
+    #[Test]
     public function testGetUserPermissions(): void
     {
         $userId = 1;

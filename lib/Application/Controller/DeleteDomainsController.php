@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -104,7 +103,7 @@ class DeleteDomainsController extends BaseController
 
         foreach ((array)$zone_ids as $zone_id) {
             $canDelete = $canDeleteOthers
-                || UserManager::canUserPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
+                || $this->createPermissionService()->canPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
             $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
         }
     }
@@ -225,7 +224,7 @@ class DeleteDomainsController extends BaseController
             $zones[$zone_id]['is_owner'] = $this->isZoneOwner($zone_id);
 
             // Check zone-specific delete permission (includes group permissions)
-            $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
+            $canDelete = $this->createPermissionService()->canPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
             $zones[$zone_id]['can_delete'] = $canDelete;
 
             $zones[$zone_id]['has_supermaster'] = false;

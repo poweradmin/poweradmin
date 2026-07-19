@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 /**
  * Service for managing user permissions
@@ -45,6 +47,8 @@ class PermissionService
 
     /** @var array<int, bool> */
     private array $adminCache = [];
+
+    private ?HybridPermissionService $hybridPermissionService = null;
 
     public function __construct(UserRepository $userRepository)
     {
@@ -105,6 +109,44 @@ class PermissionService
     }
 
     /**
+     * Check if a user may perform an action on a zone, combining ownership
+     * (direct or via group) with template and group permissions
+     *
+     * @param \PDO $db Database connection
+     * @param int $userId User ID to check
+     * @param int $domainId Zone/Domain ID
+     * @param string $permissionName Permission name (e.g. 'zone_delete_own')
+     * @return bool True if the user may perform the action on this zone
+     */
+    public function canPerformZoneAction(\PDO $db, int $userId, int $domainId, string $permissionName): bool
+    {
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        return $this->getHybridPermissionService($db)->canUserPerformAction($userId, $domainId, $permissionName);
+    }
+
+    /**
+     * Get the permissions a user has for a zone from ownership and group membership.
+     * Callers short-circuit admins first, so no ueberuser handling here.
+     */
+    private function getZonePermissions(\PDO $db, int $userId, int $domainId): array
+    {
+        $zonePermissions = $this->getHybridPermissionService($db)->getUserPermissionsForZone($userId, $domainId);
+        return $zonePermissions['permissions'] ?? [];
+    }
+
+    private function getHybridPermissionService(\PDO $db): HybridPermissionService
+    {
+        return $this->hybridPermissionService ??= new HybridPermissionService(
+            $db,
+            new DbUserGroupRepository($db),
+            new DbUserGroupMemberRepository($db)
+        );
+    }
+
+    /**
      * Get view permission level for a user
      *
      * @param int $userId User ID to check
@@ -143,10 +185,9 @@ class PermissionService
         }
 
         // Check zone-specific permissions (direct ownership + group membership)
-        // This uses HybridPermissionService internally
-        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
 
-        if (in_array('zone_content_view_own', $zonePermissions['permissions'])) {
+        if (in_array('zone_content_view_own', $zonePermissions)) {
             return 'own';
         }
 
@@ -194,12 +235,11 @@ class PermissionService
         }
 
         // Check zone-specific permissions (direct ownership + group membership)
-        // This uses HybridPermissionService internally
-        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
 
-        if (in_array('zone_content_edit_own', $zonePermissions['permissions'])) {
+        if (in_array('zone_content_edit_own', $zonePermissions)) {
             return 'own';
-        } elseif (in_array('zone_content_edit_own_as_client', $zonePermissions['permissions'])) {
+        } elseif (in_array('zone_content_edit_own_as_client', $zonePermissions)) {
             return 'own_as_client';
         }
 
@@ -347,8 +387,8 @@ class PermissionService
             return 'all';
         }
 
-        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
-        return in_array('zone_dnssec_manage_own', $zonePermissions['permissions']) ? 'own' : 'none';
+        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
+        return in_array('zone_dnssec_manage_own', $zonePermissions) ? 'own' : 'none';
     }
 
     /**

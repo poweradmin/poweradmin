@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -85,7 +84,7 @@ class DeleteDomainController extends BaseController
         // Check zone-specific delete permission (includes group permissions)
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
+        $canDelete = $this->createPermissionService()->canPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
         $canDeleteOthers = $this->hasPermission('zone_delete_others');
 
         $this->checkCondition(

@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -110,7 +109,7 @@ class EditRecordController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check view permission first (zone-aware for group support)
-        $canView = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
+        $canView = $this->createPermissionService()->canPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
         $canViewOthers = $this->hasPermission('zone_content_view_others');
 
         if (!$canViewOthers && !$canView) {
