@@ -297,23 +297,6 @@ class UserManager
     }
 
     /**
-     * Check if Valid User
-     *
-     * Check if the given $userid is connected to a valid user.
-     *
-     * @param int $id User ID
-     *
-     * @return boolean true if user exists, false if users doesnt exist
-     */
-    public static function isValidUser($db, int $id): bool
-    {
-        $stmt = $db->prepare("SELECT id FROM users WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $response = $stmt->fetchColumn();
-        return (bool)$response;
-    }
-
-    /**
      * Check if Username Exists
      *
      * Checks if a given username exists in the database.

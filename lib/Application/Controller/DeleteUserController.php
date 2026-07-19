@@ -93,7 +93,7 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(string $uid): void
     {
-        if (!UserManager::isValidUser($this->db, $uid)) {
+        if ($this->createUserRepository()->getUserById((int)$uid) === null) {
             $this->showError(_('User does not exist.'));
         }
 

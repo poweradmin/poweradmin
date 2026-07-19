@@ -813,7 +813,8 @@ class DomainManager implements DomainManagerInterface
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
         if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && self::currentUserOwnsZone($db, $zone_id))) {
-            if (UserManager::isValidUser($db, $user_id)) {
+            $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
+            if ($userRepository->getUserById($user_id) !== null) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
                 $stmt->execute([$user_id, $zone_id]);
                 if ($stmt->fetchColumn() == 0) {
