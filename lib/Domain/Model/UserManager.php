@@ -677,5 +677,4 @@ class UserManager
 
         return (int)$this->db->lastInsertId('users_id_seq');
     }
-
 }
