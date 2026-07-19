@@ -288,6 +288,42 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Get all users with the number of zones each one owns
+     *
+     * @return array Array of user rows [id, username, fullname, email, description, active, numdomains]
+     */
+    public function getUsersWithZoneCounts(): array
+    {
+        $query = "SELECT users.id AS id,
+            users.username AS username,
+            users.fullname AS fullname,
+            users.email AS email,
+            users.description AS description,
+            users.active AS active,
+            COUNT(zones.owner) AS zone_count
+            FROM users
+            LEFT JOIN zones ON users.id = zones.owner
+            GROUP BY users.id, users.username, users.fullname, users.email, users.description, users.active
+            ORDER BY users.fullname";
+
+        $stmt = $this->db->query($query);
+
+        $users = [];
+        while ($row = $stmt->fetch()) {
+            $users[] = [
+                'id' => $row['id'],
+                'username' => $row['username'],
+                'fullname' => $row['fullname'],
+                'email' => $row['email'],
+                'description' => $row['description'],
+                'active' => $row['active'],
+                'numdomains' => $row['zone_count'],
+            ];
+        }
+        return $users;
+    }
+
+    /**
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)

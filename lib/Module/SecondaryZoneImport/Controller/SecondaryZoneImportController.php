@@ -24,7 +24,6 @@ namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -326,7 +325,7 @@ class SecondaryZoneImportController extends BaseController
             'imported' => false,
             'domain_value' => htmlspecialchars((string)$this->request->getPostParam('domain', '')),
             'slave_master_value' => htmlspecialchars((string)$this->request->getPostParam('slave_master', '')),
-            'users' => UserManager::showUsers($this->db),
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'session_user_id' => $sessionUserId,
             'perm_view_others' => $this->hasPermission('user_view_others'),
             'owner_value' => $ownerInput !== null ? $ownerInput : $sessionUserId,

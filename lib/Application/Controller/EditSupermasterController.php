@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -137,7 +136,7 @@ class EditSupermasterController extends BaseController
         }
 
         $this->render('edit_supermaster.html', [
-            'users' => UserManager::showUsers($this->db),
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'master_ip' => htmlspecialchars($new_master_ip),
             'ns_name' => htmlspecialchars($new_ns_name),
             'account' => htmlspecialchars($account),

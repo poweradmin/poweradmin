@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -245,6 +244,7 @@ class AddZoneSlaveController extends BaseController
         $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
         $slaveMasterInput = $this->request->getPostParam('slave_master');
         $slave_master_value = $slaveMasterInput !== null ? htmlspecialchars($slaveMasterInput) : '';
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
         $ownerInput = $this->request->getPostParam('owner');
@@ -255,8 +255,7 @@ class AddZoneSlaveController extends BaseController
             } else {
                 $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
                 // Verify that the owner ID exists among valid users
-                $valid_users = UserManager::showUsers($this->db);
-                $valid_owner_ids = array_column($valid_users, 'id');
+                $valid_owner_ids = array_column($users, 'id');
                 $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
             }
         } else {
@@ -287,7 +286,7 @@ class AddZoneSlaveController extends BaseController
 
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,
-            'users' => UserManager::showUsers($this->db),
+            'users' => $users,
             'session_user_id' => $_SESSION[SessionKeys::USERID],
             'perm_view_others' => $this->hasPermission('user_view_others'),
             'domain_value' => $domain_value,

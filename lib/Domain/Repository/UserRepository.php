@@ -111,6 +111,13 @@ interface UserRepository
     public function getUsersList(int $offset, int $limit): array;
 
     /**
+     * Get all users with the number of zones each one owns
+     *
+     * @return array Array of user rows [id, username, fullname, email, description, active, numdomains]
+     */
+    public function getUsersWithZoneCounts(): array;
+
+    /**
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)

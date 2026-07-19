@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -327,6 +326,7 @@ class AddZoneMasterController extends BaseController
         $perm_view_others = $this->hasPermission('user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         // Keep the submitted zone name if there was an error
         $domainInput = $this->request->getPostParam('domain');
@@ -363,8 +363,7 @@ class AddZoneMasterController extends BaseController
             } else {
                 $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
                 // Verify that the owner ID exists among valid users
-                $valid_users = UserManager::showUsers($this->db);
-                $valid_owner_ids = array_column($valid_users, 'id');
+                $valid_owner_ids = array_column($users, 'id');
                 $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
             }
         } else {
@@ -416,7 +415,7 @@ class AddZoneMasterController extends BaseController
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
-            'users' => UserManager::showUsers($this->db),
+            'users' => $users,
             'zone_templates' => $templates,
             'can_use_templates' => !empty($templates),
             'default_template_id' => $default_template_id,

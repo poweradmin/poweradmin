@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
@@ -81,7 +80,7 @@ class AddSupermasterController extends BaseController
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
-            'users' => UserManager::showUsers($this->db),
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),

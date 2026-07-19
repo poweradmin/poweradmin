@@ -132,7 +132,7 @@ class DeleteUserController extends BaseController
 
         $users = [];
         if (count($zones) > 0) {
-            $users = UserManager::showUsers($this->db);
+            $users = $this->createUserRepository()->getUsersWithZoneCounts();
         }
 
         $this->render('delete_user.html', [

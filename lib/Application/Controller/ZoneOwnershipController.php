@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -103,7 +102,7 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Get owners
-        $users = UserManager::showUsers($this->db);
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
         $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
         // Filter out users who are already owners

@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -261,7 +260,7 @@ class BulkRegistrationController extends BaseController
             'perm_edit_others' => $this->hasPermission('user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => UserManager::showUsers($this->db),
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,
             'added_domains' => $added_domains,
