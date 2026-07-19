@@ -23,7 +23,6 @@
 namespace Poweradmin\Module\CsvExport\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -46,7 +45,7 @@ class CsvExportController extends BaseController
         $userId = $userContextService->getLoggedInUserId();
         $permissionService = $this->createPermissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
             $this->showError(_('You do not have permission to export this zone.'));

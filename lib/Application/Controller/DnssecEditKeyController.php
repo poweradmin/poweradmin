@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -77,7 +76,7 @@ class DnssecEditKeyController extends BaseController
         // so it requires the dedicated DNSSEC management permission.
         $perm_view = Permission::getViewPermission($this->db);
         $perm_dnssec = Permission::getDnssecPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
             $this->showError(_("You do not have permission to view this zone."));

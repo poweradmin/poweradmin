@@ -26,7 +26,6 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Validator;
 
 /**
@@ -51,7 +50,7 @@ class DnssecKeyExportController extends BaseController
         $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
         $permDnssec = Permission::getDnssecPermission($this->db);
-        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
+        $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
             $this->showError(_('You do not have permission to view this zone.'));

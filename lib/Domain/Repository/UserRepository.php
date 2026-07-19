@@ -77,6 +77,15 @@ interface UserRepository
     public function getZoneOwnerFullNames(int $domainId): string;
 
     /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool;
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for

@@ -112,6 +112,37 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool
+    {
+        $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
+        $stmt->execute([
+            ':userid' => $userId,
+            ':zoneid' => $domainId
+        ]);
+        if ($stmt->fetchColumn()) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT zg.id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :userid AND zg.domain_id = :zoneid
+        ");
+        $stmt->execute([
+            ':userid' => $userId,
+            ':zoneid' => $domainId
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for

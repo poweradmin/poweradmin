@@ -105,6 +105,19 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testUserOwnsZoneDelegatesToRepository(): void
+    {
+        $this->userRepository->method('userOwnsZone')
+            ->willReturnMap([
+                [1, 100, true],
+                [2, 100, false],
+            ]);
+
+        $this->assertTrue($this->service->userOwnsZone(1, 100));
+        $this->assertFalse($this->service->userOwnsZone(2, 100));
+    }
+
+    #[Test]
     public function testGetUserPermissions(): void
     {
         $userId = 1;

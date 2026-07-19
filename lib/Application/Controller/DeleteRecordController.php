@@ -36,7 +36,6 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -114,7 +113,7 @@ class DeleteRecordController extends BaseController
 
         // Early permission check - validate zone access before proceeding
         $userId = $this->userContextService->getLoggedInUserId();
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
+        $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check zone-specific edit permission (includes group permissions)
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zid);

@@ -590,6 +590,15 @@ abstract class BaseController
         return $userId !== null && $this->createPermissionService()->hasPermission($userId, $permission);
     }
 
+    /**
+     * Check if the logged-in user owns the given zone directly or via group membership
+     */
+    protected function isZoneOwner(int $zoneId): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createPermissionService()->userOwnsZone($userId, $zoneId);
+    }
+
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
     {
         return new DbUserGroupRepository($this->db);

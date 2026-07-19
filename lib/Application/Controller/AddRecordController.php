@@ -41,7 +41,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -128,7 +127,7 @@ class AddRecordController extends BaseController
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_type = $this->domainRepository->getDomainType($zone_id);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         $this->checkCondition(ZoneType::isReadOnly($zone_type)
             || $perm_edit == "none"

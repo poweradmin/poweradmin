@@ -35,7 +35,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Validator;
 
 class DnssecToggleKeyController extends BaseController
@@ -67,7 +66,7 @@ class DnssecToggleKeyController extends BaseController
         // Validate permissions
         $perm_view = Permission::getViewPermission($this->db);
         $perm_dnssec = Permission::getDnssecPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
             $this->showError(_("You do not have permission to view this zone."));

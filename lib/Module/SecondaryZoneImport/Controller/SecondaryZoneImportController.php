@@ -120,7 +120,7 @@ class SecondaryZoneImportController extends BaseController
         ) {
             return true;
         }
-        return UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
+        return $this->isZoneOwner($zoneId);
     }
 
     /**

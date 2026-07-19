@@ -122,8 +122,7 @@ class DeleteDomainsController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             foreach ($deleted_zones as $zone) {
                 if ($zone['type'] == 'MASTER' && !empty($zone['name'])) {
-                    $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone['id']);
-                    if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
+                    if ($perm_delete == "all" || ($perm_delete == "own" && $this->isZoneOwner($zone['id']))) {
                         if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
                             $dnssecProvider->unsecureZone($zone['name']);
                         }
@@ -223,7 +222,7 @@ class DeleteDomainsController extends BaseController
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
             $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);
-            $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+            $zones[$zone_id]['is_owner'] = $this->isZoneOwner($zone_id);
 
             // Check zone-specific delete permission (includes group permissions)
             $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');

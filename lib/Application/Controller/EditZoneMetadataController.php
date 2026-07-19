@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -105,7 +104,7 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $isOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
+        $isOwner = $this->isZoneOwner($zoneId);
         $canEditMetadata = $this->hasPermission('zone_meta_edit_others')
             || ($this->hasPermission('zone_meta_edit_own') && $isOwner);
 

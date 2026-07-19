@@ -48,7 +48,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -225,7 +224,7 @@ class EditController extends BaseController
         // Early permission check - validate access before data retrieval
         $userId = $this->userContextService->getLoggedInUserId();
         $perm_view = $this->permissionService->getViewPermissionLevel($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view !== "all" && !$user_is_zone_owner) {
             $this->showError(_('You do not have permission to access this zone.'));

@@ -35,7 +35,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -75,7 +74,7 @@ class SaveZoneAsTemplateController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId();
         $perm_zone_templ_add = $this->permissionService->canAddZoneTemplates($userId);
         $perm_is_godlike = $this->permissionService->isAdmin($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if (!($perm_zone_templ_add || $perm_is_godlike)) {
             $this->showError(_('You do not have permission to create zone templates.'));

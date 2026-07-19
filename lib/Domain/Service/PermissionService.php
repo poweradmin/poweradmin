@@ -93,6 +93,18 @@ class PermissionService
     }
 
     /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool
+    {
+        return $this->userRepository->userOwnsZone($userId, $domainId);
+    }
+
+    /**
      * Get view permission level for a user
      *
      * @param int $userId User ID to check

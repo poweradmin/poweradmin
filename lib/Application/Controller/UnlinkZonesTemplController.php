@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
 class UnlinkZonesTemplController extends BaseController
@@ -88,7 +87,7 @@ class UnlinkZonesTemplController extends BaseController
             }
 
             // Check if user has permission to edit this zone
-            if (!$perm_godlike && !UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id)) {
+            if (!$perm_godlike && !$this->isZoneOwner($zone_id)) {
                 $failed++;
                 continue;
             }
