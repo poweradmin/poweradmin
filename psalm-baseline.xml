@@ -22,7 +22,6 @@
       <code><![CDATA[$uid]]></code>
       <code><![CDATA[$uid]]></code>
       <code><![CDATA[$uid]]></code>
-      <code><![CDATA[$uid]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeleteZoneTemplController.php">
