@@ -36,8 +36,10 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -101,6 +103,19 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * Check if the logged-in user owns the zone directly or via group membership
+     */
+    private function userIsZoneOwner(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $userRepository = new DbUserRepository($this->db, $this->config);
+        return $userRepository->userOwnsZone($userId, $zoneId);
+    }
+
+    /**
      * Resolve the zone name, normalize the record name against it, and reject
      * record types a client-level editor may not add.
      *
@@ -142,7 +157,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
@@ -242,7 +257,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
@@ -356,7 +371,7 @@ class RecordManager implements RecordManagerInterface
         }
         $record['zid'] = (int)$recordDetails['zid'];
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
+        $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
         // Normalize the posted name first so the apex comparison below sees the FQDN
@@ -462,7 +477,7 @@ class RecordManager implements RecordManagerInterface
             $this->messageService->addSystemError(_("Record not found."));
             return false;
         }
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
+        $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
@@ -551,7 +566,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {

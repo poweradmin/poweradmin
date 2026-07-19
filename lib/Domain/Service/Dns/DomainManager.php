@@ -34,10 +34,12 @@ use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -96,6 +98,20 @@ class DomainManager implements DomainManagerInterface
         } catch (Throwable $e) {
             $this->logger->warning('Failed to write zone change log: {error}', ['error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Check if the logged-in user owns the zone directly or via group membership.
+     * Static so the static owner-management methods can share it.
+     */
+    private static function currentUserOwnsZone($db, int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
+        return $userRepository->userOwnsZone($userId, $zoneId);
     }
 
     /**
@@ -417,7 +433,7 @@ class DomainManager implements DomainManagerInterface
     public function deleteDomain(int $id): bool
     {
         $perm_delete = Permission::getDeletePermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
+        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
         if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
             // Get zone name for backend deletion.
@@ -504,7 +520,7 @@ class DomainManager implements DomainManagerInterface
 
         foreach ($domains as $id) {
             $perm_delete = Permission::getDeletePermission($this->db);
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
+            $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
             if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
                 // Get zone name for backend deletion.
@@ -704,7 +720,7 @@ class DomainManager implements DomainManagerInterface
         }
         if (
             UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
-            && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
+            && self::currentUserOwnsZone($this->db, $zoneId)
         ) {
             return true;
         }
@@ -796,7 +812,7 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
+        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && self::currentUserOwnsZone($db, $zone_id))) {
             if (UserManager::isValidUser($db, $user_id)) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
                 $stmt->execute([$user_id, $zone_id]);
@@ -818,41 +834,6 @@ class DomainManager implements DomainManagerInterface
             } else {
                 $messageService = new MessageService();
                 $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addOwnerToZone", "$zone_id / $user_id"));
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Delete owner from zone
-     *
-     * @param int $zone_id Zone ID
-     * @param int $user_id User ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
-    {
-        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
-            if (UserManager::isValidUser($db, $user_id)) {
-                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE domain_id = ?");
-                $stmt->execute([$zone_id]);
-                if ($stmt->fetchColumn() > 1) {
-                    $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
-                    $stmt->execute([$user_id, $zone_id]);
-
-                    self::syncZoneAccountStatic($db, $zone_id);
-                    return true;
-                } else {
-                    $messageService = new MessageService();
-                    $messageService->addSystemError(_('There must be at least one owner for a zone.'));
-                    return false;
-                }
-            } else {
-                $messageService = new MessageService();
-                $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteOwnerFromZone", "$zone_id / $user_id"));
                 return false;
             }
         } else {
@@ -899,7 +880,7 @@ class DomainManager implements DomainManagerInterface
         }
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $zone_id);
 
         $zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');

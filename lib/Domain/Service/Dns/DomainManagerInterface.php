@@ -97,16 +97,6 @@ interface DomainManagerInterface
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool;
 
     /**
-     * Delete owner from zone
-     *
-     * @param int $zone_id Zone ID
-     * @param int $user_id User ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool;
-
-    /**
      * Update All Zone Records for Zone ID with Zone Template
      *
      * @param string $db_type Database type
