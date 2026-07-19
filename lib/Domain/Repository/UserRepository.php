@@ -118,6 +118,18 @@ interface UserRepository
     public function getUsersWithZoneCounts(): array;
 
     /**
+     * Get detailed user list with template, group, and MFA info
+     *
+     * @param bool $ldapUse Whether the LDAP column should be included
+     * @param int|null $restrictToUserId Return only this user (for users without view-others permission)
+     * @param int|null $specific User ID to fetch (overrides the restriction)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
+     * @return array Array of user details
+     */
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null): array;
+
+    /**
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)

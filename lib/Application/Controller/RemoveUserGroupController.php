@@ -35,7 +35,6 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RemoveUserGroupController extends BaseController
@@ -95,9 +94,9 @@ class RemoveUserGroupController extends BaseController
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get target user details for logging
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $targetUsers = UserManager::getUserDetailList($this->db, $ldapUse, $targetUserId);
-            $targetUsername = !empty($targetUsers) ? $targetUsers[0]['username'] : "ID: $targetUserId";
+            $userRepository = $this->createUserRepository();
+            $targetUser = $userRepository->getUserById($targetUserId);
+            $targetUsername = $targetUser !== null ? $targetUser['username'] : "ID: $targetUserId";
 
             $success = $this->membershipService->removeUserFromGroup($groupId, $targetUserId);
 
@@ -105,9 +104,8 @@ class RemoveUserGroupController extends BaseController
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
 
                 // Log the removal in the same format as group management
-                $currentUserId = $userId;
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $userRepository->getUserById($userId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $userId";
 
                 $logMessage = sprintf(
                     "Removed 1 user(s) from group '%s' (ID: %d) by %s: %s",

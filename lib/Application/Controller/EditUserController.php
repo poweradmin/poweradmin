@@ -584,7 +584,7 @@ class EditUserController extends BaseController
 
     private function getUserDetails(int $editId): array
     {
-        $users = UserManager::getUserDetailList($this->db, $this->config->get('ldap', 'enabled', false), $editId);
+        $users = $this->createUserRepository()->getUserDetailList($this->config->get('ldap', 'enabled', false), null, $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));

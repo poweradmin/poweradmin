@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -489,126 +490,6 @@ class UserManager
         ]);
     }
 
-    /**
-     * Get User Details
-     *
-     * Gets an array of all users and their details
-     *
-     * @param $db
-     * @param $ldap_use
-     * @param int|null $specific User ID (optional)
-     * @param int|null $limit Number of records to return (optional)
-     * @param int|null $offset Starting offset (optional)
-     *
-     * @return array array of user details
-     */
-    public static function getUserDetailList($db, $ldap_use, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
-    {
-        $userid = $_SESSION[SessionKeys::USERID];
-
-        if ($specific) {
-            $sql_add = "AND users.id = :specific";
-        } elseif (self::verifyPermission($db, 'user_view_others')) {
-            $sql_add = "";
-        } else {
-            $sql_add = "AND users.id = :userid";
-        }
-
-        $query = "SELECT users.id AS uid,
-        username,
-        fullname,
-        email,
-        description AS descr,
-        active,
-        auth_method,";
-
-        if ($ldap_use) {
-            $query .= "use_ldap,";
-        }
-
-        // Restrict the join to user-type templates so users pointed at a deleted
-        // template or a group template are surfaced with a NULL tpl_id and routed
-        // through the broken-row fallback below.
-        $query .= "perm_templ.id AS tpl_id,
-        perm_templ.name AS tpl_name,
-        perm_templ.descr AS tpl_descr
-        FROM users
-        LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
-             AND perm_templ.template_type = 'user'
-        WHERE 1=1 " . $sql_add . "
-        ORDER BY username";
-
-        if ($limit !== null) {
-            $query .= " LIMIT :limit OFFSET :offset";
-        }
-
-        $stmt = $db->prepare($query);
-
-        if ($specific) {
-            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
-        } elseif (!self::verifyPermission($db, 'user_view_others')) {
-            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
-        }
-
-        if ($limit !== null) {
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
-        }
-
-        $stmt->execute();
-        $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Fetch user groups in a separate query
-        $userGroups = self::getUserGroupsMap($db);
-
-        // Fetch MFA status in a separate query
-        $mfaStatus = self::getUserMfaStatusMap($db);
-
-        // Resolve the fallback template only when at least one row has a dangling perm_templ.
-        // Using the minimum-permission user template keeps the dropdown's <option selected>
-        // pointing somewhere safe: a stale save lands on minimum permissions rather than
-        // letting the browser auto-pick the first <option> (which is typically Administrator).
-        $fallbackTplId = null;
-        $fallbackTplName = null;
-        foreach ($response as $user) {
-            if ($user['tpl_id'] === null) {
-                $fallbackTplId = self::getMinimalPermissionTemplateId($db, 'user');
-                if ($fallbackTplId !== null) {
-                    $fallbackTplName = self::getPermissionTemplateName($db, $fallbackTplId);
-                }
-                break;
-            }
-        }
-
-        $userList = array();
-        foreach ($response as $user) {
-            $tplId = $user['tpl_id'];
-            $tplName = $user['tpl_name'];
-            $tplDescr = $user['tpl_descr'];
-            if ($tplId === null && $fallbackTplId !== null) {
-                $tplId = $fallbackTplId;
-                $tplName = $fallbackTplName;
-                $tplDescr = null;
-            }
-
-            $userList[] = array(
-                "uid" => $user['uid'],
-                "username" => $user['username'],
-                "fullname" => $user['fullname'],
-                "email" => $user['email'],
-                "descr" => $user['descr'],
-                "active" => $user['active'],
-                "use_ldap" => $user['use_ldap'] ?? 0,
-                "auth_type" => $user['auth_method'] ?? 'sql',
-                "tpl_id" => $tplId,
-                "tpl_name" => $tplName,
-                "tpl_descr" => $tplDescr,
-                "groups" => $userGroups[$user['uid']] ?? [],
-                "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
-            );
-        }
-        return $userList;
-    }
 
     /**
      * Resolve auth_method value, preserving external auth types (oidc, saml).
@@ -630,71 +511,6 @@ class UserManager
         return 'sql';
     }
 
-    /**
-     * Look up a permission template's display name by ID
-     */
-    private static function getPermissionTemplateName($db, int $templId): ?string
-    {
-        $stmt = $db->prepare("SELECT name FROM perm_templ WHERE id = :id");
-        $stmt->execute([':id' => $templId]);
-        $name = $stmt->fetchColumn();
-        return $name === false ? null : (string)$name;
-    }
-
-    /**
-     * Get a map of user IDs to their group names
-     *
-     * @param object $db Database connection
-     * @return array Map of user_id => array of group names
-     */
-    private static function getUserGroupsMap($db): array
-    {
-        $query = "SELECT ugm.user_id, ug.name AS group_name
-                  FROM user_group_members ugm
-                  INNER JOIN user_groups ug ON ugm.group_id = ug.id
-                  ORDER BY ugm.user_id, ug.name";
-
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $userGroups = [];
-        foreach ($results as $row) {
-            $userId = $row['user_id'];
-            if (!isset($userGroups[$userId])) {
-                $userGroups[$userId] = [];
-            }
-            $userGroups[$userId][] = $row['group_name'];
-        }
-
-        return $userGroups;
-    }
-
-    /**
-     * Get a map of user IDs to their MFA enabled status
-     *
-     * @param object $db Database connection
-     * @return array Map of user_id => bool (true if MFA enabled)
-     */
-    private static function getUserMfaStatusMap($db): array
-    {
-        try {
-            $query = "SELECT user_id, enabled FROM user_mfa WHERE enabled = 1";
-            $stmt = $db->prepare($query);
-            $stmt->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $mfaStatus = [];
-            foreach ($results as $row) {
-                $mfaStatus[$row['user_id']] = true;
-            }
-
-            return $mfaStatus;
-        } catch (\PDOException $e) {
-            // Table might not exist if MFA was never enabled
-            return [];
-        }
-    }
 
     /**
      * Get List of Permissions
@@ -943,7 +759,8 @@ class UserManager
         if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
-            $current_user = self::getUserDetailList($this->db, $ldap_use, $_SESSION[SessionKeys::USERID]);
+            $userRepository = new DbUserRepository($this->db, $this->config);
+            $current_user = $userRepository->getUserDetailList((bool)$ldap_use, null, (int)$_SESSION[SessionKeys::USERID]);
             $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
         }
 

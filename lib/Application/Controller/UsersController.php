@@ -123,15 +123,15 @@ class UsersController extends BaseController
         $paginationService = $this->createPaginationService();
         $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId());
 
-        // Get total count and paginated users
+        // Get total count and paginated users; both restricted to the user's own
+        // account when they lack the permission to view other users
         $userRepository = $this->createUserRepository();
-        $totalUsers = $this->hasPermission('user_view_others')
-            ? $userRepository->getTotalUserCount()
-            : $userRepository->getTotalUserCount($this->getCurrentUserId() ?? 0);
+        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        $totalUsers = $userRepository->getTotalUserCount($restrictToUserId);
         $offset = ($currentPage - 1) * $rowsPerPage;
-        $users = UserManager::getUserDetailList(
-            $this->db,
+        $users = $userRepository->getUserDetailList(
             $this->config->get('ldap', 'enabled', false),
+            $restrictToUserId,
             null,
             $rowsPerPage,
             $offset

@@ -37,7 +37,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -153,9 +152,8 @@ class ManageGroupZonesController extends BaseController
                 $this->setMessage('manage_group_zones', 'success', $message);
 
                 // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful additions
                 $zoneNames = array_filter(array_map(
@@ -242,9 +240,8 @@ class ManageGroupZonesController extends BaseController
                 $this->setMessage('manage_group_zones', 'success', $message);
 
                 // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful removals
                 $zoneNames = array_filter(array_map(

@@ -324,6 +324,179 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Get detailed user list with template, group, and MFA info
+     *
+     * @param bool $ldapUse Whether the LDAP column should be included
+     * @param int|null $restrictToUserId Return only this user (for users without view-others permission)
+     * @param int|null $specific User ID to fetch (overrides the restriction)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
+     * @return array Array of user details
+     */
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
+    {
+        if ($specific) {
+            $sql_add = "AND users.id = :specific";
+        } elseif ($restrictToUserId === null) {
+            $sql_add = "";
+        } else {
+            $sql_add = "AND users.id = :userid";
+        }
+
+        $query = "SELECT users.id AS uid,
+        username,
+        fullname,
+        email,
+        description AS descr,
+        active,
+        auth_method,";
+
+        if ($ldapUse) {
+            $query .= "use_ldap,";
+        }
+
+        // Restrict the join to user-type templates so users pointed at a deleted
+        // template or a group template are surfaced with a NULL tpl_id and routed
+        // through the broken-row fallback below.
+        $query .= "perm_templ.id AS tpl_id,
+        perm_templ.name AS tpl_name,
+        perm_templ.descr AS tpl_descr
+        FROM users
+        LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+             AND perm_templ.template_type = 'user'
+        WHERE 1=1 " . $sql_add . "
+        ORDER BY username";
+
+        if ($limit !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+
+        $stmt = $this->db->prepare($query);
+
+        if ($specific) {
+            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
+        } elseif ($restrictToUserId !== null) {
+            $stmt->bindValue(':userid', $restrictToUserId, PDO::PARAM_INT);
+        }
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = $this->getUserGroupsMap();
+        $mfaStatus = $this->getUserMfaStatusMap();
+
+        // Resolve the fallback template only when at least one row has a dangling perm_templ.
+        // Using the minimum-permission user template keeps the dropdown's <option selected>
+        // pointing somewhere safe: a stale save lands on minimum permissions rather than
+        // letting the browser auto-pick the first <option> (which is typically Administrator).
+        $fallbackTplId = null;
+        $fallbackTplName = null;
+        foreach ($response as $user) {
+            if ($user['tpl_id'] === null) {
+                $templateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+                $fallbackTplId = $templateRepository->getMinimalPermissionTemplateId('user');
+                if ($fallbackTplId !== null) {
+                    $fallbackTplName = $this->getPermissionTemplateName($fallbackTplId);
+                }
+                break;
+            }
+        }
+
+        $userList = [];
+        foreach ($response as $user) {
+            $tplId = $user['tpl_id'];
+            $tplName = $user['tpl_name'];
+            $tplDescr = $user['tpl_descr'];
+            if ($tplId === null && $fallbackTplId !== null) {
+                $tplId = $fallbackTplId;
+                $tplName = $fallbackTplName;
+                $tplDescr = null;
+            }
+
+            $userList[] = [
+                "uid" => $user['uid'],
+                "username" => $user['username'],
+                "fullname" => $user['fullname'],
+                "email" => $user['email'],
+                "descr" => $user['descr'],
+                "active" => $user['active'],
+                "use_ldap" => $user['use_ldap'] ?? 0,
+                "auth_type" => $user['auth_method'] ?? 'sql',
+                "tpl_id" => $tplId,
+                "tpl_name" => $tplName,
+                "tpl_descr" => $tplDescr,
+                "groups" => $userGroups[$user['uid']] ?? [],
+                "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
+            ];
+        }
+        return $userList;
+    }
+
+    /**
+     * Look up a permission template's display name by ID
+     */
+    private function getPermissionTemplateName(int $templId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT name FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $templId]);
+        $name = $stmt->fetchColumn();
+        return $name === false ? null : (string)$name;
+    }
+
+    /**
+     * Get a map of user IDs to their group names
+     *
+     * @return array Map of user_id => array of group names
+     */
+    private function getUserGroupsMap(): array
+    {
+        $query = "SELECT ugm.user_id, ug.name AS group_name
+                  FROM user_group_members ugm
+                  INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                  ORDER BY ugm.user_id, ug.name";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = [];
+        foreach ($results as $row) {
+            $userGroups[$row['user_id']][] = $row['group_name'];
+        }
+
+        return $userGroups;
+    }
+
+    /**
+     * Get a map of user IDs to their MFA enabled status
+     *
+     * @return array Map of user_id => bool (true if MFA enabled)
+     */
+    private function getUserMfaStatusMap(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT user_id, enabled FROM user_mfa WHERE enabled = 1");
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $mfaStatus = [];
+            foreach ($results as $row) {
+                $mfaStatus[$row['user_id']] = true;
+            }
+
+            return $mfaStatus;
+        } catch (\PDOException $e) {
+            // Table might not exist if MFA was never enabled
+            return [];
+        }
+    }
+
+    /**
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)

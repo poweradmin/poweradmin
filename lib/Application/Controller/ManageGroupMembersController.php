@@ -36,7 +36,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -133,7 +132,8 @@ class ManageGroupMembersController extends BaseController
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
             $userMap = [];
             foreach ($allUsers as $user) {
                 $userMap[$user['uid']] = $user['username'];
@@ -209,7 +209,8 @@ class ManageGroupMembersController extends BaseController
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
             $userMap = [];
             foreach ($allUsers as $user) {
                 $userMap[$user['uid']] = $user['username'];
@@ -293,7 +294,8 @@ class ManageGroupMembersController extends BaseController
             }
 
             // Get all users for selection
-            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+            $allUsers = $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
 
             // Filter out current members from available users
             $availableUsers = array_filter($allUsers, function ($user) use ($memberIds) {
