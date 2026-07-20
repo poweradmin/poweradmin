@@ -25,6 +25,8 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -37,6 +39,7 @@ class UserManager
     private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
+    private ?PermissionService $permissionService = null;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
@@ -46,61 +49,16 @@ class UserManager
     }
 
     /**
-     * Verify User has Permission Name
-     *
-     * Function to see if user has right to do something. It will check if
-     * user has "ueberuser" bit set. If it isn't, it will check if the user has
-     * the specific permission from either their direct user template or from
-     * any groups they belong to. It returns "false" if the user doesn't have the
-     * right, and "true" if the user has.
-     *
-     * This function checks both:
-     * 1. Direct user permissions (from user's perm_templ)
-     * 2. Group permissions (from user_groups via user_group_members)
-     *
-     * @param string $arg Permission name
-     *
-     * @return boolean true if user has permission, false otherwise
+     * Check if the logged-in user has the given permission (admins always pass)
      */
-    public static function verifyPermission(object $db, string $arg): bool
+    private function hasPermission(string $permission): bool
     {
-        $permission = $arg;
-
-        static $cache = false;
-
-        if ($cache !== false) {
-            return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
-        }
-
-        if ((!isset($_SESSION[SessionKeys::USERID])) || (!is_object($db))) {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
             return false;
         }
-
-        // Query to get both direct user permissions and group permissions
-        // UNION combines permissions from both sources
-        // Note: We filter out NULL permission names to handle orphaned template items
-        $query = $db->prepare("
-            SELECT perm_items.name AS permission
-            FROM perm_templ_items
-            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-            INNER JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = ? AND perm_items.name IS NOT NULL
-
-            UNION
-
-            SELECT pi.name AS permission
-            FROM user_group_members ugm
-            INNER JOIN user_groups ug ON ugm.group_id = ug.id
-            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
-            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
-            INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE ugm.user_id = ? AND pi.name IS NOT NULL
-        ");
-        $query->execute(array($_SESSION[SessionKeys::USERID], $_SESSION[SessionKeys::USERID]));
-        $cache = $query->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
-
-        return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        return $this->permissionService->hasPermission($userId, $permission);
     }
 
     /**
@@ -158,7 +116,7 @@ class UserManager
      */
     public function deleteUser(int $uid, array $zones): bool
     {
-        if (($uid != $_SESSION[SessionKeys::USERID] && !self::verifyPermission($this->db, 'user_edit_others')) || ($uid == $_SESSION[SessionKeys::USERID] && !self::verifyPermission($this->db, 'user_edit_own'))) {
+        if (($uid != $_SESSION[SessionKeys::USERID] && !$this->hasPermission('user_edit_others')) || ($uid == $_SESSION[SessionKeys::USERID] && !$this->hasPermission('user_edit_own'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this user."));
 
             return false;
@@ -235,8 +193,8 @@ class UserManager
      */
     public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $useLdap): bool
     {
-        $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
-        $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
+        $perm_edit_own = $this->hasPermission('user_edit_own');
+        $perm_edit_others = $this->hasPermission('user_edit_others');
 
         if (($id == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($id != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
             // Fetch the current record up front: needed for the username-change check
@@ -294,14 +252,14 @@ class UserManager
 
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
-            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+            if ($this->hasPermission('user_edit_templ_perm')) {
                 $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
             }
 
             $query .= ", description = :description, active = :active, use_ldap = :use_ldap, auth_method = :auth_method";
 
-            $edit_own_perm = self::verifyPermission($this->db, 'user_edit_own');
-            $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
+            $edit_own_perm = $this->hasPermission('user_edit_own');
+            $passwd_edit_others_perm = $this->hasPermission('user_passwd_edit_others');
 
             $passwordHash = null;
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
@@ -330,7 +288,7 @@ class UserManager
             $stmt->bindValue(':auth_method', $newAuthMethod, PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
-            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+            if ($this->hasPermission('user_edit_templ_perm')) {
                 $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
             }
 
@@ -426,10 +384,10 @@ class UserManager
      */
     public function updateUserDetails(array $details): bool
     {
-        $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
-        $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
-        $perm_edit_user_templ = self::verifyPermission($this->db, 'user_edit_templ_perm');
-        $perm_is_godlike = self::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_edit_own = $this->hasPermission('user_edit_own');
+        $perm_edit_others = $this->hasPermission('user_edit_others');
+        $perm_edit_user_templ = $this->hasPermission('user_edit_templ_perm');
+        $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($details['uid'] != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
@@ -503,7 +461,7 @@ class UserManager
                 $query .= ", use_ldap = :use_ldap, auth_method = :auth_method";
             }
 
-            $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
+            $passwd_edit_others_perm = $this->hasPermission('user_passwd_edit_others');
             $hashedPassword = null;
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = ConfigurationManager::getInstance();
@@ -560,7 +518,7 @@ class UserManager
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
 
-        if (!self::verifyPermission($this->db, 'user_add_new')) {
+        if (!$this->hasPermission('user_add_new')) {
             $this->messageService->addSystemError(_("You do not have the permission to add a new user."));
 
             return false;
@@ -610,7 +568,7 @@ class UserManager
         $stmt->bindValue(':email', $details['email']);
         $stmt->bindValue(':description', $details['descr'] ?? '');
 
-        if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+        if ($this->hasPermission('user_edit_templ_perm')) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
             $userRepository = new DbUserRepository($this->db, $this->config);

@@ -37,29 +37,38 @@ use Poweradmin\Domain\Service\SessionKeys;
  * zone_content_view. Holders of zone_meta_edit_* keep view access to what
  * they can edit; plain content view no longer implies either scope.
  *
- * Each case runs in its own process because UserManager::verifyPermission caches
- * the resolved permission set in a function-static for the lifetime of a request.
+ * Each case runs in its own process because PermissionService memoizes the
+ * resolved permission set per user for the lifetime of a request.
  */
 class PermissionMetadataOwnershipViewTest extends TestCase
 {
     /**
-     * Build a PDO mock whose permission query reports exactly the given permissions.
+     * Build a PDO mock whose permission queries report exactly the given permissions.
+     * The admin-check query (filtered on 'user_is_ueberuser') and the full permission
+     * list query are answered separately, matching DbUserRepository's two queries.
      *
      * @param string[] $permissions Permission names the current user holds.
      */
     private function dbWithPermissions(array $permissions): PDO
     {
-        $grouped = [];
-        foreach ($permissions as $name) {
-            $grouped[$name] = [[]];
-        }
-
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn($grouped);
-
         $db = $this->createMock(PDO::class);
-        $db->method('prepare')->willReturn($stmt);
+        $db->method('prepare')->willReturnCallback(function (string $query) use ($permissions): PDOStatement {
+            $stmt = $this->createMock(PDOStatement::class);
+            $stmt->method('execute')->willReturn(true);
+
+            if (str_contains($query, "= 'user_is_ueberuser'")) {
+                // Admin check: a single fetch() row when the user is ueberuser, else false
+                $isAdmin = in_array('user_is_ueberuser', $permissions, true);
+                $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => 'user_is_ueberuser'] : false);
+            } else {
+                // Full permission list: one fetch() row per permission, then false
+                $rows = array_map(static fn($name) => ['permission' => $name], $permissions);
+                $rows[] = false;
+                $stmt->method('fetch')->willReturnOnConsecutiveCalls(...$rows);
+            }
+
+            return $stmt;
+        });
 
         $_SESSION[SessionKeys::USERID] = 1;
 

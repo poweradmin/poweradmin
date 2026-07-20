@@ -23,7 +23,11 @@
 namespace Poweradmin\Domain\Model;
 
 use PDO;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Class Permission
@@ -41,6 +45,22 @@ class Permission
      * Permission that lets client-level editors manage NS records below the zone apex.
      */
     public const PERM_EDIT_NS_SUBZONE = 'zone_content_edit_ns_subzone';
+
+    private static ?PermissionService $permissionService = null;
+
+    /**
+     * Check the logged-in user's permission (admins always pass). The memoized
+     * service keeps repeated level lookups at one query set per request.
+     */
+    private static function currentUserHasPermission($db, string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        self::$permissionService ??= new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+        return self::$permissionService->hasPermission($userId, $permission);
+    }
 
     /**
      * Check whether the given record type is off-limits for a client-level editor.
@@ -140,9 +160,9 @@ class Permission
      */
     public static function getViewPermission($db): string
     {
-        if (UserManager::verifyPermission($db, 'zone_content_view_others')) {
+        if (self::currentUserHasPermission($db, 'zone_content_view_others')) {
             return "all";
-        } elseif (UserManager::verifyPermission($db, 'zone_content_view_own')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -161,13 +181,13 @@ class Permission
     public static function getZoneMetadataViewPermission($db): string
     {
         if (
-            UserManager::verifyPermission($db, 'zone_metadata_view_others')
-            || UserManager::verifyPermission($db, 'zone_meta_edit_others')
+            self::currentUserHasPermission($db, 'zone_metadata_view_others')
+            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
         ) {
             return "all";
         } elseif (
-            UserManager::verifyPermission($db, 'zone_metadata_view_own')
-            || UserManager::verifyPermission($db, 'zone_meta_edit_own')
+            self::currentUserHasPermission($db, 'zone_metadata_view_own')
+            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
         ) {
             return "own";
         } else {
@@ -186,13 +206,13 @@ class Permission
     public static function getZoneOwnershipViewPermission($db): string
     {
         if (
-            UserManager::verifyPermission($db, 'zone_ownership_view_others')
-            || UserManager::verifyPermission($db, 'zone_meta_edit_others')
+            self::currentUserHasPermission($db, 'zone_ownership_view_others')
+            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
         ) {
             return "all";
         } elseif (
-            UserManager::verifyPermission($db, 'zone_ownership_view_own')
-            || UserManager::verifyPermission($db, 'zone_meta_edit_own')
+            self::currentUserHasPermission($db, 'zone_ownership_view_own')
+            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
         ) {
             return "own";
         } else {
@@ -209,11 +229,11 @@ class Permission
      */
     public static function getEditPermission($db): string
     {
-        if (UserManager::verifyPermission($db, 'zone_content_edit_others')) {
+        if (self::currentUserHasPermission($db, 'zone_content_edit_others')) {
             return "all";
-        } elseif (UserManager::verifyPermission($db, 'zone_content_edit_own')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own')) {
             return "own";
-        } elseif (UserManager::verifyPermission($db, 'zone_content_edit_own_as_client')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -230,9 +250,9 @@ class Permission
      */
     public static function getDeletePermission(PDO $db): string
     {
-        if (UserManager::verifyPermission($db, 'zone_delete_others')) {
+        if (self::currentUserHasPermission($db, 'zone_delete_others')) {
             return "all";
-        } elseif (UserManager::verifyPermission($db, 'zone_delete_own')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_delete_own')) {
             return "own";
         } else {
             return "none";
@@ -252,9 +272,9 @@ class Permission
      */
     public static function getDnssecPermission(PDO $db): string
     {
-        if (UserManager::verifyPermission($db, 'user_is_ueberuser')) {
+        if (self::currentUserHasPermission($db, 'user_is_ueberuser')) {
             return "all";
-        } elseif (UserManager::verifyPermission($db, 'zone_dnssec_manage_own')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_dnssec_manage_own')) {
             return "own";
         } else {
             return "none";
@@ -274,11 +294,11 @@ class Permission
     public static function getZoneLogPermission($db): string
     {
         if (
-            UserManager::verifyPermission($db, 'user_is_ueberuser')
-            || UserManager::verifyPermission($db, 'zone_logs_view_others')
+            self::currentUserHasPermission($db, 'user_is_ueberuser')
+            || self::currentUserHasPermission($db, 'zone_logs_view_others')
         ) {
             return "all";
-        } elseif (UserManager::verifyPermission($db, 'zone_logs_view_own')) {
+        } elseif (self::currentUserHasPermission($db, 'zone_logs_view_own')) {
             return "own";
         } else {
             return "none";
@@ -299,7 +319,7 @@ class Permission
         $result = [];
 
         foreach ($permissions as $permissionName) {
-            $result[$permissionName] = UserManager::verifyPermission($db, $permissionName);
+            $result[$permissionName] = self::currentUserHasPermission($db, $permissionName);
         }
 
         return $result;
