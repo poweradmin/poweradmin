@@ -27,9 +27,9 @@ use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\ApiKeyScope;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -47,6 +47,7 @@ class ApiKeyService
     private MessageService $messageService;
     private LoggerInterface $logger;
     private UserContextService $userContextService;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Get the database connection for debugging
@@ -83,6 +84,19 @@ class ApiKeyService
     }
 
     /**
+     * Check if the logged-in user has the given permission (admins always pass)
+     */
+    private function currentUserHasPermission(string $permission): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
      * Get all API keys the current user has access to with creator usernames
      *
      * @return array Array of API keys with creator usernames
@@ -92,7 +106,7 @@ class ApiKeyService
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Admin users can see all API keys, regular users only see their own
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->currentUserHasPermission('user_is_ueberuser')) {
             $apiKeys = $this->apiKeyRepository->getAll();
         } else {
             $apiKeys = $this->apiKeyRepository->getAll($userId);
@@ -138,7 +152,7 @@ class ApiKeyService
 
         // Check if the current user has access to this API key
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
+        if ($this->currentUserHasPermission('user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
             // Add creator username and fullname
             if ($apiKey->getCreatedBy() !== null) {
                 $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
@@ -187,8 +201,8 @@ class ApiKeyService
 
         // Check if user has permission to create API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to create API keys.'));
             return null;
@@ -196,7 +210,7 @@ class ApiKeyService
 
         // Check maximum number of API keys per user
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission('user_is_ueberuser')) {
             $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
             return null;
         }
@@ -244,8 +258,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
@@ -287,8 +301,8 @@ class ApiKeyService
 
         // Check if user has permission to delete API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to delete API keys.'));
             return false;
@@ -314,8 +328,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to regenerate API keys.'));
             return null;
@@ -345,8 +359,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
