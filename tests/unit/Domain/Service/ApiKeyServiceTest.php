@@ -301,4 +301,68 @@ class ApiKeyServiceTest extends TestCase
         $result = $this->service->authenticate('legacy_api_key_format');
         $this->assertTrue($result);
     }
+
+    /**
+     * Point the PDO mock's permission queries at exactly the given permission set.
+     * The admin-check query (filtered on 'user_is_ueberuser') and the full permission
+     * list query are answered separately, matching DbUserRepository's two queries.
+     *
+     * @param string[] $permissions Permission names the logged-in user holds.
+     */
+    private function grantPermissions(array $permissions): void
+    {
+        $this->db->method('prepare')->willReturnCallback(function (string $query) use ($permissions) {
+            $stmt = $this->createMock(\PDOStatement::class);
+            $stmt->method('execute')->willReturn(true);
+
+            if (str_contains($query, "= 'user_is_ueberuser'")) {
+                $isAdmin = in_array('user_is_ueberuser', $permissions, true);
+                $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => 'user_is_ueberuser'] : false);
+            } else {
+                $rows = array_map(static fn($name) => ['permission' => $name], $permissions);
+                $rows[] = false;
+                $stmt->method('fetch')->willReturnOnConsecutiveCalls(...$rows);
+            }
+
+            return $stmt;
+        });
+
+        $_SESSION['userid'] = 7;
+    }
+
+    #[Test]
+    public function testCreateApiKeyDeniedWithoutPermission(): void
+    {
+        $this->config->method('get')->willReturnMap([
+            ['api', 'enabled', false, true],
+            ['api', 'max_keys_per_user', 5, 5],
+        ]);
+
+        // User holds neither user_is_ueberuser nor api_manage_keys
+        $this->grantPermissions(['zone_content_view_own']);
+
+        $this->messageService->expects($this->once())->method('addSystemError');
+        $this->apiKeyRepository->expects($this->never())->method('save');
+
+        $this->assertNull($this->service->createApiKey('my-key'));
+    }
+
+    #[Test]
+    public function testCreateApiKeyAllowedForAdmin(): void
+    {
+        $this->config->method('get')->willReturnMap([
+            ['api', 'enabled', false, true],
+            ['api', 'max_keys_per_user', 5, 5],
+        ]);
+
+        // Admins bypass both the permission gate and the per-user key limit
+        $this->grantPermissions(['user_is_ueberuser']);
+
+        $saved = $this->createMock(ApiKey::class);
+        $saved->method('getId')->willReturn(99);
+        $this->apiKeyRepository->expects($this->once())->method('save')->willReturn($saved);
+        $this->apiKeyRepository->expects($this->once())->method('saveZoneIds')->with(99, []);
+
+        $this->assertSame($saved, $this->service->createApiKey('my-key'));
+    }
 }
