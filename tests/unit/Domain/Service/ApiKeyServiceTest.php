@@ -306,18 +306,22 @@ class ApiKeyServiceTest extends TestCase
      * Point the PDO mock's permission queries at exactly the given permission set.
      * The admin-check query (filtered on 'user_is_ueberuser') and the full permission
      * list query are answered separately, matching DbUserRepository's two queries.
+     * The creator-lookup query (username/fullname) answers with $creatorRow.
      *
      * @param string[] $permissions Permission names the logged-in user holds.
+     * @param array|false $creatorRow Row returned for the creator lookup; false means user not found.
      */
-    private function grantPermissions(array $permissions): void
+    private function grantPermissions(array $permissions, array|false $creatorRow = false): void
     {
-        $this->db->method('prepare')->willReturnCallback(function (string $query) use ($permissions) {
+        $this->db->method('prepare')->willReturnCallback(function (string $query) use ($permissions, $creatorRow) {
             $stmt = $this->createMock(\PDOStatement::class);
             $stmt->method('execute')->willReturn(true);
 
             if (str_contains($query, "= 'user_is_ueberuser'")) {
                 $isAdmin = in_array('user_is_ueberuser', $permissions, true);
                 $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => 'user_is_ueberuser'] : false);
+            } elseif (str_contains($query, 'SELECT username, fullname FROM users')) {
+                $stmt->method('fetch')->willReturn($creatorRow);
             } else {
                 $rows = array_map(static fn($name) => ['permission' => $name], $permissions);
                 $rows[] = false;
@@ -328,6 +332,55 @@ class ApiKeyServiceTest extends TestCase
         });
 
         $_SESSION['userid'] = 7;
+    }
+
+    #[Test]
+    public function testGetApiKeyPopulatesCreatorDetailsForOwner(): void
+    {
+        $this->grantPermissions([], ['username' => 'alice', 'fullname' => 'Alice Admin']);
+
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('getId')->willReturn(5);
+        $apiKey->method('getCreatedBy')->willReturn(7);
+        $apiKey->expects($this->once())->method('setCreatorUsername')->with('alice');
+        $apiKey->expects($this->once())->method('setCreatorFullname')->with('Alice Admin');
+        $apiKey->expects($this->once())->method('setZoneIds')->with([3, 4]);
+
+        $this->apiKeyRepository->method('findById')->with(5)->willReturn($apiKey);
+        $this->apiKeyRepository->method('getZoneIds')->with(5)->willReturn([3, 4]);
+
+        $this->assertSame($apiKey, $this->service->getApiKey(5));
+    }
+
+    #[Test]
+    public function testGetApiKeyLeavesCreatorEmptyWhenUserNoLongerExists(): void
+    {
+        // Creator row missing (deleted user): fields fall back to '' and the UI shows "Unknown"
+        $this->grantPermissions([]);
+
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('getId')->willReturn(5);
+        $apiKey->method('getCreatedBy')->willReturn(7);
+        $apiKey->expects($this->once())->method('setCreatorUsername')->with('');
+        $apiKey->expects($this->once())->method('setCreatorFullname')->with('');
+
+        $this->apiKeyRepository->method('findById')->with(5)->willReturn($apiKey);
+        $this->apiKeyRepository->method('getZoneIds')->with(5)->willReturn([]);
+
+        $this->assertSame($apiKey, $this->service->getApiKey(5));
+    }
+
+    #[Test]
+    public function testGetApiKeyDeniedForAnotherUsersKey(): void
+    {
+        $this->grantPermissions([]);
+
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('getCreatedBy')->willReturn(8);
+
+        $this->apiKeyRepository->method('findById')->with(5)->willReturn($apiKey);
+
+        $this->assertNull($this->service->getApiKey(5));
     }
 
     #[Test]

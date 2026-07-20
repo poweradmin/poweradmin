@@ -92,7 +92,19 @@
                     <table class="table table-striped mb-0">
                         <tbody>
                             <tr>
-                                <th style="width: 40%">{% trans %}Created at{% endtrans %}</th>
+                                <th style="width: 40%">{% trans %}Created by{% endtrans %}</th>
+                                <td>
+                                    {% if api_key.creatorFullname %}
+                                        {{ api_key.creatorFullname }} <small class="text-muted">({{ api_key.creatorUsername }})</small>
+                                    {% elseif api_key.creatorUsername %}
+                                        {{ api_key.creatorUsername }}
+                                    {% else %}
+                                        <span class="text-muted">{% trans %}Unknown{% endtrans %}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{% trans %}Created at{% endtrans %}</th>
                                 <td>{{ api_key.createdAt|date('Y-m-d H:i:s') }}</td>
                             </tr>
                             <tr>
