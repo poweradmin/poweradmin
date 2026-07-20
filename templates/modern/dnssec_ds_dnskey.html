@@ -15,9 +15,11 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
             {% endif %}
         </li>
+        {% if can_manage_dnssec %}
         <li class="breadcrumb-item">
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec">{% trans %}DNSSEC{% endtrans %}</a>
         </li>
+        {% endif %}
         <li class="breadcrumb-item" aria-current="page">
             {% trans %}DS and DNS keys{% endtrans %}
         </li>
@@ -37,9 +39,15 @@
                     {% endif %}
                 </strong>
                 <div>
+                    {% if can_manage_dnssec %}
                     <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
                         <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to DNSSEC keys{% endtrans %}
                     </a>
+                    {% else %}
+                    <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to zone{% endtrans %}
+                    </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">

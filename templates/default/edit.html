@@ -863,9 +863,15 @@
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}DNSSEC{% endtrans %}</h6>
                         {% if is_secured %}
+                        {% if can_manage_dnssec %}
                         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-shield-lock me-1 text-primary"></i>{% trans %}Manage DNSSEC{% endtrans %}
                         </a>
+                        {% else %}
+                        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-key me-1 text-primary"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
+                        </a>
+                        {% endif %}
                         {% if is_presigned %}
                         <span class="badge bg-info align-middle" title="{% trans %}DNSSEC keys are managed at the primary server{% endtrans %}">{% trans %}Presigned{% endtrans %}</span>
                         {% endif %}

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -72,10 +72,14 @@ class DnssecDsDnskeyController extends BaseController
             return;
         }
 
-        $this->showKeys($zone_id, $pdnssec_use);
+        // Zone-aware level (includes group permissions) to stay consistent with the edit page gate
+        $perm_dnssec = $this->createPermissionService()->getDnssecPermissionLevelForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner);
+
+        $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
     }
 
-    public function showKeys(int $zone_id, $pdnssec_use): void
+    public function showKeys(int $zone_id, $pdnssec_use, bool $can_manage_dnssec): void
     {
         $domainRepository = $this->createDomainRepository();
 
@@ -105,6 +109,7 @@ class DnssecDsDnskeyController extends BaseController
             'zone_id' => $zone_id,
             'zone_template_id' => $zone_template_id,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
+            'can_manage_dnssec' => $can_manage_dnssec,
         ]);
     }
 }
