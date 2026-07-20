@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
@@ -35,6 +34,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
@@ -157,7 +157,8 @@ class SqlAuthenticator extends LoggingService
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
             $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
-            UserManager::updateUserPassword($this->connection, $rowObj["id"], $sessionPassword);
+            $userRepository = new DbUserRepository($this->connection, $this->configManager);
+            $userRepository->updatePassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
         }
 
         // Regenerate the session id only at actual login (credentials just posted),

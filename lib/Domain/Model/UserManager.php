@@ -104,35 +104,6 @@ class UserManager
     }
 
     /**
-     * Get a list of all available permission templates
-     *
-     * @return array array of templates [id, name, descr]
-     */
-    public static function listPermissionTemplates($db, ?string $filter_type = null): array
-    {
-        if ($filter_type !== null && in_array($filter_type, ['user', 'group'])) {
-            $query = "SELECT * FROM perm_templ WHERE template_type = :template_type ORDER BY name";
-            $stmt = $db->prepare($query);
-            $stmt->execute([':template_type' => $filter_type]);
-            $response = $stmt;
-        } else {
-            $query = "SELECT * FROM perm_templ ORDER BY name";
-            $response = $db->query($query);
-        }
-
-        $template_list = array();
-        while ($template = $response->fetch()) {
-            $template_list [] = array(
-                "id" => $template ['id'],
-                "name" => $template ['name'],
-                "descr" => $template ['descr'],
-                "template_type" => $template ['template_type'] ?? 'user'
-            );
-        }
-        return $template_list;
-    }
-
-    /**
      * Check if Username Exists
      *
      * Checks if a given username exists in the database.
@@ -373,29 +344,6 @@ class UserManager
             return false;
         }
         return true;
-    }
-
-    /**
-     * Change User Password
-     *
-     * @param $db
-     * @param int $id User ID
-     * @param $user_pass
-     * @return void
-     */
-    public static function updateUserPassword($db, int $id, $user_pass): void
-    {
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption', 'bcrypt'),
-            $config->get('security', 'password_cost', 12)
-        );
-        $stmt = $db->prepare("UPDATE users SET password = :password WHERE id = :id");
-        $stmt->execute([
-            ':password' => $userAuthService->hashPassword($user_pass),
-            ':id' => $id
-        ]);
     }
 
     /**
