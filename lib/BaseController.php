@@ -31,7 +31,6 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
@@ -708,7 +707,7 @@ abstract class BaseController
      */
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!UserManager::verifyPermission($this->db, $permission)) {
+        if (!$this->hasPermission($permission)) {
             $auditService = new AuditService($this->db);
             $auditService->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
 
@@ -817,33 +816,33 @@ abstract class BaseController
         $session_key = $this->config->get('security', 'session_key');
 
         if ($this->userContextService->isAuthenticated()) {
-            $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
             $vars = array_merge($vars, [
                 'user_logged_in' => $this->userContextService->isAuthenticated(),
                 'user_name' => $this->userContextService->getDisplayName(),
                 'user_username' => $this->userContextService->getLoggedInUsername(),
-                'perm_search' => UserManager::verifyPermission($this->db, 'search'),
-                'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
-                'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
-                'perm_supermaster_view' => UserManager::verifyPermission($this->db, 'supermaster_view'),
-                'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-                'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
-                'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
-                'perm_zone_templ_edit' => UserManager::verifyPermission($this->db, 'zone_templ_edit'),
-                'perm_supermaster_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
+                'perm_search' => $this->hasPermission('search'),
+                'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
+                'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
+                'perm_supermaster_view' => $this->hasPermission('supermaster_view'),
+                'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
+                'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
+                'perm_zone_templ_add' => $this->hasPermission('zone_templ_add'),
+                'perm_zone_templ_edit' => $this->hasPermission('zone_templ_edit'),
+                'perm_supermaster_add' => $this->hasPermission('supermaster_add'),
                 'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => UserManager::verifyPermission($this->db, 'templ_perm_edit'),
-                'perm_templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
-                'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
-                'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-                'perm_edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
-                'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
-                'perm_api_manage_keys' => UserManager::verifyPermission($this->db, 'api_manage_keys'),
-                'perm_view_zone_logs_own' => UserManager::verifyPermission($this->db, 'zone_logs_view_own'),
-                'perm_view_zone_logs_others' => UserManager::verifyPermission($this->db, 'zone_logs_view_others'),
-                'perm_user_logs_view' => UserManager::verifyPermission($this->db, 'user_logs_view'),
-                'perm_group_logs_view' => UserManager::verifyPermission($this->db, 'group_logs_view'),
+                'perm_templ_perm_edit' => $this->hasPermission('templ_perm_edit'),
+                'perm_templ_perm_add' => $this->hasPermission('templ_perm_add'),
+                'perm_add_new' => $this->hasPermission('user_add_new'),
+                'perm_view_others' => $this->hasPermission('user_view_others'),
+                'perm_edit_own' => $this->hasPermission('user_edit_own'),
+                'perm_edit_others' => $this->hasPermission('user_edit_others'),
+                'perm_api_manage_keys' => $this->hasPermission('api_manage_keys'),
+                'perm_view_zone_logs_own' => $this->hasPermission('zone_logs_view_own'),
+                'perm_view_zone_logs_others' => $this->hasPermission('zone_logs_view_others'),
+                'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
+                'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
                 'session_key_error' => $perm_is_godlike && in_array($session_key, ['p0w3r4dm1n', 'change_this_key'], true) ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
@@ -973,12 +972,12 @@ abstract class BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {
-                return UserManager::verifyPermission($this->db, $item['permission']);
+                return $this->hasPermission($item['permission']);
             }
             return true;
         }));
