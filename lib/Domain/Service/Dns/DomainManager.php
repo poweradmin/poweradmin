@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
@@ -34,6 +33,7 @@ use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
@@ -61,6 +61,7 @@ class DomainManager implements DomainManagerInterface
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Constructor
@@ -115,6 +116,19 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Check if the logged-in user has the given permission (admins always pass)
+     */
+    private function userHasPermission(string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, ConfigurationManager::getInstance()));
+        return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
      * Snapshot a zone's metadata-relevant fields (type and master IP) for the
      * change log. Distinct from {@see snapshotZoneForLog()}, which only carries
      * id/name/type and is used for zone create/delete entries.
@@ -162,8 +176,8 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
     {
-        $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
-        $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
+        $zone_master_add = $this->userHasPermission('zone_master_add');
+        $zone_slave_add = $this->userHasPermission('zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -715,11 +729,11 @@ class DomainManager implements DomainManagerInterface
 
     private function userCanEditZoneMetadata(int $zoneId): bool
     {
-        if (UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
+        if ($this->userHasPermission('zone_meta_edit_others')) {
             return true;
         }
         if (
-            UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+            $this->userHasPermission('zone_meta_edit_own')
             && self::currentUserOwnsZone($this->db, $zoneId)
         ) {
             return true;
@@ -812,7 +826,12 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && self::currentUserOwnsZone($db, $zone_id))) {
+        $currentUserId = (new UserContextService())->getLoggedInUserId();
+        $permissionService = new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+        $canEditMeta = $currentUserId !== null && ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_others')
+            || ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_own') && $permissionService->userOwnsZone($currentUserId, $zone_id)));
+
+        if ($canEditMeta) {
             $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
             if ($userRepository->getUserById($user_id) !== null) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
@@ -883,8 +902,8 @@ class DomainManager implements DomainManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = self::currentUserOwnsZone($this->db, $zone_id);
 
-        $zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
-        $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');
+        $zone_master_add = $this->userHasPermission('zone_master_add');
+        $zone_slave_add = $this->userHasPermission('zone_slave_add');
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 

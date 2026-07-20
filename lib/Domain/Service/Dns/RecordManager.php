@@ -29,13 +29,13 @@ use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -60,6 +60,7 @@ class RecordManager implements RecordManagerInterface
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Constructor
@@ -116,6 +117,20 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * Check if the logged-in user has the given permission (admins always pass).
+     * Memoized service keeps bulk record loops at one permission lookup.
+     */
+    private function userHasPermission(string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
      * Resolve the zone name, normalize the record name against it, and reject
      * record types a client-level editor may not add.
      *
@@ -130,7 +145,7 @@ class RecordManager implements RecordManagerInterface
         $hostnameValidator = new HostnameValidator($this->config);
         $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
-        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
             throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
         }
@@ -381,7 +396,7 @@ class RecordManager implements RecordManagerInterface
 
         // Both the stored record and the posted state must pass: a client-level
         // editor may neither touch a restricted record nor turn a record into one.
-        $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         if (
             Permission::isRecordRestrictedForClient($recordDetails['type'], $perm_edit, $recordDetails['name'], $zone, $canEditSubzoneNs)
             || Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)
@@ -487,7 +502,7 @@ class RecordManager implements RecordManagerInterface
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             $zone = $this->domainRepository->getDomainNameById($record['zid']);
-            $canEditSubzoneNs = UserManager::verifyPermission($this->db, Permission::PERM_EDIT_NS_SUBZONE);
+            $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
             if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
                 $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
                 return false;
