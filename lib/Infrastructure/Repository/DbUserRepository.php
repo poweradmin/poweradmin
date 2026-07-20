@@ -150,15 +150,9 @@ class DbUserRepository implements UserRepository
      */
     public function getUserPermissions(int $userId): array
     {
-        // First get the user to check if they exist
-        $user = $this->getUserById($userId);
-        if (!$user) {
-            return [];
-        }
+        // Direct template and group permissions via UNION (dedupes overlaps, positional
+        // params avoid PDO binding issues); a missing user naturally yields no rows
 
-        // Query to get all permissions for the user from both direct template and groups
-        // UNION automatically removes duplicates if same permission exists in both sources
-        // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission
             FROM perm_templ_items

@@ -478,7 +478,6 @@ class DbUserRepositoryTest extends TestCase
         $userStmt->method('execute')->willReturn(true);
         $userStmt->method('fetch')
             ->willReturnOnConsecutiveCalls(
-                $this->createUserDbRow(),
                 ['permission' => 'zone_content_view_own'],
                 ['permission' => 'zone_content_edit_own'],
                 false
@@ -488,7 +487,7 @@ class DbUserRepositoryTest extends TestCase
 
         $result = $this->repository->getUserPermissions(1);
 
-        $this->assertIsArray($result);
+        $this->assertSame(['zone_content_view_own', 'zone_content_edit_own'], $result);
     }
 
     #[Test]
