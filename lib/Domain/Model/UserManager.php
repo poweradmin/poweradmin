@@ -147,35 +147,6 @@ class UserManager
     }
 
     /**
-     * Delete Permission Template ID
-     *
-     * @param int $id Permission template ID
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public static function deletePermTempl($db, int $id): bool
-    {
-        $stmt = $db->prepare("SELECT id FROM users WHERE perm_templ = :id");
-        $stmt->execute([':id' => $id]);
-        $response = $stmt->fetchColumn();
-
-        if ($response) {
-            // Create a new MessageService instance since this is a static method
-            $messageService = new MessageService();
-            $messageService->addSystemError(_('This template is assigned to at least one user.'));
-
-            return false;
-        } else {
-            $stmt = $db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $db->prepare("DELETE FROM perm_templ WHERE id = :id");
-            $stmt->execute([':id' => $id]);
-            return true;
-        }
-    }
-
-    /**
      * Modify User Details
      *
      * Edit the information of a user. Sloppy implementation with too many queries.
@@ -322,57 +293,6 @@ class UserManager
         }
 
         return 'sql';
-    }
-
-    /**
-     * Get List of Permissions
-     *
-     * Get a list of permissions that are available. If first argument is "0", it
-     * should return all available permissions. If the first argument is > "0", it
-     * should return the permissions assigned to that particular template only. If
-     * second argument is true, only the permission names are returned.
-     *
-     * @param int $templ_id Template ID (optional) [default=0]
-     * @param boolean $return_name_only Return name only or all details (optional) [default=false]
-     *
-     * @return array array of permissions [id,name,descr] or permission names [name]
-     */
-    public static function getPermissionsByTemplateId($db, int $templ_id = 0, bool $return_name_only = false): array
-    {
-        $limit = '';
-        if ($templ_id > 0) {
-            $query = "SELECT perm_items.id AS id,
-			perm_items.name AS name,
-			perm_items.descr AS descr
-			FROM perm_items, perm_templ_items
-			WHERE perm_templ_items.templ_id = :templ_id
-			AND perm_templ_items.perm_id = perm_items.id
-			ORDER BY name";
-            $stmt = $db->prepare($query);
-            $stmt->execute([':templ_id' => $templ_id]);
-            $response = $stmt;
-        } else {
-            $query = "SELECT perm_items.id AS id,
-			perm_items.name AS name,
-			perm_items.descr AS descr
-			FROM perm_items
-			ORDER BY name";
-            $response = $db->query($query);
-        }
-
-        $permission_list = array();
-        while ($permission = $response->fetch()) {
-            if (!$return_name_only) {
-                $permission_list [] = array(
-                    "id" => $permission ['id'],
-                    "name" => $permission ['name'],
-                    "descr" => $permission ['descr']
-                );
-            } else {
-                $permission_list [] = $permission ['name'];
-            }
-        }
-        return $permission_list;
     }
 
     /**
