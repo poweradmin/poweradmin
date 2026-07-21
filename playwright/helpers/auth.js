@@ -20,11 +20,16 @@ export async function login(page, username, password) {
   await page.click('[data-testid="login-button"]');
 }
 
+// Per-process cache of session cookies per username. Each Playwright worker is a
+// separate OS process, so cached sessions are never shared across workers.
+const sessionCache = new Map();
+
 /**
- * Login and wait for dashboard with retry logic.
+ * Login and wait for dashboard, reusing a cached server session when available.
  *
- * Fills the login form and waits for the redirect concurrently using
- * Promise.all, which is faster than sequential wait.
+ * On cache hit the saved cookies are injected and validated with a single page
+ * load; if the server session died (logout test, timeout, restart) it falls
+ * back to the original UI form login and refreshes the cache.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string} username - Username for login
@@ -33,6 +38,16 @@ export async function login(page, username, password) {
  * @returns {Promise<void>}
  */
 export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3) {
+  const cached = sessionCache.get(username);
+  if (cached) {
+    await page.context().addCookies(cached);
+    await page.goto('/');
+    if (!page.url().includes('/login')) {
+      return; // Cached session still valid
+    }
+    sessionCache.delete(username);
+    await page.context().clearCookies();
+  }
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       await page.goto('/login');
@@ -42,6 +57,7 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
         page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 }),
         page.click('[data-testid="login-button"]'),
       ]);
+      sessionCache.set(username, await page.context().cookies());
       return; // Success
     } catch {
       if (attempt === maxRetries) {
