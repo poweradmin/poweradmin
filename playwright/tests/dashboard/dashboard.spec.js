@@ -170,9 +170,11 @@ test.describe('Dashboard', () => {
       await expect(searchLink).toBeVisible();
     });
 
-    test('should not have Zone logs link (not admin)', async ({ page }) => {
+    test('should have Zone logs link (zone_logs_view_own)', async ({ page }) => {
+      // Zone logs are no longer admin-only: the manager fixture holds
+      // zone_logs_view_own, so the delegated logs entry is visible.
       const zoneLogsLink = page.locator('a[href*="/zones/logs"]');
-      expect(await zoneLogsLink.count()).toBe(0);
+      expect(await zoneLogsLink.count()).toBeGreaterThan(0);
     });
 
     test('should not have Permission templates link', async ({ page }) => {

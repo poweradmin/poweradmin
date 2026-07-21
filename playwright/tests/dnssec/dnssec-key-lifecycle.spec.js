@@ -63,7 +63,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should display CSK info alert on add key page', async ({ page }) => {
+    test('should not display CSK info alert on modern PowerDNS', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
       if (!zoneId) {
@@ -71,10 +71,10 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
+      // The legacy-CSK guidance alert only renders for pre-4.0 PowerDNS
+      // servers; the test environment always runs a modern server.
       const cskInfoAlert = page.locator('#csk-info-alert');
-      await expect(cskInfoAlert).toBeVisible();
-      await expect(cskInfoAlert).toContainText('PowerDNS 4.0');
-      await expect(cskInfoAlert).toContainText('CSK');
+      await expect(cskInfoAlert).toHaveCount(0);
     });
 
     test('should display key type selector', async ({ page }) => {
