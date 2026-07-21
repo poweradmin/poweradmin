@@ -378,23 +378,26 @@ export async function ensureTestZoneExists(page, zoneKey) {
 }
 
 /**
- * Get a zone ID for testing, trying multiple fallback options
- * Uses manager zone first, then admin, then any available zone
+ * Get a zone ID for testing, resolving stable fixture zones by name first.
+ *
+ * Prefers manager-zone.example.com, then admin-zone.example.com (both seeded by
+ * global-setup and resolved by name, not list order) so the result is
+ * deterministic. findAnyZoneId is only a last resort when neither named fixture
+ * is present, e.g. against a non-fixture environment.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @returns {Promise<string|null>} - Zone ID or null if no zones available
  */
 export async function getZoneIdForTest(page) {
-  // First try the manager zone
+  // Prefer named fixture zones so the choice does not depend on list order
   let zoneId = await getTestZoneId(page, 'manager');
 
   if (!zoneId) {
-    // Fallback to admin zone
     zoneId = await getTestZoneId(page, 'admin');
   }
 
   if (!zoneId) {
-    // Last resort: find any zone
+    // Last resort for non-fixture environments: any available zone
     const anyZone = await findAnyZoneId(page);
     if (anyZone) {
       zoneId = anyZone.id;

@@ -15,6 +15,22 @@ test.describe('DNSSEC Key Lifecycle', () => {
   // Helper to get a zone ID for testing
   async function getTestZoneId(page) {
     await page.goto('/zones/forward?letter=all');
+
+    // Admin-only tests; resolve admin-zone by name so the DNSSEC target is
+    // deterministic instead of whichever zone happens to be listed first.
+    const namedRow = page.locator('tr', { hasText: 'admin-zone.example.com' }).first();
+    if (await namedRow.count() > 0) {
+      const namedLink = namedRow.locator('a[href*="/zones/"][href*="/edit"]').first();
+      if (await namedLink.count() > 0) {
+        const href = await namedLink.getAttribute('href');
+        const match = href.match(/\/zones\/(\d+)\/edit/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+
+    // Fallback for non-fixture environments: first zone edit link in the table
     const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');

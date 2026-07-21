@@ -13,6 +13,22 @@ test.describe.configure({ mode: 'serial' });
 
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
+
+  // Viewer tests need a zone the viewer owns; resolve viewer-zone by name so we
+  // never grab an arbitrary first-row zone the viewer cannot view metadata for.
+  const namedRow = page.locator('tr', { hasText: 'viewer-zone.example.com' }).first();
+  if (await namedRow.count() > 0) {
+    const namedLink = namedRow.locator('a[href*="/edit"]').first();
+    if (await namedLink.count() > 0) {
+      const href = await namedLink.getAttribute('href');
+      const match = href.match(/\/zones\/(\d+)\/edit/);
+      if (match) {
+        return match[1];
+      }
+    }
+  }
+
+  // Fallback for non-fixture environments: first zone edit link on the page
   const editLink = page.locator('a[href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
