@@ -64,6 +64,7 @@ final class SessionKeys
     public const PENDING_AUTH_USED = 'pending_auth_used';
     public const PENDING_AUTH_METHOD_USED = 'pending_auth_method_used';
     public const PENDING_OIDC_PROVIDER = 'pending_oidc_provider';
+    public const PENDING_OIDC_ID_TOKEN = 'pending_oidc_id_token';
     public const PENDING_OAUTH_AVATAR_URL = 'pending_oauth_avatar_url';
     public const PENDING_SAML_PROVIDER = 'pending_saml_provider';
     public const PENDING_SAML_NAME_ID = 'pending_saml_name_id';
@@ -79,6 +80,7 @@ final class SessionKeys
     // OIDC / OAuth
     public const OIDC_AUTHENTICATED = 'oidc_authenticated';
     public const OIDC_PROVIDER = 'oidc_provider';
+    public const OIDC_ID_TOKEN = 'oidc_id_token';
     public const OIDC_STATE = 'oidc_state';
     public const OAUTH_AVATAR_URL = 'oauth_avatar_url';
 

@@ -40,6 +40,16 @@ class LogoutControllerTest extends TestCase
         return $method->invoke($controller, $logoutUrl);
     }
 
+    private function buildOidcLogoutUrl(array $providerConfig, string $returnUrl, ?string $idToken): string
+    {
+        $reflection = new ReflectionClass(LogoutController::class);
+        $controller = $reflection->newInstanceWithoutConstructor();
+        $method = $reflection->getMethod('buildOidcLogoutUrl');
+        $method->setAccessible(true);
+
+        return $method->invoke($controller, $providerConfig, $returnUrl, $idToken);
+    }
+
     public function testAuth0UsesReturnToParameter(): void
     {
         $this->assertSame(
@@ -62,5 +72,93 @@ class LogoutControllerTest extends TestCase
             'post_logout_redirect_uri',
             $this->getLogoutParameterName('https://login.microsoftonline.com/tenant-id/oauth2/v2.0/logout')
         );
+    }
+
+    public function testLogoutUrlAppendsIdTokenHintWhenAvailable(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            'https://poweradmin.example.com/login',
+            'header.payload.signature'
+        );
+
+        $this->assertStringContainsString(
+            'post_logout_redirect_uri=' . urlencode('https://poweradmin.example.com/login'),
+            $url
+        );
+        $this->assertStringContainsString('&id_token_hint=header.payload.signature', $url);
+    }
+
+    public function testLogoutUrlOmitsIdTokenHintWhenNull(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            'https://poweradmin.example.com/login',
+            null
+        );
+
+        $this->assertStringNotContainsString('id_token_hint', $url);
+    }
+
+    public function testLogoutUrlOmitsIdTokenHintWhenEmptyString(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            'https://poweradmin.example.com/login',
+            ''
+        );
+
+        $this->assertStringNotContainsString('id_token_hint', $url);
+    }
+
+    public function testLogoutUrlUrlEncodesIdTokenHint(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            'https://poweradmin.example.com/login',
+            'a b+c/d'
+        );
+
+        $this->assertStringContainsString('&id_token_hint=' . urlencode('a b+c/d'), $url);
+    }
+
+    public function testKeycloakLogoutUrlIncludesClientIdAndIdTokenHint(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            [
+                'logout_url' => 'https://sso.example.com/realms/master/protocol/openid-connect/logout',
+                'name' => 'keycloak',
+                'client_id' => 'poweradmin',
+            ],
+            'https://poweradmin.example.com/login',
+            'the-id-token'
+        );
+
+        $this->assertStringContainsString('&client_id=poweradmin', $url);
+        $this->assertStringContainsString('&id_token_hint=the-id-token', $url);
+    }
+
+    public function testAuth0LogoutUrlUsesReturnToAndIncludesIdTokenHint(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://example.auth0.com/v2/logout', 'name' => 'auth0'],
+            'https://poweradmin.example.com/login',
+            'the-id-token'
+        );
+
+        $this->assertStringContainsString('returnTo=' . urlencode('https://poweradmin.example.com/login'), $url);
+        $this->assertStringNotContainsString('post_logout_redirect_uri', $url);
+        $this->assertStringContainsString('&id_token_hint=the-id-token', $url);
+    }
+
+    public function testLogoutUrlUsesAmpersandWhenLogoutUrlAlreadyHasQuery(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout?foo=bar', 'name' => 'simplesaml'],
+            'https://poweradmin.example.com/login',
+            'the-id-token'
+        );
+
+        $this->assertStringContainsString('?foo=bar&post_logout_redirect_uri=', $url);
     }
 }

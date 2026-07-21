@@ -290,6 +290,9 @@ class OidcService extends LoggingService
                 throw $e;
             }
 
+            // Capture the id_token so logout can send it as id_token_hint (RP-initiated logout)
+            $idToken = $token->getValues()['id_token'] ?? null;
+
             // Get user information
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
@@ -366,6 +369,12 @@ class OidcService extends LoggingService
 
                     // Store OIDC-specific data as pending
                     $this->setSessionValue('pending_oidc_provider', $providerId);
+                    // Overwrite unconditionally so a prior attempt's token can't be promoted
+                    if ($idToken) {
+                        $this->setSessionValue('pending_oidc_id_token', $idToken);
+                    } else {
+                        $this->unsetSessionValue('pending_oidc_id_token');
+                    }
                     if ($userInfo->getAvatarUrl()) {
                         $this->setSessionValue('pending_oauth_avatar_url', $userInfo->getAvatarUrl());
                     }
@@ -398,6 +407,12 @@ class OidcService extends LoggingService
                     // Set OIDC-specific session variables for logout detection
                     $this->setSessionValue('oidc_authenticated', true);
                     $this->setSessionValue('oidc_provider', $providerId);
+                    // Overwrite unconditionally so a prior attempt's token can't linger
+                    if ($idToken) {
+                        $this->setSessionValue('oidc_id_token', $idToken);
+                    } else {
+                        $this->unsetSessionValue('oidc_id_token');
+                    }
 
                     // Store OAuth avatar URL if available
                     if ($userInfo->getAvatarUrl()) {
