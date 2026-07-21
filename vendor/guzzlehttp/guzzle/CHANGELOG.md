@@ -3,6 +3,49 @@
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
 
+## 7.15.1 - 2026-07-18
+
+### Security
+
+- Preserve host-only cookie scope and require explicit persistence markers (GHSA-wm3w-8rrp-j577)
+- Bound response cookie admission and generated `Cookie` headers (GHSA-f283-ghqc-fg79)
+- Exclude URI fragments from `Referer` headers generated for redirects (GHSA-h95v-h523-3mw8)
+
+
+## 7.15.0 - 2026-07-17
+
+### Added
+
+- Added `Multiplexing::NONE` support as a client, cURL multi handler, and conditional request option
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.13`
+- Use locale-independent ASCII folding for all case normalization and comparison
+- Bound cURL upload reads to the declared `Content-Length`
+- Sanitize the cURL error text exposed through exception handler context
+- Fail closed when a named cURL multi connection cap cannot be applied
+- Reject the request-level `CURLOPT_SHARE` cURL option when named connection caps are configured
+- Strengthen old-libcurl SOCKS isolation for raw `CURLOPT_PRE_PROXY` and opaque share handles
+- Isolate HTTP proxy tunnels from opaque shared connection caches
+- Trigger runtime deprecations for previously deprecated functionality in 7.1.0
+
+### Deprecated
+
+- Deprecated `Utils::jsonDecode()` and `Utils::jsonEncode()` in favor of native JSON functions
+- Deprecated passing `CURLMOPT_PIPELINING` in the cURL multi handler `options` array
+- Deprecated passing `CURLOPT_PROXYHEADER` without cURL proxy header separation support
+
+### Fixed
+
+- Defer cURL requests created from multi callbacks until native execution unwinds
+- Fail synchronous waits from native cURL callbacks promptly instead of self-deadlocking
+- Guard cURL multi handle removal against progress callbacks re-entering the handler
+- Scope promise waits on the cURL multi handler to the awaited transfer
+- Strip `Content-Length` and `Transfer-Encoding` when redirects discard the request body
+- Stop re-applying the `delay` request option to followed redirects
+
+
 ## 7.14.2 - 2026-07-14
 
 ### Security
