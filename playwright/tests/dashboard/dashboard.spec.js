@@ -2,6 +2,20 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Soft-asserts each expected nav link so one run names every missing href.
+// mode 'visible' requires the link rendered in the nav; 'present' allows it
+// to live collapsed in a dropdown (exists in DOM).
+async function expectLinks(page, links) {
+  for (const link of links) {
+    const locator = page.locator(link.selector);
+    if (link.mode === 'visible') {
+      await expect.soft(locator.first(), `${link.name} link should be visible`).toBeVisible();
+    } else {
+      expect.soft(await locator.count(), `${link.name} link should be present`).toBeGreaterThan(0);
+    }
+  }
+}
+
 test.describe('Dashboard', () => {
   test.describe('Admin User', () => {
     test.beforeEach(async ({ page }) => {
@@ -19,48 +33,24 @@ test.describe('Dashboard', () => {
       await expect(mainContent).toBeVisible();
     });
 
-    test('should have Search link', async ({ page }) => {
-      const searchLink = page.locator('a[href*="/search"]').first();
-      await expect(searchLink).toBeVisible();
-    });
-
-    test('should have List zones link', async ({ page }) => {
-      const listZonesLink = page.locator('a[href*="/zones/forward"]').first();
-      await expect(listZonesLink).toBeVisible();
-    });
-
-    test('should have Zone templates link', async ({ page }) => {
-      const templatesLink = page.locator('a[href*="/zones/templates"]').first();
-      await expect(templatesLink).toBeVisible();
-    });
-
-    test('should have Supermasters link', async ({ page }) => {
-      const supermastersLink = page.locator('a[href*="/supermasters"]').first();
-      await expect(supermastersLink).toBeVisible();
-    });
-
-    test('should have Add master zone link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const addMasterLink = page.locator('a[href*="/zones/add/master"]');
-      expect(await addMasterLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have Add slave zone link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const addSlaveLink = page.locator('a[href*="/zones/add/slave"]');
-      expect(await addSlaveLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have Add supermaster link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const addSupermasterLink = page.locator('a[href*="/supermasters/add"]');
-      expect(await addSupermasterLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have Bulk registration link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const bulkLink = page.locator('a[href*="/zones/bulk-registration"]');
-      expect(await bulkLink.count()).toBeGreaterThan(0);
+    test('exposes expected navigation links', async ({ page }) => {
+      await expectLinks(page, [
+        { selector: 'a[href*="/search"]', mode: 'visible', name: 'Search' },
+        { selector: 'a[href*="/zones/forward"]', mode: 'visible', name: 'List zones' },
+        { selector: 'a[href*="/zones/templates"]', mode: 'visible', name: 'Zone templates' },
+        { selector: 'a[href*="/supermasters"]', mode: 'visible', name: 'Supermasters' },
+        { selector: 'a[href*="/zones/add/master"]', mode: 'present', name: 'Add master zone' },
+        { selector: 'a[href*="/zones/add/slave"]', mode: 'present', name: 'Add slave zone' },
+        { selector: 'a[href*="/supermasters/add"]', mode: 'present', name: 'Add supermaster' },
+        { selector: 'a[href*="/zones/bulk-registration"]', mode: 'present', name: 'Bulk registration' },
+        { selector: 'a[href*="/password/change"]', mode: 'present', name: 'Change password' },
+        { selector: 'a[href$="/users"], a[href*="/users?"]', mode: 'visible', name: 'User administration' },
+        { selector: 'a[href*="/permissions/templates"]', mode: 'present', name: 'Permission templates' },
+        { selector: 'a[href*="/logout"]', mode: 'present', name: 'Logout' },
+        { selector: 'a[href*="/groups"]', mode: 'visible', name: 'Groups' },
+        { selector: 'a[href*="/settings/api-keys"]', mode: 'present', name: 'API Keys' },
+        { selector: 'a[href*="/tools/database-consistency"]', mode: 'present', name: 'Database Consistency' },
+      ]);
     });
 
     test('should have Zone logs link for admin (if db logging enabled)', async ({ page }) => {
@@ -74,29 +64,6 @@ test.describe('Dashboard', () => {
         // If link exists, verify it's accessible
         expect(count).toBeGreaterThan(0);
       }
-    });
-
-    test('should have Change password link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const changePasswordLink = page.locator('a[href*="/password/change"]');
-      expect(await changePasswordLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have User administration link', async ({ page }) => {
-      const userAdminLink = page.locator('a[href$="/users"], a[href*="/users?"]').first();
-      await expect(userAdminLink).toBeVisible();
-    });
-
-    test('should have Permission templates link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const permTemplatesLink = page.locator('a[href*="/permissions/templates"]');
-      expect(await permTemplatesLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have Logout link', async ({ page }) => {
-      // Link may be in dropdown menu, check if it exists in DOM
-      const logoutLink = page.locator('a[href*="/logout"]');
-      expect(await logoutLink.count()).toBeGreaterThan(0);
     });
 
     test('should navigate to search page', async ({ page }) => {
@@ -138,21 +105,6 @@ test.describe('Dashboard', () => {
         expect(bodyText).toMatch(/\d+\s+records/);
       }
     });
-
-    test('should have Groups link', async ({ page }) => {
-      const groupsLink = page.locator('a[href*="/groups"]').first();
-      await expect(groupsLink).toBeVisible();
-    });
-
-    test('should have API Keys link in Tools section', async ({ page }) => {
-      const apiKeysLink = page.locator('a[href*="/settings/api-keys"]');
-      expect(await apiKeysLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should have Database Consistency link in Tools section', async ({ page }) => {
-      const dbLink = page.locator('a[href*="/tools/database-consistency"]');
-      expect(await dbLink.count()).toBeGreaterThan(0);
-    });
   });
 
   test.describe('Manager User', () => {
@@ -165,16 +117,13 @@ test.describe('Dashboard', () => {
       expect(bodyText.toLowerCase()).toContain('welcome');
     });
 
-    test('should have Search link', async ({ page }) => {
-      const searchLink = page.locator('a[href*="/search"]').first();
-      await expect(searchLink).toBeVisible();
-    });
-
-    test('should have Zone logs link (zone_logs_view_own)', async ({ page }) => {
+    test('exposes expected navigation links', async ({ page }) => {
       // Zone logs are no longer admin-only: the manager fixture holds
-      // zone_logs_view_own, so the delegated logs entry is visible.
-      const zoneLogsLink = page.locator('a[href*="/zones/logs"]');
-      expect(await zoneLogsLink.count()).toBeGreaterThan(0);
+      // zone_logs_view_own, so the delegated logs entry is present.
+      await expectLinks(page, [
+        { selector: 'a[href*="/search"]', mode: 'visible', name: 'Search' },
+        { selector: 'a[href*="/zones/logs"]', mode: 'present', name: 'Zone logs (zone_logs_view_own)' },
+      ]);
     });
 
     test('should not have Permission templates link', async ({ page }) => {
@@ -228,14 +177,11 @@ test.describe('Dashboard', () => {
       expect(bodyText.toLowerCase()).toContain('welcome');
     });
 
-    test('should have Search link', async ({ page }) => {
-      const searchLink = page.locator('a[href*="/search"]').first();
-      await expect(searchLink).toBeVisible();
-    });
-
-    test('should have List zones link (view permission)', async ({ page }) => {
-      const listZonesLink = page.locator('a[href*="/zones/forward"]').first();
-      await expect(listZonesLink).toBeVisible();
+    test('exposes expected navigation links', async ({ page }) => {
+      await expectLinks(page, [
+        { selector: 'a[href*="/search"]', mode: 'visible', name: 'Search' },
+        { selector: 'a[href*="/zones/forward"]', mode: 'visible', name: 'List zones (view permission)' },
+      ]);
     });
 
     test('should not have Add master zone link', async ({ page }) => {

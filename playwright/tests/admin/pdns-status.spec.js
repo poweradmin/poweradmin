@@ -11,29 +11,86 @@ test.describe('PowerDNS Status Page', () => {
   // PowerDNS status page may be slow due to API calls and supermaster connectivity checks
   test.setTimeout(60000);
 
-  test.describe('Page Access', () => {
-    test('admin should access PowerDNS status page', async ({ adminPage: page }) => {
+  // All admin-facing checks share one render of the status page, which stalls
+  // ~4s on a PowerDNS API call. Navigate once, then assert every section.
+  test.describe('Status Page Rendering', () => {
+    test('status page renders expected sections and controls', async ({ adminPage: page }) => {
       await page.goto('/tools/pdns-status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/powerdns|status|server|api.*not.*configured/i);
+      const lower = bodyText.toLowerCase();
+      const onStatusPage = page.url().includes('pdns-status');
+
+      // Page access + title
+      expect(lower).toMatch(/powerdns|status|server|api.*not.*configured/i);
+      expect(lower).toMatch(/powerdns.*server.*status|status|server/i);
+
+      // Breadcrumb navigation
+      await expect(page.locator('nav[aria-label="breadcrumb"]')).toBeVisible();
+
+      // API configuration warning (shown if pdns_api_enabled is false)
+      expect(lower.includes('api') || lower.includes('configure') || lower.includes('status')).toBeTruthy();
+
+      // Server running status (Server Running / Server Not Running)
+      expect(
+        lower.includes('running') || lower.includes('online') || lower.includes('offline') ||
+        lower.includes('api') || lower.includes('status')
+      ).toBeTruthy();
+
+      // Status indicator badge, or API warning
+      const hasIndicator = await page.locator('.bg-success, .bg-danger').first().count() > 0;
+      expect(hasIndicator || lower.includes('api')).toBeTruthy();
+
+      // Server information section (Server Name, Version, Daemon Type, Uptime)
+      expect(lower.includes('server') || lower.includes('version') || lower.includes('api')).toBeTruthy();
+
+      // PowerDNS version, or API warning
+      expect(lower.includes('version') || lower.includes('api') || lower.includes('powerdns')).toBeTruthy();
+
+      // Refresh button (server running) or API-not-configured warning
+      const hasRefreshBtn = await page.locator('button:has-text("Refresh"), button[type="submit"]:has-text("Refresh")').count() > 0;
+      expect(hasRefreshBtn || (lower.includes('api') && lower.includes('not configured')) || onStatusPage).toBeTruthy();
+
+      // CSRF token in refresh form
+      const hasToken = await page.locator('input[name="_token"]').count() > 0;
+      expect(hasToken || onStatusPage).toBeTruthy();
+
+      // Server health / metrics section
+      expect(
+        lower.includes('health') || lower.includes('statistics') ||
+        lower.includes('query') || lower.includes('api')
+      ).toBeTruthy();
+
+      // Query statistics (UDP/TCP Queries, Cache Hits/Misses)
+      expect(
+        lower.includes('queries') || lower.includes('cache') ||
+        lower.includes('statistics') || lower.includes('api')
+      ).toBeTruthy();
+
+      // Metrics tabs, or API warning
+      const hasTabs = await page.locator('[role="tablist"], .nav-tabs').count() > 0;
+      expect(hasTabs || lower.includes('api') || onStatusPage).toBeTruthy();
+
+      // View toggle button (metrics available) or API-not-configured warning
+      const hasToggle = await page.locator('#viewToggle, button:has-text("Toggle View")').count() > 0;
+      expect(hasToggle || (lower.includes('api') && lower.includes('not configured')) || onStatusPage).toBeTruthy();
+
+      // Error handling message (server_status.error)
+      expect(
+        lower.includes('error') || lower.includes('running') ||
+        lower.includes('api') || lower.includes('status')
+      ).toBeTruthy();
+
+      // Slave servers section (shown when slave_status has entries)
+      expect(
+        lower.includes('slave') || lower.includes('supermaster') ||
+        lower.includes('server') || lower.includes('api')
+      ).toBeTruthy();
     });
+  });
 
-    test('should display page title', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/powerdns.*server.*status|status|server/i);
-    });
-
-    test('should display breadcrumb navigation', async ({ adminPage: page }) => {
-      // PowerDNS status page may be slow due to API calls
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const breadcrumb = page.locator('nav[aria-label="breadcrumb"]');
-      await expect(breadcrumb).toBeVisible();
-    });
-
+  // Auth/redirect checks stay separate - they exercise different sessions.
+  test.describe('Access Control', () => {
     test('should require admin authentication', async ({ managerPage: page }) => {
       await page.goto('/tools/pdns-status', { timeout: 30000 });
 
@@ -54,188 +111,6 @@ test.describe('PowerDNS Status Page', () => {
       await page.goto('/tools/pdns-status', { timeout: 30000 });
 
       await expect(page).toHaveURL(/.*\/login/);
-    });
-  });
-
-  test.describe('API Configuration Check', () => {
-    test('should show warning if API not configured', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows warning if pdns_api_enabled is false
-      const hasApiWarning = bodyText.toLowerCase().includes('api') ||
-                            bodyText.toLowerCase().includes('configure') ||
-                            bodyText.toLowerCase().includes('status');
-      expect(hasApiWarning).toBeTruthy();
-    });
-  });
-
-  test.describe('Server Status Display', () => {
-    test('should display server running status', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows either "Server Running" or "Server Not Running"
-      const hasStatusInfo = bodyText.toLowerCase().includes('running') ||
-                            bodyText.toLowerCase().includes('online') ||
-                            bodyText.toLowerCase().includes('offline') ||
-                            bodyText.toLowerCase().includes('api') ||
-                            bodyText.toLowerCase().includes('status');
-      expect(hasStatusInfo).toBeTruthy();
-    });
-
-    test('should show status indicator', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const statusIndicator = page.locator('.bg-success, .bg-danger').first();
-      const bodyText = await page.locator('body').textContent();
-
-      const hasIndicator = await statusIndicator.count() > 0;
-      const hasApiWarning = bodyText.toLowerCase().includes('api');
-
-      // Either has status indicator or API warning
-      expect(hasIndicator || hasApiWarning).toBeTruthy();
-    });
-  });
-
-  test.describe('Server Information Card', () => {
-    test('should display server information section', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows: Server Name, PowerDNS Version, Daemon Type, Uptime
-      const hasServerInfo = bodyText.toLowerCase().includes('server') ||
-                            bodyText.toLowerCase().includes('version') ||
-                            bodyText.toLowerCase().includes('api');
-      expect(hasServerInfo).toBeTruthy();
-    });
-
-    test('should show PowerDNS version when available', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Should show version info or API warning
-      const hasVersionOrWarning = bodyText.toLowerCase().includes('version') ||
-                                   bodyText.toLowerCase().includes('api') ||
-                                   bodyText.toLowerCase().includes('powerdns');
-      expect(hasVersionOrWarning).toBeTruthy();
-    });
-  });
-
-  test.describe('Refresh Status', () => {
-    test('should have refresh status button', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const refreshBtn = page.locator('button:has-text("Refresh"), button[type="submit"]:has-text("Refresh")');
-      const bodyText = await page.locator('body').textContent();
-
-      const hasRefreshBtn = await refreshBtn.count() > 0;
-      const hasApiWarning = bodyText.toLowerCase().includes('api') &&
-                            bodyText.toLowerCase().includes('not configured');
-
-      // Either has refresh button (server running) or API warning (not configured)
-      expect(hasRefreshBtn || hasApiWarning || page.url().includes('pdns-status')).toBeTruthy();
-    });
-
-    test('should include CSRF token in refresh form', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const csrfToken = page.locator('input[name="_token"]');
-      const hasToken = await csrfToken.count() > 0;
-
-      // CSRF token present if form exists
-      expect(hasToken || page.url().includes('pdns-status')).toBeTruthy();
-    });
-  });
-
-  test.describe('Server Statistics', () => {
-    test('should display server health section when running', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows metrics when server_status.running and metrics defined
-      const hasMetrics = bodyText.toLowerCase().includes('health') ||
-                          bodyText.toLowerCase().includes('statistics') ||
-                          bodyText.toLowerCase().includes('query') ||
-                          bodyText.toLowerCase().includes('api');
-      expect(hasMetrics).toBeTruthy();
-    });
-
-    test('should show query statistics when available', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows: UDP Queries, TCP Queries, Cache Hits, Cache Misses
-      const hasQueryStats = bodyText.toLowerCase().includes('queries') ||
-                            bodyText.toLowerCase().includes('cache') ||
-                            bodyText.toLowerCase().includes('statistics') ||
-                            bodyText.toLowerCase().includes('api');
-      expect(hasQueryStats).toBeTruthy();
-    });
-  });
-
-  test.describe('Metrics Navigator', () => {
-    test('should have metrics tabs when available', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template uses Bootstrap tabs for metric categories
-      const hasTabs = await page.locator('[role="tablist"], .nav-tabs').count() > 0;
-      const hasApiWarning = bodyText.toLowerCase().includes('api');
-
-      // Either has tabs or API not configured
-      expect(hasTabs || hasApiWarning || page.url().includes('pdns-status')).toBeTruthy();
-    });
-
-    test('should have view toggle button', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const toggleBtn = page.locator('#viewToggle, button:has-text("Toggle View")');
-      const bodyText = await page.locator('body').textContent();
-
-      const hasToggle = await toggleBtn.count() > 0;
-      const hasApiWarning = bodyText.toLowerCase().includes('api') &&
-                            bodyText.toLowerCase().includes('not configured');
-
-      // Either has toggle (metrics available) or API not configured
-      expect(hasToggle || hasApiWarning || page.url().includes('pdns-status')).toBeTruthy();
-    });
-  });
-
-  test.describe('Error Handling', () => {
-    test('should display error message when server not running', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows error alert when server_status.error exists
-      const hasErrorHandling = bodyText.toLowerCase().includes('error') ||
-                                bodyText.toLowerCase().includes('running') ||
-                                bodyText.toLowerCase().includes('api') ||
-                                bodyText.toLowerCase().includes('status');
-      expect(hasErrorHandling).toBeTruthy();
-    });
-  });
-
-  test.describe('Slave Servers Section', () => {
-    test('should show slave servers section when supermasters exist', async ({ adminPage: page }) => {
-      await page.goto('/tools/pdns-status', { timeout: 30000 });
-
-      const bodyText = await page.locator('body').textContent();
-
-      // Template shows slave_status if slave_status|length > 0
-      const hasSlaveSection = bodyText.toLowerCase().includes('slave') ||
-                               bodyText.toLowerCase().includes('supermaster') ||
-                               bodyText.toLowerCase().includes('server') ||
-                               bodyText.toLowerCase().includes('api');
-      expect(hasSlaveSection).toBeTruthy();
     });
   });
 });

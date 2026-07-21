@@ -2,11 +2,25 @@
  * Footer Tests
  *
  * Tests for footer display and functionality across user roles.
+ * This is the single home for the shared footer partial render checks
+ * (visible + poweradmin link + version + copyright). layout-comprehensive
+ * no longer re-proves the same partial.
  */
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
+
+// One render check for the shared footer partial per role.
+async function expectFooterRenders(page) {
+  const footer = page.locator('footer, .footer').first();
+  await expect(footer).toBeVisible();
+  await expect(page.locator('a[href*="poweradmin.org"]').first()).toBeVisible();
+  const footerText = await footer.textContent();
+  // Version in format like v3.x.x or 3.x
+  expect(footerText).toMatch(/v?\d+\.\d+/);
+  expect(footerText.toLowerCase()).toMatch(/poweradmin|©|copyright|\d{4}/i);
+}
 
 test.describe('Footer', () => {
   test.describe('Admin User', () => {
@@ -14,20 +28,8 @@ test.describe('Footer', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     });
 
-    test('should display site footer', async ({ page }) => {
-      const footer = page.locator('footer, .footer').first();
-      await expect(footer).toBeVisible();
-    });
-
-    test('should display poweradmin link', async ({ page }) => {
-      const poweradminLink = page.locator('a[href*="poweradmin.org"]').first();
-      await expect(poweradminLink).toBeVisible();
-    });
-
-    test('should display version number', async ({ page }) => {
-      const bodyText = await page.locator('footer, .footer').first().textContent();
-      // Version should be in format like v3.x.x or similar
-      expect(bodyText).toMatch(/v?\d+\.\d+/);
+    test('renders footer with branding, version and copyright', async ({ page }) => {
+      await expectFooterRenders(page);
     });
 
     test('should display theme switcher button', async ({ page }) => {
@@ -52,14 +54,8 @@ test.describe('Footer', () => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
     });
 
-    test('should display footer for manager', async ({ page }) => {
-      const footer = page.locator('footer, .footer').first();
-      await expect(footer).toBeVisible();
-    });
-
-    test('should display poweradmin link for manager', async ({ page }) => {
-      const poweradminLink = page.locator('a[href*="poweradmin.org"]').first();
-      await expect(poweradminLink).toBeVisible();
+    test('renders footer with branding, version and copyright', async ({ page }) => {
+      await expectFooterRenders(page);
     });
   });
 
@@ -68,14 +64,8 @@ test.describe('Footer', () => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
     });
 
-    test('should display footer for client', async ({ page }) => {
-      const footer = page.locator('footer, .footer').first();
-      await expect(footer).toBeVisible();
-    });
-
-    test('should display poweradmin link for client', async ({ page }) => {
-      const poweradminLink = page.locator('a[href*="poweradmin.org"]').first();
-      await expect(poweradminLink).toBeVisible();
+    test('renders footer with branding, version and copyright', async ({ page }) => {
+      await expectFooterRenders(page);
     });
   });
 
@@ -84,14 +74,8 @@ test.describe('Footer', () => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
     });
 
-    test('should display footer for viewer', async ({ page }) => {
-      const footer = page.locator('footer, .footer').first();
-      await expect(footer).toBeVisible();
-    });
-
-    test('should display poweradmin link for viewer', async ({ page }) => {
-      const poweradminLink = page.locator('a[href*="poweradmin.org"]').first();
-      await expect(poweradminLink).toBeVisible();
+    test('renders footer with branding, version and copyright', async ({ page }) => {
+      await expectFooterRenders(page);
     });
   });
 
@@ -114,14 +98,6 @@ test.describe('Footer', () => {
   });
 
   test.describe('Footer Content', () => {
-    test('should display copyright information', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const footer = page.locator('footer, .footer').first();
-      const footerText = await footer.textContent();
-      // Footer typically contains copyright or poweradmin reference
-      expect(footerText.toLowerCase()).toMatch(/poweradmin|©|copyright|\d{4}/i);
-    });
-
     test('should have consistent footer across pages', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 

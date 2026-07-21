@@ -8,91 +8,9 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
-test.describe('Layout - Footer', () => {
-  test.describe('Admin User', () => {
-    test('should display footer', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-
-    test('should display version info', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/version|poweradmin|v\d/i);
-    });
-
-    test('should display copyright', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/©|copyright|\d{4}|poweradmin/i);
-    });
-
-    test('footer should be visible on zones page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-
-    test('footer should be visible on users page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/users');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-  });
-
-  test.describe('Manager User', () => {
-    test('should display footer', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-  });
-
-  test.describe('Client User', () => {
-    test('should display footer', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-  });
-
-  test.describe('Viewer User', () => {
-    test('should display footer', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      await page.goto('/');
-
-      const footer = page.locator('footer, .footer, #footer');
-      if (await footer.count() > 0) {
-        await expect(footer.first()).toBeVisible();
-      }
-    });
-  });
-});
+// Footer render checks (visible + poweradmin link + version + copyright) live
+// in playwright/tests/layout/footer.spec.js - the footer is one shared partial,
+// so it is proven per role there instead of being re-asserted here.
 
 test.describe('Layout - Navigation', () => {
   test.describe('Logged Out User', () => {
@@ -112,46 +30,9 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Admin User Navigation', () => {
-    test('should display navigation menu', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const nav = page.locator('nav, .navbar, .navigation, #menu, ul.nav');
-      expect(await nav.count()).toBeGreaterThan(0);
-    });
-
-    test('should show zones link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const zonesLink = page.locator('a[href*="/zones"], a:has-text("Zone")');
-      expect(await zonesLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should show users link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const usersLink = page.locator('a[href*="/users"], a:has-text("User")');
-      expect(await usersLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should show search link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const searchLink = page.locator('a[href*="/search"], a:has-text("Search")');
-      expect(await searchLink.count()).toBeGreaterThan(0);
-    });
-
-    test('should show logout link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const logoutLink = page.locator('a[href*="logout"], a:has-text("Logout")');
-      expect(await logoutLink.count()).toBeGreaterThan(0);
-    });
-
+    // Nav-link presence (menu / zones / users / search / logout) is the canonical
+    // per-role matrix in playwright/tests/layout/navigation.spec.js. Only the
+    // links and behaviours unique to this file remain below.
     test('should show supermasters link', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/');
@@ -214,22 +95,7 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Manager User Navigation', () => {
-    test('should display navigation menu', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/');
-
-      const nav = page.locator('nav, .navbar, .navigation, #menu, header');
-      expect(await nav.count()).toBeGreaterThan(0);
-    });
-
-    test('should show zones link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/');
-
-      const zonesLink = page.locator('a[href*="/zones"]');
-      expect(await zonesLink.count()).toBeGreaterThan(0);
-    });
-
+    // Nav menu + zones-link presence for manager is covered in navigation.spec.js.
     test('should show logout link', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
       await page.goto('/');
@@ -240,14 +106,7 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Client User Navigation', () => {
-    test('should display navigation menu', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/');
-
-      const nav = page.locator('nav, .navbar, .navigation, #menu, header');
-      expect(await nav.count()).toBeGreaterThan(0);
-    });
-
+    // Nav menu presence for client is covered in navigation.spec.js.
     test('should show limited navigation (zones link depends on permissions)', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
       await page.goto('/');
@@ -338,64 +197,18 @@ test.describe('Layout - Navigation', () => {
 });
 
 test.describe('Layout - Page Structure', () => {
-  test.describe('Dashboard', () => {
-    test('should display page title', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
+  // One load of the dashboard, all structural shell assertions in a single test.
+  test('page shell is well-formed', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/');
 
-      const title = page.locator('h1, h2, h3, h4, h5, .page-title');
-      expect(await title.count()).toBeGreaterThan(0);
-    });
-
-    test('should display main content area', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const content = page.locator('main, .content, #content, .container');
-      expect(await content.count()).toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('Common Elements', () => {
-    test('should have proper HTML structure', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const html = page.locator('html');
-      await expect(html).toBeVisible();
-    });
-
-    test('should have head element', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const title = await page.title();
-      expect(title).toBeTruthy();
-    });
-
-    test('should have body element', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const body = page.locator('body');
-      await expect(body).toBeVisible();
-    });
-
-    test('should load CSS', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const stylesheets = page.locator('link[rel="stylesheet"]');
-      expect(await stylesheets.count()).toBeGreaterThan(0);
-    });
-
-    test('should load JavaScript', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/');
-
-      const scripts = page.locator('script');
-      expect(await scripts.count()).toBeGreaterThan(0);
-    });
+    await expect(page.locator('html')).toBeVisible();
+    await expect(page.locator('body')).toBeVisible();
+    expect(await page.title()).toBeTruthy();
+    expect(await page.locator('h1, h2, h3, h4, h5, .page-title').count()).toBeGreaterThan(0);
+    expect(await page.locator('main, .content, #content, .container').count()).toBeGreaterThan(0);
+    expect(await page.locator('link[rel="stylesheet"]').count()).toBeGreaterThan(0);
+    expect(await page.locator('script').count()).toBeGreaterThan(0);
   });
 });
 
