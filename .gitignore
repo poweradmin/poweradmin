@@ -64,6 +64,7 @@ locale/**/*.po.backup.*
 /test-results/
 *.trace.zip
 /blob-report/
+/playwright-sweep-logs/
 /playwright/.auth/
 /.playwright-mcp/
 
