@@ -41,9 +41,9 @@ test.describe('Group Members Management', () => {
 
       const found = await navigateToGroupMembers(page, 'Zone Managers');
       if (found) {
-        const bodyText = await page.locator('body').textContent();
         // Zone Managers has 'manager' as a member from test data
-        expect(bodyText).toMatch(/manager|member/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/manager|member/i);
       }
     });
 
@@ -56,8 +56,8 @@ test.describe('Group Members Management', () => {
         expect(await addForm.count()).toBeGreaterThanOrEqual(0);
 
         // Should have available users checkboxes or list
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/add|available|member/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/add|available|member/i);
       }
     });
   });

@@ -32,8 +32,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject A record with invalid IPv4', async ({ page }) => {
@@ -72,8 +72,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add AAAA record with compressed IPv6', async ({ page }) => {
@@ -89,8 +89,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject AAAA record with IPv4 address', async ({ page }) => {
@@ -133,8 +133,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add MX record with high priority value', async ({ page }) => {
@@ -154,8 +154,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -173,8 +173,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add TXT record with DMARC', async ({ page }) => {
@@ -190,8 +190,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add TXT record with special characters', async ({ page }) => {
@@ -207,8 +207,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -226,8 +226,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add CNAME pointing to external domain', async ({ page }) => {
@@ -243,8 +243,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -267,8 +267,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -289,8 +289,8 @@ test.describe('Record CRUD Operations', () => {
 
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -309,8 +309,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -363,8 +363,8 @@ test.describe('Record CRUD Operations', () => {
         await page.locator('input[name*="content"]').first().fill('192.168.1.200');
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -384,8 +384,8 @@ test.describe('Record CRUD Operations', () => {
           await ttlField.fill('7200');
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -417,8 +417,8 @@ test.describe('Record CRUD Operations', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
       }
     });
 
@@ -461,8 +461,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject negative TTL value', async ({ page }) => {
@@ -512,7 +512,8 @@ test.describe('Record CRUD Operations', () => {
         await editLink.click();
 
         const deleteLinks = page.locator('a[href*="/records/"][href*="/delete"]');
-        expect(await deleteLinks.count()).toBe(0);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(deleteLinks).toHaveCount(0);
       }
     });
   });

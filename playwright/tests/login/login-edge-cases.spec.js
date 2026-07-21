@@ -78,8 +78,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill('用户名');
       await page.locator('input[name="password"]').fill('password');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle unicode password', async ({ page }) => {
@@ -87,8 +87,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill(users.admin.username);
       await page.locator('input[name="password"]').fill('密码123');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle very long username', async ({ page }) => {
@@ -96,8 +96,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill('a'.repeat(1000));
       await page.locator('input[name="password"]').fill('password');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle very long password', async ({ page }) => {
@@ -105,8 +105,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill(users.admin.username);
       await page.locator('input[name="password"]').fill('p'.repeat(1000));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle null byte in username', async ({ page }) => {
@@ -114,8 +114,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill('admin\x00extra');
       await page.locator('input[name="password"]').fill(users.admin.password);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle newlines in username', async ({ page }) => {
@@ -123,8 +123,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill('admin\ninjected');
       await page.locator('input[name="password"]').fill(users.admin.password);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle tabs in input', async ({ page }) => {
@@ -132,8 +132,8 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill('admin\ttest');
       await page.locator('input[name="password"]').fill(users.admin.password);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 

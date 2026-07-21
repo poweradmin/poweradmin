@@ -143,8 +143,8 @@ test.describe('Zone CRUD Operations', () => {
       await page.locator('input[name*="master"], input[name*="ip"]').first().fill('192.168.1.1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty master IP', async ({ page }) => {
@@ -164,8 +164,8 @@ test.describe('Zone CRUD Operations', () => {
       await page.locator('input[name*="master"], input[name*="ip"]').first().fill('2001:db8::1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 

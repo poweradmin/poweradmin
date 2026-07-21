@@ -172,8 +172,8 @@ test.describe('Reset Password Validation', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/match|reset|password/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/match|reset|password/i);
       }
     });
 

@@ -148,8 +148,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should generate ZSK key', async ({ page }) => {
@@ -167,8 +167,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -196,8 +196,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
       const activateLink = page.locator('a[href*="/activate"], a:has-text("Activate")').first();
       if (await activateLink.count() > 0) {
         await activateLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -212,8 +212,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
       const deactivateLink = page.locator('a[href*="/deactivate"], a:has-text("Deactivate")').first();
       if (await deactivateLink.count() > 0) {
         await deactivateLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -283,8 +283,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
       const deleteLink = page.locator('a[href*="/delete"]').first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|remove/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|remove/i);
       }
     });
 

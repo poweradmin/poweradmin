@@ -150,8 +150,8 @@ test.describe('WHOIS Lookup Page', () => {
         const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
         await lookupBtn.click();
 
-        const resultText = await page.locator('body').textContent();
-        expect(resultText.toLowerCase()).toMatch(/result|error|whois|domain/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/result|error|whois|domain/i);
       } else {
         expect(bodyText.toLowerCase()).toContain('disabled');
       }

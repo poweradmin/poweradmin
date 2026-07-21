@@ -205,8 +205,8 @@ test.describe('MFA Recovery Codes Page', () => {
         const regenerateBtn = page.locator('button[name="regenerate_codes"]');
         await regenerateBtn.click();
 
-        const newBodyText = await page.locator('body').textContent();
-        expect(newBodyText.toLowerCase()).toMatch(/recovery|code|save|store/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/recovery|code|save|store/i);
       }
     });
   });

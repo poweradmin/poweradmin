@@ -40,9 +40,9 @@ test.describe('Group Zones Management', () => {
 
       const found = await navigateToGroupZones(page, 'Zone Managers');
       if (found) {
-        const bodyText = await page.locator('body').textContent();
         // Zone Managers has manager-zone, shared-zone, group-only-zone from test data
-        expect(bodyText.toLowerCase()).toMatch(/zone|domain/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/zone|domain/i);
       }
     });
 
@@ -51,8 +51,8 @@ test.describe('Group Zones Management', () => {
 
       const found = await navigateToGroupZones(page, 'Viewers');
       if (found) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/add|available|zone/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/add|available|zone/i);
       }
     });
   });

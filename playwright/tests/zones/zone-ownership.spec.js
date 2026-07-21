@@ -66,8 +66,8 @@ test.describe('Zone Ownership Management', () => {
         if (await ownerLink.count() > 0) {
           await ownerLink.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/group|ownership/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).toContainText(/group|ownership/i);
         }
       }
     });

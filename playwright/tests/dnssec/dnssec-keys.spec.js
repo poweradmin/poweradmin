@@ -174,8 +174,8 @@ test.describe('DNSSEC Key Management', () => {
 
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -199,8 +199,8 @@ test.describe('DNSSEC Key Management', () => {
 
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -268,8 +268,8 @@ test.describe('DNSSEC Key Management', () => {
         if (await toggleBtn.count() > 0) {
           await toggleBtn.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -473,7 +473,8 @@ test.describe('DNSSEC Key Management', () => {
           await dnssecLink.click();
 
           const addBtn = page.locator('a[href*="/dnssec/keys/add"]');
-          expect(await addBtn.count()).toBe(0);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(addBtn).toHaveCount(0);
         }
       }
     });
@@ -488,8 +489,8 @@ test.describe('DNSSEC Key Management', () => {
         const count = await dnssecLink.count();
         if (count > 0) {
           await dnssecLink.first().click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/you do not have|access denied|not allowed|forbidden|dnssec/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).toContainText(/you do not have|access denied|not allowed|forbidden|dnssec/i);
         }
       }
     });

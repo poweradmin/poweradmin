@@ -97,8 +97,8 @@ test.describe('Supermaster CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should create supermaster with valid IPv6', async ({ page }) => {
@@ -111,8 +111,8 @@ test.describe('Supermaster CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty IP', async ({ page }) => {
@@ -206,8 +206,8 @@ test.describe('Supermaster CRUD Operations', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
       }
     });
 
@@ -247,8 +247,8 @@ test.describe('Supermaster CRUD Operations', () => {
         if (await yesBtn.count() > 0) {
           await yesBtn.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -278,8 +278,8 @@ test.describe('Supermaster CRUD Operations', () => {
         await nsField.fill(updatedNs);
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).not.toMatch(/not a valid ip|error/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
       }
     });
 
@@ -298,15 +298,15 @@ test.describe('Supermaster CRUD Operations', () => {
         const deleteLink = row.locator('a[href*="/delete"]').first();
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).not.toMatch(/not a valid ip/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/not a valid ip/i);
 
         const yesBtn = page.locator('a:has-text("Yes"), input[value="Yes"], button:has-text("Yes")').first();
         if (await yesBtn.count() > 0) {
           await yesBtn.click();
 
-          const resultText = await page.locator('body').textContent();
-          expect(resultText.toLowerCase()).not.toMatch(/not a valid ip|error/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
         }
       }
     });

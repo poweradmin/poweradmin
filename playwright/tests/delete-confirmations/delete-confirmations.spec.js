@@ -37,8 +37,8 @@ test.describe('Zone Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete.*zone|zone.*delete/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete.*zone|zone.*delete/i);
       }
     });
 
@@ -188,8 +188,8 @@ test.describe('User Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete.*user|user/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete.*user|user/i);
       }
     });
 
@@ -266,8 +266,8 @@ test.describe('User Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const confirmBtn = page.locator('button[type="submit"], button:has-text("delete")');
-        const hasConfirmBtn = await confirmBtn.count() > 0;
-        expect(hasConfirmBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(confirmBtn.first()).toBeAttached();
       }
     });
 
@@ -280,8 +280,8 @@ test.describe('User Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const cancelBtn = page.locator('a[href*="/users"]:has-text("No"), a:has-text("keep")');
-        const hasCancelBtn = await cancelBtn.count() > 0;
-        expect(hasCancelBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(cancelBtn.first()).toBeAttached();
       }
     });
   });
@@ -392,8 +392,8 @@ test.describe('Supermaster Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/supermaster|delete|ip/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/supermaster|delete|ip/i);
       }
     });
 
@@ -469,8 +469,8 @@ test.describe('Zone Template Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|delete/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/template|delete/i);
       }
     });
 
@@ -544,8 +544,8 @@ test.describe('Permission Template Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/permission.*template|template|delete/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/permission.*template|template|delete/i);
       }
     });
 
@@ -618,9 +618,8 @@ test.describe('Common Delete Confirmation Elements', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const secondaryBtn = page.locator('.btn-secondary');
-        const hasSecondaryBtn = await secondaryBtn.count() > 0;
-        expect(hasSecondaryBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('.btn-secondary').first()).toBeAttached();
       }
     });
 
@@ -633,8 +632,8 @@ test.describe('Common Delete Confirmation Elements', () => {
         await deleteLinks.first().click();
 
         const trashIcon = page.locator('.bi-trash, .bi-trash-fill');
-        const hasTrashIcon = await trashIcon.count() > 0;
-        expect(hasTrashIcon).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(trashIcon.first()).toBeAttached();
       }
     });
 
@@ -647,8 +646,8 @@ test.describe('Common Delete Confirmation Elements', () => {
         await deleteLinks.first().click();
 
         const exclamationIcon = page.locator('.bi-exclamation-triangle, .bi-exclamation-triangle-fill');
-        const hasExclamationIcon = await exclamationIcon.count() > 0;
-        expect(hasExclamationIcon).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(exclamationIcon.first()).toBeAttached();
       }
     });
   });

@@ -88,8 +88,8 @@ test.describe('Login Form Validation', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should not cause errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
 
     test('should handle very long password', async ({ page }) => {
@@ -99,8 +99,8 @@ test.describe('Login Form Validation', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should not cause errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
 
     test('should handle special characters in username', async ({ page }) => {
@@ -109,8 +109,8 @@ test.describe('Login Form Validation', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should not cause errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
 
     test('should handle special characters in password', async ({ page }) => {
@@ -119,8 +119,8 @@ test.describe('Login Form Validation', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should not cause errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
   });
 
@@ -132,8 +132,8 @@ test.describe('Login Form Validation', () => {
 
       // Should not log in and should not cause SQL errors
       const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal error|exception|sql error|syntax error|sqlstate/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal error|exception|sql error|syntax error|sqlstate/i);
       expect(url).toMatch(/login/);
     });
 
@@ -144,8 +144,8 @@ test.describe('Login Form Validation', () => {
 
       // Should not log in and should not cause SQL errors
       const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal error|exception|sql error|syntax error|sqlstate/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal error|exception|sql error|syntax error|sqlstate/i);
       expect(url).toMatch(/login/);
     });
 
@@ -155,8 +155,8 @@ test.describe('Login Form Validation', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should not execute script
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toContain('<script>');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText('<script>');
     });
 
     test('should handle CSRF protection', async ({ page }) => {

@@ -206,8 +206,8 @@ test.describe('MFA App Setup Flow', () => {
 
       if (await setupAppBtn.count() > 0) {
         await setupAppBtn.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -424,8 +424,8 @@ test.describe('Email MFA Setup Flow', () => {
       if (await setupEmailBtn.count() > 0) {
         await setupEmailBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/email|verification|code|not available/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/email|verification|code|not available/i);
       }
     });
 

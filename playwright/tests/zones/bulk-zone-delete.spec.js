@@ -66,8 +66,8 @@ test.describe('Bulk Zone Deletion', () => {
         if (await deleteBtn.count() > 0) {
           await deleteBtn.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/are you sure|confirm|delete/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).toContainText(/are you sure|confirm|delete/i);
         }
       }
     });
@@ -86,7 +86,8 @@ test.describe('Bulk Zone Deletion', () => {
 
           // Should show table with zone info
           const table = page.locator('table');
-          expect(await table.count()).toBeGreaterThan(0);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(table.first()).toBeAttached();
         }
       }
     });
@@ -103,8 +104,8 @@ test.describe('Bulk Zone Deletion', () => {
         if (await deleteBtn.count() > 0) {
           await deleteBtn.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/owner|name|type/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).toContainText(/owner|name|type/i);
         }
       }
     });
@@ -122,7 +123,8 @@ test.describe('Bulk Zone Deletion', () => {
           await deleteBtn.click();
 
           const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")');
-          expect(await yesBtn.count()).toBeGreaterThan(0);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(yesBtn.first()).toBeAttached();
         }
       }
     });
@@ -140,7 +142,8 @@ test.describe('Bulk Zone Deletion', () => {
           await deleteBtn.click();
 
           const noBtn = page.locator('input[value="No"], button:has-text("No")');
-          expect(await noBtn.count()).toBeGreaterThan(0);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(noBtn.first()).toBeAttached();
         }
       }
     });
@@ -222,8 +225,8 @@ test.describe('Bulk Zone Deletion', () => {
           if (await yesBtn.count() > 0) {
             await yesBtn.click();
 
-            const bodyText = await page.locator('body').textContent();
-            expect(bodyText).not.toMatch(/fatal|exception/i);
+            // Auto-retrying assertion: the click navigation may still be in flight
+            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
           }
         }
       }

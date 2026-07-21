@@ -69,9 +69,8 @@ test.describe('User Permission Combinations', () => {
       const editLink = page.locator('table a[href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const bodyText = await page.locator('body').textContent();
-        const hasAccessError = bodyText.match(/you do not have|access denied|not authorized/i);
-        expect(hasAccessError).toBeFalsy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/you do not have|access denied|not authorized/i);
       }
     });
 
@@ -89,8 +88,8 @@ test.describe('User Permission Combinations', () => {
       const dnssecLink = page.locator('a[href*="/dnssec"]').first();
       if (await dnssecLink.count() > 0) {
         await dnssecLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
       }
     });
   });
@@ -117,8 +116,8 @@ test.describe('User Permission Combinations', () => {
       const editLink = page.locator('table a[href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
       }
     });
 
@@ -136,8 +135,8 @@ test.describe('User Permission Combinations', () => {
         const addRecordLink = page.locator('a[href*="/records/add"]').first();
         if (await addRecordLink.count() > 0) {
           await addRecordLink.click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
         }
       }
     });
@@ -184,9 +183,8 @@ test.describe('User Permission Combinations', () => {
         await editLink.click();
         // Check for access denied messages in the main content, not navigation
         const mainContent = page.locator('main, .container, .content, #content').first();
-        const contentText = await mainContent.textContent();
         // Should not show access denied in main content area
-        expect(contentText).not.toMatch(/access denied|you do not have permission/i);
+        await expect(mainContent).not.toContainText(/access denied|you do not have permission/i);
       }
     });
 
@@ -224,8 +222,8 @@ test.describe('User Permission Combinations', () => {
       const editLink = page.locator('table a[href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -235,7 +233,8 @@ test.describe('User Permission Combinations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
         const addRecordLink = page.locator('a[href*="/records/add"]');
-        expect(await addRecordLink.count()).toBe(0);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(addRecordLink).toHaveCount(0);
       }
     });
 
@@ -245,7 +244,8 @@ test.describe('User Permission Combinations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
         const editRecordLink = page.locator('a[href*="/records/"][href*="/edit"]');
-        expect(await editRecordLink.count()).toBe(0);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(editRecordLink).toHaveCount(0);
       }
     });
 
@@ -255,7 +255,8 @@ test.describe('User Permission Combinations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
         const deleteRecordLink = page.locator('a[href*="/records/"][href*="/delete"]');
-        expect(await deleteRecordLink.count()).toBe(0);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(deleteRecordLink).toHaveCount(0);
       }
     });
 

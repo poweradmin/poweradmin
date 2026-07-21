@@ -53,8 +53,7 @@ test.describe('Zone Templates Management', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Verify template creation
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/success|created|added/i);
+      await expect(page.locator('body')).toContainText(/success|created|added/i);
     }
   });
 

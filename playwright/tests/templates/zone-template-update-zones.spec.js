@@ -149,8 +149,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       }
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
     });
 
     test('should update zones from template without fatal error (issue #944/#945)', async ({ page }) => {
@@ -219,8 +219,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
         if (await editLink.count() > 0) {
           await editLink.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
         }
 
         // Clean up

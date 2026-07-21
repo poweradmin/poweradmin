@@ -140,8 +140,8 @@ test.describe('Permission Template CRUD Operations', () => {
       await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should create template with permissions', async ({ page }) => {
@@ -163,8 +163,8 @@ test.describe('Permission Template CRUD Operations', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty template name', async ({ page }) => {
@@ -253,8 +253,8 @@ test.describe('Permission Template CRUD Operations', () => {
           await nameField.fill(`updated-template-${Date.now()}`);
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -280,8 +280,8 @@ test.describe('Permission Template CRUD Operations', () => {
           await uncheckedBoxes.first().check();
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -306,8 +306,8 @@ test.describe('Permission Template CRUD Operations', () => {
           await checkedBox.uncheck();
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -333,8 +333,8 @@ test.describe('Permission Template CRUD Operations', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
       }
     });
 

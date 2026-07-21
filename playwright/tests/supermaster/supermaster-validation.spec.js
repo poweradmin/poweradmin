@@ -19,8 +19,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('192.168.1.100');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept valid IPv6 address', async ({ page }) => {
@@ -29,8 +29,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('2001:db8::1');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject invalid IP address', async ({ page }) => {
@@ -39,8 +39,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('invalid.ip');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject IP with out of range octet', async ({ page }) => {
@@ -49,8 +49,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('256.1.1.1');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept localhost IP', async ({ page }) => {
@@ -59,8 +59,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('127.0.0.1');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('localhost.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -71,8 +71,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('10.0.0.1');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept nameserver with subdomain', async ({ page }) => {
@@ -81,8 +81,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('10.0.0.2');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('dns1.primary.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty nameserver', async ({ page }) => {
@@ -100,8 +100,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('10.0.0.4');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns 1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -128,8 +128,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="master_ip"], input[name*="ip"]').first().fill('10.0.0.5');
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns5.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -150,8 +150,8 @@ test.describe('Supermaster Validation', () => {
       await page.locator('input[name*="ns_name"], input[name*="nameserver"]').first().fill('ns-dup.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
