@@ -27,8 +27,8 @@ test.describe('API Logs - Generate Events', () => {
     const submitBtn = page.locator('button[type="submit"]');
     await submitBtn.click();
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText.toLowerCase()).toMatch(/created|success|api key/);
+    // Auto-retrying assertion: the click navigation may still be in flight
+    await expect(page.locator('body')).toContainText(/created|success|api key/i);
   });
 
   test('should edit the API key (api_key_edit)', async ({ page }) => {
@@ -87,8 +87,8 @@ test.describe('API Logs - Generate Events', () => {
         await confirmBtn.click();
       }
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/regenerated|new.*key|api key/);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/regenerated|new.*key|api key/i);
     }
   });
 

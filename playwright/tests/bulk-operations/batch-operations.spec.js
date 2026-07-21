@@ -100,8 +100,8 @@ test.describe('Bulk and Batch Operations', () => {
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
     // Page should not error - may show form again or success
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    // Auto-retrying assertion: the click navigation may still be in flight
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should perform bulk zone deletion', async ({ page }) => {
@@ -181,8 +181,8 @@ test.describe('Bulk and Batch Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Should show validation errors
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/error|invalid|validation/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/error|invalid|validation/i);
     }
   });
 
@@ -208,9 +208,9 @@ test.describe('Bulk and Batch Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Look for progress indicators, results summary, or any valid response
-      const bodyText = await page.locator('body').textContent();
       // Should show success, error, or remain on form - but not crash
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 

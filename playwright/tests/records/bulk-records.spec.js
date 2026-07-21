@@ -157,8 +157,8 @@ test.describe('Bulk Record Operations', () => {
 
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -263,9 +263,9 @@ test.describe('Bulk Record Operations', () => {
 
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
         // Should show some feedback (error or success if validation passes server-side)
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -295,8 +295,8 @@ test.describe('Bulk Record Operations', () => {
         // Viewer should have limited or no edit access
         const addRecordLink = page.locator('a[href*="/records/add"]');
         // Either no add link or page shows read-only
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

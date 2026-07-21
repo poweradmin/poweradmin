@@ -110,8 +110,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add TXT record with comment', async ({ page }) => {
@@ -135,8 +135,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add MX record with comment', async ({ page }) => {
@@ -164,8 +164,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -189,8 +189,8 @@ test.describe('Record Comments', () => {
           await commentField.fill(`Updated comment ${Date.now()}`);
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -214,8 +214,8 @@ test.describe('Record Comments', () => {
           await commentField.clear();
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -247,8 +247,8 @@ test.describe('Record Comments', () => {
 
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -276,8 +276,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle comment with HTML entities', async ({ page }) => {
@@ -301,8 +301,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle multiline comment', async ({ page }) => {
@@ -326,8 +326,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -354,8 +354,8 @@ test.describe('Record Comments', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 });
@@ -402,8 +402,8 @@ test.describe('CNAME Root Warning', () => {
 
       await page.locator('input[name*="name"]').first().fill('@');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 

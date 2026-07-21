@@ -283,8 +283,8 @@ test.describe('Group CRUD Operations', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/member|zone|impact/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/member|zone|impact/i);
       }
     });
 

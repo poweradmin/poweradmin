@@ -65,8 +65,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(testDomain);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should search by partial zone name', async ({ page }) => {
@@ -83,8 +83,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(partialName);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle no results', async ({ page }) => {
@@ -119,8 +119,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(upperQuery);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -132,8 +132,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('www');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should search by record content', async ({ page }) => {
@@ -143,8 +143,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('192.168');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should search by record type', async ({ page }) => {
@@ -157,8 +157,8 @@ test.describe('Search Functionality', () => {
         await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('*');
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -170,8 +170,8 @@ test.describe('Search Functionality', () => {
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should handle search with special characters', async ({ page }) => {
@@ -181,8 +181,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('test-zone_123');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal error|uncaught exception|sql error|syntax error/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal error|uncaught exception|sql error|syntax error/i);
     });
 
     test('should handle very long search query', async ({ page }) => {
@@ -193,8 +193,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill(longQuery);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should display search result count', async ({ page }) => {
@@ -204,8 +204,8 @@ test.describe('Search Functionality', () => {
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('example');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -226,8 +226,8 @@ test.describe('Search Functionality', () => {
       const zoneLink = page.locator(`a:has-text("${testDomain}")`).first();
       if (await zoneLink.count() > 0) {
         await zoneLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });

@@ -409,8 +409,8 @@ test.describe('Layout - Breadcrumbs', () => {
       await editLink.click();
 
       const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 
@@ -426,8 +426,8 @@ test.describe('Layout - Breadcrumbs', () => {
       if (await addRecordLink.count() > 0) {
         await addRecordLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     }
   });

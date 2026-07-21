@@ -36,8 +36,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`private-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('10.0.0.1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/error|invalid/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/error|invalid/i);
     });
 
     test('should accept valid public IP', async ({ page }) => {
@@ -50,8 +50,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`public-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('8.8.8.8');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject hostname instead of IP', async ({ page }) => {
@@ -78,8 +78,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`localhost-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('127.0.0.1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -94,8 +94,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`ipv6-full-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept compressed IPv6', async ({ page }) => {
@@ -108,8 +108,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`ipv6-comp-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('2001:db8::1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept IPv6 loopback', async ({ page }) => {
@@ -122,8 +122,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`ipv6-loop-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('::1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject invalid IPv6', async ({ page }) => {
@@ -153,8 +153,8 @@ test.describe('Record Validation - All Types', () => {
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) await prioField.fill('0');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept MX with high priority', async ({ page }) => {
@@ -168,8 +168,8 @@ test.describe('Record Validation - All Types', () => {
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) await prioField.fill('100');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject negative priority', async ({ page }) => {
@@ -201,8 +201,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`spf-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=spf1 include:_spf.google.com ~all"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept DKIM record', async ({ page }) => {
@@ -215,8 +215,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`sel${Date.now()}._domainkey`);
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GN"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept DMARC record', async ({ page }) => {
@@ -229,8 +229,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`_dmarc${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=DMARC1; p=reject; rua=mailto:dmarc@example.com"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept long TXT record', async ({ page }) => {
@@ -244,8 +244,8 @@ test.describe('Record Validation - All Types', () => {
       const longText = '"' + 'a'.repeat(253) + '"';
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill(longText);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should show error for unquoted TXT content on add page', async ({ page }) => {
@@ -348,8 +348,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`alias-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('www.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should accept external CNAME', async ({ page }) => {
@@ -362,8 +362,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill(`ext-alias-${Date.now()}`);
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('cdn.cloudflare.net');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject IP address for CNAME', async ({ page }) => {
@@ -393,8 +393,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('select[name*="type"]').first().selectOption('NS');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('ns1.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -409,8 +409,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('input[name*="name"]').first().fill('_sip._tcp');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('10 5 5060 sipserver.example.com');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -424,8 +424,8 @@ test.describe('Record Validation - All Types', () => {
       await page.locator('select[name*="type"]').first().selectOption('CAA');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('0 issue "letsencrypt.org"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 });
