@@ -32,6 +32,7 @@ class ZoneType
     public const SLAVE = "SLAVE";
     public const NATIVE = "NATIVE";
     public const CONSUMER = "CONSUMER";
+    public const PRODUCER = "PRODUCER";
 
     /**
      * Get an array of the available zone types.
@@ -54,5 +55,15 @@ class ZoneType
     public static function isReadOnly(?string $type): bool
     {
         return in_array(strtoupper((string)$type), [self::SLAVE, self::CONSUMER], true);
+    }
+
+    /**
+     * Primary (Master) and Producer zones send DNS NOTIFY to their secondaries,
+     * so a pending-notify state is meaningful only for these; Secondary, Native,
+     * and Consumer zones never notify.
+     */
+    public static function notifies(?string $type): bool
+    {
+        return in_array(strtoupper((string)$type), [self::MASTER, self::PRODUCER], true);
     }
 }

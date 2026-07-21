@@ -279,6 +279,7 @@ class ListReverseZonesController extends BaseController
             'show_group_column' => $showGroupColumn,
             'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
+            'is_api_backend' => $isApiBackend,
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->createAndPresentPagination($pagination_count, $iface_rowamount),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),

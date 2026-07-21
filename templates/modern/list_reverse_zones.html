@@ -267,7 +267,16 @@
                         {% endif %}
 
                         {% if iface_zonelist_serial %}
-                        <td>{{ zone["serial"] }}</td>
+                        <td>
+                            {{ zone["serial"] }}
+                            {% if is_api_backend and zone["notified_serial"] is defined %}
+                                {% if zone["notify_pending"] %}
+                                <i class="bi bi-cloud text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'NOTIFY pending: serial %serial% not yet acknowledged'|trans({'%serial%': zone['serial']}) }}"></i>
+                                {% else %}
+                                <i class="bi bi-cloud-check text-success ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'NOTIFY sent at serial %serial%'|trans({'%serial%': zone['notified_serial']}) }}"></i>
+                                {% endif %}
+                            {% endif %}
+                        </td>
                         {% endif %}
 
                         {% if iface_zonelist_signed_serial %}

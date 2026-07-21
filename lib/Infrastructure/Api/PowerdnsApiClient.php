@@ -140,7 +140,7 @@ class PowerdnsApiClient
     /**
      * Get zone stats (record count, DNSSEC, serial) for all zones in a single API call.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int, edited_serial: int|null}>
+     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int, edited_serial: int|null, notified_serial: int|null}>
      */
     public function getAllZoneStats(): array
     {
@@ -157,6 +157,8 @@ class PowerdnsApiClient
                     'serial' => (int)($zoneData['serial'] ?? 0),
                     // Serial as served by PowerDNS (SOA-EDIT applied); null on servers without the field
                     'edited_serial' => isset($zoneData['edited_serial']) ? (int)$zoneData['edited_serial'] : null,
+                    // Serial of the last NOTIFY PowerDNS acknowledged for this zone; null on servers without the field
+                    'notified_serial' => isset($zoneData['notified_serial']) ? (int)$zoneData['notified_serial'] : null,
                 ];
             }
         }

@@ -308,7 +308,7 @@ interface DnsBackendProvider
      * SQL backends may return an empty array when this data is not needed;
      * API backends fetch it in a single call to avoid N+1 lookups in zone lists.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial?: int, edited_serial?: int|null}>
+     * @return array<string, array{rrset_count: int, dnssec: bool, serial?: int, edited_serial?: int|null, notified_serial?: int|null}>
      */
     public function getZoneStats(): array;
 

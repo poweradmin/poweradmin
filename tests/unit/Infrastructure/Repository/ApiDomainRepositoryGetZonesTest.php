@@ -49,6 +49,76 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     }
 
     #[Test]
+    public function getZonesExposesNotifyStateForNotifyingZones(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type) VALUES
+            (3, 102, 1, '', 0, 'pending.example.com', 'MASTER'),
+            (4, 103, 1, '', 0, 'sent.example.com', 'MASTER'),
+            (5, 104, 1, '', 0, 'nativezone.example.com', 'NATIVE'),
+            (6, 105, 1, '', 0, 'fresh.example.com', 'MASTER')");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 102, 'name' => 'pending.example.com',    'type' => 'MASTER', 'master' => '', 'dnssec' => false],
+            ['id' => 103, 'name' => 'sent.example.com',       'type' => 'MASTER', 'master' => '', 'dnssec' => false],
+            ['id' => 104, 'name' => 'nativezone.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+            ['id' => 105, 'name' => 'fresh.example.com',      'type' => 'MASTER', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([
+            'pending.example.com.'    => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => 4],
+            'sent.example.com.'       => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 7, 'edited_serial' => null, 'notified_serial' => 7],
+            'nativezone.example.com.' => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 9, 'edited_serial' => null, 'notified_serial' => 0],
+            // Never-published zone: serial 0 must not surface a NOTIFY indicator
+            'fresh.example.com.'      => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 0, 'edited_serial' => null, 'notified_serial' => 0],
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
+
+        // Primary with serial ahead of notified_serial -> pending
+        $this->assertTrue($result['pending.example.com']['notify_pending']);
+        $this->assertSame(4, $result['pending.example.com']['notified_serial']);
+
+        // Primary with serial == notified_serial -> sent
+        $this->assertFalse($result['sent.example.com']['notify_pending']);
+        $this->assertSame(7, $result['sent.example.com']['notified_serial']);
+
+        // Native zones never notify
+        $this->assertArrayNotHasKey('notify_pending', $result['nativezone.example.com']);
+        $this->assertArrayNotHasKey('notified_serial', $result['nativezone.example.com']);
+
+        // Serial 0 (no published SOA) -> no indicator even for a Primary
+        $this->assertArrayNotHasKey('notify_pending', $result['fresh.example.com']);
+        $this->assertArrayNotHasKey('notified_serial', $result['fresh.example.com']);
+    }
+
+    #[Test]
+    public function getZonesOmitsNotifyStateWhenServerLacksNotifiedSerial(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type) VALUES
+            (7, 106, 1, '', 0, 'legacy.example.com', 'MASTER')");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 106, 'name' => 'legacy.example.com', 'type' => 'MASTER', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        // Older PowerDNS without the notified_serial field -> null, indicator hidden
+        $backend->method('getZoneStats')->willReturn([
+            'legacy.example.com.' => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => null],
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
+
+        $this->assertArrayNotHasKey('notify_pending', $result['legacy.example.com']);
+        $this->assertArrayNotHasKey('notified_serial', $result['legacy.example.com']);
+    }
+
+    #[Test]
     public function getZonesMapsDnssecFlagToSecuredField(): void
     {
         $backend = $this->createMock(DnsBackendProvider::class);

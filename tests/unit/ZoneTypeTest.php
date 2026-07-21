@@ -46,4 +46,22 @@ class ZoneTypeTest extends TestCase
         $this->assertFalse(ZoneType::isReadOnly(''));
         $this->assertFalse(ZoneType::isReadOnly(null));
     }
+
+    #[Test]
+    public function notifiesTrueForPrimaryAndProducer(): void
+    {
+        $this->assertTrue(ZoneType::notifies('MASTER'));
+        $this->assertTrue(ZoneType::notifies('PRODUCER'));
+        $this->assertTrue(ZoneType::notifies('master'));
+    }
+
+    #[Test]
+    public function notifiesFalseForNonNotifyingTypes(): void
+    {
+        $this->assertFalse(ZoneType::notifies('SLAVE'));
+        $this->assertFalse(ZoneType::notifies('NATIVE'));
+        $this->assertFalse(ZoneType::notifies('CONSUMER'));
+        $this->assertFalse(ZoneType::notifies(''));
+        $this->assertFalse(ZoneType::notifies(null));
+    }
 }

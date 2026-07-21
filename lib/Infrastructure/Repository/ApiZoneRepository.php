@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -224,6 +225,17 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 }
                 if ($showTemplate) {
                     $zones[$name]['template'] = $this->resolveTemplateName((int)$row['id']);
+                }
+
+                // Pending-NOTIFY state, only meaningful for zones that notify, have
+                // a published serial, and run on a server that reports notified_serial
+                if (ZoneType::notifies($kind)) {
+                    $notifiedSerial = $stats['notified_serial'] ?? null;
+                    $currentSerial = (int)($stats['serial'] ?? 0);
+                    if ($notifiedSerial !== null && $currentSerial > 0) {
+                        $zones[$name]['notified_serial'] = $notifiedSerial;
+                        $zones[$name]['notify_pending'] = $currentSerial !== $notifiedSerial;
+                    }
                 }
             }
         }

@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -224,6 +225,17 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
             if ($iface_zonelist_template) {
                 $result[$name]['template'] = $templateMap[$zoneId] ?? '';
+            }
+
+            // Pending-NOTIFY state, only meaningful for zones that notify, have
+            // a published serial, and run on a server that reports notified_serial
+            if (ZoneType::notifies($result[$name]['type'])) {
+                $notifiedSerial = $zoneStats[$name . '.']['notified_serial'] ?? null;
+                $currentSerial = (int)($zoneStats[$name . '.']['serial'] ?? 0);
+                if ($notifiedSerial !== null && $currentSerial > 0) {
+                    $result[$name]['notified_serial'] = $notifiedSerial;
+                    $result[$name]['notify_pending'] = $currentSerial !== $notifiedSerial;
+                }
             }
         }
 
