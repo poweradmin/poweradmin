@@ -140,15 +140,13 @@ test.describe('Zone Logs', () => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
     });
 
-    test('should not have access to zone logs', async ({ page }) => {
+    test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
+      // Zone logs are permission-gated, no longer admin-only; the manager
+      // fixture holds zone_logs_view_own so the page must load.
       await page.goto('/zones/logs');
-      // Should be redirected or show error
+      await expect(page).toHaveURL(/zones\/logs/);
       const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('zones/logs')).toBeTruthy();
+      expect(bodyText.toLowerCase()).not.toContain('denied');
     });
   });
 
@@ -157,14 +155,11 @@ test.describe('Zone Logs', () => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
     });
 
-    test('should not have access to zone logs', async ({ page }) => {
+    test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
       await page.goto('/zones/logs');
+      await expect(page).toHaveURL(/zones\/logs/);
       const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('zones/logs')).toBeTruthy();
+      expect(bodyText.toLowerCase()).not.toContain('denied');
     });
   });
 
@@ -173,14 +168,11 @@ test.describe('Zone Logs', () => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
     });
 
-    test('should not have access to zone logs', async ({ page }) => {
+    test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
       await page.goto('/zones/logs');
+      await expect(page).toHaveURL(/zones\/logs/);
       const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('zones/logs')).toBeTruthy();
+      expect(bodyText.toLowerCase()).not.toContain('denied');
     });
   });
 });

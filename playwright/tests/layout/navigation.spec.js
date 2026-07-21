@@ -169,13 +169,13 @@ test.describe('Header Navigation', () => {
       expect(await accountLink.count()).toBeGreaterThan(0);
     });
 
-    test('should not have access to zone logs', async ({ page }) => {
+    test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
+      // Zone logs are permission-gated, no longer admin-only; the manager
+      // fixture holds zone_logs_view_own so the page must load.
       await page.goto('/zones/logs');
+      await expect(page).toHaveURL(/zones\/logs/);
       const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().includes('/login');
-      expect(hasError).toBeTruthy();
+      expect(bodyText.toLowerCase()).not.toContain('denied');
     });
 
     test('should not have access to user logs', async ({ page }) => {
