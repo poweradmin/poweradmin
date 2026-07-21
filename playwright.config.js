@@ -26,8 +26,9 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // 2 workers locally for parallel file execution, 1 on CI for stability
-  // Session conflicts may occur if two files use the same user simultaneously
+  // 2 workers locally for parallel file execution, 1 on CI for stability.
+  // Workers never share sessions (each has its own cookie jar and PHP session);
+  // the constraint is shared zone data, contained by per-file serial mode.
   workers: process.env.CI ? 1 : 2,
 
   // Reporter to use
