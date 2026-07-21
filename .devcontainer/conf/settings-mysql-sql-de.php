@@ -61,6 +61,7 @@ return [
         'language' => 'de_DE',
         'enabled_languages' => 'de_DE',
         'title' => 'Poweradmin (MySQL + SQL, German)',
+        'theme' => 'modern',
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,

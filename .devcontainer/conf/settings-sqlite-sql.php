@@ -54,7 +54,6 @@ return [
         'language' => 'en_EN',
         'enabled_languages' => 'en_EN,de_DE,fr_FR,ja_JP,pl_PL',
         'title' => 'Poweradmin (SQLite + SQL)',
-        'theme' => 'modern',
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,
