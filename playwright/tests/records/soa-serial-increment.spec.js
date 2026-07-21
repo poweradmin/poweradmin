@@ -13,9 +13,17 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
    * RecordManager.addRecordGetId() and again in EditController.addRecord().
    */
 
-  async function getTestZoneId(page) {
+  // Exact-serial assertion needs a zone no parallel worker writes to, so the
+  // test creates its own instead of borrowing a shared fixture zone.
+  async function createIsolatedZone(page) {
+    const zoneName = `soa-serial-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.example.com`;
+    await page.goto('/zones/add/master');
+    await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('networkidle');
     await page.goto('/zones/forward?letter=all');
-    const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
+    const row = page.locator('tr', { hasText: zoneName }).first();
+    const editLink = row.locator('a[href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');
       const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -26,7 +34,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
 
   test('inline add record should increment SOA serial by exactly 1', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
+    const zoneId = await createIsolatedZone(page);
     expect(zoneId).not.toBeNull();
 
     // Navigate to zone edit page
