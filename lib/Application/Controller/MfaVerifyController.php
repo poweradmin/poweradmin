@@ -203,6 +203,10 @@ class MfaVerifyController extends BaseController
                 $this->userContextService->unsetSessionData('pending_oidc_provider');
                 $this->userContextService->setSessionData('oidc_authenticated', true);
             }
+            if ($this->userContextService->hasSessionData('pending_oidc_id_token')) {
+                $this->userContextService->setSessionData('oidc_id_token', $this->userContextService->getSessionData('pending_oidc_id_token'));
+                $this->userContextService->unsetSessionData('pending_oidc_id_token');
+            }
             if ($this->userContextService->hasSessionData('pending_oauth_avatar_url')) {
                 $this->userContextService->setSessionData('oauth_avatar_url', $this->userContextService->getSessionData('pending_oauth_avatar_url'));
                 $this->userContextService->unsetSessionData('pending_oauth_avatar_url');
