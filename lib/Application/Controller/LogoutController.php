@@ -78,21 +78,10 @@ class LogoutController extends BaseController
             $providerConfig = $oidcConfigService->getProviderConfig($providerId);
 
             if ($providerConfig && !empty($providerConfig['logout_url'])) {
-                // Build logout URL with provider-specific parameters
-                $logoutUrl = $providerConfig['logout_url'];
+                // The id_token captured at login lets the provider honor post_logout_redirect_uri
+                $idToken = $_SESSION['oidc_id_token'] ?? null;
                 $returnUrl = $this->getBaseUrl() . '/login';
-
-                // Determine parameter name based on provider
-                $paramName = $this->getLogoutParameterName($logoutUrl);
-
-                // Build logout URL
-                $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
-                $logoutUrl .= $separator . $paramName . '=' . urlencode($returnUrl);
-
-                // Add client_id if required by provider
-                if ($this->requiresClientIdInLogout($providerConfig)) {
-                    $logoutUrl .= '&client_id=' . urlencode($providerConfig['client_id']);
-                }
+                $logoutUrl = $this->buildOidcLogoutUrl($providerConfig, $returnUrl, $idToken);
 
                 // Clear local session first
                 $this->clearSession();
@@ -158,6 +147,29 @@ class LogoutController extends BaseController
         }
     }
 
+    private function buildOidcLogoutUrl(array $providerConfig, string $returnUrl, ?string $idToken): string
+    {
+        $logoutUrl = $providerConfig['logout_url'];
+
+        // Determine the redirect parameter name based on provider
+        $paramName = $this->getLogoutParameterName($logoutUrl);
+
+        $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
+        $logoutUrl .= $separator . $paramName . '=' . urlencode($returnUrl);
+
+        // Add client_id if required by provider
+        if ($this->requiresClientIdInLogout($providerConfig)) {
+            $logoutUrl .= '&client_id=' . urlencode($providerConfig['client_id']);
+        }
+
+        // RP-initiated logout: providers such as SimpleSAML reject a redirect without this
+        if (is_string($idToken) && $idToken !== '') {
+            $logoutUrl .= '&id_token_hint=' . urlencode($idToken);
+        }
+
+        return $logoutUrl;
+    }
+
     private function getLogoutParameterName(string $logoutUrl): string
     {
         // Auth0 uses 'returnTo' instead of the standard parameter
@@ -182,6 +194,7 @@ class LogoutController extends BaseController
         unset(
             $_SESSION['oidc_authenticated'],
             $_SESSION['oidc_provider'],
+            $_SESSION['oidc_id_token'],
             $_SESSION['oidc_state']
         );
 
@@ -212,6 +225,7 @@ class LogoutController extends BaseController
         unset(
             $_SESSION['oidc_authenticated'],
             $_SESSION['oidc_provider'],
+            $_SESSION['oidc_id_token'],
             $_SESSION['oidc_state']
         );
 
