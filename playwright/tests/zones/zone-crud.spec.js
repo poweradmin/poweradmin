@@ -181,8 +181,8 @@ test.describe('Zone CRUD Operations', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+        // Auto-retrying assertion: the click navigation may still be in flight.
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
       }
     });
 
