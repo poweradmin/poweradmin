@@ -45,8 +45,8 @@ test.describe('Zone Operations', () => {
       const soaEditLink = page.locator('a[href*="/records/"][href*="/edit"]:has-text("SOA"), tr:has-text("SOA") a[href*="/edit"]').first();
       if (await soaEditLink.count() > 0) {
         await soaEditLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -77,8 +77,8 @@ test.describe('Zone Operations', () => {
         const editLink = row.locator('a[href*="/edit"]').first();
         await editLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
         // Cleanup
         await page.goto('/zones/forward?letter=all');
@@ -144,8 +144,8 @@ test.describe('Zone Operations', () => {
         await editLink.click();
         const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
         if (await commentField.count() > 0) {
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -163,8 +163,8 @@ test.describe('Zone Operations', () => {
           if (await commentField.count() > 0) {
             await commentField.fill(`Updated comment ${Date.now()}`);
             await page.locator('button[type="submit"], input[type="submit"]').first().click();
-            const bodyText = await page.locator('body').textContent();
-            expect(bodyText).not.toMatch(/fatal|exception/i);
+            // Auto-retrying assertion: the click navigation may still be in flight
+            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
           }
         }
       }
@@ -188,8 +188,8 @@ test.describe('Zone Operations', () => {
         const ownerLink = page.locator('a[href*="owner"]').first();
         if (await ownerLink.count() > 0) {
           await ownerLink.click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -203,8 +203,8 @@ test.describe('Zone Operations', () => {
         const addOwnerLink = page.locator('a[href*="owner/add"]').first();
         if (await addOwnerLink.count() > 0) {
           await addOwnerLink.click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });

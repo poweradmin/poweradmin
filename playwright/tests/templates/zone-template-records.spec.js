@@ -69,8 +69,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('input[name*="name"]').first().fill('www');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('192.168.1.1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add AAAA record to template', async ({ page }) => {
@@ -81,8 +81,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('input[name*="name"]').first().fill('ipv6');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('2001:db8::1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add MX record with priority', async ({ page }) => {
@@ -94,8 +94,8 @@ test.describe('Zone Template Records', () => {
       const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
       if (await prioField.count() > 0) await prioField.fill('10');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add NS record with [ZONE] placeholder', async ({ page }) => {
@@ -105,8 +105,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('select[name*="type"]').first().selectOption('NS');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('ns1.[ZONE]');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add TXT record for SPF', async ({ page }) => {
@@ -117,8 +117,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('input[name*="name"]').first().fill('@');
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('v=spf1 mx ~all');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add CNAME record', async ({ page }) => {
@@ -129,8 +129,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('input[name*="name"]').first().fill('ftp');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('www.[ZONE]');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should add SRV record', async ({ page }) => {
@@ -141,8 +141,8 @@ test.describe('Zone Template Records', () => {
       await page.locator('input[name*="name"]').first().fill('_sip._tcp');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('10 5 5060 sip.[ZONE]');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty record content', async ({ page }) => {
@@ -165,8 +165,8 @@ test.describe('Zone Template Records', () => {
       const editLink = page.locator('a[href*="/records/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -196,8 +196,8 @@ test.describe('Zone Template Records', () => {
         if (await contentField.count() > 0) {
           await contentField.fill('192.168.2.1');
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
         }
       }
     });
@@ -211,8 +211,8 @@ test.describe('Zone Template Records', () => {
       const deleteLink = page.locator('a[href*="/records/"][href*="/delete"]').first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm/i);
       }
     });
 
@@ -223,8 +223,8 @@ test.describe('Zone Template Records', () => {
       const deleteLink = page.locator('a[href*="/records/"][href*="/delete"]').first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm/i);
       }
     });
 

@@ -327,9 +327,8 @@ test.describe('API Key Created', () => {
 
         // Link might be in breadcrumb, card, or button
         const returnLink = page.locator('a[href*="api-keys"], a[href*="settings"]');
-        const hasReturnLink = await returnLink.count() > 0;
-
-        expect(hasReturnLink).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(returnLink.first()).toBeAttached();
       }
     });
   });
@@ -357,8 +356,8 @@ test.describe('Delete API Key', () => {
         if (await deleteLink.count() > 0) {
           await deleteLink.click();
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/delete|confirm|warning/i);
+          // Auto-retrying assertion: the click navigation may still be in flight
+          await expect(page.locator('body')).toContainText(/delete|confirm|warning/i);
         }
       }
     });

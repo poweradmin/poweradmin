@@ -168,8 +168,8 @@ test.describe('Edit Zone', () => {
       const editLink = page.locator('table a[href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/owner|zone|type/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/owner|zone|type/i);
       }
     });
   });
@@ -193,8 +193,8 @@ test.describe('Delete Zone', () => {
       const deleteLink = page.locator('a[href*="/delete"]').first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
       }
     });
 

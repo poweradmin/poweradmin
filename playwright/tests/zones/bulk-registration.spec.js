@@ -63,8 +63,8 @@ test.describe('Bulk Zone Registration', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/bulk-registration');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should register single zone', async ({ page }) => {
@@ -76,8 +76,8 @@ test.describe('Bulk Zone Registration', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Verify success or check zone list
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
       // Clean up
       await page.goto('/zones/forward?letter=all');
@@ -97,8 +97,8 @@ test.describe('Bulk Zone Registration', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Verify success
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should show created zones in list', async ({ page }) => {
