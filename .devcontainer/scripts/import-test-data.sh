@@ -28,6 +28,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEVCONTAINER_DIR="$(dirname "$SCRIPT_DIR")"
 SQL_DIR="$DEVCONTAINER_DIR/sql"
 
+# Repo-root sql/ holds the canonical poweradmin schema for the checked-out branch
+ROOT_SQL_DIR="$DEVCONTAINER_DIR/../sql"
+MYSQL_SCHEMA="$ROOT_SQL_DIR/poweradmin-mysql-db-structure.sql"
+PGSQL_SCHEMA="$ROOT_SQL_DIR/poweradmin-pgsql-db-structure.sql"
+SQLITE_SCHEMA="$ROOT_SQL_DIR/poweradmin-sqlite-db-structure.sql"
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -65,7 +71,29 @@ check_container() {
     return 0
 }
 
+# Parse poweradmin-native table names from a db-structure.sql file.
+# Handles `name` (mysql), "public"."name" (pgsql) and bare name (sqlite).
+# Deriving the list from the schema file avoids a hardcoded list that rots.
+parse_poweradmin_tables() {
+    local schema_file=$1
+    grep -oE 'CREATE TABLE[[:space:]]+[`"a-zA-Z0-9_.]+' "$schema_file" \
+        | awk '{print $NF}' \
+        | tr -d '`"' \
+        | sed -E 's/.*\.//'
+}
+
+# Parse standalone sequence names from the pgsql schema. These are not owned
+# by their tables, so DROP TABLE CASCADE leaves them behind - drop them too.
+parse_poweradmin_sequences() {
+    local schema_file=$1
+    grep -oE 'CREATE SEQUENCE[[:space:]]+[a-zA-Z0-9_]+' "$schema_file" \
+        | awk '{print $NF}'
+}
+
 # Function to clean MySQL/MariaDB test data
+# Drops and recreates the poweradmin-native tables from the current schema so
+# the devcontainer never drifts behind the checked-out branch, then clears the
+# PowerDNS-owned data rows (those tables are never dropped).
 clean_mysql() {
     echo -e "${YELLOW}🧹 Cleaning MySQL/MariaDB test data...${NC}"
 
@@ -74,59 +102,31 @@ clean_mysql() {
         return 1
     fi
 
-    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" << 'EOSQL'
-USE poweradmin;
+    if [ ! -f "$MYSQL_SCHEMA" ]; then
+        echo -e "${RED}❌ Poweradmin schema file not found at $MYSQL_SCHEMA${NC}"
+        return 1
+    fi
 
--- Delete group-related data
-DELETE FROM zones_groups;
-DELETE FROM user_group_members;
-DELETE FROM log_groups;
-DELETE FROM user_groups;
+    # Drop every poweradmin-native table, then recreate from the branch schema
+    {
+        echo "SET FOREIGN_KEY_CHECKS=0;"
+        while IFS= read -r table; do
+            [ -n "$table" ] && echo "DROP TABLE IF EXISTS \`$table\`;"
+        done < <(parse_poweradmin_tables "$MYSQL_SCHEMA")
+        echo "SET FOREIGN_KEY_CHECKS=1;"
+    } | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" 2>/dev/null
 
--- Delete zone template associations and sync data
-DELETE FROM zone_template_sync;
-DELETE FROM records_zone_templ;
+    if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$MYSQL_SCHEMA" 2>/dev/null; then
+        echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
+    else
+        echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
+        return 1
+    fi
 
--- Delete zone ownership records
-DELETE FROM zones;
-
--- Delete zone template records and templates
-DELETE FROM zone_templ_records;
-DELETE FROM zone_templ;
-
--- Delete user-related data (cascades handle some, but be explicit)
-DELETE FROM oidc_user_links;
-DELETE FROM saml_user_links;
-DELETE FROM user_agreements;
-DELETE FROM user_mfa;
-DELETE FROM user_preferences;
-DELETE FROM api_keys;
-DELETE FROM login_attempts;
-DELETE FROM password_reset_tokens;
-DELETE FROM username_recovery_requests;
-
--- Delete test users (keep admin if exists)
-DELETE FROM users WHERE username != 'admin';
-
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
-
--- Delete permission templates (keep Administrator)
-DELETE FROM perm_templ WHERE id > 1;
-
--- Clear logs
-DELETE FROM log_users;
-DELETE FROM log_zones;
-
-USE pdns;
-
--- Delete all records
+    # Clear PowerDNS-owned data (tables stay in place, never dropped)
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_PDNS_DATABASE" 2>/dev/null << 'EOSQL'
 DELETE FROM records;
-
--- Delete all domains
 DELETE FROM domains;
-
--- Delete all supermasters
 DELETE FROM supermasters;
 EOSQL
 
@@ -134,6 +134,10 @@ EOSQL
 }
 
 # Function to clean PostgreSQL test data
+# Drops and recreates the poweradmin-native tables (and their standalone
+# sequences) from the current schema, then clears the PowerDNS-owned data rows.
+# Poweradmin and PowerDNS tables share the pdns database's public schema, so the
+# drop is scoped to the parsed poweradmin table/sequence names only.
 clean_pgsql() {
     echo -e "${YELLOW}🧹 Cleaning PostgreSQL test data...${NC}"
 
@@ -142,81 +146,46 @@ clean_pgsql() {
         return 1
     fi
 
-    docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" << 'EOSQL'
--- Delete group-related data
-DELETE FROM zones_groups;
-DELETE FROM user_group_members;
-DELETE FROM log_groups;
-DELETE FROM user_groups;
+    if [ ! -f "$PGSQL_SCHEMA" ]; then
+        echo -e "${RED}❌ Poweradmin schema file not found at $PGSQL_SCHEMA${NC}"
+        return 1
+    fi
 
--- Delete zone template associations and sync data
-DELETE FROM zone_template_sync;
-DELETE FROM records_zone_templ;
+    # Drop poweradmin tables (CASCADE takes owned sequences/indexes) plus the
+    # standalone sequences the schema creates separately, then recreate.
+    {
+        while IFS= read -r table; do
+            [ -n "$table" ] && echo "DROP TABLE IF EXISTS \"$table\" CASCADE;"
+        done < <(parse_poweradmin_tables "$PGSQL_SCHEMA")
+        while IFS= read -r seq; do
+            [ -n "$seq" ] && echo "DROP SEQUENCE IF EXISTS \"$seq\" CASCADE;"
+        done < <(parse_poweradmin_sequences "$PGSQL_SCHEMA")
+    } | docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" > /dev/null 2>&1
 
--- Delete zone ownership records
-DELETE FROM zones;
+    if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$PGSQL_SCHEMA" > /dev/null 2>&1; then
+        echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
+    else
+        echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
+        return 1
+    fi
 
--- Delete zone template records and templates
-DELETE FROM zone_templ_records;
-DELETE FROM zone_templ;
-
--- Delete user-related data
-DELETE FROM oidc_user_links;
-DELETE FROM saml_user_links;
-DELETE FROM user_agreements;
-DELETE FROM user_mfa;
-DELETE FROM user_preferences;
-DELETE FROM api_keys;
-DELETE FROM login_attempts;
-DELETE FROM password_reset_tokens;
-DELETE FROM username_recovery_requests;
-
--- Delete test users (keep admin if exists)
-DELETE FROM users WHERE username != 'admin';
-
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
-
--- Delete permission templates (keep Administrator)
-DELETE FROM perm_templ WHERE id > 1;
-
--- Clear logs
-DELETE FROM log_users;
-DELETE FROM log_zones;
-
--- Delete all records
+    # Clear PowerDNS-owned data (tables stay in place); reset their sequences
+    # so fixture domain/record ids stay deterministic.
+    docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" > /dev/null 2>&1 << 'EOSQL'
 DELETE FROM records;
-
--- Delete all domains
 DELETE FROM domains;
-
--- Delete all supermasters
 DELETE FROM supermasters;
-
--- Reset sequences
-SELECT setval('perm_templ_id_seq', 1);
-SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
-SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
 SELECT setval('domains_id_seq', 1);
 SELECT setval('records_id_seq', 1);
-SELECT setval('zones_id_seq', 1);
-SELECT setval('zone_templ_id_seq', 1);
-SELECT setval('zone_templ_records_id_seq', 1);
-SELECT setval('records_zone_templ_id_seq', 1);
-SELECT setval('log_users_id_seq1', 1);
-SELECT setval('log_zones_id_seq1', 1);
-SELECT setval('log_groups_id_seq1', 1);
-SELECT setval('api_keys_id_seq', 1);
-SELECT setval('user_mfa_id_seq', 1);
-SELECT setval('login_attempts_id_seq', 1);
-SELECT setval('user_group_members_id_seq', 1);
-SELECT setval('zones_groups_id_seq', 1);
 EOSQL
 
     echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
 }
 
 # Function to clean SQLite test data
+# Poweradmin and PowerDNS tables share the single /data/pdns.db file. Drops and
+# recreates only the parsed poweradmin-native tables from the current schema,
+# then clears the PowerDNS-owned data rows (those tables are never dropped).
 clean_sqlite() {
     echo -e "${YELLOW}🧹 Cleaning SQLite test data...${NC}"
 
@@ -225,59 +194,32 @@ clean_sqlite() {
         return 1
     fi
 
-    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
--- Attach PowerDNS database
-ATTACH DATABASE '/data/pdns.db' AS pdns;
+    if [ ! -f "$SQLITE_SCHEMA" ]; then
+        echo -e "${RED}❌ Poweradmin schema file not found at $SQLITE_SCHEMA${NC}"
+        return 1
+    fi
 
--- Delete group-related data
-DELETE FROM zones_groups;
-DELETE FROM user_group_members;
-DELETE FROM log_groups;
-DELETE FROM user_groups;
+    # Drop every poweradmin-native table (foreign keys off during the drop),
+    # then recreate from the branch schema.
+    {
+        echo "PRAGMA foreign_keys=OFF;"
+        while IFS= read -r table; do
+            [ -n "$table" ] && echo "DROP TABLE IF EXISTS \"$table\";"
+        done < <(parse_poweradmin_tables "$SQLITE_SCHEMA")
+    } | docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" > /dev/null 2>&1
 
--- Delete zone template associations and sync data
-DELETE FROM zone_template_sync;
-DELETE FROM records_zone_templ;
+    if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQLITE_SCHEMA" > /dev/null 2>&1; then
+        echo -e "${GREEN}✅ Poweradmin schema recreated${NC}"
+    else
+        echo -e "${RED}❌ Poweradmin schema recreation failed${NC}"
+        return 1
+    fi
 
--- Delete zone ownership records
-DELETE FROM zones;
-
--- Delete zone template records and templates
-DELETE FROM zone_templ_records;
-DELETE FROM zone_templ;
-
--- Delete user-related data
-DELETE FROM oidc_user_links;
-DELETE FROM saml_user_links;
-DELETE FROM user_agreements;
-DELETE FROM user_mfa;
-DELETE FROM user_preferences;
-DELETE FROM api_keys;
-DELETE FROM login_attempts;
-DELETE FROM password_reset_tokens;
-DELETE FROM username_recovery_requests;
-
--- Delete test users (keep admin if exists)
-DELETE FROM users WHERE username != 'admin';
-
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
-
--- Delete permission templates (keep Administrator)
-DELETE FROM perm_templ WHERE id > 1;
-
--- Clear logs
-DELETE FROM log_users;
-DELETE FROM log_zones;
-
--- Delete all records from PowerDNS database
-DELETE FROM pdns.records;
-
--- Delete all domains from PowerDNS database
-DELETE FROM pdns.domains;
-
--- Delete all supermasters from PowerDNS database
-DELETE FROM pdns.supermasters;
+    # Clear PowerDNS-owned data (same file, tables stay in place)
+    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" > /dev/null 2>&1 << 'EOSQL'
+DELETE FROM records;
+DELETE FROM domains;
+DELETE FROM supermasters;
 EOSQL
 
     echo -e "${GREEN}✅ SQLite cleaned${NC}"
@@ -303,7 +245,7 @@ import_mysql() {
 
     if [ "$has_users_table" = "0" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
-        local poweradmin_schema="$DEVCONTAINER_DIR/../sql/poweradmin-mysql-db-structure.sql"
+        local poweradmin_schema="$MYSQL_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
             if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$poweradmin_schema" 2>/dev/null; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
@@ -407,7 +349,7 @@ import_pgsql() {
 
     if [ "$has_users_table" = "0" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
-        local poweradmin_schema="$DEVCONTAINER_DIR/../sql/poweradmin-pgsql-db-structure.sql"
+        local poweradmin_schema="$PGSQL_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
             if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$poweradmin_schema" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
@@ -491,7 +433,7 @@ import_sqlite() {
 
     if [ -z "$has_users_table" ]; then
         echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
-        local poweradmin_schema="$DEVCONTAINER_DIR/../sql/poweradmin-sqlite-db-structure.sql"
+        local poweradmin_schema="$SQLITE_SCHEMA"
         if [ -f "$poweradmin_schema" ]; then
             if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$poweradmin_schema" > /dev/null 2>&1; then
                 echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
