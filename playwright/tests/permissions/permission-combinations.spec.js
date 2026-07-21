@@ -213,8 +213,8 @@ test.describe('Permission Combinations', () => {
       const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const checkboxes = page.locator('input[type="checkbox"]');
-        expect(await checkboxes.count()).toBeGreaterThan(0);
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('input[type="checkbox"]').first()).toBeVisible();
       }
     });
 

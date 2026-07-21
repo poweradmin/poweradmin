@@ -255,7 +255,7 @@ test.describe('Bulk and Batch Operations', () => {
       const bodyText = await page.locator('body').textContent();
 
       if (bodyText.includes(domainPrefix)) {
-        const rows = page.locator(`tr:contains("${domainPrefix}")`);
+        const rows = page.locator('tr').filter({ hasText: domainPrefix });
         const count = await rows.count();
 
         for (let i = 0; i < count; i++) {

@@ -85,9 +85,9 @@ test.describe('Zone Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
+        // Auto-retrying assertion: the click navigation may still be in flight
         const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        const hasCancelBtn = await cancelBtn.count() > 0;
-        expect(hasCancelBtn).toBeTruthy();
+        await expect(cancelBtn.first()).toBeVisible();
       }
     });
 
@@ -421,9 +421,8 @@ test.describe('Supermaster Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('a.btn').first()).toBeVisible();
       }
     });
 
@@ -497,9 +496,8 @@ test.describe('Zone Template Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('a.btn').first()).toBeVisible();
       }
     });
 
@@ -573,9 +571,8 @@ test.describe('Permission Template Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('a.btn').first()).toBeVisible();
       }
     });
 
@@ -608,9 +605,8 @@ test.describe('Common Delete Confirmation Elements', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const dangerBtn = page.locator('.btn-danger');
-        const hasDangerBtn = await dangerBtn.count() > 0;
-        expect(hasDangerBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('.btn-danger').first()).toBeVisible();
       }
     });
 
