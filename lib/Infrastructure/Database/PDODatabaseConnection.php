@@ -57,6 +57,12 @@ class PDODatabaseConnection implements DatabaseConnection
             // Enable foreign key constraints for SQLite
             if ($credentials['db_type'] === 'sqlite') {
                 $pdo->exec('PRAGMA foreign_keys = ON');
+                // Wait for competing writers instead of failing immediately
+                // with "database is locked" when requests run concurrently
+                $pdo->exec('PRAGMA busy_timeout = 5000');
+                // Shorter write-lock windows; corruption-safe in all journal
+                // modes, trades only last-commit durability on power loss
+                $pdo->exec('PRAGMA synchronous = NORMAL');
             }
 
             return $pdo;
