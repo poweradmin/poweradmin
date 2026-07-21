@@ -59,9 +59,10 @@ class DnssecAddKeyController extends BaseController
             return;
         }
 
+        $zone_id = (int) $zone_id;
+
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         // Check view permission first
@@ -77,7 +78,7 @@ class DnssecAddKeyController extends BaseController
             return;
         }
 
-        if ($perm_dnssec !== "all" && !($perm_dnssec === "own" && $user_is_zone_owner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
@@ -170,7 +171,7 @@ class DnssecAddKeyController extends BaseController
                     try {
                         if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
                             $auditService = new AuditService($this->db);
-                            $auditService->logDnssecAddKey((int)$zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
+                            $auditService->logDnssecAddKey($zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {

@@ -72,9 +72,7 @@ class DnssecDsDnskeyController extends BaseController
             return;
         }
 
-        // Zone-aware level (includes group permissions) to stay consistent with the edit page gate
-        $perm_dnssec = $this->createPermissionService()->getDnssecPermissionLevelForZone($this->db, $this->getCurrentUserId(), $zone_id);
-        $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner);
+        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
 
         $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
     }

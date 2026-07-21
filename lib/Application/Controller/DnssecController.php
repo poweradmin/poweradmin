@@ -70,7 +70,6 @@ class DnssecController extends BaseController
         // Early permission check - validate zone visibility before any operations.
         // The DNSSEC page itself only requires view; per-action gates apply for mutations.
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
@@ -89,7 +88,7 @@ class DnssecController extends BaseController
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
         if ($this->request->getPostParam('unsign_zone') !== null) {
-            if ($perm_dnssec !== "all" && !($perm_dnssec === "own" && $user_is_zone_owner)) {
+            if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
                 $this->setMessage('dnssec', 'error', _("You do not have permission to manage DNSSEC for this zone."));
                 $this->showDnsSecKeys($zone_id);
                 return;
@@ -147,9 +146,7 @@ class DnssecController extends BaseController
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $perm_dnssec = Permission::getDnssecPermission($this->db);
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner);
+        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,

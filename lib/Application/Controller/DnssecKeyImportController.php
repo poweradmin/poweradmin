@@ -56,7 +56,6 @@ class DnssecKeyImportController extends BaseController
 
         $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
-        $permDnssec = Permission::getDnssecPermission($this->db);
         $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
@@ -70,7 +69,7 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        if ($permDnssec !== 'all' && !($permDnssec === 'own' && $userIsZoneOwner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneIdInt)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }

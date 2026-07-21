@@ -134,6 +134,21 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanManageDnssecForZoneShortCircuitsForAdmin(): void
+    {
+        $userId = 1;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $db = $this->createMock(\PDO::class);
+
+        $db->expects($this->never())->method('prepare');
+        $this->assertTrue($this->service->canManageDnssecForZone($db, $userId, 100));
+    }
+
+    #[Test]
     public function testGetUserPermissions(): void
     {
         $userId = 1;
@@ -420,31 +435,6 @@ class PermissionServiceTest extends TestCase
         $this->assertEquals('own', $this->service->getZoneOwnershipViewPermissionLevel(5)); // edit implies view
         $this->assertEquals('none', $this->service->getZoneOwnershipViewPermissionLevel(6)); // content view alone no longer implies
         $this->assertEquals('none', $this->service->getZoneOwnershipViewPermissionLevel(7)); // no permission
-    }
-
-    #[Test]
-    public function testGetDnssecPermissionLevel(): void
-    {
-        $this->userRepository->method('hasAdminPermission')
-            ->willReturnMap([
-                [1, true],
-                [2, false],
-                [3, false],
-                [4, false],
-            ]);
-
-        $this->userRepository->method('getUserPermissions')
-            ->willReturnMap([
-                [1, []],
-                [2, ['zone_dnssec_manage_own']],
-                [3, ['zone_content_edit_own']],
-                [4, []],
-            ]);
-
-        $this->assertEquals('all', $this->service->getDnssecPermissionLevel(1)); // admin
-        $this->assertEquals('own', $this->service->getDnssecPermissionLevel(2)); // explicit grant
-        $this->assertEquals('none', $this->service->getDnssecPermissionLevel(3)); // edit_own alone does not imply DNSSEC
-        $this->assertEquals('none', $this->service->getDnssecPermissionLevel(4)); // no permission
     }
 
     #[Test]

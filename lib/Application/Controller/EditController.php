@@ -300,9 +300,8 @@ class EditController extends BaseController
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-        $perm_dnssec = $this->permissionService->getDnssecPermissionLevelForZone($this->db, $userId, $zone_id);
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
-        $can_manage_dnssec = $perm_dnssec === 'all' || ($perm_dnssec === 'own' && $user_is_zone_owner == "1");
+        $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($this->db, $userId, $zone_id);
 
         $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
         $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);

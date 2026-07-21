@@ -75,7 +75,6 @@ class DnssecEditKeyController extends BaseController
         // Early permission check - this page is the confirmation entry for toggling a key,
         // so it requires the dedicated DNSSEC management permission.
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_dnssec = Permission::getDnssecPermission($this->db);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
@@ -90,7 +89,7 @@ class DnssecEditKeyController extends BaseController
             return;
         }
 
-        if ($perm_dnssec !== "all" && !($perm_dnssec === "own" && $user_is_zone_owner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }

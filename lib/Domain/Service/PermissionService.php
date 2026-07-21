@@ -355,40 +355,16 @@ class PermissionService
     }
 
     /**
-     * Get DNSSEC management permission level for a user.
-     *
-     * Note: checks DIRECT user permissions only. For zone-aware checks that pick up
-     * group-assigned permissions, use getDnssecPermissionLevelForZone().
-     *
-     * @param int $userId User ID to check
-     * @return string "all", "own", or "none" depending on the user's DNSSEC management permission
-     */
-    public function getDnssecPermissionLevel(int $userId): string
-    {
-        if ($this->isAdmin($userId)) {
-            return 'all';
-        }
-
-        $permissions = $this->getUserPermissions($userId);
-        return in_array('zone_dnssec_manage_own', $permissions) ? 'own' : 'none';
-    }
-
-    /**
-     * Get DNSSEC management permission level for a user on a specific zone (includes group permissions).
+     * Check if a user may manage DNSSEC keys for a zone (includes group permissions).
      *
      * @param \PDO $db Database connection
      * @param int $userId User ID to check
      * @param int $domainId Zone/Domain ID
-     * @return string "all", "own", or "none" depending on the user's DNSSEC management permission for this zone
+     * @return bool True if the user may manage DNSSEC for this zone
      */
-    public function getDnssecPermissionLevelForZone(\PDO $db, int $userId, int $domainId): string
+    public function canManageDnssecForZone(\PDO $db, int $userId, int $domainId): bool
     {
-        if ($this->isAdmin($userId)) {
-            return 'all';
-        }
-
-        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
-        return in_array('zone_dnssec_manage_own', $zonePermissions) ? 'own' : 'none';
+        return $this->canPerformZoneAction($db, $userId, $domainId, 'zone_dnssec_manage_own');
     }
 
     /**
