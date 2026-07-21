@@ -195,3 +195,7 @@ WHERE "name" = 'zone_content_view_own';
 
 UPDATE "perm_items" SET "descr" = 'User is allowed to see the content of zones he does not own.'
 WHERE "name" = 'zone_content_view_others';
+
+-- Index the API log timestamp so per-request logging (closes #1137) can prune
+-- old rows by retention date without a full scan.
+CREATE INDEX IF NOT EXISTS "idx_log_api_created_at" ON "public"."log_api" USING btree ("created_at");

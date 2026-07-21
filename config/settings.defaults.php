@@ -322,6 +322,10 @@ return [
         // Audit logging - tracks user, zone, and group operations
         'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
 
+        // Per-request API audit logging (writes to log_api; requires database_enabled)
+        'api_request_logging' => false,            // Log every public API request; permission violations (401/403) are logged regardless (added in 4.5.0)
+        'api_log_retention_days' => 0,             // Days to keep API log rows; 0 = keep forever (added in 4.5.0)
+
         // Syslog audit logging
         'syslog_enabled' => false,                 // Write audit events to syslog (added in 2.1.6)
         'syslog_identity' => 'poweradmin',         // Syslog identity (added in 2.1.6)

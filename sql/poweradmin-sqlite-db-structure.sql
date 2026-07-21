@@ -5,6 +5,8 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 
 CREATE TABLE log_api (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL);
 
+CREATE INDEX idx_log_api_created_at ON log_api(created_at);
+
 
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 

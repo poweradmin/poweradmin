@@ -432,6 +432,29 @@ class ApiKeyService
     }
 
     /**
+     * Get the api_keys row id from a raw secret key without setting session (stateless).
+     * Used for audit logging so a request can be traced back to a specific key.
+     */
+    public function getIdFromApiKey(string $secretKey): ?int
+    {
+        if (!$this->config->get('api', 'enabled', false)) {
+            return null;
+        }
+
+        try {
+            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
+            if ($apiKey === null || !$apiKey->isValid()) {
+                return null;
+            }
+
+            return $apiKey->getId();
+        } catch (Exception $e) {
+            $this->logger->error('Failed to get id from API key: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
      * Resolve the permission scope of an API key (stateless, no session writes).
      *
      * Returns null when the key is missing/invalid or the API is disabled, in

@@ -47,6 +47,28 @@ class DbApiLogger
         }
     }
 
+    /**
+     * Delete API log rows older than the given number of days. The cutoff is
+     * computed in PHP (UTC) so the comparison is portable across
+     * MySQL/PostgreSQL/SQLite; created_at is written by the DB in UTC (SQLite
+     * always, and the common UTC-configured MySQL/PostgreSQL deployment).
+     */
+    public function pruneOlderThan(int $days): void
+    {
+        if ($days <= 0) {
+            return;
+        }
+
+        $cutoff = gmdate('Y-m-d H:i:s', time() - $days * 86400);
+        try {
+            $stmt = $this->db->prepare('DELETE FROM log_api WHERE created_at < :cutoff');
+            $stmt->execute([':cutoff' => $cutoff]);
+        } catch (\PDOException $e) {
+            // Silently fail if table doesn't exist yet (during upgrade before migration)
+            return;
+        }
+    }
+
     public function getDistinctEventTypes(): array
     {
         return [
@@ -55,6 +77,8 @@ class DbApiLogger
             'api_key_edit',
             'api_key_regenerate',
             'api_key_toggle',
+            'api_request',
+            'api_violation',
         ];
     }
 
@@ -123,6 +147,8 @@ class DbApiLogger
                 'api_key_delete' => '%operation:api_key_delete%',
                 'api_key_regenerate' => '%operation:api_key_regenerate%',
                 'api_key_toggle' => '%operation:api_key_toggle%',
+                'api_request' => '%operation:api_request%',
+                'api_violation' => '%operation:api_violation%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_api.event LIKE :event_type";

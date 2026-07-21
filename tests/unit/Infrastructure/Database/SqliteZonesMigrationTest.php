@@ -91,6 +91,14 @@ class SqliteZonesMigrationTest extends TestCase
             disabled BOOLEAN NOT NULL DEFAULT 0,
             expires_at TIMESTAMP NULL
         )");
+
+        // Migration adds a created_at index to log_api (present since 4.3.0).
+        $this->db->exec("CREATE TABLE log_api (
+            id integer PRIMARY KEY,
+            event VARCHAR(2048) NOT NULL,
+            created_at timestamp DEFAULT current_timestamp,
+            priority integer NOT NULL
+        )");
     }
 
     #[Test]

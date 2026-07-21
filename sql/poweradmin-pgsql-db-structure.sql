@@ -21,6 +21,8 @@ CREATE TABLE "public"."log_api" (
                                       CONSTRAINT "log_api_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_log_api_created_at" ON "public"."log_api" USING btree ("created_at");
+
 
 CREATE SEQUENCE log_zones_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

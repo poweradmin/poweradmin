@@ -21,7 +21,8 @@ CREATE TABLE `log_api` (
                              `event` varchar(2048) NOT NULL,
                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                              `priority` int(11) NOT NULL,
-                             PRIMARY KEY (`id`)
+                             PRIMARY KEY (`id`),
+                             KEY `idx_log_api_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

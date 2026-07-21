@@ -37,10 +37,14 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Logger\DbApiLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
@@ -431,7 +435,84 @@ abstract class PublicApiController extends AbstractApiController
             $headers['Link'] = '</api/v2/>; rel="successor-version"';
         }
 
+        $this->logApiRequest($status);
+
         return parent::returnJsonResponse($data, $status, $headers);
+    }
+
+    /**
+     * Record an API request in the audit log (log_api table).
+     *
+     * Permission violations (401/403) are always logged when database audit
+     * logging is on, since they are a low-volume security signal. Successful and
+     * other requests are logged only when the api_request_logging opt-in is set,
+     * because per-request logging is high-volume. Logging never blocks the
+     * response - any failure is swallowed.
+     */
+    private function logApiRequest(int $status): void
+    {
+        try {
+            $config = $this->getConfig();
+            $isViolation = $status === 401 || $status === 403;
+            if (!$isViolation && !$config->get('logging', 'api_request_logging', false)) {
+                return;
+            }
+
+            $operation = $isViolation ? 'api_violation' : 'api_request';
+            $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
+            // Resolve the API key id lazily - only now that a log row is actually
+            // being written - so the default (logging off) path pays nothing.
+            $keyId = '-';
+            if ($this->authenticatedUserId > 0) {
+                $id = (new ApiKeyAuthenticationMiddleware($this->db, $config))->getAuthenticatedApiKeyId($this->request);
+                if ($id !== null) {
+                    $keyId = (string)$id;
+                }
+            }
+            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '-';
+            // The constructor rewrites v2 HEAD to GET so handlers can serve it;
+            // read the original method so the audit trail stays accurate.
+            $method = $_SERVER['REQUEST_METHOD'] ?? $this->request->getMethod();
+            // Cap the path so a pathological URL cannot push the event past the
+            // log_api.event 2048-char column and get the whole row (incl. a
+            // violation) rejected and silently dropped.
+            $path = mb_substr($this->request->getPathInfo(), 0, 1500);
+
+            $event = sprintf(
+                'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
+                $operation,
+                $method,
+                $path,
+                $status,
+                $keyId,
+                $user !== '' ? $user : '-',
+                $clientIp !== '' ? $clientIp : '-'
+            );
+
+            (new LegacyLogger($this->db))->logApiInfo($event);
+            $this->pruneApiLog($config);
+        } catch (\Throwable $e) {
+            // Audit logging must never break the API response.
+        }
+    }
+
+    /**
+     * Occasionally drop API log rows older than the configured retention window.
+     *
+     * There is no scheduler in Poweradmin, so pruning piggybacks on writes at a
+     * low probability (like PHP session GC) to keep the table bounded without a
+     * DELETE on every request. Retention of 0 means keep forever.
+     */
+    private function pruneApiLog(ConfigurationManager $config): void
+    {
+        $retentionDays = (int)$config->get('logging', 'api_log_retention_days', 0);
+        if ($retentionDays <= 0) {
+            return;
+        }
+        if (random_int(1, 100) !== 1) {
+            return;
+        }
+        (new DbApiLogger($this->db))->pruneOlderThan($retentionDays);
     }
 
     /**
