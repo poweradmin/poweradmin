@@ -1746,7 +1746,6 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Repository\\DbZoneGroupRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbZoneGroupRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\DbZoneRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbZoneRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\DbZoneTemplateRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbZoneTemplateRepository.php',
-        'Poweradmin\\Infrastructure\\Repository\\RecordCommentEnrichmentTrait' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/RecordCommentEnrichmentTrait.php',
         'Poweradmin\\Infrastructure\\Repository\\SqlDomainRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/SqlDomainRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\SqlDynamicDnsRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/SqlDynamicDnsRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/SqlRecordRepository.php',

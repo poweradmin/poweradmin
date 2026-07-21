@@ -37,8 +37,6 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class SqlRecordRepository implements RecordRepositoryInterface
 {
-    use RecordCommentEnrichmentTrait;
-
     private PDO $db;
     private TableNameService $tableNameService;
 
@@ -120,31 +118,12 @@ class SqlRecordRepository implements RecordRepositoryInterface
                      "$records_table.name = (SELECT name FROM $domains_table WHERE id = :domain_id_apex) DESC, " .
                      $sql_sortby;
 
-        $links_table = 'record_comment_links';
-        $castId = DbCompat::castToString($db_type, "$records_table.id");
         $query = "SELECT $records_table.*,
-            " . ($fetchComments ? "COALESCE(
-                (
-                    SELECT c.comment
-                    FROM $links_table rcl
-                    JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $castId
-                    LIMIT 1
-                ),
-                (
-                    SELECT c.comment
-                    FROM $comments_table c
-                    WHERE c.domain_id = $records_table.domain_id
-                      AND c.name = $records_table.name
-                      AND c.type = $records_table.type
-                      AND NOT EXISTS (
-                          SELECT 1 FROM $links_table rcl2
-                          WHERE rcl2.comment_id = c.id
-                      )
-                    LIMIT 1
-                )
-            )" : "NULL") . " AS comment
+            " . ($fetchComments
+                ? "rc.comment AS comment, rc.account AS comment_account, rc.modified_at AS comment_modified_at"
+                : "NULL AS comment, NULL AS comment_account, NULL AS comment_modified_at") . "
             FROM $records_table
+            " . ($fetchComments ? $this->buildCommentJoin($db_type, $records_table, $comments_table) : "") . "
             WHERE $records_table.domain_id = :domain_id
             AND $records_table.type IS NOT NULL AND $records_table.type != ''
             ORDER BY " . $sql_sortby;
@@ -167,6 +146,39 @@ class SqlRecordRepository implements RecordRepositoryInterface
         }
 
         return [];
+    }
+
+    /**
+     * Join the single comment for each record so text, author, and timestamp
+     * come from the same row: a linked comment wins, otherwise an unlinked
+     * RRset-level comment matching domain/name/type.
+     */
+    private function buildCommentJoin(string $db_type, string $records_table, string $comments_table): string
+    {
+        $links_table = 'record_comment_links';
+        $castId = DbCompat::castToString($db_type, "$records_table.id");
+
+        return "LEFT JOIN $comments_table rc ON rc.id = COALESCE(
+                (
+                    SELECT lc.id
+                    FROM $links_table rcl
+                    JOIN $comments_table lc ON lc.id = rcl.comment_id
+                    WHERE rcl.record_id = $castId
+                    LIMIT 1
+                ),
+                (
+                    SELECT c.id
+                    FROM $comments_table c
+                    WHERE c.domain_id = $records_table.domain_id
+                      AND c.name = $records_table.name
+                      AND c.type = $records_table.type
+                      AND NOT EXISTS (
+                          SELECT 1 FROM $links_table rcl2
+                          WHERE rcl2.comment_id = c.id
+                      )
+                    LIMIT 1
+                )
+            )";
     }
 
     public function recidToDomid(int|string $id): int
@@ -413,36 +425,18 @@ class SqlRecordRepository implements RecordRepositoryInterface
             $params[':content_filter'] = $content_filter;
         }
 
-        $links_table = 'record_comment_links';
-        $castId = DbCompat::castToString($driver, "$records_table.id");
         $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
                  $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
         if ($include_comments) {
-            $query .= ", COALESCE(
-                (
-                    SELECT c.comment
-                    FROM $links_table rcl
-                    JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $castId
-                    LIMIT 1
-                ),
-                (
-                    SELECT c.comment
-                    FROM $comments_table c
-                    WHERE c.domain_id = $records_table.domain_id
-                      AND c.name = $records_table.name
-                      AND c.type = $records_table.type
-                      AND NOT EXISTS (
-                          SELECT 1 FROM $links_table rcl2
-                          WHERE rcl2.comment_id = c.id
-                      )
-                    LIMIT 1
-                )
-            ) AS comment";
+            $query .= ", rc.comment AS comment, rc.account AS comment_account, rc.modified_at AS comment_modified_at";
         }
 
         $query .= " FROM $records_table";
+
+        if ($include_comments) {
+            $query .= " " . $this->buildCommentJoin($driver, $records_table, $comments_table);
+        }
 
         $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;

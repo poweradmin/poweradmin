@@ -1350,7 +1350,6 @@ return array(
     'Poweradmin\\Infrastructure\\Repository\\DbZoneGroupRepository' => $baseDir . '/lib/Infrastructure/Repository/DbZoneGroupRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\DbZoneRepository' => $baseDir . '/lib/Infrastructure/Repository/DbZoneRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\DbZoneTemplateRepository' => $baseDir . '/lib/Infrastructure/Repository/DbZoneTemplateRepository.php',
-    'Poweradmin\\Infrastructure\\Repository\\RecordCommentEnrichmentTrait' => $baseDir . '/lib/Infrastructure/Repository/RecordCommentEnrichmentTrait.php',
     'Poweradmin\\Infrastructure\\Repository\\SqlDomainRepository' => $baseDir . '/lib/Infrastructure/Repository/SqlDomainRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\SqlDynamicDnsRepository' => $baseDir . '/lib/Infrastructure/Repository/SqlDynamicDnsRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => $baseDir . '/lib/Infrastructure/Repository/SqlRecordRepository.php',

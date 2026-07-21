@@ -48,7 +48,9 @@ class ApiRecordRepository implements RecordRepositoryInterface
     {
         foreach ($records as &$record) {
             $record['comment'] = $record['api_comment'] ?? null;
-            unset($record['api_comment']);
+            $record['comment_account'] = $record['api_comment_account'] ?? null;
+            $record['comment_modified_at'] = $record['api_comment_modified_at'] ?? null;
+            unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
         }
         unset($record);
     }

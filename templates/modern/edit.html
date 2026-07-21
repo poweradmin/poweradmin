@@ -436,7 +436,13 @@
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
             {% if iface_record_comments %}
-            <td>{{ r['comment'] ?? '-' }}</td>
+            <td>
+                {{ r['comment'] ?? '-' }}
+                {% if r['comment'] and r['comment_modified_at'] %}
+                <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="{{ 'Last edited by %account% on %date%'|trans({'%account%': r['comment_account'] ?: '-', '%date%': r['comment_modified_at']|date('Y-m-d H:i')}) }}"></i>
+                {% endif %}
+            </td>
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
             {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
@@ -468,8 +474,16 @@
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
             {% if iface_record_comments %}
-            <td class="col-sm-3"><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
-                       value="{{ r['comment'] }}"></td>
+            <td class="col-sm-3">
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
+                           value="{{ r['comment'] }}">
+                    {% if r['comment'] and r['comment_modified_at'] %}
+                    <span class="input-group-text" data-bs-toggle="tooltip" data-bs-placement="top"
+                          title="{{ 'Last edited by %account% on %date%'|trans({'%account%': r['comment_account'] ?: '-', '%date%': r['comment_modified_at']|date('Y-m-d H:i')}) }}"><i class="bi bi-info-circle"></i></span>
+                    {% endif %}
+                </div>
+            </td>
             {% endif %}
             <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>

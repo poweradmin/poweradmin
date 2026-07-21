@@ -914,6 +914,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             // Extract RRset-level comment (first comment if present)
             $rrsetComments = $rrset['comments'] ?? [];
             $rrsetComment = !empty($rrsetComments) ? ($rrsetComments[0]['content'] ?? null) : null;
+            $rrsetCommentAccount = !empty($rrsetComments) ? ($rrsetComments[0]['account'] ?? null) : null;
+            $rrsetCommentModifiedAt = !empty($rrsetComments) && isset($rrsetComments[0]['modified_at'])
+                ? (int)$rrsetComments[0]['modified_at'] : null;
 
             foreach ($rrset['records'] ?? [] as $record) {
                 $content = $record['content'] ?? '';
@@ -941,6 +944,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'prio' => $prio,
                     'disabled' => ($record['disabled'] ?? false) ? 1 : 0,
                     'api_comment' => $rrsetComment,
+                    'api_comment_account' => $rrsetCommentAccount,
+                    'api_comment_modified_at' => $rrsetCommentModifiedAt,
                     // PowerDNS 4.9+ exposes a Unix timestamp per record. Older
                     // servers, the DB-backed provider, and freshly-created
                     // records all leave this null; the UI hides the column
