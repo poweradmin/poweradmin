@@ -27,37 +27,29 @@ use Poweradmin\Application\Controller\EditUserController;
 
 /**
  * Tests for EditUserController::isIdpManaged() and resolveIdentityFields(), which
- * keep fullname/email read-only for users whose account is IdP-managed after the
- * edit (OIDC/SAML always; LDAP only while it stays enabled).
+ * keep fullname/email read-only when an IdP sync would overwrite local edits:
+ * always for OIDC/SAML, for LDAP only while ldap.sync_user_info is enabled.
  */
 class EditUserControllerIdentityFieldsTest extends TestCase
 {
     public function testIsIdpManagedForEachAuthMethod(): void
     {
-        // OIDC/SAML are always managed, regardless of the LDAP checkbox.
-        $this->assertTrue(EditUserController::isIdpManaged('oidc', false));
-        $this->assertTrue(EditUserController::isIdpManaged('saml', false));
-        $this->assertTrue(EditUserController::isIdpManaged('oidc', true));
+        // OIDC/SAML sync identity fields on login, regardless of LDAP sync.
+        $this->assertTrue(EditUserController::isIdpManaged('oidc'));
+        $this->assertTrue(EditUserController::isIdpManaged('saml'));
 
-        // LDAP is managed only while LDAP stays enabled.
+        // LDAP is managed only while ldap.sync_user_info is enabled.
+        $this->assertFalse(EditUserController::isIdpManaged('ldap'));
         $this->assertTrue(EditUserController::isIdpManaged('ldap', true));
-        $this->assertFalse(EditUserController::isIdpManaged('ldap', false));
 
-        // Internal accounts are managed only when being converted to LDAP.
-        $this->assertFalse(EditUserController::isIdpManaged('sql', false));
-        $this->assertTrue(EditUserController::isIdpManaged('sql', true));
-        $this->assertFalse(EditUserController::isIdpManaged(null, false));
+        $this->assertFalse(EditUserController::isIdpManaged('sql'));
+        $this->assertFalse(EditUserController::isIdpManaged('sql', true));
+        $this->assertFalse(EditUserController::isIdpManaged(null));
     }
 
     public function testManagedAccountsKeepStoredIdentityAndDiscardSubmitted(): void
     {
-        $cases = [
-            ['oidc', false],
-            ['saml', false],
-            ['ldap', true],
-        ];
-
-        foreach ($cases as [$authType, $useLdap]) {
+        foreach (['oidc', 'saml'] as $authType) {
             $userData = [
                 'auth_type' => $authType,
                 'fullname' => 'Stored Name',
@@ -66,18 +58,16 @@ class EditUserControllerIdentityFieldsTest extends TestCase
 
             $result = EditUserController::resolveIdentityFields(
                 $userData,
-                $useLdap,
                 'Attacker Supplied',
                 'attacker@evil.example',
             );
 
-            $label = "$authType/useLdap=" . ($useLdap ? '1' : '0');
-            $this->assertSame('Stored Name', $result['fullname'], $label);
-            $this->assertSame('stored@example.com', $result['email'], $label);
+            $this->assertSame('Stored Name', $result['fullname'], $authType);
+            $this->assertSame('stored@example.com', $result['email'], $authType);
         }
     }
 
-    public function testLdapAccountConvertedToLocalUsesSubmittedValues(): void
+    public function testLdapAccountUsesSubmittedValues(): void
     {
         $userData = [
             'auth_type' => 'ldap',
@@ -85,17 +75,35 @@ class EditUserControllerIdentityFieldsTest extends TestCase
             'email' => 'stored@example.com',
         ];
 
-        // Unchecking "Use LDAP" converts to a local account, so the admin's
-        // submitted values must take effect.
+        // Without ldap.sync_user_info nothing overwrites these fields, so
+        // admin edits must take effect.
         $result = EditUserController::resolveIdentityFields(
             $userData,
-            false,
             'New Name',
             'new@example.com',
         );
 
         $this->assertSame('New Name', $result['fullname']);
         $this->assertSame('new@example.com', $result['email']);
+    }
+
+    public function testSyncedLdapAccountKeepsStoredIdentity(): void
+    {
+        $userData = [
+            'auth_type' => 'ldap',
+            'fullname' => 'Stored Name',
+            'email' => 'stored@example.com',
+        ];
+
+        $result = EditUserController::resolveIdentityFields(
+            $userData,
+            'New Name',
+            'new@example.com',
+            true,
+        );
+
+        $this->assertSame('Stored Name', $result['fullname']);
+        $this->assertSame('stored@example.com', $result['email']);
     }
 
     public function testInternalUserKeepsSubmittedValues(): void
@@ -108,7 +116,6 @@ class EditUserControllerIdentityFieldsTest extends TestCase
 
         $result = EditUserController::resolveIdentityFields(
             $userData,
-            false,
             'New Name',
             'new@example.com',
         );
@@ -121,7 +128,6 @@ class EditUserControllerIdentityFieldsTest extends TestCase
     {
         $result = EditUserController::resolveIdentityFields(
             ['fullname' => 'Stored Name', 'email' => 'stored@example.com'],
-            false,
             'New Name',
             'new@example.com',
         );
@@ -134,7 +140,6 @@ class EditUserControllerIdentityFieldsTest extends TestCase
     {
         $result = EditUserController::resolveIdentityFields(
             ['auth_type' => 'oidc'],
-            false,
             'Submitted',
             'submitted@example.com',
         );
