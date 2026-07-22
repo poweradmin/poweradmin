@@ -121,7 +121,9 @@ class IndexController extends BaseController
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.
-        if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
+        // Runs for every user: non-admin sessions need the capability snapshot
+        // too, or record-type filtering falls back to unfiltered lists.
+        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
             $this->refreshPdnsCapabilities();
         }
 

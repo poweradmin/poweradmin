@@ -343,7 +343,10 @@ abstract class BaseController
         if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
             return null;
         }
-        return $this->getPdnsCapabilities();
+        // An unknown version must not strict-filter: sessions that never ran the
+        // dashboard refresh (or whose cache expired) would lose valid types.
+        $caps = $this->getPdnsCapabilities();
+        return $caps->isKnown() ? $caps : null;
     }
 
     /**

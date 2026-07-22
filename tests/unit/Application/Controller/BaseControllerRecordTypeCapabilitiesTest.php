@@ -80,15 +80,14 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $this->assertTrue($caps->supportsRecordType('ZONEMD'));
     }
 
-    public function testReturnsUnknownCapabilitiesForApiBackendWithoutCachedVersion(): void
+    public function testReturnsNullForApiBackendWithoutCachedVersion(): void
     {
-        // API backend before detection runs: strict-unknown is intentional here
-        // (the dashboard refresh fills the cache); only SQL backends get null.
+        // API backend before detection runs (or after the cache expired):
+        // filtering must be skipped, or sessions that never hit the dashboard
+        // refresh would lose valid record types from every selector.
         $caps = $this->resolveCapabilities(['dns' => ['backend' => 'api']]);
 
-        $this->assertInstanceOf(PdnsCapabilities::class, $caps);
-        $this->assertFalse($caps->isKnown());
-        $this->assertFalse($caps->supportsRecordType('HTTPS'));
+        $this->assertNull($caps, 'Unknown version must not strict-filter record types');
     }
 
     public function testSqlBackendCapabilitiesPreserveGatedRecordTypes(): void
