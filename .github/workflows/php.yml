@@ -28,7 +28,7 @@ jobs:
       cache-key: ${{ steps.cache-key.outputs.key }}
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -40,7 +40,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer dependencies
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -64,7 +64,7 @@ jobs:
       run: echo "key=${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock', '**/composer.json') }}" >> $GITHUB_OUTPUT
 
     - name: Cache vendor directory
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ steps.cache-key.outputs.key }}
@@ -75,7 +75,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -91,7 +91,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -99,7 +99,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -113,7 +113,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -121,7 +121,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -135,7 +135,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -143,7 +143,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -157,7 +157,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -165,7 +165,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -180,7 +180,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.run_quality_check == true
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -188,7 +188,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -202,7 +202,7 @@ jobs:
     needs: setup
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -210,7 +210,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -229,7 +229,7 @@ jobs:
         php-version: ['8.2', '8.3', '8.4', '8.5']
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Setup PHP ${{ matrix.php-version }}
       uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
@@ -242,7 +242,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer dependencies
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -273,7 +273,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Check for incorrect CSRF token field names
       run: |
@@ -287,7 +287,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Install gettext
       run: sudo apt-get install -y gettext
