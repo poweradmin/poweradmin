@@ -757,6 +757,12 @@ class EditController extends BaseController
             $one_record_changed = $this->processZoneComment($zone_id, $one_record_changed);
         }
 
+        // A truncated save that changed nothing keeps the SOA serial untouched and
+        // reports only the truncation warning, not a success message.
+        if ($records_truncated && !$one_record_changed && !$error && !$serial_mismatch) {
+            return;
+        }
+
         $this->finalizeSave($error, $serial_mismatch, $zone_id, $one_record_changed, $zone_name);
     }
 
