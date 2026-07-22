@@ -14849,3 +14849,73 @@ msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
 
 
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Autentifikavimo nustatymus gali keisti tik administratorius"
+
+#: lib/Domain/Model/UserManager.php:1118
+msgid "Email address already exists, please choose another one."
+msgstr "El. pašto adresas jau egzistuoja, pasirinkite kitą."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Įveskite tinklą (pvz., 192.168.1.0/24 arba 2001:db8::/48) arba atvirkštinės zonos pavadinimą (pvz., 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Įveskite tinklą CIDR formatu (pavyzdžiui, 192.168.1.0/24 arba 2001:db8::/48) arba atvirkštinės zonos pavadinimą, kuris baigiasi in-addr.arpa arba ip6.arpa."
+
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Kai kurie įrašai nebuvo išsaugoti, nes forma viršijo serverio laukų skaičiaus limitą. Paprašykite administratoriaus padidinti PHP \"max_input_vars\" nustatymą."
+
+#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
+msgid "The record does not belong to this zone template."
+msgstr "Įrašas nepriklauso šiam zonos šablonui."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Jūsų vartotojo vardą gali keisti tik administratorius"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "Miestas"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr "Duomenų bazės suderinamumo patikrinimai negalimi naudojant PowerDNS API posistemę."
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Paveldėti globalų nustatymą"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Slaptažodžio atkūrimas įjungtas, bet interface.application_url nesukonfigūruotas, todėl atkūrimo el. laiškai nesiunčiami. Nustatykite application_url į savo viešą bazinį URL."
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Regionas"
+
+#: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Laiko juosta"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr "Naudojama laiko žymoms el. laiškuose, siunčiamuose jums (pvz., MFA kodams). Palikus tuščią, paveldima serverio globali laiko juosta."

@@ -14705,3 +14705,62 @@ msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
 msgid "Password reset is enabled but interface.application_url is not configured, so reset emails are not being sent. Set application_url to your public base URL."
 msgstr "Password reset is enabled but interface.application_url is not configured, so reset emails are not being sent. Set application_url to your public base URL."
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Authentication settings can only be changed by an administrator"
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name (e.g. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP \"max_input_vars\" setting."
+
+#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
+msgid "The record does not belong to this zone template."
+msgstr "The record does not belong to this zone template."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Your username can only be changed by an administrator"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "City"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr "Database consistency checks are not available when using the PowerDNS API backend."
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Inherit global setting"
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Region"
+
+#: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Timezone"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits the global server timezone."

@@ -15018,3 +15018,73 @@ msgstr "Não é possível ligar à base de dados do PowerDNS \"%s\": %s"
 
 
 
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "As definições de autenticação só podem ser alteradas por um administrador"
+
+#: lib/Domain/Model/UserManager.php:1118
+msgid "Email address already exists, please choose another one."
+msgstr "O endereço de email já existe. Escolha outro."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Introduza uma rede (por ex. 192.168.1.0/24 ou 2001:db8::/48) ou um nome de zona reversa (por ex. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Introduza uma rede em notação CIDR (por exemplo 192.168.1.0/24 ou 2001:db8::/48) ou um nome de zona reversa terminado em in-addr.arpa ou ip6.arpa."
+
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Alguns registos não foram guardados porque o formulário excedeu o limite do servidor para o número de campos. Peça ao seu administrador para aumentar a definição PHP \"max_input_vars\"."
+
+#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
+msgid "The record does not belong to this zone template."
+msgstr "O registo não pertence a este modelo de zona."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "O seu nome de utilizador só pode ser alterado por um administrador"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "Cidade"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr "As verificações de consistência da base de dados não estão disponíveis ao usar o backend de API de PowerDNS."
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Herdar definição global"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "A redefinição de palavra-passe está ativada, mas interface.application_url não está configurado, pelo que os e-mails de redefinição não estão a ser enviados. Defina application_url para o seu URL base público."
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Região"
+
+#: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Fuso horário"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr "Usado para marcas temporais em e-mails enviados para si (por ex. códigos MFA). Vazio herda o fuso horário global do servidor."

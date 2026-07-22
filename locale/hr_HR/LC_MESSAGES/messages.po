@@ -13925,3 +13925,73 @@ msgstr "Nije moguće spojiti se na PowerDNS bazu podataka \"%s\": %s"
 
 
 
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Postavke autentifikacije može promijeniti samo administrator"
+
+#: lib/Domain/Model/UserManager.php:1118
+msgid "Email address already exists, please choose another one."
+msgstr "Adresa e-pošte već postoji, odaberite drugu."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Unesite mrežu (npr. 192.168.1.0/24 ili 2001:db8::/48) ili naziv obrnute zone (npr. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Unesite mrežu u CIDR notaciji (na primjer 192.168.1.0/24 ili 2001:db8::/48) ili naziv obrnute zone koji završava s in-addr.arpa ili ip6.arpa."
+
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Neki zapisi nisu spremljeni jer je obrazac premašio ograničenje poslužitelja za broj polja. Zamolite administratora da poveća PHP postavku \"max_input_vars\"."
+
+#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
+msgid "The record does not belong to this zone template."
+msgstr "Zapis ne pripada ovom predlošku zone."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Vaše korisničko ime može promijeniti samo administrator"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "Grad"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr "Provjere konzistentnosti baze nisu dostupne kada se koristi PowerDNS API pozadina."
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Naslijedi globalnu postavku"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Poništavanje lozinke je omogućeno, ali interface.application_url nije konfiguriran, pa se e-poruke za poništavanje ne šalju. Postavite application_url na svoj javni osnovni URL."
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Regija"
+
+#: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Vremenska zona"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr "Koristi se za vremenske oznake u e-porukama koje vam se šalju (npr. MFA kodovi). Prazno nasljeđuje globalnu vremensku zonu poslužitelja."
