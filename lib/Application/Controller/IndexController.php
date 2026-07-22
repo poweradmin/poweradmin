@@ -120,9 +120,9 @@ class IndexController extends BaseController
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.
-        // Refresh runs whenever pdns_api is configured, so SQL mode dashboards
-        // can still show "PowerDNS: <version>".
-        if ($permissions['user_is_ueberuser'] && $pdnsApiEnabled) {
+        // Runs whenever pdns_api is configured (SQL dashboards show the version)
+        // and for every user - non-admin sessions need the capability snapshot too.
+        if ($pdnsApiEnabled) {
             $this->refreshPdnsCapabilities();
         }
 
