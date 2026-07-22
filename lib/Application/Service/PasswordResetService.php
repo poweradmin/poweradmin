@@ -315,6 +315,8 @@ class PasswordResetService
         // this token belongs to the returned row.
         if ($this->userRepository->countUsersByEmail($tokenData['email']) > 1) {
             $this->logger->warning('Password reset token rejected: email shared by multiple accounts', [
+                'email' => $tokenData['email'],
+                'token_id' => $tokenData['id'],
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             return null;
