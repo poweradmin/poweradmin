@@ -36,6 +36,7 @@ use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -84,9 +85,12 @@ class UsersController extends BaseController
             if (!is_array($user)) {
                 continue;
             }
-            // A delegated admin (non-ueberuser) must not modify a superuser account.
+            // A delegated admin (non-ueberuser) must not modify a superuser account;
+            // untouched superuser rows posted by the bulk form are skipped silently.
             if (!$currentIsSuperuser && $permissionService->isAdmin((int)$user['uid'])) {
-                $blocked = true;
+                if ($this->superuserRowEdited($user)) {
+                    $blocked = true;
+                }
                 continue;
             }
             $result = $legacyUsers->updateUserDetails($user);
@@ -100,6 +104,25 @@ class UsersController extends BaseController
         if ($blocked) {
             $this->setMessage('users', 'error', _('You do not have permission to edit a superuser account.'));
         }
+    }
+
+    private function superuserRowEdited(array $posted): bool
+    {
+        $userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $current = $userRepository->getUserById((int)($posted['uid'] ?? 0));
+        if ($current === null) {
+            return true;
+        }
+
+        $postedActive = isset($posted['active']) && $posted['active'] == 'on' ? 1 : 0;
+        $postedUseLdap = isset($posted['use_ldap']) && $posted['use_ldap'] == '1' ? 1 : 0;
+
+        return ($posted['username'] ?? '') != $current['username']
+            || ($posted['fullname'] ?? '') != ($current['fullname'] ?? '')
+            || ($posted['email'] ?? '') != ($current['email'] ?? '')
+            || (isset($posted['templ_id']) && (int)$posted['templ_id'] != (int)$current['perm_templ'])
+            || $postedActive != (int)$current['active']
+            || $postedUseLdap != (int)$current['use_ldap'];
     }
 
     private function showUsers(): void
