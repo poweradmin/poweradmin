@@ -264,7 +264,7 @@ class ConfigValidator
     {
         $timeout = $this->getSetting('pdns_api', 'timeout');
 
-        // Absent or default — nothing to validate.
+        // Absent or default - nothing to validate.
         if ($timeout === null) {
             return;
         }
