@@ -13188,3 +13188,42 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "身份验证设置只能由管理员更改"
+
+#: lib/Domain/Model/UserManager.php:1108
+msgid "Email address already exists, please choose another one."
+msgstr "电子邮件地址已存在，请选择另一个。"
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "输入网络（例如 192.168.1.0/24 或 2001:db8::/48）或反向区域名称（例如 1.168.192.in-addr.arpa）。"
+
+#: lib/Application/Controller/AddZoneSlaveController.php:111
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "以 CIDR 表示法输入网络（例如 192.168.1.0/24 或 2001:db8::/48），或输入以 in-addr.arpa 或 ip6.arpa 结尾的反向区域名称。"
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
+msgid "Logs"
+msgstr "日志"
+
+#: lib/Application/Controller/EditController.php:660
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "由于表单超出了服务器对字段数量的限制，部分记录未被保存。请让管理员增大 PHP \"max_input_vars\" 设置。"
+
+#: lib/Domain/Model/ZoneTemplate.php:523 lib/Domain/Model/ZoneTemplate.php:585
+msgid "The record does not belong to this zone template."
+msgstr "该记录不属于此区域模板。"
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "您的用户名只能由管理员更改"

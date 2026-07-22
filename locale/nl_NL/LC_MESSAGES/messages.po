@@ -14322,3 +14322,42 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Authenticatie-instellingen kunnen alleen door een beheerder worden gewijzigd"
+
+#: lib/Domain/Model/UserManager.php:1108
+msgid "Email address already exists, please choose another one."
+msgstr "E-mailadres bestaat al, kies een ander."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Voer een netwerk in (bijv. 192.168.1.0/24 of 2001:db8::/48) of een reverse zone-naam (bijv. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:111
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Voer een netwerk in CIDR-notatie in (bijvoorbeeld 192.168.1.0/24 of 2001:db8::/48) of een reverse zone-naam die eindigt op in-addr.arpa of ip6.arpa."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
+msgid "Logs"
+msgstr "Logs"
+
+#: lib/Application/Controller/EditController.php:660
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Sommige records zijn niet opgeslagen omdat het formulier de serverlimiet voor het aantal velden heeft overschreden. Vraag uw beheerder om de PHP-instelling \"max_input_vars\" te verhogen."
+
+#: lib/Domain/Model/ZoneTemplate.php:523 lib/Domain/Model/ZoneTemplate.php:585
+msgid "The record does not belong to this zone template."
+msgstr "Het record behoort niet tot dit zonesjabloon."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Uw gebruikersnaam kan alleen door een beheerder worden gewijzigd"

@@ -14647,3 +14647,42 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Impossible de se connecter à la base de données PowerDNS \"%s\" : %s"
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Les paramètres d'authentification ne peuvent être modifiés que par un administrateur"
+
+#: lib/Domain/Model/UserManager.php:1108
+msgid "Email address already exists, please choose another one."
+msgstr "L'adresse e-mail existe déjà, veuillez en choisir une autre."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Saisissez un réseau (par ex. 192.168.1.0/24 ou 2001:db8::/48) ou un nom de zone inverse (par ex. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:111
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Saisissez un réseau en notation CIDR (par exemple 192.168.1.0/24 ou 2001:db8::/48) ou un nom de zone inverse se terminant par in-addr.arpa ou ip6.arpa."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
+msgid "Logs"
+msgstr "Journaux"
+
+#: lib/Application/Controller/EditController.php:660
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Certains enregistrements n'ont pas été enregistrés car le formulaire a dépassé la limite du serveur sur le nombre de champs. Demandez à votre administrateur d'augmenter le paramètre PHP \"max_input_vars\"."
+
+#: lib/Domain/Model/ZoneTemplate.php:523 lib/Domain/Model/ZoneTemplate.php:585
+msgid "The record does not belong to this zone template."
+msgstr "L'enregistrement n'appartient pas à ce modèle de zone."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Votre nom d'utilisateur ne peut être modifié que par un administrateur"

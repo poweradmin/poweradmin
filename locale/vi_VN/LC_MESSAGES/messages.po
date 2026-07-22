@@ -13727,3 +13727,42 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Cài đặt xác thực chỉ có thể được thay đổi bởi quản trị viên"
+
+#: lib/Domain/Model/UserManager.php:1108
+msgid "Email address already exists, please choose another one."
+msgstr "Địa chỉ email đã tồn tại, vui lòng chọn địa chỉ khác."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Nhập một mạng (ví dụ: 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược (ví dụ: 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:111
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Nhập một mạng theo ký hiệu CIDR (ví dụ 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược kết thúc bằng in-addr.arpa hoặc ip6.arpa."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
+msgid "Logs"
+msgstr "Nhật ký"
+
+#: lib/Application/Controller/EditController.php:660
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Một số bản ghi không được lưu vì biểu mẫu đã vượt quá giới hạn số trường của máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
+
+#: lib/Domain/Model/ZoneTemplate.php:523 lib/Domain/Model/ZoneTemplate.php:585
+msgid "The record does not belong to this zone template."
+msgstr "Bản ghi không thuộc về mẫu vùng này."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Tên người dùng của bạn chỉ có thể được thay đổi bởi quản trị viên"
