@@ -455,12 +455,12 @@ class UserManager
 
             // External-auth users have an IdP-managed email that may legitimately be
             // empty, so skip the format check for them; internal users still need a
-            // valid address. Gate on the resulting auth method so disabling LDAP
-            // (converting the account to internal) re-applies the email requirement.
+            // valid address. Only OIDC/SAML emails are IdP-managed; LDAP accounts
+            // keep Poweradmin-maintained identity fields, so they are validated.
             $newAuthMethod = self::resolveAuthMethod((bool)$useLdap, $usercheck['auth_method'] ?? null);
-            $isExternalAuth = in_array($newAuthMethod, ['ldap', 'oidc', 'saml'], true);
+            $isIdpManagedEmail = in_array($newAuthMethod, ['oidc', 'saml'], true);
             $validation = new Validator($this->db, $this->config);
-            if (!$isExternalAuth && !$validation->isValidEmail($email)) {
+            if (!$isIdpManagedEmail && !$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;

@@ -200,7 +200,7 @@ class EditUserController extends BaseController
             '',
             $this->request->getPostParam('use_ldap') === '1'
         );
-        if (!self::isIdpManaged($user['auth_type'] ?? null, $auth['use_ldap'])) {
+        if (!self::isIdpManaged($user['auth_type'] ?? null)) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -320,11 +320,10 @@ class EditUserController extends BaseController
             $this->request->getPostParam('use_ldap') === '1'
         );
 
-        // Externally authenticated users have their identity fields owned by the IdP
+        // OIDC/SAML users have their identity fields owned by the IdP
         // (overwritten on the next sync), so ignore any submitted changes to them.
         $identity = self::resolveIdentityFields(
             $userData,
-            $auth['use_ldap'],
             htmlspecialchars($this->request->getPostParam('fullname')),
             htmlspecialchars($this->request->getPostParam('email'))
         );
@@ -343,26 +342,25 @@ class EditUserController extends BaseController
 
     /**
      * Whether a user's identity fields (fullname/email) are owned by an external
-     * identity provider after this edit, and so must stay read-only.
+     * identity provider, and so must stay read-only.
      *
-     * OIDC/SAML accounts are always external (this form cannot convert them). An
-     * LDAP account is external only while LDAP stays enabled - unchecking "Use LDAP"
-     * converts it to a local account, after which the fields become user-managed.
+     * Only OIDC/SAML sync fullname/email on login and would revert local edits.
+     * LDAP authentication never syncs these fields, so LDAP accounts keep
+     * Poweradmin-managed (editable) identity fields.
      */
-    public static function isIdpManaged(?string $currentAuthMethod, bool $useLdap): bool
+    public static function isIdpManaged(?string $currentAuthMethod): bool
     {
-        return $useLdap || in_array($currentAuthMethod, ['oidc', 'saml'], true);
+        return in_array($currentAuthMethod, ['oidc', 'saml'], true);
     }
 
     /**
      * Resolve the fullname/email to persist for a user edit.
      *
-     * When the account is IdP-managed after this edit, the identity provider owns
-     * these fields (overwritten on the next sync), so the stored values are kept and
+     * When the account is IdP-managed, the identity provider owns these fields
+     * (overwritten on the next sync), so the stored values are kept and
      * submitted changes discarded. Otherwise the submitted values are used.
      *
      * @param array $userData The persisted user record (expects auth_type, fullname, email)
-     * @param bool $useLdap Whether LDAP is being enabled for this user by the form
      * @param string $submittedFullname Fullname from the form
      * @param string $submittedEmail Email from the form
      * @return array{fullname: string, email: string}
@@ -394,9 +392,9 @@ class EditUserController extends BaseController
         ];
     }
 
-    public static function resolveIdentityFields(array $userData, bool $useLdap, string $submittedFullname, string $submittedEmail): array
+    public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail): array
     {
-        if (self::isIdpManaged($userData['auth_type'] ?? null, $useLdap)) {
+        if (self::isIdpManaged($userData['auth_type'] ?? null)) {
             return [
                 'fullname' => (string)($userData['fullname'] ?? ''),
                 'email' => (string)($userData['email'] ?? ''),
@@ -473,6 +471,7 @@ class EditUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
+            'is_identity_readonly' => self::isIdpManaged($user['auth_type'] ?? 'sql'),
             'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
