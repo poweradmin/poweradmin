@@ -3,7 +3,7 @@
 /**
  * Top Level Domains list from IANA
  *
- * Updated on 2026-05-20 - 1437 TLDs
+ * Updated on 2026-07-22 - 1437 TLDs
  * Source: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
  *
  * Do not edit manually - use scripts/update_tlds.sh to regenerate
