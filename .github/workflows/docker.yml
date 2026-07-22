@@ -19,6 +19,11 @@ on:
       - release/4.2.x
       - release/4.3.x
   workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -101,6 +106,7 @@ jobs:
           load: true
           tags: poweradmin:smoke-test
           cache-from: type=gha
+          no-cache: ${{ inputs.no_cache == true }}
 
       - name: Smoke test (root mode - port 80)
         run: |
@@ -177,6 +183,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache: ${{ inputs.no_cache == true }}
 
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request' && success()
