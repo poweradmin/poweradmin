@@ -460,7 +460,7 @@ class UserManager
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $stmt = $this->db->prepare("SELECT username, auth_method FROM users WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT username, email, auth_method FROM users WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $usercheck = $stmt->fetch();
 
@@ -479,9 +479,9 @@ class UserManager
                 }
             }
 
-            // Reject an email already used by a different account (blank stays allowed
-            // for external-auth users whose address is managed by their provider).
-            if ($email !== '' && self::emailExists($this->db, $email, $id)) {
+            // Reject a changed email that another account already uses; unchanged
+            // addresses stay editable even if existing data contains duplicates.
+            if ($email !== '' && strcasecmp($email, (string)$usercheck['email']) !== 0 && self::emailExists($this->db, $email, $id)) {
                 $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
 
                 return false;
@@ -962,12 +962,6 @@ class UserManager
                 return false;
             }
 
-            if (self::emailExists($this->db, $details['email'], (int)$details['uid'])) {
-                $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
-
-                return false;
-            }
-
             if (!isset($details['active']) || $details['active'] != "on") {
                 $active = 0;
             } else {
@@ -988,11 +982,19 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username, auth_method FROM users WHERE id = :id";
+            $query = "SELECT username, email, auth_method FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
             $userCheck = $stmt->fetch();
+
+            // Reject a changed email that another account already uses; unchanged
+            // addresses stay editable even if existing data contains duplicates.
+            if (strcasecmp($details['email'], (string)$userCheck['email']) !== 0 && self::emailExists($this->db, $details['email'], (int)$details['uid'])) {
+                $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
+
+                return false;
+            }
 
             if ($userCheck['username'] != $details['username']) {
                 // Username of user ID in the database is different from the name
