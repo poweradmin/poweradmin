@@ -3,7 +3,7 @@
 /**
  * Top Level Domains list from IANA
  *
- * Updated on 2026-05-20 - 1437 TLDs
+ * Updated on 2026-07-22 - 1437 TLDs
  * Source: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
  *
  * Do not edit manually - use scripts/update_tlds.sh to regenerate
@@ -209,12 +209,20 @@ return [
         'yokohama', 'you', 'youtube', 'yt', 'yun', 'za', 'zappos', 'zara', 'zero', 
         'zip', 'zm', 'zone', 'zuerich', 'zw', 
     ],
-    // RFC 2606 special TLDs for testing and documentation
-    // http://tools.ietf.org/html/rfc2606#section-2
+    // IETF/ICANN reserved special-use TLDs (not delegated by IANA)
     'special' => [
+        // RFC 2606 - testing and documentation
         'test',
         'example',
         'invalid',
         'localhost',
+        // RFC 6762 - multicast DNS
+        'local',
+        // RFC 7686 - Tor hidden services
+        'onion',
+        // RFC 9476 - alternative DNS namespaces
+        'alt',
+        // ICANN reserved 2024 - private-use applications
+        'internal',
     ],
 ];
