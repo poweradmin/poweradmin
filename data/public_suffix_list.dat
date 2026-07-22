@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-07-21_22-23-05_UTC
-// COMMIT: 54cf5588656759f9ce7ab8a087c7be336bcf8d12
+// VERSION: 2026-07-20_19-57-20_UTC
+// COMMIT: ca355e4aadee94e349e1f9c86145618cf762249d
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -13501,6 +13501,10 @@ expo.app
 on.expo.app
 staging.expo.app
 on.staging.expo.app
+
+// Fabrica Technologies, Inc. : https://www.fabrica.dev/
+// Submitted by Eric Jiang <eric@fabrica.dev>
+onfabrica.com
 
 // fachschaften.org: https://fachschaften.org/
 // Submitted by Felix Schäfer <security@fachschaften.org>
