@@ -14015,3 +14015,42 @@ msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
 
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Nastavení ověřování může změnit pouze administrátor"
+
+#: lib/Domain/Model/UserManager.php:1113
+msgid "Email address already exists, please choose another one."
+msgstr "E-mailová adresa již existuje, vyberte prosím jinou."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Zadejte síť (např. 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny (např. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Zadejte síť v zápisu CIDR (například 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny končící na in-addr.arpa nebo ip6.arpa."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Protokoly"
+
+#: lib/Application/Controller/EditController.php:662
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Některé záznamy nebyly uloženy, protože formulář překročil serverový limit počtu polí. Požádejte administrátora o zvýšení nastavení PHP \"max_input_vars\"."
+
+#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
+msgid "The record does not belong to this zone template."
+msgstr "Tento záznam nepatří do této šablony zóny."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Vaše uživatelské jméno může změnit pouze administrátor"

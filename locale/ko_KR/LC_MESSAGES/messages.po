@@ -13305,3 +13305,42 @@ msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
 
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "인증 설정은 관리자만 변경할 수 있습니다"
+
+#: lib/Domain/Model/UserManager.php:1113
+msgid "Email address already exists, please choose another one."
+msgstr "이메일 주소가 이미 존재합니다. 다른 주소를 선택하세요."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 역방향 존 이름(예: 1.168.192.in-addr.arpa)을 입력하세요."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "CIDR 표기법의 네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 in-addr.arpa 또는 ip6.arpa로 끝나는 역방향 존 이름을 입력하세요."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "로그"
+
+#: lib/Application/Controller/EditController.php:662
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "양식이 필드 수에 대한 서버 제한을 초과하여 일부 레코드가 저장되지 않았습니다. 관리자에게 PHP \"max_input_vars\" 설정을 늘려 달라고 요청하세요."
+
+#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
+msgid "The record does not belong to this zone template."
+msgstr "이 레코드는 이 존 템플릿에 속하지 않습니다."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "사용자 이름은 관리자만 변경할 수 있습니다"

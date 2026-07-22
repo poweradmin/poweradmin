@@ -13967,3 +13967,38 @@ msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 # OBSOLETE: msgstr "Make sure the domain names follow valid DNS naming conventions"
 
 
+
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Authentication settings can only be changed by an administrator"
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name (e.g. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Enter a network in CIDR notation (for example 192.168.1.0/24 or 2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Logs"
+
+#: lib/Application/Controller/EditController.php:662
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP \"max_input_vars\" setting."
+
+#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
+msgid "The record does not belong to this zone template."
+msgstr "The record does not belong to this zone template."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Your username can only be changed by an administrator"
