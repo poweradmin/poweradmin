@@ -19,6 +19,13 @@ on:
       - release/4.2.x
       - release/4.3.x
   workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '30 4 * * 1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -29,6 +36,22 @@ env:
   DOCKERHUB_IMAGE_NAME: poweradmin/poweradmin
 
 jobs:
+  refresh-active-branches:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch no-cache rebuilds for active branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # release/3.x has no docker.yml of its own; its image rebuilds on branch pushes only
+          for branch in develop release/4.3.x release/4.2.x; do
+            gh workflow run docker.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" -f no_cache=true \
+              || echo "dispatch failed for $branch"
+          done
+
   build-push:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -101,6 +124,7 @@ jobs:
           load: true
           tags: poweradmin:smoke-test
           cache-from: type=gha
+          no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
 
       - name: Smoke test (root mode - port 80)
         run: |
@@ -167,6 +191,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
 
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request' && success()
