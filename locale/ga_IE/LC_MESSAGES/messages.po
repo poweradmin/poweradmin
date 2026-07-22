@@ -13643,3 +13643,394 @@ msgstr "Liostaigh teimpléid ceadanna"
 
 msgid "Permissions"
 msgstr "Ceadanna"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Iarradh aistriú ón bpríomhfhreastalaí. Tarraingíonn PowerDNS an crios sa chúlra; nuair a shroicheann na taifid, is féidir leat é a thiontú ina phríomhchrios."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Oibríochtaí ceadaithe"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Sann gach ceann domsa"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "Sannadh %d crios; theip ar %d"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Sannadh úinéireacht ar %d crios"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Ní féidir ach le riarthóir socruithe fíordheimhnithe a athrú"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "Caithfidh ábhar an taifid BRID a bheith ina bhlob ionchódaithe base64 nach bhfuil folamh."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Tuairisc Chlárúcháin Ollmhór"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Ní féidir an crios seo a chruthú toisc go bhforluíonn sé le crios atá ann cheana atá faoi úinéireacht úsáideora eile."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Stádas an aistrithe á sheiceáil..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Tiontaigh ina phríomhchrios"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Coinníonn tiontú ina phríomhchrios na taifid aistrithe agus cuireann sé stop le Poweradmin an crios a láimhseáil mar mhacasamhail."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Níorbh fhéidir teagmháil a dhéanamh leis an PowerDNS API; níl seiceálacha comhsheasmhachta ar fáil."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Cruthaigh agus aistrigh"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Crios tánaisteach cruthaithe"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Cruthaíonn sé crios tánaisteach a dhíríonn ar an bpríomhfhreastalaí thíos agus iarrann sé ar PowerDNS é a aistriú trí AXFR. Tar éis do na taifid teacht, is féidir leat é a thiontú ina phríomhchrios."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "Déantar eochracha DNSSEC a bhainistiú ag an bpríomhfhreastalaí"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Taispeáin an colún líon na dtaifead i liostaí crios"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "Tá an seoladh ríomhphoist ann cheana, roghnaigh ceann eile le do thoil."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Cuir isteach líonra (m.sh. 192.168.1.0/24 nó 2001:db8::/48) nó ainm crios aisiompaithe (m.sh. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Cuir isteach líonra i nodaireacht CIDR (mar shampla 192.168.1.0/24 nó 2001:db8::/48) nó ainm crios aisiompaithe a chríochnaíonn le in-addr.arpa nó ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Theip ar chrios a chur leis."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Theip ar an gcrios tánaisteach a chruthú."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "Caithfidh ábhar an taifid HHIT a bheith ina bhlob ionchódaithe base64 nach bhfuil folamh."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Seoladh IPv4 nó IPv6. Scar príomhfhreastalaithe iolracha le camóga."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Iompórtáil ceann eile"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Iompórtáil crios tánaisteach"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Seoladh ríomhphoist neamhbhailí sa taifead SOA. Úsáid an fhoirm \"hostmaster.example.net\" (léiríonn an chéad phonc gan éalú @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Luach neamhbhailí do %s. Luachanna ceadaithe: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Crios neamhbhailí."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Fág gach ceann gan tic chun gach oibríocht a cheadú."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Fág folamh chun rochtain a cheadú ar gach crios atá ar fáil duit."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Níor aimsíodh comhad cumraíochta ag %s. Rith an suiteálaí ag install/ chun ceann a chruthú, nó cruthaigh an comhad cumraíochta de láimh."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Níor aistríodh aon taifead go fóill. Seans go bhfuil PowerDNS fós ag aistriú; athlódáil chun seiceáil arís."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Níl aon chrios gan úinéir le deisiú"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Tá athshocrú pasfhocail cumasaithe ach níl interface.application_url cumraithe, mar sin níl ríomhphoist athshocraithe á seoladh. Socraigh application_url do do bhunURL poiblí."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Réamhshínithe"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Seoladh IP an phríomhfhreastalaí"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Caithfidh ábhar an taifid RESINFO a bheith ina cheann amháin nó níos mó de theaghráin charachtar faoi chomharthaí athfhriotail (gach ceann suas le 255 beart)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "Ní féidir le hábhar an taifid RESINFO a bheith folamh."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Inléite amháin"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Inléite amháin (ceadaigh iarratais GET amháin)"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Déantar taifid an chreasa seo a mhacasamhlú óna phríomhfhreastalaí agus ní féidir iad a chur in eagar anseo."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "Tá an t-áitshealbhóir teimpléid %s sa SOA. Úsáid luachanna litriúla; ní leathnaítear áitshealbhóirí ach amháin agus crios á chruthú ó theimpléad."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Caithfidh ainm an taifid SOA a bheith ag teacht le buaic an chreasa \"%s\". Fág réimse an ainm folamh nó cuir isteach \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Polasaí sraithuimhreach SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Meiteashonraí SOA-EDIT-API: conas a nuashonraítear an tsraithuimhir SOA ar athruithe níos déanaí. Ní shocraíonn áitshealbhóirí teimpléid ar nós [SERIAL], [UNIXTIME] nó [COUNTER] ach an tsraithuimhir tosaigh."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Crios tánaisteach cruthaithe"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Sraithuimhir mar a fhreastalaíonn PowerDNS air, le SOA-EDIT curtha i bhfeidhm"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Réamhshocrú an fhreastalaí"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Sraithuimhir shínithe"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Níor sábháladh roinnt taifead toisc gur sháraigh an fhoirm teorainn an fhreastalaí ar líon na réimsí. Iarr ar do riarthóir an socrú PHP \"max_input_vars\" a mhéadú."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Curtha in ionad le stampa ama UNIX reatha"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Curtha in ionad le luach tosaigh an chuntadóra"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Tá an chomhadlann install/ ann, caithfidh tú é a bhaint ar dtús sula leanann tú ar aghaidh."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Ní bhaineann an taifead leis an teimpléad crios seo."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Cruthaíodh an crios, ach níor glacadh leis an iarratas aistrithe. Seans go ndiúltóidh an príomhfhreastalaí AXFR, nó déanfaidh PowerDNS iarracht arís de réir a sceideal athnuachana féin."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Éilíonn an gníomh seo iarratas POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Níl aon taifid aistrithe ag an gcrios seo go fóill. Fan go gcríochnóidh an t-aistriú sula dtiontóidh tú ina phríomhchrios é."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Tá an crios seo réamhshínithe; déantar eochracha DNSSEC a bhainistiú ag an bpríomhfhreastalaí."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "An iomarca iarrachtaí teipthe. Bain triail eile as ar ball le do thoil."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Amharc ar an gcrios"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Caithfidh ábhar an taifid WALLET a bheith ina cheann amháin nó níos mó de theaghráin charachtar faoi chomharthaí athfhriotail (gach ceann suas le 255 beart)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "Ní féidir le hábhar an taifid WALLET a bheith folamh."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "De ghnáth bíonn siombail airgeadra agus seoladh sparáin scartha le spás i dtaifid WALLET, m.sh. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Ní féidir leat teimpléad a chur i bhfeidhm ar chrios inléite amháin."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Ní féidir leat taifid a scriosadh ó chrios inléite amháin."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Ní féidir leat taifid a chur in eagar i gcrios inléite amháin."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Ní féidir leat taifid a iompórtáil isteach i gcrios inléite amháin."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Níl cead agat meiteashonraí crios a athrú."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Níl cead agat crios tánaisteach a iompórtáil."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Ní féidir ach le riarthóir d'ainm úsáideora a athrú"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Rochtain crios"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Tiontaíodh an crios ina phríomhchrios."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Tá ainm an chreasa agus seoladh an phríomhfhreastalaí ag teastáil."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Tá modh úinéireachta crios groups_only ach níl aon ghrúpaí ann. Cruthaigh grúpa sula n-iompórtálann tú criosanna."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Tá modh úinéireachta crios groups_only ach níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa sula n-iompórtálann tú criosanna."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Líon taifead an chreasa"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "theip"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "iompórtáilte"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "taifid faighte - réidh le tiontú."

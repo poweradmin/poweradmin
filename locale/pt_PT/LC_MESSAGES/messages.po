@@ -15339,3 +15339,398 @@ msgstr "Listar modelos de permissões"
 
 msgid "Permissions"
 msgstr "Permissões"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Foi solicitada uma transferência do servidor primário. O PowerDNS obtém a zona em segundo plano; assim que os registos chegarem, pode convertê-la numa zona primária."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Operações permitidas"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Atribuir tudo a mim"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "%d zonas atribuídas; %d com falha"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Atribuída a propriedade de %d zonas"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "As definições de autenticação só podem ser alteradas por um administrador"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "O conteúdo do registo BRID tem de ser um blob não vazio codificado em base64."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Relatório de registo em massa"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Não é possível criar esta zona porque se sobrepõe a uma zona existente pertencente a outro utilizador."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "A verificar o estado da transferência..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Converter em zona primária"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Converter numa zona primária mantém os registos transferidos e faz o Poweradmin deixar de tratar a zona como réplica."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Não foi possível aceder à API do PowerDNS; as verificações de consistência estão indisponíveis."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Criar e transferir"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Zona secundária criada"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Cria uma zona secundária a apontar para o servidor primário abaixo e pede ao PowerDNS que a transfira via AXFR. Depois de os registos chegarem, pode convertê-la numa zona primária."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "As chaves DNSSEC são geridas no servidor primário"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Mostrar a coluna de contagem de registos nas listas de zonas"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "O endereço de email já existe. Escolha outro."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Introduza uma rede (por ex. 192.168.1.0/24 ou 2001:db8::/48) ou um nome de zona reversa (por ex. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Introduza uma rede em notação CIDR (por exemplo 192.168.1.0/24 ou 2001:db8::/48) ou um nome de zona reversa terminado em in-addr.arpa ou ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Falha ao adicionar zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Falha ao criar a zona secundária."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "O conteúdo do registo HHIT tem de ser um blob não vazio codificado em base64."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Endereço IPv4 ou IPv6. Separe vários servidores primários com vírgulas."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Importar outra"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Importar zona secundária"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Endereço de e-mail inválido no registo SOA. Use a forma \"hostmaster.example.net\" (o primeiro ponto sem escape representa @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Valor inválido para %s. Valores permitidos: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Zona inválida."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Deixe tudo desmarcado para permitir todas as operações."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Deixe em branco para permitir acesso a todas as zonas disponíveis para si."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Nenhum ficheiro de configuração encontrado em %s. Execute o instalador em install/ para criar um, ou crie o ficheiro de configuração manualmente."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Ainda não foram transferidos registos. O PowerDNS pode ainda estar a transferir; recarregue para verificar novamente."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Nenhuma zona sem proprietários para corrigir"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "A redefinição de palavra-passe está ativada, mas interface.application_url não está configurado, pelo que os e-mails de redefinição não estão a ser enviados. Defina application_url para o seu URL base público."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Presigned"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Endereço IP do servidor primário"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "A prioridade tem de ser 0 para registos BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "A prioridade tem de ser 0 para registos HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "A prioridade tem de ser 0 para registos RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "A prioridade tem de ser 0 para registos WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "O conteúdo do registo RESINFO tem de conter uma ou mais cadeias de caracteres entre aspas (cada uma com até 255 bytes)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "O conteúdo do registo RESINFO não pode estar vazio."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Apenas leitura"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Apenas leitura (permitir apenas pedidos GET)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Assistente de registos"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Os registos desta zona são replicados a partir da sua zona primária e não podem ser editados aqui."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "O SOA contém o marcador de modelo %s. Use valores literais; os marcadores só são expandidos ao criar uma zona a partir de um modelo."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "O nome do registo SOA tem de corresponder ao ápice da zona \"%s\". Deixe o campo de nome em branco ou introduza \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Política de série do SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Metadados SOA-EDIT-API: como a série do SOA é atualizada em alterações posteriores. Marcadores de modelo como [SERIAL], [UNIXTIME] ou [COUNTER] definem apenas a série inicial."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Zona secundária criada"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Série conforme fornecida pelo PowerDNS, com SOA-EDIT aplicado"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Predefinição do servidor"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Série assinada"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Alguns registos não foram guardados porque o formulário excedeu o limite do servidor para o número de campos. Peça ao seu administrador para aumentar a definição PHP \"max_input_vars\"."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Substituído pela data/hora UNIX atual"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Substituído pelo valor inicial do contador"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "O diretório install/ existe; tem de o remover antes de prosseguir."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "O registo não pertence a este modelo de zona."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "A zona foi criada, mas o pedido de transferência não foi aceite. O servidor primário pode recusar o AXFR, ou o PowerDNS tentará novamente conforme o seu próprio agendamento de atualização."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Esta ação requer um pedido POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Esta zona ainda não tem registos transferidos. Aguarde a conclusão da transferência antes de a converter numa zona primária."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Esta zona é presigned; as chaves DNSSEC são geridas no servidor primário."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Demasiadas tentativas falhadas. Tente novamente mais tarde."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Ver zona"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "O conteúdo do registo WALLET tem de conter uma ou mais cadeias de caracteres entre aspas (cada uma com até 255 bytes)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "O conteúdo do registo WALLET não pode estar vazio."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "Os registos WALLET contêm habitualmente um símbolo de moeda e um endereço de carteira separados por espaço, por exemplo \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Não pode aplicar um modelo a uma zona apenas de leitura."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Não pode eliminar registos de uma zona apenas de leitura."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Não pode editar registos numa zona apenas de leitura."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Não pode importar registos para uma zona apenas de leitura."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Não tem permissão para alterar os metadados da zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Não tem permissão para importar uma zona secundária."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "O seu nome de utilizador só pode ser alterado por um administrador"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Acesso à zona"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "A zona foi convertida numa zona primária."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "O nome da zona e o endereço do servidor primário são obrigatórios."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "O modo de propriedade da zona é groups_only, mas não existem grupos. Crie um grupo antes de importar zonas."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "O modo de propriedade da zona é groups_only, mas não é membro de nenhum grupo. Peça a um administrador para o adicionar a um grupo antes de importar zonas."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Contagem de registos da zona"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "falha"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "importado"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "registos recebidos - pronto para converter."

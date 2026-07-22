@@ -13797,3 +13797,398 @@ msgstr "Listă șabloane de permisiuni"
 
 msgid "Permissions"
 msgstr "Permisiuni"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "S-a solicitat un transfer de la serverul primar. PowerDNS preia zona în fundal; odată ce înregistrările sosesc, o puteți converti într-o zonă primară."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Operațiuni permise"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Atribuie-mi toate"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "%d zone atribuite; %d eșuate"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "S-a atribuit proprietatea a %d zone"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Setările de autentificare pot fi modificate doar de un administrator"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "Conținutul înregistrării BRID trebuie să fie un blob nevid codificat în base64."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Raport de înregistrare în masă"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Nu se poate crea această zonă deoarece se suprapune cu o zonă existentă deținută de alt utilizator."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Se verifică starea transferului..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Convertește în zonă primară"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Convertirea într-o zonă primară păstrează înregistrările transferate și oprește Poweradmin din a trata zona ca replică."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Nu s-a putut contacta API-ul PowerDNS; verificările de consistență sunt indisponibile."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Creează și transferă"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Zonă secundară creată"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Creează o zonă secundară care indică spre serverul primar de mai jos și solicită PowerDNS să o transfere prin AXFR. După ce înregistrările sosesc, o puteți converti într-o zonă primară."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "Cheile DNSSEC sunt gestionate pe serverul primar"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Afișează coloana cu numărul de înregistrări în listele de zone"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "Adresa email există deja, alegeți alta."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Introduceți o rețea (de ex. 192.168.1.0/24 sau 2001:db8::/48) sau un nume de zonă inversă (de ex. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Introduceți o rețea în notație CIDR (de exemplu 192.168.1.0/24 sau 2001:db8::/48) sau un nume de zonă inversă care se termină în in-addr.arpa sau ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Nu s-a putut adăuga zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Nu s-a putut crea zona secundară."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "Conținutul înregistrării HHIT trebuie să fie un blob nevid codificat în base64."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Adresă IPv4 sau IPv6. Separați mai multe servere primare prin virgule."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Importă alta"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Importă zonă secundară"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Adresă de e-mail invalidă în înregistrarea SOA. Folosiți forma \"hostmaster.example.net\" (primul punct fără escape reprezintă @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Valoare invalidă pentru %s. Valori permise: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Zonă invalidă."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Lăsați totul nebifat pentru a permite orice operațiune."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Lăsați gol pentru a permite accesul la toate zonele disponibile pentru dvs."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Nu s-a găsit niciun fișier de configurare la %s. Rulați instalatorul din install/ pentru a crea unul sau creați fișierul de configurare manual."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Încă nu s-au transferat înregistrări. PowerDNS ar putea încă transfera; reîncărcați pentru a verifica din nou."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Nu există zone fără proprietari de reparat"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Resetarea parolei este activată, dar interface.application_url nu este configurat, așa că emailurile de resetare nu sunt trimise. Setați application_url la URL-ul public de bază."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Presigned"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Adresă IP a serverului primar"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "Prioritatea trebuie să fie 0 pentru înregistrările BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "Prioritatea trebuie să fie 0 pentru înregistrările HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "Prioritatea trebuie să fie 0 pentru înregistrările RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "Prioritatea trebuie să fie 0 pentru înregistrările WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Conținutul înregistrării RESINFO trebuie să fie unul sau mai multe șiruri de caractere între ghilimele (fiecare de până la 255 de octeți)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "Conținutul înregistrării RESINFO nu poate fi gol."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Doar citire"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Doar citire (permite doar cereri GET)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Asistent de înregistrări"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Înregistrările acestei zone sunt replicate din zona sa primară și nu pot fi editate aici."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA conține substituentul de șablon %s. Folosiți valori literale; substituenții sunt extinși doar la crearea unei zone dintr-un șablon."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Numele înregistrării SOA trebuie să corespundă vârfului zonei \"%s\". Lăsați câmpul nume gol sau introduceți \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Politică de serial SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Metadate SOA-EDIT-API: cum este actualizat serialul SOA la modificări ulterioare. Substituenții de șablon precum [SERIAL], [UNIXTIME] sau [COUNTER] stabilesc doar serialul inițial."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Zonă secundară creată"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Serial așa cum este servit de PowerDNS, cu SOA-EDIT aplicat"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Implicit server"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Serial semnat"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Unele înregistrări nu au fost salvate deoarece formularul a depășit limita serverului privind numărul de câmpuri. Cereți administratorului să mărească setarea PHP \"max_input_vars\"."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Înlocuit cu marcajul temporal UNIX curent"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Înlocuit cu valoarea inițială a contorului"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Directorul install/ există; trebuie să îl eliminați mai întâi înainte de a continua."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Înregistrarea nu aparține acestui șablon de zonă."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Zona a fost creată, dar cererea de transfer nu a fost acceptată. Serverul primar poate refuza AXFR sau PowerDNS va reîncerca conform propriului program de reîmprospătare."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Această acțiune necesită o cerere POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Această zonă nu are încă înregistrări transferate. Așteptați finalizarea transferului înainte de a o converti într-o zonă primară."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Această zonă este presigned; cheile DNSSEC sunt gestionate pe serverul primar."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Prea multe încercări eșuate. Încercați din nou mai târziu."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Vizualizează zona"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Conținutul înregistrării WALLET trebuie să fie unul sau mai multe șiruri de caractere între ghilimele (fiecare de până la 255 de octeți)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "Conținutul înregistrării WALLET nu poate fi gol."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "Înregistrările WALLET conțin în mod obișnuit un simbol de monedă și o adresă de portofel separate prin spațiu, de ex. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Nu puteți aplica un șablon unei zone doar-citire."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Nu puteți șterge înregistrări dintr-o zonă doar-citire."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Nu puteți edita înregistrări într-o zonă doar-citire."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Nu puteți importa înregistrări într-o zonă doar-citire."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Nu aveți permisiunea de a modifica metadatele zonei."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Nu aveți permisiunea de a importa o zonă secundară."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Numele de utilizator poate fi modificat doar de un administrator"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Acces la zonă"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Zona a fost convertită într-o zonă primară."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Numele zonei și adresa serverului primar sunt obligatorii."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Modul de proprietate a zonei este groups_only, dar nu există grupuri. Creați un grup înainte de a importa zone."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Modul de proprietate a zonei este groups_only, dar nu sunteți membru al niciunui grup. Cereți unui administrator să vă adauge într-un grup înainte de a importa zone."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Numărul de înregistrări din zonă"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "eșuat"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "importat"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "înregistrări primite - gata de convertit."

@@ -13790,3 +13790,398 @@ msgstr "Engedélysablonok listája"
 
 msgid "Permissions"
 msgstr "Engedélyek"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Átvitel indult az elsődleges szerverről. A PowerDNS a háttérben tölti le a zónát; miután a rekordok megérkeztek, elsődleges zónává alakíthatja."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Engedélyezett műveletek"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Összes hozzárendelése hozzám"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "%d zóna hozzárendelve; %d sikertelen"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "%d zóna tulajdonjoga hozzárendelve"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "A hitelesítési beállításokat csak rendszergazda módosíthatja"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "A BRID rekord tartalmának nem üres, base64 kódolású blobnak kell lennie."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Tömeges regisztrációs jelentés"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Ez a zóna nem hozható létre, mert átfedésben van egy másik felhasználó tulajdonában lévő meglévő zónával."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Átvitel állapotának ellenőrzése..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Átalakítás elsődleges zónává"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Az elsődleges zónává alakítás megtartja az átvitt rekordokat, és megakadályozza, hogy a Poweradmin replikaként kezelje a zónát."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "A PowerDNS API nem érhető el; a konzisztencia-ellenőrzések nem elérhetők."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Létrehozás és átvitel"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Másodlagos zóna létrehozva"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Létrehoz egy másodlagos zónát, amely az alábbi elsődleges szerverre mutat, és megkéri a PowerDNS-t, hogy AXFR-en keresztül átvigye. Miután a rekordok megérkeztek, elsődleges zónává alakíthatja."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "A DNSSEC kulcsokat az elsődleges szerveren kezelik"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Rekordszám oszlop megjelenítése a zónalistákban"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "Az e-mail cím már létezik, válasszon másikat."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Adjon meg egy hálózatot (pl. 192.168.1.0/24 vagy 2001:db8::/48) vagy egy fordított zóna nevét (pl. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Adjon meg egy hálózatot CIDR jelöléssel (például 192.168.1.0/24 vagy 2001:db8::/48) vagy egy fordított zóna nevét, amely in-addr.arpa vagy ip6.arpa végződésű."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Nem sikerült hozzáadni a zónát."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Nem sikerült létrehozni a másodlagos zónát."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "A HHIT rekord tartalmának nem üres, base64 kódolású blobnak kell lennie."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "IPv4 vagy IPv6 cím. Több elsődleges szervert vesszővel válasszon el."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Másik importálása"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Másodlagos zóna importálása"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Érvénytelen e-mail cím az SOA rekordban. Használja a \"hostmaster.example.net\" formát (az első nem escapelt pont a @ jelet jelöli)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Érvénytelen érték a következőhöz: %s. Engedélyezett értékek: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Érvénytelen zóna."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Hagyja mindet bejelöletlenül az összes művelet engedélyezéséhez."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Hagyja üresen az összes elérhető zónához való hozzáférés engedélyezéséhez."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Nem található konfigurációs fájl itt: %s. Futtassa a telepítőt az install/ könyvtárban egy létrehozásához, vagy hozza létre a konfigurációs fájlt kézzel."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Még nem érkeztek rekordok. Lehet, hogy a PowerDNS még mindig átvisz; töltse újra az ismételt ellenőrzéshez."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Nincs javítandó, tulajdonos nélküli zóna"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "A jelszó visszaállítás engedélyezve van, de az interface.application_url nincs beállítva, ezért a visszaállítási e-mailek nem kerülnek elküldésre. Állítsa be az application_url értékét a nyilvános alap-URL-re."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Előre aláírt"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Elsődleges szerver IP címe"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "A prioritásnak 0-nak kell lennie BRID rekordoknál."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "A prioritásnak 0-nak kell lennie HHIT rekordoknál."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "A prioritásnak 0-nak kell lennie RESINFO rekordoknál."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "A prioritásnak 0-nak kell lennie WALLET rekordoknál."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "A RESINFO rekord tartalmának egy vagy több idézőjeles karakterláncnak kell lennie (egyenként legfeljebb 255 bájt)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "A RESINFO rekord tartalma nem lehet üres."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Csak olvasható"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Csak olvasható (csak GET kérések engedélyezése)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Rekord varázsló"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Ennek a zónának a rekordjai az elsődleges szerveréről vannak replikálva, és itt nem szerkeszthetők."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "Az SOA a(z) %s sablon helykitöltőt tartalmazza. Használjon szó szerinti értékeket; a helykitöltők csak sablonból való zónalétrehozáskor bővülnek ki."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Az SOA rekord nevének meg kell egyeznie a zóna csúcsával: \"%s\". Hagyja üresen a név mezőt, vagy adja meg a \"@\" jelet."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "SOA sorszám házirend"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "SOA-EDIT-API metaadat: hogyan frissül az SOA sorszám a későbbi változtatásoknál. Az olyan sablon helykitöltők, mint a [SERIAL], [UNIXTIME] vagy [COUNTER], csak a kezdeti sorszámot állítják be."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Másodlagos zóna létrehozva"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "A PowerDNS által kiszolgált sorszám, alkalmazott SOA-EDIT-tel"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Szerver alapértelmezett"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Aláírt sorszám"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Néhány rekord nem lett mentve, mert az űrlap túllépte a mezők számára vonatkozó szerverkorlátot. Kérje meg a rendszergazdát, hogy növelje a PHP \"max_input_vars\" beállítást."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Az aktuális UNIX időbélyeggel helyettesítve"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "A kezdeti számláló értékkel helyettesítve"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Az install/ könyvtár létezik, a folytatás előtt előbb el kell távolítania."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "A rekord nem tartozik ehhez a zóna sablonhoz."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "A zóna létrejött, de az átviteli kérést nem fogadták el. Az elsődleges szerver visszautasíthatja az AXFR-t, vagy a PowerDNS saját frissítési ütemterve szerint próbálkozik újra."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Ehhez a művelethez POST kérés szükséges."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Ennek a zónának még nincsenek átvitt rekordjai. Várja meg az átvitel befejeződését, mielőtt elsődleges zónává alakítja."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Ez a zóna előre aláírt; a DNSSEC kulcsokat az elsődleges szerveren kezelik."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Túl sok sikertelen próbálkozás. Kérjük, próbálja újra később."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Zóna megtekintése"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "A WALLET rekord tartalmának egy vagy több idézőjeles karakterláncnak kell lennie (egyenként legfeljebb 255 bájt)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "A WALLET rekord tartalma nem lehet üres."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "A WALLET rekordok hagyományosan egy érme szimbólumot és egy tárca címet tartalmaznak szóközzel elválasztva, pl. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Csak olvasható zónára nem alkalmazhat sablont."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Csak olvasható zónából nem törölhet rekordokat."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Csak olvasható zónában nem szerkeszthet rekordokat."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Csak olvasható zónába nem importálhat rekordokat."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Nincs jogosultsága a zóna metaadatainak módosítására."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Nincs jogosultsága másodlagos zóna importálására."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "A felhasználónevét csak rendszergazda módosíthatja"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Zóna hozzáférés"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "A zóna elsődleges zónává lett alakítva."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "A zóna neve és az elsődleges szerver címe kötelező."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "A zóna tulajdonjogi módja groups_only, de nincsenek csoportok. Hozzon létre egy csoportot a zónák importálása előtt."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "A zóna tulajdonjogi módja groups_only, de Ön nem tagja egyetlen csoportnak sem. Kérjen meg egy adminisztrátort, hogy adja Önt egy csoporthoz a zónák importálása előtt."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Zóna rekordszáma"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "sikertelen"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "importálva"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "rekordok érkeztek - készen áll az átalakításra."

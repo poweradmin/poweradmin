@@ -15181,3 +15181,398 @@ msgstr "Rodyti leidimų šablonus"
 
 msgid "Permissions"
 msgstr "Leidimai"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Užklausta perkėlimo iš pirminio serverio. PowerDNS parsiunčia zoną fone; kai įrašai atkeliaus, galėsite konvertuoti ją į pirminę zoną."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Leidžiamos operacijos"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Priskirti visas man"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "Priskirta %d zonų; %d nepavyko"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Priskirta %d zonų nuosavybė"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Autentifikavimo nustatymus gali keisti tik administratorius"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "BRID įrašo turinys turi būti netuščias base64 užkoduotas blokas."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Masinės registracijos ataskaita"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Nepavyksta sukurti šios zonos, nes ji sutampa su esama zona, priklausančia kitam naudotojui."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Tikrinama perkėlimo būsena..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Konvertuoti į pirminę zoną"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Konvertuojant į pirminę zoną išsaugomi perkelti įrašai ir Poweradmin nustoja laikyti zoną replika."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Nepavyko pasiekti PowerDNS API; nuoseklumo patikros negalimos."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Sukurti ir perkelti"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Sukurta antrinė zona"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Sukuria antrinę zoną, nukreiptą į žemiau nurodytą pirminį serverį, ir paprašo PowerDNS perkelti ją per AXFR. Kai įrašai atkeliaus, galėsite konvertuoti ją į pirminę zoną."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "DNSSEC raktai valdomi pirminiame serveryje"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Rodyti įrašų skaičiaus stulpelį zonų sąrašuose"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "El. pašto adresas jau egzistuoja, pasirinkite kitą."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Įveskite tinklą (pvz., 192.168.1.0/24 arba 2001:db8::/48) arba atvirkštinės zonos pavadinimą (pvz., 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Įveskite tinklą CIDR formatu (pavyzdžiui, 192.168.1.0/24 arba 2001:db8::/48) arba atvirkštinės zonos pavadinimą, kuris baigiasi in-addr.arpa arba ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Nepavyko pridėti zonos."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Nepavyko sukurti antrinės zonos."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "HHIT įrašo turinys turi būti netuščias base64 užkoduotas blokas."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "IPv4 arba IPv6 adresas. Kelis pirminius serverius atskirkite kableliais."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Importuoti kitą"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Importuoti antrinę zoną"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Neteisingas el. pašto adresas SOA įraše. Naudokite formą \"hostmaster.example.net\" (pirmasis neekranuotas taškas reiškia @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Neteisinga %s reikšmė. Leidžiamos reikšmės: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Neteisinga zona."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Palikite visus nepažymėtus, kad būtų leidžiamos visos operacijos."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Palikite tuščią, kad būtų leidžiama prieiga prie visų jums prieinamų zonų."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Konfigūracijos failas nerastas vietoje %s. Paleiskite diegimo programą install/, kad jį sukurtumėte, arba sukurkite konfigūracijos failą rankiniu būdu."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Kol kas neperkelta jokių įrašų. PowerDNS gali vis dar perkelti; įkelkite iš naujo, kad patikrintumėte dar kartą."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Nėra zonų be savininkų, kurias reikėtų sutvarkyti"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Slaptažodžio atkūrimas įjungtas, bet interface.application_url nesukonfigūruotas, todėl atkūrimo el. laiškai nesiunčiami. Nustatykite application_url į savo viešą bazinį URL."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Iš anksto pasirašyta"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Pirminio serverio IP adresas"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "BRID įrašų prioritetas turi būti 0."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "HHIT įrašų prioritetas turi būti 0."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "RESINFO įrašų prioritetas turi būti 0."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "WALLET įrašų prioritetas turi būti 0."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "RESINFO įrašo turinys turi būti viena ar daugiau kabutėse įrašytų simbolių eilučių (kiekviena iki 255 baitų)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "RESINFO įrašo turinys negali būti tuščias."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Tik skaitymui"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Tik skaitymui (leisti tik GET užklausas)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Įrašų vediklis"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Šios zonos įrašai replikuojami iš jos pirminio serverio ir čia negali būti redaguojami."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA turi šablono vietaženklį %s. Naudokite pažodines reikšmes; vietaženkliai išplečiami tik kuriant zoną iš šablono."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "SOA įrašo pavadinimas turi atitikti zonos viršūnę \"%s\". Palikite pavadinimo lauką tuščią arba įveskite \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "SOA serijos numerio politika"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "SOA-EDIT-API metaduomenys: kaip SOA serijos numeris atnaujinamas vėlesniuose pakeitimuose. Šablono vietaženkliai, tokie kaip [SERIAL], [UNIXTIME] ar [COUNTER], nustato tik pradinį serijos numerį."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Antrinė zona sukurta"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Serijos numeris, kaip jį pateikia PowerDNS, pritaikius SOA-EDIT"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Serverio numatytoji"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Pasirašytas serijos numeris"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Kai kurie įrašai nebuvo išsaugoti, nes forma viršijo serverio laukų skaičiaus limitą. Paprašykite administratoriaus padidinti PHP \"max_input_vars\" nustatymą."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Pakeičiama dabartine UNIX laiko žyma"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Pakeičiama pradine skaitiklio reikšme"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Katalogas install/ egzistuoja, prieš tęsdami pirmiausia jį pašalinkite."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Įrašas nepriklauso šiam zonos šablonui."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Zona buvo sukurta, bet perkėlimo užklausa nebuvo priimta. Pirminis serveris gali atmesti AXFR arba PowerDNS pakartos pagal savo atnaujinimo tvarkaraštį."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Šiam veiksmui reikalinga POST užklausa."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Ši zona dar neturi perkeltų įrašų. Prieš konvertuodami ją į pirminę zoną, palaukite, kol perkėlimas bus baigtas."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Ši zona yra iš anksto pasirašyta; DNSSEC raktai valdomi pirminiame serveryje."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Per daug nepavykusių bandymų. Bandykite dar kartą vėliau."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Peržiūrėti zoną"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "WALLET įrašo turinys turi būti viena ar daugiau kabutėse įrašytų simbolių eilučių (kiekviena iki 255 baitų)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "WALLET įrašo turinys negali būti tuščias."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "WALLET įrašuose įprastai nurodomas monetos simbolis ir piniginės adresas, atskirti tarpu, pvz. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Negalite pritaikyti šablono tik skaitymui skirtai zonai."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Negalite ištrinti įrašų iš tik skaitymui skirtos zonos."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Negalite redaguoti įrašų tik skaitymui skirtoje zonoje."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Negalite importuoti įrašų į tik skaitymui skirtą zoną."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Neturite leidimo keisti zonos metaduomenų."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Neturite leidimo importuoti antrinę zoną."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Jūsų vartotojo vardą gali keisti tik administratorius"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Zonos prieiga"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Zona konvertuota į pirminę zoną."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Būtina nurodyti zonos pavadinimą ir pirminio serverio adresą."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Zonos nuosavybės režimas yra groups_only, bet grupių nėra. Prieš importuodami zonas sukurkite grupę."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Zonos nuosavybės režimas yra groups_only, bet jūs nepriklausote jokiai grupei. Paprašykite administratoriaus įtraukti jus į grupę prieš importuojant zonas."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Zonos įrašų skaičius"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "nepavyko"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "importuota"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "įrašai gauti - paruošta konvertuoti."

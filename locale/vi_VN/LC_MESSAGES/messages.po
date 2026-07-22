@@ -14704,3 +14704,398 @@ msgstr "Danh sách mẫu quyền hạn"
 
 msgid "Permissions"
 msgstr "Quyền hạn"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Đã yêu cầu chuyển từ máy chủ primary. PowerDNS kéo vùng ở chế độ nền; khi các bản ghi đến, bạn có thể chuyển đổi nó thành vùng primary."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Các thao tác được phép"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Gán tất cả cho tôi"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "Đã gán %d vùng; %d thất bại"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Đã gán quyền sở hữu của %d vùng"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Cài đặt xác thực chỉ có thể được thay đổi bởi quản trị viên"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "Nội dung bản ghi BRID phải là một blob mã hóa base64 không rỗng."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Báo cáo đăng ký hàng loạt"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Không thể tạo vùng này vì nó chồng lấn với một vùng hiện có thuộc sở hữu của người dùng khác."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Đang kiểm tra trạng thái chuyển..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Chuyển đổi thành vùng primary"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Chuyển đổi thành vùng primary sẽ giữ lại các bản ghi đã chuyển và ngừng để Poweradmin coi vùng này là bản sao."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Không thể kết nối tới PowerDNS API; không thể thực hiện kiểm tra tính nhất quán."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Tạo và chuyển"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Đã tạo vùng secondary"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Tạo một vùng secondary trỏ tới máy chủ primary bên dưới và yêu cầu PowerDNS chuyển nó qua AXFR. Sau khi các bản ghi đến, bạn có thể chuyển đổi nó thành vùng primary."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "Các khóa DNSSEC được quản lý tại máy chủ primary"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Hiển thị cột số lượng bản ghi trong danh sách vùng"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "Địa chỉ email đã tồn tại, vui lòng chọn địa chỉ khác."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Nhập một mạng (ví dụ: 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược (ví dụ: 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Nhập một mạng theo ký hiệu CIDR (ví dụ 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược kết thúc bằng in-addr.arpa hoặc ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Không thể thêm vùng."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Không thể tạo vùng secondary."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "Nội dung bản ghi HHIT phải là một blob mã hóa base64 không rỗng."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Địa chỉ IPv4 hoặc IPv6. Phân tách nhiều máy chủ primary bằng dấu phẩy."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Nhập thêm"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Nhập vùng secondary"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Địa chỉ email không hợp lệ trong bản ghi SOA. Sử dụng dạng \"hostmaster.example.net\" (dấu chấm không thoát đầu tiên đại diện cho @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Giá trị không hợp lệ cho %s. Các giá trị được phép: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Vùng không hợp lệ."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Để trống tất cả để cho phép mọi thao tác."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Để trống để cho phép truy cập tất cả các vùng khả dụng với bạn."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Không tìm thấy tệp cấu hình tại %s. Vui lòng chạy trình cài đặt tại install/ để tạo một tệp, hoặc tạo tệp cấu hình theo cách thủ công."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Chưa có bản ghi nào được chuyển. PowerDNS có thể vẫn đang chuyển; tải lại để kiểm tra lại."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Không có vùng nào thiếu chủ sở hữu để sửa"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Đặt lại mật khẩu đã được bật nhưng interface.application_url chưa được cấu hình, vì vậy email đặt lại không được gửi. Đặt application_url thành URL cơ sở công khai của bạn."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Đã ký sẵn"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Địa chỉ IP máy chủ primary"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "Mức ưu tiên phải là 0 đối với bản ghi BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "Mức ưu tiên phải là 0 đối với bản ghi HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "Mức ưu tiên phải là 0 đối với bản ghi RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "Mức ưu tiên phải là 0 đối với bản ghi WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Nội dung bản ghi RESINFO phải là một hoặc nhiều chuỗi ký tự trong dấu ngoặc kép (mỗi chuỗi tối đa 255 byte)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "Nội dung bản ghi RESINFO không được để trống."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Chỉ đọc"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Chỉ đọc (chỉ cho phép yêu cầu GET)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Trình hướng dẫn bản ghi"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Các bản ghi của vùng này được sao chép từ máy chủ primary và không thể chỉnh sửa tại đây."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA chứa trình giữ chỗ mẫu %s. Hãy dùng giá trị cụ thể; trình giữ chỗ chỉ được mở rộng khi tạo vùng từ một mẫu."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Tên bản ghi SOA phải khớp với apex của vùng \"%s\". Để trống trường tên hoặc nhập \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Chính sách số sê-ri SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Siêu dữ liệu SOA-EDIT-API: cách số sê-ri SOA được cập nhật ở các thay đổi sau. Các trình giữ chỗ mẫu như [SERIAL], [UNIXTIME] hoặc [COUNTER] chỉ đặt số sê-ri ban đầu."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Vùng secondary đã được tạo"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Số sê-ri như được PowerDNS phục vụ, đã áp dụng SOA-EDIT"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Mặc định của máy chủ"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Số sê-ri đã ký"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Một số bản ghi không được lưu vì biểu mẫu đã vượt quá giới hạn số trường của máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Được thay bằng dấu thời gian UNIX hiện tại"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Được thay bằng giá trị bộ đếm ban đầu"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Thư mục install/ tồn tại, bạn phải xóa nó trước khi tiếp tục."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Bản ghi không thuộc về mẫu vùng này."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Vùng đã được tạo, nhưng yêu cầu chuyển không được chấp nhận. Máy chủ primary có thể từ chối AXFR, hoặc PowerDNS sẽ thử lại theo lịch làm mới của nó."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Hành động này yêu cầu một yêu cầu POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Vùng này chưa có bản ghi nào được chuyển. Hãy chờ quá trình chuyển hoàn tất trước khi chuyển đổi nó thành vùng primary."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Vùng này đã ký sẵn; các khóa DNSSEC được quản lý tại máy chủ primary."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Quá nhiều lần thử thất bại. Vui lòng thử lại sau."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Xem vùng"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Nội dung bản ghi WALLET phải là một hoặc nhiều chuỗi ký tự trong dấu ngoặc kép (mỗi chuỗi tối đa 255 byte)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "Nội dung bản ghi WALLET không được để trống."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "Bản ghi WALLET theo quy ước chứa một ký hiệu tiền tệ và địa chỉ ví được phân tách bằng khoảng trắng, ví dụ \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Bạn không thể áp dụng mẫu cho một vùng chỉ đọc."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Bạn không thể xóa bản ghi khỏi một vùng chỉ đọc."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Bạn không thể chỉnh sửa bản ghi trong một vùng chỉ đọc."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Bạn không thể nhập bản ghi vào một vùng chỉ đọc."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Bạn không có quyền thay đổi siêu dữ liệu vùng."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Bạn không có quyền nhập một vùng secondary."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Tên người dùng của bạn chỉ có thể được thay đổi bởi quản trị viên"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Truy cập vùng"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Vùng đã được chuyển đổi thành vùng primary."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Tên vùng và địa chỉ máy chủ primary là bắt buộc."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Chế độ sở hữu vùng là groups_only nhưng không có nhóm nào tồn tại. Hãy tạo một nhóm trước khi nhập vùng."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Chế độ sở hữu vùng là groups_only nhưng bạn không phải là thành viên của bất kỳ nhóm nào. Hãy yêu cầu quản trị viên thêm bạn vào một nhóm trước khi nhập vùng."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Số lượng bản ghi vùng"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "thất bại"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "đã nhập"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "đã nhận bản ghi - sẵn sàng để chuyển đổi."

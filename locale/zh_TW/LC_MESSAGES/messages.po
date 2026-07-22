@@ -13702,3 +13702,398 @@ msgstr "列出權限模板"
 
 msgid "Permissions"
 msgstr "權限"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "已請求從 Primary 伺服器進行傳輸。PowerDNS 會在背景拉取該區域；記錄到達後，您可以將其轉換為 Primary 區域。"
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "允許的操作"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "全部指派給我"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "已指派 %d 個區域；%d 個失敗"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "已指派 %d 個區域的所有權"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "驗證設定只能由管理員變更"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "BRID 記錄內容必須是非空的 base64 編碼 blob。"
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "批次註冊報告"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "無法建立此區域，因為它與另一位使用者擁有的現有區域重疊。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "正在檢查傳輸狀態..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "轉換為 Primary 區域"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "轉換為 Primary 區域會保留已傳輸的記錄，並使 Poweradmin 不再將該區域視為副本。"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "無法連線到 PowerDNS API；一致性檢查不可用。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "建立並傳輸"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "已建立 Secondary 區域"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "建立一個指向下方 Primary 伺服器的 Secondary 區域，並請求 PowerDNS 透過 AXFR 進行傳輸。記錄到達後，您可以將其轉換為 Primary 區域。"
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "DNSSEC 金鑰在 Primary 伺服器上管理"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "在區域清單中顯示記錄計數欄"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "電子郵件位址已存在，請選擇另一個。"
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "輸入一個網路（例如 192.168.1.0/24 或 2001:db8::/48）或一個反向區域名稱（例如 1.168.192.in-addr.arpa）。"
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "以 CIDR 記法輸入一個網路（例如 192.168.1.0/24 或 2001:db8::/48）或一個以 in-addr.arpa 或 ip6.arpa 結尾的反向區域名稱。"
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "新增區域失敗。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "建立 Secondary 區域失敗。"
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "HHIT 記錄內容必須是非空的 base64 編碼 blob。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "IPv4 或 IPv6 位址。使用逗號分隔多個 Primary。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "導入另一個"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "導入 Secondary 區域"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "SOA 記錄中的電子郵件位址無效。請使用 \"hostmaster.example.net\" 形式（第一個未跳脫的點表示 @）。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "%s 的值無效。允許的值：%s。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "無效的區域。"
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "全部不勾選以允許所有操作。"
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "留空以允許存取您可用的所有區域。"
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "在 %s 找不到設定檔。請在 install/ 執行安裝程式以建立一個，或手動建立設定檔。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "尚未傳輸任何記錄。PowerDNS 可能仍在傳輸；請重新載入以再次檢查。"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "沒有缺少所有者的區域需要修復"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "已啟用密碼重設，但未設定 interface.application_url，因此不會發送重設郵件。請將 application_url 設定為您的公開基礎 URL。"
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "預簽名"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Primary 伺服器 IP 位址"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "BRID 記錄的優先級必須為 0。"
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "HHIT 記錄的優先級必須為 0。"
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "RESINFO 記錄的優先級必須為 0。"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "WALLET 記錄的優先級必須為 0。"
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "RESINFO 記錄內容必須是一個或多個帶引號的字元字串（每個最多 255 位元組）。"
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "RESINFO 記錄內容不能為空。"
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "唯讀"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "唯讀（僅允許 GET 請求）"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "記錄精靈"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "此區域的記錄從其 Primary 複製而來，無法在此處編輯。"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA 包含模板佔位符 %s。請使用字面值；佔位符僅在從模板建立區域時展開。"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "SOA 記錄名稱必須與區域頂點 \"%s\" 相符。請將名稱欄位留空或輸入 \"@\"。"
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "SOA 序列號策略"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "SOA-EDIT-API 中繼資料：後續變更時 SOA 序列號如何更新。諸如 [SERIAL]、[UNIXTIME] 或 [COUNTER] 等模板佔位符僅設定初始序列號。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Secondary 區域已建立"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "PowerDNS 提供的序列號，已套用 SOA-EDIT"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "伺服器預設值"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "已簽名序列號"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "部分記錄未儲存，因為表單超出了伺服器對欄位數量的限制。請要求您的管理員提高 PHP \"max_input_vars\" 設定。"
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "替換為目前 UNIX 時間戳記"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "替換為初始計數器值"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "install/ 目錄存在，您必須先將其移除才能繼續。"
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "該記錄不屬於此區域模板。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "區域已建立，但傳輸請求未被接受。Primary 可能拒絕 AXFR，或者 PowerDNS 將按其自身的重新整理排程重試。"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "此操作需要 POST 請求。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "此區域尚無已傳輸的記錄。請等待傳輸完成後再將其轉換為 Primary 區域。"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "此區域為預簽名；DNSSEC 金鑰在 Primary 伺服器上管理。"
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "失敗嘗試次數過多。請稍後重試。"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "檢視區域"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "WALLET 記錄內容必須是一個或多個帶引號的字元字串（每個最多 255 位元組）。"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "WALLET 記錄內容不能為空。"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "WALLET 記錄通常包含一個幣種符號和錢包位址，以空白分隔，例如 \"BTC bc1q...\"。"
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "您不能對唯讀區域套用模板。"
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "您不能從唯讀區域刪除記錄。"
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "您不能在唯讀區域中編輯記錄。"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "您不能將記錄導入唯讀區域。"
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "您沒有變更區域中繼資料的權限。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "您沒有導入 Secondary 區域的權限。"
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "您的使用者名稱只能由管理員變更"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "區域存取"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "區域已轉換為 Primary 區域。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "區域名稱和 Primary 伺服器位址為必填項。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "區域所有權模式為 groups_only，但不存在任何組。請在導入區域前建立一個組。"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "區域所有權模式為 groups_only，但您不是任何組的成員。請在導入區域前要求管理員將您加入一個組。"
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "區域記錄計數"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "失敗"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "已導入"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "已接收記錄 - 準備轉換。"

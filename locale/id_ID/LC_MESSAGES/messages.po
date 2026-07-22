@@ -14553,3 +14553,398 @@ msgstr "Daftar templat izin"
 
 msgid "Permissions"
 msgstr "Izin"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Transfer dari server primer telah diminta. PowerDNS menarik zona di latar belakang; setelah rekaman tiba, Anda dapat mengonversinya menjadi zona primer."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Operasi yang diizinkan"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Tetapkan semua ke saya"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "%d zona ditetapkan; %d gagal"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Kepemilikan %d zona ditetapkan"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Pengaturan autentikasi hanya dapat diubah oleh administrator"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "Konten rekaman BRID harus berupa blob berkode base64 yang tidak kosong."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Laporan Registrasi Massal"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Tidak dapat membuat zona ini karena tumpang tindih dengan zona yang sudah ada milik pengguna lain."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Memeriksa status transfer..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Konversi ke zona primer"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Mengonversi ke zona primer mempertahankan rekaman yang ditransfer dan menghentikan Poweradmin memperlakukan zona sebagai replika."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Tidak dapat menjangkau PowerDNS API; pemeriksaan konsistensi tidak tersedia."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Buat dan transfer"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Zona sekunder dibuat"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Membuat zona sekunder yang mengarah ke server primer di bawah dan meminta PowerDNS mentransfernya melalui AXFR. Setelah rekaman tiba, Anda dapat mengonversinya menjadi zona primer."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "Kunci DNSSEC dikelola di server primer"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Tampilkan kolom jumlah rekaman di daftar zona"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "Alamat email sudah ada, silakan pilih yang lain."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Masukkan jaringan (mis. 192.168.1.0/24 atau 2001:db8::/48) atau nama zona reverse (mis. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Masukkan jaringan dalam notasi CIDR (misalnya 192.168.1.0/24 atau 2001:db8::/48) atau nama zona reverse yang diakhiri dengan in-addr.arpa atau ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Gagal menambahkan zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Gagal membuat zona sekunder."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "Konten rekaman HHIT harus berupa blob berkode base64 yang tidak kosong."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Alamat IPv4 atau IPv6. Pisahkan beberapa server primer dengan koma."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Impor lainnya"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Impor zona sekunder"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Alamat email tidak valid dalam rekaman SOA. Gunakan format \"hostmaster.example.net\" (titik pertama yang tidak di-escape mewakili @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Nilai tidak valid untuk %s. Nilai yang diizinkan: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Zona tidak valid."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Biarkan semua tidak dicentang untuk mengizinkan setiap operasi."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Biarkan kosong untuk mengizinkan akses ke semua zona yang tersedia untuk Anda."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Tidak ada file konfigurasi ditemukan di %s. Silakan jalankan installer di install/ untuk membuatnya, atau buat file konfigurasi secara manual."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Belum ada rekaman yang ditransfer. PowerDNS mungkin masih mentransfer; muat ulang untuk memeriksa lagi."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Tidak ada zona tanpa pemilik untuk diperbaiki"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Atur ulang kata sandi diaktifkan tetapi interface.application_url tidak dikonfigurasi, sehingga email atur ulang tidak dikirim. Setel application_url ke URL dasar publik Anda."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Sudah ditandatangani"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "Alamat IP server primer"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "Prioritas harus 0 untuk rekaman BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "Prioritas harus 0 untuk rekaman HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "Prioritas harus 0 untuk rekaman RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "Prioritas harus 0 untuk rekaman WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Konten rekaman RESINFO harus berupa satu atau lebih string karakter dalam tanda kutip (masing-masing hingga 255 byte)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "Konten rekaman RESINFO tidak boleh kosong."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Hanya-baca"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Hanya-baca (izinkan hanya permintaan GET)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Wizard Rekaman"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Rekaman untuk zona ini direplikasi dari server primernya dan tidak dapat diedit di sini."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA berisi placeholder templat %s. Gunakan nilai literal; placeholder hanya diperluas saat membuat zona dari templat."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Nama rekaman SOA harus cocok dengan apex zona \"%s\". Biarkan kolom nama kosong atau masukkan \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Kebijakan serial SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Metadata SOA-EDIT-API: bagaimana serial SOA diperbarui pada perubahan berikutnya. Placeholder templat seperti [SERIAL], [UNIXTIME] atau [COUNTER] hanya mengatur serial awal."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Zona sekunder dibuat"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Serial seperti yang disajikan oleh PowerDNS, dengan SOA-EDIT diterapkan"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Default server"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Serial yang ditandatangani"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Beberapa rekaman tidak disimpan karena formulir melebihi batas server untuk jumlah bidang. Minta administrator Anda untuk menaikkan pengaturan PHP \"max_input_vars\"."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Diganti dengan timestamp UNIX saat ini"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Diganti dengan nilai penghitung awal"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Direktori install/ ada, Anda harus menghapusnya terlebih dahulu sebelum melanjutkan."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Rekaman tidak termasuk dalam template zona ini."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Zona telah dibuat, tetapi permintaan transfer tidak diterima. Server primer mungkin menolak AXFR, atau PowerDNS akan mencoba lagi sesuai jadwal refresh-nya sendiri."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Tindakan ini memerlukan permintaan POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Zona ini belum memiliki rekaman yang ditransfer. Tunggu hingga transfer selesai sebelum mengonversinya menjadi zona primer."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Zona ini sudah ditandatangani; kunci DNSSEC dikelola di server primer."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Terlalu banyak percobaan yang gagal. Silakan coba lagi nanti."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Lihat zona"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Konten rekaman WALLET harus berupa satu atau lebih string karakter dalam tanda kutip (masing-masing hingga 255 byte)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "Konten rekaman WALLET tidak boleh kosong."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "Rekaman WALLET secara konvensional berisi simbol koin dan alamat dompet yang dipisahkan oleh spasi, mis. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Anda tidak dapat menerapkan templat ke zona hanya-baca."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Anda tidak dapat menghapus rekaman dari zona hanya-baca."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "Anda tidak dapat mengedit rekaman di zona hanya-baca."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Anda tidak dapat mengimpor rekaman ke zona hanya-baca."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Anda tidak memiliki izin untuk mengubah metadata zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Anda tidak memiliki izin untuk mengimpor zona sekunder."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Nama pengguna Anda hanya dapat diubah oleh administrator"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Akses zona"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Zona telah dikonversi menjadi zona primer."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Nama zona dan alamat server primer diperlukan."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Mode kepemilikan zona adalah groups_only tetapi tidak ada grup. Buat grup sebelum mengimpor zona."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Mode kepemilikan zona adalah groups_only tetapi Anda bukan anggota grup mana pun. Minta administrator untuk menambahkan Anda ke grup sebelum mengimpor zona."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Jumlah rekaman zona"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "gagal"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "diimpor"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "rekaman diterima - siap untuk dikonversi."

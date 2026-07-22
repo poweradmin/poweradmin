@@ -13909,3 +13909,398 @@ msgstr "권한 템플릿 목록"
 
 msgid "Permissions"
 msgstr "권한"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "주 서버로부터의 전송이 요청되었습니다. PowerDNS가 백그라운드에서 존을 가져옵니다. 레코드가 도착하면 이를 주 존으로 변환할 수 있습니다."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "허용된 작업"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "모두 나에게 할당"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "%d개 존 할당됨, %d개 실패"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "%d개 존의 소유권 할당됨"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "인증 설정은 관리자만 변경할 수 있습니다"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "BRID 레코드 내용은 비어 있지 않은 base64 인코딩된 blob이어야 합니다."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "일괄 등록 보고서"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "이 존은 다른 사용자가 소유한 기존 존과 겹치므로 생성할 수 없습니다."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "전송 상태 확인 중..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "주 존으로 변환"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "주 존으로 변환하면 전송된 레코드가 유지되고 Poweradmin이 해당 존을 복제본으로 취급하지 않게 됩니다."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "PowerDNS API에 연결할 수 없어 일관성 검사를 사용할 수 없습니다."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "생성 및 전송"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "보조 존 생성됨"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "아래의 주 서버를 가리키는 보조 존을 생성하고 PowerDNS에 AXFR을 통해 전송하도록 요청합니다. 레코드가 도착한 후 이를 주 존으로 변환할 수 있습니다."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "DNSSEC 키는 주 서버에서 관리됩니다"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "존 목록에 레코드 수 열 표시"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "이메일 주소가 이미 존재합니다. 다른 주소를 선택하세요."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 역방향 존 이름(예: 1.168.192.in-addr.arpa)을 입력하세요."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "CIDR 표기법의 네트워크(예: 192.168.1.0/24 또는 2001:db8::/48) 또는 in-addr.arpa 또는 ip6.arpa로 끝나는 역방향 존 이름을 입력하세요."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "존을 추가하지 못했습니다."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "보조 존을 생성하지 못했습니다."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "HHIT 레코드 내용은 비어 있지 않은 base64 인코딩된 blob이어야 합니다."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "IPv4 또는 IPv6 주소입니다. 여러 주 서버는 쉼표로 구분하십시오."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "다른 존 가져오기"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "보조 존 가져오기"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "SOA 레코드의 이메일 주소가 잘못되었습니다. \"hostmaster.example.net\" 형식을 사용하십시오(첫 번째 이스케이프되지 않은 점은 @를 나타냅니다)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "%s의 값이 잘못되었습니다. 허용된 값: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "잘못된 존입니다."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "모든 작업을 허용하려면 모두 선택하지 않은 상태로 두십시오."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "사용 가능한 모든 존에 대한 접근을 허용하려면 비워 두십시오."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "%s에서 구성 파일을 찾을 수 없습니다. install/의 설치 프로그램을 실행하여 생성하거나 구성 파일을 수동으로 생성하십시오."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "아직 전송된 레코드가 없습니다. PowerDNS가 여전히 전송 중일 수 있습니다. 다시 확인하려면 새로고침하십시오."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "수정할 소유자 없는 존이 없습니다"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "비밀번호 재설정이 활성화되어 있지만 interface.application_url이 구성되지 않아 재설정 이메일이 전송되지 않습니다. application_url을 공개 기본 URL로 설정하세요."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "사전 서명됨"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "주 서버 IP 주소"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "BRID 레코드의 우선순위는 0이어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "HHIT 레코드의 우선순위는 0이어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "RESINFO 레코드의 우선순위는 0이어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "WALLET 레코드의 우선순위는 0이어야 합니다."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "RESINFO 레코드 내용은 하나 이상의 따옴표로 묶인 문자열이어야 합니다(각각 최대 255바이트)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "RESINFO 레코드 내용은 비어 있을 수 없습니다."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "읽기 전용"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "읽기 전용(GET 요청만 허용)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "레코드 마법사"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "이 존의 레코드는 주 서버에서 복제되며 여기서 편집할 수 없습니다."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA에 템플릿 자리표시자 %s이(가) 포함되어 있습니다. 리터럴 값을 사용하십시오. 자리표시자는 템플릿에서 존을 생성할 때만 확장됩니다."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "SOA 레코드 이름은 존 정점 \"%s\"과(와) 일치해야 합니다. 이름 필드를 비워 두거나 \"@\"를 입력하십시오."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "SOA 일련번호 정책"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "SOA-EDIT-API 메타데이터: 이후 변경 시 SOA 일련번호가 업데이트되는 방식입니다. [SERIAL], [UNIXTIME], [COUNTER]와 같은 템플릿 자리표시자는 초기 일련번호만 설정합니다."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "보조 존이 생성되었습니다"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "SOA-EDIT가 적용되어 PowerDNS가 제공하는 일련번호"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "서버 기본값"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "서명된 일련번호"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "양식이 필드 수에 대한 서버 제한을 초과하여 일부 레코드가 저장되지 않았습니다. 관리자에게 PHP \"max_input_vars\" 설정을 늘려 달라고 요청하세요."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "현재 UNIX 타임스탬프로 대체됨"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "초기 카운터 값으로 대체됨"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "install/ 디렉터리가 존재합니다. 계속하기 전에 먼저 제거해야 합니다."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "이 레코드는 이 존 템플릿에 속하지 않습니다."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "존이 생성되었지만 전송 요청이 수락되지 않았습니다. 주 서버가 AXFR을 거부하거나 PowerDNS가 자체 새로고침 일정에 따라 다시 시도합니다."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "이 작업에는 POST 요청이 필요합니다."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "이 존에는 아직 전송된 레코드가 없습니다. 주 존으로 변환하기 전에 전송이 완료될 때까지 기다리십시오."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "이 존은 사전 서명되어 있습니다. DNSSEC 키는 주 서버에서 관리됩니다."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "실패한 시도가 너무 많습니다. 나중에 다시 시도하십시오."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "존 보기"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "WALLET 레코드 내용은 하나 이상의 따옴표로 묶인 문자열이어야 합니다(각각 최대 255바이트)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "WALLET 레코드 내용은 비어 있을 수 없습니다."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "WALLET 레코드는 일반적으로 공백으로 구분된 코인 기호와 지갑 주소를 포함합니다. 예: \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "읽기 전용 존에는 템플릿을 적용할 수 없습니다."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "읽기 전용 존에서는 레코드를 삭제할 수 없습니다."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "읽기 전용 존에서는 레코드를 편집할 수 없습니다."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "읽기 전용 존에는 레코드를 가져올 수 없습니다."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "존 메타데이터를 변경할 권한이 없습니다."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "보조 존을 가져올 권한이 없습니다."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "사용자 이름은 관리자만 변경할 수 있습니다"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "존 접근"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "존이 주 존으로 변환되었습니다."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "존 이름과 주 서버 주소가 필요합니다."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "존 소유권 모드가 groups_only이지만 그룹이 없습니다. 존을 가져오기 전에 그룹을 생성하십시오."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "존 소유권 모드가 groups_only이지만 귀하는 어떤 그룹에도 속해 있지 않습니다. 존을 가져오기 전에 관리자에게 그룹에 추가해 달라고 요청하십시오."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "존 레코드 수"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "실패"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "가져옴"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "레코드 수신됨 - 변환 준비 완료."

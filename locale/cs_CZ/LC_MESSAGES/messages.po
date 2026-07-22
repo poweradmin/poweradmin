@@ -15098,3 +15098,398 @@ msgstr "Seznam šablon oprávnění"
 
 msgid "Permissions"
 msgstr "Oprávnění"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:24
+msgid ""
+"A transfer from the primary server was requested. PowerDNS pulls the zone in "
+"the background; once the records arrive you can convert it to a primary zone."
+msgstr "Byl vyžádán přenos z primárního serveru. PowerDNS stahuje zónu na pozadí; jakmile záznamy dorazí, můžete ji převést na primární zónu."
+
+#: templates/modern/api_key_edit.html:50 templates/modern/api_key_add.html:42
+msgid "Allowed operations"
+msgstr "Povolené operace"
+
+#: templates/modern/database_consistency.html:63
+msgid "Assign all to me"
+msgstr "Přiřadit vše mně"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:132
+msgid "Assigned %d zones; %d failed"
+msgstr "Přiřazeno %d zón; %d selhalo"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:127
+msgid "Assigned ownership of %d zones"
+msgstr "Přiřazeno vlastnictví %d zón"
+
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Nastavení ověřování může změnit pouze administrátor"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:54
+msgid "BRID record content must be a non-empty base64-encoded blob."
+msgstr "Obsah záznamu BRID musí být neprázdný blok zakódovaný v base64."
+
+#: templates/modern/bulk_registration.html:127
+msgid "Bulk Registration Report"
+msgstr "Zpráva o hromadné registraci"
+
+#: lib/BaseController.php:672
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "Tuto zónu nelze vytvořit, protože se překrývá s existující zónou, kterou vlastní jiný uživatel."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:60
+msgid "Checking transfer status..."
+msgstr "Kontrola stavu přenosu..."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:42
+msgid "Convert to primary zone"
+msgstr "Převést na primární zónu"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:53
+msgid ""
+"Converting to a primary zone keeps the transferred records and stops "
+"Poweradmin from treating the zone as a replica."
+msgstr "Převod na primární zónu zachová přenesené záznamy a zabrání Poweradminu považovat zónu za repliku."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:76
+msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
+msgstr "Nepodařilo se spojit s PowerDNS API; kontroly konzistence nejsou k dispozici."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:231
+msgid "Create and transfer"
+msgstr "Vytvořit a přenést"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:17
+msgid "Created secondary zone"
+msgstr "Vytvořena sekundární zóna"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:117
+msgid ""
+"Creates a secondary zone pointing at the primary server below and asks "
+"PowerDNS to transfer it over AXFR. After the records arrive you can convert "
+"it to a primary zone."
+msgstr "Vytvoří sekundární zónu odkazující na primární server níže a požádá PowerDNS o její přenos přes AXFR. Po doručení záznamů ji můžete převést na primární zónu."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "DNSSEC keys are managed at the primary server"
+msgstr "Klíče DNSSEC jsou spravovány na primárním serveru"
+
+#: templates/modern/user_preferences.html:118
+msgid "Display the record count column in zone lists"
+msgstr "Zobrazit sloupec s počtem záznamů v seznamech zón"
+
+#: lib/Domain/Model/UserManager.php:464
+msgid "Email address already exists, please choose another one."
+msgstr "E-mailová adresa již existuje, vyberte prosím jinou."
+
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr "Zadejte síť (např. 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny (např. 1.168.192.in-addr.arpa)."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:143
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr "Zadejte síť v zápisu CIDR (například 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny končící na in-addr.arpa nebo ip6.arpa."
+
+#: lib/Application/Controller/BulkRegistrationController.php:214
+msgid "Failed to add zone."
+msgstr "Nepodařilo se přidat zónu."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
+msgid "Failed to create the secondary zone."
+msgstr "Nepodařilo se vytvořit sekundární zónu."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
+msgid "HHIT record content must be a non-empty base64-encoded blob."
+msgstr "Obsah záznamu HHIT musí být neprázdný blok zakódovaný v base64."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:131
+msgid "IPv4 or IPv6 address. Separate multiple primaries with commas."
+msgstr "Adresa IPv4 nebo IPv6. Více primárních serverů oddělte čárkami."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:49
+msgid "Import another"
+msgstr "Importovat další"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:62
+#: lib/Module/SecondaryZoneImport/templates/import.html:113
+msgid "Import secondary zone"
+msgstr "Importovat sekundární zónu"
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+msgid ""
+"Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
+"(the first unescaped dot represents @)."
+msgstr "Neplatná e-mailová adresa v záznamu SOA. Použijte tvar \"hostmaster.example.net\" (první neescapovaná tečka představuje @)."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:420
+msgid "Invalid value for %s. Allowed values: %s."
+msgstr "Neplatná hodnota pro %s. Povolené hodnoty: %s."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:231
+msgid "Invalid zone."
+msgstr "Neplatná zóna."
+
+#: templates/modern/api_key_edit.html:57 templates/modern/api_key_add.html:49
+msgid "Leave all unchecked to allow every operation."
+msgstr "Ponechte vše nezaškrtnuté, chcete-li povolit každou operaci."
+
+#: templates/modern/api_key_edit.html:67 templates/modern/api_key_add.html:59
+msgid "Leave empty to allow access to all zones available to you."
+msgstr "Ponechte prázdné, chcete-li povolit přístup ke všem zónám, které máte k dispozici."
+
+#: lib/AppInitializer.php:82
+msgid ""
+"No configuration file found at %s. Please run the installer at install/ to "
+"create one, or create the configuration file manually."
+msgstr "Na %s nebyl nalezen žádný konfigurační soubor. Spusťte instalátor v install/ pro jeho vytvoření, nebo konfigurační soubor vytvořte ručně."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:59
+msgid ""
+"No records transferred yet. PowerDNS may still be transferring; reload to "
+"check again."
+msgstr "Zatím nebyly přeneseny žádné záznamy. PowerDNS možná stále přenáší; obnovte pro opětovnou kontrolu."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:124
+msgid "No zones without owners to fix"
+msgstr "Žádné zóny bez vlastníků k opravě"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr "Obnovení hesla je povoleno, ale interface.application_url není nakonfigurováno, takže e-maily pro obnovení nejsou odesílány. Nastavte application_url na svou veřejnou základní URL."
+
+#: templates/default/edit.html:888 templates/modern/edit.html:888
+msgid "Presigned"
+msgstr "Předpodepsaná"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Primary server IP address"
+msgstr "IP adresa primárního serveru"
+
+#: lib/Domain/Service/DnsValidation/BRIDRecordValidator.php:68
+msgid "Priority must be 0 for BRID records."
+msgstr "Priorita musí být 0 pro záznamy BRID."
+
+#: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:68
+msgid "Priority must be 0 for HHIT records."
+msgstr "Priorita musí být 0 pro záznamy HHIT."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:111
+msgid "Priority must be 0 for RESINFO records."
+msgstr "Priorita musí být 0 pro záznamy RESINFO."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:122
+msgid "Priority must be 0 for WALLET records."
+msgstr "Priorita musí být 0 pro záznamy WALLET."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:97
+msgid ""
+"RESINFO record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Obsah záznamu RESINFO musí být jeden nebo více řetězců znaků v uvozovkách (každý až 255 bajtů)."
+
+#: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
+msgid "RESINFO record content must not be empty."
+msgstr "Obsah záznamu RESINFO nesmí být prázdný."
+
+#: templates/modern/list_forward_zones.html:160
+msgid "Read-only"
+msgstr "Pouze pro čtení"
+
+#: templates/modern/api_key_edit.html:46 templates/modern/api_key_add.html:38
+msgid "Read-only (allow GET requests only)"
+msgstr "Pouze pro čtení (povolit pouze požadavky GET)"
+
+#: lib/Module/DnsWizard/DnsWizardModule.php:85
+msgid "Record Wizard"
+msgstr "Průvodce záznamem"
+
+#: templates/modern/list_forward_zones.html:160
+msgid ""
+"Records for this zone are replicated from its primary and cannot be edited "
+"here."
+msgstr "Záznamy pro tuto zónu jsou replikovány z jejího primárního serveru a nelze je zde upravovat."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+msgid ""
+"SOA contains the template placeholder %s. Use literal values; placeholders "
+"are only expanded when creating a zone from a template."
+msgstr "SOA obsahuje zástupný symbol šablony %s. Použijte doslovné hodnoty; zástupné symboly se rozbalí pouze při vytváření zóny ze šablony."
+
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+msgid ""
+"SOA record name must match the zone apex \"%s\". Leave the name field blank "
+"or enter \"@\"."
+msgstr "Název záznamu SOA musí odpovídat vrcholu zóny \"%s\". Ponechte pole názvu prázdné nebo zadejte \"@\"."
+
+#: templates/modern/add_zone_master.html:69
+msgid "SOA serial policy"
+msgstr "Zásada sériového čísla SOA"
+
+#: templates/modern/add_zone_master.html:76
+msgid ""
+"SOA-EDIT-API metadata: how the SOA serial is updated on later changes. "
+"Template placeholders like [SERIAL], [UNIXTIME] or [COUNTER] set only the "
+"initial serial."
+msgstr "Metadata SOA-EDIT-API: jak se sériové číslo SOA aktualizuje při pozdějších změnách. Zástupné symboly šablony jako [SERIAL], [UNIXTIME] nebo [COUNTER] nastavují pouze počáteční sériové číslo."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:13
+msgid "Secondary zone created"
+msgstr "Sekundární zóna vytvořena"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
+msgstr "Sériové číslo tak, jak jej poskytuje PowerDNS, s aplikovaným SOA-EDIT"
+
+#: templates/modern/add_zone_master.html:71
+msgid "Server default"
+msgstr "Výchozí nastavení serveru"
+
+#: templates/modern/edit.html:891 templates/modern/list_forward_zones.html:125
+msgid "Signed serial"
+msgstr "Podepsané sériové číslo"
+
+#: lib/Application/Controller/EditController.php:751
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Některé záznamy nebyly uloženy, protože formulář překročil serverový limit počtu polí. Požádejte administrátora o zvýšení nastavení PHP \"max_input_vars\"."
+
+#: templates/modern/edit_zone_templ.html:209
+msgid "Substituted with current UNIX timestamp"
+msgstr "Nahrazeno aktuálním časovým razítkem UNIX"
+
+#: templates/modern/edit_zone_templ.html:213
+msgid "Substituted with initial counter value"
+msgstr "Nahrazeno počáteční hodnotou čítače"
+
+#: lib/BaseController.php:811
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Adresář install/ existuje, před pokračováním jej musíte nejprve odstranit."
+
+#: lib/Domain/Model/ZoneTemplate.php:697 lib/Domain/Model/ZoneTemplate.php:759
+msgid "The record does not belong to this zone template."
+msgstr "Tento záznam nepatří do této šablony zóny."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:29
+msgid ""
+"The zone was created, but the transfer request was not accepted. The primary "
+"may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
+msgstr "Zóna byla vytvořena, ale požadavek na přenos nebyl přijat. Primární server může AXFR odmítnout, nebo to PowerDNS zkusí znovu podle vlastního plánu obnovování."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:61
+msgid "This action requires a POST request."
+msgstr "Tato akce vyžaduje požadavek POST."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:238
+msgid ""
+"This zone has no transferred records yet. Wait for the transfer to complete "
+"before converting it to a primary zone."
+msgstr "Tato zóna zatím nemá žádné přenesené záznamy. Před převodem na primární zónu počkejte na dokončení přenosu."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
+#: templates/default/dnssec.html:54 templates/modern/dnssec.html:54
+msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
+msgstr "Tato zóna je předpodepsaná; klíče DNSSEC jsou spravovány na primárním serveru."
+
+#: lib/Application/Controller/MfaVerifyController.php:148
+msgid "Too many failed attempts. Please try again later."
+msgstr "Příliš mnoho neúspěšných pokusů. Zkuste to prosím znovu později."
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:46
+msgid "View zone"
+msgstr "Zobrazit zónu"
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:102
+msgid ""
+"WALLET record content must be one or more quoted character-strings (each up "
+"to 255 bytes)."
+msgstr "Obsah záznamu WALLET musí být jeden nebo více řetězců znaků v uvozovkách (každý až 255 bajtů)."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
+msgid "WALLET record content must not be empty."
+msgstr "Obsah záznamu WALLET nesmí být prázdný."
+
+#: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:108
+msgid ""
+"WALLET records conventionally contain a coin symbol and wallet address "
+"separated by whitespace, e.g. \"BTC bc1q...\"."
+msgstr "Záznamy WALLET obvykle obsahují symbol mince a adresu peněženky oddělené mezerou, např. \"BTC bc1q...\"."
+
+#: lib/Application/Controller/EditController.php:571
+msgid "You cannot apply a template to a read-only zone."
+msgstr "Na zónu pouze pro čtení nelze použít šablonu."
+
+#: lib/Domain/Service/Dns/RecordManager.php:499
+msgid "You cannot delete records from a read-only zone."
+msgstr "Ze zóny pouze pro čtení nelze mazat záznamy."
+
+#: lib/Application/Controller/EditRecordController.php:125
+msgid "You cannot edit records in a read-only zone."
+msgstr "V zóně pouze pro čtení nelze upravovat záznamy."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
+msgid "You cannot import records into a read-only zone."
+msgstr "Do zóny pouze pro čtení nelze importovat záznamy."
+
+#: lib/Domain/Service/Dns/DomainManager.php:793
+msgid "You do not have the permission to change zone metadata."
+msgstr "Nemáte oprávnění měnit metadata zóny."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:61
+msgid "You do not have the permission to import a secondary zone."
+msgstr "Nemáte oprávnění importovat sekundární zónu."
+
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Vaše uživatelské jméno může změnit pouze administrátor"
+
+#: templates/modern/api_key_edit.html:61 templates/modern/api_key_add.html:53
+msgid "Zone access"
+msgstr "Přístup k zóně"
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:250
+msgid "Zone has been converted to a primary zone."
+msgstr "Zóna byla převedena na primární zónu."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
+msgid "Zone name and primary server address are required."
+msgstr "Název zóny a adresa primárního serveru jsou povinné."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:139
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before importing zones."
+msgstr "Režim vlastnictví zóny je groups_only, ale neexistují žádné skupiny. Před importem zón vytvořte skupinu."
+
+#: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:144
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before importing zones."
+msgstr "Režim vlastnictví zóny je groups_only, ale nejste členem žádné skupiny. Požádejte administrátora, aby vás přidal do skupiny, než začnete importovat zóny."
+
+#: templates/modern/user_preferences.html:117
+msgid "Zone record count"
+msgstr "Počet záznamů zóny"
+
+#: templates/modern/bulk_registration.html:129
+msgid "failed"
+msgstr "selhalo"
+
+#: templates/modern/bulk_registration.html:128
+msgid "imported"
+msgstr "importováno"
+
+#: lib/Module/SecondaryZoneImport/templates/import.html:58
+msgid "records received - ready to convert."
+msgstr "záznamy přijaty - připraveno k převodu."
