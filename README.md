@@ -125,8 +125,8 @@ Poweradmin maintains multiple release branches:
 | `master` | Current release | 4.4.x releases - newest line, still hardening |
 | `release/4.3.x` | Stable | Current stable line (recommended), patch releases and security updates |
 | `release/4.2.x` | Maintenance | Security updates only, winding down |
-| `release/4.1.x` | Maintenance | Security updates only |
-| `release/4.0.x` | Maintenance | Security updates only |
+| `release/4.1.x` | End of support | No further updates - upgrade to 4.3.x |
+| `release/4.0.x` | End of support | No further updates - upgrade to 4.3.x |
 | `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
 
 ### PHP Version Support
