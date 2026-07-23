@@ -1,0 +1,50 @@
+name: Docker Retag
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: 'Existing image tag the target should point at (e.g. 4.3.4)'
+        required: true
+        type: string
+      target_tag:
+        description: 'Tag to move'
+        required: true
+        default: 'stable'
+        type: string
+
+permissions:
+  packages: write
+
+jobs:
+  retag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4
+        with:
+          registry: docker.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Retag Docker Hub image
+        env:
+          SOURCE: ${{ inputs.source_tag }}
+          TARGET: ${{ inputs.target_tag }}
+        run: docker buildx imagetools create -t "poweradmin/poweradmin:${TARGET}" "poweradmin/poweradmin:${SOURCE}"
+
+      - name: Retag GHCR image
+        env:
+          SOURCE: ${{ inputs.source_tag }}
+          TARGET: ${{ inputs.target_tag }}
+        run: docker buildx imagetools create -t "ghcr.io/${{ github.repository_owner }}/poweradmin:${TARGET}" "ghcr.io/${{ github.repository_owner }}/poweradmin:${SOURCE}"
