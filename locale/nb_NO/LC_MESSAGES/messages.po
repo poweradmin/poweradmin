@@ -14032,3 +14032,10 @@ msgstr "Posten tilhører ikke denne sonemalen."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Brukernavnet ditt kan bare endres av en administrator"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Brukeren ble ikke slettet fordi skjemaet oversteg serverens grense for antall felt. Be administratoren om å øke PHP-innstillingen \"max_input_vars\"."

@@ -13130,3 +13130,10 @@ msgstr "该记录不属于此区域模板。"
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "您的用户名只能由管理员更改"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "由于表单超出了服务器对字段数量的限制，用户未被删除。请让管理员增大 PHP \"max_input_vars\" 设置。"

@@ -14393,3 +14393,10 @@ msgstr "Der Eintrag gehört nicht zu dieser Zonenvorlage."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Ihr Benutzername kann nur von einem Administrator geändert werden"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Der Benutzer wurde nicht gelöscht, da das Formular das Serverlimit für die Anzahl der Felder überschritten hat. Bitten Sie Ihren Administrator, die PHP-Einstellung \"max_input_vars\" zu erhöhen."
