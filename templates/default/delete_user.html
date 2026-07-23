@@ -17,7 +17,7 @@
             <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
         </div>
 
-        <form method="post" action="">
+        <form method="post" action="" id="delete-user-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
 
             {% if zones_count > 0 %}
@@ -96,6 +96,34 @@
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this user{% endtrans %}
                 </a>
             </div>
+            {# Must stay the last form field: its absence tells the server the POST was truncated #}
+            <input type="hidden" name="form_complete" value="1">
         </form>
     </div>
 </div>
+
+<script>
+// Posts per-zone decisions as one JSON field to stay under PHP's max_input_vars
+// limit; zones left on the default "leave" choice need no server-side action.
+document.getElementById('delete-user-form')?.addEventListener('submit', function() {
+    const decisions = [];
+    this.querySelectorAll('input[name^="zone["][name$="[target]"]:checked').forEach(radio => {
+        const match = radio.name.match(/^zone\[(\d+)\]\[target\]$/);
+        if (!match || radio.value === 'leave') {
+            return;
+        }
+        const decision = {zid: match[1], target: radio.value};
+        if (radio.value === 'new_owner') {
+            const newOwner = radio.closest('tr')?.querySelector('select[name$="[newowner]"]');
+            decision.newowner = newOwner ? newOwner.value : '';
+        }
+        decisions.push(decision);
+    });
+    this.querySelectorAll('[name^="zone["]').forEach(el => el.disabled = true);
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'zone';
+    hidden.value = JSON.stringify(decisions);
+    this.appendChild(hidden);
+});
+</script>
