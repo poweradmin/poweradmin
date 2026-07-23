@@ -64,11 +64,13 @@
                                 <td>
                                     <select class="form-select form-select-sm" name="zone[{{ zone['id']}}][newowner]"
                                             onchange="document.getElementById('new_owner_{{ zone['id']}}').checked = true;">
+                                        {% if not lazy_owner_options %}
                                         {% for user in users %}
                                         <option value="{{ user['id'] }}">
                                             {% if user["fullname"] %}{{ user["fullname"]}} ({{ user["username"]}}){% else %}{{ user["username"]}}{% endif %}
                                         </option>
                                         {% endfor %}
+                                        {% endif %}
                                     </select>
                                 </td>
                             </tr>
@@ -76,6 +78,17 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {% if lazy_owner_options %}
+                    {# Shared option list cloned into a row's select on first use - rendering it per row exhausts memory on large installs #}
+                    <select id="newowner-options" class="d-none" aria-hidden="true">
+                        {% for user in users %}
+                        <option value="{{ user['id'] }}">
+                            {% if user["fullname"] %}{{ user["fullname"]}} ({{ user["username"]}}){% else %}{{ user["username"]}}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% endif %}
 
                     <div class="mt-3 small text-muted">
                         <ul class="mb-0">
@@ -103,6 +116,32 @@
 </div>
 
 <script>
+// Fills a row's empty owner select from the shared option list on first use
+const newOwnerOptions = document.getElementById('newowner-options');
+function populateNewOwnerSelect(select) {
+    if (!newOwnerOptions || !select || select.options.length) {
+        return;
+    }
+    Array.from(newOwnerOptions.options).forEach(opt => select.appendChild(opt.cloneNode(true)));
+}
+
+const deleteUserForm = document.getElementById('delete-user-form');
+deleteUserForm?.addEventListener('mousedown', event => {
+    if (event.target.matches('select[name$="[newowner]"]')) {
+        populateNewOwnerSelect(event.target);
+    }
+}, true);
+deleteUserForm?.addEventListener('focusin', event => {
+    if (event.target.matches('select[name$="[newowner]"]')) {
+        populateNewOwnerSelect(event.target);
+    }
+});
+deleteUserForm?.addEventListener('change', event => {
+    if (event.target.matches('input[value="new_owner"]')) {
+        populateNewOwnerSelect(event.target.closest('tr')?.querySelector('select[name$="[newowner]"]'));
+    }
+});
+
 // Posts per-zone decisions as one JSON field to stay under PHP's max_input_vars
 // limit; zones left on the default "leave" choice need no server-side action.
 document.getElementById('delete-user-form')?.addEventListener('submit', function() {
