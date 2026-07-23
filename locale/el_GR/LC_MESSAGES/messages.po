@@ -13998,3 +13998,10 @@ msgstr "εισήχθη"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "εγγραφές ελήφθησαν - έτοιμες για μετατροπή."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Ο χρήστης δεν διαγράφηκε επειδή η φόρμα υπερέβη το όριο του διακομιστή στον αριθμό πεδίων. Ζητήστε από τον διαχειριστή σας να αυξήσει τη ρύθμιση PHP \"max_input_vars\"."

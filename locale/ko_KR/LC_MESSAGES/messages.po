@@ -14304,3 +14304,10 @@ msgstr "가져옴"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "레코드 수신됨 - 변환 준비 완료."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "양식이 필드 수에 대한 서버 제한을 초과하여 사용자가 삭제되지 않았습니다. 관리자에게 PHP \"max_input_vars\" 설정을 늘려 달라고 요청하세요."

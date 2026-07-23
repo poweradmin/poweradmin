@@ -13997,3 +13997,10 @@ msgstr "יובא"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "רשומות התקבלו - מוכן להמרה."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "המשתמש לא נמחק מכיוון שהטופס חרג ממגבלת השרת על מספר השדות. בקש מהמנהל שלך להגדיל את הגדרת ה-PHP \"max_input_vars\"."

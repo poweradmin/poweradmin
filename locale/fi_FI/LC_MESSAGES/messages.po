@@ -14294,3 +14294,10 @@ msgstr "tuotu"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "tietuetta vastaanotettu - valmis muunnettavaksi."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Käyttäjää ei poistettu, koska lomake ylitti palvelimen kenttien enimmäismäärän. Pyydä ylläpitäjää suurentamaan PHP:n \"max_input_vars\"-asetusta."

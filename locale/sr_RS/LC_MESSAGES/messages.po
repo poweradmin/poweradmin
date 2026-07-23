@@ -14404,3 +14404,10 @@ msgstr "увезено"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "записи примљени - спремно за претварање."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Корисник није обрисан јер је формулар прекорачио ограничење сервера на број поља. Затражите од администратора да повећа PHP \"max_input_vars\" подешавање."

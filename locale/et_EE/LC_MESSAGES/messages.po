@@ -14366,3 +14366,10 @@ msgstr "imporditud"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "kirjed vastu võetud - valmis teisendamiseks."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Kasutajat ei kustutatud, kuna vorm ületas serveri väljade arvu piirangu. Paluge administraatoril suurendada PHP \"max_input_vars\" seadet."

@@ -15677,3 +15677,10 @@ msgstr "импортировано"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "записи получены - готово к преобразованию."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Пользователь не был удалён, так как форма превысила серверный лимит на количество полей. Попросите администратора увеличить значение параметра PHP \"max_input_vars\"."

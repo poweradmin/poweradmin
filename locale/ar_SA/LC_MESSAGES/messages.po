@@ -14046,3 +14046,10 @@ msgstr "تم الاستيراد"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "تم استلام السجلات - جاهزة للتحويل."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "لم يُحذف المستخدم لأن النموذج تجاوز حد الخادم لعدد الحقول. اطلب من المسؤول زيادة إعداد PHP \"max_input_vars\"."

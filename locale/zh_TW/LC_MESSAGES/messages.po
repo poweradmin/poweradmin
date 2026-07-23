@@ -14097,3 +14097,10 @@ msgstr "已導入"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "已接收記錄 - 準備轉換。"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "使用者未被刪除，因為表單超出了伺服器對欄位數量的限制。請要求您的管理員提高 PHP \"max_input_vars\" 設定。"

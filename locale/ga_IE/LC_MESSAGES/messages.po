@@ -14034,3 +14034,10 @@ msgstr "iompórtáilte"
 #: lib/Module/SecondaryZoneImport/templates/import.html:58
 msgid "records received - ready to convert."
 msgstr "taifid faighte - réidh le tiontú."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Níor scriosadh an t-úsáideoir toisc gur sháraigh an fhoirm teorainn an fhreastalaí ar líon na réimsí. Iarr ar do riarthóir an socrú PHP \"max_input_vars\" a mhéadú."
