@@ -8,9 +8,8 @@
 [![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
-interface supports most of
-the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for
-DNSSEC operations.
+interface supports most of the features of PowerDNS. It can work directly against the PowerDNS database
+(with API-assisted DNSSEC) or run entirely through the PowerDNS API in API backend mode.
 
 ## Features
 
@@ -19,8 +18,10 @@ DNSSEC operations.
 - Zone templates for quick zone creation
 - Bulk operations for records and reverse DNS
 - Zone metadata editor for PowerDNS `domainmetadata`, including multi-value metadata kinds
+- Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
+- Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
 - IPv6 support
-- Multi-language support (15+ languages)
+- Multi-language support (28 languages)
 - DNSSEC operations via PowerDNS API
 - Light and dark themes
 - Search functionality across zones and records
@@ -104,6 +105,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
+- **master (4.4.x)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.3.x (stable)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
@@ -111,7 +113,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 **User-reported compatibility:**
 - PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
 
-**Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
+**Compatibility note:** In the default SQL backend, Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API for DNSSEC operations - the database schema stays relatively stable between PowerDNS releases, so compatibility is broad. In API backend mode, all operations go through the PowerDNS HTTP API instead. Since 4.4.0, the interface also detects the connected PowerDNS version and adjusts the available features accordingly.
 
 ## Version Support
 
@@ -120,11 +122,11 @@ Poweradmin maintains multiple release branches:
 | Branch | Status | Support |
 |--------|--------|---------|
 | `develop` | Experimental | 4.5.x experimental features, may be unstable |
-| `master` | Development | 4.4.x next release development |
-| `release/4.3.x` | Stable | Current stable, patch releases and security updates |
-| `release/4.2.x` | Maintenance | Security updates only |
-| `release/4.1.x` | Maintenance | Security updates only |
-| `release/4.0.x` | Maintenance | Security updates only |
+| `master` | Current release | 4.4.x releases - newest line, still hardening |
+| `release/4.3.x` | Stable | Current stable line (recommended), patch releases and security updates |
+| `release/4.2.x` | Maintenance | Security updates only, winding down |
+| `release/4.1.x` | End of support | No further updates - upgrade to 4.3.x |
+| `release/4.0.x` | End of support | No further updates - upgrade to 4.3.x |
 | `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
 
 ### PHP Version Support
