@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -113,18 +113,38 @@ class ManageGroupMembersController extends BaseController
         }
     }
 
-    private function addMembers(int $groupId): void
+    /**
+     * Selected users arrive as one comma-separated field to stay under PHP's
+     * max_input_vars limit; a plain checkbox array is accepted as fallback.
+     */
+    private function getSelectedUserIds(): array
     {
         $userIds = $this->request->getPostParam('user_ids', []);
+        if (is_string($userIds)) {
+            $userIds = explode(',', $userIds);
+        }
+        if (!is_array($userIds)) {
+            return [];
+        }
+        $ids = [];
+        foreach ($userIds as $userId) {
+            $id = (int)$userId;
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+        return $ids;
+    }
 
-        if (!is_array($userIds) || empty($userIds)) {
+    private function addMembers(int $groupId): void
+    {
+        $userIds = $this->getSelectedUserIds();
+
+        if (empty($userIds)) {
             $this->setMessage('manage_group_members', 'error', _('Please select at least one user.'));
             $this->showManageMembers($groupId);
             return;
         }
-
-        // Convert to integers
-        $userIds = array_map('intval', $userIds);
 
         try {
             // Get group details and usernames before adding
@@ -191,16 +211,13 @@ class ManageGroupMembersController extends BaseController
 
     private function removeMembers(int $groupId): void
     {
-        $userIds = $this->request->getPostParam('user_ids', []);
+        $userIds = $this->getSelectedUserIds();
 
-        if (!is_array($userIds) || empty($userIds)) {
+        if (empty($userIds)) {
             $this->setMessage('manage_group_members', 'error', _('Please select at least one user.'));
             $this->showManageMembers($groupId);
             return;
         }
-
-        // Convert to integers
-        $userIds = array_map('intval', $userIds);
 
         try {
             // Get group details and usernames before removing
