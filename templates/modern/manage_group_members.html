@@ -187,6 +187,10 @@ function toggleAddButton() {
     if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
 }
 
+document.getElementById('add-form')?.addEventListener('submit', function() {
+    collapseSelectedIds(this, 'available-checkbox', 'user_ids');
+});
+
 // Search functionality
 document.getElementById('search-available')?.addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
@@ -208,6 +212,8 @@ function showRemoveMembersModal() {
 
 // Handle remove confirmation
 document.getElementById('confirmRemoveMembersBtn')?.addEventListener('click', function() {
-    document.getElementById('remove-form').submit();
+    const removeForm = document.getElementById('remove-form');
+    collapseSelectedIds(removeForm, 'member-checkbox', 'user_ids');
+    removeForm.submit();
 });
 </script>

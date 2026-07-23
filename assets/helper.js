@@ -54,8 +54,8 @@ function toggleEditRecordCheckboxes() {
     updateDeleteButtonState("delete-selected-records", checkboxes);
 }
 
-// Posts selected zone IDs as one field to stay under PHP's max_input_vars limit
-function collapseSelectedZones(form, checkboxClass) {
+// Posts selected row IDs as one field to stay under PHP's max_input_vars limit
+function collapseSelectedIds(form, checkboxClass, fieldName) {
     const checked = form.querySelectorAll('.' + checkboxClass + ':checked');
     const ids = [];
     checked.forEach(cb => {
@@ -64,9 +64,13 @@ function collapseSelectedZones(form, checkboxClass) {
     });
     const hidden = document.createElement('input');
     hidden.type = 'hidden';
-    hidden.name = 'domain_ids';
+    hidden.name = fieldName;
     hidden.value = ids.join(',');
     form.appendChild(hidden);
+}
+
+function collapseSelectedZones(form, checkboxClass) {
+    collapseSelectedIds(form, checkboxClass, 'domain_ids');
 }
 
 function updateDeleteButtonState(buttonId, checkboxes) {
