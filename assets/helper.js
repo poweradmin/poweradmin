@@ -2,7 +2,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,6 +52,21 @@ function toggleEditRecordCheckboxes() {
         checkboxes[index].checked = select_state.checked;
     }
     updateDeleteButtonState("delete-selected-records", checkboxes);
+}
+
+// Posts selected zone IDs as one field to stay under PHP's max_input_vars limit
+function collapseSelectedZones(form, checkboxClass) {
+    const checked = form.querySelectorAll('.' + checkboxClass + ':checked');
+    const ids = [];
+    checked.forEach(cb => {
+        ids.push(cb.value);
+        cb.disabled = true;
+    });
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'domain_ids';
+    hidden.value = ids.join(',');
+    form.appendChild(hidden);
 }
 
 function updateDeleteButtonState(buttonId, checkboxes) {
