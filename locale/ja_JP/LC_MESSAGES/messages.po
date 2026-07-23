@@ -14866,3 +14866,10 @@ msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
 msgstr "あなたに送信されるメール（MFA コードなど）のタイムスタンプに使用されます。空の場合はサーバーのグローバルタイムゾーンを継承します。"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "フォームがサーバーのフィールド数上限を超えたため、ユーザーは削除されませんでした。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してください。"

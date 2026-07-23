@@ -15380,3 +15380,10 @@ msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
 msgstr "Utilisé pour les horodatages dans les e-mails qui vous sont envoyés (par exemple, les codes MFA). Vide, hérite du fuseau horaire global du serveur."
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "L'utilisateur n'a pas été supprimé car le formulaire a dépassé la limite du serveur sur le nombre de champs. Demandez à votre administrateur d'augmenter le paramètre PHP \"max_input_vars\"."
