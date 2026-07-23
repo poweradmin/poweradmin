@@ -44,6 +44,10 @@ use Poweradmin\Domain\Service\SessionKeys;
 
 class DeleteUserController extends BaseController
 {
+    // Above this many total <option> elements the owner dropdowns are rendered
+    // lazily, since zones x users options can exhaust the PHP memory limit
+    private const MAX_INLINE_OWNER_OPTIONS = 10000;
+
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
@@ -117,6 +121,13 @@ class DeleteUserController extends BaseController
                 $this->setMessage('delete_user', 'error', _('The user was not deleted because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
                 return;
             }
+            // Reject reassignments without a valid owner (lazily rendered selects post empty without JS)
+            foreach ($zone as $zoneEntry) {
+                if (is_array($zoneEntry) && ($zoneEntry['target'] ?? '') === 'new_owner' && (int)($zoneEntry['newowner'] ?? 0) <= 0) {
+                    $this->showError(_('Invalid or unexpected input given.'));
+                    return;
+                }
+            }
             $zones = $zone;
         }
 
@@ -188,6 +199,7 @@ class DeleteUserController extends BaseController
             'zones' => $zones,
             'zones_count' => count($zones),
             'users' => $users,
+            'lazy_owner_options' => count($zones) * count($users) > self::MAX_INLINE_OWNER_OPTIONS,
         ]);
     }
 }
