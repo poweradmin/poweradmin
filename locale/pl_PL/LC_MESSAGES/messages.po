@@ -14342,3 +14342,10 @@ msgstr "Rekord nie należy do tego szablonu strefy."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Twoja nazwa użytkownika może być zmieniona tylko przez administratora"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Użytkownik nie został usunięty, ponieważ formularz przekroczył serwerowy limit liczby pól. Poproś administratora o zwiększenie ustawienia PHP \"max_input_vars\"."

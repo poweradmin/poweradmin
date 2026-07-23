@@ -14351,3 +14351,10 @@ msgstr "Запис не належить до цього шаблону зони
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Ваше ім'я користувача може змінити лише адміністратор"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Користувача не було видалено, оскільки форма перевищила серверне обмеження на кількість полів. Попросіть адміністратора збільшити налаштування PHP \"max_input_vars\"."

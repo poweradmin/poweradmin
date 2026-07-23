@@ -14453,3 +14453,10 @@ msgstr "Il record non appartiene a questo template di zona."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Il tuo nome utente può essere modificato solo da un amministratore"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "L'utente non è stato eliminato perché il modulo ha superato il limite del server sul numero di campi. Chiedi al tuo amministratore di aumentare l'impostazione PHP \"max_input_vars\"."

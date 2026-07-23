@@ -13645,3 +13645,10 @@ msgstr "Rekaman tidak termasuk dalam template zona ini."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Nama pengguna Anda hanya dapat diubah oleh administrator"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Pengguna tidak dihapus karena formulir melebihi batas server untuk jumlah bidang. Minta administrator Anda untuk menaikkan pengaturan PHP \"max_input_vars\"."

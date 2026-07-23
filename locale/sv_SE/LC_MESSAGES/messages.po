@@ -13586,3 +13586,10 @@ msgstr "Posten tillhör inte denna zonmall."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Ditt användarnamn kan endast ändras av en administratör"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Användaren togs inte bort eftersom formuläret överskred serverns gräns för antalet fält. Be din administratör att öka PHP-inställningen \"max_input_vars\"."

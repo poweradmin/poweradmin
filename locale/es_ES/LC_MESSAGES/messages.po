@@ -14460,3 +14460,10 @@ msgstr "El registro no pertenece a esta plantilla de zona."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Su nombre de usuario solo puede ser cambiado por un administrador"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "El usuario no se eliminó porque el formulario superó el límite del servidor en el número de campos. Pida a su administrador que aumente la configuración \"max_input_vars\" de PHP."

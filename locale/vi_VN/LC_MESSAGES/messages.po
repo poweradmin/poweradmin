@@ -13766,3 +13766,10 @@ msgstr "Bản ghi không thuộc về mẫu vùng này."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Tên người dùng của bạn chỉ có thể được thay đổi bởi quản trị viên"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Người dùng không bị xóa vì biểu mẫu đã vượt quá giới hạn số trường của máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."

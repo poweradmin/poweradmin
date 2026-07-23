@@ -14220,3 +14220,10 @@ msgstr "Kayıt bu zon şablonuna ait değil."
 #: templates/default/edit_user.html:33
 msgid "Your username can only be changed by an administrator"
 msgstr "Kullanıcı adınız yalnızca bir yönetici tarafından değiştirilebilir"
+
+#: lib/Application/Controller/DeleteUserController.php:129
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr "Form, alan sayısı için sunucu sınırını aştığından kullanıcı silinmedi. Yöneticinizden PHP \"max_input_vars\" ayarını artırmasını isteyin."
