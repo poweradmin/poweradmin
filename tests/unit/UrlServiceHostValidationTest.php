@@ -108,10 +108,12 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertEquals('https://legitimate.com/login', $loginUrl);
     }
 
-    public function testAutoDetectionWhenNoConfigurationExists(): void
+    public function testAutoDetectionUsesServerNameNotHostHeaderWhenNoConfigurationExists(): void
     {
-        // Simulate environment without configured application_url
-        $_SERVER['HTTP_HOST'] = 'autodetect.com';
+        // Without application_url, a forged Host must be ignored in favour of SERVER_NAME
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'autodetect.com';
+        $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
         $config = $this->createMockConfig([
@@ -123,11 +125,33 @@ class UrlServiceHostValidationTest extends TestCase
 
         $urlService = new UrlService($config);
 
-        // Get absolute URL
         $url = $urlService->getAbsoluteUrl('/test');
 
-        // Auto-detection should work when no configuration exists
         $this->assertEquals('https://autodetect.com/test', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', $url);
+    }
+
+    public function testZoneEditUrlIgnoresForgedHostWhenApplicationUrlEmpty(): void
+    {
+        // Regression: the emailed zone-access link must not honour a forged Host header
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $_SERVER['SERVER_NAME'] = 'dns.legitimate.example';
+        $_SERVER['SERVER_PORT'] = '443';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $url = $urlService->getZoneEditUrl(42);
+
+        $this->assertEquals('https://dns.legitimate.example/zones/42/edit', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', $url);
     }
 
     public function testCaseInsensitiveHostComparison(): void
@@ -156,7 +180,8 @@ class UrlServiceHostValidationTest extends TestCase
     {
         // Simulate CLI context (like PHPUnit, cron jobs, queue workers)
         $_SERVER['SCRIPT_NAME'] = 'bin/console';
-        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['SERVER_NAME'] = 'example.com';
+        $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
         // No configured application_url or base_url_prefix

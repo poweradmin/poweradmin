@@ -158,19 +158,21 @@ class UrlService
     }
 
     /**
-     * Get host from server variables with validation
+     * Get host from server variables
      *
-     * Validates HTTP_HOST against configured application_url to prevent
-     * host header injection attacks that could lead to phishing emails.
+     * Prefers the configured application_url. HTTP_HOST is attacker-controllable, so it is
+     * only consulted when application_url is set (and then validated against it); otherwise
+     * the host is taken from SERVER_NAME, matching the OIDC/SAML/logout link-building paths.
      *
      * @return string Host (e.g., 'example.com' or 'example.com:8080')
      */
     private function getHost(): string
     {
-        $host = '';
+        $configuredUrl = $this->config->get('interface', 'application_url', '');
 
-        // Prefer HTTP_HOST as it includes port if non-standard
-        if (!empty($_SERVER['HTTP_HOST'])) {
+        // Only trust HTTP_HOST when application_url is configured, because the mismatch check
+        // below then forces the configured host. Without it, fall back to SERVER_NAME.
+        if (!empty($configuredUrl) && !empty($_SERVER['HTTP_HOST'])) {
             $host = $_SERVER['HTTP_HOST'];
         } elseif (!empty($_SERVER['SERVER_NAME'])) {
             $host = $_SERVER['SERVER_NAME'];
@@ -185,15 +187,12 @@ class UrlService
             return 'localhost';
         }
 
-        // Validate host against configured application_url to prevent host header injection
-        $configuredUrl = $this->config->get('interface', 'application_url', '');
+        // When application_url is configured, force it on any host mismatch
         if (!empty($configuredUrl)) {
             $expectedHost = $this->extractHostFromUrl($configuredUrl);
 
-            // If configured URL exists, validate the detected host matches
             if (!empty($expectedHost) && strcasecmp($host, $expectedHost) !== 0) {
-                // Log suspicious activity - possible host header injection attempt
-                $this->logger->warning('UrlService: Host header mismatch - got {host}, expected {expectedHost} from configuration. Using configured host for security.', ['host' => $host, 'expectedHost' => $expectedHost]);
+                $this->logger->warning('UrlService: Host header mismatch - got {host}, expected {expectedHost} from configuration. Using configured host.', ['host' => $host, 'expectedHost' => $expectedHost]);
                 return $expectedHost;
             }
         }
