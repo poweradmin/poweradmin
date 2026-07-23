@@ -170,6 +170,10 @@ function toggleAddButton() {
     if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
 }
 
+document.getElementById('add-form')?.addEventListener('submit', function() {
+    collapseSelectedZones(this, 'available-checkbox');
+});
+
 // Search functionality
 const searchAvailable = document.getElementById('search-available');
 const clearSearchAvailable = document.getElementById('clear-search-available');
@@ -209,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmBtn.addEventListener('click', function() {
             const removeForm = document.getElementById('remove-form');
             if (removeForm) {
+                collapseSelectedZones(removeForm, 'owned-checkbox');
                 removeForm.submit();
             }
         });

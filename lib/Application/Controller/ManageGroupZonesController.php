@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -114,18 +114,38 @@ class ManageGroupZonesController extends BaseController
         }
     }
 
-    private function addZones(int $groupId): void
+    /**
+     * Selected zones arrive as one comma-separated field to stay under PHP's
+     * max_input_vars limit; a plain checkbox array is accepted as fallback.
+     */
+    private function getSelectedDomainIds(): array
     {
         $domainIds = $this->request->getPostParam('domain_ids', []);
+        if (is_string($domainIds)) {
+            $domainIds = explode(',', $domainIds);
+        }
+        if (!is_array($domainIds)) {
+            return [];
+        }
+        $ids = [];
+        foreach ($domainIds as $domainId) {
+            $id = (int)$domainId;
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+        return $ids;
+    }
 
-        if (!is_array($domainIds) || empty($domainIds)) {
+    private function addZones(int $groupId): void
+    {
+        $domainIds = $this->getSelectedDomainIds();
+
+        if (empty($domainIds)) {
             $this->setMessage('manage_group_zones', 'error', _('Please select at least one zone.'));
             $this->showManageZones($groupId);
             return;
         }
-
-        // Convert to integers
-        $domainIds = array_map('intval', $domainIds);
 
         try {
             // Get group details and zone names before adding
@@ -204,16 +224,13 @@ class ManageGroupZonesController extends BaseController
 
     private function removeZones(int $groupId): void
     {
-        $domainIds = $this->request->getPostParam('domain_ids', []);
+        $domainIds = $this->getSelectedDomainIds();
 
-        if (!is_array($domainIds) || empty($domainIds)) {
+        if (empty($domainIds)) {
             $this->setMessage('manage_group_zones', 'error', _('Please select at least one zone.'));
             $this->showManageZones($groupId);
             return;
         }
-
-        // Convert to integers
-        $domainIds = array_map('intval', $domainIds);
 
         try {
             // Get group details and zone names before removing
