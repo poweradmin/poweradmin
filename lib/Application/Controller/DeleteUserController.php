@@ -93,8 +93,23 @@ class DeleteUserController extends BaseController
         $targetUsername = UserEntity::getUserNameById($this->db, $uid);
 
         $zones = array();
-        if (isset($_POST['zone'])) {
-            $zones = $_POST['zone'];
+        $zone = $_POST['zone'] ?? null;
+        if (is_string($zone)) {
+            // Per-zone decisions arrive as one JSON field to stay under PHP's max_input_vars limit
+            $parsed = self::parseZoneDecisions($zone);
+            if ($parsed === null) {
+                $this->showError(_('Invalid or unexpected input given.'));
+                return;
+            }
+            $zones = $parsed;
+        } elseif (is_array($zone)) {
+            // No-JS fallback posts several fields per zone; a missing trailing marker means
+            // the POST was truncated, so abort instead of mishandling the dropped zones
+            if (!isset($_POST['form_complete'])) {
+                $this->setMessage('delete_user', 'error', _('The user was not deleted because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
+                return;
+            }
+            $zones = $zone;
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
@@ -109,6 +124,39 @@ class DeleteUserController extends BaseController
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('/users');
         }
+    }
+
+    /**
+     * Parses the JSON zone-decision field into the per-zone array shape used by
+     * UserManager::deleteUser(). Returns null when the payload is malformed.
+     */
+    public static function parseZoneDecisions(string $json): ?array
+    {
+        $decoded = json_decode($json, true);
+        if (!is_array($decoded)) {
+            return null;
+        }
+        $zones = [];
+        foreach ($decoded as $decision) {
+            if (!is_array($decision)) {
+                return null;
+            }
+            $zid = (int)($decision['zid'] ?? 0);
+            $target = $decision['target'] ?? '';
+            if ($zid <= 0 || !in_array($target, ['delete', 'new_owner'], true)) {
+                return null;
+            }
+            $zone = ['zid' => $zid, 'target' => $target];
+            if ($target === 'new_owner') {
+                $newOwner = (int)($decision['newowner'] ?? 0);
+                if ($newOwner <= 0) {
+                    return null;
+                }
+                $zone['newowner'] = $newOwner;
+            }
+            $zones[$zid] = $zone;
+        }
+        return array_values($zones);
     }
 
     public function showQuestion(string $uid): void
