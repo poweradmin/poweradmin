@@ -4,6 +4,7 @@
 /scripts
 /templates/*
 /templates/default/custom/*
+!/templates/theme-specific-templates.txt
 !/templates/default
 !/templates/modern
 !/templates/emails

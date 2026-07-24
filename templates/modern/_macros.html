@@ -5,3 +5,8 @@
 {% macro csrf_field(token) %}
 <input type="hidden" name="_token" value="{{ token|default(csrf_token) }}">
 {%- endmacro %}
+
+{# Locale-aware timestamp for log listings - one place to change the app-wide style. #}
+{% macro log_timestamp(value) %}
+{{- value|format_datetime('medium', 'medium') -}}
+{% endmacro %}

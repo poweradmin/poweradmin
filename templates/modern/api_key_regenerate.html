@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}">
+        <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}/regenerate">
             {{ macros.csrf_field() }}
             
             <div class="d-flex gap-2">

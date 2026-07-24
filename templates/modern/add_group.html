@@ -35,12 +35,7 @@
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ" required>
                             <option value="" disabled {{ perm_templ ? '' : 'selected' }}>{% trans %}Select a template...{% endtrans %}</option>
                             {% for template in perm_templates %}
-                            {% if perm_templ == template['id'] %}
-                            {% set selected = 'selected' %}
-                            {% else %}
-                            {% set selected = '' %}
-                            {% endif %}
-                            <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
+                            <option value="{{ template['id'] }}" {{ perm_templ == template['id'] ? 'selected' : '' }}>{{ template['name'] }}</option>
                             {% endfor %}
                         </select>
                         <small class="text-muted">{% trans %}All group members will inherit these permissions for zones owned by this group{% endtrans %}</small>
@@ -69,7 +64,7 @@
                 <h6><i class="bi bi-shield-check me-2 text-primary"></i>{% trans %}What are Groups?{% endtrans %}</h6>
                 <p>{% trans %}Groups allow you to organize users and manage zone access collectively. Members inherit the group's permissions for all zones owned by the group.{% endtrans %}</p>
                 <h6><i class="bi bi-lightbulb me-2 text-warning"></i>{% trans %}How to Use Groups{% endtrans %}</h6>
-                <p>{% trans %}After creating the group, you can add members and assign zones to it. All members will automatically get access to the group's zones.{% endtrans %}</p>
+                <p class="mb-0">{% trans %}After creating the group, you can add members and assign zones to it. All members will automatically get access to the group's zones.{% endtrans %}</p>
             </div>
         </div>
     </div>

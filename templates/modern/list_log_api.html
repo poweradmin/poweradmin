@@ -1,0 +1,38 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}API Logs{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% embed '_partials/log_list.html' with {
+    filter_action: base_url_prefix ~ '/settings/api/logs',
+    modal_id: 'apiLogModal',
+} %}
+    {% block title %}{% trans %}API Activity Logs{% endtrans %}{% endblock %}
+    {% block info %}
+        <strong><i class="bi bi-info-circle me-1"></i>{% trans %}API Log Behavior:{% endtrans %}</strong>
+        {% trans %}Records API key lifecycle events (creation, regeneration, revocation, permission changes) and authenticated API requests. Filter by user or operation to audit external integration activity. Sensitive values (keys, tokens) are never written to this log.{% endtrans %}
+    {% endblock %}
+    {% block filter_fields %}
+        <div class="col-md-3">
+            <select name="name" class="form-select form-select-sm">
+                <option value="">{% trans %}All users{% endtrans %}</option>
+                {% for u in users %}
+                <option value="{{ u }}" {% if name == u %}selected{% endif %}>{{ u }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="event_type" class="form-select form-select-sm">
+                <option value="">{% trans %}All events{% endtrans %}</option>
+                {% for et in event_types %}
+                <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endblock %}
+    {% block operation_badge %}
+        <span class="badge {% if 'delete' in operation %}bg-danger{% elseif 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% elseif 'regenerate' in operation %}bg-warning text-dark{% elseif 'toggle' in operation %}bg-info{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
+    {% endblock %}
+{% endembed %}

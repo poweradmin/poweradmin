@@ -1,0 +1,72 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        {% if zone_id_filter and zone_name %}
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id_filter }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Logs{% endtrans %}</li>
+        {% else %}
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone logs{% endtrans %}</li>
+        {% endif %}
+    </ol>
+</nav>
+
+{% embed '_partials/log_list.html' with {
+    filter_action: base_url_prefix ~ '/zones/logs',
+    filter_clear: base_url_prefix ~ '/zones/logs' ~ (zone_id_filter ? '?zone_id=' ~ zone_id_filter : ''),
+    filter_buttons_class: 'col-md-1',
+    header_icon: 'bi-list-ul',
+    modal_id: 'logModal',
+} %}
+    {% block pre_card %}
+    {% if is_owner_view %}
+    <div class="alert alert-info py-2 small mb-3" role="alert">
+        <i class="bi bi-info-circle me-1"></i>{% trans %}Showing logs for zones you own.{% endtrans %}
+    </div>
+    {% endif %}
+    {% endblock %}
+    {% block title %}{% trans %}Zone Change Logs{% endtrans %}{% endblock %}
+    {% block info %}
+        <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Zone Log Behavior:{% endtrans %}</strong>
+        {% trans %}This activity feed records every operation performed against zones and records (creates, edits, deletes, DNSSEC actions, imports) as a flat key:value event string. For structured before/after snapshots and a diff view of record changes, see the Record Change Log.{% endtrans %}
+    {% endblock %}
+    {% block filter_hidden %}
+        {% if zone_id_filter %}
+        <input type="hidden" name="zone_id" value="{{ zone_id_filter }}">
+        {% endif %}
+    {% endblock %}
+    {% block filter_fields %}
+        {% if not zone_id_filter %}
+        <div class="col-md-3">
+            <input name="name" type="text" class="form-control form-control-sm"
+                   placeholder="{% trans %}Domain name{% endtrans %}"
+                   {% if name %}value="{{ name }}"{% endif %}>
+        </div>
+        {% endif %}
+        <div class="col-md-2">
+            <select name="operation" class="form-select form-select-sm">
+                <option value="">{% trans %}All operations{% endtrans %}</option>
+                {% for op in operations %}
+                <option value="{{ op }}" {% if operation == op %}selected{% endif %}>{{ op }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="user" class="form-select form-select-sm">
+                <option value="">{% trans %}All users{% endtrans %}</option>
+                {% for u in users %}
+                <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endblock %}
+    {% block operation_badge %}
+        <span class="badge {% if 'delete' in operation %}bg-danger{% elseif 'add' in operation %}bg-success{% elseif 'edit' in operation or 'update' in operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
+    {% endblock %}
+{% endembed %}

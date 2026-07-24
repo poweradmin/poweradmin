@@ -137,7 +137,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}" class="btn btn-outline-secondary btn-sm text-start">
+                    <a href="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}/regenerate" class="btn btn-outline-secondary btn-sm text-start">
                         <i class="bi bi-arrow-repeat me-2 text-secondary"></i>{% trans %}Regenerate API Key{% endtrans %}
                         <div class="small text-muted ms-4">{% trans %}Creates a new key, invalidating the old one{% endtrans %}</div>
                     </a>

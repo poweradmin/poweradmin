@@ -72,7 +72,12 @@
                     <div class="list-group list-group-flush">
                         <div class="list-group-item border-bottom">
                             <h6 class="mb-1"><i class="bi bi-person-check text-success me-2"></i>{% trans %}Template Assignment{% endtrans %}</h6>
-                            <p class="small mb-1">{% trans %}This template can be assigned to users to quickly apply its set of permissions. Changes made here will affect all users who have this template assigned.{% endtrans %}</p>
+                            <p class="small mb-1">{% trans %}This template can be assigned to users and groups to quickly apply its set of permissions. Changes made here will affect all users and groups who have this template assigned.{% endtrans %}</p>
+                        </div>
+                        <div class="list-group-item border-bottom">
+                            <h6 class="mb-1"><i class="bi bi-info-circle text-info me-2"></i>{% trans %}Users vs Groups{% endtrans %}</h6>
+                            <p class="small mb-1">{% trans %}When assigned to <strong>users</strong>: Permissions apply globally across the system.{% endtrans %}</p>
+                            <p class="small mb-0">{% trans %}When assigned to <strong>groups</strong>: Permissions apply only to zones owned by that group.{% endtrans %}</p>
                         </div>
                         <div class="list-group-item border-bottom">
                             <h6 class="mb-1"><i class="bi bi-shield-check text-primary me-2"></i>{% trans %}Permission Groups{% endtrans %}</h6>

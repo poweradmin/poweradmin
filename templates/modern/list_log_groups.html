@@ -1,0 +1,36 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Group logs{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% embed '_partials/log_list.html' with {
+    filter_action: base_url_prefix ~ '/groups/logs',
+    modal_id: 'groupLogModal',
+} %}
+    {% block title %}{% trans %}Group Activity Logs{% endtrans %}{% endblock %}
+    {% block info %}
+        <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Group Log Behavior:{% endtrans %}</strong>
+        {% trans %}Records group lifecycle events (create, edit, delete) and membership changes (users added or removed). Each entry shows the action, the actor, the affected group, and a timestamp. Useful for auditing zone-access changes mediated by group ownership.{% endtrans %}
+    {% endblock %}
+    {% block filter_fields %}
+        <div class="col-md-3">
+            <input name="name" type="text" class="form-control form-control-sm"
+                   placeholder="{% trans %}Group name{% endtrans %}"
+                   {% if name %}value="{{ name }}"{% endif %}>
+        </div>
+        <div class="col-md-3">
+            <select name="event_type" class="form-select form-select-sm">
+                <option value="">{% trans %}All events{% endtrans %}</option>
+                {% for et in event_types %}
+                <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endblock %}
+    {% block operation_badge %}
+        <span class="badge {% if 'delete' in operation %}bg-danger{% elseif 'remove' in operation %}bg-warning text-dark{% elseif 'add' in operation or 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
+    {% endblock %}
+{% endembed %}

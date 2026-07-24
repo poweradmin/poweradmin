@@ -1,0 +1,39 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}User logs{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% embed '_partials/log_list.html' with {
+    filter_action: base_url_prefix ~ '/users/logs',
+    modal_id: 'userLogModal',
+} %}
+    {% block title %}{% trans %}User Activity Logs{% endtrans %}{% endblock %}
+    {% block info %}
+        <strong><i class="bi bi-info-circle me-1"></i>{% trans %}User Log Behavior:{% endtrans %}</strong>
+        {% trans %}Records user account events such as logins, password changes, group membership updates, and admin actions on user records. Each entry shows the action, the actor, the affected user, and a timestamp. Filter by operation or user to audit access changes.{% endtrans %}
+    {% endblock %}
+    {% block filter_fields %}
+        <div class="col-md-3">
+            <select name="name" class="form-select form-select-sm">
+                <option value="">{% trans %}All users{% endtrans %}</option>
+                {% for u in users %}
+                <option value="{{ u }}" {% if name == u %}selected{% endif %}>{{ u }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="event_type" class="form-select form-select-sm">
+                <option value="">{% trans %}All events{% endtrans %}</option>
+                {% for et in event_types %}
+                <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endblock %}
+    {% block operation_badge %}
+        <span class="badge {% if 'failed' in operation %}bg-danger{% elseif 'delete' in operation %}bg-danger{% elseif 'login_success' in operation %}bg-success{% elseif 'add' in operation or 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% elseif 'change_password' in operation or 'password_reset' in operation %}bg-warning text-dark{% elseif 'mfa' in operation %}bg-info{% elseif 'logout' in operation %}bg-secondary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
+    {% endblock %}
+{% endembed %}

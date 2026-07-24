@@ -143,6 +143,7 @@
         btn.addEventListener('click', function () {
             const target = document.getElementById(btn.dataset.target);
             if (!target) return;
+            // Pull just the textual lines without the inline copy-line buttons.
             const lines = target.querySelectorAll('.copy-line-row');
             const text = Array.from(lines)
                 .map(function (row) { return row.dataset.record || row.firstChild.textContent.trim(); })
@@ -152,6 +153,7 @@
     });
 
     document.querySelectorAll('.copy-line').forEach(function (btn) {
+        // Stash the record text on the wrapper too so .copy-block can read it.
         const row = btn.closest('.copy-line-row');
         if (row && !row.dataset.record) {
             row.dataset.record = btn.dataset.record || '';
