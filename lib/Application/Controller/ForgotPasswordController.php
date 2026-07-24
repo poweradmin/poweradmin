@@ -271,6 +271,7 @@ class ForgotPasswordController extends BaseController
         $this->render('forgot_password.html', [
             'success' => true,
             'message' => 'If an account exists with that email address, you will receive a password reset link shortly.',
+            'recaptcha_enabled' => false,
         ]);
     }
 }

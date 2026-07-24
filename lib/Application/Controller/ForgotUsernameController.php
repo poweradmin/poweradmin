@@ -258,6 +258,7 @@ class ForgotUsernameController extends BaseController
         $this->render('forgot_username.html', [
             'success' => true,
             'message' => 'If an account exists with that email address, you will receive your username shortly.',
+            'recaptcha_enabled' => false,
         ]);
     }
 }

@@ -339,6 +339,7 @@ abstract class BaseController
         // keep strict_variables mode rendering identical to non-strict output.
         $params['message'] ??= false;
         $params['is_reverse_zone'] ??= false;
+        $params['success'] ??= false;
 
         $this->app->render($template, $params);
         $this->renderFooter();
