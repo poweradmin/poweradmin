@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -17,7 +18,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/edit" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="name" class="form-label">{% trans %}Group Name{% endtrans %} <span class="text-danger">*</span></label>
@@ -156,13 +157,13 @@
 
 <!-- Forms for removing members and zones -->
 <form id="removeMemberForm" method="post" action="{{ base_url_prefix }}/groups/quick-remove-member" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="group_id" value="{{ group.id }}">
     <input type="hidden" name="user_id" id="remove_member_id" value="">
 </form>
 
 <form id="removeZoneForm" method="post" action="{{ base_url_prefix }}/groups/quick-remove-zone" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="group_id" value="{{ group.id }}">
     <input type="hidden" name="zone_id" id="remove_zone_id" value="">
 </form>

@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% set can_edit_keys = can_manage_dnssec and not is_presigned %}
 
 <!-- Unsign Zone Confirmation Modal -->
@@ -18,7 +19,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
                 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <button type="submit" name="unsign_zone" class="btn btn-danger">
                         <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign Zone{% endtrans %}
                     </button>
@@ -162,7 +163,7 @@
     <div class="card-body">
         <p class="text-muted small mb-3">{% trans %}Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the key size from the PEM contents - select the matching algorithm and key role.{% endtrans %}</p>
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/import" class="row g-3">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="col-md-3">
                 <label for="import_key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
                 <select class="form-select form-select-sm" id="import_key_type" name="key_type" required>

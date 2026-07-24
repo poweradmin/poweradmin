@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -16,7 +17,7 @@
         </p>
 
         <form method="post" action="{{ base_url_prefix }}/tools/record-type-defaults">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             <div class="table-responsive">
                 <table class="table table-sm table-striped align-middle">

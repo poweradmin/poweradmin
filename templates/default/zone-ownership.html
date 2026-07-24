@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -32,7 +33,7 @@
                                 {% endif %}
                             </div>
                             <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {{ macros.csrf_field() }}
                                 <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     <i class="bi bi-trash text-danger"></i>
@@ -66,7 +67,7 @@
                     <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
                 </div>
                 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <div id="user_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
                         {% for user in users %}
                         {% if perm_view_others or user['id'] == session_userid %}
@@ -110,7 +111,7 @@
                                 <i class="bi bi-people me-2"></i>{{ group.name }}
                             </span>
                             <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {{ macros.csrf_field() }}
                                 <input type="hidden" name="delete_group" value="{{ group.id }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     <i class="bi bi-trash text-danger"></i>
@@ -140,7 +141,7 @@
                     <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
                 </div>
                 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <div id="group_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
                         {% for group in all_groups %}
                         <div class="form-check mb-2 group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">

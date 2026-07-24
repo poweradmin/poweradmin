@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -35,7 +36,7 @@
         {% endif %}
 
         <form method="post" class="needs-validation" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             {% if showWarnings %}
                 <input type="hidden" name="warnings_acknowledged" value="1">
             {% endif %}

@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -58,7 +59,7 @@
 
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/zones/templates/unlink" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="template_id" value="{{ template_id }}">
                 <input type="hidden" name="confirm" value="1">
                 {% for zone_id in zone_ids %}

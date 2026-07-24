@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -6,7 +7,7 @@
 </nav>
 
 <form method="post" id="preferences-form">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
 
 <div class="row g-4">
     <!-- Left Column -->

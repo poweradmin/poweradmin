@@ -110,6 +110,13 @@ class AppManager
         // Look directly in the theme path for templates, not in subdirectories
         $loader = new FilesystemLoader([$theme_path]);
 
+        // Custom themes fall back to the default theme for templates they do
+        // not provide (module templates rely on the shared _macros.html)
+        $default_theme_path = $fs_base_path . '/default';
+        if ($theme_path !== $default_theme_path && is_dir($default_theme_path)) {
+            $loader->addPath($default_theme_path);
+        }
+
         // Register module template paths as Twig namespaces (@module_name/template.html)
         $registry = new ModuleRegistry($this->configuration);
         $registry->loadModules();

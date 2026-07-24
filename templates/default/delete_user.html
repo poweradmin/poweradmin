@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -18,7 +19,7 @@
         </div>
 
         <form method="post" action="" id="delete-user-form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             {% if zones_count > 0 %}
             <div class="card border-warning mt-4 mb-4">

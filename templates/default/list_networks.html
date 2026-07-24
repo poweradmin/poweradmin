@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -37,7 +38,7 @@
                         <td><span class="badge bg-secondary">{{ entry.view }}</span></td>
                         <td class="text-end">
                             <form method="post" action="{{ base_url_prefix }}/networks" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {{ macros.csrf_field() }}
                                 <input type="hidden" name="action" value="remove">
                                 <input type="hidden" name="cidr" value="{{ entry.network }}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans %}Remove mapping{% endtrans %}">
@@ -58,7 +59,7 @@
             </div>
             <div class="card-body">
                 <form method="post" action="{{ base_url_prefix }}/networks" class="row g-2">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="set">
                     <div class="col-md-5">
                         <label for="network-cidr" class="form-label small">{% trans %}CIDR{% endtrans %}</label>

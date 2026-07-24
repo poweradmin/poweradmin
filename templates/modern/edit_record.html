@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -35,7 +36,7 @@
         <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
 
         <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm">

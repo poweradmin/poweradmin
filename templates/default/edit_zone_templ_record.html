@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -36,7 +37,7 @@
 
                 <form class="needs-validation" method="post" id="edit-zone-templ-record-form"
                       action="{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/records/{{ record_id }}/edit" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="rid" value="{{ record_id }}">
                     <input type="hidden" name="zid" value="{{ zone_templ_id }}">
 

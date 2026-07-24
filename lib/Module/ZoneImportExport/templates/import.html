@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -97,7 +98,7 @@
         </div>
 
         <form method="post" action="{{ base_url_prefix }}/tools/zone-import/execute">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="import_mode" value="{{ import_mode }}">
             <input type="hidden" name="existing_zone_id" value="{{ existing_zone_id }}">
 
@@ -187,7 +188,7 @@
             </div>
             <div class="card-body">
                 <form method="post" action="{{ base_url_prefix }}/tools/zone-import" enctype="multipart/form-data">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="zone_file" class="form-label">{% trans %}Zone file{% endtrans %} <span class="text-danger">*</span></label>

@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -34,7 +35,7 @@
                 <p class="small text-muted mb-3">{% trans %}Create a new record for this zone template{% endtrans %}</p>
 
                 <form class="needs-validation" method="post" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="domain" value="{{ zone_templ_id }}">
 
                     <div class="mb-3">

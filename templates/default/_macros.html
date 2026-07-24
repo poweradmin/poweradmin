@@ -1,0 +1,7 @@
+{# Shared template macros. Import with: {% import '_macros.html' as macros %} #}
+
+{# CSRF token field - the name MUST stay "_token" (BaseController::validateCsrfToken).
+   Pass a token only for flows with their own session token (e.g. login). #}
+{% macro csrf_field(token) %}
+<input type="hidden" name="_token" value="{{ token|default(csrf_token) }}">
+{%- endmacro %}

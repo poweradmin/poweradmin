@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -23,7 +24,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="number" value="{{ edit_id }}">
 
                     <div class="mb-3">
@@ -262,7 +263,7 @@
                 <p class="small text-muted mb-3">{% trans %}Select one or more groups and click "Add Selected Groups" button.{% endtrans %}</p>
 
                 <form method="post" action="{{ base_url_prefix }}/users/{{ edit_id }}/edit" id="addGroupsForm">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add_groups">
 
                     <div class="mb-2">
@@ -311,7 +312,7 @@
 
 {% if show_group_access_templates %}
 <form id="removeGroupForm" method="post" action="{{ base_url_prefix }}/users/groups/remove" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="user_id" id="remove_user_id" value="">
     <input type="hidden" name="group_id" id="remove_group_id" value="">
 </form>

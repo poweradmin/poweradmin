@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -33,7 +34,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/batch-ptr{% if has_zone_id %}?id={{ zone_id }}{% endif %}" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="network_type" class="form-label">{% trans %}IP Version{% endtrans %}</label>

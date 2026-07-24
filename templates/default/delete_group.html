@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -79,7 +80,7 @@
 
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/delete" style="display: inline;">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="confirm" value="yes">
                 <button type="submit" class="btn btn-danger btn-sm">
                     <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this group{% endtrans %}

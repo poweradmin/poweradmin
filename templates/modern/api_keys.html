@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -122,7 +123,7 @@
                     <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
                 </button>
                 <form method="post" id="disableApiKeyForm" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="disable" value="1">
                     <button type="submit" class="btn btn-warning btn-sm">
                         <i class="bi bi-pause-circle me-1"></i>{% trans %}Disable{% endtrans %}
@@ -152,7 +153,7 @@
                     <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
                 </button>
                 <form method="post" id="enableApiKeyForm" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="disable" value="0">
                     <button type="submit" class="btn btn-success btn-sm">
                         <i class="bi bi-play-circle me-1"></i>{% trans %}Enable{% endtrans %}

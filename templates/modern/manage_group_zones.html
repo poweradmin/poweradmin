@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -28,7 +29,7 @@
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/zones" id="remove-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="remove">
 
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
@@ -80,7 +81,7 @@
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/zones" id="add-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add">
 
                     <div class="mb-3">

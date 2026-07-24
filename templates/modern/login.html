@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% if msg %}
 <div data-testid="session-error" class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small alert-dismissible fade show" role="alert">
     <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
@@ -12,7 +13,7 @@
     </div>
     <div class="card-body p-4">
         <form class="needs-validation" method="post" action="{{ base_url_prefix }}/login" novalidate>
-            <input type="hidden" name="_token" value="{{ login_token }}">
+            {{ macros.csrf_field(login_token) }}
             <div class="mb-3">
                 <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
                 <input type="text" data-testid="username-input" class="form-control" id="username" name="username" required>

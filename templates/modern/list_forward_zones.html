@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -17,7 +18,7 @@
         <div>
             {% if is_api_backend and perm_is_godlike %}
             <form action="{{ base_url_prefix }}/zones/forward" method="post" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="action" value="sync">
                 <button type="submit" class="btn btn-outline-secondary btn-sm" title="{% trans %}Fetch zones from PowerDNS and reconcile the local table{% endtrans %}">
                     <i class="bi bi-arrow-repeat me-1"></i>{% trans %}Sync from PowerDNS{% endtrans %}
@@ -59,7 +60,7 @@
         {% endif %}
 
         <form method="post" action="{{ base_url_prefix }}/zones/delete" id="delete-zones-form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
                     {% if zones|length == 0 %}

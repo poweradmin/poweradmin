@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -40,14 +41,14 @@
 
               <div class="d-flex gap-2">
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary me-2">
                     <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
                   </button>
                 </form>
                 {% if not mfa_enforced %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
                     {% trans %}Disable MFA{% endtrans %}
                   </button>
@@ -79,7 +80,7 @@
                 <li>{% trans %}Easy to use{% endtrans %}</li>
               </ul>
               <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
               </form>
             </div>
@@ -113,7 +114,7 @@
                 </div>
               {% else %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
                 </form>
               {% endif %}

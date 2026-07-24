@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -59,7 +60,7 @@
         </div>
         {% endif %}
         <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
             <table class="table table-striped table-hover table-sm add-record-form">
@@ -332,7 +333,7 @@
         {% endif %}
 
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
 
             <div class="table-responsive">
@@ -614,7 +615,7 @@
 </form>
 
 <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="zone_id" value="{{ zone_id }}">
     <div id="selected-records-container"></div>
 </form>
@@ -662,7 +663,7 @@
         </div>
         {% endif %}
         <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
 
@@ -794,7 +795,7 @@
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="newtype">
                                     {% for type in zone_types %}
@@ -821,7 +822,7 @@
                         <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
                                 <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
                                 <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
@@ -840,7 +841,7 @@
                         <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="zone_template">
@@ -893,7 +894,7 @@
                         {% else %}
                             {% if can_manage_dnssec %}
                             <form method="post" action="" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {{ macros.csrf_field() }}
                                 <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone">
                                     <i class="bi bi-shield-check me-1 text-success"></i>{% trans %}Sign zone{% endtrans %}
                                 </button>

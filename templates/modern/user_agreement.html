@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% block content %}
 <div class="container mt-4">
     {% if msg %}
@@ -22,7 +23,7 @@
             </div>
             
             <form method="post" action="{{ base_url_prefix }}/user-agreement" class="needs-validation" novalidate>
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="agreement_version" value="{{ agreement_version }}">
                 
                 <div class="form-check mb-3">

@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -42,7 +43,7 @@
         </div>
         {% else %}
         <form method="post" action="" id="template-records-form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
@@ -125,7 +126,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" id="template-form" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="templ_name" class="form-label">{% trans %}Template name{% endtrans %}</label>

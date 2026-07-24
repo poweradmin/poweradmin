@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -35,7 +36,7 @@
                accepted: PowerDNS may still pull the zone on its refresh schedule.
                The convert handler refuses while the zone has no records. #}
             <form method="post" action="{{ base_url_prefix }}/zones/import-secondary" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="action" value="convert">
                 <input type="hidden" name="zone_id" value="{{ imported_zone_id }}">
                 <button class="btn btn-primary btn-sm" type="submit">
@@ -103,7 +104,7 @@
 {% else %}
 {# Import form #}
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/import-secondary" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
 
     <div class="row">
         <!-- Left column: zone + primary -->

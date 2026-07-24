@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -8,7 +9,7 @@
 </nav>
 
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/permissions/templates/add" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
 
     <div class="row mb-4">
         <!-- Template Basic Information -->

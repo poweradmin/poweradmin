@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -14,7 +15,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/add" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="name" class="form-label">{% trans %}Group Name{% endtrans %} <span class="text-danger">*</span></label>

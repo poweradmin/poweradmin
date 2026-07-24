@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -33,7 +34,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center py-2">
                     <span class="font-monospace small">{{ zone }}</span>
                     <form method="post" action="{{ base_url_prefix }}/views" class="d-inline">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                        {{ macros.csrf_field() }}
                         <input type="hidden" name="action" value="remove">
                         <input type="hidden" name="view" value="{{ view.name }}">
                         <input type="hidden" name="zone" value="{{ zone }}">
@@ -55,7 +56,7 @@
             </div>
             <div class="card-body">
                 <form method="post" action="{{ base_url_prefix }}/views" class="row g-2">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add">
                     <div class="col-md-4">
                         <label for="view-name" class="form-label small">{% trans %}View name{% endtrans %}</label>

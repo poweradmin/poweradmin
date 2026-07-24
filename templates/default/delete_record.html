@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
@@ -76,7 +77,7 @@
         {% endif %}
 
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ record_id }}/delete" id="delete_form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
             <div class="form-check mb-3">

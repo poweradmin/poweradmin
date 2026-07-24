@@ -1,3 +1,4 @@
+{% import '_macros.html' as macros %}
 {% block content %}
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
@@ -13,7 +14,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
                 <form id="deleteConfirmForm" method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="check_type" id="deleteCheckType" value="">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="item_id" id="deleteItemId" value="">
@@ -56,7 +57,7 @@
                     <div class="mt-3">
                         <form method="post" action="{{ base_url_prefix }}/tools/database-consistency"
                               onsubmit="return confirm('{{ 'Assign yourself as owner of all listed zones?'|trans|e('js') }}');">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <input type="hidden" name="check_type" value="zones_without_owners">
                             <input type="hidden" name="action" value="fix_all">
                             <button type="submit" class="btn btn-sm btn-success">
@@ -82,7 +83,7 @@
                                         <td>{{ zone.owner|default('(none)') }}</td>
                                         <td>
                                             <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                {{ macros.csrf_field() }}
                                                 <input type="hidden" name="check_type" value="zones_without_owners">
                                                 <input type="hidden" name="action" value="fix">
                                                 <input type="hidden" name="item_id" value="{{ zone.id }}">
@@ -232,7 +233,7 @@
                                         <td><span class="badge bg-danger">{{ zone.soa_count }}</span></td>
                                         <td>
                                             <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                {{ macros.csrf_field() }}
                                                 <input type="hidden" name="check_type" value="duplicate_soa">
                                                 <input type="hidden" name="action" value="fix">
                                                 <input type="hidden" name="item_id" value="{{ zone.zone_id }}">
@@ -281,7 +282,7 @@
                                         <td><span class="badge {{ zone_type_class(zone.type) }}">{{ zone_type_label(zone.type) }}</span></td>
                                         <td>
                                             <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                {{ macros.csrf_field() }}
                                                 <input type="hidden" name="check_type" value="zones_without_soa">
                                                 <input type="hidden" name="action" value="fix">
                                                 <input type="hidden" name="item_id" value="{{ zone.id }}">
