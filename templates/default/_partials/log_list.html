@@ -1,14 +1,19 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}User logs{% endtrans %}</li>
-    </ol>
-</nav>
+{# Shared scaffold for the activity-log list pages. Embed it and override the
+   blocks; the embedding page's context (data, pagination, number_of_logs,
+   date_from, date_to, iface_edit_show_id) is inherited.
 
+   Required context: filter_action (form URL), modal_id (details-modal DOM id,
+   kept per page because E2E selectors target it).
+   Optional: header_icon, filter_clear (defaults to filter_action),
+   filter_buttons_class (defaults to col-md-2).
+
+   Blocks: pre_card, title, info, filter_hidden, filter_fields,
+   operation_badge (sees `operation` from the row loop). #}
+
+{% block pre_card %}{% endblock %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-journal-text me-2"></i>{% trans %}User Activity Logs{% endtrans %}</strong>
+        <strong><i class="bi {{ header_icon|default('bi-journal-text') }} me-2"></i>{% block title %}{% endblock %}</strong>
         <div>
             <span class="badge bg-secondary">{{ number_of_logs }}</span>
             <span class="ms-1 small text-muted">{% trans %}Total logs{% endtrans %}</span>
@@ -16,27 +21,12 @@
     </div>
     <div class="card-body">
         <div class="text-muted small mb-3">
-            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}User Log Behavior:{% endtrans %}</strong>
-            {% trans %}Records user account events such as logins, password changes, group membership updates, and admin actions on user records. Each entry shows the action, the actor, the affected user, and a timestamp. Filter by operation or user to audit access changes.{% endtrans %}
+            {% block info %}{% endblock %}
         </div>
-        <form method="GET" action="{{ base_url_prefix }}/users/logs">
+        <form method="GET" action="{{ filter_action }}">
+            {% block filter_hidden %}{% endblock %}
             <div class="row g-2 mb-2">
-                <div class="col-md-3">
-                    <select name="name" class="form-select form-select-sm">
-                        <option value="">{% trans %}All users{% endtrans %}</option>
-                        {% for u in users %}
-                        <option value="{{ u }}" {% if name == u %}selected{% endif %}>{{ u }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="event_type" class="form-select form-select-sm">
-                        <option value="">{% trans %}All events{% endtrans %}</option>
-                        {% for et in event_types %}
-                        <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                {% block filter_fields %}{% endblock %}
                 <div class="col-md-2">
                     <input name="date_from" type="date" class="form-control form-control-sm"
                            {% if date_from %}value="{{ date_from }}"{% endif %}
@@ -47,11 +37,11 @@
                            {% if date_to %}value="{{ date_to }}"{% endif %}
                            title="{% trans %}To date{% endtrans %}">
                 </div>
-                <div class="col-md-2 d-flex gap-1">
+                <div class="{{ filter_buttons_class|default('col-md-2') }} d-flex gap-1">
                     <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
                         <i class="bi bi-search text-white"></i>
                     </button>
-                    <a href="{{ base_url_prefix }}/users/logs" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
+                    <a href="{{ filter_clear|default(filter_action) }}" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
                         <i class="bi bi-x-circle text-secondary"></i>
                     </a>
                 </div>
@@ -68,11 +58,11 @@
                 <thead class="table-light">
                 <tr>
                     {% if iface_edit_show_id is defined and iface_edit_show_id %}
-                    <th>{% trans %}Id{% endtrans %}</th>
+                    <th scope="col">{% trans %}Id{% endtrans %}</th>
                     {% endif %}
-                    <th>{% trans %}Created at{% endtrans %}</th>
-                    <th>{% trans %}Event{% endtrans %}</th>
-                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    <th scope="col">{% trans %}Created at{% endtrans %}</th>
+                    <th scope="col">{% trans %}Event{% endtrans %}</th>
+                    <th scope="col" class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -93,7 +83,9 @@
                                 {% endif %}
                             {% endfor %}
                             {% if operation %}
-                                <span class="badge {% if 'failed' in operation %}bg-danger{% elseif 'delete' in operation %}bg-danger{% elseif 'login_success' in operation %}bg-success{% elseif 'add' in operation or 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% elseif 'change_password' in operation or 'password_reset' in operation %}bg-warning text-dark{% elseif 'mfa' in operation %}bg-info{% elseif 'logout' in operation %}bg-secondary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
+                                {% block operation_badge %}
+                                <span class="badge bg-secondary me-1">{{ operation }}</span>
+                                {% endblock %}
                             {% endif %}
                             {% for part in parts %}
                                 {% set kv = part|split(':') %}
@@ -107,7 +99,7 @@
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userLogModal" data-bs-content="{{ row['event'] }}" title="{% trans %}Details{% endtrans %}">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}" data-bs-content="{{ row['event'] }}" title="{% trans %}Details{% endtrans %}">
                             <i class="bi bi-eye-fill text-primary"></i>
                         </button>
                     </td>
@@ -124,6 +116,7 @@
             </button>
         </div>
 
+        <!-- Export Modal -->
         <div class="modal fade" tabindex="-1" id="exportModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -169,7 +162,7 @@
         </script>
 
         <!-- Details Modal -->
-        <div class="modal fade" tabindex="-1" id="userLogModal">
+        <div class="modal fade" tabindex="-1" id="{{ modal_id }}">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -192,20 +185,20 @@
 
         <script>
             var logRawText = '';
-            var userLogModal = document.getElementById('userLogModal');
-            if (userLogModal) {
-                userLogModal.addEventListener('show.bs.modal', function(event) {
+            var logDetailsModal = document.getElementById('{{ modal_id }}');
+            if (logDetailsModal) {
+                logDetailsModal.addEventListener('show.bs.modal', function(event) {
                     var triggerButton = event.relatedTarget;
                     var raw = triggerButton.getAttribute('data-bs-content');
                     logRawText = raw;
                     var escaped = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                     var formatted = escaped.replace(/(\w+):/g, '<br>$1:').replace(/^<br>/, '');
-                    userLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
+                    logDetailsModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
                 });
             }
             function copyLogDetails() {
                 navigator.clipboard.writeText(logRawText).then(function() {
-                    var btn = document.querySelector('#userLogModal .btn-outline-secondary');
+                    var btn = document.querySelector('#{{ modal_id }} .btn-outline-secondary');
                     var origHtml = btn.innerHTML;
                     btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{% trans %}Copied{% endtrans %}';
                     setTimeout(function() { btn.innerHTML = origHtml; }, 1500);
