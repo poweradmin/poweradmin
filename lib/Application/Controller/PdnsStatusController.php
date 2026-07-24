@@ -88,6 +88,8 @@ class PdnsStatusController extends BaseController
             $slaveStatus = $this->statusService->checkSlaveServerStatus($slaveServers);
         }
 
+        $serverStatus['error'] ??= null;
+
         $this->render('pdns_status.html', [
             'server_status' => $serverStatus,
             'slave_status' => $slaveStatus,

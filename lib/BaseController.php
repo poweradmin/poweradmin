@@ -335,6 +335,11 @@ abstract class BaseController
         // globals (see setupTwigEnvironment); page params still override them.
         $params = array_merge($languageVars, $params);
 
+        // Shared page chrome tested bare in many templates; the falsy defaults
+        // keep strict_variables mode rendering identical to non-strict output.
+        $params['message'] ??= false;
+        $params['is_reverse_zone'] ??= false;
+
         $this->app->render($template, $params);
         $this->renderFooter();
     }
@@ -782,6 +787,8 @@ abstract class BaseController
         $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
         $this->app->addTwigGlobal('pdns_caps', $this->getPdnsCapabilities());
         $this->app->addTwigGlobal('pdns_server_info', PdnsVersionService::getCachedInfo());
+        $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
+        $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
     }
 
     /**
@@ -829,7 +836,6 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'file_version' => $this->getAssetVersion(),
             'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
             'custom_dark_exists' => $customDarkExists,
@@ -837,6 +843,8 @@ abstract class BaseController
             'install_error' => file_exists('install') ? _('The install/ directory exists, you must remove it first before proceeding.') : false,
             'version' => Version::VERSION,
             'show_style_switcher' => true,
+            // Defined on every render (incl. unauthenticated) so strict_variables holds
+            'api_error' => false,
         ], LanguageCode::templateVars($activeLocale));
 
         $vars = array_merge($vars, $languageVars ?? $this->getLanguageSelectorVars($activeLocale));
@@ -848,7 +856,6 @@ abstract class BaseController
             $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
             $vars = array_merge($vars, [
-                'user_logged_in' => $this->userContextService->isAuthenticated(),
                 'user_name' => $this->userContextService->getDisplayName(),
                 'user_username' => $this->userContextService->getLoggedInUsername(),
                 'perm_search' => $this->hasPermission('search'),
@@ -936,8 +943,6 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'user_logged_in' => $this->userContextService->isAuthenticated(),
-            'file_version' => $this->getAssetVersion(),
             'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
         ]);
     }

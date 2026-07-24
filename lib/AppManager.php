@@ -42,6 +42,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Extension\DebugExtension;
 use Twig\Extension\ExtensionInterface;
 use Twig\Loader\FilesystemLoader;
 
@@ -177,6 +178,10 @@ class AppManager
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
         $this->templateRenderer->addExtension(new BadgeTwigExtension());
+
+        if ($this->templateRenderer->isDebug()) {
+            $this->templateRenderer->addExtension(new DebugExtension());
+        }
     }
 
     /**
@@ -188,7 +193,10 @@ class AppManager
      */
     private function buildTwigOptions(): array
     {
-        $options = ['debug' => false];
+        // Dev mode surfaces template typos and undefined params; production
+        // keeps Twig's silent behavior so pages never break on missing vars.
+        $displayErrors = (bool)$this->configuration->get('misc', 'display_errors', false);
+        $options = ['debug' => $displayErrors, 'strict_variables' => $displayErrors];
 
         if (!$this->configuration->get('misc', 'template_cache', false)) {
             return $options;
@@ -242,7 +250,12 @@ class AppManager
         } catch (Error $e) {
             $this->logger->error('Template rendering failed: {error}', ['error' => $e->getMessage()]);
             $messageService = new MessageService();
-            $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
+            if ($this->templateRenderer->isDebug()) {
+                // Twig messages carry the template name and line - essential in dev mode
+                $messageService->displayDirectSystemError('Template rendering failed: ' . $e->getMessage());
+            } else {
+                $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
+            }
         }
     }
 

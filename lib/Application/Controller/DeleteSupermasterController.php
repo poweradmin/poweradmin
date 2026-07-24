@@ -111,6 +111,12 @@ class DeleteSupermasterController extends BaseController
         $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
         $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
 
+        if (empty($info)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('/supermasters');
+            return;
+        }
+
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,
             'info' => $info

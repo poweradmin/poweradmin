@@ -68,6 +68,8 @@ class AddZoneTemplController extends BaseController
         $this->render('add_zone_templ.html', [
             'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'templ_name' => '',
+            'templ_descr' => '',
         ]);
     }
 
