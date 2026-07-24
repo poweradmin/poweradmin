@@ -736,6 +736,7 @@ generate_config() {
     local record_comments_sync=$(to_php_bool "${PA_RECORD_COMMENTS_SYNC:-false}")
     local display_errors=$(to_php_bool "${PA_DISPLAY_ERRORS:-false}")
     local show_generated_passwords=$(to_php_bool "${PA_SHOW_GENERATED_PASSWORDS:-true}")
+    local template_cache=$(to_php_bool "${PA_TEMPLATE_CACHE:-false}")
 
     # Convert OIDC boolean values to lowercase
     local oidc_enabled=$(to_php_bool "${PA_OIDC_ENABLED:-false}")
@@ -1118,6 +1119,8 @@ return [
         'edit_conflict_resolution' => '${PA_EDIT_CONFLICT_RESOLUTION:-last_writer_wins}',
         'display_errors' => ${display_errors},
         'show_generated_passwords' => ${show_generated_passwords},
+        'template_cache' => ${template_cache},
+        'template_cache_path' => '${PA_TEMPLATE_CACHE_PATH:-}',
     ],
     'oidc' => [
         'enabled' => ${oidc_enabled},

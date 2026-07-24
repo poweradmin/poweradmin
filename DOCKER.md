@@ -762,6 +762,8 @@ docker run -d \
 | `PA_RECORD_COMMENTS_SYNC` | Enable bidirectional comment sync between A and PTR records | `false` | No |
 | `PA_EDIT_CONFLICT_RESOLUTION` | Edit conflict resolution: `last_writer_wins`, `only_latest_version`, `3_way_merge` | `last_writer_wins` | No |
 | `PA_DISPLAY_ERRORS` | Display PHP errors (false for production) | `false` | No |
+| `PA_TEMPLATE_CACHE` | Cache compiled templates on disk for faster rendering | `false` | No |
+| `PA_TEMPLATE_CACHE_PATH` | Compiled template directory (default `var/cache/twig`); must be writable, e.g. `/tmp/twig-cache` for read-only containers, otherwise the app logs a warning and runs uncached | (empty) | No |
 | `PA_SHOW_GENERATED_PASSWORDS` | Show generated passwords on user creation | `true` | No |
 
 ### Configuration Override

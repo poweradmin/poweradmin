@@ -25,6 +25,7 @@ namespace Poweradmin;
 use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Service\TemplateCacheResolver;
 use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -119,7 +120,7 @@ class AppManager
             }
         }
 
-        $this->templateRenderer = new Environment($loader, ['debug' => false]);
+        $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
 
         if ($this->configuration->get('misc', 'display_stats', false)) {
             $memoryUsage = new MemoryUsage();
@@ -176,6 +177,32 @@ class AppManager
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
         $this->templateRenderer->addExtension(new BadgeTwigExtension());
+    }
+
+    /**
+     * Builds the Twig environment options, enabling the opt-in compiled
+     * template cache when misc.template_cache is set. Cache failures degrade
+     * to uncached rendering with a logged warning - never fatal.
+     *
+     * @return array The options for the Environment constructor
+     */
+    private function buildTwigOptions(): array
+    {
+        $options = ['debug' => false];
+
+        if (!$this->configuration->get('misc', 'template_cache', false)) {
+            return $options;
+        }
+
+        $resolver = new TemplateCacheResolver($this->logger);
+        $cachePath = $resolver->resolve((string)$this->configuration->get('misc', 'template_cache_path', ''));
+        if ($cachePath !== null) {
+            $options['cache'] = $cachePath;
+            // Without this, debug=false would let upgrades serve stale compiled templates
+            $options['auto_reload'] = true;
+        }
+
+        return $options;
     }
 
     /**

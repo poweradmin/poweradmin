@@ -47,6 +47,9 @@ package-lock.json
 # Logs
 /logs
 /*.log
+
+# Runtime caches (compiled templates, ...)
+/var/
 /npm-debug.log*
 
 # Temporary files
