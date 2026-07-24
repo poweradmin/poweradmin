@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
+use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -98,6 +99,8 @@ abstract class BaseController
     protected LoggerInterface $logger;
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionServiceInstance = null;
+
+    private bool $twigExtensionsRegistered = false;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -771,12 +774,32 @@ abstract class BaseController
     }
 
     /**
+     * Registers Twig extensions that need controller-owned services. Called on
+     * the first render of the request (Twig locks extensions after that), so
+     * API requests that never render a template skip the cost entirely.
+     */
+    private function registerTwigExtensions(): void
+    {
+        if ($this->twigExtensionsRegistered) {
+            return;
+        }
+        $this->twigExtensionsRegistered = true;
+
+        // The closure defers the permission lookup until a template calls can()
+        $this->app->addTwigExtension(new PermissionTwigExtension(
+            fn(string $permission): bool => $this->hasPermission($permission)
+        ));
+    }
+
+    /**
      * Renders the header of the page.
      *
      * @param array|null $systemMessages System messages to be displayed
      */
     private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
     {
+        $this->registerTwigExtensions();
+
         if (!headers_sent()) {
             header('Content-type: text/html; charset=utf-8');
         }

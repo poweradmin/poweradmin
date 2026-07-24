@@ -41,6 +41,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Extension\ExtensionInterface;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -175,6 +176,17 @@ class AppManager
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
         $this->templateRenderer->addExtension(new BadgeTwigExtension());
+    }
+
+    /**
+     * Registers an extension on the template renderer. Must be called before
+     * the first render of the request - Twig locks extensions afterwards.
+     *
+     * @param ExtensionInterface $extension The Twig extension to register
+     */
+    public function addTwigExtension(ExtensionInterface $extension): void
+    {
+        $this->templateRenderer->addExtension($extension);
     }
 
     /**

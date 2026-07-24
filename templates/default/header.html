@@ -87,70 +87,70 @@
 
             <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                 {% if user_logged_in %}
-                {% if perm_search %}
+                {% if can('search') %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/search" class="nav-link text-{{ current_page == 'search' ? 'primary' : 'secondary' }}"><i class="bi bi-search fs-5"></i></a>
                     <a href="{{ base_url_prefix }}/search" class="text-{{ current_page == 'search' ? 'primary' : 'secondary' }} text-decoration-none">{% trans %}Search{% endtrans %}</a>
                 </li>
                 {% endif %}
-                {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add or ((perm_view_zone_logs_own or perm_view_zone_logs_others) and dblog_use == true) %}
+                {% if can('zone_content_view_own') or can('zone_content_view_others') or can('zone_master_add') or can('zone_slave_add') or ((can('zone_logs_view_own') or can('zone_logs_view_others')) and dblog_use == true) %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/zones/forward" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }}" data-testid="list-zones-link"><i class="bi bi-diagram-3 fs-5"></i></a>
                     <a class="text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        {% if perm_view_zone_own or perm_view_zone_other %}
+                        {% if can('zone_content_view_own') or can('zone_content_view_others') %}
                         <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward" data-testid="list-forward-zones-link"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward zones{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse" data-testid="list-reverse-zones-link"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse zones{% endtrans %}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         {% endif %}
-                        {% if perm_zone_master_add %}
+                        {% if can('zone_master_add') %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_master' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/add/master" data-testid="add-master-zone-link"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}</a></li>
                         {% endif %}
-                        {% if perm_zone_slave_add %}
+                        {% if can('zone_slave_add') %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_slave' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/add/slave"><i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}</a></li>
                         {% endif %}
-                        {% if perm_zone_master_add %}
+                        {% if can('zone_master_add') %}
                         <li><a class="dropdown-item {{ current_page == 'bulk_registration' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}</a>
                         </li>
                         {% endif %}
-                        {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
+                        {% if iface_add_reverse_record and (can('zone_content_view_own') or can('zone_content_view_others')) %}
                         <li><a class="dropdown-item {{ current_page == 'batch_ptr_record' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>
                         {% endif %}
-                        {% if (perm_is_godlike or perm_view_zone_logs_own or perm_view_zone_logs_others) and dblog_use == true %}
-                        {% if perm_is_godlike %}
+                        {% if (can('user_is_ueberuser') or can('zone_logs_view_own') or can('zone_logs_view_others')) and dblog_use == true %}
+                        {% if can('user_is_ueberuser') %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
-                        {% if perm_is_godlike %}
+                        {% if can('user_is_ueberuser') %}
                         <li><a class="dropdown-item {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes"><i class="bi bi-clock-history me-2"></i>{% trans %}Record change log{% endtrans %}</a></li>
                         {% endif %}
                         {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike or (perm_user_logs_view and dblog_use == true) %}
+                {% if can('user_view_others') or can('user_edit_others') or can('user_add_new') or can('user_is_ueberuser') or (can('user_logs_view') and dblog_use == true) %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people fs-5"></i></a>
                     <a class="text-{{ current_page in ['users', 'add_user', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
+                        {% if can('user_view_others') or can('user_edit_others') or can('user_add_new') or can('user_is_ueberuser') %}
                         <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-person-gear me-2"></i>{% trans %}List users{% endtrans %}</a></li>
                         {% endif %}
-                        {% if perm_add_new %}
+                        {% if can('user_add_new') %}
                         <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
                         {% endif %}
-                        {% if (perm_is_godlike or perm_user_logs_view) and dblog_use == true %}
+                        {% if (can('user_is_ueberuser') or can('user_logs_view')) and dblog_use == true %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -160,14 +160,14 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if (perm_is_godlike or (perm_group_logs_view and dblog_use == true)) and show_group_access_templates %}
+                {% if (can('user_is_ueberuser') or (can('group_logs_view') and dblog_use == true)) and show_group_access_templates %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/groups" class="nav-link text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones', 'list_log_groups'] ? 'primary' : 'secondary' }}"><i class="bi bi-people-fill fs-5"></i></a>
                     <a class="text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones', 'list_log_groups'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Groups{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        {% if perm_is_godlike %}
+                        {% if can('user_is_ueberuser') %}
                         <li><a class="dropdown-item {{ current_page == 'list_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups"><i class="bi bi-collection-fill me-2"></i>{% trans %}List groups{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'add_group' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/add"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add group{% endtrans %}</a></li>
                         {% endif %}
@@ -181,7 +181,7 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_templ_perm_edit %}
+                {% if can('templ_perm_edit') %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/permissions/templates" class="nav-link text-{{ current_page in ['list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }} text-center"><i class="bi bi-shield-lock fs-5"></i></a>
                     <a class="text-{{ current_page in ['list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
@@ -190,14 +190,14 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_perm_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
-                        {% if perm_templ_perm_add %}
+                        {% if can('templ_perm_add') %}
                         <li><a class="dropdown-item {{ current_page == 'add_perm_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_zone_templ_add or perm_zone_templ_edit %}
+                {% if can('zone_templ_add') or can('zone_templ_edit') %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/zones/templates" class="nav-link text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-center"><i
                             class="bi bi-files fs-5"></i></a>
@@ -207,26 +207,27 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_zone_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/templates"><i class="bi bi-files me-2"></i>{% trans %}List zone templates{% endtrans %}</a></li>
-                        {% if perm_zone_templ_add %}
+                        {% if can('zone_templ_add') %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/zones/templates/add"><i class="bi bi-file-plus me-2"></i>{% trans %}Add zone template{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 {% endif %}
-                {% if ((perm_is_godlike or perm_api_manage_keys) and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                {% set is_ueberuser = can('user_is_ueberuser') %}
+                {% if ((is_ueberuser or can('api_manage_keys')) and api_enabled) or (is_ueberuser and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
                 <li class="p-2">
                     <a href="#" class="nav-link text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
                     <a class="text-{{ current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                         href="#"
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        {% if (perm_is_godlike or perm_api_manage_keys) and api_enabled %}
+                        {% if (can('user_is_ueberuser') or can('api_manage_keys')) and api_enabled %}
                         <li><a class="dropdown-item {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                             <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
                         </a></li>
                         {% endif %}
-                        {% if perm_is_godlike and api_enabled and dblog_use == true %}
+                        {% if can('user_is_ueberuser') and api_enabled and dblog_use == true %}
                         <li><a class="dropdown-item {{ current_page == 'list_log_api' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api/logs">
                             <i class="bi bi-journal-text me-2"></i>{% trans %}API Logs{% endtrans %}
                         </a></li>
@@ -236,7 +237,7 @@
                             <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}
                         </a></li>
                         {% endif %}
-                        {% if perm_is_godlike and enable_consistency_checks %}
+                        {% if can('user_is_ueberuser') and enable_consistency_checks %}
                         <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                             <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
                         </a></li>
@@ -270,7 +271,7 @@
                             <small class="text-muted">{{ user_username }}</small>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        {% if perm_edit_own %}
+                        {% if can('user_edit_own') %}
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/users/{{ session_userid }}/edit"><i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}</a></li>
                         {% endif %}
