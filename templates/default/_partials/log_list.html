@@ -71,7 +71,7 @@
                     {% if iface_edit_show_id is defined and iface_edit_show_id %}
                     <td class="log-id-cell">{{ row['id'] }}</td>
                     {% endif %}
-                    <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
+                    <td class="log-timestamp-cell">{{ row['created_at']|format_datetime('medium', 'medium') }}</td>
                     <td class="log-event-cell small">
                         {% if 'operation:' in row['event'] %}
                             {% set parts = row['event']|split(' ') %}

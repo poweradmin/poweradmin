@@ -19,19 +19,20 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
-        '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
         '89efb1254ef2d1c5d80096acd12c4098' => __DIR__ . '/..' . '/twig/twig/src/Resources/core.php',
         'ffecb95d45175fd40f75be8a23b34f90' => __DIR__ . '/..' . '/twig/twig/src/Resources/debug.php',
         'c7baa00073ee9c61edf148c51917cfb4' => __DIR__ . '/..' . '/twig/twig/src/Resources/escaper.php',
         'f844ccf1d25df8663951193c3fc307c8' => __DIR__ . '/..' . '/twig/twig/src/Resources/string_loader.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
+        '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'T' =>
         array (
+            'Twig\\Extra\\Intl\\' => 16,
             'Twig\\' => 5,
         ),
         'S' =>
@@ -65,6 +66,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
             'Symfony\\Component\\PasswordHasher\\' => 33,
             'Symfony\\Component\\Mime\\' => 23,
             'Symfony\\Component\\Mailer\\' => 25,
+            'Symfony\\Component\\Intl\\' => 23,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
@@ -130,6 +132,10 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
     );
 
     public static $prefixDirsPsr4 = array (
+        'Twig\\Extra\\Intl\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/twig/intl-extra',
+        ),
         'Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
@@ -249,6 +255,10 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Symfony\\Component\\Mailer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/mailer',
+        ),
+        'Symfony\\Component\\Intl\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/symfony/intl',
         ),
         'Symfony\\Component\\HttpKernel\\' =>
         array (
@@ -2769,6 +2779,55 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Symfony\\Component\\HttpKernel\\Profiler\\ProfilerStorageInterface' => __DIR__ . '/..' . '/symfony/http-kernel/Profiler/ProfilerStorageInterface.php',
         'Symfony\\Component\\HttpKernel\\RebootableInterface' => __DIR__ . '/..' . '/symfony/http-kernel/RebootableInterface.php',
         'Symfony\\Component\\HttpKernel\\TerminableInterface' => __DIR__ . '/..' . '/symfony/http-kernel/TerminableInterface.php',
+        'Symfony\\Component\\Intl\\Countries' => __DIR__ . '/..' . '/symfony/intl/Countries.php',
+        'Symfony\\Component\\Intl\\Currencies' => __DIR__ . '/..' . '/symfony/intl/Currencies.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Compiler\\BundleCompilerInterface' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Compiler/BundleCompilerInterface.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Compiler\\GenrbCompiler' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Compiler/GenrbCompiler.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\BufferedBundleReader' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/BufferedBundleReader.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\BundleEntryReader' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/BundleEntryReader.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\BundleEntryReaderInterface' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/BundleEntryReaderInterface.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\BundleReaderInterface' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/BundleReaderInterface.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\IntlBundleReader' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/IntlBundleReader.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\JsonBundleReader' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/JsonBundleReader.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Reader\\PhpBundleReader' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Reader/PhpBundleReader.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Writer\\BundleWriterInterface' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Writer/BundleWriterInterface.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Writer\\JsonBundleWriter' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Writer/JsonBundleWriter.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Writer\\PhpBundleWriter' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Writer/PhpBundleWriter.php',
+        'Symfony\\Component\\Intl\\Data\\Bundle\\Writer\\TextBundleWriter' => __DIR__ . '/..' . '/symfony/intl/Data/Bundle/Writer/TextBundleWriter.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\AbstractDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/AbstractDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\CurrencyDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/CurrencyDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\FallbackTrait' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/FallbackTrait.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\GeneratorConfig' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/GeneratorConfig.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\LanguageDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/LanguageDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\LocaleDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/LocaleDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\RegionDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/RegionDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\ScriptDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/ScriptDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Generator\\TimezoneDataGenerator' => __DIR__ . '/..' . '/symfony/intl/Data/Generator/TimezoneDataGenerator.php',
+        'Symfony\\Component\\Intl\\Data\\Util\\ArrayAccessibleResourceBundle' => __DIR__ . '/..' . '/symfony/intl/Data/Util/ArrayAccessibleResourceBundle.php',
+        'Symfony\\Component\\Intl\\Data\\Util\\LocaleScanner' => __DIR__ . '/..' . '/symfony/intl/Data/Util/LocaleScanner.php',
+        'Symfony\\Component\\Intl\\Data\\Util\\RecursiveArrayAccess' => __DIR__ . '/..' . '/symfony/intl/Data/Util/RecursiveArrayAccess.php',
+        'Symfony\\Component\\Intl\\Data\\Util\\RingBuffer' => __DIR__ . '/..' . '/symfony/intl/Data/Util/RingBuffer.php',
+        'Symfony\\Component\\Intl\\Exception\\BadMethodCallException' => __DIR__ . '/..' . '/symfony/intl/Exception/BadMethodCallException.php',
+        'Symfony\\Component\\Intl\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/intl/Exception/ExceptionInterface.php',
+        'Symfony\\Component\\Intl\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/intl/Exception/InvalidArgumentException.php',
+        'Symfony\\Component\\Intl\\Exception\\MissingResourceException' => __DIR__ . '/..' . '/symfony/intl/Exception/MissingResourceException.php',
+        'Symfony\\Component\\Intl\\Exception\\OutOfBoundsException' => __DIR__ . '/..' . '/symfony/intl/Exception/OutOfBoundsException.php',
+        'Symfony\\Component\\Intl\\Exception\\ResourceBundleNotFoundException' => __DIR__ . '/..' . '/symfony/intl/Exception/ResourceBundleNotFoundException.php',
+        'Symfony\\Component\\Intl\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/intl/Exception/RuntimeException.php',
+        'Symfony\\Component\\Intl\\Exception\\UnexpectedTypeException' => __DIR__ . '/..' . '/symfony/intl/Exception/UnexpectedTypeException.php',
+        'Symfony\\Component\\Intl\\Intl' => __DIR__ . '/..' . '/symfony/intl/Intl.php',
+        'Symfony\\Component\\Intl\\Languages' => __DIR__ . '/..' . '/symfony/intl/Languages.php',
+        'Symfony\\Component\\Intl\\Locale' => __DIR__ . '/..' . '/symfony/intl/Locale.php',
+        'Symfony\\Component\\Intl\\Locales' => __DIR__ . '/..' . '/symfony/intl/Locales.php',
+        'Symfony\\Component\\Intl\\ResourceBundle' => __DIR__ . '/..' . '/symfony/intl/ResourceBundle.php',
+        'Symfony\\Component\\Intl\\Scripts' => __DIR__ . '/..' . '/symfony/intl/Scripts.php',
+        'Symfony\\Component\\Intl\\Timezones' => __DIR__ . '/..' . '/symfony/intl/Timezones.php',
+        'Symfony\\Component\\Intl\\Transliterator\\EmojiTransliterator' => __DIR__ . '/..' . '/symfony/intl/Transliterator/EmojiTransliterator.php',
+        'Symfony\\Component\\Intl\\Util\\GitRepository' => __DIR__ . '/..' . '/symfony/intl/Util/GitRepository.php',
+        'Symfony\\Component\\Intl\\Util\\GzipStreamWrapper' => __DIR__ . '/..' . '/symfony/intl/Util/GzipStreamWrapper.php',
+        'Symfony\\Component\\Intl\\Util\\IcuVersion' => __DIR__ . '/..' . '/symfony/intl/Util/IcuVersion.php',
+        'Symfony\\Component\\Intl\\Util\\IntlTestHelper' => __DIR__ . '/..' . '/symfony/intl/Util/IntlTestHelper.php',
+        'Symfony\\Component\\Intl\\Util\\Version' => __DIR__ . '/..' . '/symfony/intl/Util/Version.php',
         'Symfony\\Component\\Mailer\\Command\\MailerTestCommand' => __DIR__ . '/..' . '/symfony/mailer/Command/MailerTestCommand.php',
         'Symfony\\Component\\Mailer\\DataCollector\\MessageDataCollector' => __DIR__ . '/..' . '/symfony/mailer/DataCollector/MessageDataCollector.php',
         'Symfony\\Component\\Mailer\\DelayedEnvelope' => __DIR__ . '/..' . '/symfony/mailer/DelayedEnvelope.php',
@@ -3990,6 +4049,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Twig\\Extension\\StagingExtension' => __DIR__ . '/..' . '/twig/twig/src/Extension/StagingExtension.php',
         'Twig\\Extension\\StringLoaderExtension' => __DIR__ . '/..' . '/twig/twig/src/Extension/StringLoaderExtension.php',
         'Twig\\Extension\\YieldNotReadyExtension' => __DIR__ . '/..' . '/twig/twig/src/Extension/YieldNotReadyExtension.php',
+        'Twig\\Extra\\Intl\\IntlExtension' => __DIR__ . '/..' . '/twig/intl-extra/IntlExtension.php',
         'Twig\\FileExtensionEscapingStrategy' => __DIR__ . '/..' . '/twig/twig/src/FileExtensionEscapingStrategy.php',
         'Twig\\Lexer' => __DIR__ . '/..' . '/twig/twig/src/Lexer.php',
         'Twig\\Loader\\ArrayLoader' => __DIR__ . '/..' . '/twig/twig/src/Loader/ArrayLoader.php',

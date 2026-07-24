@@ -44,6 +44,7 @@ use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Extension\DebugExtension;
 use Twig\Extension\ExtensionInterface;
+use Twig\Extra\Intl\IntlExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -178,6 +179,10 @@ class AppManager
             }
         }
 
+        // ICU formatters (format_datetime etc.) read the default locale;
+        // setlocale() in LocaleManager does not affect ICU
+        \Locale::setDefault($interfaceLang);
+
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);
@@ -197,6 +202,7 @@ class AppManager
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
         $this->templateRenderer->addExtension(new BadgeTwigExtension());
+        $this->templateRenderer->addExtension(new IntlExtension());
 
         if ($this->templateRenderer->isDebug()) {
             $this->templateRenderer->addExtension(new DebugExtension());

@@ -99,7 +99,7 @@
 
                     {% if row.action == 'record_edit' %}
                         <tr class="table-danger">
-                            <td rowspan="2" class="small">{{ row.created_at }}</td>
+                            <td rowspan="2" class="small">{{ row.created_at|format_datetime('medium', 'medium') }}</td>
                             <td rowspan="2"><span class="badge bg-primary">{{ row.action }}</span></td>
                             <td rowspan="2" class="small">{{ row.username }}</td>
                             <td rowspan="2" class="small">{% if before.zone_name %}{{ before.zone_name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
@@ -118,7 +118,7 @@
                         </tr>
                     {% elseif row.action == 'zone_metadata_edit' %}
                         <tr class="{{ rowClass }}">
-                            <td class="small">{{ row.created_at }}</td>
+                            <td class="small">{{ row.created_at|format_datetime('medium', 'medium') }}</td>
                             <td><span class="badge bg-warning text-dark">{{ row.action }}</span></td>
                             <td class="small">{{ row.username }}</td>
                             <td class="small">{% if before.name %}{{ before.name }}{% elseif after.name %}{{ after.name }}{% else %}{{ row.zone_id }}{% endif %}</td>
@@ -131,7 +131,7 @@
                         {# zone_create / zone_delete / record_create / record_delete - single row #}
                         {% set snap = after ? after : before %}
                         <tr class="{{ rowClass }}">
-                            <td class="small">{{ row.created_at }}</td>
+                            <td class="small">{{ row.created_at|format_datetime('medium', 'medium') }}</td>
                             <td><span class="badge {% if 'create' in row.action %}bg-success{% elseif 'delete' in row.action %}bg-danger{% else %}bg-secondary{% endif %}">{{ row.action }}</span></td>
                             <td class="small">{{ row.username }}</td>
                             <td class="small">{% if snap.zone_name %}{{ snap.zone_name }}{% elseif snap.name %}{{ snap.name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
