@@ -96,7 +96,13 @@ class AppManager
             $theme = 'default';
             $theme_path = $fs_base_path . '/' . $theme;
 
-            // If even default doesn't exist, this is a critical error
+            // Custom base paths without a default theme fall back to the
+            // bundled one so pages still render (styles may 404)
+            if (!is_dir($theme_path)) {
+                $theme_path = ThemePathResolver::toFilesystemPath('templates') . '/default';
+            }
+
+            // If even the bundled default doesn't exist, this is a critical error
             if (!is_dir($theme_path)) {
                 $messageService = new MessageService();
                 $messageService->displayDirectSystemError(
@@ -111,10 +117,16 @@ class AppManager
         $loader = new FilesystemLoader([$theme_path]);
 
         // Custom themes fall back to the default theme for templates they do
-        // not provide (module templates rely on the shared _macros.html)
-        $default_theme_path = $fs_base_path . '/default';
-        if ($theme_path !== $default_theme_path && is_dir($default_theme_path)) {
-            $loader->addPath($default_theme_path);
+        // not provide (module templates rely on the shared _macros.html).
+        // The bundled default is the last resort for custom theme base paths.
+        $fallbacks = array_unique([
+            $fs_base_path . '/default',
+            ThemePathResolver::toFilesystemPath('templates') . '/default',
+        ]);
+        foreach ($fallbacks as $fallback) {
+            if ($fallback !== $theme_path && is_dir($fallback)) {
+                $loader->addPath($fallback);
+            }
         }
 
         // Register module template paths as Twig namespaces (@module_name/template.html)
