@@ -40,7 +40,12 @@
 
 FROM dunglas/frankenphp:1.12.6-php8.4-alpine
 
-# Update base packages and install required packages and PHP extensions
+# OCI standard image annotations
+LABEL org.opencontainers.image.source="https://github.com/poweradmin/poweradmin"
+LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
+
+# Update base packages and install required packages, PHP extensions, and su-exec
+# su-exec is included here so all packages land in a single layer.
 RUN apk upgrade --no-cache \
     && apk add --no-cache --virtual .build-deps \
     gettext-dev \
@@ -63,6 +68,7 @@ RUN apk upgrade --no-cache \
     libpq \
     libldap \
     libxml2 \
+    su-exec \
     && install-php-extensions \
     gettext \
     intl \
@@ -78,7 +84,8 @@ WORKDIR /app
 # Copy application files
 COPY . .
 
-# Copy and set permissions for entrypoint script, create directories
+# Copy entrypoint to a dedicated system path (separate from /app to avoid
+# being overwritten when the app directory is bind-mounted in development)
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /db /app/config \
@@ -163,27 +170,36 @@ CADDYEOF
 ENV XDG_CONFIG_HOME=/var/caddy
 ENV XDG_DATA_HOME=/var/caddy
 
-# Set proper ownership and install su-exec for dropping privileges
+# Set proper ownership for writable volumes.
 # Group set to root (GID 0) + group-writable supports both:
 #   - K8s with fsGroup (overrides group at mount time)
 #   - OpenShift arbitrary UIDs (which always run as GID 0)
-# Root-mode entrypoint re-asserts www-data ownership via setup_permissions()
+# Root-mode entrypoint re-asserts www-data ownership via setup_permissions().
+#
+# Note on setcap -r: the net-bind capability is intentionally stripped here to
+# allow rootless / OpenShift deployments (which cannot grant capabilities).
+# The entrypoint re-applies cap_net_bind_service at runtime when running as root
+# and SERVER_PORT < 1024. If setcap fails at runtime the entrypoint falls back
+# to port 8080 automatically.
 RUN chown -R www-data:0 /app /db \
     && chmod -R g+w /app/config /db \
     && mkdir -p /var/caddy/caddy \
     && chown -R www-data:0 /var/caddy \
     && chmod -R g+w /var/caddy \
-    && apk add --no-cache su-exec \
     && setcap -r /usr/local/bin/frankenphp
 
-# Run as root initially, entrypoint will drop to www-data
-# For rootless/restricted K8s: set runAsUser: 82, fsGroup: 82, container auto-switches to port 8080
+# Run as root initially; entrypoint drops to www-data after setup.
+# For rootless/restricted K8s: set runAsUser: 82, fsGroup: 82 — the container
+# auto-switches to port 8080 when not running as root.
 
 EXPOSE 80 8080
 
-# Healthcheck reads the port from file written by entrypoint (healthcheck runs
-# as a separate process and does not inherit entrypoint's exported env vars)
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+# Healthcheck reads the port written to /tmp/.server_port by the entrypoint.
+# The healthcheck runs as a separate process and does not inherit entrypoint
+# env vars. start-period is set to 30s to ensure the file exists before the
+# first check fires, avoiding a false-negative on slow starts where the cat
+# fallback would incorrectly use port 80 for non-root (port 8080) containers.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
