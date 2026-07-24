@@ -798,7 +798,14 @@ abstract class BaseController
      */
     protected function getAssetVersion(): string
     {
-        return substr(hash_hmac('sha256', Version::VERSION, (string)$this->config->get('security', 'session_key', '')), 0, 12);
+        $key = (string)$this->config->get('security', 'session_key', '');
+        if ($key === '' || in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
+            // Placeholder keys are publicly known, so mix in a per-install
+            // value to keep the token unpredictable from the release alone
+            $configFile = getenv('PA_CONFIG_PATH') ?: dirname(__DIR__) . '/config/settings.php';
+            $key .= (string)@filemtime($configFile);
+        }
+        return substr(hash_hmac('sha256', Version::VERSION, $key), 0, 12);
     }
 
     /**
