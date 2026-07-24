@@ -785,6 +785,16 @@ abstract class BaseController
     }
 
     /**
+     * Opaque cache-busting token for static asset URLs: stable within a
+     * release so browsers can cache, changes on upgrade, and does not
+     * reveal the release number to unauthenticated visitors.
+     */
+    protected function getAssetVersion(): string
+    {
+        return substr(hash_hmac('sha256', Version::VERSION, (string)$this->config->get('security', 'session_key', '')), 0, 12);
+    }
+
+    /**
      * Renders the header of the page.
      *
      * @param array|null $systemMessages System messages to be displayed
@@ -819,7 +829,7 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'file_version' => time(),
+            'file_version' => $this->getAssetVersion(),
             'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
             'custom_dark_exists' => $customDarkExists,
@@ -927,6 +937,7 @@ abstract class BaseController
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'user_logged_in' => $this->userContextService->isAuthenticated(),
+            'file_version' => $this->getAssetVersion(),
             'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
         ]);
     }

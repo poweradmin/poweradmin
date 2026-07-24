@@ -229,7 +229,6 @@ class BatchPtrRecordController extends BaseController
     {
         $id = $this->request->getQueryParam('id');
         $hasZoneId = !empty($id);
-        $file_version = time();
         $zone_id = "";
         $zone_name = "";
         $idn_zone_name = "";
@@ -267,7 +266,7 @@ class BatchPtrRecordController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'is_reverse_zone' => $isReverseZone,
             'has_zone_id' => $hasZoneId,
-            'file_version' => $file_version,
+            'file_version' => $this->getAssetVersion(),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
             'reverse_zones' => $reverseZones,
         ]);

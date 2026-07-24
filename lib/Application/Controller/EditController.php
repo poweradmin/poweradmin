@@ -530,7 +530,7 @@ class EditController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'iface_zone_comments' => $iface_zone_comments,
             'serial' => SOARecordManager::getSOASerial($soa_record),
-            'file_version' => time(),
+            'file_version' => $this->getAssetVersion(),
             'whois_actions' => $this->getWhoisActions($zone_id),
             'rdap_actions' => $this->getRdapActions($zone_id),
             'form_token' => $formToken,
