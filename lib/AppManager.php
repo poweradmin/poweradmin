@@ -190,6 +190,19 @@ class AppManager
     }
 
     /**
+     * Registers a global template variable. New names must be registered
+     * before the first render of the request; re-registering an existing
+     * name afterwards only updates its value.
+     *
+     * @param string $name The variable name available to all templates
+     * @param mixed $value The value to expose
+     */
+    public function addTwigGlobal(string $name, mixed $value): void
+    {
+        $this->templateRenderer->addGlobal($name, $value);
+    }
+
+    /**
      * Renders a template with the given parameters.
      *
      * @param string $template The template file to render

@@ -98,7 +98,6 @@ class ZoneFileImportController extends BaseController
         $vars = array_merge([
             'max_file_size' => $maxFileSize,
             'max_file_size_human' => $this->formatBytes($maxFileSize),
-            'csrf_token' => $this->getCsrfToken(),
             'target_zone_id' => $targetZoneId,
             'target_zone_name' => $targetZoneName,
         ], $extra);
@@ -480,10 +479,5 @@ class ZoneFileImportController extends BaseController
             return round($bytes / 1048576, 1) . ' MB';
         }
         return round($bytes / 1024, 1) . ' KB';
-    }
-
-    private function getCsrfToken(): string
-    {
-        return $_SESSION[SessionKeys::CSRF_TOKEN] ?? '';
     }
 }

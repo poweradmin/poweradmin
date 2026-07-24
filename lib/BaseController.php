@@ -100,7 +100,7 @@ abstract class BaseController
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionServiceInstance = null;
 
-    private bool $twigExtensionsRegistered = false;
+    private bool $twigEnvironmentReady = false;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -331,24 +331,9 @@ abstract class BaseController
             $languageVars
         );
 
-        // Render main template
-        // Ensure CSRF token exists, generate one if missing
-        $this->csrfTokenService->ensureTokenExists();
-        $params['csrf_token'] = $this->csrfTokenService->getToken();
-
-        // Add base_url_prefix for subfolder deployment support
-        $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
-
+        // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
+        // globals (see setupTwigEnvironment); page params still override them.
         $params = array_merge($languageVars, $params);
-
-        // Expose connected PowerDNS capabilities to every template so views
-        // can adapt (record types, zone kinds, terminology, etc).
-        if (!array_key_exists('pdns_caps', $params)) {
-            $params['pdns_caps'] = $this->getPdnsCapabilities();
-        }
-        if (!array_key_exists('pdns_server_info', $params)) {
-            $params['pdns_server_info'] = PdnsVersionService::getCachedInfo();
-        }
 
         $this->app->render($template, $params);
         $this->renderFooter();
@@ -774,21 +759,29 @@ abstract class BaseController
     }
 
     /**
-     * Registers Twig extensions that need controller-owned services. Called on
-     * the first render of the request (Twig locks extensions after that), so
-     * API requests that never render a template skip the cost entirely.
+     * Registers Twig extensions and globals that need controller-owned
+     * services. Called on the first render of the request (Twig locks
+     * extensions and new globals after that), so API requests that never
+     * render a template skip the cost entirely.
      */
-    private function registerTwigExtensions(): void
+    private function setupTwigEnvironment(): void
     {
-        if ($this->twigExtensionsRegistered) {
+        if ($this->twigEnvironmentReady) {
             return;
         }
-        $this->twigExtensionsRegistered = true;
+        $this->twigEnvironmentReady = true;
 
         // The closure defers the permission lookup until a template calls can()
         $this->app->addTwigExtension(new PermissionTwigExtension(
             fn(string $permission): bool => $this->hasPermission($permission)
         ));
+
+        // Always-on context shared by header, page, and footer templates
+        $this->csrfTokenService->ensureTokenExists();
+        $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
+        $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
+        $this->app->addTwigGlobal('pdns_caps', $this->getPdnsCapabilities());
+        $this->app->addTwigGlobal('pdns_server_info', PdnsVersionService::getCachedInfo());
     }
 
     /**
@@ -798,7 +791,7 @@ abstract class BaseController
      */
     private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
     {
-        $this->registerTwigExtensions();
+        $this->setupTwigEnvironment();
 
         if (!headers_sent()) {
             header('Content-type: text/html; charset=utf-8');
