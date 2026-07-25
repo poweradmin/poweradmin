@@ -1,10 +1,8 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Group logs{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Groups'|trans, url: base_url_prefix ~ '/groups'},
+    {label: 'Group logs'|trans},
+]) }}
 
 {% embed '_partials/log_list.html' with {
     filter_action: base_url_prefix ~ '/groups/logs',

@@ -1,10 +1,5 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}User Preferences{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([{label: 'User Preferences'|trans}]) }}
 
 <form method="post" id="preferences-form">
     {{ macros.csrf_field() }}

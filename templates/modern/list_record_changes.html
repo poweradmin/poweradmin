@@ -1,11 +1,8 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Record Change Log{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Forward Zones'|trans, url: base_url_prefix ~ '/zones/forward'},
+    {label: 'Record Change Log'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">

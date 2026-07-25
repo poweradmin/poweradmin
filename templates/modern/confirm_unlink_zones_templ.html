@@ -1,12 +1,9 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates/{{ template_id }}/zones">{{ template_name }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Unlink zones{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Zone templates'|trans, url: base_url_prefix ~ '/zones/templates'},
+    {label: template_name, url: base_url_prefix ~ '/zones/templates/' ~ template_id ~ '/zones'},
+    {label: 'Unlink zones'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">

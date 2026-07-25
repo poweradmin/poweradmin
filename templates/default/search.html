@@ -1,10 +1,5 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Search{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([{label: 'Search'|trans}]) }}
 
 {% if message %}
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>

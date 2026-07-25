@@ -1,12 +1,9 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{{ templ_details['name'] }}</li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit template{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Zone templates'|trans, url: base_url_prefix ~ '/zones/templates'},
+    {label: templ_details['name']},
+    {label: 'Edit template'|trans},
+]) }}
 
 {% if unsynced_zones_count > 0 %}
 <div class="alert alert-warning alert-dismissible fade show mb-3 py-2 small" role="alert">

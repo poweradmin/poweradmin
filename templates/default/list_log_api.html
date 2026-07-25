@@ -1,9 +1,5 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}API Logs{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([{label: 'API Logs'|trans}]) }}
 
 {% embed '_partials/log_list.html' with {
     filter_action: base_url_prefix ~ '/settings/api/logs',

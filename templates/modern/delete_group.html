@@ -1,11 +1,8 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete group{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Groups'|trans, url: base_url_prefix ~ '/groups'},
+    {label: 'Delete group'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">

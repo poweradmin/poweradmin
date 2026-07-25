@@ -1,11 +1,8 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/supermasters">{{ autoprimaries_label('plural') }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{{ autoprimaries_label('edit_action') }}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: autoprimaries_label('plural'), url: base_url_prefix ~ '/supermasters'},
+    {label: autoprimaries_label('edit_action')},
+]) }}
 
 <div class="row">
     <div class="col-md-6">

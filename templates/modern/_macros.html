@@ -10,3 +10,20 @@
 {% macro log_timestamp(value) %}
 {{- value|format_datetime('medium', 'medium') -}}
 {% endmacro %}
+
+{# Breadcrumb trail. items: list of {label, url} maps; omit url on the current
+   (last) item. Home is prepended automatically. Pass translated labels: 'X'|trans #}
+{% macro breadcrumb(items) %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        {% for item in items %}
+        {% if item.url is defined and item.url %}
+        <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% else %}
+        <li class="breadcrumb-item" aria-current="page">{{ item.label }}</li>
+        {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endmacro %}
