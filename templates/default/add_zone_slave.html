@@ -22,9 +22,7 @@
     <!-- Left Column: Zone Configuration (Vertical) -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Slave Zone Configuration{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-cloud-download', 'Slave Zone Configuration'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
                     <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
@@ -52,9 +50,7 @@
         {% if user_owner_allowed %}
         <!-- User Owner Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-person-badge', 'User Owner'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
                     <div class="alert alert-sm alert-success py-2 mb-2" id="selected_user_indicator" style="display: none;">
@@ -101,9 +97,7 @@
         {% if group_owner_allowed and all_groups is not empty %}
         <!-- Group Ownership Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Ownership'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
                     <div class="input-group input-group-sm">

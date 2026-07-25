@@ -118,9 +118,7 @@
     <div class="col-md-6">
         <!-- Template Placeholders Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Template Placeholders'|trans) }}
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
@@ -183,9 +181,7 @@
         
         <!-- Common Record Examples Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-lightbulb me-2"></i>{% trans %}Example Records{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-lightbulb', 'Example Records'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">

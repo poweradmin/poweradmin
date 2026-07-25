@@ -157,9 +157,7 @@
 
 {% if pdns_caps and pdns_caps.supportsPemKeyImportExport and can_edit_keys %}
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-upload me-2"></i>{% trans %}Import key from PEM{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-upload', 'Import key from PEM'|trans) }}
     <div class="card-body">
         <p class="text-muted small mb-3">{% trans %}Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the key size from the PEM contents - select the matching algorithm and key role.{% endtrans %}</p>
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/import" class="row g-3">

@@ -23,9 +23,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header py-3">
-                    <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
-                </div>
+                {{ macros.card_header('bi-collection', 'Bulk Registration'|trans) }}
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
@@ -77,9 +75,7 @@
         {% if user_owner_allowed or (group_owner_allowed and all_groups is not empty) %}
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header py-3">
-                    <strong><i class="bi bi-person-gear me-2"></i>{% trans %}Ownership{% endtrans %}</strong>
-                </div>
+                {{ macros.card_header('bi-person-gear', 'Ownership'|trans) }}
                 <div class="card-body">
                     {% if user_owner_allowed %}
                     <div class="mb-3">

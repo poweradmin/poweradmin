@@ -29,9 +29,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-arrow-left-right me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-arrow-left-right', 'Batch PTR Records'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/batch-ptr{% if has_zone_id %}?id={{ zone_id }}{% endif %}" novalidate>
                     {{ macros.csrf_field() }}
@@ -133,9 +131,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}PTR Record Information{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'PTR Record Information'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -174,9 +170,7 @@
         </div>
         
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-question-circle', 'Quick Tips'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">

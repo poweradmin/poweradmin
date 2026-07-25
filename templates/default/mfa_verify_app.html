@@ -8,9 +8,7 @@
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <div class="card">
-        <div class="card-header py-3">
-          <strong><i class="bi bi-qr-code me-2"></i>{% trans %}Set Up Authenticator App{% endtrans %}</strong>
-        </div>
+        {{ macros.card_header('bi-qr-code', 'Set Up Authenticator App'|trans) }}
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">

@@ -12,9 +12,7 @@
     {% if user_owner_allowed or has_user_owners %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-person-badge', 'User Owner'|trans) }}
             <div class="card-body">
                 {% if owners is not empty and owners != "-1" %}
                 <div class="mb-3">
@@ -94,9 +92,7 @@
     {% if group_owner_allowed or has_group_owners %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Ownership'|trans) }}
             <div class="card-body">
                 {% if group_owners is not empty %}
                 <div class="mb-3">

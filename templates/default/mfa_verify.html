@@ -1,10 +1,9 @@
+{% import '_macros.html' as macros %}
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm">
-        <div class="card-header py-3">
-          <strong><i class="bi bi-lock me-2"></i>{% trans %}Two-Factor Authentication{% endtrans %}</strong>
-        </div>
+        {{ macros.card_header('bi-lock', 'Two-Factor Authentication'|trans) }}
         <div class="card-body">
           {% if msg %}
           <div class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small" role="alert">

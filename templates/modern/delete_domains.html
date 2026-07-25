@@ -14,9 +14,7 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Multiple Zones{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete Multiple Zones'|trans, 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-warning py-1 mb-2 small">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>

@@ -10,9 +10,7 @@
     {% endif %}
 
     <div class="card shadow-sm">
-        <div class="card-header py-3">
-            <strong><i class="bi bi-shield-check me-2"></i>{% trans %}User Agreement{% endtrans %}</strong>
-        </div>
+        {{ macros.card_header('bi-shield-check', 'User Agreement'|trans) }}
         <div class="card-body">
             <div class="agreement-content mb-4" style="max-height: 350px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem;">
                 {% if custom_content_exists %}

@@ -118,9 +118,7 @@
     <div class="col-md-6">
         <!-- Template Settings Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-gear me-2"></i>{% trans %}Template Settings{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-gear', 'Template Settings'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" id="template-form" novalidate>
                     {{ macros.csrf_field() }}
@@ -172,9 +170,7 @@
     <div class="col-md-6">
         <!-- Placeholders Info Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Template Placeholders'|trans) }}
             <div class="card-body">
                 <p>{% trans %}The following placeholders can be used in template records{% endtrans %}:</p>
                 <div class="table-responsive">

@@ -3,9 +3,7 @@
 {{ macros.breadcrumb([{label: 'Default TTLs by record type'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-clock-history me-2"></i>{% trans %}Default TTLs by record type{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-clock-history', 'Default TTLs by record type'|trans) }}
     <div class="card-body">
         <p class="small text-muted mb-3">
             {% trans %}Current global defaults{% endtrans %}: <code>dns.ttl = {{ dns_ttl }}</code>{% if ttl_reverse is not null and ttl_reverse != '' %}, <code>dns.ttl_reverse = {{ ttl_reverse }}</code>{% endif %}.

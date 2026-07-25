@@ -5,9 +5,7 @@
 ]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-envelope-fill', 'Email Template Previews'|trans) }}
     <div class="card-body">
         <p>{% trans %}Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling.{% endtrans %}</p>
         

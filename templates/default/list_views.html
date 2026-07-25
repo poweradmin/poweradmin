@@ -2,9 +2,7 @@
 {{ macros.breadcrumb([{label: 'Views'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-eye me-2"></i>{% trans %}Views{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-eye', 'Views'|trans) }}
     <div class="card-body">
         <div class="text-muted small mb-3">
             <strong><i class="bi bi-info-circle me-1"></i>{% trans %}View Behavior:{% endtrans %}</strong>

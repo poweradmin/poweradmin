@@ -11,6 +11,14 @@
 {{- value|format_datetime('medium', 'medium') -}}
 {% endmacro %}
 
+{# Simple card header: icon + bold title. Pass translated titles: 'X'|trans.
+   Rich headers (badges, buttons, collapse toggles) stay hand-written. #}
+{% macro card_header(icon, title, icon_class = '') %}
+<div class="card-header py-3">
+    <strong><i class="bi {{ icon }} me-2{% if icon_class %} {{ icon_class }}{% endif %}"></i>{{ title }}</strong>
+</div>
+{% endmacro %}
+
 {# Breadcrumb trail. items: list of {label, url} maps; omit url on the current
    (last) item. Home is prepended automatically. Pass translated labels: 'X'|trans #}
 {% macro breadcrumb(items) %}

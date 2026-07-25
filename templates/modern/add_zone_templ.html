@@ -65,9 +65,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Information{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Template Information'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -88,9 +86,7 @@
         </div>
         
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Tips & Examples{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-question-circle', 'Tips & Examples'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">

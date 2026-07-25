@@ -27,9 +27,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Bulk Add Records{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-plus-circle', 'Bulk Add Records'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" novalidate>
                     {{ macros.csrf_field() }}
@@ -70,9 +68,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Instructions{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Instructions'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -97,9 +93,7 @@
         </div>
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-code-square me-2"></i>{% trans %}Record Type Examples{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-code-square', 'Record Type Examples'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">

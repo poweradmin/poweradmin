@@ -2,9 +2,7 @@
 {{ macros.breadcrumb([{label: 'Network views'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Network views{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-diagram-3', 'Network views'|trans) }}
     <div class="card-body">
         <div class="text-muted small mb-3">
             <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Network Mapping:{% endtrans %}</strong>

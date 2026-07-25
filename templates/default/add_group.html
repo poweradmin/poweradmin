@@ -7,9 +7,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-plus-circle me-2 text-dark"></i>{% trans %}Add Group{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-plus-circle', 'Add Group'|trans, 'text-dark') }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/add" novalidate>
                     {{ macros.csrf_field() }}
@@ -54,9 +52,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Groups{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'About Groups'|trans) }}
             <div class="card-body">
                 <h6><i class="bi bi-shield-check me-2 text-primary"></i>{% trans %}What are Groups?{% endtrans %}</h6>
                 <p>{% trans %}Groups allow you to organize users and manage zone access collectively. Members inherit the group's permissions for all zones owned by the group.{% endtrans %}</p>

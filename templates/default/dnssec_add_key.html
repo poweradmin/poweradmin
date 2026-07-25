@@ -186,9 +186,7 @@
     
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About DNSSEC Key Types{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'About DNSSEC Key Types'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
                     <h6>{% trans %}Key Types Explained{% endtrans %}</h6>
