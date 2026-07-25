@@ -70,22 +70,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" name="confirm" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these zones{% endtrans %}
-                        </button>
-                        {% if is_reverse_zone %}
-                            <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% elseif is_mixed_zones %}
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% else %}
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% endif %}
+                        {{ macros.delete_actions('Yes, delete these zones'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep these zones'|trans, '', '', 'confirm') }}
                     </div>
                 </form>
             </div>

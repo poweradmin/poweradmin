@@ -11,6 +11,17 @@
 {{- value|format_datetime('medium', 'medium') -}}
 {% endmacro %}
 
+{# Confirm/cancel pair for delete confirmation pages. The confirm button
+   submits the enclosing POST form; the cancel link navigates away. #}
+{% macro delete_actions(confirm_label, cancel_url, cancel_label, confirm_testid = '', cancel_testid = '', confirm_name = '') %}
+<button type="submit" class="btn btn-danger btn-sm"{% if confirm_name %} name="{{ confirm_name }}"{% endif %}{% if confirm_testid %} data-testid="{{ confirm_testid }}"{% endif %}>
+    <i class="bi bi-trash-fill me-1 text-white"></i>{{ confirm_label }}
+</button>
+<a href="{{ cancel_url }}" class="btn btn-secondary btn-sm"{% if cancel_testid %} data-testid="{{ cancel_testid }}"{% endif %}>
+    <i class="bi bi-x-circle me-1 text-white"></i>{{ cancel_label }}
+</a>
+{% endmacro %}
+
 {# Simple card header: icon + bold title. Pass translated titles: 'X'|trans.
    Rich headers (badges, buttons, collapse toggles) stay hand-written. #}
 {% macro card_header(icon, title, icon_class = '') %}

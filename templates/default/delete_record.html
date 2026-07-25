@@ -96,12 +96,7 @@
             {% endif %}
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
-                </button>
-                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
-                </a>
+                {{ macros.delete_actions('Yes, delete this record'|trans, base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit', 'No, keep this record'|trans) }}
             </div>
         </form>
     </div>

@@ -70,17 +70,8 @@
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/delete" style="display: inline;">
                 {{ macros.csrf_field() }}
-                <button type="submit" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
-                </button>
+                {{ macros.delete_actions('Yes, delete this zone'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep this zone'|trans, 'confirm-delete-zone', 'cancel-delete-zone') }}
             </form>
-            {% if is_reverse_zone %}
-            <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
-            {% endif %}
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this zone{% endtrans %}
-            </a>
         </div>
     </div>
 </div>
