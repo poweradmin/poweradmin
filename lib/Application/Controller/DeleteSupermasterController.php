@@ -51,8 +51,7 @@ class DeleteSupermasterController extends BaseController
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        // Deleting requires a confirmed POST; the confirmation page itself is a GET
-        if ($this->isPost() && $this->request->getPostParam('confirm') !== null) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();

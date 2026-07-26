@@ -62,8 +62,7 @@ class DeletePermTemplController extends BaseController
     {
         $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
 
-        // Deleting requires a confirmed POST; the confirmation page itself is a GET
-        if ($this->isPost() && $this->request->getPostParam('confirm') !== null) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->handleFormSubmission();
         } else {
             $this->showForm();

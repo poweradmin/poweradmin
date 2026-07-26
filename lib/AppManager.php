@@ -110,10 +110,6 @@ class AppManager
     }
 
     /**
-     * Exits with an error message if the bundled defaults file could not be
-     * loaded.
-     */
-    /**
      * Fails fast on broken configuration. Static and free of template setup so
      * callers can check before, or without, building the Twig stack.
      */

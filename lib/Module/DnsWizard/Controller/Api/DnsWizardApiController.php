@@ -24,7 +24,6 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -298,22 +297,7 @@ class DnsWizardApiController extends InternalApiController
      */
     private function createRecord(): JsonResponse
     {
-        // Validate CSRF token from X-CSRF-Token header
-        $csrfToken = $this->request->headers->get('X-CSRF-Token', '');
-        if (empty($csrfToken)) {
-            return $this->returnApiError('Missing CSRF token', 403);
-        }
-
-        // Validate the CSRF token using the service from BaseController
-        if (!$this->config->get('security', 'global_token_validation', true)) {
-            // CSRF validation is disabled in config - skip check
-        } else {
-            // Create a temporary CsrfTokenService to validate the token
-            $csrfService = new CsrfTokenService();
-            if (!$csrfService->validateToken($csrfToken)) {
-                return $this->returnApiError('Invalid CSRF token', 403);
-            }
-        }
+        // The X-CSRF-Token header is validated by InternalApiController
 
         $data = json_decode($this->request->getContent(), true) ?? [];
 

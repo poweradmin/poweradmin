@@ -65,8 +65,7 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $zone_templ_id = (int)$zone_templ_id_value;
 
-        // Deleting requires a confirmed POST; the confirmation page itself is a GET
-        $confirmed = $this->isPost() && $this->request->getPostParam('confirm') !== null;
+        $confirmed = $this->request->getPostParam('confirm') !== null;
 
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
