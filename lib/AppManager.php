@@ -286,29 +286,21 @@ class AppManager
     }
 
     /**
-     * Displays validation errors if the configuration is invalid.
+     * Displays validation errors and exits if the configuration is invalid.
      *
      * @param ConfigValidator $validator The configuration validator
      */
-    public function showValidationErrors(ConfigValidator $validator): void
+    private function showValidationErrors(ConfigValidator $validator): void
     {
-        if (!$validator->validate()) {
-            $errors = $validator->getErrors();
-            $messageService = new MessageService();
-
-            // If there's only one error, display it directly
-            if (count($errors) === 1) {
-                $firstKey = array_key_first($errors);
-                $messageService->displayDirectSystemError("Invalid configuration: " . $errors[$firstKey]);
-            } elseif (count($errors) > 1) {
-                $errorMessage = "Invalid configuration:<ul>";
-                foreach ($errors as $error) {
-                    $errorMessage .= "<li>" . htmlspecialchars($error, ENT_QUOTES) . "</li>";
-                }
-                $errorMessage .= "</ul>";
-                $messageService->displayDirectSystemError($errorMessage);
-            }
+        if ($validator->validate()) {
+            return;
         }
+
+        // MessageService escapes the message itself, so pass plain text only
+        $messageService = new MessageService();
+        $messageService->displayDirectSystemError(
+            'Invalid configuration: ' . implode('; ', $validator->getErrors())
+        );
     }
 
     /**
