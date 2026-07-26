@@ -133,7 +133,8 @@ final class BootstrapErrorResponder
             return;
         }
 
-        http_response_code(500);
+        // A rejected method is a routine client error, not a server failure
+        http_response_code($e->getCode() === 405 ? 405 : 500);
 
         if ($this->displayErrors()) {
             $this->renderDebugPage($e);

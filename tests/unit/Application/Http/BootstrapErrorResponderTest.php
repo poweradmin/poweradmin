@@ -309,6 +309,18 @@ class BootstrapErrorResponderTest extends TestCase
         $this->assertSame(500, http_response_code());
     }
 
+    public function testHtmlMethodNotAllowedKeepsItsOwnStatus(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/zones/add/master';
+        $_SERVER['HTTP_ACCEPT'] = 'text/html';
+
+        $this->assertSame(
+            'An error occurred while processing the request.',
+            $this->capture(new Exception('Method not allowed', 405))
+        );
+        $this->assertSame(405, http_response_code());
+    }
+
     public function testGenericHtmlErrorShowsDebugPageWhenEnabled(): void
     {
         $_SERVER['REQUEST_URI'] = '/zones';
