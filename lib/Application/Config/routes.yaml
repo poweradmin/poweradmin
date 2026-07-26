@@ -623,15 +623,16 @@ api_v2_zone_records:
     id: '\d+'
   methods: [GET, POST]
 
-# Declared before api_v2_zone_record, whose record_id pattern also matches the
-# literal "bulk". Keep the specific path first so POST resolves here by position
-# rather than by the two routes happening to accept different methods.
+# Must stay ahead of api_v2_zone_record, whose record_id pattern also matches the
+# literal "bulk". Claims that route's verbs too so the controller answers 405,
+# instead of them falling through to a lookup for a record named "bulk". PATCH is
+# left out on purpose: neither route accepts it, so it stays a routing-level 405.
 api_v2_zone_records_bulk:
   path: /api/v2/zones/{id}/records/bulk
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController::run
   requirements:
     id: '\d+'
-  methods: [POST]
+  methods: [GET, POST, PUT, DELETE]
 
 api_v2_zone_record:
   path: /api/v2/zones/{id}/records/{record_id}
