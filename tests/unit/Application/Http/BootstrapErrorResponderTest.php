@@ -218,11 +218,13 @@ class BootstrapErrorResponderTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v1/zones';
 
-        // A PDOException carries a SQLSTATE string, which must not read as 404
+        // A PDOException carries a SQLSTATE string, which must not read as 404.
+        // PDO writes that string internally, so reproducing it here needs the cast.
         $body = $this->capture(new class ('table missing') extends Exception {
             public function __construct(string $message)
             {
                 parent::__construct($message);
+                /** @psalm-suppress InvalidPropertyAssignmentValue */
                 $this->code = '42S02';
             }
         });
