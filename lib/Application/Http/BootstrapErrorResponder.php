@@ -131,6 +131,8 @@ final class BootstrapErrorResponder
             return;
         }
 
+        http_response_code(500);
+
         if ($this->displayErrors()) {
             $this->renderDebugPage($e);
             return;

@@ -332,6 +332,7 @@ class BootstrapErrorResponderTest extends TestCase
             'An error occurred while processing the request.',
             $this->capture(new Exception('database credentials rejected'))
         );
+        $this->assertSame(500, http_response_code());
     }
 
     public function testGenericHtmlErrorShowsDebugPageWhenEnabled(): void
@@ -350,6 +351,7 @@ class BootstrapErrorResponderTest extends TestCase
             . '</pre>';
 
         $this->assertSame($expected, $body);
+        $this->assertSame(500, http_response_code());
     }
 
     public function testDebugPageEscapesHtmlInTheMessage(): void
