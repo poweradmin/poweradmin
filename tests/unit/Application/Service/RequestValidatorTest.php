@@ -12,10 +12,10 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Http;
+namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Http\RequestValidator;
+use Poweradmin\Application\Service\RequestValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

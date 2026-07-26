@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Presenter;
+namespace Poweradmin\Infrastructure\Web;
 
 use Closure;
 use Poweradmin\AppManager;
@@ -34,7 +34,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Infrastructure\Service\StyleManager;
-use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
 

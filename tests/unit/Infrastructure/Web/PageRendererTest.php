@@ -12,11 +12,11 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Presenter;
+namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppManager;
-use Poweradmin\Application\Presenter\PageRenderer;
+use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
