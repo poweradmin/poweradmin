@@ -59,7 +59,6 @@ class PageRendererTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             $userContext,
             fn(string $permission): bool => false,
-            fn() => null,
             fn() => []
         );
     }
@@ -126,19 +125,31 @@ class PageRendererTest extends TestCase
 
     public function testGetOverrideIgnoredForDisabledOrMalformedLocale(): void
     {
+        $config = ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']];
+
+        // Fresh renderer per case: the resolved locale is memoized per instance
+        $_GET['lang'] = 'fr_FR'; // not in enabled_languages
+        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
+
+        // Malformed values must never pass the character allowlist
+        $_GET['lang'] = '../etc';
+        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
+
+        $_GET['lang'] = ['de_DE'];
+        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
+    }
+
+    public function testResolveActiveLocaleIsMemoizedPerInstance(): void
+    {
         $renderer = $this->makeRenderer(
             ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']]
         );
 
-        // Not in enabled_languages
-        $_GET['lang'] = 'fr_FR';
         $this->assertSame('en_EN', $renderer->resolveActiveLocale());
 
-        // Malformed values must never pass the character allowlist
-        $_GET['lang'] = '../etc';
+        // A later superglobal change must not flip the already-resolved locale
+        $_GET['lang'] = 'de_DE';
         $this->assertSame('en_EN', $renderer->resolveActiveLocale());
-
-        $_GET['lang'] = ['de_DE'];
-        $this->assertSame('en_EN', $renderer->resolveActiveLocale());
+        $this->assertSame('en_EN', $renderer->languageVars()['current_language']);
     }
 }

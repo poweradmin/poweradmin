@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -41,9 +42,9 @@ use Poweradmin\Version;
  * Renders the shared page chrome (header, footer, Twig globals) around
  * controller-rendered templates.
  *
- * Permission, capability, and debug-query lookups arrive as closures so
- * they stay deferred until a template actually needs them, and so this
- * class never triggers authentication or database work on construction.
+ * The permission and debug-query lookups arrive as closures so they stay
+ * deferred until a template actually needs them, and so this class never
+ * triggers authentication or database work on construction.
  */
 class PageRenderer
 {
@@ -52,10 +53,11 @@ class PageRenderer
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
     private Closure $hasPermission;
-    private Closure $getPdnsCapabilities;
     private Closure $getDebugQueries;
 
     private bool $twigEnvironmentReady = false;
+    private ?string $activeLocale = null;
+    private ?array $languageVars = null;
 
     public function __construct(
         AppManager $app,
@@ -63,7 +65,6 @@ class PageRenderer
         CsrfTokenService $csrfTokenService,
         UserContextService $userContextService,
         Closure $hasPermission,
-        Closure $getPdnsCapabilities,
         Closure $getDebugQueries
     ) {
         $this->app = $app;
@@ -71,7 +72,6 @@ class PageRenderer
         $this->csrfTokenService = $csrfTokenService;
         $this->userContextService = $userContextService;
         $this->hasPermission = $hasPermission;
-        $this->getPdnsCapabilities = $getPdnsCapabilities;
         $this->getDebugQueries = $getDebugQueries;
     }
 
@@ -94,16 +94,15 @@ class PageRenderer
         $this->twigEnvironmentReady = true;
 
         // The closure defers the permission lookup until a template calls can()
-        $this->app->addTwigExtension(new PermissionTwigExtension(
-            fn(string $permission): bool => $this->hasPermission($permission)
-        ));
+        $this->app->addTwigExtension(new PermissionTwigExtension($this->hasPermission));
 
         // Always-on context shared by header, page, and footer templates
         $this->csrfTokenService->ensureTokenExists();
         $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
         $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
-        $this->app->addTwigGlobal('pdns_caps', ($this->getPdnsCapabilities)());
-        $this->app->addTwigGlobal('pdns_server_info', PdnsVersionService::getCachedInfo());
+        $pdnsInfo = PdnsVersionService::getCachedInfo();
+        $this->app->addTwigGlobal('pdns_caps', PdnsCapabilities::fromVersion($pdnsInfo['version'] ?? null));
+        $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
     }
@@ -132,7 +131,7 @@ class PageRenderer
      * @param string $pageTitle Page title, or '' to fall back to the interface title
      * @param array|null $systemMessages System messages to be displayed
      */
-    public function renderHeader(array $requestData, string $pageTitle, ?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
+    public function renderHeader(array $requestData, string $pageTitle, ?array $systemMessages = null, ?array $scriptMessages = null): void
     {
         $this->setupTwigEnvironment();
 
@@ -173,7 +172,7 @@ class PageRenderer
             'api_error' => false,
         ], LanguageCode::templateVars($activeLocale));
 
-        $vars = array_merge($vars, $languageVars ?? $this->getLanguageSelectorVars($activeLocale));
+        $vars = array_merge($vars, $this->languageVars());
 
         $dblog_use = $this->config->get('logging', 'database_enabled');
         $session_key = $this->config->get('security', 'session_key');
@@ -274,6 +273,18 @@ class PageRenderer
     }
 
     /**
+     * Language selector variables for the current request, built once and
+     * shared by the header dropdown, the page body (login form's hidden
+     * userlang field), and any later render call in the same request.
+     *
+     * @return array<string, mixed>
+     */
+    public function languageVars(): array
+    {
+        return $this->languageVars ??= $this->getLanguageSelectorVars($this->resolveActiveLocale());
+    }
+
+    /**
      * Build the login-page language selector variables: the active locale,
      * the dropdown options, and a visibility flag. Shared by the header
      * dropdown and the login form's hidden userlang field so the chosen
@@ -306,9 +317,15 @@ class PageRenderer
 
     /**
      * Returns the locale active for the current request (GET override > session > config).
+     * Memoized: the inputs are stable within a request and this runs on every
+     * header and footer render.
      */
     public function resolveActiveLocale(): string
     {
+        if ($this->activeLocale !== null) {
+            return $this->activeLocale;
+        }
+
         $active = $this->userContextService->getUserLanguage()
             ?? $this->config->get('interface', 'language', 'en_EN')
             ?? 'en_EN';
@@ -320,7 +337,7 @@ class PageRenderer
                 $active = $requested;
             }
         }
-        return $active;
+        return $this->activeLocale = $active;
     }
 
     /**

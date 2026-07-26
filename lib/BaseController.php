@@ -213,20 +213,19 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
-        // Build the language selector once and share it with the header and the
-        // body template so the login form's hidden userlang field carries the
-        // chosen language through submission.
-        $renderer = $this->getPageRenderer();
-        $languageVars = $renderer->getLanguageSelectorVars($renderer->resolveActiveLocale());
+        // The language selector vars are shared with the body template so the
+        // login form's hidden userlang field carries the chosen language
+        // through submission (PageRenderer memoizes them per request).
+        $languageVars = $this->getPageRenderer()->languageVars();
 
         $this->renderHeader(
             $this->messageService->getMessages('system'),
-            $this->messageService->getMessages(pathinfo($template)['filename']),
-            $languageVars
+            $this->messageService->getMessages(pathinfo($template)['filename'])
         );
 
         // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
-        // globals (see setupTwigEnvironment); page params still override them.
+        // globals (see PageRenderer::setupTwigEnvironment); page params still
+        // override them.
         $params = array_merge($languageVars, $params);
 
         // Shared page chrome tested bare in many templates; the falsy defaults
@@ -656,9 +655,8 @@ abstract class BaseController
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,
-            fn(string $permission): bool => $this->hasPermission($permission),
-            fn() => $this->getPdnsCapabilities(),
-            fn() => $this->init->getDebugQueries()
+            $this->hasPermission(...),
+            $this->init->getDebugQueries(...)
         );
     }
 
@@ -667,9 +665,9 @@ abstract class BaseController
      *
      * @param array|null $systemMessages System messages to be displayed
      */
-    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
+    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null): void
     {
-        $this->getPageRenderer()->renderHeader($this->requestData, $this->pageTitle, $systemMessages, $scriptMessages, $languageVars);
+        $this->getPageRenderer()->renderHeader($this->requestData, $this->pageTitle, $systemMessages, $scriptMessages);
     }
 
     /**
