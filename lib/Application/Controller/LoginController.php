@@ -60,6 +60,15 @@ class LoginController extends BaseController
         );
     }
 
+    /**
+     * The login form sends `_token` carrying the login token, which
+     * SessionAuthenticator validates against its own session key.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         if (isset($_SESSION[SessionKeys::USERID])) {

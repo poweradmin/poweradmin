@@ -84,6 +84,15 @@ abstract class AbstractApiController extends BaseController
     }
 
     /**
+     * API requests authenticate per call with an API key or HTTP Basic credentials,
+     * so there is no session-bound form token to check.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
+    /**
      * Checks if the current request is a JSON request
      *
      * @return bool True if the request is JSON, false otherwise

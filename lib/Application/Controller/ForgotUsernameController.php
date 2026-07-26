@@ -96,6 +96,15 @@ class ForgotUsernameController extends BaseController
         }
     }
 
+    /**
+     * This flow validates its own one-shot `username_recovery_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if username recovery is enabled

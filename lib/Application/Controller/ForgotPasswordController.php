@@ -92,6 +92,15 @@ class ForgotPasswordController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
     }
 
+    /**
+     * This flow validates its own one-shot `password_reset_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if password reset is enabled

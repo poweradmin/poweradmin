@@ -77,6 +77,15 @@ class OidcCallbackController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
+    /**
+     * The identity provider posts here directly; the OIDC state parameter, not a
+     * form token, is what ties the response to this session.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if OIDC is enabled

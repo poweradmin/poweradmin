@@ -77,6 +77,15 @@ class SamlCallbackController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
+    /**
+     * The identity provider posts here directly; the signed SAML response, not a
+     * form token, is what authenticates the request.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if SAML is enabled

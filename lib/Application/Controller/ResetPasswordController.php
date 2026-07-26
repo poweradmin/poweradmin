@@ -96,6 +96,15 @@ class ResetPasswordController extends BaseController
         $this->token = $this->request->getQueryParam('token');
     }
 
+    /**
+     * This flow validates its own one-shot `reset_password_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if password reset is enabled

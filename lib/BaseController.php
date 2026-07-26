@@ -147,6 +147,23 @@ abstract class BaseController
                 exit;
             }
         }
+
+        // Every state-changing web request is token-checked here rather than in each
+        // controller, so a handler cannot be written without the guard
+        if ($this->isPost() && $this->requiresCsrfValidation()) {
+            $this->validateCsrfToken();
+        }
+    }
+
+    /**
+     * Whether a POST to this controller must carry a valid `_token`.
+     *
+     * Controllers that authenticate statelessly, receive third-party posts, or
+     * validate their own flow-scoped token override this and return false.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return true;
     }
 
     /**

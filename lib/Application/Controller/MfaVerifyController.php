@@ -64,6 +64,15 @@ class MfaVerifyController extends BaseController
         $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
     }
 
+    /**
+     * This flow validates its own one-shot `mfa_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if MFA is globally enabled or this is a logout request
