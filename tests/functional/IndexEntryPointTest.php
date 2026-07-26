@@ -61,10 +61,6 @@ class IndexEntryPointTest extends TestCase
             'initializeSession() function should be available'
         );
         $this->assertTrue(
-            function_exists('sendJsonError'),
-            'sendJsonError() function should be available'
-        );
-        $this->assertTrue(
             function_exists('initializeTimezone'),
             'initializeTimezone() function should be available'
         );

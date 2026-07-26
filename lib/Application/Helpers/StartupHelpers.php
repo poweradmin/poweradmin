@@ -56,18 +56,3 @@ function initializeSession(): void
 
     session_start();
 }
-
-/**
- * Send JSON error response
- */
-function sendJsonError(string $message, ?string $file = null, ?int $line = null, ?array $trace = null): void
-{
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => true,
-        'message' => $message,
-        'file' => $file,
-        'line' => $line,
-        'trace' => $trace
-    ]);
-}
