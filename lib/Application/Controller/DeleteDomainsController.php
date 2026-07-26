@@ -117,14 +117,12 @@ class DeleteDomainsController extends BaseController
         // which would conflict with the deletion transaction
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         if ($pdnssec_use) {
-            $perm_delete = Permission::getDeletePermission($this->db);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            // Permission for every zone was already established by verifyDeletePermission()
             foreach ($deleted_zones as $zone) {
                 if ($zone['type'] == 'MASTER' && !empty($zone['name'])) {
-                    if ($perm_delete == "all" || ($perm_delete == "own" && $this->isZoneOwner($zone['id']))) {
-                        if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
-                            $dnssecProvider->unsecureZone($zone['name']);
-                        }
+                    if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
+                        $dnssecProvider->unsecureZone($zone['name']);
                     }
                 }
             }
@@ -198,8 +196,8 @@ class DeleteDomainsController extends BaseController
         $permissionService = $this->createPermissionService();
         $userId = $this->userContextService->getLoggedInUserId();
         foreach ($zones as &$zone) {
-            // Direct ownership only, so the per-zone warning still shows for
-            // users whose grant comes via a group
+            // Effectively always true here: verifyDeletePermission() already blocked
+            // any zone the user cannot delete. Kept for the template contract.
             $zone['user_can_delete'] = $permissionService->canDeleteZone($userId, (bool)$zone['is_owner']);
         }
         unset($zone);
@@ -219,8 +217,6 @@ class DeleteDomainsController extends BaseController
         $domainRepository = $this->createDomainRepository();
         $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
-        $userId = $this->userContextService->getLoggedInUserId();
-
         // Fetch all zone details in one bulk call to avoid per-zone API round-trips
         $zoneInfos = [];
         foreach ($domainRepository->getZoneInfoFromIds($zone_ids) as $info) {
@@ -232,10 +228,6 @@ class DeleteDomainsController extends BaseController
             $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
             $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);
             $zones[$zone_id]['is_owner'] = $this->isZoneOwner($zone_id);
-
-            // Check zone-specific delete permission (includes group permissions)
-            $canDelete = $this->createPermissionService()->canPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
-            $zones[$zone_id]['can_delete'] = $canDelete;
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
