@@ -1,20 +1,10 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/edit">{{ templ_details['name'] }}</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit record{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Zone templates'|trans, url: base_url_prefix ~ '/zones/templates'},
+    {label: templ_details['name'], url: base_url_prefix ~ '/zones/templates/' ~ zone_templ_id ~ '/edit'},
+    {label: 'Edit record'|trans},
+]) }}
 
 {% if zones_linked_count > 0 %}
 <div class="alert alert-info alert-dismissible fade show mb-3 py-2 small" role="alert">

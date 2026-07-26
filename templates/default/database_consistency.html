@@ -24,12 +24,7 @@
         </div>
     </div>
 </div>
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Database Consistency Check{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([{label: 'Database Consistency Check'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">

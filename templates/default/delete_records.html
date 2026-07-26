@@ -1,22 +1,13 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        {% if zone_id %}
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{% trans %}Edit zone{% endtrans %}</a></li>
-        {% else %}
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/search">{% trans %}Search{% endtrans %}</a></li>
-        {% endif %}
-        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete records{% endtrans %}</li>
-    </ol>
-</nav>
+{% if zone_id %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Edit zone'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+] %}
+{% else %}
+{% set crumbs = [{label: 'Search'|trans, url: base_url_prefix ~ '/search'}] %}
+{% endif %}
+{{ macros.breadcrumb(crumbs|merge([{label: 'Delete records'|trans}])) }}
 
 <div class="card shadow-sm mb-4">
     {{ macros.card_header('bi-trash', 'Delete records'|trans) }}
@@ -79,16 +70,7 @@
             </div>
             {% endif %}
 
-            <button type="submit" name="confirm" value="1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these records{% endtrans %}
-            </button>
-            {% if zone_id %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm ms-2">
-            {% else %}
-            <a href="{{ base_url_prefix }}/search" class="btn btn-secondary btn-sm ms-2">
-            {% endif %}
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-            </a>
+            {{ macros.delete_actions('Yes, delete these records'|trans, base_url_prefix ~ (zone_id ? '/zones/' ~ zone_id ~ '/edit' : '/search'), 'Cancel'|trans, confirm_name: 'confirm') }}
         </form>
     </div>
 </div>

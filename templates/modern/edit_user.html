@@ -1,19 +1,11 @@
 {% import '_macros.html' as macros %}
 {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit profile{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([{label: 'Edit profile'|trans}]) }}
 {% else %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit user{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Users'|trans, url: base_url_prefix ~ '/users'},
+    {label: 'Edit user'|trans},
+]) }}
 {% endif %}
 
 <div class="row">

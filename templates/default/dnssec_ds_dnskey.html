@@ -1,30 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
-            {% endif %}
-        </li>
-        {% if can_manage_dnssec %}
-        <li class="breadcrumb-item">
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec">{% trans %}DNSSEC{% endtrans %}</a>
-        </li>
-        {% endif %}
-        <li class="breadcrumb-item" aria-current="page">
-            {% trans %}DS and DNS keys{% endtrans %}
-        </li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: idn_zone_name|default(domain_name), url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+] %}
+{% if can_manage_dnssec %}
+{% set crumbs = crumbs|merge([{label: 'DNSSEC'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/dnssec'}]) %}
+{% endif %}
+{{ macros.breadcrumb(crumbs|merge([{label: 'DS and DNS keys'|trans}])) }}
 
 <div class="row">
     <div class="col-md-12">

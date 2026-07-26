@@ -1,21 +1,13 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        {% if zone_id_filter and zone_name %}
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id_filter }}/edit">{{ zone_name }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Logs{% endtrans %}</li>
-        {% else %}
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone logs{% endtrans %}</li>
-        {% endif %}
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+] %}
+{% if zone_id_filter and zone_name %}
+{% set crumbs = crumbs|merge([{label: zone_name, url: base_url_prefix ~ '/zones/' ~ zone_id_filter ~ '/edit'}, {label: 'Logs'|trans}]) %}
+{% else %}
+{% set crumbs = crumbs|merge([{label: 'Zone logs'|trans}]) %}
+{% endif %}
+{{ macros.breadcrumb(crumbs) }}
 
 {% embed '_partials/log_list.html' with {
     filter_action: base_url_prefix ~ '/zones/logs',

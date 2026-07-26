@@ -1,11 +1,8 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans %}Regenerate API Key{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'API Keys'|trans, url: base_url_prefix ~ '/settings/api-keys'},
+    {label: 'Regenerate API Key'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">

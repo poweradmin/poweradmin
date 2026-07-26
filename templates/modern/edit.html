@@ -1,24 +1,9 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-            {% if is_reverse_zone %}
-            <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            {{ idn_zone_name }}
-            {% else %}
-            {{ zone_name_to_display }}
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: idn_zone_name|default(zone_name_to_display)},
+    {label: 'Edit'|trans},
+]) }}
 
 {% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and not zone_is_read_only(domain_type) and iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">

@@ -1,11 +1,8 @@
 {% import '_macros.html' as macros %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{% trans %}Tools{% endtrans %}</li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone Import{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Tools'|trans},
+    {label: 'Zone Import'|trans},
+]) }}
 
 {% if result is defined and result %}
 {# Import results #}

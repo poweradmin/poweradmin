@@ -31,9 +31,7 @@
 {% endmacro %}
 
 {# Breadcrumb trail. items: list of {label, url} maps; omit url on the current
-   (last) item. Home is prepended automatically. Pass translated labels: 'X'|trans.
-   Conditional trails ({% if %} mid-list) are still hand-written as of 4.5.0 -
-   build the items list with {% set %} first when migrating one. #}
+   (last) item. Home is prepended automatically. Pass translated labels: 'X'|trans #}
 {% macro breadcrumb(items) %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
