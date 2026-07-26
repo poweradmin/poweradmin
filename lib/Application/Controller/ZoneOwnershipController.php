@@ -150,6 +150,9 @@ class ZoneOwnershipController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
+        // getZoneOwners returns the legacy "-1" sentinel when the zone has no owner rows
+        $has_user_owners = is_array($owners) ? $owners !== [] : ($owners !== '-1' && $owners !== '' && $owners !== null);
+
         // Render the ownership page
         $this->render('zone-ownership.html', [
             'zone_id' => $zone_id,
@@ -158,6 +161,8 @@ class ZoneOwnershipController extends BaseController
             'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,
+            'has_user_owners' => $has_user_owners,
+            'has_group_owners' => $groupOwners !== [],
             'all_groups' => $availableGroups,
             'meta_edit' => $meta_edit,
             'perm_view_others' => $perm_view_others,

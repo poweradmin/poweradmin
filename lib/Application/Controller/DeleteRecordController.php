@@ -285,6 +285,10 @@ class DeleteRecordController extends BaseController
             }
         }
 
+        if ($record_info) {
+            $record_info['display_name'] ??= $record_info['name'] ?? '';
+        }
+
         $this->render('delete_record.html', [
             'record_id' => $record_id,
             'zone_id' => $zid,

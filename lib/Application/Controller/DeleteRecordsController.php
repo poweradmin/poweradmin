@@ -290,9 +290,17 @@ class DeleteRecordsController extends BaseController
             return;
         }
 
+        foreach ($records as &$record) {
+            $record['display_name'] ??= $record['name'] ?? '';
+        }
+        unset($record);
+
+        $has_ip_records = (bool)array_filter($records, fn($r) => in_array($r['type'] ?? '', ['A', 'AAAA'], true));
+
         $this->render('delete_records.html', [
             'records' => $records,
             'total_records' => count($records),
+            'has_ip_records' => $has_ip_records,
             'zone_id' => $this->request->getPostParam('zone_id')
         ]);
     }

@@ -32,11 +32,6 @@
 {# The ueberuser dashboard has enough tiles to warrant grouped, collapsible sections. #}
 
 {# --- DNS Management --- #}
-{% set has_dns_management = (permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status)
-    or permissions['search']
-    or permissions['zone_content_view_own'] or permissions['zone_content_view_others']
-    or permissions['zone_templ_add'] or permissions['zone_templ_edit']
-    or permissions['supermaster_view'] %}
 {% if has_dns_management %}
 <div class="card mb-2">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#dns-management" aria-expanded="true">
@@ -138,10 +133,6 @@
 {% endif %}
 
 {# --- Zone Operations --- #}
-{% set has_zone_operations = permissions['zone_master_add']
-    or permissions['zone_slave_add']
-    or permissions['supermaster_add']
-    or (iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others'])) %}
 {% if has_zone_operations %}
 <div class="card mb-2">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#zone-operations" aria-expanded="true">
@@ -208,9 +199,6 @@
 {% endif %}
 
 {# --- Administration --- #}
-{% set has_administration = (permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'])
-    or permissions['templ_perm_edit']
-    or (permissions['user_is_ueberuser'] and dblog_use == true) %}
 {% if has_administration %}
 <div class="card mb-2">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#administration" aria-expanded="true">
@@ -297,9 +285,6 @@
 {% endif %}
 
 {# --- Tools & Modules --- #}
-{% set has_tools = (permissions['user_is_ueberuser'] and enable_consistency_checks)
-    or ((permissions['user_is_ueberuser'] or permissions['api_manage_keys']) and api_enabled)
-    or (module_nav_items is defined and module_nav_items|length > 0) %}
 {% if has_tools %}
 <div class="card mb-2">
     <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#tools-modules" aria-expanded="true">

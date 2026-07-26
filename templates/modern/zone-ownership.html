@@ -7,14 +7,12 @@
 
 <!-- Ownership (Side by Side) -->
 <div class="row">
-    {% set has_user_owners = owners is not empty and owners != "-1" %}
-    {% set has_group_owners = group_owners is not empty %}
     {% if user_owner_allowed or has_user_owners %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             {{ macros.card_header('bi-person-badge', 'User Owner'|trans) }}
             <div class="card-body">
-                {% if owners is not empty and owners != "-1" %}
+                {% if has_user_owners %}
                 <div class="mb-3">
                     <ul class="list-group">
                     {% if meta_edit %}
@@ -94,7 +92,7 @@
         <div class="card shadow-sm mb-4">
             {{ macros.card_header('bi-people', 'Group Ownership'|trans) }}
             <div class="card-body">
-                {% if group_owners is not empty %}
+                {% if has_group_owners %}
                 <div class="mb-3">
                     <ul class="list-group">
                     {% if meta_edit %}

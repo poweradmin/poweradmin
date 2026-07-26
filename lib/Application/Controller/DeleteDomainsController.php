@@ -194,8 +194,16 @@ class DeleteDomainsController extends BaseController
             }
         }
 
+        $perm_delete = Permission::getDeletePermission($this->db);
+        foreach ($zones as &$zone) {
+            // Mirrors the historical template check: direct ownership only, so the
+            // per-zone warning still shows for users whose grant comes via a group
+            $zone['user_can_delete'] = $perm_delete === 'all' || ($perm_delete === 'own' && $zone['is_owner']);
+        }
+        unset($zone);
+
         $this->render('delete_domains.html', [
-            'perm_delete' => Permission::getDeletePermission($this->db),
+            'perm_delete' => $perm_delete,
             'zones' => $zones,
             'error' => _("You do not have the permission to delete a zone."),
             'is_reverse_zone' => $all_reverse, // If all zones are reverse, use reverse breadcrumb

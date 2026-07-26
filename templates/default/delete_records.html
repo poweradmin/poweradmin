@@ -32,7 +32,7 @@
                 <tbody>
                 {% for record in records %}
                 <tr>
-                    <td>{{ record['display_name'] is defined ? record['display_name'] : record['name'] }}</td>
+                    <td>{{ record['display_name'] }}</td>
                     <td><span class="badge {{ record_type_class(record['type']) }}">{{ record['type'] }}</span></td>
                     <td>{{ record['prio'] }}</td>
                     <td><code class="text-break">{{ record['content'] }}</code></td>
@@ -51,14 +51,6 @@
             {% endif %}
             {% for record in records %}
             <input type="hidden" name="record_id[]" value="{{ record['id'] }}">
-            {% endfor %}
-
-            {# Check if any A or AAAA records are being deleted #}
-            {% set has_ip_records = false %}
-            {% for record in records %}
-                {% if record['type'] == 'A' or record['type'] == 'AAAA' %}
-                    {% set has_ip_records = true %}
-                {% endif %}
             {% endfor %}
 
             {% if has_ip_records %}
