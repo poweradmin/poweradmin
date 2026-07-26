@@ -139,6 +139,16 @@ class PageRendererTest extends TestCase
         $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
     }
 
+    public function testGetOverrideAppliesForSpacedEnabledList(): void
+    {
+        $renderer = $this->makeRenderer(
+            ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN, de_DE']]
+        );
+
+        $_GET['lang'] = 'de_DE';
+        $this->assertSame('de_DE', $renderer->resolveActiveLocale());
+    }
+
     public function testResolveActiveLocaleIsMemoizedPerInstance(): void
     {
         $renderer = $this->makeRenderer(

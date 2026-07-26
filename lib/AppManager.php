@@ -22,6 +22,8 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -35,7 +37,6 @@ use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Psr\Log\LoggerInterface;
@@ -161,23 +162,8 @@ class AppManager
         $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
-        $userContextService = new UserContextService();
-        $interfaceLang = $this->configuration->get('interface', 'language', 'en_EN');
-        $userLang = $userContextService->getUserLanguage();
-        if ($userLang !== null) {
-            $interfaceLang = $userLang;
-        }
-
-        // Allow language override via GET parameter (login page language switcher)
-        $request = Request::createFromGlobals();
-        $requestedLang = $request->query->get('lang');
-        if (is_string($requestedLang) && preg_match('/^[a-zA-Z_]+$/', $requestedLang)) {
-            $enabledLanguages = $this->configuration->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-            $supportedLocales = explode(',', $enabledLanguages);
-            if (in_array($requestedLang, $supportedLocales, true)) {
-                $interfaceLang = $requestedLang;
-            }
-        }
+        $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
+        $interfaceLang = $resolver->resolve();
 
         // ICU formatters (format_datetime etc.) read the default locale;
         // setlocale() in LocaleManager does not affect ICU
@@ -185,7 +171,7 @@ class AppManager
 
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);
+        $translator->addResource('po', $this->getLocaleFile($interfaceLang, $resolver->getSupportedLocales()), $interfaceLang);
 
         // Load module translations
         foreach ($registry->getEnabledModules() as $module) {
@@ -288,12 +274,12 @@ class AppManager
      * Gets the locale file path for the given interface language.
      *
      * @param string $interfaceLang The interface language
+     * @param array $supportedLocales The enabled locales
      * @return string The path to the locale file
      */
-    public function getLocaleFile(string $interfaceLang): string
+    private function getLocaleFile(string $interfaceLang, array $supportedLocales): string
     {
-        $supportedLocales = explode(',', $this->configuration->get('interface', 'enabled_languages', 'en_EN'));
-        if (in_array($interfaceLang, $supportedLocales)) {
+        if (in_array($interfaceLang, $supportedLocales, true)) {
             return "locale/$interfaceLang/LC_MESSAGES/messages.po";
         }
         return "locale/en_EN/LC_MESSAGES/messages.po";

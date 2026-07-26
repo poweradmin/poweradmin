@@ -24,9 +24,11 @@ namespace Poweradmin\Infrastructure\Web;
 
 use Closure;
 use Poweradmin\AppManager;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
@@ -322,22 +324,13 @@ class PageRenderer
      */
     public function resolveActiveLocale(): string
     {
-        if ($this->activeLocale !== null) {
-            return $this->activeLocale;
-        }
-
-        $active = $this->userContextService->getUserLanguage()
-            ?? $this->config->get('interface', 'language', 'en_EN')
-            ?? 'en_EN';
-
-        $requested = $_GET['lang'] ?? null;
-        if (is_string($requested) && preg_match('/^[a-zA-Z_]+$/', $requested)) {
-            $enabled = explode(',', $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
-            if (in_array($requested, array_map('trim', $enabled), true)) {
-                $active = $requested;
-            }
-        }
-        return $this->activeLocale = $active;
+        // Request is constructed here, not in the constructor: it snapshots
+        // the superglobals, which must happen at first resolve time
+        return $this->activeLocale ??= (new LocaleResolver(
+            $this->config,
+            $this->userContextService,
+            new Request()
+        ))->resolve();
     }
 
     /**

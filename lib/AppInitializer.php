@@ -22,7 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -108,27 +110,9 @@ class AppInitializer
      */
     private function loadLocale(): void
     {
-        // Re-reading the same key with a default does not help when it is present
-        // but empty (`enabled_languages => ''`), which would explode() to ['']; fall
-        // back to a real default instead.
-        $enabledLanguages = $this->configManager->get('interface', 'enabled_languages');
-        if (empty($enabledLanguages)) {
-            $enabledLanguages = 'en_EN';
-        }
-
-        $supportedLocales = explode(',', $enabledLanguages);
-        $locale = new LocaleManager($supportedLocales, './locale');
-
-        $userContextService = new UserContextService();
-        $defaultLanguage = $this->configManager->get('interface', 'language', 'en_EN');
-        $userLang = $userContextService->getUserLanguage() ?? $defaultLanguage;
-
-        // Allow language override via GET parameter (login page language switcher)
-        if (!empty($_GET['lang']) && in_array($_GET['lang'], $supportedLocales)) {
-            $userLang = $_GET['lang'];
-        }
-
-        $locale->setLocale($userLang);
+        $resolver = new LocaleResolver($this->configManager, new UserContextService(), new Request());
+        $localeManager = new LocaleManager($resolver->getSupportedLocales(), './locale');
+        $localeManager->setLocale($resolver->resolve());
     }
 
     /**
