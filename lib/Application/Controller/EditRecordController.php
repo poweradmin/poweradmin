@@ -186,6 +186,7 @@ class EditRecordController extends BaseController
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name,
             'zone_type' => $zone_type,
             'zid' => $zid,
             'perm_edit' => $perm_edit,

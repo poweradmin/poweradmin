@@ -1,7 +1,7 @@
 {% import '_macros.html' as macros %}
 {{ macros.breadcrumb([
     {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
-    {label: idn_zone_name|default(zone_name), url: base_url_prefix ~ '/zones/' ~ zid ~ '/edit'},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zid ~ '/edit'},
     {label: 'Edit record'|trans},
 ]) }}
 
@@ -58,7 +58,7 @@
                             <input type="hidden" name="zid" value="{{ zid }}">
                             {% if display_hostname_only %}
                             <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
-                            .{{ idn_zone_name ?: zone_name }}
+                            .{{ zone_display_name }}
                             {% else %}
                             <input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}">
                             {% endif %}

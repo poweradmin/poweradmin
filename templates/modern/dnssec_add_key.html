@@ -1,7 +1,7 @@
 {% import '_macros.html' as macros %}
 {{ macros.breadcrumb([
     {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
-    {label: idn_zone_name|default(domain_name), url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
     {label: 'DNSSEC'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/dnssec'},
     {label: 'Add key'|trans},
 ]) }}

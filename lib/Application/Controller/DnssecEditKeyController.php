@@ -125,6 +125,7 @@ class DnssecEditKeyController extends BaseController
         $this->render('dnssec_edit_key.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $domain_name,
             'key_id' => $key_id,
             'key_info' => $dnssecProvider->getZoneKey($domain_name, $key_id),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,

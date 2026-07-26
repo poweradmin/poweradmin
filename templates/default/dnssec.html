@@ -14,7 +14,7 @@
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This action will remove all DNSSEC keys and disable DNSSEC for this zone.{% endtrans %}
                 </div>
-                <p>{% trans %}Are you sure you want to unsign the zone{% endtrans %} "<strong>{{ idn_zone_name|default(domain_name) }}</strong>"?</p>
+                <p>{% trans %}Are you sure you want to unsign the zone{% endtrans %} "<strong>{{ zone_display_name }}</strong>"?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
@@ -31,7 +31,7 @@
 
 {{ macros.breadcrumb([
     {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
-    {label: idn_zone_name|default(domain_name), url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
     {label: 'DNSSEC'|trans},
 ]) }}
 

@@ -331,6 +331,7 @@ class AddRecordController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name,
             'is_reverse_zone' => $isReverseZone,
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),

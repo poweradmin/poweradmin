@@ -192,6 +192,7 @@ class EditZoneMetadataController extends BaseController
             'zone_id' => $zoneId,
             'zone' => $zone,
             'idn_zone_name' => $idnZoneName,
+            'zone_display_name' => $idnZoneName !== '' ? $idnZoneName : $zone['name'],
             'metadata_rows' => $this->prepareRowsForTemplate($metadataRows, array_column($definitions, 'kind')),
             'metadata_definitions' => $definitions,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone['name']),

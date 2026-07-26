@@ -504,6 +504,7 @@ class EditController extends BaseController
             'zone_name' => $zone_name,
             'zone_name_to_display' => $zone_name_to_display,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name_to_display,
             'zone_comment' => $zone_comment,
             'domain_type' => $domain_type,
             'slave_master' => $slave_master,

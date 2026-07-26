@@ -151,6 +151,7 @@ class DnssecController extends BaseController
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $domain_name,
             'domain_type' => $domainRepository->getDomainType($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),

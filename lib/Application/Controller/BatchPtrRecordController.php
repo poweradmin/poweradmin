@@ -264,6 +264,7 @@ class BatchPtrRecordController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name,
             'is_reverse_zone' => $isReverseZone,
             'has_zone_id' => $hasZoneId,
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
