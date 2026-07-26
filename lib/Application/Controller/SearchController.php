@@ -333,6 +333,8 @@ class SearchController extends BaseController
             'total_records' => $totalRecords,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
+            'zones_pager' => $this->buildPagerWindow($totalZones, $zone_rowamount, $zones_page),
+            'records_pager' => $this->buildPagerWindow($totalRecords, $record_rowamount, $records_page),
             'zone_rowamount' => $zone_rowamount,
             'record_rowamount' => $record_rowamount,
             'iface_zone_comments' => $iface_zone_comments,
@@ -346,6 +348,30 @@ class SearchController extends BaseController
             'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
             'record_types' => $recordTypes,
         ]);
+    }
+
+    /**
+     * Sliding pagination window matching the search page's client-side pager:
+     * up to 9 page links centered on the current page, with break indicators
+     * when the window does not touch the first or last page.
+     *
+     * @return array{total_pages: int, start_page: int, end_page: int, show_leading_break: bool, show_trailing_break: bool}
+     */
+    private function buildPagerWindow(int $total, int $rowAmount, int $currentPage): array
+    {
+        $maxVisiblePages = 9;
+        $halfVisiblePages = intdiv($maxVisiblePages, 2);
+        $totalPages = (int)ceil($total / max(1, $rowAmount));
+        $startPage = max(1, $currentPage - $halfVisiblePages);
+        $endPage = min($startPage + $maxVisiblePages - 1, $totalPages);
+
+        return [
+            'total_pages' => $totalPages,
+            'start_page' => $startPage,
+            'end_page' => $endPage,
+            'show_leading_break' => $currentPage > $halfVisiblePages + 1,
+            'show_trailing_break' => $totalPages > $endPage,
+        ];
     }
 
     private function getModuleActionPatterns(string $capability): array
@@ -449,6 +475,7 @@ class SearchController extends BaseController
                 $zoneOwnerMap,
                 $zoneGroupMap
             );
+            $record['display_name'] ??= $record['name'] ?? '';
         }
         unset($record);
 
