@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\PageRenderer;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -42,7 +43,6 @@ use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
-use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -53,15 +53,9 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -91,8 +85,7 @@ abstract class BaseController
     private UserContextService $userContextService;
     private string $pageTitle = '';
     protected LoggerInterface $logger;
-    private ?DnsBackendProvider $dnsBackendProvider = null;
-    private ?PermissionService $permissionServiceInstance = null;
+    private ?ControllerServiceFactory $serviceFactory = null;
     private ?PageRenderer $pageRenderer = null;
 
     /**
@@ -412,75 +405,62 @@ abstract class BaseController
     }
 
     /**
-     * Create UserPreferenceService instance
-     *
-     * @return UserPreferenceService
+     * Lazily builds the shared service factory so per-request memoized
+     * instances (backend provider, permission cache) span all accessors.
      */
+    private function services(): ControllerServiceFactory
+    {
+        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+    }
+
     protected function createUserPreferenceService(): UserPreferenceService
     {
-        $db_type = $this->config->get('database', 'type');
-        $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        return new UserPreferenceService($repository, $this->config);
+        return $this->services()->userPreferenceService();
     }
 
     protected function createUserTimezoneService(): UserTimezoneService
     {
-        return new UserTimezoneService($this->createUserPreferenceService(), $this->config);
+        return $this->services()->userTimezoneService();
     }
 
-    /**
-     * Create PaginationService with user preferences support
-     *
-     * @return PaginationService
-     */
     protected function createPaginationService(): PaginationService
     {
-        $userPreferenceService = $this->createUserPreferenceService();
-        return new PaginationService($userPreferenceService);
+        return $this->services()->paginationService();
     }
 
-    /**
-     * Create DnsBackendProvider for backend-aware DNS operations.
-     *
-     * Providers are stateless, so one shared instance serves the whole request.
-     *
-     * @return DnsBackendProvider
-     */
     protected function createDnsBackendProvider(): DnsBackendProvider
     {
-        return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        return $this->services()->dnsBackendProvider();
     }
 
     protected function createDnsDataService(): DnsDataService
     {
-        $backendProvider = $this->createDnsBackendProvider();
-        return new DnsDataService($backendProvider, $this->db, $this->getConfig());
+        return $this->services()->dnsDataService();
     }
 
     protected function createZoneRepository(): ZoneRepositoryInterface
     {
-        return $this->getRepositoryFactory()->createZoneRepository();
+        return $this->services()->zoneRepository();
     }
 
     protected function createDomainRepository(): DomainRepositoryInterface
     {
-        return $this->getRepositoryFactory()->createDomainRepository();
+        return $this->services()->domainRepository();
     }
 
     protected function createRecordRepository(): RecordRepositoryInterface
     {
-        return $this->getRepositoryFactory()->createRecordRepository();
+        return $this->services()->recordRepository();
     }
 
     protected function createUserRepository(): UserRepository
     {
-        return new DbUserRepository($this->db, $this->getConfig());
+        return $this->services()->userRepository();
     }
 
     protected function createPermissionService(): PermissionService
     {
-        // Shared instance so the per-user permission cache spans the whole request
-        return $this->permissionServiceInstance ??= new PermissionService($this->createUserRepository());
+        return $this->services()->permissionService();
     }
 
     /**
@@ -503,43 +483,42 @@ abstract class BaseController
 
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
     {
-        return new DbUserGroupRepository($this->db);
+        return $this->services()->userGroupRepository();
     }
 
     protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
     {
-        return new DbUserGroupMemberRepository($this->db);
+        return $this->services()->userGroupMemberRepository();
     }
 
     protected function createPermissionTemplateRepository(): DbPermissionTemplateRepository
     {
-        return new DbPermissionTemplateRepository($this->db, $this->getConfig());
+        return $this->services()->permissionTemplateRepository();
     }
 
     protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface
     {
-        return new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+        return $this->services()->zoneGroupRepository();
     }
 
     protected function createReverseTtlResolver(): ReverseTtlResolver
     {
-        return new ReverseTtlResolver($this->getConfig(), new DbRecordTypeDefaultRepository($this->db));
+        return $this->services()->reverseTtlResolver();
     }
 
     protected function createRecordManager(): RecordManagerInterface
     {
-        return DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        return $this->services()->recordManager();
     }
 
     protected function createDomainManager(): DomainManagerInterface
     {
-        return DnsServiceFactory::createDomainManager($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        return $this->services()->domainManager();
     }
 
     protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
     {
-        $provider = $backendProvider ?? $this->createDnsBackendProvider();
-        return new RepositoryFactory($this->db, $this->getConfig(), $provider, $this->logger);
+        return $this->services()->repositoryFactory($backendProvider);
     }
 
     /**
