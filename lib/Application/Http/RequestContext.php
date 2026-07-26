@@ -79,13 +79,22 @@ final class RequestContext
     }
 
     /**
-     * Whether the request URI mentions an /api/ path segment. Looser than
+     * Whether the request path mentions an /api/ segment. Looser than
      * isApiRequest(): any /api/ occurrence counts, matching the historical
-     * JSON-negotiation behavior.
+     * JSON-negotiation behavior. Keyed off the path so a web URL such as
+     * /zones/1/edit?next=/api/v1/x is not mistaken for an API call.
      */
     public static function isApiPath(): bool
     {
-        return str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/');
+        return str_contains(self::path(), '/api/');
+    }
+
+    /**
+     * Whether the Accept header mentions JSON at all.
+     */
+    public static function acceptsJson(): bool
+    {
+        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
     }
 
     /**
@@ -93,8 +102,7 @@ final class RequestContext
      */
     public static function acceptsJsonOnly(): bool
     {
-        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
-        return str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html');
+        return self::acceptsJson() && !str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'text/html');
     }
 
     /**

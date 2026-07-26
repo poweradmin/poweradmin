@@ -40,7 +40,13 @@ class RequestContextTest extends TestCase
 
     private function setServerEnvironment(array $vars): void
     {
-        unset($_SERVER['REQUEST_URI'], $_SERVER['HTTP_ACCEPT'], $_SERVER['HTTP_X_REQUESTED_WITH']);
+        unset(
+            $_SERVER['REQUEST_URI'],
+            $_SERVER['HTTP_ACCEPT'],
+            $_SERVER['HTTP_X_REQUESTED_WITH'],
+            $_SERVER['CONTENT_TYPE'],
+            $_SERVER['HTTP_CONTENT_TYPE']
+        );
 
         foreach ($vars as $key => $value) {
             $_SERVER[$key] = $value;
@@ -383,5 +389,44 @@ class RequestContextTest extends TestCase
 
             $this->assertLessThan(0.01, $duration, 'expectsJson() should be fast even with large inputs');
         }
+    }
+
+    public function testIsApiPathIgnoresTheQueryString(): void
+    {
+        // A web page carrying an API URL as a parameter must still render as HTML
+        $this->setServerEnvironment(['REQUEST_URI' => '/zones/1/edit?next=/api/v1/zones']);
+        $this->assertFalse(RequestContext::isApiPath());
+        $this->assertFalse(RequestContext::expectsJson());
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/index.php?return=/api/internal/user']);
+        $this->assertFalse(RequestContext::isApiPath());
+        $this->assertFalse(RequestContext::expectsJson());
+    }
+
+    public function testIsApiPathMatchesRealApiPaths(): void
+    {
+        $this->setServerEnvironment(['REQUEST_URI' => '/api/v1/zones?page=2']);
+        $this->assertTrue(RequestContext::isApiPath());
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/poweradmin/api/internal/user']);
+        $this->assertTrue(RequestContext::isApiPath());
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/apidocs']);
+        $this->assertFalse(RequestContext::isApiPath());
+    }
+
+    public function testAcceptsJsonDistinguishesFromAcceptsJsonOnly(): void
+    {
+        $this->setServerEnvironment(['HTTP_ACCEPT' => 'application/json']);
+        $this->assertTrue(RequestContext::acceptsJson());
+        $this->assertTrue(RequestContext::acceptsJsonOnly());
+
+        $this->setServerEnvironment(['HTTP_ACCEPT' => 'text/html, application/json']);
+        $this->assertTrue(RequestContext::acceptsJson());
+        $this->assertFalse(RequestContext::acceptsJsonOnly());
+
+        $this->setServerEnvironment(['HTTP_ACCEPT' => 'text/html']);
+        $this->assertFalse(RequestContext::acceptsJson());
+        $this->assertFalse(RequestContext::acceptsJsonOnly());
     }
 }
