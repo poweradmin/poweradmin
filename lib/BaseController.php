@@ -70,7 +70,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class BaseController
 {
-    private AppManager $app;
+    private ?AppManager $app = null;
     private AppInitializer $init;
     protected PDO $db;
     protected array $requestData;
@@ -106,7 +106,10 @@ abstract class BaseController
         $this->logger = new Logger($logHandler, $logLevel);
 
         $this->config->setLogger($this->logger);
-        $this->app = new AppManager($this->logger);
+
+        // Kept eager: the template stack below is lazy, and a broken configuration
+        // should still stop the request rather than surface deep in a handler
+        AppManager::assertConfigurationUsable($this->config);
 
         $this->init = new AppInitializer($authenticate);
         $this->db = $this->init->getDb();
@@ -251,7 +254,7 @@ abstract class BaseController
         $params['is_reverse_zone'] ??= false;
         $params['success'] ??= false;
 
-        $this->app->render($template, $params);
+        $this->app()->render($template, $params);
         $this->renderFooter();
     }
 
@@ -661,6 +664,15 @@ abstract class BaseController
     }
 
     /**
+     * Lazily builds the Twig environment and translator. Both consumers are
+     * presentation paths, so API controllers never pay for the template stack.
+     */
+    private function app(): AppManager
+    {
+        return $this->app ??= new AppManager($this->logger);
+    }
+
+    /**
      * Lazily builds the page chrome renderer. Deferred closures keep
      * permission, capability, and debug-query lookups out of controller
      * construction, and API controllers never build the renderer at all.
@@ -668,7 +680,7 @@ abstract class BaseController
     private function getPageRenderer(): PageRenderer
     {
         return $this->pageRenderer ??= new PageRenderer(
-            $this->app,
+            $this->app(),
             $this->config,
             $this->csrfTokenService,
             $this->userContextService,

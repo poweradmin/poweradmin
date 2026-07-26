@@ -91,10 +91,6 @@ class AppManager
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
-        // Fail fast on broken configuration before any template setup work
-        $this->assertDefaultsFileLoaded();
-        $this->showValidationErrors(new ConfigValidator($this->configuration->getAll()));
-
         $registry = new ModuleRegistry($this->configuration);
         $registry->loadModules();
 
@@ -117,17 +113,28 @@ class AppManager
      * Exits with an error message if the bundled defaults file could not be
      * loaded.
      */
-    private function assertDefaultsFileLoaded(): void
+    /**
+     * Fails fast on broken configuration. Static and free of template setup so
+     * callers can check before, or without, building the Twig stack.
+     */
+    public static function assertConfigurationUsable(ConfigurationManager $configuration): void
     {
-        if ($this->configuration->isDefaultsFileLoaded()) {
+        if (!$configuration->isDefaultsFileLoaded()) {
+            (new MessageService())->displayDirectSystemError(sprintf(
+                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
+                $configuration->getDefaultsFilePath()
+            ));
+        }
+
+        $validator = new ConfigValidator($configuration->getAll());
+        if ($validator->validate()) {
             return;
         }
 
-        $messageService = new MessageService();
-        $messageService->displayDirectSystemError(sprintf(
-            'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
-            $this->configuration->getDefaultsFilePath()
-        ));
+        // MessageService escapes the message itself, so pass plain text only
+        (new MessageService())->displayDirectSystemError(
+            'Invalid configuration: ' . implode('; ', $validator->getErrors())
+        );
     }
 
     /**
@@ -393,24 +400,6 @@ class AppManager
     public function getSupportedLocales(): array
     {
         return $this->supportedLocales;
-    }
-
-    /**
-     * Displays validation errors and exits if the configuration is invalid.
-     *
-     * @param ConfigValidator $validator The configuration validator
-     */
-    private function showValidationErrors(ConfigValidator $validator): void
-    {
-        if ($validator->validate()) {
-            return;
-        }
-
-        // MessageService escapes the message itself, so pass plain text only
-        $messageService = new MessageService();
-        $messageService->displayDirectSystemError(
-            'Invalid configuration: ' . implode('; ', $validator->getErrors())
-        );
     }
 
     /**
