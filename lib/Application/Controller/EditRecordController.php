@@ -41,6 +41,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -175,6 +176,9 @@ class EditRecordController extends BaseController
             $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
         }
 
+        $zone_is_read_only = ZoneType::isReadOnly($zone_type);
+        $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner);
+
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
@@ -186,6 +190,9 @@ class EditRecordController extends BaseController
             'zid' => $zid,
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
+            'zone_is_read_only' => $zone_is_read_only,
+            'user_can_edit_zone' => $user_can_edit_zone,
+            'zone_is_editable' => $user_can_edit_zone && !$zone_is_read_only,
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),

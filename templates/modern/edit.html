@@ -5,7 +5,7 @@
     {label: 'Edit'|trans},
 ]) }}
 
-{% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and not zone_is_read_only(domain_type) and iface_edit_add_record_top and iface_show_add_record_form %}
+{% if zone_is_editable and iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
@@ -171,7 +171,7 @@
             {% endif %}
         </strong>
         <div>
-            {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only(domain_type) %}
+            {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only %}
             <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
             </button>
@@ -179,12 +179,12 @@
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
-            {% if not iface_show_add_record_form and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and not zone_is_read_only(domain_type) %}
+            {% if not iface_show_add_record_form and zone_is_editable %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
             {% endif %}
-            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and not zone_is_read_only(domain_type) %}
+            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label|trans }}
@@ -399,23 +399,20 @@
                     </thead>
                     <tbody>
         {% for r in records %}
-        {% set ns_record_locked = r['type'] == "NS" and perm_edit == "own_as_client" and not (perm_edit_ns_subzone and r['name']|lower != zone_name|lower) %}
-        {% set record_locked = zone_is_read_only(domain_type) or (r['type'] == "SOA" and perm_edit != "all") or ns_record_locked %}
-
-        {% if not record_locked %}
+        {% if not r['record_locked'] %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr style="font-size: 14px;">
             <td class="text-center">
-                {% if not record_locked %}
+                {% if not r['record_locked'] %}
                 <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}" onclick="updateRecordSelectionButtons()">
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
             <td>{{ r['id'] }}</td>
             {% endif %}
-            {% if record_locked %}
+            {% if r['record_locked'] %}
             <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
@@ -488,9 +485,9 @@
             {% endif %}
 
             {% if iface_show_record_edit_button or iface_show_record_delete_button %}
-                {% if zone_is_read_only(domain_type) or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
+                {% if not zone_is_editable %}
                 <td>&nbsp;</td>
-                {% elseif r['type'] == "SOA" and perm_edit != "all" or ns_record_locked %}
+                {% elseif r['record_locked'] %}
                 <td>&nbsp;</td>
                 {% else %}
                 <td class="text-center" style="width: 100px;">
@@ -518,7 +515,7 @@
                     {{ pagination | raw }}
                 </div>
                 <div class="d-flex gap-2">
-                    {% if perm_edit != "none" and not zone_is_read_only(domain_type) and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") %}
+                    {% if zone_is_editable %}
                         {% if not iface_show_record_edit_button %}
                         <button type="button" class="btn btn-primary btn-sm" id="edit-selected-record" disabled onclick="editSelectedRecord()">
                             <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
@@ -551,7 +548,7 @@
 {% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
-        {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only(domain_type) %}
+        {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only %}
         <button class="btn btn-primary btn-sm" type="submit" name="commit">
             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
         </button>
@@ -561,7 +558,7 @@
         {% endif %}
     </div>
     <div class="d-flex gap-2">
-        {% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and not zone_is_read_only(domain_type) %}
+        {% if zone_is_editable %}
         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
         </a>
@@ -606,8 +603,8 @@
 </div>
 </div>
 
-{% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
-{% if not zone_is_read_only(domain_type) and not iface_edit_add_record_top and iface_show_add_record_form %}
+{% if user_can_edit_zone %}
+{% if not zone_is_read_only and not iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>

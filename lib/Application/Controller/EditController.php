@@ -51,6 +51,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -472,11 +473,31 @@ class EditController extends BaseController
             $displayRecords = $records;
         }
 
-        // The template rule referenced header-scoped perm_view_zone_logs_* vars that
-        // are undefined in the page context, so the button only ever showed for admins
-        $can_view_zone_logs = $this->permissionService->isAdmin($userId)
+        $perm_edit_ns_subzone = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        $perm_is_godlike = $this->permissionService->isAdmin($userId);
+        $zone_is_read_only = ZoneType::isReadOnly($domain_type);
+        $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
+        $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
+        $can_view_zone_logs = $perm_is_godlike
             || $this->hasPermission('zone_logs_view_others')
             || ($this->hasPermission('zone_logs_view_own') && $user_is_zone_owner);
+
+        foreach ($displayRecords as &$record) {
+            $record['ns_record_locked'] = ZoneAccessPolicy::isNsRecordLocked(
+                $record['type'],
+                $perm_edit,
+                $perm_edit_ns_subzone,
+                $record['name'],
+                $zone_name
+            );
+            $record['record_locked'] = ZoneAccessPolicy::isRecordLocked(
+                $zone_is_read_only,
+                $record['type'],
+                $perm_edit,
+                $record['ns_record_locked']
+            );
+        }
+        unset($record);
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
@@ -495,16 +516,19 @@ class EditController extends BaseController
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
-            'perm_edit_ns_subzone' => $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE),
+            'perm_edit_ns_subzone' => $perm_edit_ns_subzone,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
             'metadata_view' => $metadata_view,
             'ownership_view' => $ownership_view,
+            'zone_is_read_only' => $zone_is_read_only,
+            'user_can_edit_zone' => $user_can_edit_zone,
+            'zone_is_editable' => $zone_is_editable,
+            'can_view_zone_logs' => $can_view_zone_logs,
             'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
-            'perm_is_godlike' => $this->permissionService->isAdmin($userId),
+            'perm_is_godlike' => $perm_is_godlike,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'can_view_zone_logs' => $can_view_zone_logs,
             'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
             'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
