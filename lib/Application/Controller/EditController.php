@@ -478,12 +478,13 @@ class EditController extends BaseController
         $zone_is_read_only = ZoneType::isReadOnly($domain_type);
         $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
-        $can_view_zone_logs = $perm_is_godlike
-            || $this->hasPermission('zone_logs_view_others')
-            || ($this->hasPermission('zone_logs_view_own') && $user_is_zone_owner);
+        $log_permission = Permission::getZoneLogPermission($this->db);
+        $can_view_zone_logs = $log_permission === 'all' || ($log_permission === 'own' && $user_is_zone_owner);
 
         foreach ($displayRecords as &$record) {
-            $record['ns_record_locked'] = ZoneAccessPolicy::isNsRecordLocked(
+            $record['display_name'] ??= $record['name'];
+            $record['editable_name'] ??= $record['name'];
+            $nsRecordLocked = ZoneAccessPolicy::isNsRecordLocked(
                 $record['type'],
                 $perm_edit,
                 $perm_edit_ns_subzone,
@@ -494,7 +495,7 @@ class EditController extends BaseController
                 $zone_is_read_only,
                 $record['type'],
                 $perm_edit,
-                $record['ns_record_locked']
+                $nsRecordLocked
             );
         }
         unset($record);
@@ -504,7 +505,7 @@ class EditController extends BaseController
             'zone_name' => $zone_name,
             'zone_name_to_display' => $zone_name_to_display,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name_to_display,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name_to_display),
             'zone_comment' => $zone_comment,
             'domain_type' => $domain_type,
             'slave_master' => $slave_master,

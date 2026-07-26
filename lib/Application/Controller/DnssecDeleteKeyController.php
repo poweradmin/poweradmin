@@ -145,7 +145,7 @@ class DnssecDeleteKeyController extends BaseController
         $this->render('dnssec_delete_key.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $domain_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'key_id' => $key_id,
             'key_info' => $key_info,
             'algorithms' => DnssecAlgorithm::ALGORITHMS,

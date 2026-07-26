@@ -260,7 +260,7 @@ class BulkRecordAddController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'failed_records' => $failed_records,
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),

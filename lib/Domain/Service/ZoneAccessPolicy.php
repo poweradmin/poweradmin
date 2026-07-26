@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\Permission;
+
 /**
  * Pure rules for what a user may change on the zone edit screens.
  *
@@ -53,7 +55,7 @@ final class ZoneAccessPolicy
     ): bool {
         return $recordType === 'NS'
             && $permEdit === 'own_as_client'
-            && !($permEditNsSubzone && mb_strtolower($recordName) !== mb_strtolower((string)$zoneName));
+            && !($permEditNsSubzone && Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName));
     }
 
     /**

@@ -353,7 +353,9 @@ class SearchController extends BaseController
     /**
      * Sliding pagination window matching the search page's client-side pager:
      * up to 9 page links centered on the current page, with break indicators
-     * when the window does not touch the first or last page.
+     * when the window does not touch the first or last page. Deliberately not
+     * the Pagination model: that one shifts the window left near the last page,
+     * which would change what the search pager has always rendered.
      *
      * @return array{total_pages: int, start_page: int, end_page: int, show_leading_break: bool, show_trailing_break: bool}
      */

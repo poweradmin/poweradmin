@@ -172,7 +172,7 @@ class DeleteDomainController extends BaseController
             'zone_id' => $zone_id,
             'zone_info' => $zone_info,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_info['name'],
+            'zone_display_name' => DnsIdnService::toDisplay($zone_info['name']),
             'zone_owners' => $zone_owners,
             'slave_master_exists' => $slave_master_exists,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),

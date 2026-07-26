@@ -130,7 +130,7 @@ class EditCommentController extends BaseController
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
         ]);
     }
 }

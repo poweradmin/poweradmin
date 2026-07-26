@@ -83,7 +83,6 @@ class OwnerGroupColumnPresenterTest extends TestCase
     public function testGroupsEmpty(): void
     {
         $result = OwnerGroupColumnPresenter::presentGroups([]);
-        $this->assertSame(0, $result['count']);
         $this->assertSame([], $result['visible']);
         $this->assertSame(0, $result['remaining_count']);
     }
@@ -91,7 +90,6 @@ class OwnerGroupColumnPresenterTest extends TestCase
     public function testGroupsOverflow(): void
     {
         $result = OwnerGroupColumnPresenter::presentGroups(['g1', 'g2', 'g3', 'g4']);
-        $this->assertSame(4, $result['count']);
         $this->assertSame(['g1', 'g2'], $result['visible']);
         $this->assertSame(2, $result['remaining_count']);
         $this->assertSame('g3, g4', $result['remaining_label']);

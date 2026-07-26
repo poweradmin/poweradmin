@@ -216,7 +216,7 @@ class DnssecAddKeyController extends BaseController
             'zone_id' => $zone_id,
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $domain_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'key_type' => $key_type,
             'bits' => $bits,
             'algorithm' => $algorithm,

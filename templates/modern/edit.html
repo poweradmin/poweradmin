@@ -413,7 +413,7 @@
             <td>{{ r['id'] }}</td>
             {% endif %}
             {% if r['record_locked'] %}
-            <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
+            <td class="col-sm-2">{{ r['display_name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
@@ -439,7 +439,7 @@
             {% endif %}
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
-                                        name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
+                                        name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] }}"></td>
             <td class="text-center">
                 <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
                 <span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span>

@@ -355,6 +355,20 @@ class PermissionService
     }
 
     /**
+     * Check if a user may access user management (any view/edit/add grant or admin).
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user may manage other users
+     */
+    public function canManageUsers(int $userId): bool
+    {
+        return $this->hasPermission($userId, 'user_view_others')
+            || $this->hasPermission($userId, 'user_edit_others')
+            || $this->hasPermission($userId, 'user_add_new')
+            || $this->isAdmin($userId);
+    }
+
+    /**
      * Check if a user may manage DNSSEC keys for a zone (includes group permissions).
      *
      * @param \PDO $db Database connection

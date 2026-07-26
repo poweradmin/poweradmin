@@ -195,10 +195,12 @@ class DeleteDomainsController extends BaseController
         }
 
         $perm_delete = Permission::getDeletePermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $userId = $this->userContextService->getLoggedInUserId();
         foreach ($zones as &$zone) {
-            // Mirrors the historical template check: direct ownership only, so the
-            // per-zone warning still shows for users whose grant comes via a group
-            $zone['user_can_delete'] = $perm_delete === 'all' || ($perm_delete === 'own' && $zone['is_owner']);
+            // Direct ownership only, so the per-zone warning still shows for
+            // users whose grant comes via a group
+            $zone['user_can_delete'] = $permissionService->canDeleteZone($userId, (bool)$zone['is_owner']);
         }
         unset($zone);
 

@@ -99,7 +99,7 @@ class DnssecDsDnskeyController extends BaseController
         $this->render('dnssec_ds_dnskey.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => $idn_zone_name !== '' ? $idn_zone_name : $domain_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'domain_type' => $domain_type,
             'dnskey_records' => $dnskey_records,
             'ds_records' => $ds_records,

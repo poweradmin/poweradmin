@@ -59,7 +59,7 @@ final class OwnerGroupColumnPresenter
 
     /**
      * @param array $groups group names
-     * @return array{count: int, visible: list<string>, remaining_count: int, remaining_label: string}
+     * @return array{visible: list<string>, remaining_count: int, remaining_label: string}
      */
     public static function presentGroups(array $groups): array
     {
@@ -67,7 +67,6 @@ final class OwnerGroupColumnPresenter
         $remaining = array_slice($names, self::VISIBLE_LIMIT);
 
         return [
-            'count' => count($names),
             'visible' => array_slice($names, 0, self::VISIBLE_LIMIT),
             'remaining_count' => count($remaining),
             'remaining_label' => implode(', ', $remaining),

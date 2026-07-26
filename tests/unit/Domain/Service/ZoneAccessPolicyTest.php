@@ -58,7 +58,8 @@ class ZoneAccessPolicyTest extends TestCase
             'apex compare is case-insensitive' => ['NS', 'own_as_client', true, 'EXAMPLE.com', 'example.COM', true],
             'NS free for all editors' => ['NS', 'all', false, 'example.com', 'example.com', false],
             'NS free for plain own editors' => ['NS', 'own', false, 'example.com', 'example.com', false],
-            'null zone name treated as empty' => ['NS', 'own_as_client', true, 'sub.example.com', null, false],
+            'trailing dots ignored in apex compare' => ['NS', 'own_as_client', true, 'example.com.', 'example.com', true],
+            'null zone name stays locked' => ['NS', 'own_as_client', true, 'sub.example.com', null, true],
         ];
     }
 
