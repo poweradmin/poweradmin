@@ -7,9 +7,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-server me-2"></i>{{ autoprimaries_label('add_action') }}</strong>
-            </div>
+            {{ macros.card_header('bi-server', autoprimaries_label('add_action')) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/supermasters/add" novalidate>
                     {{ macros.csrf_field() }}
@@ -64,9 +62,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{{ autoprimaries_label('about_title') }}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', autoprimaries_label('about_title')) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">

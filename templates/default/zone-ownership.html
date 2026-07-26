@@ -1,6 +1,6 @@
 {% import '_macros.html' as macros %}
 {{ macros.breadcrumb([
-    {label: 'Zones'|trans, url: base_url_prefix ~ '/zones/' ~ is_reverse_zone ? 'reverse' : 'forward'},
+    {label: 'Zones'|trans, url: base_url_prefix ~ '/zones/' ~ (is_reverse_zone ? 'reverse' : 'forward')},
     {label: zone_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
     {label: 'Ownership'|trans},
 ]) }}

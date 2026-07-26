@@ -98,7 +98,7 @@
             {% endif %}
 
             <div class="mt-4">
-                {{ macros.delete_actions('Yes, delete this user'|trans, base_url_prefix ~ '/users', 'No, keep this user'|trans, '', '', 'commit') }}
+                {{ macros.delete_actions('Yes, delete this user'|trans, base_url_prefix ~ '/users', 'No, keep this user'|trans, confirm_name: 'commit') }}
             </div>
             {# Must stay the last form field: its absence tells the server the POST was truncated #}
             <input type="hidden" name="form_complete" value="1">

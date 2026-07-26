@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="mt-4">
-                        {{ macros.delete_actions('Yes, delete these zones'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep these zones'|trans, '', '', 'confirm') }}
+                        {{ macros.delete_actions('Yes, delete these zones'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep these zones'|trans, confirm_name: 'confirm') }}
                     </div>
                 </form>
             </div>
