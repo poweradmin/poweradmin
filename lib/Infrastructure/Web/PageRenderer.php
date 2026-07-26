@@ -142,12 +142,14 @@ class PageRenderer
         }
 
         $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
+        // The resolved theme (not the raw config value) keeps asset URLs in
+        // sync with the templates AppManager actually serves after fallback
+        $themeBasePath = $this->app->getThemeBasePath();
+        $theme = $this->app->getThemeName();
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
 
-        // Resolve against the app root for on-disk asset checks (the config value
-        // stays relative for the template URL below).
+        // Resolve against the app root for on-disk asset checks (the resolved
+        // value stays relative for the template URL below).
         $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
 
         // Check for custom theme stylesheets
@@ -251,8 +253,8 @@ class PageRenderer
     public function renderFooter(): void
     {
         $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
+        $themeBasePath = $this->app->getThemeBasePath();
+        $theme = $this->app->getThemeName();
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
         $selected_style = $styleManager->getSelectedStyle();
         $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);

@@ -66,6 +66,12 @@ class AppManager
 
     private LoggerInterface $logger;
 
+    /** @var string $themeName The theme name after any fallback to 'default' */
+    private string $themeName;
+
+    /** @var string $themeBasePath The theme base path in relative/URL form, after any fallback */
+    private string $themeBasePath;
+
     /**
      * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
@@ -138,11 +144,13 @@ class AppManager
                 $this->logger->warning('The {theme} theme was removed in Poweradmin 4.0. Please update your configuration to use theme: default.', ['theme' => $theme]);
             }
 
+            $theme = 'default';
             $theme_path = $fs_base_path . '/default';
 
             // Custom base paths without a default theme fall back to the
-            // bundled one so pages still render (styles may 404)
+            // bundled one so pages still render
             if (!is_dir($theme_path)) {
+                $theme_base_path = 'templates';
                 $theme_path = ThemePathResolver::toFilesystemPath('templates') . '/default';
             }
 
@@ -155,7 +163,32 @@ class AppManager
             }
         }
 
+        $this->themeName = $theme;
+        $this->themeBasePath = $theme_base_path;
+
         return $theme_path;
+    }
+
+    /**
+     * Gets the theme name that templates are actually served from, which is
+     * 'default' when the configured theme directory does not exist.
+     *
+     * @return string The resolved theme name
+     */
+    public function getThemeName(): string
+    {
+        return $this->themeName;
+    }
+
+    /**
+     * Gets the theme base path matching the resolved theme, in the
+     * relative/URL form used for asset paths in templates.
+     *
+     * @return string The resolved theme base path
+     */
+    public function getThemeBasePath(): string
+    {
+        return $this->themeBasePath;
     }
 
     /**
