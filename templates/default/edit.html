@@ -548,7 +548,6 @@
 
     {% endif %}
 
-{% set can_view_zone_logs = perm_is_godlike or perm_view_zone_logs_others or (perm_view_zone_logs_own and user_is_zone_owner == "1") %}
 {% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>

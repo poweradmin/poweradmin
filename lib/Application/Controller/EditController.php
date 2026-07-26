@@ -472,6 +472,12 @@ class EditController extends BaseController
             $displayRecords = $records;
         }
 
+        // The template rule referenced header-scoped perm_view_zone_logs_* vars that
+        // are undefined in the page context, so the button only ever showed for admins
+        $can_view_zone_logs = $this->permissionService->isAdmin($userId)
+            || $this->hasPermission('zone_logs_view_others')
+            || ($this->hasPermission('zone_logs_view_own') && $user_is_zone_owner);
+
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -498,6 +504,7 @@ class EditController extends BaseController
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
+            'can_view_zone_logs' => $can_view_zone_logs,
             'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
             'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
