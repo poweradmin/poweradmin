@@ -24,6 +24,7 @@ namespace Poweradmin;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Http\RequestContext;
+use Poweradmin\Application\Http\RequestValidator;
 use Poweradmin\Application\Presenter\PageRenderer;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -61,10 +62,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Abstract class BaseController
@@ -77,8 +74,7 @@ abstract class BaseController
     private AppInitializer $init;
     protected PDO $db;
     protected array $requestData;
-    private ValidatorInterface $validator;
-    private array $validationConstraints = [];
+    private ?RequestValidator $requestValidator = null;
     private CsrfTokenService $csrfTokenService;
     protected MessageService $messageService;
     protected ConfigurationManager $config;
@@ -116,7 +112,6 @@ abstract class BaseController
         $this->db = $this->init->getDb();
 
         $this->requestData = $request;
-        $this->validator = Validation::createValidator();
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
@@ -711,13 +706,22 @@ abstract class BaseController
     }
 
     /**
+     * Lazily builds the request validator: only the minority of controllers
+     * that declare validation rules pay for the Symfony validator.
+     */
+    private function validator(): RequestValidator
+    {
+        return $this->requestValidator ??= new RequestValidator();
+    }
+
+    /**
      * Sets validation constraints for the request data.
      *
      * @param array $constraints The validation constraints.
      */
     public function setValidationConstraints(array $constraints): void
     {
-        $this->validationConstraints = $constraints;
+        $this->validator()->setConstraints($constraints);
     }
 
     /**
@@ -727,51 +731,7 @@ abstract class BaseController
      */
     public function setRequestRules(array $rules): void
     {
-        $constraints = [];
-
-        // Convert rules to Symfony validator constraints
-        if (isset($rules['required'])) {
-            foreach ($rules['required'] as $field) {
-                $constraints[$field] = new Assert\NotBlank(['message' => sprintf(_('The %s field is required.'), $field)]);
-            }
-        }
-
-        if (isset($rules['integer'])) {
-            foreach ($rules['integer'] as $field) {
-                $constraints[$field] = new Assert\Type([
-                    'type' => 'numeric',
-                    'message' => sprintf(_('The %s field must be a number.'), $field)
-                ]);
-            }
-        }
-
-        $this->validationConstraints = $constraints;
-    }
-
-    /**
-     * Validates data and returns constraint violations.
-     *
-     * @param array|null $data Optional data to validate. If not provided, uses $this->requestData
-     * @return ConstraintViolationListInterface
-     */
-    private function validateData(?array $data = null): ConstraintViolationListInterface
-    {
-        $dataToValidate = $data ?? $this->requestData;
-
-        // Filter input data to remove empty values to prevent type errors
-        foreach ($dataToValidate as $key => $value) {
-            if ($value === '') {
-                unset($dataToValidate[$key]);
-            }
-        }
-
-        $collectionConstraint = new Assert\Collection([
-            'fields' => $this->validationConstraints,
-            'allowExtraFields' => true,
-            'allowMissingFields' => true
-        ]);
-
-        return $this->validator->validate($dataToValidate, $collectionConstraint);
+        $this->validator()->setRules($rules);
     }
 
     /**
@@ -782,8 +742,7 @@ abstract class BaseController
      */
     public function doValidateRequest(?array $data = null): bool
     {
-        $violations = $this->validateData($data);
-        return $violations->count() === 0;
+        return $this->validator()->validate($data ?? $this->requestData)->count() === 0;
     }
 
     /**
@@ -793,11 +752,9 @@ abstract class BaseController
      */
     public function showFirstValidationError(?array $data = null): void
     {
-        $violations = $this->validateData($data);
+        $errorMessage = $this->validator()->firstErrorMessage($data ?? $this->requestData);
 
-        if ($violations->count() > 0) {
-            $firstViolation = $violations->get(0);
-            $errorMessage = (string) $firstViolation->getMessage();
+        if ($errorMessage !== null) {
             $this->showError($errorMessage);
         }
     }
