@@ -479,6 +479,10 @@ class EditUserController extends BaseController
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'can_manage_users' => $this->hasPermission('user_view_others')
+                || $this->hasPermission('user_edit_others')
+                || $this->hasPermission('user_add_new')
+                || $this->hasPermission('user_is_ueberuser'),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);

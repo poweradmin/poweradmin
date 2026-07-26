@@ -1,5 +1,5 @@
 {% import '_macros.html' as macros %}
-{% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
+{% if not can_manage_users %}
 {{ macros.breadcrumb([{label: 'Edit profile'|trans}]) }}
 {% else %}
 {{ macros.breadcrumb([
@@ -119,7 +119,7 @@
                             <button type="reset" class="btn btn-secondary btn-sm" name="reset">
                                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
                             </button>
-                            {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
+                            {% if not can_manage_users %}
                             <a href="{{ base_url_prefix }}/" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Home{% endtrans %}
                             </a>
