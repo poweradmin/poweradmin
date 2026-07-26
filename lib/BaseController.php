@@ -24,7 +24,7 @@ namespace Poweradmin;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Http\RequestContext;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Application\Presenter\PageRenderer;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -34,19 +34,15 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
-use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
-use Poweradmin\Infrastructure\Utility\LanguageCode;
-use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -68,9 +64,6 @@ use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Service\StyleManager;
-use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Version;
 use Poweradmin\Domain\Service\SessionKeys;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,8 +93,7 @@ abstract class BaseController
     protected LoggerInterface $logger;
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionServiceInstance = null;
-
-    private bool $twigEnvironmentReady = false;
+    private ?PageRenderer $pageRenderer = null;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -236,7 +228,8 @@ abstract class BaseController
         // Build the language selector once and share it with the header and the
         // body template so the login form's hidden userlang field carries the
         // chosen language through submission.
-        $languageVars = $this->getLanguageSelectorVars($this->resolveActiveLocale());
+        $renderer = $this->getPageRenderer();
+        $languageVars = $renderer->getLanguageSelectorVars($renderer->resolveActiveLocale());
 
         $this->renderHeader(
             $this->messageService->getMessages('system'),
@@ -678,48 +671,21 @@ abstract class BaseController
     }
 
     /**
-     * Registers Twig extensions and globals that need controller-owned
-     * services. Called on the first render of the request (Twig locks
-     * extensions and new globals after that), so API requests that never
-     * render a template skip the cost entirely.
+     * Lazily builds the page chrome renderer. Deferred closures keep
+     * permission, capability, and debug-query lookups out of controller
+     * construction, and API controllers never build the renderer at all.
      */
-    private function setupTwigEnvironment(): void
+    private function getPageRenderer(): PageRenderer
     {
-        if ($this->twigEnvironmentReady) {
-            return;
-        }
-        $this->twigEnvironmentReady = true;
-
-        // The closure defers the permission lookup until a template calls can()
-        $this->app->addTwigExtension(new PermissionTwigExtension(
-            fn(string $permission): bool => $this->hasPermission($permission)
-        ));
-
-        // Always-on context shared by header, page, and footer templates
-        $this->csrfTokenService->ensureTokenExists();
-        $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
-        $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
-        $this->app->addTwigGlobal('pdns_caps', $this->getPdnsCapabilities());
-        $this->app->addTwigGlobal('pdns_server_info', PdnsVersionService::getCachedInfo());
-        $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
-        $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
-    }
-
-    /**
-     * Opaque cache-busting token for static asset URLs: stable within a
-     * release so browsers can cache, changes on upgrade, and does not
-     * reveal the release number to unauthenticated visitors.
-     */
-    protected function getAssetVersion(): string
-    {
-        $key = (string)$this->config->get('security', 'session_key', '');
-        if ($key === '' || in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
-            // Placeholder keys are publicly known, so mix in a per-install
-            // value to keep the token unpredictable from the release alone
-            $configFile = getenv('PA_CONFIG_PATH') ?: dirname(__DIR__) . '/config/settings.php';
-            $key .= (string)@filemtime($configFile);
-        }
-        return substr(hash_hmac('sha256', Version::VERSION, $key), 0, 12);
+        return $this->pageRenderer ??= new PageRenderer(
+            $this->app,
+            $this->config,
+            $this->csrfTokenService,
+            $this->userContextService,
+            fn(string $permission): bool => $this->hasPermission($permission),
+            fn() => $this->getPdnsCapabilities(),
+            fn() => $this->init->getDebugQueries()
+        );
     }
 
     /**
@@ -729,114 +695,7 @@ abstract class BaseController
      */
     private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null, ?array $languageVars = null): void
     {
-        $this->setupTwigEnvironment();
-
-        if (!headers_sent()) {
-            header('Content-type: text/html; charset=utf-8');
-        }
-
-        $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
-        $styleManager = new StyleManager($style, $themeBasePath, $theme);
-
-        // Resolve against the app root for on-disk asset checks (the config value
-        // stays relative for the template URL below).
-        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
-
-        // Check for custom theme stylesheets
-        $customLightExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_light.css');
-        $customDarkExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_dark.css');
-        $customThemeExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
-
-        $activeLocale = $this->resolveActiveLocale();
-
-        $vars = array_merge([
-            'iface_title' => $this->config->get('interface', 'title'),
-            'iface_style' => $styleManager->getSelectedStyle(),
-            'theme' => $theme,
-            'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
-            'custom_light_exists' => $customLightExists,
-            'custom_dark_exists' => $customDarkExists,
-            'custom_theme_exists' => $customThemeExists,
-            'install_error' => file_exists('install') ? _('The install/ directory exists, you must remove it first before proceeding.') : false,
-            'version' => Version::VERSION,
-            'show_style_switcher' => true,
-            // Defined on every render (incl. unauthenticated) so strict_variables holds
-            'api_error' => false,
-        ], LanguageCode::templateVars($activeLocale));
-
-        $vars = array_merge($vars, $languageVars ?? $this->getLanguageSelectorVars($activeLocale));
-
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-        $session_key = $this->config->get('security', 'session_key');
-
-        if ($this->userContextService->isAuthenticated()) {
-            $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
-
-            $vars = array_merge($vars, [
-                'user_name' => $this->userContextService->getDisplayName(),
-                'user_username' => $this->userContextService->getLoggedInUsername(),
-                'perm_search' => $this->hasPermission('search'),
-                'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
-                'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
-                'perm_supermaster_view' => $this->hasPermission('supermaster_view'),
-                'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
-                'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
-                'perm_zone_templ_add' => $this->hasPermission('zone_templ_add'),
-                'perm_zone_templ_edit' => $this->hasPermission('zone_templ_edit'),
-                'perm_supermaster_add' => $this->hasPermission('supermaster_add'),
-                'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => $this->hasPermission('templ_perm_edit'),
-                'perm_templ_perm_add' => $this->hasPermission('templ_perm_add'),
-                'perm_add_new' => $this->hasPermission('user_add_new'),
-                'perm_view_others' => $this->hasPermission('user_view_others'),
-                'perm_edit_own' => $this->hasPermission('user_edit_own'),
-                'perm_edit_others' => $this->hasPermission('user_edit_others'),
-                'perm_api_manage_keys' => $this->hasPermission('api_manage_keys'),
-                'perm_view_zone_logs_own' => $this->hasPermission('zone_logs_view_own'),
-                'perm_view_zone_logs_others' => $this->hasPermission('zone_logs_view_others'),
-                'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
-                'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
-                'session_key_error' => $perm_is_godlike && in_array($session_key, ['p0w3r4dm1n', 'change_this_key'], true) ? _('Default session encryption key is used, please set it in your configuration file.') : false,
-                'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
-                'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
-                'can_change_password' => !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']),
-                'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
-                'user_avatar_url' => $this->getUserAvatarUrl(),
-                'request' => $this->requestData,
-                'dblog_use' => $dblog_use,
-                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
-                'api_enabled' => $this->config->get('api', 'enabled', false),
-                'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
-                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
-                'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
-                'module_nav_items' => $this->getModuleNavItems(),
-                'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
-                'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
-            ]);
-
-            // Surface PowerDNS API errors on every page, not just the dashboard.
-            if ($perm_is_godlike && DnsBackendProviderFactory::isApiBackend($this->config)) {
-                $vars['api_error'] = (new ApiStatusService())->getLastError();
-            }
-        }
-
-        if ($systemMessages) {
-            $vars['system_messages'] = $systemMessages;
-        }
-        if ($scriptMessages) {
-            $vars['script_messages'] = $scriptMessages;
-        }
-
-        // Add the current page and page title to the header variables
-        $currentPage = $this->requestData['page'] ?? 'index';
-        $vars['current_page'] = $currentPage;
-        $vars['page_title'] = $this->pageTitle !== '' ? $this->pageTitle : $vars['iface_title'];
-
-        $this->app->render('header.html', $vars);
+        $this->getPageRenderer()->renderHeader($this->requestData, $this->pageTitle, $systemMessages, $scriptMessages, $languageVars);
     }
 
     /**
@@ -844,110 +703,7 @@ abstract class BaseController
      */
     private function renderFooter(): void
     {
-        $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
-        $styleManager = new StyleManager($style, $themeBasePath, $theme);
-        $selected_style = $styleManager->getSelectedStyle();
-        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
-
-        $display_stats = $this->config->get('misc', 'display_stats');
-        $db_debug = $this->config->get('database', 'debug');
-
-        $this->app->render('footer.html', [
-            'version' => $this->userContextService->isAuthenticated() ? Version::VERSION : false,
-            'custom_footer' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/footer.html'),
-            'display_stats' => $display_stats ? $this->app->displayStats() : false,
-            'db_queries' => $db_debug ? $this->init->getDebugQueries() : false,
-            'show_style_switcher' => in_array($selected_style, ['light', 'dark']),
-            'iface_style' => $selected_style,
-            'theme' => $theme,
-            'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
-        ]);
-    }
-
-    /**
-     * Build the login-page language selector variables: the active locale,
-     * the dropdown options, and a visibility flag. Shared by the header
-     * dropdown and the login form's hidden userlang field so the chosen
-     * language survives form submission.
-     *
-     * @return array<string, mixed>
-     */
-    private function getLanguageSelectorVars(string $activeLocale): array
-    {
-        $vars = ['current_language' => $activeLocale];
-
-        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-        $localeList = array_map('trim', explode(',', $enabledLanguages));
-        if (count($localeList) > 1) {
-            $preparedLocales = [];
-            foreach ($localeList as $locale) {
-                $preparedLocales[] = [
-                    'locale' => $locale,
-                    'language' => LanguageCode::getByLocale($locale),
-                    'selected' => $locale === $activeLocale,
-                ];
-            }
-            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
-            $vars['locales'] = $preparedLocales;
-            $vars['show_language_selector'] = true;
-        }
-
-        return $vars;
-    }
-
-    /**
-     * Returns the locale active for the current request (GET override > session > config).
-     */
-    private function resolveActiveLocale(): string
-    {
-        $active = $this->userContextService->getUserLanguage()
-            ?? $this->config->get('interface', 'language', 'en_EN')
-            ?? 'en_EN';
-
-        $requested = $_GET['lang'] ?? null;
-        if (is_string($requested) && preg_match('/^[a-zA-Z_]+$/', $requested)) {
-            $enabled = explode(',', $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
-            if (in_array($requested, array_map('trim', $enabled), true)) {
-                $active = $requested;
-            }
-        }
-        return $active;
-    }
-
-    /**
-     * Gets navigation items from enabled modules.
-     *
-     * @return array<array<string, string>>
-     */
-    private function getModuleNavItems(): array
-    {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $items = $registry->getNavItems($isAdmin);
-
-        return array_values(array_filter($items, function (array $item): bool {
-            if (!empty($item['permission'])) {
-                return $this->hasPermission($item['permission']);
-            }
-            return true;
-        }));
-    }
-
-    /**
-     * Gets the user's avatar URL if avatar functionality is enabled
-     *
-     * @return string|null The avatar URL or null if not available/enabled
-     */
-    private function getUserAvatarUrl(): ?string
-    {
-        $userAvatarService = new UserAvatarService($this->userContextService, $this->config);
-        return $userAvatarService->getCurrentUserAvatarUrl();
+        $this->getPageRenderer()->renderFooter();
     }
 
     /**
