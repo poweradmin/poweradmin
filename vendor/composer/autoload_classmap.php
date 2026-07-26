@@ -1036,6 +1036,7 @@ return array(
     'Poweradmin\\Application\\Controller\\UserPreferencesController' => $baseDir . '/lib/Application/Controller/UserPreferencesController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',
     'Poweradmin\\Application\\Controller\\ZoneOwnershipController' => $baseDir . '/lib/Application/Controller/ZoneOwnershipController.php',
+    'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => $baseDir . '/lib/Application/Http/BootstrapErrorResponder.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
     'Poweradmin\\Application\\Http\\RequestContext' => $baseDir . '/lib/Application/Http/RequestContext.php',
     'Poweradmin\\Application\\Presenter\\OwnerGroupColumnPresenter' => $baseDir . '/lib/Application/Presenter/OwnerGroupColumnPresenter.php',

@@ -1442,6 +1442,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Controller\\UserPreferencesController' => __DIR__ . '/../..' . '/lib/Application/Controller/UserPreferencesController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',
         'Poweradmin\\Application\\Controller\\ZoneOwnershipController' => __DIR__ . '/../..' . '/lib/Application/Controller/ZoneOwnershipController.php',
+        'Poweradmin\\Application\\Http\\BootstrapErrorResponder' => __DIR__ . '/../..' . '/lib/Application/Http/BootstrapErrorResponder.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
         'Poweradmin\\Application\\Http\\RequestContext' => __DIR__ . '/../..' . '/lib/Application/Http/RequestContext.php',
         'Poweradmin\\Application\\Presenter\\OwnerGroupColumnPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/OwnerGroupColumnPresenter.php',
