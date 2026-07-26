@@ -71,7 +71,8 @@ class DeleteZoneTemplController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete zone templates."));
 
-        if ($this->request->getQueryParam('confirm') !== null) {
+        // Deleting requires a confirmed POST; the confirmation page itself is a GET
+        if ($this->isPost() && $this->request->getPostParam('confirm') !== null) {
             $this->deleteZoneTempl();
         } else {
             $this->showDeleteZoneTempl();

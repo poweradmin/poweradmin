@@ -65,11 +65,8 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $zone_templ_id = (int)$zone_templ_id_value;
 
-        $confirm = "-1";
-        $confirmParam = $this->request->getQueryParam('confirm');
-        if ($confirmParam !== null && Validator::isNumber($confirmParam)) {
-            $confirm = $confirmParam;
-        }
+        // Deleting requires a confirmed POST; the confirmation page itself is a GET
+        $confirmed = $this->isPost() && $this->request->getPostParam('confirm') !== null;
 
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
@@ -77,7 +74,7 @@ class DeleteZoneTemplRecordController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 
-        if ($confirm == '1') {
+        if ($confirmed) {
             if ($this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id)) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());

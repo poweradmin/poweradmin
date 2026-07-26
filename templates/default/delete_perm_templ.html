@@ -20,13 +20,9 @@
         </div>
         {% endif %}
 
-        <div class="mt-4">
-            <a href="{{ base_url_prefix }}/permissions/templates/{{ perm_templ_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this template{% endtrans %}
-            </a>
-            <a href="{{ base_url_prefix }}/permissions/templates" class="btn btn-secondary btn-sm">
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this template{% endtrans %}
-            </a>
-        </div>
+        <form method="post" action="{{ base_url_prefix }}/permissions/templates/{{ perm_templ_id }}/delete" class="mt-4">
+            {{ macros.csrf_field() }}
+            {{ macros.delete_actions('Yes, delete this template'|trans, base_url_prefix ~ '/permissions/templates', 'No, keep this template'|trans, confirm_name: 'confirm') }}
+        </form>
     </div>
 </div>

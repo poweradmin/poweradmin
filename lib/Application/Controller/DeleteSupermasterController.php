@@ -51,7 +51,8 @@ class DeleteSupermasterController extends BaseController
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        if ($this->request->getQueryParam('confirm') !== null) {
+        // Deleting requires a confirmed POST; the confirmation page itself is a GET
+        if ($this->isPost() && $this->request->getPostParam('confirm') !== null) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();
@@ -73,13 +74,13 @@ class DeleteSupermasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($this->request->getQueryParams())) {
-            $this->showFirstValidationError($this->request->getQueryParams());
+        if (!$this->doValidateRequest($this->request->getPostParams())) {
+            $this->showFirstValidationError($this->request->getPostParams());
             return;
         }
 
-        $master_ip = filter_input(INPUT_GET, 'master_ip', FILTER_VALIDATE_IP);
-        $ns_name = filter_input(INPUT_GET, 'ns_name', FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+        $master_ip = filter_var((string)$this->request->getPostParam('master_ip'), FILTER_VALIDATE_IP);
+        $ns_name = filter_var((string)$this->request->getPostParam('ns_name'), FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
 
         if ($master_ip === false) {
             $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));

@@ -44,13 +44,11 @@
             </div>
         </div>
 
-        <div class="mt-4">
-            <a href="{{ base_url_prefix }}/supermasters/delete?master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{{ autoprimaries_label('delete_yes') }}
-            </a>
-            <a href="{{ base_url_prefix }}/supermasters" class="btn btn-secondary btn-sm">
-                <i class="bi bi-x-circle me-1 text-white"></i>{{ autoprimaries_label('delete_no') }}
-            </a>
-        </div>
+        <form method="post" action="{{ base_url_prefix }}/supermasters/delete" class="mt-4">
+            {{ macros.csrf_field() }}
+            <input type="hidden" name="master_ip" value="{{ master_ip }}">
+            <input type="hidden" name="ns_name" value="{{ info['ns_name'] }}">
+            {{ macros.delete_actions(autoprimaries_label('delete_yes'), base_url_prefix ~ '/supermasters', autoprimaries_label('delete_no'), confirm_name: 'confirm') }}
+        </form>
     </div>
 </div>
