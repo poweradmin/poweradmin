@@ -71,6 +71,43 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
+     * A configuration failure happens before the router exists, so it can only be
+     * shaped if the whole bootstrap sits inside the front controller's try block.
+     */
+    public function testBootstrapFailureIsShapedInsteadOfEscapingAsAFatal(): void
+    {
+        $repositoryRoot = dirname(__DIR__, 2);
+
+        $process = proc_open(
+            [PHP_BINARY, $repositoryRoot . '/index.php'],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+            $repositoryRoot,
+            [
+                'PATH' => getenv('PATH'),
+                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/throwing-settings.php',
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/api/v2/zones',
+                'HTTP_ACCEPT' => 'application/json',
+                'SERVER_NAME' => 'localhost',
+                'SERVER_PORT' => '80',
+            ]
+        );
+
+        $this->assertIsResource($process, 'Failed to start the front controller subprocess');
+
+        $stdout = (string) stream_get_contents($pipes[1]);
+        $stderr = (string) stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+
+        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
+        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
+        $this->assertStringContainsString('Simulated configuration failure', $stderr);
+    }
+
+    /**
      * Test session initialization function
      */
     public function testSessionInitialization(): void

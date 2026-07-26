@@ -29,30 +29,32 @@ require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 
-// Initialize configuration
+// Only allocation happens out here: getInstance() and the responder cannot fail,
+// and the responder tolerates a half-built configuration so it can shape the
+// failure of the initialize() call below.
 $configManager = ConfigurationManager::getInstance();
-$configManager->initialize();
-
-// Initialize timezone and session
-initializeTimezone($configManager);
-initializeSession();
-
-// A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
-// so buffer the response and drop its body: HEAD must return headers only. The
-// callback runs when the response flushes its own output buffers during send().
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && RequestContext::isV2ApiRequest()) {
-    ob_start(static fn(): string => '');
-}
-
-// Create and process routes
-$router = new SymfonyRouter();
+$errorResponder = new BootstrapErrorResponder($configManager);
 
 try {
-    // Process the request
+    $configManager->initialize();
+
+    initializeTimezone($configManager);
+    initializeSession();
+
+    // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
+    // so buffer the response and drop its body: HEAD must return headers only. The
+    // callback runs when the response flushes its own output buffers during send().
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && RequestContext::isV2ApiRequest()) {
+        ob_start(static fn(): string => '');
+    }
+
+    // Constructing the router parses routes.yaml and loads the module registry, so
+    // it belongs inside the guarded region rather than ahead of it.
+    $router = new SymfonyRouter();
     $router->process();
 } catch (Throwable $e) {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
     // array where a string is expected) is an Error, and must still be shaped into
     // a JSON 500 instead of escaping as a blank/HTML fatal.
-    (new BootstrapErrorResponder($configManager))->handle($e);
+    $errorResponder->handle($e);
 }
