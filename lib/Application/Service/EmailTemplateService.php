@@ -31,7 +31,7 @@ use Twig\Error\SyntaxError;
 
 class EmailTemplateService
 {
-    private Environment $twig;
+    private ?Environment $twig = null;
     private ConfigurationInterface $config;
     private string $defaultTemplatePath;
     private string $customTemplatePath;
@@ -41,12 +41,19 @@ class EmailTemplateService
         $this->config = $config;
         $this->defaultTemplatePath = __DIR__ . '/../../../templates/emails';
         $this->customTemplatePath = __DIR__ . '/../../../templates/emails/custom';
-
-        $this->initializeTwig();
     }
 
-    private function initializeTwig(): void
+    /**
+     * Builds the email Twig environment on first render. This service is
+     * constructed on request paths that only ever check whether MFA applies, so
+     * loading Twig up front would cost every authenticated request.
+     */
+    private function twig(): Environment
     {
+        if ($this->twig !== null) {
+            return $this->twig;
+        }
+
         $paths = [];
 
         // Add custom template path first (higher priority)
@@ -67,6 +74,8 @@ class EmailTemplateService
 
         // Add global variables available to all templates
         $this->twig->addGlobal('appName', $this->config->get('interface', 'title', 'Poweradmin'));
+
+        return $this->twig;
     }
 
     /**
@@ -79,7 +88,7 @@ class EmailTemplateService
      */
     public function render(string $template, array $variables = []): string
     {
-        return $this->twig->render($template, $variables);
+        return $this->twig()->render($template, $variables);
     }
 
     /**
