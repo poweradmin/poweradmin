@@ -76,6 +76,52 @@ class AppManager
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
+        // Fail fast on broken configuration before any template setup work
+        $this->assertDefaultsFileLoaded();
+        $this->showValidationErrors(new ConfigValidator($this->configuration->getAll()));
+
+        $registry = new ModuleRegistry($this->configuration);
+        $registry->loadModules();
+
+        $loader = $this->createTemplateLoader($this->resolveTheme(), $registry);
+        $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
+        $this->statsDisplayService = $this->createStatsDisplayService();
+
+        $this->setupTranslator($registry);
+
+        $this->templateRenderer->addExtension(new BadgeTwigExtension());
+        $this->templateRenderer->addExtension(new IntlExtension());
+
+        if ($this->templateRenderer->isDebug()) {
+            $this->templateRenderer->addExtension(new DebugExtension());
+        }
+    }
+
+    /**
+     * Exits with an error message if the bundled defaults file could not be
+     * loaded.
+     */
+    private function assertDefaultsFileLoaded(): void
+    {
+        if ($this->configuration->isDefaultsFileLoaded()) {
+            return;
+        }
+
+        $messageService = new MessageService();
+        $messageService->displayDirectSystemError(sprintf(
+            'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
+            $this->configuration->getDefaultsFilePath()
+        ));
+    }
+
+    /**
+     * Resolves the configured theme to an existing template directory,
+     * falling back to the default theme when the configured one is missing.
+     *
+     * @return string The filesystem path of the theme template directory
+     */
+    private function resolveTheme(): string
+    {
         $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
         $theme = $this->configuration->get('interface', 'theme', 'default');
 
@@ -84,19 +130,15 @@ class AppManager
         $fs_base_path = ThemePathResolver::toFilesystemPath($theme_base_path);
         $theme_path = $fs_base_path . '/' . $theme;
 
-        // Validate theme directory exists, fallback to 'default' if not
         if (!is_dir($theme_path)) {
             $this->logger->warning('Theme directory {path} does not exist. Falling back to default theme.', ['path' => $theme_path]);
 
-            // Check if this is a removed legacy theme
             $removedThemes = ['spark', 'ignite', 'mobile'];
             if (in_array($theme, $removedThemes)) {
                 $this->logger->warning('The {theme} theme was removed in Poweradmin 4.0. Please update your configuration to use theme: default.', ['theme' => $theme]);
             }
 
-            // Fallback to default theme
-            $theme = 'default';
-            $theme_path = $fs_base_path . '/' . $theme;
+            $theme_path = $fs_base_path . '/default';
 
             // Custom base paths without a default theme fall back to the
             // bundled one so pages still render (styles may 404)
@@ -104,37 +146,48 @@ class AppManager
                 $theme_path = ThemePathResolver::toFilesystemPath('templates') . '/default';
             }
 
-            // If even the bundled default doesn't exist, this is a critical error
             if (!is_dir($theme_path)) {
                 $messageService = new MessageService();
                 $messageService->displayDirectSystemError(
                     "Critical error: Default theme directory '$theme_path' does not exist. " .
                     "Please ensure Poweradmin is properly installed."
                 );
-                exit(1);
             }
         }
 
+        return $theme_path;
+    }
+
+    /**
+     * Creates the Twig template loader for the resolved theme, with default
+     * theme fallbacks and module template namespaces.
+     *
+     * @param string $themePath The filesystem path of the theme template directory
+     * @param ModuleRegistry $registry The registry of loaded modules
+     * @return FilesystemLoader The configured template loader
+     */
+    private function createTemplateLoader(string $themePath, ModuleRegistry $registry): FilesystemLoader
+    {
         // Look directly in the theme path for templates, not in subdirectories
-        $loader = new FilesystemLoader([$theme_path]);
+        $loader = new FilesystemLoader([$themePath]);
 
         // Custom themes fall back to the default theme for templates they do
         // not provide (module templates rely on the shared _macros.html).
         // The bundled default is the last resort for custom theme base paths.
+        $fs_base_path = ThemePathResolver::toFilesystemPath(
+            $this->configuration->get('interface', 'theme_base_path', 'templates')
+        );
         $fallbacks = array_unique([
             $fs_base_path . '/default',
             ThemePathResolver::toFilesystemPath('templates') . '/default',
         ]);
         foreach ($fallbacks as $fallback) {
-            if ($fallback !== $theme_path && is_dir($fallback)) {
+            if ($fallback !== $themePath && is_dir($fallback)) {
                 $loader->addPath($fallback);
             }
         }
 
         // Register module template paths as Twig namespaces (@module_name/template.html)
-        $registry = new ModuleRegistry($this->configuration);
-        $registry->loadModules();
-
         foreach ($registry->getEnabledModules() as $module) {
             $templatePath = $module->getTemplatePath();
             if (!empty($templatePath) && is_dir($templatePath)) {
@@ -142,26 +195,31 @@ class AppManager
             }
         }
 
-        $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
+        return $loader;
+    }
 
-        if ($this->configuration->get('misc', 'display_stats', false)) {
-            $memoryUsage = new MemoryUsage();
-            $timer = new Timer();
-            $sizeFormatter = new SimpleSizeFormatter();
-            $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
+    /**
+     * Creates the statistics display service when misc.display_stats is on.
+     *
+     * @return StatsDisplayService|null The service, or null when disabled
+     */
+    private function createStatsDisplayService(): ?StatsDisplayService
+    {
+        if (!$this->configuration->get('misc', 'display_stats', false)) {
+            return null;
         }
 
-        if ($this->configuration instanceof ConfigurationManager && !$this->configuration->isDefaultsFileLoaded()) {
-            $messageService = new MessageService();
-            $messageService->displayDirectSystemError(sprintf(
-                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
-                $this->configuration->getDefaultsFilePath()
-            ));
-        }
+        return new StatsDisplayService(new MemoryUsage(), new Timer(), new SimpleSizeFormatter());
+    }
 
-        $validator = new ConfigValidator($this->configuration->getAll());
-        $this->showValidationErrors($validator);
-
+    /**
+     * Resolves the interface language and registers the translator with the
+     * template renderer, including module translations.
+     *
+     * @param ModuleRegistry $registry The registry of loaded modules
+     */
+    private function setupTranslator(ModuleRegistry $registry): void
+    {
         $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
         $interfaceLang = $resolver->resolve();
 
@@ -173,7 +231,6 @@ class AppManager
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($interfaceLang, $resolver->getSupportedLocales()), $interfaceLang);
 
-        // Load module translations
         foreach ($registry->getEnabledModules() as $module) {
             $localePath = $module->getLocalePath();
             if (empty($localePath)) {
@@ -187,12 +244,6 @@ class AppManager
         }
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
-        $this->templateRenderer->addExtension(new BadgeTwigExtension());
-        $this->templateRenderer->addExtension(new IntlExtension());
-
-        if ($this->templateRenderer->isDebug()) {
-            $this->templateRenderer->addExtension(new DebugExtension());
-        }
     }
 
     /**
