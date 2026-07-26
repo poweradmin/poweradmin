@@ -44,12 +44,10 @@ class BaseControllerApiDetectionTest extends TestCase
     {
         $this->assertTrue($this->detect('isInternalApiRoute', '/api/internal/zones'));
         $this->assertTrue($this->detect('isApiRequest', '/api/internal/zones'));
-        $this->assertFalse($this->detect('isPublicApiRoute', '/api/internal/zones'));
     }
 
     public function testPublicApiRouteDetected(): void
     {
-        $this->assertTrue($this->detect('isPublicApiRoute', '/api/v2/zones/1/records'));
         $this->assertTrue($this->detect('isApiRequest', '/api/v1/zones'));
         $this->assertFalse($this->detect('isInternalApiRoute', '/api/v2/zones'));
     }

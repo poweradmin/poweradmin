@@ -261,30 +261,4 @@ abstract class AbstractApiController extends BaseController
         }
         return is_string($raw) ? $raw : 'none';
     }
-
-    /**
-     * Determines if this is a public API route (v1, v2, etc.) or internal API route
-     *
-     * @return bool True if this is a public API route, false otherwise
-     */
-    protected function isPublicApiRoute(): bool
-    {
-        // Use the temporary request object which is initialized before this method is called
-        $page = self::$tempRequest?->query->get('page', '');
-
-        // Check if this is an API route
-        if (!$page || !str_starts_with($page, 'api/')) {
-            return false;
-        }
-
-        // Extract the API version from the route
-        $parts = explode('/', $page);
-        if (count($parts) < 2) {
-            return false;
-        }
-
-        // Check if the second part is a version indicator (v1, v2, etc.)
-        $versionPart = $parts[1] ?? '';
-        return preg_match('/^v\d+$/i', $versionPart) === 1;
-    }
 }

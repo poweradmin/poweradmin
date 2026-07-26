@@ -247,16 +247,6 @@ abstract class BaseController
     }
 
     /**
-     * Checks if the current request is a public API route (api/v1/*, api/v2/*, etc.)
-     *
-     * @return bool True if this is a public API route, false otherwise
-     */
-    protected function isPublicApiRoute(): bool
-    {
-        return preg_match('#/api/v\d+(/|$)#i', $this->getRoutedPath()) === 1;
-    }
-
-    /**
      * Tries to authenticate using API key
      * Only used for internal API routes by default
      */
@@ -1166,58 +1156,12 @@ abstract class BaseController
     }
 
     /**
-     * Builds a URL with the given script and arguments.
-     *
-     * @param string $script The script to build the URL for.
-     * @param mixed $args The arguments to include in the URL.
-     * @return string The built URL.
-     */
-    private function buildUrl(string $script, mixed $args): string
-    {
-        $parsedUrl = parse_url($script);
-        $existingQueryParams = $this->parseQueryParams($parsedUrl);
-
-        $args['time'] = time();
-        $queryParams = array_merge($existingQueryParams, $args);
-
-        $queryString = http_build_query($queryParams);
-
-        if (isset($parsedUrl['query'])) {
-            return $script . "&" . $queryString;
-        } else {
-            return $script . "?" . $queryString;
-        }
-    }
-
-    /**
-     * Parses query parameters from a URL.
-     *
-     * @param array $parsedUrl The parsed URL.
-     * @return array The query parameters.
-     */
-    private function parseQueryParams(array $parsedUrl): array
-    {
-        $existingQueryParams = [];
-        if (isset($parsedUrl['query'])) {
-            parse_str($parsedUrl['query'], $existingQueryParams);
-        }
-        return $existingQueryParams;
-    }
-
-    /**
      * Sends a redirect to the given URL.
      *
      * @param string $url The URL to redirect to.
      */
     private function sendRedirect(string $url): void
     {
-        $allowedHosts = [];
-
-        $parsedUrl = parse_url($url);
-        if (isset($parsedUrl['host']) && is_array($allowedHosts) && count($allowedHosts) > 0 && !in_array($parsedUrl['host'], $allowedHosts)) {
-            $url = '/';
-        }
-
         $sanitizeUrl = filter_var($url, FILTER_SANITIZE_URL);
         header("Location: $sanitizeUrl");
         exit;
