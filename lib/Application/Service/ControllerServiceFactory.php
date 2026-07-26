@@ -61,6 +61,8 @@ class ControllerServiceFactory
 
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
+    private ?UserPreferenceService $userPreferenceService = null;
+    private ?RepositoryFactory $repositoryFactory = null;
 
     public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
     {
@@ -69,11 +71,18 @@ class ControllerServiceFactory
         $this->logger = $logger;
     }
 
+    /**
+     * Shared instance so its per-request preference cache survives across
+     * consumers (pagination, timezone, and direct preference reads).
+     */
     public function userPreferenceService(): UserPreferenceService
     {
-        $db_type = $this->config->get('database', 'type');
-        $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        return new UserPreferenceService($repository, $this->config);
+        if ($this->userPreferenceService === null) {
+            $db_type = $this->config->get('database', 'type');
+            $repository = new DbUserPreferenceRepository($this->db, $db_type);
+            $this->userPreferenceService = new UserPreferenceService($repository, $this->config);
+        }
+        return $this->userPreferenceService;
     }
 
     public function userTimezoneService(): UserTimezoneService
@@ -164,7 +173,11 @@ class ControllerServiceFactory
 
     public function repositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
     {
-        $provider = $backendProvider ?? $this->dnsBackendProvider();
-        return new RepositoryFactory($this->db, $this->config, $provider, $this->logger);
+        // Only the default-provider factory is shared; an explicit provider
+        // means the caller wants its own wiring
+        if ($backendProvider !== null) {
+            return new RepositoryFactory($this->db, $this->config, $backendProvider, $this->logger);
+        }
+        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->dnsBackendProvider(), $this->logger);
     }
 }

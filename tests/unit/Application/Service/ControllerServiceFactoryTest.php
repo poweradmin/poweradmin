@@ -54,19 +54,22 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->permissionService(), $factory->permissionService());
     }
 
-    public function testUserPreferenceServiceIsFreshPerCall(): void
+    public function testUserPreferenceServiceIsMemoized(): void
     {
         $factory = $this->makeFactory();
 
-        $this->assertNotSame($factory->userPreferenceService(), $factory->userPreferenceService());
+        // Shared so the per-request preference cache spans all consumers
+        $this->assertSame($factory->userPreferenceService(), $factory->userPreferenceService());
     }
 
-    public function testRepositoryFactoryUsesExplicitProviderWhenGiven(): void
+    public function testRepositoryFactoryMemoizesOnlyTheDefaultProviderPath(): void
     {
         $factory = $this->makeFactory();
 
-        // Passing no provider must not fail and must reuse the memoized one
-        $this->assertNotNull($factory->repositoryFactory());
-        $this->assertNotNull($factory->repositoryFactory($factory->dnsBackendProvider()));
+        $this->assertSame($factory->repositoryFactory(), $factory->repositoryFactory());
+
+        // An explicit provider asks for dedicated wiring, never the shared one
+        $explicit = $factory->repositoryFactory($factory->dnsBackendProvider());
+        $this->assertNotSame($factory->repositoryFactory(), $explicit);
     }
 }
