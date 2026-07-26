@@ -154,8 +154,9 @@ class PermissionService
      */
     public function getViewPermissionLevel(int $userId): string
     {
-        // Note: This checks DIRECT user permissions only
-        // For zone-specific permissions (including groups), use getViewPermissionLevelForZone()
+        // Covers the user's own template and their groups' templates. The ForZone
+        // variant is stricter, not broader: there the grant must come from a group
+        // that also owns the zone.
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_view_others', $permissions) || $this->isAdmin($userId)) {
@@ -202,8 +203,9 @@ class PermissionService
      */
     public function getEditPermissionLevel(int $userId): string
     {
-        // Note: This checks DIRECT user permissions only
-        // For zone-specific permissions (including groups), use getEditPermissionLevelForZone()
+        // Covers the user's own template and their groups' templates. The ForZone
+        // variant is stricter, not broader: there the grant must come from a group
+        // that also owns the zone.
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
