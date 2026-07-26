@@ -31,10 +31,14 @@ namespace Poweradmin\Application\Http;
  */
 final class RequestContext
 {
+    private function __construct()
+    {
+    }
+
     /**
      * Path portion of the current request, with the query string stripped.
      */
-    public static function path(): string
+    private static function path(): string
     {
         return parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
     }
@@ -42,11 +46,16 @@ final class RequestContext
     /**
      * Checks if the current request is any API route
      *
+     * @param bool $requireTrailingSlash Require a path segment after the API
+     *                                   root (e.g. /api/v1/zones but not /api/v1);
+     *                                   used where a bare root should fall
+     *                                   through to web handling
      * @return bool True if this is an API request, false otherwise
      */
-    public static function isApiRequest(): bool
+    public static function isApiRequest(bool $requireTrailingSlash = false): bool
     {
-        return preg_match('#/api/(internal|v\d+)(/|$)#', self::path()) === 1;
+        $suffix = $requireTrailingSlash ? '/' : '(/|$)';
+        return preg_match('#/api/(internal|v\d+)' . $suffix . '#', self::path()) === 1;
     }
 
     /**
@@ -70,6 +79,43 @@ final class RequestContext
     }
 
     /**
+     * Whether the request URI mentions an /api/ path segment. Looser than
+     * isApiRequest(): any /api/ occurrence counts, matching the historical
+     * JSON-negotiation behavior.
+     */
+    public static function isApiPath(): bool
+    {
+        return str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/');
+    }
+
+    /**
+     * Whether the Accept header asks for JSON without also accepting HTML.
+     */
+    public static function acceptsJsonOnly(): bool
+    {
+        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
+        return str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html');
+    }
+
+    /**
+     * Whether the request was made via XMLHttpRequest.
+     */
+    public static function isAjax(): bool
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
+    /**
+     * Whether the request body is declared as JSON.
+     */
+    public static function hasJsonContentType(): bool
+    {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
+        return str_contains($contentType, 'application/json');
+    }
+
+    /**
      * Checks if the current request expects a JSON response
      * This is more comprehensive than just checking the route
      *
@@ -77,32 +123,9 @@ final class RequestContext
      */
     public static function expectsJson(): bool
     {
-        // Check if it's an API route
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
-        if (str_contains($requestUri, '/api/')) {
-            return true;
-        }
-
-        // Check Accept header
-        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
-        if (str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html')) {
-            return true;
-        }
-
-        // Check if it's an AJAX request
-        if (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-        ) {
-            return true;
-        }
-
-        // Check Content-Type for JSON requests
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
-        if (str_contains($contentType, 'application/json')) {
-            return true;
-        }
-
-        return false;
+        return self::isApiPath()
+            || self::acceptsJsonOnly()
+            || self::isAjax()
+            || self::hasJsonContentType();
     }
 }

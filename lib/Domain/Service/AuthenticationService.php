@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
@@ -67,12 +68,9 @@ class AuthenticationService
 
     private function isApiRequest(): bool
     {
-        // Match only real API route roots (/api/internal/, /api/v1/, /api/v2/, ...) in
-        // the path - not HTML pages like /settings/api/logs, and not an API-looking
-        // return URL sitting in the query string. Deliberately stricter than
-        // RequestContext::isApiRequest(): the trailing slash is required here.
-        $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-        return (bool) preg_match('#/api/(internal|v\d+)/#', $path);
+        // Trailing slash required: only requests below a real API root get the
+        // JSON 401; a bare /api/v1 still falls through to the login redirect
+        return RequestContext::isApiRequest(requireTrailingSlash: true);
     }
 
     private function sendApiUnauthorized(): void

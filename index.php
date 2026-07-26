@@ -56,13 +56,13 @@ try {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
-    // Check if request expects JSON response. Deliberately narrower than
-    // RequestContext::expectsJson(): no Content-Type signal for fatal-error shaping.
+    // Differs from RequestContext::expectsJson(): no Content-Type signal, and
+    // the Accept check has no text/html exclusion - fatal-error shaping errs
+    // toward JSON so API-ish clients never get an HTML stack page.
     $expectsJson = (
-        str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/') ||
+        \Poweradmin\Application\Http\RequestContext::isApiPath() ||
         str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') ||
-        (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+        \Poweradmin\Application\Http\RequestContext::isAjax()
     );
 
     if ($expectsJson) {
