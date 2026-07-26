@@ -72,6 +72,9 @@ class AppManager
     /** @var string $themeBasePath The theme base path in relative/URL form, after any fallback */
     private string $themeBasePath;
 
+    /** @var string $themePath The filesystem path of the resolved theme template directory */
+    private string $themePath;
+
     /**
      * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
@@ -89,7 +92,8 @@ class AppManager
         $registry = new ModuleRegistry($this->configuration);
         $registry->loadModules();
 
-        $loader = $this->createTemplateLoader($this->resolveTheme(), $registry);
+        $this->resolveTheme();
+        $loader = $this->createTemplateLoader($registry);
         $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
         $this->statsDisplayService = $this->createStatsDisplayService();
 
@@ -123,10 +127,9 @@ class AppManager
     /**
      * Resolves the configured theme to an existing template directory,
      * falling back to the default theme when the configured one is missing.
-     *
-     * @return string The filesystem path of the theme template directory
+     * Sets the themeName, themeBasePath, and themePath properties.
      */
-    private function resolveTheme(): string
+    private function resolveTheme(): void
     {
         $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
         $theme = $this->configuration->get('interface', 'theme', 'default');
@@ -165,8 +168,7 @@ class AppManager
 
         $this->themeName = $theme;
         $this->themeBasePath = $theme_base_path;
-
-        return $theme_path;
+        $this->themePath = $theme_path;
     }
 
     /**
@@ -193,29 +195,26 @@ class AppManager
 
     /**
      * Creates the Twig template loader for the resolved theme, with default
-     * theme fallbacks and module template namespaces.
+     * theme fallbacks and module template namespaces. Requires resolveTheme()
+     * to have run.
      *
-     * @param string $themePath The filesystem path of the theme template directory
      * @param ModuleRegistry $registry The registry of loaded modules
      * @return FilesystemLoader The configured template loader
      */
-    private function createTemplateLoader(string $themePath, ModuleRegistry $registry): FilesystemLoader
+    private function createTemplateLoader(ModuleRegistry $registry): FilesystemLoader
     {
         // Look directly in the theme path for templates, not in subdirectories
-        $loader = new FilesystemLoader([$themePath]);
+        $loader = new FilesystemLoader([$this->themePath]);
 
         // Custom themes fall back to the default theme for templates they do
         // not provide (module templates rely on the shared _macros.html).
         // The bundled default is the last resort for custom theme base paths.
-        $fs_base_path = ThemePathResolver::toFilesystemPath(
-            $this->configuration->get('interface', 'theme_base_path', 'templates')
-        );
         $fallbacks = array_unique([
-            $fs_base_path . '/default',
+            ThemePathResolver::toFilesystemPath($this->themeBasePath) . '/default',
             ThemePathResolver::toFilesystemPath('templates') . '/default',
         ]);
         foreach ($fallbacks as $fallback) {
-            if ($fallback !== $themePath && is_dir($fallback)) {
+            if ($fallback !== $this->themePath && is_dir($fallback)) {
                 $loader->addPath($fallback);
             }
         }
