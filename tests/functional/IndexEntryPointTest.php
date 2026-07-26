@@ -8,8 +8,8 @@ use ErrorException;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
-use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Pages;
 use ReflectionMethod;
@@ -209,14 +209,14 @@ class IndexEntryPointTest extends TestCase
 
         // Test that expectsJson method exists and is static
         $this->assertTrue(
-            method_exists('Poweradmin\BaseController', 'expectsJson'),
-            'BaseController::expectsJson() should be available'
+            method_exists('Poweradmin\Application\Http\RequestContext', 'expectsJson'),
+            'RequestContext::expectsJson() should be available'
         );
 
-        $reflection = new ReflectionMethod('Poweradmin\BaseController', 'expectsJson');
+        $reflection = new ReflectionMethod('Poweradmin\Application\Http\RequestContext', 'expectsJson');
         $this->assertTrue(
             $reflection->isStatic(),
-            'BaseController::expectsJson() should be static'
+            'RequestContext::expectsJson() should be static'
         );
     }
 
@@ -254,8 +254,8 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['HTTPS'] = '';
 
-        // Test BaseController JSON detection
-        $expectsJson = BaseController::expectsJson();
+        // Test RequestContext JSON detection
+        $expectsJson = RequestContext::expectsJson();
         $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
@@ -288,7 +288,7 @@ class IndexEntryPointTest extends TestCase
         ConfigurationManager::getInstance();
         $router = new SymfonyRouter();
         $pages = Pages::getPages();
-        BaseController::expectsJson();
+        RequestContext::expectsJson();
 
         $memoryAfter = memory_get_usage();
         $memoryUsed = $memoryAfter - $memoryBefore;
@@ -392,12 +392,12 @@ class IndexEntryPointTest extends TestCase
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
-        // BaseController JSON detection
+        // RequestContext JSON detection
         $_SERVER['REQUEST_URI'] = '/api/test';
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
 
         $_SERVER['REQUEST_URI'] = '/dashboard';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
     }
 }

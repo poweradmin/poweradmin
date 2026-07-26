@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -138,7 +139,7 @@ abstract class BaseController
 
         // If we're in an API context and the user is not authenticated,
         // check for API key authentication (but only for internal API routes)
-        if ($authenticate && !$this->userContextService->isAuthenticated() && $this->isInternalApiRoute()) {
+        if ($authenticate && !$this->userContextService->isAuthenticated() && RequestContext::isInternalApiRoute()) {
             $this->tryApiKeyAuthentication();
         }
 
@@ -149,7 +150,7 @@ abstract class BaseController
             $currentPage = $request['page'] ?? '';
 
             if (MfaSessionManager::isMfaRequired() && $currentPage !== 'mfa_verify') {
-                if ($this->isApiRequest()) {
+                if (RequestContext::isApiRequest()) {
                     http_response_code(403);
                     header('Content-Type: application/json');
                     echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
@@ -169,88 +170,10 @@ abstract class BaseController
     }
 
     /**
-     * Checks if the current request is any API route
-     *
-     * @return bool True if this is an API request, false otherwise
-     */
-    protected function isApiRequest(): bool
-    {
-        // Match the real routed path, not requestData['page']: the router only sets
-        // 'page' for web routes, and trusting it would let ?page=api/... spoof detection.
-        return preg_match('#/api/(internal|v\d+)(/|$)#', $this->getRoutedPath()) === 1;
-    }
-
-    /**
-     * Path portion of the current request, with the query string stripped.
-     */
-    private function getRoutedPath(): string
-    {
-        return parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-    }
-
-    /**
-     * Whether the current request targets the v2 public API. Matches on the URL path
-     * only (query string ignored) so the v2 error-wrapper decision is not swayed by an
-     * unrelated URL that merely mentions /api/v2/ in its query string.
-     */
-    public static function isV2ApiRequest(): bool
-    {
-        $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-        return preg_match('#/api/v2(/|$)#', $path) === 1;
-    }
-
-    /**
-     * Checks if the current request expects a JSON response
-     * This is more comprehensive than just checking the route
-     *
-     * @return bool True if this request expects JSON, false otherwise
-     */
-    public static function expectsJson(): bool
-    {
-        // Check if it's an API route
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
-        if (str_contains($requestUri, '/api/')) {
-            return true;
-        }
-
-        // Check Accept header
-        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
-        if (str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html')) {
-            return true;
-        }
-
-        // Check if it's an AJAX request
-        if (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-        ) {
-            return true;
-        }
-
-        // Check Content-Type for JSON requests
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
-        if (str_contains($contentType, 'application/json')) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if the current request is an internal API route (api/internal/*)
-     *
-     * @return bool True if this is an internal API route, false otherwise
-     */
-    protected function isInternalApiRoute(): bool
-    {
-        return preg_match('#/api/internal(/|$)#', $this->getRoutedPath()) === 1;
-    }
-
-    /**
      * Tries to authenticate using API key
      * Only used for internal API routes by default
      */
-    protected function tryApiKeyAuthentication(): void
+    private function tryApiKeyAuthentication(): void
     {
         // Check if API functionality is enabled (which includes API keys)
         if (!$this->config->get('api', 'enabled', false)) {
@@ -699,7 +622,7 @@ abstract class BaseController
             $auditService->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
 
             // Check if this request expects JSON
-            if (self::expectsJson()) {
+            if (RequestContext::expectsJson()) {
                 header('Content-Type: application/json');
                 http_response_code(403);
                 echo json_encode([
@@ -734,7 +657,7 @@ abstract class BaseController
         }
 
         // Check if this request expects JSON
-        if (self::expectsJson()) {
+        if (RequestContext::expectsJson()) {
             header('Content-Type: application/json');
             http_response_code(400);
             echo json_encode([

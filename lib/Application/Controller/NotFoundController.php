@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\BaseController;
 
 class NotFoundController extends BaseController
@@ -38,10 +39,10 @@ class NotFoundController extends BaseController
         http_response_code(404);
 
         // Check if the request expects JSON
-        if (self::expectsJson()) {
+        if (RequestContext::expectsJson()) {
             header('Content-Type: application/json');
             // v2 wraps errors as {success:false,data,message}; other JSON callers keep the legacy shape.
-            if (self::isV2ApiRequest()) {
+            if (RequestContext::isV2ApiRequest()) {
                 echo json_encode([
                     'success' => false,
                     'data' => null,

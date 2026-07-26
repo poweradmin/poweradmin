@@ -39,7 +39,7 @@ initializeSession();
 // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
 // so buffer the response and drop its body: HEAD must return headers only. The
 // callback runs when the response flushes its own output buffers during send().
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && \Poweradmin\BaseController::isV2ApiRequest()) {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && \Poweradmin\Application\Http\RequestContext::isV2ApiRequest()) {
     ob_start(static fn(): string => '');
 }
 
@@ -56,7 +56,8 @@ try {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
-    // Check if request expects JSON response
+    // Check if request expects JSON response. Deliberately narrower than
+    // RequestContext::expectsJson(): no Content-Type signal for fatal-error shaping.
     $expectsJson = (
         str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/') ||
         str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') ||
@@ -68,7 +69,7 @@ try {
         header('Content-Type: application/json');
 
         // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
-        $isV2Api = \Poweradmin\BaseController::isV2ApiRequest();
+        $isV2Api = \Poweradmin\Application\Http\RequestContext::isV2ApiRequest();
 
         if ($e->getCode() === 404) {
             http_response_code(404);

@@ -1,25 +1,28 @@
 <?php
 
-declare(strict_types=1);
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ */
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Application\Http;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Http\RequestContext;
 
 /**
- * Integration tests for BaseController JSON detection logic
- *
- * These tests verify the expectsJson() method works correctly with various
- * HTTP request scenarios. This is critical for proper API vs web response handling.
- *
- * Tests cover:
- * - API route detection
- * - Accept header parsing
- * - AJAX request detection
- * - Edge cases and security concerns
+ * The API-route detectors must key off the real routed path, not requestData['page']
+ * (which the router never sets for API routes and which ?page= could spoof) - audit M18.
+ * Also covers expectsJson() response negotiation (API routes, Accept header, AJAX).
  */
-class BaseControllerJsonDetectionTest extends TestCase
+class RequestContextTest extends TestCase
 {
     private array $originalServer;
 
@@ -35,24 +38,90 @@ class BaseControllerJsonDetectionTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Set $_SERVER variables for testing
-     */
     private function setServerEnvironment(array $vars): void
     {
-        // Clear relevant $_SERVER vars first
         unset($_SERVER['REQUEST_URI'], $_SERVER['HTTP_ACCEPT'], $_SERVER['HTTP_X_REQUESTED_WITH']);
 
-        // Set test values
         foreach ($vars as $key => $value) {
             $_SERVER[$key] = $value;
         }
     }
 
-    /**
-     * Test API route detection - core functionality
-     */
-    public function testDetectsApiRoutes(): void
+    public function testInternalApiRouteDetected(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/api/internal/zones';
+        $this->assertTrue(RequestContext::isInternalApiRoute());
+        $this->assertTrue(RequestContext::isApiRequest());
+    }
+
+    public function testPublicApiRouteDetected(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $this->assertTrue(RequestContext::isApiRequest());
+
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
+        $this->assertFalse(RequestContext::isInternalApiRoute());
+    }
+
+    public function testSubfolderApiRouteDetected(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/poweradmin/api/internal/user';
+        $this->assertTrue(RequestContext::isInternalApiRoute());
+
+        $_SERVER['REQUEST_URI'] = '/poweradmin/api/v2/zones';
+        $this->assertTrue(RequestContext::isApiRequest());
+    }
+
+    public function testQueryStringDoesNotFlipDetection(): void
+    {
+        // The router never sets 'page' for API routes; a spoofed ?page= in the query
+        // string must not make a web page look like an API route.
+        $_SERVER['REQUEST_URI'] = '/index.php?page=api/internal/x';
+        $this->assertFalse(RequestContext::isApiRequest());
+
+        $_SERVER['REQUEST_URI'] = '/zones?return=/api/internal/x';
+        $this->assertFalse(RequestContext::isInternalApiRoute());
+    }
+
+    public function testHtmlPageContainingApiSegmentIsNotApi(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/settings/api/logs';
+        $this->assertFalse(RequestContext::isApiRequest());
+        $this->assertFalse(RequestContext::isInternalApiRoute());
+    }
+
+    public function testV2ApiRequestDetected(): void
+    {
+        $this->assertV2('/api/v2/zones');
+        $this->assertV2('/api/v2/zones/1/records');
+        $this->assertV2('/poweradmin/api/v2/zones');
+        // Bare collection root with no trailing slash still counts as v2.
+        $this->assertV2('/api/v2');
+    }
+
+    public function testV2ApiRequestRejectsNonV2AndSpoofedQuery(): void
+    {
+        $this->assertNotV2('/api/v1/zones');
+        $this->assertNotV2('/api/internal/zones');
+        $this->assertNotV2('/zones');
+        // A query string that merely mentions the v2 path must not flip detection.
+        $this->assertNotV2('/index.php?return=/api/v2/zones');
+        $this->assertNotV2('/settings/api/v2things');
+    }
+
+    private function assertV2(string $requestUri): void
+    {
+        $_SERVER['REQUEST_URI'] = $requestUri;
+        $this->assertTrue(RequestContext::isV2ApiRequest(), "Expected v2 for $requestUri");
+    }
+
+    private function assertNotV2(string $requestUri): void
+    {
+        $_SERVER['REQUEST_URI'] = $requestUri;
+        $this->assertFalse(RequestContext::isV2ApiRequest(), "Expected non-v2 for $requestUri");
+    }
+
+    public function testExpectsJsonDetectsApiRoutes(): void
     {
         $apiRoutes = [
             '/api/v1/zones',
@@ -70,7 +139,7 @@ class BaseControllerJsonDetectionTest extends TestCase
             ]);
 
             $this->assertTrue(
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Failed to detect API route: {$route}"
             );
         }
@@ -81,15 +150,12 @@ class BaseControllerJsonDetectionTest extends TestCase
             'HTTP_ACCEPT' => 'text/html'
         ]);
         $this->assertFalse(
-            BaseController::expectsJson(),
+            RequestContext::expectsJson(),
             "Should not detect '/api' without trailing slash as API route"
         );
     }
 
-    /**
-     * Test non-API routes don't trigger JSON mode
-     */
-    public function testDoesNotDetectNonApiRoutes(): void
+    public function testExpectsJsonDoesNotDetectNonApiRoutes(): void
     {
         $webRoutes = [
             '/',
@@ -108,16 +174,13 @@ class BaseControllerJsonDetectionTest extends TestCase
             ]);
 
             $this->assertFalse(
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Incorrectly detected web route as API: {$route}"
             );
         }
     }
 
-    /**
-     * Test Accept header parsing - JSON preference
-     */
-    public function testDetectsJsonAcceptHeader(): void
+    public function testExpectsJsonDetectsJsonAcceptHeader(): void
     {
         $jsonAcceptHeaders = [
             'application/json',
@@ -132,16 +195,13 @@ class BaseControllerJsonDetectionTest extends TestCase
             ]);
 
             $this->assertTrue(
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Failed to detect JSON Accept header: {$acceptHeader}"
             );
         }
     }
 
-    /**
-     * Test Accept header parsing - HTML preference over JSON
-     */
-    public function testPrefersHtmlOverJsonInMixedAccept(): void
+    public function testExpectsJsonPrefersHtmlOverJsonInMixedAccept(): void
     {
         $mixedAcceptHeaders = [
             'application/json,text/html;q=0.9',
@@ -156,16 +216,13 @@ class BaseControllerJsonDetectionTest extends TestCase
             ]);
 
             $this->assertFalse(
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Should prefer HTML for mixed Accept header: {$acceptHeader}"
             );
         }
     }
 
-    /**
-     * Test AJAX request detection (XMLHttpRequest)
-     */
-    public function testDetectsAjaxRequests(): void
+    public function testExpectsJsonDetectsAjaxRequests(): void
     {
         $ajaxHeaders = [
             'XMLHttpRequest',
@@ -181,49 +238,43 @@ class BaseControllerJsonDetectionTest extends TestCase
             ]);
 
             $this->assertTrue(
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Failed to detect AJAX request: {$ajaxHeader}"
             );
         }
     }
 
-    /**
-     * Test edge cases and malformed inputs
-     */
-    public function testHandlesEdgeCases(): void
+    public function testExpectsJsonHandlesEdgeCases(): void
     {
         // Empty REQUEST_URI
         $this->setServerEnvironment(['REQUEST_URI' => '']);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
 
         // Missing REQUEST_URI
         $this->setServerEnvironment([]);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
 
         // Empty Accept header
         $this->setServerEnvironment([
             'REQUEST_URI' => '/test',
             'HTTP_ACCEPT' => ''
         ]);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
 
         // Malformed Accept header
         $this->setServerEnvironment([
             'REQUEST_URI' => '/test',
             'HTTP_ACCEPT' => 'invalid-mime-type'
         ]);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
 
         // Very long REQUEST_URI
         $longUri = '/test/' . str_repeat('a', 2000);
         $this->setServerEnvironment(['REQUEST_URI' => $longUri]);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
     }
 
-    /**
-     * Test security concerns - path traversal attempts
-     */
-    public function testHandlesPathTraversalAttempts(): void
+    public function testExpectsJsonHandlesPathTraversalAttempts(): void
     {
         $maliciousUris = [
             '/api/../admin/users',
@@ -241,30 +292,27 @@ class BaseControllerJsonDetectionTest extends TestCase
             $expectsJson = str_contains($uri, '/api/');
             $this->assertEquals(
                 $expectsJson,
-                BaseController::expectsJson(),
+                RequestContext::expectsJson(),
                 "Unexpected result for potentially malicious URI: {$uri}"
             );
         }
     }
 
-    /**
-     * Test real-world PowerAdmin scenarios
-     */
-    public function testPowerAdminSpecificScenarios(): void
+    public function testExpectsJsonPowerAdminSpecificScenarios(): void
     {
         // Dynamic DNS API endpoints
         $this->setServerEnvironment([
             'REQUEST_URI' => '/api/v1/zones/example.com/records',
             'HTTP_ACCEPT' => 'application/json'
         ]);
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
 
         // Web interface zone editing
         $this->setServerEnvironment([
             'REQUEST_URI' => '/edit.php?id=123',
             'HTTP_ACCEPT' => 'text/html,application/xhtml+xml'
         ]);
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
 
         // AJAX calls from web interface
         $this->setServerEnvironment([
@@ -272,20 +320,17 @@ class BaseControllerJsonDetectionTest extends TestCase
             'HTTP_ACCEPT' => 'application/json',
             'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'
         ]);
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
 
         // PowerDNS API proxy endpoints
         $this->setServerEnvironment([
             'REQUEST_URI' => '/api/internal/pdns/servers/localhost/zones',
             'HTTP_ACCEPT' => 'application/json'
         ]);
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
     }
 
-    /**
-     * Test that API routes override Accept headers
-     */
-    public function testApiRoutesOverrideAcceptHeaders(): void
+    public function testExpectsJsonApiRoutesOverrideAcceptHeaders(): void
     {
         // Even with HTML accept header, /api/ routes should return JSON
         $this->setServerEnvironment([
@@ -293,7 +338,7 @@ class BaseControllerJsonDetectionTest extends TestCase
             'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         ]);
 
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
 
         // Verify this doesn't apply to non-API routes
         $this->setServerEnvironment([
@@ -301,33 +346,27 @@ class BaseControllerJsonDetectionTest extends TestCase
             'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         ]);
 
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
     }
 
-    /**
-     * Test case sensitivity
-     */
-    public function testCaseSensitivity(): void
+    public function testExpectsJsonCaseSensitivity(): void
     {
         // URI paths are case sensitive
         $this->setServerEnvironment(['REQUEST_URI' => '/API/test']);
-        $this->assertFalse(BaseController::expectsJson(), '/API/ should not match (case sensitive)');
+        $this->assertFalse(RequestContext::expectsJson(), '/API/ should not match (case sensitive)');
 
         $this->setServerEnvironment(['REQUEST_URI' => '/Api/test']);
-        $this->assertFalse(BaseController::expectsJson(), '/Api/ should not match (case sensitive)');
+        $this->assertFalse(RequestContext::expectsJson(), '/Api/ should not match (case sensitive)');
 
         // X-Requested-With is case insensitive
         $this->setServerEnvironment([
             'REQUEST_URI' => '/test',
             'HTTP_X_REQUESTED_WITH' => 'XMLHTTPREQUEST'
         ]);
-        $this->assertTrue(BaseController::expectsJson(), 'X-Requested-With should be case insensitive');
+        $this->assertTrue(RequestContext::expectsJson(), 'X-Requested-With should be case insensitive');
     }
 
-    /**
-     * Test performance with various input sizes
-     */
-    public function testPerformanceWithVariousInputSizes(): void
+    public function testExpectsJsonPerformanceWithVariousInputSizes(): void
     {
         $testCases = [
             ['REQUEST_URI' => '/' . str_repeat('a', 10)],
@@ -339,7 +378,7 @@ class BaseControllerJsonDetectionTest extends TestCase
         foreach ($testCases as $testCase) {
             $startTime = microtime(true);
             $this->setServerEnvironment($testCase);
-            BaseController::expectsJson();
+            RequestContext::expectsJson();
             $duration = microtime(true) - $startTime;
 
             $this->assertLessThan(0.01, $duration, 'expectsJson() should be fast even with large inputs');
