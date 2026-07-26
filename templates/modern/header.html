@@ -11,6 +11,9 @@
         // Global configuration for subfolder deployment
         window.BASE_URL_PREFIX = '{{ base_url_prefix }}';
 
+        // Lets scripts send X-CSRF-Token on internal API writes
+        window.CSRF_TOKEN = '{{ csrf_token }}';
+
         // Determine correct theme before loading stylesheets to prevent FOUC
         const savedTheme = localStorage.getItem('style');
         const serverTheme = '{{ iface_style }}';
