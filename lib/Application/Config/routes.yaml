@@ -130,10 +130,6 @@ zones_reverse:
   path: /zones/reverse
   controller: Poweradmin\Application\Controller\ListReverseZonesController::run
 
-zones_template:
-  path: /zones/template
-  controller: Poweradmin\Application\Controller\ListTemplateZonesController::run
-
 zone_add_master:
   path: /zones/add/master
   controller: Poweradmin\Application\Controller\AddZoneMasterController::run
@@ -627,6 +623,16 @@ api_v2_zone_records:
     id: '\d+'
   methods: [GET, POST]
 
+# Declared before api_v2_zone_record, whose record_id pattern also matches the
+# literal "bulk". Keep the specific path first so POST resolves here by position
+# rather than by the two routes happening to accept different methods.
+api_v2_zone_records_bulk:
+  path: /api/v2/zones/{id}/records/bulk
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
+
 api_v2_zone_record:
   path: /api/v2/zones/{id}/records/{record_id}
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsController::run
@@ -634,13 +640,6 @@ api_v2_zone_record:
     id: '\d+'
     record_id: '[\w\-=.]+'
   methods: [GET, PUT, DELETE]
-
-api_v2_zone_records_bulk:
-  path: /api/v2/zones/{id}/records/bulk
-  controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController::run
-  requirements:
-    id: '\d+'
-  methods: [POST]
 
 api_v2_zone_rrsets:
   path: /api/v2/zones/{id}/rrsets
