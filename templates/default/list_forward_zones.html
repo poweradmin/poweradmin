@@ -138,7 +138,7 @@
                     <tbody>
                     {% for zone in zones %}
 
-                    {% set user_can_delete_zone = zone['user_can_delete']|default(perm_delete == "all" or (perm_delete == "own" and session_userlogin in zone['users'])) %}
+                    {% set user_can_delete_zone = zone['user_can_delete'] %}
 
                     <tr>
                         <td>
@@ -162,51 +162,31 @@
 
                         {% if show_owner_column %}
                         <td>
-                            {% set owner_count = zone['owners']|length %}
-                            {% for key, owner in zone['owners'] %}
-                                {% if loop.index0 < 2 %}
+                            {% for item in zone['owners_display'].visible %}
                                 <div>
-                                    {% if zone['full_names'][key] %}
-                                        {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
+                                    {% if item.full_name %}
+                                        {{ item.full_name }} <small class="text-muted">({{ item.name }})</small>
                                     {% else %}
-                                        {{ owner }}
+                                        {{ item.name }}
                                     {% endif %}
                                 </div>
-                                {% endif %}
                             {% endfor %}
-                            {% if owner_count > 2 %}
+                            {% if zone['owners_display'].remaining_count > 0 %}
                             <div>
-                                {% set remaining_owners = [] %}
-                                {% for key, owner in zone['owners'] %}
-                                    {% if loop.index0 >= 2 %}
-                                        {% set remaining_owners = remaining_owners|merge([zone['full_names'][key] ? zone['full_names'][key] ~ ' (' ~ owner ~ ')' : owner]) %}
-                                    {% endif %}
-                                {% endfor %}
-                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ remaining_owners|join(', ') }}">+{{ owner_count - 2 }} {% trans %}more...{% endtrans %}</small>
+                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ zone['owners_display'].remaining_label }}">+{{ zone['owners_display'].remaining_count }} {% trans %}more...{% endtrans %}</small>
                             </div>
                             {% endif %}
                         </td>
                         {% endif %}
                         {% if show_group_column %}
                         <td>
-                            {% set group_count = zone['groups'] is defined ? zone['groups']|length : 0 %}
-                            {% if group_count > 0 %}
-                                {% for group in zone['groups'] %}
-                                    {% if loop.index0 < 2 %}
-                                    <div class="text-muted">{{ group }}</div>
-                                    {% endif %}
-                                {% endfor %}
-                                {% if group_count > 2 %}
-                                <div>
-                                    {% set remaining_groups = [] %}
-                                    {% for group in zone['groups'] %}
-                                        {% if loop.index0 >= 2 %}
-                                            {% set remaining_groups = remaining_groups|merge([group]) %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    <small class="text-muted" data-bs-toggle="tooltip" title="{{ remaining_groups|join(', ') }}">+{{ group_count - 2 }} {% trans %}more...{% endtrans %}</small>
-                                </div>
-                                {% endif %}
+                            {% for group in zone['groups_display'].visible %}
+                                <div class="text-muted">{{ group }}</div>
+                            {% endfor %}
+                            {% if zone['groups_display'].remaining_count > 0 %}
+                            <div>
+                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ zone['groups_display'].remaining_label }}">+{{ zone['groups_display'].remaining_count }} {% trans %}more...{% endtrans %}</small>
+                            </div>
                             {% endif %}
                         </td>
                         {% endif %}

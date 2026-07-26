@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -259,6 +260,9 @@ class ListReverseZonesController extends BaseController
                     $zone['groups'] = [];
                 }
             }
+
+            $zone['owners_display'] = OwnerGroupColumnPresenter::presentOwners($zone['owners'] ?? [], $zone['full_names'] ?? []);
+            $zone['groups_display'] = OwnerGroupColumnPresenter::presentGroups($zone['groups']);
         }
         unset($zone); // Break the reference
 
