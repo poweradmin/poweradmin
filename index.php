@@ -27,7 +27,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
-require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 
 // Only allocation happens out here: getInstance() and the responder cannot fail,
 // and the responder tolerates a half-built configuration so it can shape the

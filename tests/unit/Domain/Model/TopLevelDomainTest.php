@@ -100,4 +100,16 @@ class TopLevelDomainTest extends TestCase
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('mail.server.example.org'));
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('deep.nested.subdomain.example.net'));
     }
+
+    /**
+     * Nothing initializes the TLD table at startup any more, so the first lookup
+     * has to load it itself.
+     */
+    public function testIsValidTopLevelDomainInitializesLazily(): void
+    {
+        TopLevelDomain::resetCache();
+
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('example.com'));
+        $this->assertFalse(TopLevelDomain::isValidTopLevelDomain('example.invalidtld'));
+    }
 }
