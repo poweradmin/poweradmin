@@ -56,6 +56,14 @@ class StaticAssetController extends BaseController
     /**
      * Serve static assets
      */
+    /**
+     * Serving a static file changes nothing, and this route answers every verb.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Path comes from route parameters merged into request data by the router

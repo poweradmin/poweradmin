@@ -62,6 +62,14 @@ class JsonController extends BaseController
     /**
      * Run the controller
      */
+    /**
+     * The spec is read-only and is reachable without a session.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if API documentation is enabled

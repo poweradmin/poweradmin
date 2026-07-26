@@ -33,6 +33,15 @@ class NotFoundController extends BaseController
         parent::__construct($request, false);
     }
 
+    /**
+     * Serving a 404 changes nothing, and the response must stay a 404 for any
+     * verb rather than becoming a token error page.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Set 404 HTTP status code
