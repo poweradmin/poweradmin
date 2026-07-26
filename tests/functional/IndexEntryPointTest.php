@@ -65,8 +65,8 @@ class IndexEntryPointTest extends TestCase
             'sendJsonError() function should be available'
         );
         $this->assertTrue(
-            function_exists('displayHtmlError'),
-            'displayHtmlError() function should be available'
+            function_exists('initializeTimezone'),
+            'initializeTimezone() function should be available'
         );
     }
 
@@ -87,56 +87,6 @@ class IndexEntryPointTest extends TestCase
         // The actual session initialization is tested in integration context
         // Here we just verify the function exists and can be called
         $this->assertIsCallable('initializeSession');
-    }
-
-    /**
-     * Test error handling integration with various scenarios
-     */
-    public function testErrorHandlingIntegration(): void
-    {
-        // Test JSON error output
-        ob_start();
-        sendJsonError("Test API error", "/api/endpoint.php", 123, ["API call failed"]);
-        $jsonOutput = ob_get_clean();
-
-        $this->assertJson($jsonOutput);
-        $decoded = json_decode($jsonOutput, true);
-        $this->assertArrayHasKey('error', $decoded);
-        $this->assertTrue($decoded['error']);
-
-        // Test HTML error output
-        $testException = new Exception("Test web error");
-        ob_start();
-        displayHtmlError($testException);
-        $htmlOutput = ob_get_clean();
-
-        $this->assertStringContainsString('<pre>', $htmlOutput);
-        $this->assertStringContainsString('Test web error', $htmlOutput);
-    }
-
-    /**
-     * Test security measures in error handling
-     */
-    public function testErrorHandlingSecurity(): void
-    {
-        // Test XSS protection in HTML errors
-        $xssException = new Exception("<script>alert('xss')</script>");
-        ob_start();
-        displayHtmlError($xssException);
-        $output = ob_get_clean();
-
-        $this->assertStringNotContainsString('<script>alert(', $output);
-        $this->assertStringContainsString('&lt;script&gt;', $output);
-
-        // Test that file paths in production don't expose sensitive info
-        ob_start();
-        sendJsonError("Production error", "/var/www/poweradmin/config/database.php", 50, []);
-        $jsonOutput = ob_get_clean();
-
-        $decoded = json_decode($jsonOutput, true);
-        // In production, file paths might be filtered - this tests the structure
-        $this->assertArrayHasKey('file', $decoded);
-        $this->assertArrayHasKey('message', $decoded);
     }
 
     /**
@@ -299,45 +249,6 @@ class IndexEntryPointTest extends TestCase
             $memoryUsed,
             "Initialization should not use excessive memory: {$memoryUsed} bytes"
         );
-    }
-
-    /**
-     * Test error handling with different exception types
-     */
-    public function testErrorHandlingWithDifferentExceptions(): void
-    {
-        $exceptionTypes = [
-            new Exception("General exception"),
-            new RuntimeException("Runtime error"),
-            new InvalidArgumentException("Invalid argument"),
-            new ErrorException("PHP error", 0, E_ERROR, __FILE__, __LINE__),
-        ];
-
-        foreach ($exceptionTypes as $exception) {
-            // Test HTML error display
-            ob_start();
-            displayHtmlError($exception);
-            $htmlOutput = ob_get_clean();
-
-            $this->assertStringContainsString($exception->getMessage(), $htmlOutput);
-            $this->assertStringContainsString('Error:', $htmlOutput);
-            $this->assertStringContainsString('File:', $htmlOutput);
-            $this->assertStringContainsString('Line:', $htmlOutput);
-
-            // Test JSON error (simulating what index.php would do)
-            ob_start();
-            sendJsonError(
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-                explode("\n", $exception->getTraceAsString())
-            );
-            $jsonOutput = ob_get_clean();
-
-            $decoded = json_decode($jsonOutput, true);
-            $this->assertIsArray($decoded);
-            $this->assertEquals($exception->getMessage(), $decoded['message']);
-        }
     }
 
     /**

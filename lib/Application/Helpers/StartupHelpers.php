@@ -71,16 +71,3 @@ function sendJsonError(string $message, ?string $file = null, ?int $line = null,
         'trace' => $trace
     ]);
 }
-
-/**
- * Display HTML error with detailed information
- */
-function displayHtmlError(Throwable $e): void
-{
-    echo '<pre>';
-    echo 'Error: ' . htmlspecialchars($e->getMessage()) . "\n";
-    echo 'File: ' . htmlspecialchars($e->getFile()) . "\n";
-    echo 'Line: ' . $e->getLine() . "\n";
-    echo 'Trace: ' . "\n" . htmlspecialchars($e->getTraceAsString());
-    echo '</pre>';
-}

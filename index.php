@@ -20,7 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Controller\NotFoundController;
+use Poweradmin\Application\Http\BootstrapErrorResponder;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -39,7 +40,7 @@ initializeSession();
 // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
 // so buffer the response and drop its body: HEAD must return headers only. The
 // callback runs when the response flushes its own output buffers during send().
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && \Poweradmin\Application\Http\RequestContext::isV2ApiRequest()) {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && RequestContext::isV2ApiRequest()) {
     ob_start(static fn(): string => '');
 }
 
@@ -51,73 +52,7 @@ try {
     $router->process();
 } catch (Throwable $e) {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
-    // array where a string is expected) is an Error, and must still yield the JSON
-    // 500 below instead of escaping as a blank/HTML fatal.
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-
-    // Differs from RequestContext::expectsJson(): no Content-Type signal, and
-    // the Accept check has no text/html exclusion - fatal-error shaping errs
-    // toward JSON so API-ish clients never get an HTML stack page.
-    $expectsJson = (
-        \Poweradmin\Application\Http\RequestContext::isApiPath() ||
-        str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') ||
-        \Poweradmin\Application\Http\RequestContext::isAjax()
-    );
-
-    if ($expectsJson) {
-        header('Content-Type: application/json');
-
-        // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
-        $isV2Api = \Poweradmin\Application\Http\RequestContext::isV2ApiRequest();
-
-        if ($e->getCode() === 404) {
-            http_response_code(404);
-            echo json_encode($isV2Api
-                ? ['success' => false, 'data' => null, 'message' => 'Endpoint not found']
-                : ['error' => true, 'message' => 'Endpoint not found']);
-        } elseif ($e->getCode() === 405) {
-            http_response_code(405);
-            echo json_encode($isV2Api
-                ? ['success' => false, 'data' => null, 'message' => 'Method not allowed']
-                : ['error' => true, 'message' => 'Method not allowed']);
-        } else {
-            http_response_code(500);
-            $showDebug = $configManager->get('misc', 'display_errors', false);
-            if ($isV2Api) {
-                echo json_encode([
-                    'success' => false,
-                    'data' => $showDebug ? [
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine(),
-                        'trace' => explode("\n", $e->getTraceAsString()),
-                    ] : null,
-                    'message' => $showDebug ? $e->getMessage() : 'Internal server error',
-                ]);
-            } else {
-                echo json_encode([
-                    'error' => true,
-                    'message' => $showDebug ? $e->getMessage() : 'Internal server error',
-                    'file' => $showDebug ? $e->getFile() : null,
-                    'line' => $showDebug ? $e->getLine() : null,
-                    'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
-                ]);
-            }
-        }
-    } else {
-        // HTML error response
-        if ($e->getCode() === 404) {
-            http_response_code(404);
-            try {
-                $notFoundController = new NotFoundController([]);
-                $notFoundController->run();
-            } catch (Throwable $notFoundError) {
-                echo 'Page not found.';
-            }
-        } elseif ($configManager->get('misc', 'display_errors', false)) {
-            displayHtmlError($e);
-        } else {
-            echo 'An error occurred while processing the request.';
-        }
-    }
+    // array where a string is expected) is an Error, and must still be shaped into
+    // a JSON 500 instead of escaping as a blank/HTML fatal.
+    (new BootstrapErrorResponder($configManager))->handle($e);
 }

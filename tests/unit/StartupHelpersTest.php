@@ -12,9 +12,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * Tests the helper functions extracted during index.php refactoring:
  * - sendJsonError()
- * - displayHtmlError()
+ * - initializeTimezone()
  *
- * These functions are critical for error handling in both web and API contexts.
+ * Error-response shaping itself lives in BootstrapErrorResponder.
  */
 class StartupHelpersTest extends TestCase
 {
@@ -69,70 +69,6 @@ class StartupHelpersTest extends TestCase
         $this->assertNull($decoded['line']);
         $this->assertNull($decoded['trace']);
         $this->assertTrue($decoded['error']);
-    }
-
-    /**
-     * Test displayHtmlError with basic exception
-     */
-    public function testDisplayHtmlErrorBasicException(): void
-    {
-        $exception = new \Exception("Configuration file not found");
-
-        ob_start();
-        displayHtmlError($exception);
-        $output = ob_get_clean();
-
-        $this->assertStringContainsString('<pre>', $output);
-        $this->assertStringContainsString('Error: Configuration file not found', $output);
-        $this->assertStringContainsString('File:', $output);
-        $this->assertStringContainsString('Line:', $output);
-        $this->assertStringContainsString('Trace:', $output);
-        $this->assertStringContainsString('</pre>', $output);
-    }
-
-    /**
-     * Test XSS protection in HTML error display
-     * This is critical for security - ensures malicious code in exceptions is escaped
-     */
-    public function testDisplayHtmlErrorXssProtection(): void
-    {
-        $maliciousException = new \Exception("<script>alert('XSS attack');</script><img src=x onerror=alert(1)>");
-
-        ob_start();
-        displayHtmlError($maliciousException);
-        $output = ob_get_clean();
-
-        // Verify HTML tags are escaped
-        $this->assertStringNotContainsString('<script>', $output);
-        $this->assertStringNotContainsString('<img', $output);
-        $this->assertStringContainsString('&lt;script&gt;', $output);
-        $this->assertStringContainsString('&lt;img', $output);
-
-        // Verify quotes are escaped
-        $this->assertStringNotContainsString("alert('XSS attack');", $output);
-        $this->assertStringContainsString("alert(&#039;XSS attack&#039;);", $output);
-    }
-
-    /**
-     * Test Unicode character handling in HTML error display
-     * Important for international users and DNS with IDN
-     */
-    public function testDisplayHtmlErrorWithUnicodeCharacters(): void
-    {
-        $unicodeException = new \Exception("DNS zone 测试.中国 validation failed: émojis 🚨 ñáéíóú العربية");
-
-        ob_start();
-        displayHtmlError($unicodeException);
-        $output = ob_get_clean();
-
-        $this->assertStringContainsString('测试.中国', $output);
-        $this->assertStringContainsString('🚨', $output);
-        $this->assertStringContainsString('ñáéíóú', $output);
-        $this->assertStringContainsString('العربية', $output);
-
-        // Ensure HTML structure is maintained
-        $this->assertStringContainsString('<pre>', $output);
-        $this->assertStringContainsString('</pre>', $output);
     }
 
     /**
@@ -216,28 +152,6 @@ class StartupHelpersTest extends TestCase
         $this->assertEquals(999999, $decoded['line']);
     }
 
-    /**
-     * Test that HTML error display handles deep stack traces
-     * Important for complex DNS validation chains
-     */
-    public function testDisplayHtmlErrorWithDeepStackTrace(): void
-    {
-        // Create exception with deep call stack
-        try {
-            $this->level1();
-        } catch (\Exception $e) {
-            ob_start();
-            displayHtmlError($e);
-            $output = ob_get_clean();
-
-            $this->assertStringContainsString('level1', $output);
-            $this->assertStringContainsString('level2', $output);
-            $this->assertStringContainsString('level3', $output);
-            $this->assertStringContainsString('<pre>', $output);
-            $this->assertStringContainsString('Trace:', $output);
-        }
-    }
-
     public function testInitializeTimezoneUsesConfiguredTimezone(): void
     {
         $originalTz = date_default_timezone_get();
@@ -270,24 +184,6 @@ class StartupHelpersTest extends TestCase
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
 
         date_default_timezone_set($originalTz);
-    }
-
-    /**
-     * Helper method to create deep stack trace for testing
-     */
-    private function level1(): void
-    {
-        $this->level2();
-    }
-
-    private function level2(): void
-    {
-        $this->level3();
-    }
-
-    private function level3(): void
-    {
-        throw new \Exception("Deep stack trace test for DNS validation");
     }
 
     /**
