@@ -429,4 +429,48 @@ class RequestContextTest extends TestCase
         $this->assertFalse(RequestContext::acceptsJson());
         $this->assertFalse(RequestContext::acceptsJsonOnly());
     }
+
+    public function testExpectsJsonOnErrorIgnoresTheHtmlExclusion(): void
+    {
+        $this->setServerEnvironment([
+            'REQUEST_URI' => '/dashboard',
+            'HTTP_ACCEPT' => 'text/html,application/json;q=0.8'
+        ]);
+
+        $this->assertFalse(RequestContext::expectsJson());
+        $this->assertTrue(RequestContext::expectsJsonOnError());
+    }
+
+    public function testExpectsJsonOnErrorIgnoresTheJsonContentType(): void
+    {
+        $this->setServerEnvironment([
+            'REQUEST_URI' => '/dashboard',
+            'HTTP_ACCEPT' => 'text/html',
+            'CONTENT_TYPE' => 'application/json'
+        ]);
+
+        $this->assertTrue(RequestContext::expectsJson());
+        $this->assertFalse(RequestContext::expectsJsonOnError());
+    }
+
+    public function testExpectsJsonOnErrorDetectsApiPathAndAjax(): void
+    {
+        $this->setServerEnvironment([
+            'REQUEST_URI' => '/api/v1/zones',
+            'HTTP_ACCEPT' => 'text/html'
+        ]);
+        $this->assertTrue(RequestContext::expectsJsonOnError());
+
+        $this->setServerEnvironment([
+            'REQUEST_URI' => '/zones',
+            'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'
+        ]);
+        $this->assertTrue(RequestContext::expectsJsonOnError());
+
+        $this->setServerEnvironment([
+            'REQUEST_URI' => '/zones',
+            'HTTP_ACCEPT' => 'text/html'
+        ]);
+        $this->assertFalse(RequestContext::expectsJsonOnError());
+    }
 }

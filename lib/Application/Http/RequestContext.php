@@ -136,4 +136,20 @@ final class RequestContext
             || self::isAjax()
             || self::hasJsonContentType();
     }
+
+    /**
+     * Negotiation used when shaping an unhandled throwable. Deliberately looser
+     * than expectsJson(): no Content-Type signal, so a JSON body posted to a web
+     * form still gets the HTML error page it can render, and no text/html
+     * exclusion on the Accept check, so an API-ish client that also accepts HTML
+     * never receives an HTML stack page.
+     *
+     * @return bool True if a fatal error should be shaped as JSON
+     */
+    public static function expectsJsonOnError(): bool
+    {
+        return self::isApiPath()
+            || self::acceptsJson()
+            || self::isAjax();
+    }
 }
