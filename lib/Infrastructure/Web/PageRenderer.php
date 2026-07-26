@@ -24,11 +24,9 @@ namespace Poweradmin\Infrastructure\Web;
 
 use Closure;
 use Poweradmin\AppManager;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
@@ -58,7 +56,6 @@ class PageRenderer
     private Closure $getDebugQueries;
 
     private bool $twigEnvironmentReady = false;
-    private ?string $activeLocale = null;
     private ?array $languageVars = null;
 
     public function __construct(
@@ -300,8 +297,7 @@ class PageRenderer
     {
         $vars = ['current_language' => $activeLocale];
 
-        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-        $localeList = array_map('trim', explode(',', $enabledLanguages));
+        $localeList = $this->app->getSupportedLocales();
         if (count($localeList) > 1) {
             $preparedLocales = [];
             foreach ($localeList as $locale) {
@@ -320,19 +316,12 @@ class PageRenderer
     }
 
     /**
-     * Returns the locale active for the current request (GET override > session > config).
-     * Memoized: the inputs are stable within a request and this runs on every
-     * header and footer render.
+     * Returns the locale the translator was built with, so rendered strings
+     * and the page's lang metadata always agree.
      */
     public function resolveActiveLocale(): string
     {
-        // Request is constructed here, not in the constructor: it snapshots
-        // the superglobals, which must happen at first resolve time
-        return $this->activeLocale ??= (new LocaleResolver(
-            $this->config,
-            $this->userContextService,
-            new Request()
-        ))->resolve();
+        return $this->app->getInterfaceLocale();
     }
 
     /**

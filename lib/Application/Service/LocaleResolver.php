@@ -77,7 +77,7 @@ class LocaleResolver
     public function getSupportedLocales(): array
     {
         $enabledLanguages = $this->config->get('interface', 'enabled_languages');
-        if (empty($enabledLanguages) || !is_string($enabledLanguages)) {
+        if (!is_string($enabledLanguages)) {
             return [self::DEFAULT_LOCALE];
         }
 

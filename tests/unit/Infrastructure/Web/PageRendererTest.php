@@ -22,42 +22,23 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * Covers the locale-resolution and language-selector logic of PageRenderer,
- * the pure parts of the page chrome pipeline extracted from BaseController.
+ * Covers the language-selector logic of PageRenderer. Locale precedence
+ * itself is resolved by LocaleResolver (see LocaleResolverTest) and shared
+ * through AppManager.
  */
 class PageRendererTest extends TestCase
 {
-    private array $originalGet;
-
-    protected function setUp(): void
+    private function makeRenderer(array $supportedLocales, string $interfaceLocale = 'en_EN'): PageRenderer
     {
-        parent::setUp();
-        $this->originalGet = $_GET;
-    }
-
-    protected function tearDown(): void
-    {
-        $_GET = $this->originalGet;
-        parent::tearDown();
-    }
-
-    private function makeRenderer(array $interfaceConfig, ?string $userLanguage = null): PageRenderer
-    {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            function (string $group, string $key, $default = null) use ($interfaceConfig) {
-                return $interfaceConfig[$group][$key] ?? $default;
-            }
-        );
-
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getUserLanguage')->willReturn($userLanguage);
+        $app = $this->createMock(AppManager::class);
+        $app->method('getSupportedLocales')->willReturn($supportedLocales);
+        $app->method('getInterfaceLocale')->willReturn($interfaceLocale);
 
         return new PageRenderer(
-            $this->createMock(AppManager::class),
-            $config,
+            $app,
+            $this->createMock(ConfigurationManager::class),
             $this->createMock(CsrfTokenService::class),
-            $userContext,
+            $this->createMock(UserContextService::class),
             fn(string $permission): bool => false,
             fn() => []
         );
@@ -65,7 +46,7 @@ class PageRendererTest extends TestCase
 
     public function testSingleEnabledLanguageHidesSelector(): void
     {
-        $renderer = $this->makeRenderer(['interface' => ['enabled_languages' => 'en_EN']]);
+        $renderer = $this->makeRenderer(['en_EN']);
 
         $vars = $renderer->getLanguageSelectorVars('en_EN');
 
@@ -76,7 +57,7 @@ class PageRendererTest extends TestCase
 
     public function testMultipleLanguagesBuildSortedSelector(): void
     {
-        $renderer = $this->makeRenderer(['interface' => ['enabled_languages' => 'en_EN,de_DE,fr_FR']]);
+        $renderer = $this->makeRenderer(['en_EN', 'de_DE', 'fr_FR']);
 
         $vars = $renderer->getLanguageSelectorVars('de_DE');
 
@@ -94,72 +75,11 @@ class PageRendererTest extends TestCase
         $this->assertSame('de_DE', $selected[0]['locale']);
     }
 
-    public function testResolveActiveLocalePrefersUserLanguage(): void
+    public function testActiveLocaleAndSelectorComeFromAppManager(): void
     {
-        $renderer = $this->makeRenderer(
-            ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']],
-            'de_DE'
-        );
+        $renderer = $this->makeRenderer(['en_EN', 'de_DE'], 'de_DE');
 
         $this->assertSame('de_DE', $renderer->resolveActiveLocale());
-    }
-
-    public function testResolveActiveLocaleFallsBackToConfig(): void
-    {
-        $renderer = $this->makeRenderer(
-            ['interface' => ['language' => 'fr_FR', 'enabled_languages' => 'en_EN,fr_FR']]
-        );
-
-        $this->assertSame('fr_FR', $renderer->resolveActiveLocale());
-    }
-
-    public function testGetOverrideAppliesForEnabledLocale(): void
-    {
-        $renderer = $this->makeRenderer(
-            ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']]
-        );
-
-        $_GET['lang'] = 'de_DE';
-        $this->assertSame('de_DE', $renderer->resolveActiveLocale());
-    }
-
-    public function testGetOverrideIgnoredForDisabledOrMalformedLocale(): void
-    {
-        $config = ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']];
-
-        // Fresh renderer per case: the resolved locale is memoized per instance
-        $_GET['lang'] = 'fr_FR'; // not in enabled_languages
-        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
-
-        // Malformed values must never pass the character allowlist
-        $_GET['lang'] = '../etc';
-        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
-
-        $_GET['lang'] = ['de_DE'];
-        $this->assertSame('en_EN', $this->makeRenderer($config)->resolveActiveLocale());
-    }
-
-    public function testGetOverrideAppliesForSpacedEnabledList(): void
-    {
-        $renderer = $this->makeRenderer(
-            ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN, de_DE']]
-        );
-
-        $_GET['lang'] = 'de_DE';
-        $this->assertSame('de_DE', $renderer->resolveActiveLocale());
-    }
-
-    public function testResolveActiveLocaleIsMemoizedPerInstance(): void
-    {
-        $renderer = $this->makeRenderer(
-            ['interface' => ['language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE']]
-        );
-
-        $this->assertSame('en_EN', $renderer->resolveActiveLocale());
-
-        // A later superglobal change must not flip the already-resolved locale
-        $_GET['lang'] = 'de_DE';
-        $this->assertSame('en_EN', $renderer->resolveActiveLocale());
-        $this->assertSame('en_EN', $renderer->languageVars()['current_language']);
+        $this->assertSame('de_DE', $renderer->languageVars()['current_language']);
     }
 }

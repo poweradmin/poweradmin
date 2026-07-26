@@ -75,6 +75,12 @@ class AppManager
     /** @var string $themePath The filesystem path of the resolved theme template directory */
     private string $themePath;
 
+    /** @var string $interfaceLocale The locale the translator was built with */
+    private string $interfaceLocale;
+
+    /** @var list<string> $supportedLocales The enabled locales, trimmed */
+    private array $supportedLocales;
+
     /**
      * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
@@ -253,7 +259,9 @@ class AppManager
     private function setupTranslator(ModuleRegistry $registry): void
     {
         $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
-        $interfaceLang = $resolver->resolve();
+        $this->interfaceLocale = $resolver->resolve();
+        $this->supportedLocales = $resolver->getSupportedLocales();
+        $interfaceLang = $this->interfaceLocale;
 
         // ICU formatters (format_datetime etc.) read the default locale;
         // setlocale() in LocaleManager does not affect ICU
@@ -261,7 +269,7 @@ class AppManager
 
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', $this->getLocaleFile($interfaceLang, $resolver->getSupportedLocales()), $interfaceLang);
+        $translator->addResource('po', $this->getLocaleFile(), $interfaceLang);
 
         foreach ($registry->getEnabledModules() as $module) {
             $localePath = $module->getLocalePath();
@@ -354,18 +362,37 @@ class AppManager
     }
 
     /**
-     * Gets the locale file path for the given interface language.
+     * Gets the locale file path for the resolved interface locale.
      *
-     * @param string $interfaceLang The interface language
-     * @param array $supportedLocales The enabled locales
      * @return string The path to the locale file
      */
-    private function getLocaleFile(string $interfaceLang, array $supportedLocales): string
+    private function getLocaleFile(): string
     {
-        if (in_array($interfaceLang, $supportedLocales, true)) {
-            return "locale/$interfaceLang/LC_MESSAGES/messages.po";
+        if (in_array($this->interfaceLocale, $this->supportedLocales, true)) {
+            return "locale/$this->interfaceLocale/LC_MESSAGES/messages.po";
         }
         return "locale/en_EN/LC_MESSAGES/messages.po";
+    }
+
+    /**
+     * Gets the locale the translator was built with. Page chrome must use
+     * this (not re-resolve) so rendered strings and lang metadata agree.
+     *
+     * @return string The resolved interface locale
+     */
+    public function getInterfaceLocale(): string
+    {
+        return $this->interfaceLocale;
+    }
+
+    /**
+     * Gets the enabled locales as resolved for this request.
+     *
+     * @return list<string> The enabled locales, trimmed
+     */
+    public function getSupportedLocales(): array
+    {
+        return $this->supportedLocales;
     }
 
     /**
