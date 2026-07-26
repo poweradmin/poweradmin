@@ -99,27 +99,29 @@ final class BootstrapErrorResponder
         }
 
         http_response_code(500);
-        $showDebug = $this->displayErrors();
+
+        $debug = $this->displayErrors() ? [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => explode("\n", $e->getTraceAsString()),
+        ] : null;
+        $message = $debug === null ? 'Internal server error' : $e->getMessage();
 
         if ($isV2Api) {
             echo json_encode([
                 'success' => false,
-                'data' => $showDebug ? [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => explode("\n", $e->getTraceAsString()),
-                ] : null,
-                'message' => $showDebug ? $e->getMessage() : 'Internal server error',
+                'data' => $debug,
+                'message' => $message,
             ]);
             return;
         }
 
         echo json_encode([
             'error' => true,
-            'message' => $showDebug ? $e->getMessage() : 'Internal server error',
-            'file' => $showDebug ? $e->getFile() : null,
-            'line' => $showDebug ? $e->getLine() : null,
-            'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
+            'message' => $message,
+            'file' => $debug['file'] ?? null,
+            'line' => $debug['line'] ?? null,
+            'trace' => $debug['trace'] ?? null
         ]);
     }
 

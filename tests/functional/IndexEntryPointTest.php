@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
-use ErrorException;
-use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Pages;
 use ReflectionMethod;
-use RuntimeException;
 
 /**
  * Functional tests for index.php entry point
@@ -23,11 +19,9 @@ use RuntimeException;
  * - Session initialization
  * - Configuration loading
  * - Router setup
- * - Error handling integration
- * - Security measures
+ * - Bootstrap failures reaching the error responder
  *
- * Note: These tests may require database connection mocking or
- * environment-specific configuration for full functionality.
+ * Error-response shaping itself is covered by BootstrapErrorResponderTest.
  */
 class IndexEntryPointTest extends TestCase
 {

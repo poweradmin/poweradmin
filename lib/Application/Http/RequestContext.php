@@ -90,11 +90,19 @@ final class RequestContext
     }
 
     /**
+     * Accept header of the current request.
+     */
+    private static function acceptHeader(): string
+    {
+        return $_SERVER['HTTP_ACCEPT'] ?? '';
+    }
+
+    /**
      * Whether the Accept header mentions JSON at all.
      */
     public static function acceptsJson(): bool
     {
-        return str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+        return str_contains(self::acceptHeader(), 'application/json');
     }
 
     /**
@@ -102,7 +110,7 @@ final class RequestContext
      */
     public static function acceptsJsonOnly(): bool
     {
-        return self::acceptsJson() && !str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'text/html');
+        return self::acceptsJson() && !str_contains(self::acceptHeader(), 'text/html');
     }
 
     /**

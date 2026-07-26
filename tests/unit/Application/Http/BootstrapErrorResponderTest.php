@@ -14,6 +14,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Http;
 
+use Closure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
@@ -59,56 +60,27 @@ class BootstrapErrorResponderTest extends TestCase
 
     private function config(bool $displayErrors): ConfigurationInterface
     {
-        return new class ($displayErrors) implements ConfigurationInterface {
-            public function __construct(private readonly bool $displayErrors)
-            {
-            }
+        $config = $this->createStub(ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null): mixed
+                => $group === 'misc' && $key === 'display_errors' ? $displayErrors : $default
+        );
 
-            public function get(string $group, string $key, mixed $default = null): mixed
-            {
-                if ($group === 'misc' && $key === 'display_errors') {
-                    return $this->displayErrors;
-                }
-
-                return $default;
-            }
-
-            public function getGroup(string $group): array
-            {
-                return [];
-            }
-
-            public function getAll(): array
-            {
-                return [];
-            }
-        };
+        return $config;
     }
 
     private function throwingConfig(): ConfigurationInterface
     {
-        return new class implements ConfigurationInterface {
-            public function get(string $group, string $key, mixed $default = null): mixed
-            {
-                throw new RuntimeException('Configuration is unavailable');
-            }
+        $config = $this->createStub(ConfigurationInterface::class);
+        $config->method('get')->willThrowException(new RuntimeException('Configuration is unavailable'));
 
-            public function getGroup(string $group): array
-            {
-                throw new RuntimeException('Configuration is unavailable');
-            }
-
-            public function getAll(): array
-            {
-                throw new RuntimeException('Configuration is unavailable');
-            }
-        };
+        return $config;
     }
 
     private function capture(
         Throwable $e,
         ?ConfigurationInterface $config = null,
-        ?\Closure $notFoundRenderer = null
+        ?Closure $notFoundRenderer = null
     ): string {
         $responder = new BootstrapErrorResponder($config ?? $this->config(false), $notFoundRenderer);
 

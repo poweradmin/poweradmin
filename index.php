@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,11 +28,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 
-// Only allocation happens out here: getInstance() and the responder cannot fail,
-// and the responder tolerates a half-built configuration so it can shape the
-// failure of the initialize() call below.
+// getInstance() only allocates; initialize() is what can fail, so it goes inside
+// the guarded region. The responder tolerates a half-built configuration.
 $configManager = ConfigurationManager::getInstance();
-$errorResponder = new BootstrapErrorResponder($configManager);
 
 try {
     $configManager->initialize();
@@ -55,5 +53,5 @@ try {
     // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
     // array where a string is expected) is an Error, and must still be shaped into
     // a JSON 500 instead of escaping as a blank/HTML fatal.
-    $errorResponder->handle($e);
+    (new BootstrapErrorResponder($configManager))->handle($e);
 }
