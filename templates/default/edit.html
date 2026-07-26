@@ -73,7 +73,7 @@
                 <tr>
                     <td class="col-sm-2">
                         <input class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'name' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
-                               type="text" name="name" value="{{ form_data.name|default('') }}" 
+                               type="text" name="name" value="{{ form_data.name|default('') }}" data-testid="record-name-input"
                                placeholder="">
                         {% if form_data.fieldError is defined and form_data.fieldError == 'name' %}
                         <div class="invalid-feedback">{% trans %}Invalid hostname format{% endtrans %}</div>
@@ -98,8 +98,8 @@
                     </td>
                     <td>
                         <div id="contentInputContainerTop">
-                            <input id="recordContentTop" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
-                                   type="text" name="content" value="{{ form_data.content|default('') }}" required>
+                            <input id="recordContentTop" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}"
+                                   type="text" name="content" value="{{ form_data.content|default('') }}" data-testid="record-content-input" required>
                         </div>
                         {% if form_data.fieldError is defined and form_data.fieldError == 'content' %}
                         <div class="invalid-feedback">{{ form_data.errorMessage }}</div>
@@ -134,17 +134,17 @@
                     <td class="col-sm-1 text-center">
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
-                            <input class="form-check-input" type="checkbox" name="reverse">
+                            <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
                         </span>
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                         <span class="align-middle">
-                            <input class="form-check-input" type="checkbox" name="create_domain_record">
+                            <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="btn btn-primary btn-sm" type="submit" name="commit"
+                        <input class="btn btn-primary btn-sm" type="submit" name="commit" data-testid="add-record-button"
                             value="{% trans %}Add record{% endtrans %}">
                     </td>
                 </tr>
