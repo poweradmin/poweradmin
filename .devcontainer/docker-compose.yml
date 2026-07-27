@@ -170,7 +170,7 @@ services:
 
   # Nginx webserver (MySQL + SQL) - Port 8080
   webserver:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-mysql-sql
     networks:
       - internal
@@ -203,7 +203,7 @@ services:
 
   # Caddy webserver (SQLite + SQL) - Port 8082
   caddy:
-    image: caddy:2-alpine
+    image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
     container_name: pwa-web-sqlite-sql
     networks:
       - internal
@@ -220,7 +220,7 @@ services:
 
   # Nginx webserver (MySQL + API) - Port 8083
   web-mysql-api:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-mysql-api
     networks:
       - internal
@@ -234,7 +234,7 @@ services:
 
   # Nginx webserver (PostgreSQL + API) - Port 8084
   web-pgsql-api:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-pgsql-api
     networks:
       - internal
@@ -248,7 +248,7 @@ services:
 
   # Nginx webserver (SQLite + API) - Port 8085
   web-sqlite-api:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-sqlite-api
     networks:
       - internal
@@ -263,7 +263,7 @@ services:
 
   # Nginx webserver (MySQL + Subfolder) - Port 8086
   web-subfolder:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-subfolder
     networks:
       - internal
@@ -277,7 +277,7 @@ services:
 
   # Nginx webserver (MySQL + SQL, German only) - Port 8087
   web-mysql-de:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: pwa-web-mysql-sql-de
     networks:
       - internal
@@ -341,7 +341,7 @@ services:
       retries: 3
 
   sqlite:
-    image: keinos/sqlite3
+    image: keinos/sqlite3@sha256:a5610a155a8c9007f2050120406a0abcffab246570d6ac1ffe370f5f23e14dc1
     container_name: sqlite
     user: "0:0"
     networks:
@@ -408,7 +408,7 @@ services:
   # =============================================================================
 
   adminer:
-    image: adminer
+    image: adminer@sha256:494d4a9461105644222c938679fe58d5e3fd13fb228c76a426e81c16d4ffbaef
     container_name: adminer
     networks:
       - internal
@@ -423,7 +423,7 @@ services:
   # =============================================================================
 
   ldap:
-    image: osixia/openldap:1.5.0
+    image: osixia/openldap:1.5.0@sha256:18742e9c449c9c1afe129d3f2f3ee15fb34cc43e5f940a20f3399728f41d7c28
     container_name: ldap
     networks:
       - internal
@@ -445,7 +445,7 @@ services:
       start_period: 10s
 
   ldapadmin:
-    image: phpldapadmin/phpldapadmin:2.3.11
+    image: phpldapadmin/phpldapadmin:2.3.11@sha256:e4855767ffb1513ed6cbfa126ce0913ef229e9badf3c205a010a2421a2b5e47c
     container_name: ldapadmin
     networks:
       - internal
