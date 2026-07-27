@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -192,9 +191,11 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $perm_delete = Permission::getDeletePermission($this->db);
         $permissionService = $this->createPermissionService();
         $userId = $this->userContextService->getLoggedInUserId();
+        // Same "all"/"own"/"none" contract as Permission::getDeletePermission(), but off
+        // the request-cached service the delete check above already warmed
+        $perm_delete = $permissionService->getDeletePermissionLevel($userId);
         foreach ($zones as &$zone) {
             // Effectively always true here: verifyDeletePermission() already blocked
             // any zone the user cannot delete. Kept for the template contract.
