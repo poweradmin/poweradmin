@@ -90,7 +90,10 @@ class DnsWizardApiController extends InternalApiController
                 $response = $this->generateRecord();
                 break;
             case 'create':
-                $response = $this->createRecord();
+                // The only mutating action, and the CSRF header check skips GET
+                $response = strtoupper($this->request->getMethod()) === 'POST'
+                    ? $this->createRecord()
+                    : $this->returnApiError('Method not allowed', 405);
                 break;
             default:
                 $response = $this->returnApiError('Invalid action', 400);
@@ -297,7 +300,8 @@ class DnsWizardApiController extends InternalApiController
      */
     private function createRecord(): JsonResponse
     {
-        // The X-CSRF-Token header is validated by InternalApiController
+        // Reached on POST only, so InternalApiController has already validated the
+        // X-CSRF-Token header (it skips GET, HEAD and OPTIONS)
 
         $data = json_decode($this->request->getContent(), true) ?? [];
 
