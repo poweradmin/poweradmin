@@ -17,8 +17,6 @@
     "develop",
     "master",
     "release/3.x",
-    "release/4.0.x",
-    "release/4.1.x",
     "release/4.2.x",
     "release/4.3.x"
   ],
@@ -49,8 +47,6 @@
       "description": "Only allow patch updates on stable branches",
       "matchBaseBranches": [
         "release/3.x",
-        "release/4.0.x",
-        "release/4.1.x",
         "release/4.2.x",
         "release/4.3.x"
       ],
