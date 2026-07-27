@@ -14,34 +14,52 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppManager;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionClass;
 
 /**
- * Covers the language-selector logic of PageRenderer. Locale precedence
- * itself is resolved by LocaleResolver (see LocaleResolverTest) and shared
- * through AppManager.
+ * Covers the language-selector and branding-asset logic of PageRenderer.
+ * Locale precedence itself is resolved by LocaleResolver (see
+ * LocaleResolverTest) and shared through AppManager.
  */
 class PageRendererTest extends TestCase
 {
-    private function makeRenderer(array $supportedLocales, string $interfaceLocale = 'en_EN'): PageRenderer
+    private function makeRenderer(array $supportedLocales, string $interfaceLocale = 'en_EN', array $interfaceConfig = []): PageRenderer
     {
         $app = $this->createMock(AppManager::class);
         $app->method('getSupportedLocales')->willReturn($supportedLocales);
         $app->method('getInterfaceLocale')->willReturn($interfaceLocale);
 
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null): mixed => $group === 'interface'
+                ? ($interfaceConfig[$key] ?? $default)
+                : $default
+        );
+
         return new PageRenderer(
             $app,
-            $this->createMock(ConfigurationManager::class),
+            $config,
             $this->createMock(CsrfTokenService::class),
             $this->createMock(UserContextService::class),
             fn(string $permission): bool => false,
             fn() => []
         );
+    }
+
+    private function brandingUrl(string $configured, string $baseUrlPrefix): string
+    {
+        $renderer = $this->makeRenderer(['en_EN'], 'en_EN', ['favicon_path' => $configured]);
+
+        return (new ReflectionClass(PageRenderer::class))
+            ->getMethod('brandingUrl')
+            ->invoke($renderer, 'favicon_path', '/favicon.ico', $baseUrlPrefix);
     }
 
     public function testSingleEnabledLanguageHidesSelector(): void
@@ -81,5 +99,27 @@ class PageRendererTest extends TestCase
 
         $this->assertSame('de_DE', $renderer->resolveActiveLocale());
         $this->assertSame('de_DE', $renderer->languageVars()['current_language']);
+    }
+
+    public static function brandingUrlProvider(): array
+    {
+        return [
+            'unset falls back to the bundled asset' => ['', '', '/favicon.ico'],
+            'unset keeps the subfolder prefix' => ['', '/poweradmin', '/poweradmin/favicon.ico'],
+            'absolute url is used as-is' => ['https://cdn.example.com/brand.ico', '', 'https://cdn.example.com/brand.ico'],
+            'absolute url ignores the prefix' => ['https://cdn.example.com/brand.ico', '/poweradmin', 'https://cdn.example.com/brand.ico'],
+            'protocol-relative url is used as-is' => ['//cdn.example.com/brand.ico', '', '//cdn.example.com/brand.ico'],
+            'protocol-relative url ignores the prefix' => ['//cdn.example.com/brand.ico', '/poweradmin', '//cdn.example.com/brand.ico'],
+            'relative path gains a leading slash' => ['custom/brand.ico', '', '/custom/brand.ico'],
+            'relative path gains the prefix' => ['custom/brand.ico', '/poweradmin', '/poweradmin/custom/brand.ico'],
+            'site-absolute path is left alone' => ['/custom/brand.ico', '', '/custom/brand.ico'],
+            'site-absolute path is served from the subfolder' => ['/custom/brand.ico', '/poweradmin', '/poweradmin/custom/brand.ico'],
+        ];
+    }
+
+    #[DataProvider('brandingUrlProvider')]
+    public function testBrandingUrlResolvesConfiguredAssets(string $configured, string $baseUrlPrefix, string $expected): void
+    {
+        $this->assertSame($expected, $this->brandingUrl($configured, $baseUrlPrefix));
     }
 }
