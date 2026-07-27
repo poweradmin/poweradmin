@@ -55,7 +55,7 @@ services:
 
   # Nginx webserver (MySQL) - Port 8080
   webserver:
-    image: nginx:latest
+    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
     container_name: web-mysql
     networks:
       - internal
@@ -88,7 +88,7 @@ services:
 
   # Caddy webserver (SQLite) - Port 8082
   caddy:
-    image: caddy:2-alpine
+    image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
     container_name: web-sqlite
     networks:
       - internal
@@ -155,7 +155,7 @@ services:
       retries: 3
 
   sqlite:
-    image: keinos/sqlite3
+    image: keinos/sqlite3@sha256:a5610a155a8c9007f2050120406a0abcffab246570d6ac1ffe370f5f23e14dc1
     container_name: sqlite
     user: "0:0"
     networks:
@@ -222,7 +222,7 @@ services:
   # =============================================================================
 
   adminer:
-    image: adminer
+    image: adminer@sha256:494d4a9461105644222c938679fe58d5e3fd13fb228c76a426e81c16d4ffbaef
     container_name: adminer
     networks:
       - internal
@@ -237,7 +237,7 @@ services:
   # =============================================================================
 
   ldap:
-    image: osixia/openldap:1.5.0
+    image: osixia/openldap:1.5.0@sha256:18742e9c449c9c1afe129d3f2f3ee15fb34cc43e5f940a20f3399728f41d7c28
     container_name: ldap
     networks:
       - internal
@@ -259,7 +259,7 @@ services:
       start_period: 10s
 
   ldapadmin:
-    image: osixia/phpldapadmin:0.9.0
+    image: osixia/phpldapadmin:0.9.0@sha256:d112b82be1336f91e028b0348755133fda333992355b533419355a65c32ff9ad
     container_name: ldapadmin
     networks:
       - internal
