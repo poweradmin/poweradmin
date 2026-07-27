@@ -276,6 +276,12 @@ class SessionAuthenticator extends LoggingService
 
     private function checkMfaEnforcementRequirements(): void
     {
+        // isMfaSetupRequired() short-circuits on this same flag, so returning here is
+        // equivalent and keeps the service graph and the user lookup off every request
+        if (!$this->configManager->get('security', 'mfa.enabled', false)) {
+            return;
+        }
+
         $userContextService = new UserContextService();
 
         // Only check if user is authenticated
