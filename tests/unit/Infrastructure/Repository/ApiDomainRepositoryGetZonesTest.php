@@ -48,6 +48,19 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $this->config->initialize();
     }
 
+    /**
+     * Config stub where one group/key pair reads true and everything else
+     * falls back to the caller's default.
+     */
+    private function configWith(?string $trueGroup = null, ?string $trueKey = null): ConfigurationManager
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null) => ($group === $trueGroup && $key === $trueKey) ? true : $default
+        );
+        return $config;
+    }
+
     #[Test]
     public function getZonesExposesNotifyStateForNotifyingZones(): void
     {
@@ -187,10 +200,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesMapsSignedSerialWhenSettingEnabled(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === 'interface' && $key === 'display_signed_serial_in_zone_list') ? true : $default
-        );
+        $config = $this->configWith('interface', 'display_signed_serial_in_zone_list');
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('getZones')->willReturn([
@@ -313,10 +323,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     {
         // dnssec.enabled off and the signed-serial column off, so PowerDNS must
         // not be asked to compute DNSSEC state for every zone
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => $default
-        );
+        $config = $this->configWith();
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->expects($this->once())->method('getZones')->with(false)->willReturn([
@@ -334,10 +341,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     public function getZonesRequestsDnssecWhenTheDnssecColumnIsOn(): void
     {
         // Getting this gate wrong silently blanks the DNSSEC column
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === 'dnssec' && $key === 'enabled') ? true : $default
-        );
+        $config = $this->configWith('dnssec', 'enabled');
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->expects($this->once())->method('getZones')->with(true)->willReturn([
@@ -356,10 +360,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesRequestsDnssecWhenSignedSerialColumnIsOn(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === 'interface' && $key === 'display_signed_serial_in_zone_list') ? true : $default
-        );
+        $config = $this->configWith('interface', 'display_signed_serial_in_zone_list');
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->expects($this->once())->method('getZones')->with(true)->willReturn([

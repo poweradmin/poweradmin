@@ -452,7 +452,7 @@ class PowerdnsApiClientTest extends TestCase
             ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrset_name=example.com.&rrset_type=SOA')
             ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
 
-        $this->apiClient->getZone('example.com.', true, 'example.com.', 'SOA');
+        $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
     }
 
     public function testGetZoneCombinesRrsetsFalseWithTheRrsetFilter(): void
@@ -463,7 +463,7 @@ class PowerdnsApiClientTest extends TestCase
             ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false&rrset_name=www.example.com.')
             ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.']]);
 
-        $this->apiClient->getZone('example.com.', false, 'www.example.com.');
+        $this->apiClient->getZone('example.com.', false, ['rrset_name' => 'www.example.com.']);
     }
 
     public function testGetAllZonesOmitsDnssecFlagByDefault(): void

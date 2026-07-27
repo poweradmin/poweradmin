@@ -1299,7 +1299,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         // SLAVE zones receive records via AXFR; absent local SOA is normal,
         // and we must not waste an API call to verify that.
-        $this->mockClient->expects($this->never())->method('getZone');
+        $this->mockClient->expects($this->never())->method('getZoneRrset');
 
         $result = $this->provider->getZoneSoaHealth('slave.example.com', 'SLAVE');
 
@@ -1309,7 +1309,7 @@ class ApiDnsBackendProviderTest extends TestCase
     public function testGetZoneSoaHealthReportsDisabledWhenSoaRecordHasDisabledFlag(): void
     {
         $this->mockClient->expects($this->once())
-            ->method('getZone')
+            ->method('getZoneRrset')
             ->with('disabled.example.com.')
             ->willReturn([
                 'name' => 'disabled.example.com.',
@@ -1333,7 +1333,7 @@ class ApiDnsBackendProviderTest extends TestCase
     public function testGetZoneSoaHealthReportsMissingSoaWhenZoneHasNoSoaRrset(): void
     {
         $this->mockClient->expects($this->once())
-            ->method('getZone')
+            ->method('getZoneRrset')
             ->with('broken.example.com.')
             ->willReturn([
                 'name' => 'broken.example.com.',
@@ -1350,7 +1350,7 @@ class ApiDnsBackendProviderTest extends TestCase
     public function testGetZoneSoaHealthHealthyZoneReturnsBothFalse(): void
     {
         $this->mockClient->expects($this->once())
-            ->method('getZone')
+            ->method('getZoneRrset')
             ->with('healthy.example.com.')
             ->willReturn([
                 'name' => 'healthy.example.com.',
@@ -1375,8 +1375,8 @@ class ApiDnsBackendProviderTest extends TestCase
         // Downloading the whole zone body to read one flag is what made large
         // zone lists slow (#1387)
         $this->mockClient->expects($this->once())
-            ->method('getZone')
-            ->with('healthy.example.com.', true, 'healthy.example.com.', 'SOA')
+            ->method('getZoneRrset')
+            ->with('healthy.example.com.', 'healthy.example.com.', 'SOA')
             ->willReturn([
                 'name' => 'healthy.example.com.',
                 'kind' => 'Master',
@@ -1401,7 +1401,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // PowerDNS below 4.7 does not know rrset_name and returns the whole
         // zone; the scan must still find the apex SOA among the other RRsets.
         $this->mockClient->expects($this->once())
-            ->method('getZone')
+            ->method('getZoneRrset')
             ->willReturn([
                 'name' => 'legacy.example.com.',
                 'kind' => 'Master',
@@ -1427,7 +1427,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         // On 4.7+ a zone with no apex SOA comes back with an empty rrsets array
         $this->mockClient->expects($this->once())
-            ->method('getZone')
+            ->method('getZoneRrset')
             ->willReturn(['name' => 'empty.example.com.', 'kind' => 'Master', 'rrsets' => []]);
 
         $result = $this->provider->getZoneSoaHealth('empty.example.com', 'MASTER');
@@ -1440,7 +1440,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Caller's local cache says MASTER, but PowerDNS reports SLAVE - we must
         // not flag a legitimate SLAVE as "No SOA" just because the caller's
         // syncIfStale() window hasn't refreshed yet.
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->willReturn(['kind' => 'Slave', 'rrsets' => []]);
 
         $result = $this->provider->getZoneSoaHealth('reverse.example.com', 'MASTER');
@@ -1452,7 +1452,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         // A stray SOA at sub.example.com. doesn't make example.com. authoritative,
         // and a disabled SOA there shouldn't disable the parent zone either.
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->willReturn([
                 'rrsets' => [
                     [
@@ -1473,7 +1473,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // PowerDNS rrsets normally hold one SOA, but malformed/imported zones
         // can have multiples. Mirror the SQL backend: any disabled SOA at the
         // apex disables the zone, regardless of which record appears first.
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->willReturn([
                 'rrsets' => [
                     [
@@ -1497,7 +1497,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // null signals the caller (sync, refreshZoneSoaCache) to leave the
         // existing cached flags alone - clobbering them would clear a real
         // Disabled / No SOA badge until a later sync recovers.
-        $this->mockClient->method('getZone')->willReturn(null);
+        $this->mockClient->method('getZoneRrset')->willReturn(null);
 
         $result = $this->provider->getZoneSoaHealth('unreachable.example.com', 'MASTER');
 

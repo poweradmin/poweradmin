@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -34,7 +33,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Orchestration service for DNS data reads.
@@ -328,8 +326,10 @@ class DnsDataService
             return $zoneSearch->getTotalZones($parameters, $permissionView);
         }
 
-        // API mode: get all matching zones (unpaginated) and count
-        $allZones = $this->searchZonesApi($parameters, $permissionView, 'name', 'ASC', PHP_INT_MAX, false, 1);
+        // API mode: get all matching zones (unpaginated) and count. This one is
+        // deliberately unpaginated, so record counts must stay off - they would
+        // cost an API call per matched zone only to be discarded.
+        $allZones = $this->searchZonesApi($parameters, $permissionView, 'name', 'ASC', PHP_INT_MAX, false, 1, false);
         return count($allZones);
     }
 
@@ -508,7 +508,7 @@ class DnsDataService
      * PowerDNS's /zones list response carries no record count - so it costs one
      * call per zone and must only be given the zones on the current page.
      *
-     * @param array<int, array{id?: int, name?: string}> $zones
+     * @param array<int, array{id?: int}> $zones
      * @return array<int, int> zone ID => record count
      */
     private function batchCountZoneRecords(array $zones): array
@@ -652,7 +652,8 @@ class DnsDataService
         string $sortDirection,
         int $rowAmount,
         bool $includeComments,
-        int $page
+        int $page,
+        bool $includeRecordCount = true
     ): array {
         $query = $parameters['query'] ?? '';
         if (empty($query) || !$parameters['zones']) {
@@ -726,7 +727,9 @@ class DnsDataService
 
         // After paging so the per-zone API calls scale with the page, not the
         // whole result set
-        $this->enrichWithRecordCounts($zones);
+        if ($includeRecordCount) {
+            $this->enrichWithRecordCounts($zones);
+        }
 
         // Format to match template shape
         $result = [];

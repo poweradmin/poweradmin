@@ -156,7 +156,9 @@ class DbZoneLogger
         $backendProvider = $this->backendProvider ?? DnsBackendProviderFactory::create($this->db, $this->config);
         $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
         $domainRepository = $repositoryFactory->createDomainRepository();
-        $zones = $domainRepository->getZones('all', 0, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false);
+        // Only zone names are read here, and this runs unpaginated, so neither
+        // health badges nor record counts may trigger their per-zone lookups
+        $zones = $domainRepository->getZones('all', 0, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
         foreach ($zones as $zone) {
             if (str_contains($zone['name'], $domain_searched)) {
                 return true;

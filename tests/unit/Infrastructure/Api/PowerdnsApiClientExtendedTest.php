@@ -78,8 +78,8 @@ class PowerdnsApiClientExtendedTest extends TestCase
             ->willReturn([
                 'responseCode' => 200,
                 'data' => [
-                    ['name' => 'signed.com.', 'rrset_count' => 5, 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
-                    ['name' => 'legacy.com.', 'rrset_count' => 3, 'dnssec' => false, 'serial' => 2024010101],
+                    ['name' => 'signed.com.', 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+                    ['name' => 'legacy.com.', 'dnssec' => false, 'serial' => 2024010101],
                 ],
             ]);
 

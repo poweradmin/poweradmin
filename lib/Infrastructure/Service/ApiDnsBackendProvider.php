@@ -853,7 +853,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // before 4.7 ignores the filter and returns the whole zone, which the
         // scan below handles either way.
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName, true, $apiName, 'SOA');
+        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
         if ($zoneData === null) {
             return null;
         }

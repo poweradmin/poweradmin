@@ -139,8 +139,10 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
 
         // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
-        // for it when a column actually renders it
+        // for it when a column actually renders it. The zone list feeds the
+        // DNSSEC column; the stats call additionally feeds the signed serial.
         $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $iface_zonelist_signed_serial;
+        $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
         $syncService = new ZoneSyncService($this->db, $this->backendProvider);
@@ -192,7 +194,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         }
 
         $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial)
-            ? $this->backendProvider->getZoneStats($iface_zonelist_signed_serial)
+            ? $this->backendProvider->getZoneStats($needsEditedSerial)
             : [];
         $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
 

@@ -90,8 +90,7 @@ class SearchController extends BaseController
             || ($ownershipViewPermission === 'own' && Permission::getViewPermission($this->db) === 'own');
         // In API mode record counts are resolved per page, so sorting on them
         // would only order the rows already on screen
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        $isRecordCountSortSupported = !$isApiBackend;
+        $isRecordCountSortSupported = !DnsBackendProviderFactory::isApiBackend($this->getConfig());
         $allowedZoneSort = ['name', 'type'];
         if ($isRecordCountSortSupported) {
             $allowedZoneSort[] = 'count_records';

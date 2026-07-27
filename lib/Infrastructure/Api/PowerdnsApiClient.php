@@ -654,27 +654,32 @@ class PowerdnsApiClient
     // ---------------------------------------------------------------
 
     /**
+     * Fetch a single RRset from a zone instead of the whole zone body.
+     *
+     * PowerDNS below 4.7 does not know these filters, ignores them and returns
+     * the entire zone, so callers must still scan the RRsets they get back.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return array|null Zone data carrying the matching RRsets, or null if not found
+     */
+    public function getZoneRrset(string $zoneName, string $rrsetName, string $rrsetType): ?array
+    {
+        return $this->getZone($zoneName, true, ['rrset_name' => $rrsetName, 'rrset_type' => $rrsetType]);
+    }
+
+    /**
      * Get a single zone with its RRsets
      *
      * @param string $zoneName Zone name (with trailing dot)
      * @param bool $includeRrsets Set false to fetch zone metadata only (skips records on large zones)
-     * @param string|null $rrsetName Return only RRsets at this name (PowerDNS 4.7+; older servers ignore it and return the whole zone)
-     * @param string|null $rrsetType Narrow $rrsetName further to a single type
+     * @param array<string, string> $filters Extra query parameters, e.g. an RRset filter - prefer getZoneRrset()
      * @return array|null Zone data or null if not found
      */
-    public function getZone(string $zoneName, bool $includeRrsets = true, ?string $rrsetName = null, ?string $rrsetType = null): ?array
+    public function getZone(string $zoneName, bool $includeRrsets = true, array $filters = []): ?array
     {
         try {
-            $params = [];
-            if (!$includeRrsets) {
-                $params['rrsets'] = 'false';
-            }
-            if ($rrsetName !== null) {
-                $params['rrset_name'] = $rrsetName;
-                if ($rrsetType !== null) {
-                    $params['rrset_type'] = $rrsetType;
-                }
-            }
+            $params = $includeRrsets ? [] : ['rrsets' => 'false'];
+            $params += $filters;
             $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
             $endpoint = $this->buildZoneEndpoint($zoneName, $query === '' ? '' : '?' . $query);
             $response = $this->httpClient->makeRequest('GET', $endpoint);

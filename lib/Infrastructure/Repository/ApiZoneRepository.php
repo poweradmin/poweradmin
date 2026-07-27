@@ -208,7 +208,9 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
-                    'count_records' => $includeRecordCount ? $this->resolveRecordCount((int)$row['id']) : 0,
+                    // One API call per zone - the /zones list carries no record
+                    // count. Safe here because the query above is already paged.
+                    'count_records' => $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['id']) : 0,
                     'is_disabled' => $soaHealth['is_disabled'] ?? false,
                     'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                     'comment' => $row['comment'] ?? '',
@@ -246,19 +248,6 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $this->enrichZonesWithOwnership($zones);
 
         return $zones;
-    }
-
-    /**
-     * Resolve a zone's record count. PowerDNS's /zones list response carries no
-     * record count, so this costs one API call per zone - only ever called for
-     * the zones on the current page.
-     */
-    private function resolveRecordCount(int $zoneId): int
-    {
-        if ($zoneId <= 0) {
-            return 0;
-        }
-        return $this->backendProvider->countZoneRecords($zoneId);
     }
 
     /**
@@ -440,7 +429,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $this->resolveRecordCount((int)$row['id']),
+                    // One API call per zone - safe because the query above is paged
+                    'count_records' => $this->backendProvider->countZoneRecords((int)$row['id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
