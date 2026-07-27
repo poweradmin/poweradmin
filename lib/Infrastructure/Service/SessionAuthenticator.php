@@ -135,7 +135,8 @@ class SessionAuthenticator extends LoggingService
 
         // Logout is now handled by LogoutController via /logout route
 
-        $login_token = $_POST['_token'] ?? '';
+        // A posted _token[] arrives as an array, which validateToken() cannot accept
+        $login_token = is_string($_POST['_token'] ?? null) ? $_POST['_token'] : '';
         if (
             ($login_token_validation || $global_token_validation)
             && isset($_POST['authenticate'])

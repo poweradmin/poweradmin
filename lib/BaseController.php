@@ -729,7 +729,13 @@ abstract class BaseController
             return '';
         }
 
-        return htmlspecialchars($this->requestData[$key], ENT_QUOTES);
+        // Any key can arrive as an array (?id[]=1), which htmlspecialchars rejects
+        $value = $this->requestData[$key];
+        if (!is_scalar($value)) {
+            return '';
+        }
+
+        return htmlspecialchars((string)$value, ENT_QUOTES);
     }
 
     /**
