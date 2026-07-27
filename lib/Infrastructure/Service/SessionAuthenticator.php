@@ -56,11 +56,9 @@ class SessionAuthenticator extends LoggingService
     private AuthenticationService $authService;
     private PDO $db;
     private ConfigurationManager $configManager;
-    private UserEventLogger $userEventLogger;
-    private LdapUserEventLogger $ldapUserEventLogger;
     private CsrfTokenService $csrfTokenService;
-    private LdapAuthenticator $ldapAuthenticator;
-    private SqlAuthenticator $sqlAuthenticator;
+    private ?LdapAuthenticator $ldapAuthenticator = null;
+    private ?SqlAuthenticator $sqlAuthenticator = null;
     private LoginAttemptService $loginAttemptService;
     private RecaptchaService $recaptchaService;
     private RedirectService $redirectService;
@@ -79,27 +77,38 @@ class SessionAuthenticator extends LoggingService
         $this->authService = new AuthenticationService($sessionService, $this->redirectService);
         $this->csrfTokenService = new CsrfTokenService();
 
-        $this->userEventLogger = new UserEventLogger($connection);
-        $this->ldapUserEventLogger = new LdapUserEventLogger($connection);
-
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
         $this->recaptchaService = new RecaptchaService($configManager);
+    }
 
-        $userContextService = new UserContextService();
-        $this->ldapAuthenticator = new LdapAuthenticator(
-            $connection,
-            $configManager,
-            $this->ldapUserEventLogger,
+    /**
+     * Builds the LDAP authenticator on first use, so installations without LDAP
+     * never construct it or its MFA graph.
+     */
+    private function ldapAuthenticator(): LdapAuthenticator
+    {
+        return $this->ldapAuthenticator ??= new LdapAuthenticator(
+            $this->db,
+            $this->configManager,
+            new LdapUserEventLogger($this->db),
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
             $this->loginAttemptService,
-            $userContextService
+            new UserContextService()
         );
-        $this->sqlAuthenticator = new SqlAuthenticator(
-            $connection,
-            $configManager,
-            $this->userEventLogger,
+    }
+
+    /**
+     * Builds the SQL authenticator on first use, so LDAP, OIDC, and SAML sessions
+     * skip it entirely.
+     */
+    private function sqlAuthenticator(): SqlAuthenticator
+    {
+        return $this->sqlAuthenticator ??= new SqlAuthenticator(
+            $this->db,
+            $this->configManager,
+            new UserEventLogger($this->db),
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
@@ -216,7 +225,7 @@ class SessionAuthenticator extends LoggingService
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
                     $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
-                    $this->ldapAuthenticator->authenticate();
+                    $this->ldapAuthenticator()->authenticate();
                 } else {
                     $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
@@ -228,7 +237,7 @@ class SessionAuthenticator extends LoggingService
                 if (isset($_SESSION[SessionKeys::USERLOGIN])) {
                     $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 }
-                $this->sqlAuthenticator->authenticate();
+                $this->sqlAuthenticator()->authenticate();
                 break;
         }
 
