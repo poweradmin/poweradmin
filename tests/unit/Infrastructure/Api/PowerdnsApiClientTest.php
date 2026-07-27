@@ -430,4 +430,100 @@ class PowerdnsApiClientTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testGetZoneRequestsTheWholeZoneByDefault(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.']]);
+
+        $this->apiClient->getZone('example.com.');
+    }
+
+    public function testGetZoneCanNarrowToASingleRrset(): void
+    {
+        // Lets the SOA-health probe read one RRset instead of downloading the
+        // whole zone. PowerDNS below 4.7 ignores these and returns everything.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrset_name=example.com.&rrset_type=SOA')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
+
+        $this->apiClient->getZone('example.com.', true, 'example.com.', 'SOA');
+    }
+
+    public function testGetZoneCombinesRrsetsFalseWithTheRrsetFilter(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false&rrset_name=www.example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.']]);
+
+        $this->apiClient->getZone('example.com.', false, 'www.example.com.');
+    }
+
+    public function testGetAllZonesOmitsDnssecFlagByDefault(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZones();
+    }
+
+    public function testGetAllZonesCanSkipDnssecLookup(): void
+    {
+        // PowerDNS then skips a DNSSEC-keeper lookup per zone
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZones(false);
+    }
+
+    public function testGetAllZoneStatsCanSkipDnssecLookup(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZoneStats(false);
+    }
+
+    public function testGetAllZoneKindsNeverPaysForTheDnssecLookup(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZoneKinds();
+    }
+
+    public function testGetAllZoneStatsReportsNoRecordCount(): void
+    {
+        // PowerDNS's zone list carries no record count - callers must not expect one
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'example.com.', 'dnssec' => true, 'serial' => 5, 'edited_serial' => 6, 'notified_serial' => 4],
+            ]]);
+
+        $stats = $this->apiClient->getAllZoneStats();
+
+        $this->assertArrayNotHasKey('rrset_count', $stats['example.com.']);
+        $this->assertSame(5, $stats['example.com.']['serial']);
+        $this->assertTrue($stats['example.com.']['dnssec']);
+    }
 }

@@ -81,10 +81,14 @@
                         </th>
                         {% if iface_zonelist_record_count %}
                         <th>
+                            {% if is_record_count_sort_supported %}
                             <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
+                            {% else %}
+                            {% trans %}Records{% endtrans %}
+                            {% endif %}
                         </th>
                         {% endif %}
                         {% if show_owner_column %}

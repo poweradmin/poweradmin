@@ -1370,6 +1370,71 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
     }
 
+    public function testGetZoneSoaHealthAsksPowerdnsForOnlyTheApexSoaRrset(): void
+    {
+        // Downloading the whole zone body to read one flag is what made large
+        // zone lists slow (#1387)
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->with('healthy.example.com.', true, 'healthy.example.com.', 'SOA')
+            ->willReturn([
+                'name' => 'healthy.example.com.',
+                'kind' => 'Master',
+                'rrsets' => [
+                    [
+                        'name' => 'healthy.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('healthy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthStillWorksWhenServerIgnoresTheRrsetFilter(): void
+    {
+        // PowerDNS below 4.7 does not know rrset_name and returns the whole
+        // zone; the scan must still find the apex SOA among the other RRsets.
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->willReturn([
+                'name' => 'legacy.example.com.',
+                'kind' => 'Master',
+                'rrsets' => [
+                    ['name' => 'legacy.example.com.', 'type' => 'NS', 'records' => [['content' => 'ns1.', 'disabled' => false]]],
+                    ['name' => 'www.legacy.example.com.', 'type' => 'A', 'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+                    [
+                        'name' => 'legacy.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => true],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('legacy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => true, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsMissingSoaWhenFilteredResponseIsEmpty(): void
+    {
+        // On 4.7+ a zone with no apex SOA comes back with an empty rrsets array
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->willReturn(['name' => 'empty.example.com.', 'kind' => 'Master', 'rrsets' => []]);
+
+        $result = $this->provider->getZoneSoaHealth('empty.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => true], $result);
+    }
+
     public function testGetZoneSoaHealthRespectsAuthoritativeApiKindOverStaleCallerHint(): void
     {
         // Caller's local cache says MASTER, but PowerDNS reports SLAVE - we must

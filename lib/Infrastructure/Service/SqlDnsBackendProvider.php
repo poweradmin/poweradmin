@@ -403,7 +403,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
-    public function getZoneStats(): array
+    public function getZoneStats(bool $withDnssec = true): array
     {
         return [];
     }
@@ -517,7 +517,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // Zone list operations
     // ---------------------------------------------------------------
 
-    public function getZones(): array
+    public function getZones(bool $withDnssec = true): array
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);

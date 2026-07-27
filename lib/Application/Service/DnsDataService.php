@@ -383,129 +383,8 @@ class DnsDataService
     }
 
     // ---------------------------------------------------------------
-    // Private: API-mode zone fetching
-    // ---------------------------------------------------------------
-
-    /**
-     * Fetch zones from API backend with enrichment, filtering, sorting, pagination.
-     */
-    private function getZonesFromApi(
-        string $perm,
-        int $userId,
-        string $letterStart,
-        int $offset,
-        int $limit,
-        string $sortBy,
-        string $sortDirection,
-        bool $showSerial,
-        bool $showTemplate,
-        string $zoneType,
-        string $reverseType = 'all'
-    ): array {
-        // Sync local zones table with PowerDNS API before listing
-        $this->zoneSyncService?->syncIfStale();
-
-        $allZones = $this->backendProvider->getZones();
-
-        // Filter by zone type (forward/reverse)
-        $allZones = $this->filterZonesByType($allZones, $zoneType, $reverseType);
-
-        // Enrich with Poweradmin metadata (ownership, comments, record counts, DNSSEC)
-        $allZones = $this->enrichZonesWithOwnership($allZones);
-
-        // Filter by permission
-        if ($perm === 'own') {
-            $allZones = $this->filterZonesByOwnership($allZones, $userId);
-        } elseif ($perm !== 'all') {
-            return [];
-        }
-
-        // Apply letter filter (forward zones only)
-        if ($zoneType === 'forward' && $letterStart !== 'all') {
-            $allZones = ResultPaginator::filterByLetter($allZones, $letterStart, 'name');
-        }
-
-        // Map sortBy to match data keys
-        $apiSortBy = $sortBy;
-        if ($sortBy === 'owner') {
-            $apiSortBy = 'owner_username';
-        }
-
-        // Sort
-        $allZones = ResultPaginator::sort($allZones, $apiSortBy, $sortDirection);
-
-        // Paginate
-        $paginatedZones = ResultPaginator::paginate($allZones, $offset, $limit);
-
-        // Enrich with serial and template if requested
-        if ($showSerial) {
-            $this->enrichZonesWithSerial($paginatedZones);
-        }
-        if ($showTemplate) {
-            $this->enrichZonesWithTemplate($paginatedZones);
-        }
-
-        // Convert to expected output shape (keyed by domain name)
-        $result = [];
-        foreach ($paginatedZones as $zone) {
-            $name = $zone['name'];
-            $utf8Name = DnsIdnService::toUtf8($name);
-
-            $result[$name] = [
-                'id' => $zone['id'] ?? 0,
-                'name' => $name,
-                'utf8_name' => $utf8Name,
-                'type' => $zone['type'] ?? 'NATIVE',
-                'count_records' => $zone['count_records'] ?? 0,
-                'comment' => $zone['comment'] ?? '',
-                'secured' => $zone['dnssec'] ?? false,
-                'owners' => $zone['owners'] ?? [],
-                'full_names' => $zone['full_names'] ?? [],
-                'users' => $zone['owners'] ?? [],
-            ];
-
-            if ($showSerial) {
-                $result[$name]['serial'] = $zone['serial'] ?? '';
-            }
-            if ($showTemplate) {
-                $result[$name]['template'] = $zone['template'] ?? '';
-            }
-        }
-
-        return $result;
-    }
-
-    // ---------------------------------------------------------------
     // Private: Zone filtering
     // ---------------------------------------------------------------
-
-    /**
-     * Filter zones by forward/reverse type.
-     */
-    private function filterZonesByType(array $zones, string $zoneType, string $reverseType = 'all'): array
-    {
-        if ($zoneType === 'forward') {
-            return array_values(array_filter($zones, function ($zone) {
-                return !DnsHelper::isReverseZoneName($zone['name'] ?? '');
-            }));
-        }
-
-        if ($zoneType === 'reverse') {
-            $filtered = array_filter($zones, function ($zone) use ($reverseType) {
-                $name = $zone['name'] ?? '';
-                if ($reverseType === 'ipv4') {
-                    return str_ends_with($name, '.in-addr.arpa');
-                }
-                if ($reverseType === 'ipv6') {
-                    return str_ends_with($name, '.ip6.arpa');
-                }
-                return DnsHelper::isReverseZoneName($name);
-            });
-            return array_values($filtered);
-        }
-
-        return $zones;
-    }
 
     /**
      * Filter zones to only those owned by a user (direct or group ownership).
@@ -560,7 +439,7 @@ class DnsDataService
     // ---------------------------------------------------------------
 
     /**
-     * Enrich zones with Poweradmin ownership, comments, and record counts.
+     * Enrich zones with Poweradmin ownership and comments.
      */
     private function enrichZonesWithOwnership(array $zones): array
     {
@@ -607,21 +486,27 @@ class DnsDataService
         }
         unset($zone);
 
-        // Enrich with record counts from the records table
+        return $zones;
+    }
+
+    /**
+     * Fill in record counts. Costs one API call per zone in API mode, so only
+     * ever call this with the zones on the current page.
+     */
+    private function enrichWithRecordCounts(array &$zones): void
+    {
         $recordCounts = $this->batchCountZoneRecords($zones);
         foreach ($zones as &$zone) {
             $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
         }
         unset($zone);
-
-        return $zones;
     }
 
     /**
      * Batch count records for multiple zones.
-     * SQL backend uses a single query. API backend uses one /zones stats call
-     * (getZoneStats) instead of a per-zone zone-body fetch, falling back to a
-     * per-zone call only when PowerDNS omits rrset_count (pre-4.4) or reports 0.
+     * SQL backend uses a single query. The API backend has no bulk equivalent -
+     * PowerDNS's /zones list response carries no record count - so it costs one
+     * call per zone and must only be given the zones on the current page.
      *
      * @param array<int, array{id?: int, name?: string}> $zones
      * @return array<int, int> zone ID => record count
@@ -629,19 +514,13 @@ class DnsDataService
     private function batchCountZoneRecords(array $zones): array
     {
         if ($this->backendProvider->isApiBackend()) {
-            $stats = $this->backendProvider->getZoneStats();
             $counts = [];
             foreach ($zones as $zone) {
                 $id = (int)($zone['id'] ?? 0);
                 if ($id <= 0) {
                     continue;
                 }
-                $apiName = rtrim((string)($zone['name'] ?? ''), '.') . '.';
-                $count = (int)($stats[$apiName]['rrset_count'] ?? 0);
-                if ($count === 0) {
-                    $count = $this->backendProvider->countZoneRecords($id);
-                }
-                $counts[$id] = $count;
+                $counts[$id] = $this->backendProvider->countZoneRecords($id);
             }
             return $counts;
         }
@@ -665,36 +544,6 @@ class DnsDataService
             $counts[(int)$row['domain_id']] = (int)$row['count_records'];
         }
         return $counts;
-    }
-
-    /**
-     * Enrich zones with SOA serial numbers.
-     */
-    private function enrichZonesWithSerial(array &$zones): void
-    {
-        if (empty($zones)) {
-            return;
-        }
-
-        $recordRepository = $this->repositoryFactory->createRecordRepository();
-        $zoneIds = array_map(fn($zone) => $zone['id'] ?? 0, $zones);
-        $serials = $recordRepository->getSerialsByZoneIds($zoneIds);
-
-        foreach ($zones as &$zone) {
-            $zone['serial'] = $serials[$zone['id'] ?? 0] ?? '';
-        }
-        unset($zone);
-    }
-
-    /**
-     * Enrich zones with template names.
-     */
-    private function enrichZonesWithTemplate(array &$zones): void
-    {
-        foreach ($zones as &$zone) {
-            $zone['template'] = ZoneTemplate::getZoneTemplName($this->db, $zone['id'] ?? 0);
-        }
-        unset($zone);
     }
 
     // ---------------------------------------------------------------
@@ -849,7 +698,7 @@ class DnsDataService
             }
         }
 
-        // Enrich with ownership, record counts
+        // Enrich with ownership
         $zones = $this->enrichZonesWithOwnership($zones);
 
         // Filter by permission
@@ -874,6 +723,10 @@ class DnsDataService
         // Paginate
         $offset = ($page - 1) * $rowAmount;
         $zones = ResultPaginator::paginate($zones, $offset, $rowAmount);
+
+        // After paging so the per-zone API calls scale with the page, not the
+        // whole result set
+        $this->enrichWithRecordCounts($zones);
 
         // Format to match template shape
         $result = [];

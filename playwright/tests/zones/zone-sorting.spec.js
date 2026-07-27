@@ -47,6 +47,8 @@ test.describe('Zone List Sorting', () => {
       expect(hasSortableOwnerHeader).toBeTruthy();
     });
 
+    // SQL backend only. In API mode record counts are resolved per page, so the
+    // column is plain text - see api-backend-zone-list.spec.js.
     test('should have sortable records count column', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');

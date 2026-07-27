@@ -648,9 +648,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $zoneId ?? 0;
     }
 
-    public function getZoneStats(): array
+    public function getZoneStats(bool $withDnssec = true): array
     {
-        return $this->client->getAllZoneStats();
+        return $this->client->getAllZoneStats($withDnssec);
     }
 
     public function countZoneRecords(int $domainId): int
@@ -749,11 +749,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // Zone list operations
     // ---------------------------------------------------------------
 
-    public function getZones(): array
+    public function getZones(bool $withDnssec = true): array
     {
         $statusService = new ApiStatusService();
         try {
-            $apiZones = $this->client->getAllZones();
+            $apiZones = $this->client->getAllZones($withDnssec);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
             $statusService->recordError($e->getMessage(), [
@@ -849,8 +849,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return ['is_disabled' => false, 'is_missing_soa' => false];
         }
 
+        // Only the apex SOA matters here, so ask for just that RRset. PowerDNS
+        // before 4.7 ignores the filter and returns the whole zone, which the
+        // scan below handles either way.
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName);
+        $zoneData = $this->client->getZone($apiName, true, $apiName, 'SOA');
         if ($zoneData === null) {
             return null;
         }

@@ -185,8 +185,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $zoneStats = $this->backendProvider->getZoneStats();
         $showSignedSerial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
+        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
+        // for it when a column actually renders it
+        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $showSignedSerial;
+        $zoneStats = $this->backendProvider->getZoneStats($needsDnssec);
         $zones = [];
         foreach ($results as $row) {
             $name = (string)$row['name'];
@@ -205,7 +208,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
-                    'count_records' => $includeRecordCount ? $this->resolveRecordCount($stats, (int)$row['id']) : 0,
+                    'count_records' => $includeRecordCount ? $this->resolveRecordCount((int)$row['id']) : 0,
                     'is_disabled' => $soaHealth['is_disabled'] ?? false,
                     'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                     'comment' => $row['comment'] ?? '',
@@ -246,17 +249,14 @@ class ApiZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Resolve a zone's record count, falling back to a per-zone API call when
-     * PowerDNS's /zones summary endpoint omits rrset_count (older versions
-     * such as 4.4.x) or returns 0.
-     *
-     * @param array<string, mixed> $stats Stats row from getZoneStats()
+     * Resolve a zone's record count. PowerDNS's /zones list response carries no
+     * record count, so this costs one API call per zone - only ever called for
+     * the zones on the current page.
      */
-    private function resolveRecordCount(array $stats, int $zoneId): int
+    private function resolveRecordCount(int $zoneId): int
     {
-        $count = (int)($stats['rrset_count'] ?? 0);
-        if ($count > 0 || $zoneId <= 0) {
-            return $count;
+        if ($zoneId <= 0) {
+            return 0;
         }
         return $this->backendProvider->countZoneRecords($zoneId);
     }
@@ -440,7 +440,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
+                    'count_records' => $this->resolveRecordCount((int)$row['id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],

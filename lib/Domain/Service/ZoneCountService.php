@@ -150,7 +150,8 @@ class ZoneCountService
 
     private function countZonesApi(string $perm, string $letterstart, string $zone_type): int
     {
-        $allZones = $this->backendProvider->getZones();
+        // Only names and ids are counted, so skip the DNSSEC lookup
+        $allZones = $this->backendProvider->getZones(false);
 
         // Filter by ownership
         if ($perm === 'own') {

@@ -99,7 +99,8 @@ class ZoneSyncService
         $apiStatusService = new ApiStatusService();
         $syncStartedAt = time();
 
-        $apiZones = $this->backendProvider->getZones();
+        // Only name/kind/master are mirrored, so skip the DNSSEC lookup
+        $apiZones = $this->backendProvider->getZones(false);
 
         // getZones() swallows API errors; if one was recorded during this call,
         // fail the sync so manual callers see it and the throttle stays open.

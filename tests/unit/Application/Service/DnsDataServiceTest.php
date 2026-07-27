@@ -262,7 +262,7 @@ class DnsDataServiceTest extends TestCase
     // batchCountZoneRecords() - API mode N+1 regression (#1178)
     // ---------------------------------------------------------------
 
-    public function testApiRecordCountsUseSingleStatsCallNotPerZone(): void
+    public function testApiRecordCountsAreFetchedPerZoneWithoutBulkStatsCall(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
         $this->mockBackend->method('searchDnsData')->willReturn([
@@ -274,16 +274,12 @@ class DnsDataServiceTest extends TestCase
             'records' => [],
         ]);
 
-        // getZoneStats() must be hit exactly once for the whole list, and the
-        // slow per-zone fallback must never run when rrset_count is present.
-        $this->mockBackend->expects($this->once())
-            ->method('getZoneStats')
-            ->willReturn([
-                'one.example.com.' => ['rrset_count' => 5, 'dnssec' => false, 'serial' => 1],
-                'two.example.com.' => ['rrset_count' => 9, 'dnssec' => false, 'serial' => 1],
-                'three.example.com.' => ['rrset_count' => 2, 'dnssec' => false, 'serial' => 1],
-            ]);
-        $this->mockBackend->expects($this->never())->method('countZoneRecords');
+        // PowerDNS's zone list carries no record count, so getZoneStats() is of
+        // no use here and each count costs its own call.
+        $this->mockBackend->expects($this->never())->method('getZoneStats');
+        $this->mockBackend->expects($this->exactly(3))
+            ->method('countZoneRecords')
+            ->willReturnMap([[1, 5], [2, 9], [3, 2]]);
 
         $mockStmt = $this->createMock(\PDOStatement::class);
         $mockStmt->method('fetch')->willReturn(false);
@@ -304,23 +300,25 @@ class DnsDataServiceTest extends TestCase
         $this->assertSame(2, $byName['three.example.com']);
     }
 
-    public function testApiRecordCountFallsBackToPerZoneCallWhenStatsMissing(): void
+    public function testApiRecordCountsOnlyFetchedForZonesOnTheCurrentPage(): void
     {
-        $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('searchDnsData')->willReturn([
-            'zones' => [
-                ['id' => 7, 'name' => 'legacy.example.com', 'type' => 'NATIVE'],
-            ],
-            'records' => [],
-        ]);
+        // Regression for #1387: counting every matched zone instead of just the
+        // visible page turned a large result set into hundreds of API calls.
+        $zones = [];
+        for ($i = 1; $i <= 30; $i++) {
+            $zones[] = ['id' => $i, 'name' => sprintf('zone%02d.example.com', $i), 'type' => 'NATIVE'];
+        }
 
-        // Pre-4.4 PowerDNS omits rrset_count, so a single zone with no stats
-        // is allowed one fallback fetch.
-        $this->mockBackend->expects($this->once())->method('getZoneStats')->willReturn([]);
-        $this->mockBackend->expects($this->once())
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('searchDnsData')->willReturn(['zones' => $zones, 'records' => []]);
+
+        $counted = [];
+        $this->mockBackend->expects($this->exactly(10))
             ->method('countZoneRecords')
-            ->with(7)
-            ->willReturn(42);
+            ->willReturnCallback(function (int $id) use (&$counted): int {
+                $counted[] = $id;
+                return $id;
+            });
 
         $mockStmt = $this->createMock(\PDOStatement::class);
         $mockStmt->method('fetch')->willReturn(false);
@@ -328,11 +326,13 @@ class DnsDataServiceTest extends TestCase
         $this->mockDb->method('query')->willReturn($mockStmt);
         $this->mockDb->method('prepare')->willReturn($mockStmt);
 
-        $parameters = ['query' => 'legacy', 'zones' => true, 'records' => false];
+        $parameters = ['query' => 'example', 'zones' => true, 'records' => false];
         $service = $this->createService();
         $result = $service->searchZones($parameters, 'all', 'name', 'ASC', 10, false, 1);
 
-        $this->assertSame(42, $result[0]['count_records']);
+        $this->assertCount(10, $result);
+        sort($counted);
+        $this->assertSame(range(1, 10), $counted, 'only the first page may be counted');
     }
 
     public function testSearchRecordsApiModeWithTypeFilter(): void

@@ -186,8 +186,12 @@ class ListForwardZonesController extends BaseController
         $isOwnerSortSupported = $showOwnerColumn && $ownershipSortAllowed;
         $isGroupSortSupported = $showGroupColumn && !$isApiBackend && $ownershipSortAllowed;
 
+        // In API mode record counts are resolved per page, so sorting on them
+        // would only order the rows already on screen
+        $isRecordCountSortSupported = $iface_zonelist_record_count && !$isApiBackend;
+
         $allowedSort = ['name', 'type'];
-        if ($iface_zonelist_record_count) {
+        if ($isRecordCountSortSupported) {
             $allowedSort[] = 'count_records';
         }
         if ($isOwnerSortSupported) {
@@ -294,6 +298,7 @@ class ListForwardZonesController extends BaseController
             'iface_zonelist_signed_serial' => $iface_zonelist_signed_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_record_count' => $iface_zonelist_record_count,
+            'is_record_count_sort_supported' => $isRecordCountSortSupported,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'show_owner_column' => $showOwnerColumn,
             'show_group_column' => $showGroupColumn,

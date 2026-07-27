@@ -118,13 +118,24 @@ class PowerdnsApiClient
     }
 
     /**
+     * Build the zone list endpoint. Passing $withDnssec = false makes PowerDNS
+     * skip a DNSSEC-keeper lookup and SOA-EDIT serial calculation per zone,
+     * which matters on servers with many zones (PowerDNS 4.3+).
+     */
+    private function buildZoneListEndpoint(bool $withDnssec): string
+    {
+        return $this->buildEndpoint("/zones") . ($withDnssec ? '' : '?dnssec=false');
+    }
+
+    /**
      * Get all zones from the PowerDNS server
      *
+     * @param bool $withDnssec Set false when the caller ignores DNSSEC state
      * @return array
      */
-    public function getAllZones(): array
+    public function getAllZones(bool $withDnssec = true): array
     {
-        $endpoint = $this->buildEndpoint("/zones");
+        $endpoint = $this->buildZoneListEndpoint($withDnssec);
         $response = $this->httpClient->makeRequest('GET', $endpoint);
 
         $zones = [];
@@ -138,13 +149,17 @@ class PowerdnsApiClient
     }
 
     /**
-     * Get zone stats (record count, DNSSEC, serial) for all zones in a single API call.
+     * Get zone stats (DNSSEC, serial) for all zones in a single API call.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int, edited_serial: int|null, notified_serial: int|null}>
+     * The zone list response carries no record count, so callers that need one
+     * must fetch it per zone.
+     *
+     * @param bool $withDnssec Set false when the caller needs neither the DNSSEC flag nor edited_serial
+     * @return array<string, array{dnssec: bool, serial: int, edited_serial: int|null, notified_serial: int|null}>
      */
-    public function getAllZoneStats(): array
+    public function getAllZoneStats(bool $withDnssec = true): array
     {
-        $endpoint = $this->buildEndpoint("/zones");
+        $endpoint = $this->buildZoneListEndpoint($withDnssec);
         $response = $this->httpClient->makeRequest('GET', $endpoint);
 
         $stats = [];
@@ -152,7 +167,6 @@ class PowerdnsApiClient
             foreach ($response['data'] as $zoneData) {
                 $name = $zoneData['name'] ?? '';
                 $stats[$name] = [
-                    'rrset_count' => (int)($zoneData['rrset_count'] ?? 0),
                     'dnssec' => (bool)($zoneData['dnssec'] ?? false),
                     'serial' => (int)($zoneData['serial'] ?? 0),
                     // Serial as served by PowerDNS (SOA-EDIT applied); null on servers without the field
@@ -175,7 +189,8 @@ class PowerdnsApiClient
      */
     public function getAllZoneKinds(): array
     {
-        $endpoint = $this->buildEndpoint("/zones");
+        // Only kind/masters are read, so never pay for the DNSSEC lookup
+        $endpoint = $this->buildZoneListEndpoint(false);
         $response = $this->httpClient->makeRequest('GET', $endpoint);
 
         $kinds = [];
@@ -643,12 +658,25 @@ class PowerdnsApiClient
      *
      * @param string $zoneName Zone name (with trailing dot)
      * @param bool $includeRrsets Set false to fetch zone metadata only (skips records on large zones)
+     * @param string|null $rrsetName Return only RRsets at this name (PowerDNS 4.7+; older servers ignore it and return the whole zone)
+     * @param string|null $rrsetType Narrow $rrsetName further to a single type
      * @return array|null Zone data or null if not found
      */
-    public function getZone(string $zoneName, bool $includeRrsets = true): ?array
+    public function getZone(string $zoneName, bool $includeRrsets = true, ?string $rrsetName = null, ?string $rrsetType = null): ?array
     {
         try {
-            $endpoint = $this->buildZoneEndpoint($zoneName, $includeRrsets ? '' : '?rrsets=false');
+            $params = [];
+            if (!$includeRrsets) {
+                $params['rrsets'] = 'false';
+            }
+            if ($rrsetName !== null) {
+                $params['rrset_name'] = $rrsetName;
+                if ($rrsetType !== null) {
+                    $params['rrset_type'] = $rrsetType;
+                }
+            }
+            $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+            $endpoint = $this->buildZoneEndpoint($zoneName, $query === '' ? '' : '?' . $query);
             $response = $this->httpClient->makeRequest('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {

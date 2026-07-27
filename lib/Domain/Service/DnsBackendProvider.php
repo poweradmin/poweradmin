@@ -303,14 +303,16 @@ interface DnsBackendProvider
     public function getZoneIdFromRecordId(int|string $recordId): int;
 
     /**
-     * Get bulk zone stats (record count, DNSSEC state, SOA serial) keyed by zone name.
+     * Get bulk zone stats (DNSSEC state, SOA serials) keyed by zone name.
      *
      * SQL backends may return an empty array when this data is not needed;
      * API backends fetch it in a single call to avoid N+1 lookups in zone lists.
+     * Record counts are not included - the PowerDNS zone list carries none.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial?: int, edited_serial?: int|null, notified_serial?: int|null}>
+     * @param bool $withDnssec Set false when neither the DNSSEC flag nor edited_serial is needed
+     * @return array<string, array{dnssec: bool, serial?: int, edited_serial?: int|null, notified_serial?: int|null}>
      */
-    public function getZoneStats(): array;
+    public function getZoneStats(bool $withDnssec = true): array;
 
     /**
      * Count non-ENT records in a zone.
@@ -381,9 +383,11 @@ interface DnsBackendProvider
      * Returns raw zone data without Poweradmin metadata (ownership, comments).
      * Each zone array contains: name, type, dnssec (bool), master (string).
      *
+     * @param bool $withDnssec Set false to skip DNSSEC state; API backends then
+     *                         avoid a per-zone lookup and report dnssec as false
      * @return array Array of zone data arrays
      */
-    public function getZones(): array;
+    public function getZones(bool $withDnssec = true): array;
 
     /**
      * Get a single zone by name with its type, master, and DNSSEC status.

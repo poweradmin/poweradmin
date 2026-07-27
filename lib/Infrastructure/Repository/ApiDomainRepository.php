@@ -118,9 +118,14 @@ class ApiDomainRepository implements DomainRepositoryInterface
         bool $includeHealth = true,
         bool $includeRecordCount = true
     ): array {
-        $allowedSortColumns = $includeRecordCount
-            ? ['name', 'type', 'count_records', 'owner']
-            : ['name', 'type', 'owner'];
+        // Record counts are resolved per page, so sorting on them would only
+        // order the rows already on screen. Fall back rather than reject: a
+        // session carried over from SQL mode can still ask for this column.
+        if ($sortby === 'count_records') {
+            $sortby = 'name';
+        }
+
+        $allowedSortColumns = ['name', 'type', 'owner'];
         $tableNameService = new TableNameService($this->config);
         $sortby = $tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $tableNameService->validateDirection($sortDirection);
@@ -133,11 +138,15 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $iface_zonelist_signed_serial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
 
+        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
+        // for it when a column actually renders it
+        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $iface_zonelist_signed_serial;
+
         // Sync local zones table with PowerDNS API before listing
         $syncService = new ZoneSyncService($this->db, $this->backendProvider);
         $syncService->syncIfStale();
 
-        $allZones = $this->backendProvider->getZones();
+        $allZones = $this->backendProvider->getZones($needsDnssec);
 
         // Filter reverse zones if requested
         if ($excludeReverse) {
@@ -148,11 +157,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
         // Enrich with ownership from local tables
         $allZones = $this->enrichZonesWithOwnership($allZones);
-
-        // Each record count requires a separate API round-trip, so skip when the column is hidden
-        if ($includeRecordCount) {
-            $this->enrichWithRecordCounts($allZones);
-        }
 
         // Filter by ownership
         if ($perm === 'own') {
@@ -181,7 +185,15 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
         }
 
-        $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial) ? $this->backendProvider->getZoneStats() : [];
+        // Each record count costs an API round-trip, so this runs after paging
+        // to keep the cost proportional to the page, not the whole zone set
+        if ($includeRecordCount) {
+            $this->enrichWithRecordCounts($allZones);
+        }
+
+        $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial)
+            ? $this->backendProvider->getZoneStats($iface_zonelist_signed_serial)
+            : [];
         $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
 
         // Convert to expected output shape (keyed by domain name)
@@ -319,13 +331,12 @@ class ApiDomainRepository implements DomainRepositoryInterface
             return [];
         }
 
-        // One bulk zone-list fetch for name/type/master plus one stats fetch for
-        // record counts, instead of two per-zone zone-body fetches per zone.
+        // One bulk zone-list fetch for name/type/master instead of a per-zone
+        // zone-body fetch. Record counts have no bulk equivalent in the API.
         $byId = [];
         foreach ($this->backendProvider->getZones() as $zone) {
             $byId[(int)($zone['id'] ?? 0)] = $zone;
         }
-        $stats = $this->backendProvider->getZoneStats();
 
         $zone_infos = [];
         foreach ($zones as $zid) {
@@ -334,17 +345,12 @@ class ApiDomainRepository implements DomainRepositoryInterface
             if ($zone === null) {
                 continue;
             }
-            $apiName = rtrim((string)($zone['name'] ?? ''), '.') . '.';
-            $recordCount = (int)($stats[$apiName]['rrset_count'] ?? 0);
-            if ($recordCount === 0) {
-                $recordCount = $this->backendProvider->countZoneRecords($zid);
-            }
             $zone_infos[] = [
                 'id' => $zid,
                 'name' => $zone['name'],
                 'type' => $zone['type'],
                 'master_ip' => $zone['master'],
-                'record_count' => $recordCount,
+                'record_count' => $this->backendProvider->countZoneRecords($zid),
             ];
         }
         return $zone_infos;

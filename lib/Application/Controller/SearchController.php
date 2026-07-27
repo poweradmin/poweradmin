@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use PDO;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -87,7 +88,14 @@ class SearchController extends BaseController
         $ownershipViewPermission = Permission::getZoneOwnershipViewPermission($this->db);
         $ownerSortAllowed = $ownershipViewPermission === 'all'
             || ($ownershipViewPermission === 'own' && Permission::getViewPermission($this->db) === 'own');
-        $allowedZoneSort = ['name', 'type', 'count_records'];
+        // In API mode record counts are resolved per page, so sorting on them
+        // would only order the rows already on screen
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $isRecordCountSortSupported = !$isApiBackend;
+        $allowedZoneSort = ['name', 'type'];
+        if ($isRecordCountSortSupported) {
+            $allowedZoneSort[] = 'count_records';
+        }
         if ($ownerSortAllowed) {
             $allowedZoneSort[] = 'fullname';
         }
@@ -283,7 +291,8 @@ class SearchController extends BaseController
             $editPermission,
             $deletePermission,
             $ownershipViewPermission,
-            $ownerSortAllowed
+            $ownerSortAllowed,
+            $isRecordCountSortSupported
         );
     }
 
@@ -306,7 +315,8 @@ class SearchController extends BaseController
         string $editPermission,
         string $deletePermission,
         string $ownershipViewPermission,
-        bool $ownerSortAllowed
+        bool $ownerSortAllowed,
+        bool $isRecordCountSortSupported
     ): void {
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
@@ -315,6 +325,7 @@ class SearchController extends BaseController
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
+            'is_record_count_sort_supported' => $isRecordCountSortSupported,
             'record_sort_by' => $record_sort_by,
             'record_sort_direction' => $record_sort_direction,
             'query' => isset($parameters['displayed_query']) ? $parameters['displayed_query'] : $parameters['query'],

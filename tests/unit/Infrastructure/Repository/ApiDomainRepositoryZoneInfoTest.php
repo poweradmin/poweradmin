@@ -57,24 +57,22 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     }
 
     #[Test]
-    public function getZoneInfoFromIdsUsesOneBulkStatsCallNotPerZoneFetches(): void
+    public function getZoneInfoFromIdsUsesOneBulkZoneListCall(): void
     {
         $backend = $this->createMock(DnsBackendProvider::class);
 
-        // One bulk zone-list call and one bulk stats call must cover every zone;
-        // the per-zone countZoneRecords fallback must never run when rrset_count
-        // is present.
+        // Name/type/master come from a single bulk zone-list call rather than a
+        // zone-body fetch per zone. Record counts have no bulk equivalent - the
+        // PowerDNS zone list carries none - so they stay one call per zone.
         $backend->expects($this->once())->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'one.example.com',   'type' => 'NATIVE', 'master' => ''],
             ['id' => 101, 'name' => 'two.example.com',   'type' => 'MASTER', 'master' => '192.0.2.1'],
             ['id' => 102, 'name' => 'three.example.com', 'type' => 'NATIVE', 'master' => ''],
         ]);
-        $backend->expects($this->once())->method('getZoneStats')->willReturn([
-            'one.example.com.'   => ['rrset_count' => 5, 'dnssec' => false, 'serial' => 1],
-            'two.example.com.'   => ['rrset_count' => 9, 'dnssec' => false, 'serial' => 1],
-            'three.example.com.' => ['rrset_count' => 2, 'dnssec' => false, 'serial' => 1],
-        ]);
-        $backend->expects($this->never())->method('countZoneRecords');
+        $backend->expects($this->never())->method('getZoneStats');
+        $backend->expects($this->exactly(3))
+            ->method('countZoneRecords')
+            ->willReturnMap([[100, 5], [101, 9], [102, 2]]);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
         $result = $repo->getZoneInfoFromIds([100, 101, 102]);
@@ -93,20 +91,19 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     }
 
     #[Test]
-    public function getZoneInfoFromIdsFallsBackToPerZoneCountWhenStatsMissing(): void
+    public function getZoneInfoFromIdsSkipsZonesMissingFromTheApi(): void
     {
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->expects($this->once())->method('getZones')->willReturn([
-            ['id' => 100, 'name' => 'legacy.example.com', 'type' => 'NATIVE', 'master' => ''],
+            ['id' => 100, 'name' => 'present.example.com', 'type' => 'NATIVE', 'master' => ''],
         ]);
-        // Pre-4.4 PowerDNS omits rrset_count, so a zone with no stats is allowed
-        // one fallback fetch.
-        $backend->expects($this->once())->method('getZoneStats')->willReturn([]);
+        // The unknown id must not trigger a lookup for a zone that isn't there
         $backend->expects($this->once())->method('countZoneRecords')->with(100)->willReturn(42);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
-        $result = $repo->getZoneInfoFromIds([100]);
+        $result = $repo->getZoneInfoFromIds([100, 999]);
 
+        $this->assertCount(1, $result);
         $this->assertSame(42, $result[0]['record_count']);
     }
 
@@ -115,7 +112,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     {
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->expects($this->never())->method('getZones');
-        $backend->expects($this->never())->method('getZoneStats');
+        $backend->expects($this->never())->method('countZoneRecords');
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
 

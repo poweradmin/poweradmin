@@ -155,12 +155,16 @@
                             </a>
                         </th>
                         <th>
+                            {% if is_record_count_sort_supported %}
                             <a href="javascript:zone_sort_by('count_records');" class="d-flex align-items-center text-decoration-none">
                                 <span class="me-2">{% trans %}Records{% endtrans %}</span>
                                 {% if zone_sort_by == 'count_records' %}
                                     <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
                                 {% endif %}
                             </a>
+                            {% else %}
+                            {% trans %}Records{% endtrans %}
+                            {% endif %}
                         </th>
                         {% if show_zone_owners %}
                         <th>

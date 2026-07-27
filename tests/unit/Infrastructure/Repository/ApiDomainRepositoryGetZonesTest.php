@@ -67,11 +67,11 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([
-            'pending.example.com.'    => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => 4],
-            'sent.example.com.'       => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 7, 'edited_serial' => null, 'notified_serial' => 7],
-            'nativezone.example.com.' => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 9, 'edited_serial' => null, 'notified_serial' => 0],
+            'pending.example.com.'    => ['dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => 4],
+            'sent.example.com.'       => ['dnssec' => false, 'serial' => 7, 'edited_serial' => null, 'notified_serial' => 7],
+            'nativezone.example.com.' => ['dnssec' => false, 'serial' => 9, 'edited_serial' => null, 'notified_serial' => 0],
             // Never-published zone: serial 0 must not surface a NOTIFY indicator
-            'fresh.example.com.'      => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 0, 'edited_serial' => null, 'notified_serial' => 0],
+            'fresh.example.com.'      => ['dnssec' => false, 'serial' => 0, 'edited_serial' => null, 'notified_serial' => 0],
         ]);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
@@ -108,7 +108,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         // Older PowerDNS without the notified_serial field -> null, indicator hidden
         $backend->method('getZoneStats')->willReturn([
-            'legacy.example.com.' => ['rrset_count' => 1, 'dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => null],
+            'legacy.example.com.' => ['dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => null],
         ]);
 
         $repo = new ApiDomainRepository($this->db, $this->config, $backend);
@@ -200,8 +200,8 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([
-            'signed.example.com.' => ['rrset_count' => 5, 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
-            'unsigned.example.com.' => ['rrset_count' => 3, 'dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101],
+            'signed.example.com.' => ['dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+            'unsigned.example.com.' => ['dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101],
         ]);
 
         $repo = new ApiDomainRepository($this->db, $config, $backend);
@@ -229,5 +229,152 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertArrayNotHasKey('signed_serial', $result['signed.example.com']);
+    }
+
+    #[Test]
+    public function getZonesCountsRecordsOnlyForTheVisiblePage(): void
+    {
+        // Regression for #1387: counting every zone rather than the visible page
+        // turned a 600-zone install into 600 zone-body fetches per page load.
+        $apiZones = [];
+        for ($i = 1; $i <= 60; $i++) {
+            $name = sprintf('zone%02d.example.com', $i);
+            $this->db->exec(sprintf(
+                "INSERT INTO zones (domain_id, owner, comment, zone_templ_id, zone_name, zone_type)
+                 VALUES (%d, 1, '', 0, '%s', 'NATIVE')",
+                200 + $i,
+                $name
+            ));
+            $apiZones[] = ['id' => 200 + $i, 'name' => $name, 'type' => 'NATIVE', 'master' => '', 'dnssec' => false];
+        }
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn($apiZones);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+        $backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
+
+        $counted = [];
+        $backend->expects($this->exactly(25))
+            ->method('countZoneRecords')
+            ->willReturnCallback(function (int $id) use (&$counted): int {
+                $counted[] = $id;
+                return $id;
+            });
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertCount(25, $result);
+        sort($counted);
+        $this->assertSame(range(201, 225), $counted, 'only the visible page may be counted');
+        $this->assertSame(201, $result['zone01.example.com']['count_records']);
+    }
+
+    #[Test]
+    public function getZonesSkipsRecordCountsWhenColumnHidden(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+        $backend->expects($this->never())->method('countZoneRecords');
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC', false, null, null, true, false);
+
+        $this->assertSame(0, $result['signed.example.com']['count_records']);
+    }
+
+    #[Test]
+    public function getZonesFallsBackToNameSortWhenAskedToSortByRecordCount(): void
+    {
+        // count_records is resolved per page, so it must not be accepted as a
+        // sort key - ordering on it would only order the rows already on screen
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+        $backend->method('countZoneRecords')->willReturnMap([[100, 9], [101, 1]]);
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 25, 'count_records', 'ASC');
+
+        $this->assertSame(['signed.example.com', 'unsigned.example.com'], array_keys($result));
+    }
+
+    #[Test]
+    public function getZonesSkipsDnssecLookupWhenNoColumnNeedsIt(): void
+    {
+        // dnssec.enabled off and the signed-serial column off, so PowerDNS must
+        // not be asked to compute DNSSEC state for every zone
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null) => $default
+        );
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())->method('getZones')->with(false)->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([]);
+
+        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+    }
+
+    #[Test]
+    public function getZonesRequestsDnssecWhenTheDnssecColumnIsOn(): void
+    {
+        // Getting this gate wrong silently blanks the DNSSEC column
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null) => ($group === 'dnssec' && $key === 'enabled') ? true : $default
+        );
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())->method('getZones')->with(true)->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([]);
+
+        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertTrue($result['signed.example.com']['secured']);
+    }
+
+    #[Test]
+    public function getZonesRequestsDnssecWhenSignedSerialColumnIsOn(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null) => ($group === 'interface' && $key === 'display_signed_serial_in_zone_list') ? true : $default
+        );
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())->method('getZones')->with(true)->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        // edited_serial only comes back when DNSSEC data was requested
+        $backend->expects($this->once())->method('getZoneStats')->with(true)->willReturn([
+            'signed.example.com.' => ['dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+        ]);
+
+        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
     }
 }
