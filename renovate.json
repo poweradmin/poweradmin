@@ -17,6 +17,7 @@
     "develop",
     "master",
     "release/3.x",
+    "release/4.3.x",
     "release/4.2.x"
   ],
   "constraints": {
@@ -46,6 +47,7 @@
       "description": "Only allow patch updates on stable branches",
       "matchBaseBranches": [
         "release/3.x",
+        "release/4.3.x",
         "release/4.2.x"
       ],
       "matchUpdateTypes": [
