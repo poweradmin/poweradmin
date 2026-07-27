@@ -48,6 +48,13 @@ class ApiKeysController extends BaseController
     private IpAddressRetriever $ipAddressRetriever;
 
     /**
+     * Matched route name, captured before setCurrentPage() overwrites the 'page' key.
+     * The router sets it from the real match after merging GET and POST, so it cannot
+     * be spoofed by a query parameter and each action keeps the verbs its route allows.
+     */
+    private string $routeName;
+
+    /**
      * Constructor
      *
      * @param array $request Request parameters
@@ -56,6 +63,7 @@ class ApiKeysController extends BaseController
     {
         parent::__construct($request);
 
+        $this->routeName = (string)($request['page'] ?? '');
         $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config);
         $this->apiKeyService = new ApiKeyService(
             $this->apiKeyRepository,
@@ -92,25 +100,7 @@ class ApiKeysController extends BaseController
         $this->setCurrentPage('api_keys');
         $this->setPageTitle(_('API Keys'));
 
-        // Determine action from route name or fallback to query parameter for backward compatibility
-        $routeName = $this->getSafeRequestValue('_route');
-        $action = $this->getActionFromRoute($routeName) ?: ($this->getSafeRequestValue('action') ?: 'list');
-
-        // Special handling for API keys paths if route name detection fails
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
-        if ($action === 'list') {
-            if (str_contains($requestUri, '/settings/api-keys/add')) {
-                $action = 'add';
-            } elseif (preg_match('#/settings/api-keys/(\d+)/delete#', $requestUri)) {
-                $action = 'delete';
-            } elseif (preg_match('#/settings/api-keys/(\d+)/edit#', $requestUri)) {
-                $action = 'edit';
-            } elseif (preg_match('#/settings/api-keys/(\d+)/regenerate#', $requestUri)) {
-                $action = 'regenerate';
-            } elseif (preg_match('#/settings/api-keys/(\d+)/toggle#', $requestUri)) {
-                $action = 'toggle';
-            }
-        }
+        $action = $this->getActionFromRoute($this->routeName) ?? 'list';
 
         switch ($action) {
             case 'list':
