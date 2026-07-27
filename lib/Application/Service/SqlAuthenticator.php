@@ -69,16 +69,20 @@ class SqlAuthenticator extends LoggingService
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
         $this->serverParams = $serverParams ?: $_SERVER;
+    }
 
-        // Initialize MFA service
-        $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
-        $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService(
-            $userMfaRepository,
-            $configManager,
-            $mailService,
+    /**
+     * Builds the MFA service on first use. The call site is already guarded by
+     * security.mfa.enabled, so installations without MFA never pay for the graph.
+     */
+    private function mfaService(): MfaService
+    {
+        return $this->mfaService ??= new MfaService(
+            new DbUserMfaRepository($this->connection, $this->configManager),
+            $this->configManager,
+            new MailService($this->configManager),
             null,
-            UserTimezoneService::createDefault($connection, $configManager)
+            UserTimezoneService::createDefault($this->connection, $this->configManager)
         );
     }
 
@@ -178,7 +182,7 @@ class SqlAuthenticator extends LoggingService
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
         // Check if MFA is enabled for this user
-        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($rowObj['id']);
 
         if ($mfaRequired) {
             $this->logInfo('MFA is required for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
