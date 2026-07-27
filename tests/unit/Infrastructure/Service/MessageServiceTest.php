@@ -357,4 +357,33 @@ class MessageServiceTest extends TestCase
         $this->assertCount(1, $script2Messages);
         $this->assertEquals('info', $script2Messages[0]['type']);
     }
+
+    // ========== Direct system error tests ==========
+
+    #[Test]
+    public function testDirectSystemErrorReportsServerError(): void
+    {
+        ob_start();
+        $this->service->dontExit()->displayDirectSystemError('Configuration is broken');
+        $body = (string)ob_get_clean();
+
+        $this->assertSame(500, http_response_code());
+        $this->assertStringContainsString('<!DOCTYPE html>', $body);
+        $this->assertStringContainsString('Configuration is broken', $body);
+
+        http_response_code(200);
+    }
+
+    #[Test]
+    public function testDirectSystemErrorEscapesTheMessage(): void
+    {
+        ob_start();
+        $this->service->dontExit()->displayDirectSystemError('<script>alert(1)</script>');
+        $body = (string)ob_get_clean();
+
+        $this->assertStringContainsString('&lt;script&gt;', $body);
+        $this->assertStringNotContainsString('<script>alert', $body);
+
+        http_response_code(200);
+    }
 }

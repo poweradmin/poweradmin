@@ -215,6 +215,10 @@ class MessageService
         $processedError = htmlspecialchars($error, ENT_QUOTES, 'UTF-8');
 
         if (!headers_sent()) {
+            // Every caller is an unrecoverable fault, so the response must not report
+            // success. Once output has started the status is already committed.
+            http_response_code(500);
+
             echo '<!DOCTYPE html>
 <html lang="en">
 <head>
