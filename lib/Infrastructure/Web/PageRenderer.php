@@ -124,6 +124,22 @@ class PageRenderer
     }
 
     /**
+     * Resolves a configurable branding asset (favicon, logo) to a usable URL.
+     *
+     * Absolute URLs (scheme or protocol-relative) are used as-is; site and
+     * app-relative paths are served from the application, so they get the
+     * subfolder prefix like every other internal URL.
+     */
+    private function brandingUrl(string $configKey, string $bundledPath, string $baseUrlPrefix): string
+    {
+        $path = $this->config->get('interface', $configKey, '') ?: $bundledPath;
+        if (preg_match('~^([a-z][a-z0-9+.-]*:|//)~i', $path)) {
+            return $path;
+        }
+        return $baseUrlPrefix . (str_starts_with($path, '/') ? $path : '/' . $path);
+    }
+
+    /**
      * Renders the header of the page.
      *
      * @param array $requestData The controller's request data (current page, form state)
@@ -155,13 +171,16 @@ class PageRenderer
         $customThemeExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
 
         $activeLocale = $this->resolveActiveLocale();
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
 
         $vars = array_merge([
             'iface_title' => $this->config->get('interface', 'title'),
             'iface_style' => $styleManager->getSelectedStyle(),
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
+            'base_url_prefix' => $baseUrlPrefix,
+            'iface_favicon' => $this->brandingUrl('favicon_path', '/favicon.ico', $baseUrlPrefix),
+            'iface_logo' => $this->brandingUrl('logo_path', '/assets/logo.png', $baseUrlPrefix),
             'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
             'custom_dark_exists' => $customDarkExists,
