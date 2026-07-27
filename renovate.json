@@ -7,6 +7,7 @@
     "after 9am and before 9pm"
   ],
   "timezone": "Europe/Vilnius",
+  "pinDigests": true,
   "baseBranchPatterns": [
     "master",
     "release/3.x"
