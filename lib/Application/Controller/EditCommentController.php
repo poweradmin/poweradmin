@@ -74,6 +74,11 @@ class EditCommentController extends BaseController
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
+        if (!$domainRepository->zoneIdExists((int)$zone_id)) {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
         $zone_type = $domainRepository->getDomainType($zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
