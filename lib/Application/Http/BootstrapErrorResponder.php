@@ -77,13 +77,15 @@ final class BootstrapErrorResponder
 
     private function respondJson(Throwable $e): void
     {
-        header('Content-Type: application/json');
+        if (!headers_sent()) {
+            header('Content-Type: application/json');
+        }
 
         // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
         $isV2Api = RequestContext::isV2ApiRequest();
 
         if ($e->getCode() === 404) {
-            http_response_code(404);
+            $this->sendStatus(404);
             echo json_encode($isV2Api
                 ? ['success' => false, 'data' => null, 'message' => 'Endpoint not found']
                 : ['error' => true, 'message' => 'Endpoint not found']);
@@ -91,14 +93,14 @@ final class BootstrapErrorResponder
         }
 
         if ($e->getCode() === 405) {
-            http_response_code(405);
+            $this->sendStatus(405);
             echo json_encode($isV2Api
                 ? ['success' => false, 'data' => null, 'message' => 'Method not allowed']
                 : ['error' => true, 'message' => 'Method not allowed']);
             return;
         }
 
-        http_response_code(500);
+        $this->sendStatus(500);
 
         $debug = $this->displayErrors() ? [
             'file' => $e->getFile(),
@@ -128,13 +130,13 @@ final class BootstrapErrorResponder
     private function respondHtml(Throwable $e): void
     {
         if ($e->getCode() === 404) {
-            http_response_code(404);
+            $this->sendStatus(404);
             $this->renderNotFound();
             return;
         }
 
         // A rejected method is a routine client error, not a server failure
-        http_response_code($e->getCode() === 405 ? 405 : 500);
+        $this->sendStatus($e->getCode() === 405 ? 405 : 500);
 
         if ($this->displayErrors()) {
             $this->renderDebugPage($e);
@@ -163,6 +165,19 @@ final class BootstrapErrorResponder
         echo 'Line: ' . $e->getLine() . "\n";
         echo 'Trace: ' . "\n" . htmlspecialchars($e->getTraceAsString());
         echo '</pre>';
+    }
+
+    /**
+     * A throwable raised after the page header was flushed cannot change the status,
+     * and header() would only append warnings. Skip those, still emit the body.
+     */
+    private function sendStatus(int $code): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        http_response_code($code);
     }
 
     /**
