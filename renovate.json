@@ -9,6 +9,7 @@
   "timezone": "Europe/Vilnius",
   "minimumReleaseAge": "7 days",
   "internalChecksFilter": "strict",
+  "pinDigests": true,
   "vulnerabilityAlerts": {
     "minimumReleaseAge": null
   },
