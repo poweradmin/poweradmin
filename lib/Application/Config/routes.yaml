@@ -837,21 +837,6 @@ unlink_zones_templ:
   controller: Poweradmin\Application\Controller\UnlinkZonesTemplController::run
   methods: [GET, POST]
 
-# Authentication Routes  
-reset_password_token:
-  path: /auth/reset-password/{token}
-  controller: Poweradmin\Application\Controller\ResetPasswordController::run
-  requirements:
-    token: '[a-zA-Z0-9]+'
-  methods: [GET, POST]
-
-mfa_verify_token:
-  path: /auth/mfa/verify/{token}
-  controller: Poweradmin\Application\Controller\MfaVerifyController::run
-  requirements:
-    token: '[a-zA-Z0-9]+'
-  methods: [GET, POST]
-
 # DNSSEC Key Management
 dnssec_key_toggle:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/toggle
