@@ -83,10 +83,14 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        // Ensure perm_id is always present so an all-unchecked form clears the
-        // permission list rather than leaving it untouched.
+        // Ensure perm_id is always a list so an all-unchecked form clears the
+        // permission list rather than leaving it untouched or iterating a scalar.
         $request = $this->getRequest();
-        $request['perm_id'] = $request['perm_id'] ?? [];
+        $request['perm_id'] = is_array($request['perm_id'] ?? null) ? $request['perm_id'] : [];
+
+        // The route id is the only authoritative one; a posted templ_id would let
+        // this write a template the URL never named.
+        $request['templ_id'] = (int)$this->getSafeRequestValue('id');
         $this->permissionTemplate->updatePermissionTemplateDetails($request);
 
         $this->auditLogger->logInfo(sprintf(
