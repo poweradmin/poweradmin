@@ -39,7 +39,7 @@ class Permission
     /**
      * Record types that holders of zone_content_edit_own_as_client may not modify.
      */
-    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS'];
+    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS', 'LUA'];
 
     /**
      * Permission that lets client-level editors manage NS records below the zone apex.
@@ -136,18 +136,24 @@ class Permission
      */
     public static function restrictedRecordTypeMessage(string $type, string $action): string
     {
-        $isNs = strtoupper($type) === 'NS';
+        $type = strtoupper($type);
 
         return match ($action) {
-            'add' => $isNs
-                ? _('You do not have the permission to add NS record.')
-                : _('You do not have the permission to add SOA record.'),
-            'edit' => $isNs
-                ? _('You do not have the permission to edit this NS record.')
-                : _('You do not have the permission to edit this SOA record.'),
-            'delete' => $isNs
-                ? _('You do not have the permission to delete NS records.')
-                : _('You do not have the permission to delete SOA records.'),
+            'add' => match ($type) {
+                'NS' => _('You do not have the permission to add NS record.'),
+                'LUA' => _('You do not have the permission to add LUA record.'),
+                default => _('You do not have the permission to add SOA record.'),
+            },
+            'edit' => match ($type) {
+                'NS' => _('You do not have the permission to edit this NS record.'),
+                'LUA' => _('You do not have the permission to edit this LUA record.'),
+                default => _('You do not have the permission to edit this SOA record.'),
+            },
+            'delete' => match ($type) {
+                'NS' => _('You do not have the permission to delete NS records.'),
+                'LUA' => _('You do not have the permission to delete LUA records.'),
+                default => _('You do not have the permission to delete SOA records.'),
+            },
         };
     }
 

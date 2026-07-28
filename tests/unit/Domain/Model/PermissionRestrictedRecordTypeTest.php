@@ -37,10 +37,24 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('NS', 'own_as_client'));
     }
 
+    public function testLuaIsRestrictedForOwnAsClient(): void
+    {
+        // LUA records make PowerDNS execute script content, so a client-level editor
+        // must not create them even where the server has LUA enabled.
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('LUA', 'own_as_client'));
+    }
+
+    public function testLuaStaysAvailableToFullEditors(): void
+    {
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('LUA', 'own'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('LUA', 'all'));
+    }
+
     public function testLowercaseTypeStillRestricted(): void
     {
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('soa', 'own_as_client'));
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('ns', 'own_as_client'));
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
     }
 
     public function testNonRestrictedTypesArePermitted(): void
@@ -80,6 +94,23 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertSame(
             'You do not have the permission to add NS record.',
             Permission::restrictedRecordTypeMessage('NS', 'add')
+        );
+    }
+
+    public function testLuaGetsItsOwnDenialMessage(): void
+    {
+        // The helper used to fall through to the SOA wording for anything but NS.
+        $this->assertSame(
+            'You do not have the permission to add LUA record.',
+            Permission::restrictedRecordTypeMessage('LUA', 'add')
+        );
+        $this->assertSame(
+            'You do not have the permission to edit this LUA record.',
+            Permission::restrictedRecordTypeMessage('LUA', 'edit')
+        );
+        $this->assertSame(
+            'You do not have the permission to delete LUA records.',
+            Permission::restrictedRecordTypeMessage('LUA', 'delete')
         );
     }
 
