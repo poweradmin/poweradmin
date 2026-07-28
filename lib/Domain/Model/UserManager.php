@@ -369,9 +369,12 @@ class UserManager
 
             $edit_own_perm = self::verify_permission($this->db, 'user_edit_own');
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
+            // Changing another user's password requires user_passwd_edit_others;
+            // without it the posted password is ignored and the other fields still save.
+            $may_set_password = $id == $_SESSION["userid"] ? ($edit_own_perm || $passwd_edit_others_perm) : $passwd_edit_others_perm;
 
             $passwordHash = '';
-            if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
+            if ($user_password != "" && $may_set_password) {
                 $config = new AppConfiguration();
                 $userAuthService = new UserAuthenticationService(
                     $config->get('password_encryption'),
@@ -398,7 +401,7 @@ class UserManager
                 $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
             }
 
-            if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
+            if ($user_password != "" && $may_set_password) {
                 $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
             }
 
