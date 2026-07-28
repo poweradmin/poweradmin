@@ -676,6 +676,16 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
+    public function getPermissionIdByName(string $name): ?int
+    {
+        // perm_items.name carries no unique constraint, so order for a stable answer
+        $stmt = $this->db->prepare("SELECT id FROM perm_items WHERE name = :name ORDER BY id");
+        $stmt->execute([':name' => $name]);
+        $id = $stmt->fetchColumn();
+
+        return $id === false ? null : (int)$id;
+    }
+
     public function createUser(array $userData): ?int
     {
         $useLdap = (int)($userData['use_ldap'] ?? 0);

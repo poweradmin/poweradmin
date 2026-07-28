@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\MfaSessionManager;
@@ -508,6 +509,11 @@ abstract class BaseController
     protected function createPermissionTemplateRepository(): DbPermissionTemplateRepository
     {
         return $this->services()->permissionTemplateRepository();
+    }
+
+    protected function createPermissionTemplateWriteService(): PermissionTemplateWriteService
+    {
+        return $this->services()->permissionTemplateWriteService();
     }
 
     protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface

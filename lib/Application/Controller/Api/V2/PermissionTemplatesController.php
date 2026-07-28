@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -40,12 +41,14 @@ use OpenApi\Attributes as OA;
 class PermissionTemplatesController extends PublicApiController
 {
     private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateWriteService $permissionTemplateWriteService;
     private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
@@ -303,13 +306,13 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
-            $result = $this->permissionTemplateRepository->addPermissionTemplate($details);
+            $result = $this->permissionTemplateWriteService->create($currentUserId, $details);
 
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template created successfully', 201);
-            } else {
-                return $this->returnApiError('Failed to create permission template', 500);
+            if (!$result['success']) {
+                return $this->returnApiError($result['message'], $result['status']);
             }
+
+            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
         }
@@ -426,13 +429,13 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
-            $result = $this->permissionTemplateRepository->updatePermissionTemplateDetails($details);
+            $result = $this->permissionTemplateWriteService->update($currentUserId, $id, $details);
 
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template updated successfully');
-            } else {
-                return $this->returnApiError('Failed to update permission template', 500);
+            if (!$result['success']) {
+                return $this->returnApiError($result['message'], $result['status']);
             }
+
+            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::updateTemplate', 'Failed to update permission template');
         }

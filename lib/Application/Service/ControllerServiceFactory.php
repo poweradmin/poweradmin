@@ -151,6 +151,11 @@ class ControllerServiceFactory
         return new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
+    public function permissionTemplateWriteService(): PermissionTemplateWriteService
+    {
+        return new PermissionTemplateWriteService($this->permissionTemplateRepository(), $this->userRepository());
+    }
+
     public function zoneGroupRepository(): ZoneGroupRepositoryInterface
     {
         return new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));

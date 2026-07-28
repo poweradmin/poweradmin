@@ -186,6 +186,14 @@ interface UserRepository
     public function templateGrantsUberuser(int $permTemplId): bool;
 
     /**
+     * Resolve a permission id from its name
+     *
+     * @param string $name Permission name as stored in perm_items
+     * @return int|null Permission id, or null when the permission is not installed
+     */
+    public function getPermissionIdByName(string $name): ?int;
+
+    /**
      * Create a new user
      *
      * @param array $userData User data containing username, password, email, etc.

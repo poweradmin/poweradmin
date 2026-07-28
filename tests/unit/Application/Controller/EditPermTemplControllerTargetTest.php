@@ -24,6 +24,10 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditPermTemplController;
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -42,6 +46,13 @@ class EditPermTemplControllerTargetTest extends TestCase
     protected function setUp(): void
     {
         $this->reflection = new ReflectionClass(EditPermTemplController::class);
+        $_SESSION[SessionKeys::USERID] = 1;
+    }
+
+    protected function tearDown(): void
+    {
+        unset($_SESSION[SessionKeys::USERID]);
+        parent::tearDown();
     }
 
     public function testPostedTemplateIdCannotRedirectTheWrite(): void
@@ -112,8 +123,19 @@ class EditPermTemplControllerTargetTest extends TestCase
             }))
             ->willThrowException(new RuntimeException('stop before redirect'));
 
+        // A superuser caller, so the content guard passes and the id plumbing is what
+        // is actually under test here.
+        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository->method('hasAdminPermission')->willReturn(true);
+
         $controller = $this->reflection->newInstanceWithoutConstructor();
         $this->setProperty($controller, 'permissionTemplate', $repository);
+        $this->setProperty(
+            $controller,
+            'permissionTemplateWriteService',
+            new PermissionTemplateWriteService($repository, $userRepository)
+        );
+        $this->setProperty($controller, 'userContextService', new UserContextService());
         $this->setBaseProperty($controller, 'config', $this->primeConfig());
         $this->setBaseProperty($controller, 'messageService', new MessageService());
         $this->setBaseProperty($controller, 'requestData', $requestData);

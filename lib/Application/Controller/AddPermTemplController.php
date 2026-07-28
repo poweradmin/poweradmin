@@ -31,7 +31,9 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -40,6 +42,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 class AddPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
+    private PermissionTemplateWriteService $permissionTemplateWriteService;
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
@@ -49,6 +52,7 @@ class AddPermTemplController extends BaseController
         parent::__construct($request);
 
         $this->permissionTemplate = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -78,7 +82,12 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->addPermissionTemplate($this->getRequest());
+        $result = $this->permissionTemplateWriteService->create($this->callerId(), $this->getRequest());
+        if (!$result['success']) {
+            $this->setMessage('list_perm_templ', 'error', $this->translateWriteError($result['message']));
+            $this->showForm();
+            return;
+        }
 
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:add_perm_template name:%s',
@@ -94,7 +103,10 @@ class AddPermTemplController extends BaseController
     private function showForm(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+            'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
+                $this->permissionTemplate->getPermissionsByTemplateId(),
+                $this->permissionTemplateWriteService->callerMaySetSuperuser($this->callerId())
+            ),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -115,5 +127,19 @@ class AddPermTemplController extends BaseController
         ]);
 
         return $this->doValidateRequest();
+    }
+
+    private function callerId(): int
+    {
+        return (int)$this->userContextService->getLoggedInUserId();
+    }
+
+    private function translateWriteError(string $message): string
+    {
+        return match ($message) {
+            PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED =>
+                _('Granting administrator rights in a permission template requires administrator rights.'),
+            default => _('The permission template could not be added.'),
+        };
     }
 }
