@@ -952,6 +952,50 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
+    /**
+     * Check whether the caller may put an account on the given permission template.
+     *
+     * Delegated template management is not a route to superuser: the holder may not
+     * hand out a template carrying user_is_ueberuser, nor retemplate their own
+     * account without the right to edit other users.
+     *
+     * @return ?string Error to surface, or null when the assignment is allowed
+     */
+    private function permissionTemplateAssignmentError(
+        int $permTemplId,
+        int $targetUserId,
+        bool $callerIsSuperuser,
+        bool $callerMayEditOthers
+    ): ?string {
+        if ($callerIsSuperuser) {
+            return null;
+        }
+
+        if ($targetUserId === (int)$_SESSION["userid"] && !$callerMayEditOthers) {
+            return _('Changing your own permission template requires the permission to edit other users.');
+        }
+
+        if ($this->templateGrantsUberuser($permTemplId)) {
+            return _('Assigning a permission template with administrator rights requires administrator rights.');
+        }
+
+        return null;
+    }
+
+    private function templateGrantsUberuser(int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = :templ_id AND pi.name = 'user_is_ueberuser'
+        ");
+        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
     public function updateUserDetails(array $details): bool
     {
         $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
@@ -1025,6 +1069,18 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
+                $templateError = $this->permissionTemplateAssignmentError(
+                    (int)$details['templ_id'],
+                    (int)$details['uid'],
+                    $perm_is_godlike == "1",
+                    $perm_edit_others
+                );
+                if ($templateError !== null) {
+                    $this->messageService->addSystemError($templateError);
+
+                    return false;
+                }
+
                 $query .= ", perm_templ = :templ_id";
             }
 
