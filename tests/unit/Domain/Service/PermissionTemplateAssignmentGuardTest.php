@@ -126,7 +126,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $this->assertArrayNotHasKey('perm_templ', $input);
     }
 
-    public function testInputUntouchedWhenCallerIsPrivilegedAndOmittedTemplate(): void
+    public function testPrivilegedCallerOmittingTemplateGetsMinimalDefault(): void
     {
         $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
         $input = ['username' => 'x'];
@@ -134,6 +134,6 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
 
         $this->assertNull($error);
-        $this->assertArrayNotHasKey('perm_templ', $input, 'No default injected for privileged callers - they may omit');
+        $this->assertSame(4, $input['perm_templ'], 'Caller did not choose; safe minimal template injected');
     }
 }

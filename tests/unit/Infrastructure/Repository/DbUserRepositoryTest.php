@@ -233,7 +233,8 @@ class DbUserRepositoryTest extends TestCase
             'username' => 'newuser',
             'password' => 'hashed_password',
             'fullname' => 'New User',
-            'email' => 'new@example.com'
+            'email' => 'new@example.com',
+            'perm_templ' => 3
         ];
 
         $result = $this->repository->createUser($userData);
@@ -262,6 +263,7 @@ class DbUserRepositoryTest extends TestCase
             'username' => 'ldapuser',
             'password' => 'LDAP_USER',
             'use_ldap' => 1,
+            'perm_templ' => 3,
         ]);
 
         $this->assertEquals(43, $result);
@@ -285,6 +287,7 @@ class DbUserRepositoryTest extends TestCase
         $result = $this->repository->createUser([
             'username' => 'sqluser',
             'password' => 'hashed',
+            'perm_templ' => 3,
         ]);
 
         $this->assertEquals(44, $result);

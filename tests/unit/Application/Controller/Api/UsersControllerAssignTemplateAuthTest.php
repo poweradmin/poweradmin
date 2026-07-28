@@ -65,6 +65,7 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
         $permission = $this->createMock(ApiPermissionService::class);
         $permission->method('canEditUser')->with(1, 5)->willReturn(true);
         $permission->method('canEditPermissionTemplates')->with(1)->willReturn(true);
+        $permission->method('userHasPermission')->willReturn(true);
 
         $userService = $this->createMock(UserManagementService::class);
         $userService->expects($this->once())

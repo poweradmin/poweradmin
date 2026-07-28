@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use PDO;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
@@ -442,6 +443,26 @@ class ApiPermissionService
 
         // User with user_edit_templ_perm can edit permission templates
         return $this->userHasPermission($userId, 'user_edit_templ_perm');
+    }
+
+    /**
+     * Check whether a permission template carries superuser rights (stateless)
+     *
+     * @param int $permTemplId Permission template ID to inspect
+     * @return bool True if the template grants user_is_ueberuser
+     */
+    public function templateGrantsSuperuser(int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = :templ_id AND pi.name = 'user_is_ueberuser'
+        ");
+        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     /**
