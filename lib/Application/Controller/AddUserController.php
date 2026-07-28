@@ -117,9 +117,12 @@ class AddUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
 
-        // When user permission templates are hidden, force minimal user template assignment
+        // The template picker is hidden when access templates are disabled or the
+        // caller lacks user_edit_templ_perm; those callers get the minimal one.
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
-        if (!$showUserAccessTemplates) {
+        $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission('user_edit_templ_perm');
+
+        if (!$canChooseTemplate || !isset($userParams['perm_templ']) || $userParams['perm_templ'] === '') {
             $minimalTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user');
             if ($minimalTemplateId === null) {
                 $this->setMessage('add_user', 'error', _('No non-superuser permission template is available to assign.'));
@@ -130,12 +133,10 @@ class AddUserController extends BaseController
         }
 
         // Validate that the template is a user template
-        if (isset($userParams['perm_templ']) && $userParams['perm_templ'] !== '') {
-            if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
-                $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
-                $this->renderAddUserForm($policyConfig);
-                return;
-            }
+        if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
+            $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
+            $this->renderAddUserForm($policyConfig);
+            return;
         }
 
         // Handle auto-generated password
