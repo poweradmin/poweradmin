@@ -106,8 +106,22 @@ class UserProvisioningService extends LoggingService
 
             // Try to find by email if email linking is enabled
             $authConfig = $this->getAuthMethodConfig($authMethod);
-            if (($authConfig['link_by_email'] ?? true) && !empty($userInfo->getEmail())) {
+            if (
+                ($authConfig['link_by_email'] ?? true)
+                && !empty($userInfo->getEmail())
+                && $this->emailClaimIsLinkable($userInfo)
+            ) {
                 $existingUserId = $this->findUserByEmail($userInfo->getEmail());
+
+                if ($existingUserId !== null && $this->userHoldsSuperuserPermission($existingUserId)) {
+                    // An address is not proof of identity, so it may never hand out
+                    // the account that can rewrite every zone and every other user.
+                    $this->logWarning('Refusing to link {method} identity to superuser account {id} by email', [
+                        'method' => strtoupper($authMethod),
+                        'id' => $existingUserId
+                    ]);
+                    $existingUserId = null;
+                }
 
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
@@ -178,6 +192,42 @@ class UserProvisioningService extends LoggingService
         } catch (\Exception $e) {
             $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
             return null;
+        }
+    }
+
+    /**
+     * Whether the provider vouched for the email address it just sent.
+     */
+    private function emailClaimIsLinkable(UserInfoInterface $userInfo): bool
+    {
+        $claims = $userInfo->getRawData();
+        if (!array_key_exists('email_verified', $claims)) {
+            return true;
+        }
+
+        $verified = $claims['email_verified'];
+        // SAML attribute bags wrap every value in an array; OIDC sends it bare.
+        if (is_array($verified)) {
+            $verified = $verified[0] ?? null;
+        }
+
+        // Providers serialize this as bool, "true"/"false", or 1/0.
+        $isVerified = filter_var($verified, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+        if (!$isVerified) {
+            $this->logWarning('Provider reported email_verified=false; skipping email-based account linking');
+        }
+
+        return $isVerified;
+    }
+
+    private function userHoldsSuperuserPermission(int $userId): bool
+    {
+        try {
+            return $this->userRepository->hasAdminPermission($userId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable permission state must not permit linking.
+            $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
+            return true;
         }
     }
 
