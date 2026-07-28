@@ -380,7 +380,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ_record($db, array $record): bool
+    public static function edit_zone_templ_record($db, array $record, int $zone_templ_id): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to edit this record."));
@@ -412,7 +412,8 @@ class ZoneTemplate
                                 content=" . $db->quote($record['content'], 'text') . ",
                                 ttl=" . $db->quote($record['ttl'], 'integer') . ",
                                 prio=" . $db->quote($record['prio'] ?? 0, 'integer') . "
-                                WHERE id=" . $db->quote($record['rid'], 'integer');
+                                WHERE id=" . $db->quote($record['rid'], 'integer') . "
+                                AND zone_templ_id=" . $db->quote($zone_templ_id, 'integer');
         $db->query($query);
         return true;
     }
@@ -423,7 +424,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ_record($db, int $rid): bool
+    public static function delete_zone_templ_record($db, int $rid, int $zone_templ_id): bool
     {
         if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
             $error = new ErrorMessage(_("You do not have the permission to delete this record."));
@@ -432,7 +433,8 @@ class ZoneTemplate
 
             return false;
         } else {
-            $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer');
+            $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer')
+                . " AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
             $db->query($query);
             return true;
         }

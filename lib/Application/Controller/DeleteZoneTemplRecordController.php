@@ -60,7 +60,7 @@ class DeleteZoneTemplRecordController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if (ZoneTemplate::delete_zone_templ_record($this->db, $record_id)) {
+            if (ZoneTemplate::delete_zone_templ_record($this->db, $record_id, $zone_templ_id)) {
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
             } else {
                 $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
