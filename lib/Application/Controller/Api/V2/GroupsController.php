@@ -328,7 +328,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     private function createGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can create groups', 403);
         }
 
@@ -421,7 +421,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 404, description: 'Group not found')]
     private function updateGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can update groups', 403);
         }
 
@@ -500,7 +500,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 404, description: 'Group not found')]
     private function deleteGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can delete groups', 403);
         }
 

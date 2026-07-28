@@ -86,6 +86,23 @@ class PermissionService
     }
 
     /**
+     * Check whether a user may create, edit or delete groups.
+     *
+     * Group management is superuser-only, unlike user permission templates which
+     * `user_edit_templ_perm` delegates. Two reasons: that permission is defined as
+     * covering the template assigned to *users*, and a group's template lands in the
+     * same global permission union as a user's, so delegating it would hand out a
+     * second, unguarded route to superuser.
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user may manage groups
+     */
+    public function canManageGroups(int $userId): bool
+    {
+        return $this->isAdmin($userId);
+    }
+
+    /**
      * Check if a user is an admin (has the "überuser" permission)
      *
      * @param int $userId User ID to check
