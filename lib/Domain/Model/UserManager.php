@@ -658,6 +658,42 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
+    /**
+     * Check whether the caller may put an account on the given permission template.
+     *
+     * Delegated template management is not a route to superuser: the holder may not
+     * hand out a template carrying user_is_ueberuser, nor retemplate their own
+     * account without the right to edit other users.
+     *
+     * @return string|null Error to surface, or null when the assignment is allowed
+     */
+    private static function permission_template_assignment_error(
+        $db,
+        int $perm_templ_id,
+        int $target_user_id,
+        bool $caller_is_superuser,
+        bool $caller_may_edit_others
+    ): ?string {
+        if ($caller_is_superuser) {
+            return null;
+        }
+
+        if ($target_user_id === (int)$_SESSION["userid"] && !$caller_may_edit_others) {
+            return _('Changing your own permission template requires the permission to edit other users.');
+        }
+
+        $count = $db->queryOne("SELECT COUNT(*) FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = " . $db->quote($perm_templ_id, 'integer') . "
+            AND pi.name = 'user_is_ueberuser'");
+
+        if ((int)$count > 0) {
+            return _('Assigning a permission template with administrator rights requires administrator rights.');
+        }
+
+        return null;
+    }
+
     public function update_user_details(array $details): bool
     {
         $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
@@ -734,6 +770,21 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
+                $templateError = self::permission_template_assignment_error(
+                    $this->db,
+                    (int)$details['templ_id'],
+                    (int)$details['uid'],
+                    $perm_is_godlike == "1",
+                    $perm_edit_others
+                );
+                if ($templateError !== null) {
+                    $error = new ErrorMessage($templateError);
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
+
+                    return false;
+                }
+
                 $query .= ", perm_templ = :templ_id";
             }
 
