@@ -196,7 +196,8 @@ class EditZoneMetadataController extends BaseController
             'idn_zone_name' => $idnZoneName,
             'metadata_rows' => $this->prepareRowsForTemplate($metadataRows),
             'metadata_definitions' => $this->getMetadataDefinitionsForTemplate(
-                UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+                UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+                array_column($metadataRows, 'kind')
             ),
             'is_reverse_zone' => DnsHelper::isReverseZone($zone['name']),
             'can_edit_metadata' => $canEdit,
@@ -454,9 +455,10 @@ class EditZoneMetadataController extends BaseController
      * Build metadata definitions for the template, already localized for display.
      *
      * @param bool $includeOperatorOnly Whether the caller may set operator-only kinds
+     * @param array<int, string> $existingKinds Kinds already stored on the zone
      * @return array<int, array<string, mixed>>
      */
-    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly = true): array
+    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly = true, array $existingKinds = []): array
     {
         $definitions = [];
         $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
@@ -471,7 +473,10 @@ class EditZoneMetadataController extends BaseController
                 continue;
             }
 
-            if (!$includeOperatorOnly && MetadataDefinitions::isOperatorOnly($kind)) {
+            // A stored operator-only kind stays in the list so its row still matches
+            // an option; it is disabled, so it cannot be picked for a new row.
+            $lockedKind = !$includeOperatorOnly && MetadataDefinitions::isOperatorOnly($kind);
+            if ($lockedKind && !in_array($kind, $existingKinds, true)) {
                 continue;
             }
 
@@ -482,7 +487,7 @@ class EditZoneMetadataController extends BaseController
                 'placeholder' => $definition['placeholder'],
                 'help' => _($definition['help']),
                 'badges' => $this->buildBadgeDescriptors($kind, $definition),
-                'disabled' => $support === 'unsupported_known',
+                'disabled' => $support === 'unsupported_known' || $lockedKind,
                 'min_version' => $definition['min_version'] ?? null,
             ];
         }

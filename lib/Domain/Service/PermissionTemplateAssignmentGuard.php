@@ -59,15 +59,7 @@ class PermissionTemplateAssignmentGuard
     ): ?string {
         $providesTemplate = array_key_exists('perm_templ', $input) && $input['perm_templ'] !== null;
 
-        if ($permissionService->userHasPermission($callerId, 'user_is_ueberuser')) {
-            return null;
-        }
-
-        if (!$permissionService->userHasPermission($callerId, 'user_edit_templ_perm')) {
-            if ($providesTemplate) {
-                return self::REJECT_MESSAGE;
-            }
-
+        if (!$providesTemplate) {
             if ($defaultUserTemplateId !== null) {
                 $input['perm_templ'] = $defaultUserTemplateId;
             }
@@ -75,8 +67,12 @@ class PermissionTemplateAssignmentGuard
             return null;
         }
 
-        if (!$providesTemplate) {
+        if ($permissionService->userHasPermission($callerId, 'user_is_ueberuser')) {
             return null;
+        }
+
+        if (!$permissionService->userHasPermission($callerId, 'user_edit_templ_perm')) {
+            return self::REJECT_MESSAGE;
         }
 
         // user_edit_templ_perm delegates template management, not self-promotion.
