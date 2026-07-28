@@ -32,6 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
 class AddPermTemplController extends BaseController
@@ -65,7 +67,20 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->addPermissionTemplate($this->getRequest());
+        $request = $this->getRequest();
+        $guardError = PermissionTemplateContentGuard::apply(
+            $this->callerIsSuperuser(),
+            $this->permissionTemplate->getPermissionsByTemplateId(),
+            [],
+            is_array($request['perm_id'] ?? null) ? $request['perm_id'] : []
+        );
+        if ($guardError !== null) {
+            $this->setMessage('list_perm_templ', 'error', $this->guardMessage($guardError));
+            $this->redirect('index.php', ['page' => 'list_perm_templ']);
+            return;
+        }
+
+        $this->permissionTemplate->addPermissionTemplate($request);
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
         $this->redirect('index.php', ['page' => 'list_perm_templ']);
     }
@@ -73,7 +88,10 @@ class AddPermTemplController extends BaseController
     private function showForm(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId()
+            'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
+                $this->permissionTemplate->getPermissionsByTemplateId(),
+                $this->callerIsSuperuser()
+            )
         ]);
     }
 
@@ -89,5 +107,17 @@ class AddPermTemplController extends BaseController
         ]);
 
         return $this->doValidateRequest();
+    }
+
+    private function callerIsSuperuser(): bool
+    {
+        return UserManager::verify_permission($this->db, 'user_is_ueberuser');
+    }
+
+    private function guardMessage(string $code): string
+    {
+        return $code === PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED
+            ? _('Granting administrator rights in a permission template requires administrator rights.')
+            : _('The permission template could not be added.');
     }
 }
