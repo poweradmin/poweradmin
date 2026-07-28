@@ -742,7 +742,7 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username FROM users WHERE id = :id";
+            $query = "SELECT username, perm_templ FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
@@ -773,13 +773,15 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
-                $templateError = self::permission_template_assignment_error(
-                    $this->db,
-                    (int)$details['templ_id'],
-                    (int)$details['uid'],
-                    $perm_is_godlike == "1",
-                    $perm_edit_others
-                );
+                $templateError = (int)$details['templ_id'] === (int)$userCheck['perm_templ']
+                    ? null
+                    : self::permission_template_assignment_error(
+                        $this->db,
+                        (int)$details['templ_id'],
+                        (int)$details['uid'],
+                        $perm_is_godlike == "1",
+                        $perm_edit_others
+                    );
                 if ($templateError !== null) {
                     $error = new ErrorMessage($templateError);
                     $errorPresenter = new ErrorPresenter();
