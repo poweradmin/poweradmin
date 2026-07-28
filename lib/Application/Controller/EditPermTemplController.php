@@ -32,6 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
 class EditPermTemplController extends BaseController
@@ -77,7 +79,25 @@ class EditPermTemplController extends BaseController
         // Ensure perm_id is always present so an all-unchecked form clears the
         // permission list rather than leaving it untouched.
         $request = $this->getRequest();
-        $request['perm_id'] = $request['perm_id'] ?? [];
+        $request['perm_id'] = is_array($request['perm_id'] ?? null) ? $request['perm_id'] : [];
+
+        // The route id is the only authoritative one; a posted templ_id would let
+        // this write a template the URL never named.
+        $templateId = (int)$this->getSafeRequestValue('id');
+        $request['templ_id'] = $templateId;
+
+        $guardError = PermissionTemplateContentGuard::apply(
+            $this->callerIsSuperuser(),
+            $this->permissionTemplate->getPermissionsByTemplateId(),
+            $this->permissionTemplate->getPermissionsByTemplateId($templateId),
+            $request['perm_id']
+        );
+        if ($guardError !== null) {
+            $this->setMessage('list_perm_templ', 'error', $this->guardMessage($guardError));
+            $this->redirect('/permissions/templates');
+            return;
+        }
+
         $this->permissionTemplate->updatePermissionTemplateDetails($request);
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
@@ -91,7 +111,10 @@ class EditPermTemplController extends BaseController
             'id' => $id,
             'templ' => $this->permissionTemplate->getPermissionTemplateDetails($id),
             'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId($id),
-            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+            'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
+                $this->permissionTemplate->getPermissionsByTemplateId(),
+                $this->callerIsSuperuser()
+            ),
         ]);
     }
 
@@ -115,5 +138,17 @@ class EditPermTemplController extends BaseController
         ]);
 
         return $this->doValidateRequest();
+    }
+
+    private function callerIsSuperuser(): bool
+    {
+        return UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+    }
+
+    private function guardMessage(string $code): string
+    {
+        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
+            ? _('Editing a permission template with administrator rights requires administrator rights.')
+            : _('Granting administrator rights in a permission template requires administrator rights.');
     }
 }

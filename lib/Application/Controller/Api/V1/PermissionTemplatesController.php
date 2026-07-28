@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -282,6 +283,16 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
+            $guardError = PermissionTemplateContentGuard::apply(
+                $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser'),
+                $this->permissionTemplateRepository->getPermissionsByTemplateId(),
+                [],
+                $details['perm_id'] ?? []
+            );
+            if ($guardError !== null) {
+                return $this->returnApiError($this->guardMessage($guardError), 403);
+            }
+
             $result = $this->permissionTemplateRepository->addPermissionTemplate($details);
 
             if ($result) {
@@ -389,6 +400,16 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
+            $guardError = PermissionTemplateContentGuard::apply(
+                $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser'),
+                $this->permissionTemplateRepository->getPermissionsByTemplateId(),
+                $this->permissionTemplateRepository->getPermissionsByTemplateId($id),
+                $details['perm_id'] ?? []
+            );
+            if ($guardError !== null) {
+                return $this->returnApiError($this->guardMessage($guardError), 403);
+            }
+
             $result = $this->permissionTemplateRepository->updatePermissionTemplateDetails($details);
 
             if ($result) {
@@ -471,5 +492,12 @@ class PermissionTemplatesController extends PublicApiController
         } catch (Exception $e) {
             return $this->returnApiError('Failed to delete permission template: ' . $e->getMessage(), 500);
         }
+    }
+
+    private function guardMessage(string $code): string
+    {
+        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
+            ? 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser'
+            : 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     }
 }
