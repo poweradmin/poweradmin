@@ -158,6 +158,10 @@ class EditController extends BaseController
 
         if (isset($_POST['sign_zone'])) {
             $this->validateCsrfToken();
+            $this->checkCondition(
+                !($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")),
+                _("You do not have the permission to edit this zone.")
+            );
             $dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -177,6 +181,10 @@ class EditController extends BaseController
 
         if (isset($_POST['unsign_zone'])) {
             $this->validateCsrfToken();
+            $this->checkCondition(
+                !($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")),
+                _("You do not have the permission to edit this zone.")
+            );
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->unsecureZone($zone_name);
@@ -418,6 +426,14 @@ class EditController extends BaseController
 
     public function saveAsTemplate(int $zone_id): void
     {
+        // Runs before the page's view gate, so the zone has to be checked here or any
+        // zone's records could be copied into a template the caller owns.
+        $perm_view = Permission::getViewPermission($this->db);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
+            $this->showError(_("You do not have the permission to view this zone."));
+        }
+
         $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
         if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
             $this->showError(_('Zone template with this name already exists, please choose another one.'));

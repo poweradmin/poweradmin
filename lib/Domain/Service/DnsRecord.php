@@ -1772,6 +1772,17 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
+        // Applying a template rewrites this zone's records, so it needs edit rights on
+        // the zone itself. Reporting the error is not enough: ErrorPresenter returns,
+        // so without this the insert below still ran for any zone id.
+        if (!($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
+            $error = new ErrorMessage(_("You do not have the permission to edit this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return;
+        }
+
         $zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add') ? "1" : "0";
         $zone_slave_add = UserManager::verify_permission($this->db, 'zone_slave_add') ? "1" : "0";
 
@@ -1782,21 +1793,16 @@ class DnsRecord
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($zone_template_id != 0) {
-            if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                if ($db_type == 'pgsql') {
-                    $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                } elseif ($db_type == 'sqlite') {
-                    $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
-                } else {
-                    $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
-                }
-                $stmt = $this->db->prepare($query);
-                $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+            if ($db_type == 'pgsql') {
+                $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+            } elseif ($db_type == 'sqlite') {
+                $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
             } else {
-                $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
             }
+            $stmt = $this->db->prepare($query);
+            $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
                 $domain = $this->get_domain_name_by_id($zone_id);
                 $templ_records = ZoneTemplate::get_zone_templ_records($this->db, $zone_template_id);
