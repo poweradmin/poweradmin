@@ -727,7 +727,7 @@ class UsersController extends PublicApiController
             // Update path passes null so an omitted perm_templ stays omitted (the
             // existing template persists). Only the create path injects a safe
             // default to replace the repository's historical fallback to id 1.
-            $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null);
+            $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null, $targetUserId);
             if ($templateGate !== null) {
                 return $templateGate;
             }
@@ -995,6 +995,17 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('perm_templ must be a numeric ID', 400);
             }
 
+            // canEditPermissionTemplates() alone would let a delegated template
+            // manager put their own account on the Administrator template.
+            $assignError = $this->apiPermissionService->checkPermissionTemplateAssignment(
+                $currentUserId,
+                $targetUserId,
+                $permTemplId
+            );
+            if ($assignError !== null) {
+                return $this->returnApiError($assignError, 403);
+            }
+
             // Use the domain service to assign permission template
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
@@ -1022,13 +1033,14 @@ class UsersController extends PublicApiController
         }
     }
 
-    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId): ?JsonResponse
+    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId = null): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(
             $this->apiPermissionService,
             $defaultUserTemplateId,
             $currentUserId,
-            $input
+            $input,
+            $targetUserId
         );
 
         return $error === null ? null : $this->returnApiError($error, 403);

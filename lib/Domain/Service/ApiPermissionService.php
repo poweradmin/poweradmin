@@ -34,6 +34,10 @@ use Poweradmin\Domain\Model\ZoneType;
  */
 class ApiPermissionService
 {
+    public const TEMPLATE_ASSIGN_DENIED = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
+    public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
+    public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
+
     private PDO $db;
 
     public function __construct(PDO $db)
@@ -544,6 +548,59 @@ class ApiPermissionService
 
         // User with user_edit_templ_perm can edit permission templates
         return $this->userHasPermission($userId, 'user_edit_templ_perm');
+    }
+
+    /**
+     * Check whether a permission template grants superuser rights.
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the template carries user_is_ueberuser
+     */
+    public function templateGrantsSuperuser(int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = :templ_id AND pi.name = 'user_is_ueberuser'
+        ");
+        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Check whether a caller may put a target account on a given permission template.
+     *
+     * Layered on top of canEditPermissionTemplates(): a caller may never hand out
+     * more authority than they hold, and self-retemplating needs user_edit_others
+     * exactly as the web user editor requires.
+     *
+     * @param int $userId Acting user ID
+     * @param ?int $targetUserId Account whose template would change; null on the create path
+     * @param int $permTemplId Template being assigned
+     * @return ?string Error message to surface as 403, or null when allowed
+     */
+    public function checkPermissionTemplateAssignment(int $userId, ?int $targetUserId, int $permTemplId): ?string
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return null;
+        }
+
+        if (!$this->userHasPermission($userId, 'user_edit_templ_perm')) {
+            return self::TEMPLATE_ASSIGN_DENIED;
+        }
+
+        if ($userId === $targetUserId && !$this->userHasPermission($userId, 'user_edit_others')) {
+            return self::TEMPLATE_SELF_ASSIGN_DENIED;
+        }
+
+        if ($this->templateGrantsSuperuser($permTemplId)) {
+            return self::TEMPLATE_SUPERUSER_DENIED;
+        }
+
+        return null;
     }
 
     /**
