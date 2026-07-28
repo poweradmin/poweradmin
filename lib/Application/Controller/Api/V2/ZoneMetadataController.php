@@ -304,6 +304,13 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
+        if (
+            MetadataDefinitions::isOperatorOnly($kind)
+            && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
+        ) {
+            return $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403);
+        }
+
         if (!MetadataDefinitions::isApiWritable($kind)) {
             return $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403);
         }
@@ -385,6 +392,13 @@ class ZoneMetadataController extends PublicApiController
 
         if (!$this->apiPermissionService->canEditZoneMeta($this->authenticatedUserId, $zoneId)) {
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
+        }
+
+        if (
+            MetadataDefinitions::isOperatorOnly($kind)
+            && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
+        ) {
+            return $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403);
         }
 
         if (!MetadataDefinitions::isApiWritable($kind)) {

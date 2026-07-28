@@ -125,10 +125,23 @@ class EditZoneMetadataController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
+
+            // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
+            // calls in API-backend mode and is only needed past this point.
             $validationErrors = $this->validateMetadataRows($submittedMetadata);
 
             if (!empty($validationErrors)) {
                 $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
+                $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
+                return;
+            }
+
+            $restrictionErrors = $this->operatorOnlyViolations(
+                $submittedMetadata,
+                $this->loadMetadata($zoneId, $zone['name'])
+            );
+            if (!empty($restrictionErrors)) {
+                $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
@@ -383,6 +396,55 @@ class EditZoneMetadataController extends BaseController
         }
 
         return array_values(array_unique($errors));
+    }
+
+    /**
+     * Reject changes to operator-only metadata kinds by non-superusers.
+     *
+     * These kinds make PowerDNS evaluate Lua, which reaches every zone the server
+     * hosts, so a zone-level editor must not set them. Rows that already exist are
+     * compared rather than rejected outright, so an administrator-set value does
+     * not lock the zone's own editor out of saving unrelated metadata.
+     *
+     * @param array<int, array<string, string>> $submitted
+     * @param array<int, array<string, string>> $current
+     * @return array<int, string>
+     */
+    private function operatorOnlyViolations(array $submitted, array $current): array
+    {
+        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            return [];
+        }
+
+        $collect = static function (array $rows): array {
+            $byKind = [];
+            foreach ($rows as $row) {
+                $kind = (string)($row['kind'] ?? '');
+                if ($kind !== '' && MetadataDefinitions::isOperatorOnly($kind)) {
+                    $byKind[$kind][] = (string)($row['content'] ?? '');
+                }
+            }
+            foreach ($byKind as $kind => $values) {
+                sort($values);
+                $byKind[$kind] = $values;
+            }
+            return $byKind;
+        };
+
+        $before = $collect($current);
+        $after = $collect($submitted);
+
+        $errors = [];
+        foreach (array_keys($before + $after) as $kind) {
+            if (($before[$kind] ?? []) !== ($after[$kind] ?? [])) {
+                $errors[] = sprintf(
+                    _('Metadata kind %s can only be changed by an administrator.'),
+                    $kind
+                );
+            }
+        }
+
+        return $errors;
     }
 
     /**
