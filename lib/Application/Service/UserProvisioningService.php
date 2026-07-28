@@ -538,21 +538,13 @@ class UserProvisioningService extends LoggingService
                 'id' => $defaultTemplateId
             ]);
             return $defaultTemplateId;
-        } else {
-            $this->logError('Default permission template {template} not found in database!', ['template' => $defaultTemplateName]);
         }
 
-        // Final fallback: find any available template (should not happen in normal operation)
-        $this->logWarning('Default permission template not found, using first available template');
-        $fallbackId = $this->findFirstAvailablePermissionTemplate();
+        // No arbitrary fallback: the lowest template id is the bundled Administrator
+        // template, so guessing one would hand out superuser access.
+        $this->logError('Default permission template {template} not found in database!', ['template' => $defaultTemplateName]);
 
-        if ($fallbackId) {
-            $this->logInfo('Using fallback permission template ID: {id}', ['id' => $fallbackId]);
-        } else {
-            $this->logError('No permission templates found in database at all!');
-        }
-
-        return $fallbackId;
+        return null;
     }
 
     /**
@@ -586,20 +578,6 @@ class UserProvisioningService extends LoggingService
             return $result ? (int)$result['id'] : null;
         } catch (\Exception $e) {
             $this->logError('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
-            return null;
-        }
-    }
-
-    private function findFirstAvailablePermissionTemplate(): ?int
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ ORDER BY id ASC LIMIT 1");
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? (int)$result['id'] : null;
-        } catch (\Exception $e) {
-            $this->logError('Error finding first available permission template: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
