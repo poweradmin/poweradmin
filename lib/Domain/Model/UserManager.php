@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -40,6 +41,7 @@ class UserManager
     private ConfigurationManager $config;
     private MessageService $messageService;
     private ?PermissionService $permissionService = null;
+    private ?ApiPermissionService $apiPermissionService = null;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
@@ -59,6 +61,35 @@ class UserManager
         }
         $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
+     * Check whether the caller may write the given permission template.
+     *
+     * Mirrors ApiPermissionService::checkPermissionTemplateAssignment(): holding
+     * user_edit_templ_perm delegates template management, it does not confer the
+     * right to hand out superuser access or to retemplate one's own account.
+     *
+     * @param ?int $targetUserId Account being written, or null when creating one
+     * @return ?string Error to surface, or null when the assignment is allowed
+     */
+    private function permissionTemplateAssignmentError(int $permTemplId, ?int $targetUserId): ?string
+    {
+        if ($this->hasPermission('user_is_ueberuser')) {
+            return null;
+        }
+
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($targetUserId !== null && $userId === $targetUserId && !$this->hasPermission('user_edit_others')) {
+            return _('Changing your own permission template requires the permission to edit other users.');
+        }
+
+        $this->apiPermissionService ??= new ApiPermissionService($this->db);
+        if ($this->apiPermissionService->templateGrantsSuperuser($permTemplId)) {
+            return _('Assigning a permission template with administrator rights requires administrator rights.');
+        }
+
+        return null;
     }
 
     /**
@@ -170,7 +201,7 @@ class UserManager
         if (($id == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($id != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
             // Fetch the current record up front: needed for the username-change check
             // below and to know whether this is an externally authenticated user.
-            $stmt = $this->db->prepare("SELECT username, email, auth_method FROM users WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT username, email, auth_method, perm_templ FROM users WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $usercheck = $stmt->fetch();
 
@@ -224,7 +255,19 @@ class UserManager
 
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
-            if ($this->hasPermission('user_edit_templ_perm')) {
+            $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
+            if ($mayAssignTemplate) {
+                // Only an actual change is gated, so editing other fields on a user
+                // who already holds a superuser template keeps working.
+                if ((int)$perm_templ !== (int)$usercheck['perm_templ']) {
+                    $templateError = $this->permissionTemplateAssignmentError((int)$perm_templ, $id);
+                    if ($templateError !== null) {
+                        $this->messageService->addSystemError($templateError);
+
+                        return false;
+                    }
+                }
+
                 $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
             }
 
@@ -263,7 +306,7 @@ class UserManager
             $stmt->bindValue(':auth_method', $newAuthMethod, PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
-            if ($this->hasPermission('user_edit_templ_perm')) {
+            if ($mayAssignTemplate) {
                 $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
             }
 
@@ -464,6 +507,17 @@ class UserManager
             $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
 
             return false;
+        }
+
+        // Callers without user_edit_templ_perm inherit the creator's own template
+        // below, so only a chosen template needs gating.
+        if ($this->hasPermission('user_edit_templ_perm')) {
+            $templateError = $this->permissionTemplateAssignmentError((int)($details['perm_templ'] ?? 0), null);
+            if ($templateError !== null) {
+                $this->messageService->addSystemError($templateError);
+
+                return false;
+            }
         }
 
         // Set active status (defaults to 0 if not set)
