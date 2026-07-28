@@ -111,22 +111,24 @@ class EditController extends BaseController
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
-        if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
+        // Zone metadata writes need the meta-edit right; without this gate any
+        // authenticated user could retype a zone or repoint its primary.
+        if (isset($_POST['slave_master_change']) && $meta_edit) {
             $this->validateCsrfToken();
-            $dnsRecord->change_zone_slave_master($_POST['domain'], $_POST['new_master']);
+            $dnsRecord->change_zone_slave_master($zone_id, $_POST['new_master']);
         }
 
         $types = ZoneType::getTypes();
 
         $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-        if (isset($_POST['type_change']) && in_array($new_type, $types)) {
+        if (isset($_POST['type_change']) && in_array($new_type, $types) && $meta_edit) {
             $this->validateCsrfToken();
             $dnsRecord->change_zone_type($new_type, $zone_id);
         }
 
-        if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
+        if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
             $this->validateCsrfToken();
-            DnsRecord::add_owner_to_zone($this->db, $_POST["domain"], $_POST["newowner"]);
+            DnsRecord::add_owner_to_zone($this->db, $zone_id, $_POST["newowner"]);
         }
 
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {

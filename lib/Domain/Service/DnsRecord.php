@@ -915,7 +915,9 @@ class DnsRecord
      */
     public static function add_owner_to_zone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $_GET["id"])) {
+        // Authorise the zone this call actually writes, not whatever id the request
+        // happens to carry.
+        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $zone_id)) {
             if (UserManager::is_valid_user($db, $user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::get_zone_template($db, $zone_id);
@@ -954,7 +956,7 @@ class DnsRecord
      */
     public static function delete_owner_from_zone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $_GET["id"])) {
+        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $zone_id)) {
             if (UserManager::is_valid_user($db, $user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
