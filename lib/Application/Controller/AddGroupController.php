@@ -147,8 +147,9 @@ class AddGroupController extends BaseController
     {
         $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
 
-        // Use minimal permission template as default (most secure)
-        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '1';
+        // Use minimal permission template as default (most secure); preselect
+        // nothing rather than falling back to template id 1 (Administrator).
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '';
 
         $this->render('add_group.html', [
             'name' => $this->request->getPostParam('name', ''),

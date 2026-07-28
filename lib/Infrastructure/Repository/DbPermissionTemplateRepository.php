@@ -241,17 +241,28 @@ class DbPermissionTemplateRepository
      * Get the permission template with the fewest permissions assigned.
      * Useful for setting a secure default when creating new users or groups.
      *
+     * Superuser templates are excluded outright: user_is_ueberuser is a single
+     * row, so the bundled Administrator template ranks as one of the smallest
+     * and would otherwise win this query whenever an emptier template (such as
+     * the bundled Guest) is renamed or removed.
+     *
      * @param string|null $templateType Restrict to 'user' or 'group' templates; null = no filter
-     * @return int|null Template ID with minimal permissions, or null if no templates exist
+     * @return int|null Template ID with minimal permissions, or null if none qualify
      */
     public function getMinimalPermissionTemplateId(?string $templateType = null): ?int
     {
         $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
                   FROM perm_templ pt
-                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id";
+                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id
+                  WHERE NOT EXISTS (
+                      SELECT 1
+                      FROM perm_templ_items sup
+                      INNER JOIN perm_items spi ON sup.perm_id = spi.id
+                      WHERE sup.templ_id = pt.id AND spi.name = 'user_is_ueberuser'
+                  )";
 
         if ($templateType !== null) {
-            $query .= " WHERE pt.template_type = :template_type";
+            $query .= " AND pt.template_type = :template_type";
         }
 
         $query .= " GROUP BY pt.id, pt.name

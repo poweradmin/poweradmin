@@ -120,7 +120,13 @@ class AddUserController extends BaseController
         // When user permission templates are hidden, force minimal user template assignment
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         if (!$showUserAccessTemplates) {
-            $userParams['perm_templ'] = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '1';
+            $minimalTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user');
+            if ($minimalTemplateId === null) {
+                $this->setMessage('add_user', 'error', _('No non-superuser permission template is available to assign.'));
+                $this->renderAddUserForm($policyConfig);
+                return;
+            }
+            $userParams['perm_templ'] = $minimalTemplateId;
         }
 
         // Validate that the template is a user template
@@ -208,8 +214,9 @@ class AddUserController extends BaseController
         $fullname = $this->request->getPostParam('fullname', '');
         $email = $this->request->getPostParam('email', '');
 
-        // Use minimal permission template as default (most secure)
-        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '1';
+        // Use minimal permission template as default (most secure); preselect
+        // nothing rather than falling back to template id 1 (Administrator).
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '';
         $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->request->getPostParam('descr', '');
