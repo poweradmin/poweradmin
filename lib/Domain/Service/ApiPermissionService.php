@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Stateless permission service for API requests
@@ -39,6 +42,7 @@ class ApiPermissionService
     public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
 
     private PDO $db;
+    private ?UserRepository $userRepository = null;
 
     public function __construct(PDO $db)
     {
@@ -558,16 +562,10 @@ class ApiPermissionService
      */
     public function templateGrantsSuperuser(int $permTemplId): bool
     {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*)
-            FROM perm_templ_items pti
-            INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE pti.templ_id = :templ_id AND pi.name = 'user_is_ueberuser'
-        ");
-        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
-        $stmt->execute();
+        // One owner for this query: the repository also answers it for the web paths.
+        $this->userRepository ??= new DbUserRepository($this->db, ConfigurationManager::getInstance());
 
-        return (int)$stmt->fetchColumn() > 0;
+        return $this->userRepository->templateGrantsUberuser($permTemplId);
     }
 
     /**
