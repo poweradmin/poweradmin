@@ -145,6 +145,7 @@ class MetadataDefinitions
             'placeholder' => '/path/to/script.lua',
             'help' => 'Readable via API, but not writable through the metadata endpoint.',
             'api_write' => false,
+            'operator_only' => true,
         ],
         'NSEC3NARROW' => [
             'label' => 'NSEC3NARROW',
@@ -228,6 +229,7 @@ class MetadataDefinitions
             'placeholder' => '1',
             'help' => 'Not writable through the metadata API endpoint.',
             'api_write' => false,
+            'operator_only' => true,
         ],
         'SOA-EDIT-API' => [
             'label' => 'SOA-EDIT-API',
@@ -260,6 +262,21 @@ class MetadataDefinitions
             return true; // Custom kinds are writable
         }
         return (bool)($definition['api_write'] ?? true);
+    }
+
+    /**
+     * Check whether a metadata kind may only be set by a superuser.
+     *
+     * These kinds make PowerDNS evaluate operator-supplied Lua, so a zone-level
+     * editor setting them would reach past the zone they administer.
+     */
+    public static function isOperatorOnly(string $kind): bool
+    {
+        $definition = self::get($kind);
+        if ($definition === null) {
+            return false;
+        }
+        return (bool)($definition['operator_only'] ?? false);
     }
 
     /**

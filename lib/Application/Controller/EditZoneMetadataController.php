@@ -122,17 +122,22 @@ class EditZoneMetadataController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
-            $validationErrors = $this->validateMetadataRows($submittedMetadata);
+
+            // Capture the current metadata state for the change-log diff and for
+            // the operator-only comparison. Done before the write so we record
+            // what was actually replaced.
+            $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
+
+            $validationErrors = array_merge(
+                $this->validateMetadataRows($submittedMetadata),
+                $this->operatorOnlyViolations($submittedMetadata, $beforeMetadata)
+            );
 
             if (!empty($validationErrors)) {
                 $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
-
-            // Capture the current metadata state for the change-log diff. Done
-            // before the write so we record what was actually replaced.
-            $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
 
             $saveResult = $this->saveMetadata($zone, $submittedMetadata);
 
@@ -186,7 +191,7 @@ class EditZoneMetadataController extends BaseController
         $this->setCurrentPage('zone_metadata');
         $this->setPageTitle($canEdit ? _('Edit Zone Metadata') : _('Zone Metadata'));
 
-        $definitions = $this->getMetadataDefinitionsForTemplate();
+        $definitions = $this->getMetadataDefinitionsForTemplate($this->hasPermission('user_is_ueberuser'));
 
         $this->render('edit_zone_metadata.html', [
             'zone_id' => $zoneId,
@@ -426,11 +431,61 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
+     * Reject changes to operator-only metadata kinds by non-superusers.
+     *
+     * These kinds make PowerDNS evaluate Lua, which reaches every zone the server
+     * hosts, so a zone-level editor must not set them. Rows that already exist are
+     * compared rather than rejected outright, so an administrator-set value does
+     * not lock the zone's own editor out of saving unrelated metadata.
+     *
+     * @param array<int, array{kind: string, content: string}> $submitted
+     * @param array<int, array{kind: string, content: string}> $current
+     * @return array<int, string>
+     */
+    private function operatorOnlyViolations(array $submitted, array $current): array
+    {
+        if ($this->hasPermission('user_is_ueberuser')) {
+            return [];
+        }
+
+        $collect = static function (array $rows): array {
+            $byKind = [];
+            foreach ($rows as $row) {
+                $kind = (string)($row['kind'] ?? '');
+                if ($kind !== '' && MetadataDefinitions::isOperatorOnly($kind)) {
+                    $byKind[$kind][] = (string)($row['content'] ?? '');
+                }
+            }
+            foreach ($byKind as $kind => $values) {
+                sort($values);
+                $byKind[$kind] = $values;
+            }
+            return $byKind;
+        };
+
+        $before = $collect($current);
+        $after = $collect($submitted);
+
+        $errors = [];
+        foreach (array_keys($before + $after) as $kind) {
+            if (($before[$kind] ?? []) !== ($after[$kind] ?? [])) {
+                $errors[] = sprintf(
+                    _('Metadata kind %s can only be changed by an administrator.'),
+                    $kind
+                );
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
      * Build metadata definitions for the template, already localized for display.
      *
+     * @param bool $includeOperatorOnly Whether the caller may set operator-only kinds
      * @return array<int, array<string, mixed>>
      */
-    private function getMetadataDefinitionsForTemplate(): array
+    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly = true): array
     {
         $definitions = [];
         $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
@@ -448,6 +503,12 @@ class EditZoneMetadataController extends BaseController
             // An empty configured option list disables the kind in the editor
             $options = MetadataDefinitions::getOfferedOptions($kind, $this->getConfig());
             if ($options === []) {
+                continue;
+            }
+
+            // Do not offer kinds the caller is not allowed to set; the POST
+            // handler rejects them regardless.
+            if (!$includeOperatorOnly && MetadataDefinitions::isOperatorOnly($kind)) {
                 continue;
             }
 
