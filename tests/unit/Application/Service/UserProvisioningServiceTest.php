@@ -506,4 +506,100 @@ class UserProvisioningServiceTest extends TestCase
 
         $this->assertSame(['lab1'], $invoker(['lab1', 42, ['nested'], new \stdClass()]));
     }
+
+    /**
+     * A missing default template must not fall back to "the first template by id",
+     * which is the bundled Administrator template on every shipped schema.
+     */
+    public function testDeterminePermissionTemplateFailsClosedWhenDefaultIsMissing(): void
+    {
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], []],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $service = $this->createServiceWithMocks($db, $configManager);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        $this->assertNull(
+            $method->invoke($service, [], 'oidc', true),
+            'A renamed or deleted default template must refuse provisioning, not pick template id 1'
+        );
+    }
+
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function emailVerifiedClaimProvider(): array
+    {
+        return [
+            'verified bool true' => [true, true],
+            'verified string true' => ['true', true],
+            'verified int one' => [1, true],
+            'unverified bool false' => [false, false],
+            'unverified string false' => ['false', false],
+            'unverified int zero' => [0, false],
+            'unparseable value' => ['maybe', false],
+        ];
+    }
+
+    #[DataProvider('emailVerifiedClaimProvider')]
+    public function testEmailClaimIsLinkableHonoursEmailVerified(mixed $claim, bool $expected): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['email_verified' => $claim]);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertSame($expected, $method->invoke($service, $userInfo));
+    }
+
+    /**
+     * SAML has no email_verified equivalent, so an absent claim stays permissive
+     * and the superuser-account rule carries the protection.
+     */
+    public function testEmailClaimIsLinkableWhenClaimIsAbsent(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['sub' => 'abc']);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($service, $userInfo));
+    }
+
+    public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
+    {
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willThrowException(new \RuntimeException('connection lost'));
+
+        $service = $this->createServiceWithMocks($db);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('userHoldsSuperuserPermission');
+        $method->setAccessible(true);
+
+        $this->assertTrue(
+            $method->invoke($service, 1),
+            'An unreadable permission state must block email linking rather than allow it'
+        );
+    }
 }

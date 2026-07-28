@@ -123,8 +123,23 @@ class UserProvisioningService extends LoggingService
 
             // Try to find by email if email linking is enabled
             $authConfig = $this->getAuthMethodConfig($authMethod);
-            if (in_array($authMethod, self::LINKABLE_AUTH_METHODS, true) && ($authConfig['link_by_email'] ?? true) && !empty($userInfo->getEmail())) {
+            if (
+                in_array($authMethod, self::LINKABLE_AUTH_METHODS, true)
+                && ($authConfig['link_by_email'] ?? true)
+                && !empty($userInfo->getEmail())
+                && $this->emailClaimIsLinkable($userInfo)
+            ) {
                 $existingUserId = $this->findUserByEmail($userInfo->getEmail());
+
+                if ($existingUserId !== null && $this->userHoldsSuperuserPermission($existingUserId)) {
+                    // An address is not proof of identity, so it may never hand out
+                    // the account that can rewrite every zone and every other user.
+                    $this->logWarning(
+                        'Refusing to link {method} identity to superuser account {id} by email',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    $existingUserId = null;
+                }
 
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
@@ -216,6 +231,71 @@ class UserProvisioningService extends LoggingService
             $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
         } else {
             $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
+        }
+    }
+
+    /**
+     * Decide whether the provider's email claim may be used to match an account.
+     *
+     * OpenID Connect defines email_verified so a relying party can tell whether
+     * the provider actually confirmed the address; a provider that says "false"
+     * is stating the address is attacker-settable. SAML has no equivalent claim,
+     * so an absent value stays permissive and the superuser rule carries the load.
+     */
+    private function emailClaimIsLinkable(UserInfoInterface $userInfo): bool
+    {
+        $claims = $userInfo->getRawData();
+        if (!array_key_exists('email_verified', $claims)) {
+            return true;
+        }
+
+        $verified = $claims['email_verified'];
+        // Providers serialize this as bool, "true"/"false", or 1/0.
+        $isVerified = filter_var($verified, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+
+        if (!$isVerified) {
+            $this->logWarning(
+                'Provider reported email_verified=false; skipping email-based account linking for {email}',
+                ['email' => $userInfo->getEmail()]
+            );
+        }
+
+        return $isVerified;
+    }
+
+    /**
+     * Check whether an account carries user_is_ueberuser, directly or via a group.
+     */
+    private function userHoldsSuperuserPermission(int $userId): bool
+    {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT COUNT(*) FROM (
+                    SELECT pi.id
+                    FROM users u
+                    INNER JOIN perm_templ_items pti ON pti.templ_id = u.perm_templ
+                    INNER JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE u.id = :user_id AND pi.name = 'user_is_ueberuser'
+
+                    UNION
+
+                    SELECT pi.id
+                    FROM user_group_members ugm
+                    INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                    INNER JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
+                    INNER JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE ugm.user_id = :user_id2 AND pi.name = 'user_is_ueberuser'
+                ) AS combined
+            ");
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':user_id2', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable permission state must not permit linking.
+            $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
+            return true;
         }
     }
 
