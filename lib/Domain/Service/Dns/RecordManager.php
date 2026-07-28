@@ -309,12 +309,15 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
-        if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
+        // The stored type counts as well: posting a different type would otherwise
+        // let a client-level editor rewrite an existing SOA or NS record.
+        $affectedTypes = [strtoupper((string)$recordDetails['type']), strtoupper((string)$record['type'])];
+        if ($perm_edit == "own_as_client" && in_array('SOA', $affectedTypes, true)) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this SOA record."));
 
             return false;
         }
-        if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
+        if ($perm_edit == "own_as_client" && in_array('NS', $affectedTypes, true)) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this NS record."));
 
             return false;
