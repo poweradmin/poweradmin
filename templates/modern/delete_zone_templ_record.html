@@ -55,9 +55,12 @@
         </div>
 
         <div class="mt-4">
-            <a href="{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/records/{{ record_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
-            </a>
+            <form method="post" action="{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/records/{{ record_id }}/delete" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
+                </button>
+            </form>
             <a href="{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/edit" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
             </a>

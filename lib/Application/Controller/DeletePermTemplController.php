@@ -50,7 +50,7 @@ class DeletePermTemplController extends BaseController
     {
         $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->isPost()) {
             $this->handleFormSubmission();
         } else {
             $this->showForm();
@@ -59,6 +59,8 @@ class DeletePermTemplController extends BaseController
 
     private function handleFormSubmission(): void
     {
+        $this->validateCsrfToken();
+
         if (!$this->validateSubmitRequest()) {
             $this->showFirstValidationError();
             return;

@@ -42,6 +42,14 @@ class DnssecToggleKeyController extends BaseController
 {
     public function run(): void
     {
+        // Toggling a key changes zone signing state, so it may not be driven by a
+        // plain link that any third-party page could trigger.
+        if (!$this->isPost()) {
+            $this->showError(_('Invalid or unexpected input given.'));
+            return;
+        }
+        $this->validateCsrfToken();
+
         $zone_id = $this->getSafeRequestValue('zone_id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid zone ID.'));

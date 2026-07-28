@@ -49,9 +49,14 @@
         </div>
 
         <div class="mt-4">
-            <a href="{{ base_url_prefix }}/supermasters/delete?master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this supermaster{% endtrans %}
-            </a>
+            <form method="post" action="{{ base_url_prefix }}/supermasters/delete" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="master_ip" value="{{ master_ip }}">
+                <input type="hidden" name="ns_name" value="{{ info['ns_name'] }}">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this supermaster{% endtrans %}
+                </button>
+            </form>
             <a href="{{ base_url_prefix }}/supermasters" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this supermaster{% endtrans %}
             </a>
