@@ -23,6 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
@@ -91,25 +92,32 @@ class InstallSecurityService
 
     private function getClientIp(): string
     {
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ($remoteAddr === '' || filter_var($remoteAddr, FILTER_VALIDATE_IP) === false) {
+            return self::DEFAULT_IP;
+        }
 
-        $hasForwardedForHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']);
-        $hasRemoteAddress = isset($_SERVER['REMOTE_ADDR']);
+        // X-Forwarded-For is attacker-controlled unless the peer is a proxy the
+        // operator listed in trusted_proxies, so without that list REMOTE_ADDR is
+        // the only address that may open the allow-list.
+        $trusted = $this->config['ip_access']['trusted_proxies'] ?? [];
 
-        if ($hasRemoteAddress && $hasForwardedForHeader) {
-            $forwardedIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $clientIp = trim(end($forwardedIps));
+        if ($trusted === [] || !IpUtils::checkIp($remoteAddr, $trusted) || empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $remoteAddr;
+        }
 
-            if (filter_var($clientIp, FILTER_VALIDATE_IP)) {
-                return $clientIp;
+        // Walk the chain right-to-left peeling trusted hops; the first untrusted
+        // address is the real client, matching Symfony's getClientIp() model.
+        $forwarded = array_reverse(array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
+        foreach ($forwarded as $ip) {
+            if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+                continue;
+            }
+            if (!IpUtils::checkIp($ip, $trusted)) {
+                return $ip;
             }
         }
 
-        if ($hasRemoteAddress) {
-            return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)
-                ? $_SERVER['REMOTE_ADDR']
-                : self::DEFAULT_IP;
-        }
-
-        return self::DEFAULT_IP;
+        return $remoteAddr;
     }
 }
