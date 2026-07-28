@@ -22,13 +22,10 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Model;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -63,7 +60,7 @@ class UserManagerTemplateAssignmentTest extends TestCase
         // The hole this closes: user_edit_templ_perm alone used to be enough to
         // put another account on the Administrator template.
         $error = $this->check(
-            permissions: ['user_is_ueberuser' => false, 'user_edit_others' => true],
+            permissions: ['user_edit_templ_perm' => true, 'user_edit_others' => true],
             templateIsSuperuser: true,
             targetUserId: 42
         );
@@ -75,7 +72,7 @@ class UserManagerTemplateAssignmentTest extends TestCase
     public function testDelegatedManagerMayAssignAnOrdinaryTemplate(): void
     {
         $error = $this->check(
-            permissions: ['user_is_ueberuser' => false, 'user_edit_others' => true],
+            permissions: ['user_edit_templ_perm' => true, 'user_edit_others' => true],
             templateIsSuperuser: false,
             targetUserId: 42
         );
@@ -86,7 +83,7 @@ class UserManagerTemplateAssignmentTest extends TestCase
     public function testSelfAssignmentNeedsUserEditOthers(): void
     {
         $error = $this->check(
-            permissions: ['user_is_ueberuser' => false, 'user_edit_others' => false],
+            permissions: ['user_edit_templ_perm' => true, 'user_edit_others' => false],
             templateIsSuperuser: false,
             targetUserId: self::CALLER_ID
         );
@@ -98,7 +95,7 @@ class UserManagerTemplateAssignmentTest extends TestCase
     public function testSelfAssignmentIsAllowedWithUserEditOthers(): void
     {
         $error = $this->check(
-            permissions: ['user_is_ueberuser' => false, 'user_edit_others' => true],
+            permissions: ['user_edit_templ_perm' => true, 'user_edit_others' => true],
             templateIsSuperuser: false,
             targetUserId: self::CALLER_ID
         );
@@ -110,7 +107,7 @@ class UserManagerTemplateAssignmentTest extends TestCase
     {
         // A create has no target account yet, so only the superuser rule applies.
         $error = $this->check(
-            permissions: ['user_is_ueberuser' => false, 'user_edit_others' => false],
+            permissions: ['user_edit_templ_perm' => true, 'user_edit_others' => false],
             templateIsSuperuser: true,
             targetUserId: null
         );
@@ -126,17 +123,18 @@ class UserManagerTemplateAssignmentTest extends TestCase
     {
         $_SESSION[SessionKeys::USERID] = self::CALLER_ID;
 
-        $permissionService = $this->createMock(PermissionService::class);
-        $permissionService->method('hasPermission')
+        // Only the two leaf lookups are stubbed, so the real policy in
+        // checkPermissionTemplateAssignment() runs and this asserts the web mapping
+        // against it rather than against a restated copy of the rules.
+        $apiPermissionService = $this->createPartialMock(
+            ApiPermissionService::class,
+            ['userHasPermission', 'templateGrantsSuperuser']
+        );
+        $apiPermissionService->method('userHasPermission')
             ->willReturnCallback(fn(int $userId, string $permission): bool => $permissions[$permission] ?? false);
-
-        $apiPermissionService = $this->createMock(ApiPermissionService::class);
         $apiPermissionService->method('templateGrantsSuperuser')->willReturn($templateIsSuperuser);
 
         $manager = (new ReflectionClass(UserManager::class))->newInstanceWithoutConstructor();
-        $this->setProperty($manager, 'db', $this->createMock(PDO::class));
-        $this->setProperty($manager, 'config', $this->createMock(ConfigurationManager::class));
-        $this->setProperty($manager, 'permissionService', $permissionService);
         $this->setProperty($manager, 'apiPermissionService', $apiPermissionService);
 
         $method = new ReflectionMethod($manager, 'permissionTemplateAssignmentError');

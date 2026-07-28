@@ -66,30 +66,54 @@ class UserManager
     /**
      * Check whether the caller may write the given permission template.
      *
-     * Mirrors ApiPermissionService::checkPermissionTemplateAssignment(): holding
-     * user_edit_templ_perm delegates template management, it does not confer the
-     * right to hand out superuser access or to retemplate one's own account.
+     * The rules live in ApiPermissionService so the web and the API cannot drift;
+     * this only turns its fixed contract strings into localized UI messages.
      *
      * @param ?int $targetUserId Account being written, or null when creating one
      * @return ?string Error to surface, or null when the assignment is allowed
      */
     private function permissionTemplateAssignmentError(int $permTemplId, ?int $targetUserId): ?string
     {
-        if ($this->hasPermission('user_is_ueberuser')) {
-            return null;
-        }
-
         $userId = (new UserContextService())->getLoggedInUserId();
-        if ($targetUserId !== null && $userId === $targetUserId && !$this->hasPermission('user_edit_others')) {
-            return _('Changing your own permission template requires the permission to edit other users.');
+        if ($userId === null) {
+            return _('You do not have the permission to change the permission template.');
         }
 
         $this->apiPermissionService ??= new ApiPermissionService($this->db);
-        if ($this->apiPermissionService->templateGrantsSuperuser($permTemplId)) {
-            return _('Assigning a permission template with administrator rights requires administrator rights.');
+
+        return match ($this->apiPermissionService->checkPermissionTemplateAssignment($userId, $targetUserId, $permTemplId)) {
+            null => null,
+            ApiPermissionService::TEMPLATE_SELF_ASSIGN_DENIED =>
+                _('Changing your own permission template requires the permission to edit other users.'),
+            ApiPermissionService::TEMPLATE_SUPERUSER_DENIED =>
+                _('Assigning a permission template with administrator rights requires administrator rights.'),
+            default => _('You do not have the permission to change the permission template.'),
+        };
+    }
+
+    /**
+     * Reject a permission template write, reporting the reason to the user.
+     *
+     * Only an actual change is gated, so editing other fields on a user who
+     * already holds a superuser template keeps working.
+     *
+     * @param ?int $currentTemplId Template the account holds now, null when creating one
+     * @param ?int $targetUserId Account being written, null when creating one
+     */
+    private function templateAssignmentRejected(?int $currentTemplId, int $newTemplId, ?int $targetUserId): bool
+    {
+        if ($currentTemplId === $newTemplId) {
+            return false;
         }
 
-        return null;
+        $error = $this->permissionTemplateAssignmentError($newTemplId, $targetUserId);
+        if ($error === null) {
+            return false;
+        }
+
+        $this->messageService->addSystemError($error);
+
+        return true;
     }
 
     /**
@@ -257,15 +281,8 @@ class UserManager
 
             $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
             if ($mayAssignTemplate) {
-                // Only an actual change is gated, so editing other fields on a user
-                // who already holds a superuser template keeps working.
-                if ((int)$perm_templ !== (int)$usercheck['perm_templ']) {
-                    $templateError = $this->permissionTemplateAssignmentError((int)$perm_templ, $id);
-                    if ($templateError !== null) {
-                        $this->messageService->addSystemError($templateError);
-
-                        return false;
-                    }
+                if ($this->templateAssignmentRejected((int)$usercheck['perm_templ'], (int)$perm_templ, $id)) {
+                    return false;
                 }
 
                 $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
@@ -422,18 +439,14 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_edit_user_templ == "1") {
-                // Only an actual change is gated, so editing other fields on a user
-                // who already holds a superuser template keeps working.
-                if ((int)$details['templ_id'] !== (int)$userCheck['perm_templ']) {
-                    $templateError = $this->permissionTemplateAssignmentError(
+                if (
+                    $this->templateAssignmentRejected(
+                        (int)$userCheck['perm_templ'],
                         (int)$details['templ_id'],
                         (int)$details['uid']
-                    );
-                    if ($templateError !== null) {
-                        $this->messageService->addSystemError($templateError);
-
-                        return false;
-                    }
+                    )
+                ) {
+                    return false;
                 }
 
                 $query .= ", perm_templ = :templ_id, perm_templ_source = 'admin'";
@@ -525,13 +538,9 @@ class UserManager
 
         // Callers without user_edit_templ_perm inherit the creator's own template
         // below, so only a chosen template needs gating.
-        if ($this->hasPermission('user_edit_templ_perm')) {
-            $templateError = $this->permissionTemplateAssignmentError((int)($details['perm_templ'] ?? 0), null);
-            if ($templateError !== null) {
-                $this->messageService->addSystemError($templateError);
-
-                return false;
-            }
+        $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
+        if ($mayAssignTemplate && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
+            return false;
         }
 
         // Set active status (defaults to 0 if not set)
@@ -562,7 +571,7 @@ class UserManager
         $stmt->bindValue(':email', $details['email']);
         $stmt->bindValue(':description', $details['descr'] ?? '');
 
-        if ($this->hasPermission('user_edit_templ_perm')) {
+        if ($mayAssignTemplate) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
             $userRepository = new DbUserRepository($this->db, $this->config);
