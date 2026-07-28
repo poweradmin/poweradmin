@@ -31,15 +31,19 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
 {
+    private readonly TableNameService $tableNameService;
+
     public function __construct(
         private readonly PDO $db,
         private readonly DnsBackendProvider $backendProvider,
         private readonly string $dbType,
         private readonly ConfigurationInterface $config
     ) {
+        $this->tableNameService = new TableNameService($config);
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
@@ -175,11 +179,14 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         }
         $query .= ")";
 
-        // Sorting
+        // Sorting. The Type column is offered as sortable, so it needs its own
+        // arm - without one it fell to the default and quietly sorted by name.
         $sortCol = match ($sortBy) {
             'owner' => 'u.username',
+            'type' => 'z.zone_type',
             default => "z.zone_name",
         };
+        $sortDirection = $this->tableNameService->validateDirection($sortDirection);
         $query .= " ORDER BY $sortCol $sortDirection";
         $query .= " LIMIT :limit OFFSET :offset";
 
