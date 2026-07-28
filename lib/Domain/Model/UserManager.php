@@ -384,7 +384,7 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username, email, auth_method FROM users WHERE id = :id";
+            $query = "SELECT username, email, auth_method, perm_templ FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
@@ -422,6 +422,20 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_edit_user_templ == "1") {
+                // Only an actual change is gated, so editing other fields on a user
+                // who already holds a superuser template keeps working.
+                if ((int)$details['templ_id'] !== (int)$userCheck['perm_templ']) {
+                    $templateError = $this->permissionTemplateAssignmentError(
+                        (int)$details['templ_id'],
+                        (int)$details['uid']
+                    );
+                    if ($templateError !== null) {
+                        $this->messageService->addSystemError($templateError);
+
+                        return false;
+                    }
+                }
+
                 $query .= ", perm_templ = :templ_id, perm_templ_source = 'admin'";
             }
 
