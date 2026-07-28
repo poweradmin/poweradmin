@@ -139,7 +139,10 @@ class ZoneTemplate
             $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
             $stmt->bindValue(':name', $details['templ_name'], PDO::PARAM_STR);
             $stmt->bindValue(':descr', $details['templ_descr'], PDO::PARAM_STR);
-            $stmt->bindValue(':owner', isset($details['templ_global']) ? 0 : $userid, PDO::PARAM_INT);
+            // owner 0 offers the template to every user, so publishing one is an
+            // administrator action even though owning a template is not.
+            $makeGlobal = isset($details['templ_global']) && UserManager::verify_permission($db, 'user_is_ueberuser');
+            $stmt->bindValue(':owner', $makeGlobal ? 0 : $userid, PDO::PARAM_INT);
             $stmt->execute();
             return true;
         }
@@ -579,7 +582,10 @@ class ZoneTemplate
         } else {
             $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';
 
-            if (isset($details['templ_global'])) {
+            // owner 0 offers the template to every user, so publishing one is an
+            // administrator action even though owning a template is not.
+            $makeGlobal = isset($details['templ_global']) && UserManager::verify_permission($db, 'user_is_ueberuser');
+            if ($makeGlobal) {
                 $query .= ', owner=0';
             } else {
                 $query .= ', owner=:templ_owner';
@@ -590,7 +596,7 @@ class ZoneTemplate
             $stmt->bindValue(':templ_name', $details['templ_name'], PDO::PARAM_STR);
             $stmt->bindValue(':templ_descr', $details['templ_descr'], PDO::PARAM_STR);
             $stmt->bindValue(':templ_id', $zone_templ_id, PDO::PARAM_INT);
-            if (!isset($details['templ_global'])) {
+            if (!$makeGlobal) {
                 $stmt->bindValue(':templ_owner', $user_id, PDO::PARAM_INT);
             }
             $stmt->execute();

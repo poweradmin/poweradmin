@@ -51,13 +51,13 @@ class DeleteUserController extends BaseController
 
         $uid = (int)$_GET['id'];
 
+        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
+            $this->showError(_("You do not have the permission to delete this user."));
+        }
+
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->deleteUser($uid);
-        }
-
-        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
-            $this->showError(_("You do not have the permission to delete this user."));
         }
 
         $this->showQuestion($uid);
