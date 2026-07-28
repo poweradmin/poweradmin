@@ -17,7 +17,10 @@ return [
             //'192.168.0.0/16',
             //'172.16.0.0/12',
             //'10.0.0.0/8'
-        ]
+        ],
+        // Reverse proxies whose X-Forwarded-For header may be believed.
+        // Leave empty to match on the connecting address only.
+        'trusted_proxies' => []
     ],
 
     // Admin user password requirements

@@ -24,6 +24,7 @@ namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
@@ -96,26 +97,37 @@ class InstallSecurityService
 
     private function getClientIp(): string
     {
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ($remoteAddr === '' || !$this->isValidIp($remoteAddr)) {
+            return self::DEFAULT_IP;
+        }
 
-        $hasForwardedForHeader = isset($_SERVER['HTTP_X_FORWARDED_FOR']);
-        $hasRemoteAddress = isset($_SERVER['REMOTE_ADDR']);
+        // X-Forwarded-For is attacker-controlled unless the peer is a proxy the
+        // operator listed in trusted_proxies, so without that list REMOTE_ADDR is
+        // the only address that may open the allow-list.
+        $trusted = $this->config['ip_access']['trusted_proxies'] ?? [];
 
-        if ($hasRemoteAddress && $hasForwardedForHeader) {
-            $forwardedIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $clientIp = trim(end($forwardedIps));
+        if ($trusted === [] || !IpUtils::checkIp($remoteAddr, $trusted) || empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $remoteAddr;
+        }
 
-            if ($this->ipValidator->isValidIPv4($clientIp) || $this->ipValidator->isValidIPv6($clientIp)) {
-                return $clientIp;
+        // Walk the chain right-to-left peeling trusted hops; the first untrusted
+        // address is the real client, matching Symfony's getClientIp() model.
+        $forwarded = array_reverse(array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
+        foreach ($forwarded as $ip) {
+            if (!$this->isValidIp($ip)) {
+                continue;
+            }
+            if (!IpUtils::checkIp($ip, $trusted)) {
+                return $ip;
             }
         }
 
-        if ($hasRemoteAddress) {
-            $remoteAddr = $_SERVER['REMOTE_ADDR'];
-            return ($this->ipValidator->isValidIPv4($remoteAddr) || $this->ipValidator->isValidIPv6($remoteAddr))
-                ? $remoteAddr
-                : self::DEFAULT_IP;
-        }
+        return $remoteAddr;
+    }
 
-        return self::DEFAULT_IP;
+    private function isValidIp(string $ip): bool
+    {
+        return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
     }
 }
