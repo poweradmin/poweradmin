@@ -70,7 +70,12 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->updatePermissionTemplateDetails($this->getRequest());
+        // The route id is validated as an integer and is the only authoritative one;
+        // a posted templ_id would let this write a template the URL never named.
+        $request = $this->getRequest();
+        $request['templ_id'] = (int)$this->getSafeRequestValue('id');
+
+        $this->permissionTemplate->updatePermissionTemplateDetails($request);
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('index.php', ['page' => 'list_perm_templ']);
     }

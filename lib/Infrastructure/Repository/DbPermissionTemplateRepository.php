@@ -128,7 +128,7 @@ class DbPermissionTemplateRepository
         // like too much work. Just delete all the permissions currently assigned to
         // the template, then assign all the permissions the template should have.
 
-        $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'];
+        $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $this->db->quote($details['templ_id'], 'integer');
         $this->db->query($query);
 
         if (isset($details['perm_id'])) {
