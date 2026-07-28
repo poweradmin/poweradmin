@@ -12,7 +12,10 @@
     {% trans %}Account{% endtrans %}: <span data-testid="supermaster-account">{{ info['account'] }}</span>
 </p>
 <p data-testid="confirmation-message">{% trans %}Are you sure?{% endtrans %}</p>
-<input type="button" class="btn btn-primary btn-sm"
-       onClick="location.href='index.php?page=delete_supermaster&master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-supermaster">
+<form method="post" action="index.php?page=delete_supermaster" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="master_ip" value="{{ master_ip }}">
+    <input type="hidden" name="ns_name" value="{{ info['ns_name'] }}">
+    <input type="submit" class="btn btn-primary btn-sm" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-supermaster">
+</form>
 <input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_supermasters'" value="{% trans %}No{% endtrans %}" data-testid="cancel-delete-supermaster">

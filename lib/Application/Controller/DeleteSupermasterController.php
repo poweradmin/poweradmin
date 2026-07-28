@@ -42,7 +42,7 @@ class DeleteSupermasterController extends BaseController
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->isPost()) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();
@@ -51,7 +51,9 @@ class DeleteSupermasterController extends BaseController
 
     private function deleteSuperMaster(): void
     {
-        $v = new Valitron\Validator($_GET);
+        $this->validateCsrfToken();
+
+        $v = new Valitron\Validator($_POST);
         $v->rules([
             'required' => ['master_ip', 'ns_name'],
             'ip' => ['master_ip'],
@@ -62,8 +64,8 @@ class DeleteSupermasterController extends BaseController
             return;
         }
 
-        $master_ip = filter_input(INPUT_GET, 'master_ip', FILTER_VALIDATE_IP);
-        $ns_name = filter_input(INPUT_GET, 'ns_name', FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+        $master_ip = filter_input(INPUT_POST, 'master_ip', FILTER_VALIDATE_IP);
+        $ns_name = filter_input(INPUT_POST, 'ns_name', FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
 
         if ($master_ip === false) {
             $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));

@@ -31,5 +31,8 @@
     </tbody>
 </table>
 <p data-testid="confirmation-message">{% trans %}Are you sure?{% endtrans %}</p>
-<a href="index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1" class="btn btn-primary btn-sm" data-testid="confirm-button">{% trans %}Yes{% endtrans %}</a>
+<form method="post" action="index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="submit" class="btn btn-primary btn-sm" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
+</form>
 <a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}" class="btn btn-secondary btn-sm" data-testid="cancel-button">{% trans %}No{% endtrans %}</a>

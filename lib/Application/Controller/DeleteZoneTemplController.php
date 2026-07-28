@@ -57,7 +57,7 @@ class DeleteZoneTemplController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->isPost()) {
             $this->deleteZoneTempl();
         } else {
             $this->showDeleteZoneTempl();
@@ -66,6 +66,8 @@ class DeleteZoneTemplController extends BaseController
 
     private function deleteZoneTempl(): void
     {
+        $this->validateCsrfToken();
+
         $zone_templ_id = (int)$_GET['id'];
         ZoneTemplate::delete_zone_templ($this->db, $zone_templ_id);
 

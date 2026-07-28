@@ -53,11 +53,6 @@ class DnssecEditKeyController extends BaseController
             $key_id = (int)$_GET['key_id'];
         }
 
-        $confirm = -1;
-        if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
-            $confirm = (int)$_GET['confirm'];
-        }
-
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
         if ($zone_id == -1) {
@@ -82,7 +77,9 @@ class DnssecEditKeyController extends BaseController
 
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
-        if ($confirm == 1) {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
+
             if ($key_info[5]) {
                 if ($dnssecProvider->deactivateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));

@@ -51,18 +51,15 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $zone_templ_id = (int)$_GET['zone_templ_id'];
 
-        $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
-            $confirm = $_GET['confirm'];
-        }
-
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete this record."));
 
-        if ($confirm == '1') {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
+
             if (ZoneTemplate::delete_zone_templ_record($this->db, $record_id)) {
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
             } else {
