@@ -198,13 +198,19 @@ class UserManager
     {
         // Find the template with the fewest permissions assigned
         // If multiple templates have the same number of permissions, prefer by name order
-        // This query returns the template with 0 or minimal permissions
+        // Superuser templates are skipped: user_is_ueberuser is a single permission,
+        // so the bundled Administrator template would otherwise rank as the minimum.
         $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
                   FROM perm_templ pt
-                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id";
+                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id
+                  WHERE NOT EXISTS (
+                      SELECT 1 FROM perm_templ_items sup
+                      INNER JOIN perm_items spi ON sup.perm_id = spi.id
+                      WHERE sup.templ_id = pt.id AND spi.name = 'user_is_ueberuser'
+                  )";
 
         if ($templateType !== null) {
-            $query .= " WHERE pt.template_type = :template_type";
+            $query .= " AND pt.template_type = :template_type";
         }
 
         $query .= " GROUP BY pt.id, pt.name

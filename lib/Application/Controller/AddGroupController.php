@@ -150,7 +150,7 @@ class AddGroupController extends BaseController
         $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
 
         // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db) ?? '1';
+        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'group') ?? '';
 
         $this->render('add_group.html', [
             'name' => $this->request->getPostParam('name', ''),
