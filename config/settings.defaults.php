@@ -355,6 +355,7 @@ return [
         'fullname_attribute' => 'displayName',          // LDAP attribute for full name (displayName for AD, cn for OpenLDAP) (added in 4.5.0)
         'email_attribute' => 'mail',                    // LDAP attribute for email address (added in 4.5.0)
         'auto_provision' => false,                      // Create missing users on first successful LDAP login (added in 4.5.0)
+        'allow_superuser_provisioning' => false,        // Let LDAP mappings grant user_is_ueberuser (added in 4.5.0)
         'default_permission_template' => 'Guest',       // Template for auto-provisioned users when no mapping matches (added in 4.5.0)
         'groups_attribute' => 'memberOf',               // LDAP attribute holding group memberships (added in 4.5.0)
 
@@ -420,6 +421,7 @@ return [
         'enabled' => false,                   // Enable OIDC authentication
         'auto_provision' => true,             // Automatically create user accounts from OIDC
         'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'allow_superuser_provisioning' => false, // Let OIDC mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
@@ -641,6 +643,7 @@ return [
         'enabled' => false,                   // Enable SAML authentication
         'auto_provision' => true,             // Automatically create user accounts from SAML
         'link_by_email' => true,              // Link SAML accounts to existing users by email
+        'allow_superuser_provisioning' => false, // Let SAML mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
         'default_permission_template' => 'Guest',  // Default permission template for new SAML users (minimal access until assigned proper role)
 

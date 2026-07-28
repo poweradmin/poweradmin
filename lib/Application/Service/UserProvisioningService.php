@@ -631,7 +631,7 @@ class UserProvisioningService extends LoggingService
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             if ($this->groupMatches((string)$groupName, $groups)) {
                 $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
-                $templateId = $this->findPermissionTemplateByName($templateName);
+                $templateId = $this->findPermissionTemplateByName($templateName, $authMethod);
                 if ($templateId) {
                     $this->logInfo('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
                         'group' => $groupName,
@@ -665,7 +665,7 @@ class UserProvisioningService extends LoggingService
 
         $this->logInfo('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
 
-        $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName);
+        $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
 
         if ($defaultTemplateId) {
             $this->logInfo('Using default permission template: {template} (ID: {id})', [
@@ -692,7 +692,7 @@ class UserProvisioningService extends LoggingService
         if (empty($defaultTemplateName)) {
             return null;
         }
-        return $this->findPermissionTemplateByName($defaultTemplateName);
+        return $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
     }
 
     /**
@@ -716,7 +716,7 @@ class UserProvisioningService extends LoggingService
         }
     }
 
-    private function findPermissionTemplateByName(string $templateName): ?int
+    private function findPermissionTemplateByName(string $templateName, string $authMethod): ?int
     {
         try {
             // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
@@ -725,10 +725,61 @@ class UserProvisioningService extends LoggingService
             $stmt->execute([$templateName]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return $result ? (int)$result['id'] : null;
+            if (!$result) {
+                return null;
+            }
+
+            $templateId = (int)$result['id'];
+            if (!$this->superuserProvisioningAllowed($authMethod) && $this->templateGrantsSuperuser($templateId)) {
+                $this->logWarning(
+                    'Refusing to provision superuser template {template} from {method}; '
+                    . 'set allow_superuser_provisioning to permit it',
+                    ['template' => $templateName, 'method' => strtoupper($authMethod)]
+                );
+                return null;
+            }
+
+            return $templateId;
         } catch (\Exception $e) {
             $this->logError('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
             return null;
+        }
+    }
+
+    /**
+     * Whether this auth method may hand out superuser rights without an admin acting.
+     */
+    private function superuserProvisioningAllowed(string $authMethod): bool
+    {
+        return (bool)$this->configManager->get($authMethod, 'allow_superuser_provisioning', false);
+    }
+
+    private function templateGrantsSuperuser(int $permTemplId): bool
+    {
+        try {
+            return $this->userRepository->templateGrantsUberuser($permTemplId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable template must not be assumed harmless.
+            $this->logError('Error checking template permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+    }
+
+    /**
+     * Whether membership of this group would confer superuser rights on its members.
+     */
+    private function groupGrantsSuperuser(int $groupId): bool
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT perm_templ FROM user_groups WHERE id = :id");
+            $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+            $permTemplId = $stmt->fetchColumn();
+
+            return $permTemplId !== false && $this->templateGrantsSuperuser((int)$permTemplId);
+        } catch (\Exception $e) {
+            $this->logError('Error checking group permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
         }
     }
 
@@ -1017,6 +1068,23 @@ class UserProvisioningService extends LoggingService
             }
         }
         $targetGroupIds = array_values(array_unique($targetGroupIds));
+
+        // A group whose template grants superuser turns an IdP claim into full access,
+        // so membership of it is not something an assertion may hand out on its own.
+        if (!$this->superuserProvisioningAllowed($authMethod)) {
+            $targetGroupIds = array_values(array_filter($targetGroupIds, function (int $groupId) use ($idToName, $authMethod): bool {
+                if (!$this->groupGrantsSuperuser($groupId)) {
+                    return true;
+                }
+
+                $this->logWarning(
+                    'Refusing to add {method} user to superuser group {group}; '
+                    . 'set allow_superuser_provisioning to permit it',
+                    ['method' => strtoupper($authMethod), 'group' => $idToName[$groupId] ?? $groupId]
+                );
+                return false;
+            }));
+        }
 
         // Current memberships among mapped groups, so unchanged state costs no writes
         $currentGroupIds = [];

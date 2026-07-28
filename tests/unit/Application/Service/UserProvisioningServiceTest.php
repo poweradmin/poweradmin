@@ -235,12 +235,71 @@ class UserProvisioningServiceTest extends TestCase
      * Create a UserProvisioningService instance with mocked dependencies for testing
      * determinePermissionTemplate and related methods.
      */
+    public function testSuperuserTemplateIsRefusedWhenProvisioningItIsNotAllowed(): void
+    {
+        // An IdP claim mapped onto the Administrator template would otherwise mint a
+        // global superuser at login.
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: true, allowSuperuser: false);
+
+        $this->assertNull($result, 'A superuser template must not be provisioned from an IdP claim');
+    }
+
+    public function testSuperuserTemplateIsAllowedWhenTheOperatorOptsIn(): void
+    {
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: true, allowSuperuser: true);
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testOrdinaryTemplateIsUnaffected(): void
+    {
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: false, allowSuperuser: false);
+
+        $this->assertEquals(1, $result);
+    }
+
+    private function resolveMappedTemplate(bool $templateGrantsUberuser, bool $allowSuperuser): ?int
+    {
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['id' => 1]);
+
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['admins' => 'Administrator']],
+                ['oidc', 'allow_superuser_provisioning', false, $allowSuperuser],
+            ]);
+
+        $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $userRepository->method('templateGrantsUberuser')->willReturn($templateGrantsUberuser);
+
+        $service = $this->createServiceWithMocks($db, $configManager, $userRepository);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        return $method->invoke($service, ['admins'], 'oidc', false);
+    }
+
     private function createServiceWithMocks(
         ?\PDO $db = null,
-        ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null
+        ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null,
+        ?\Poweradmin\Infrastructure\Repository\DbUserRepository $userRepository = null
     ): UserProvisioningService {
         $reflection = new ReflectionClass(UserProvisioningService::class);
         $service = $reflection->newInstanceWithoutConstructor();
+
+        if ($userRepository === null) {
+            $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+            $userRepository->method('templateGrantsUberuser')->willReturn(false);
+        }
+        $userRepositoryProp = $reflection->getProperty('userRepository');
+        $userRepositoryProp->setAccessible(true);
+        $userRepositoryProp->setValue($service, $userRepository);
 
         $dbProp = $reflection->getProperty('db');
         $dbProp->setAccessible(true);
