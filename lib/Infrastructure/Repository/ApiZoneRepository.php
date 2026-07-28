@@ -90,10 +90,17 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         bool $includeHealth = true,
         bool $includeRecordCount = true
     ) {
+        $showSignedSerial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
+        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
+        // for it when a column actually renders it
+        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $showSignedSerial;
+
         // Sync local zones table with PowerDNS API before listing so reverse
         // zones are visible on a fresh install without the user having to open
-        // the Forward Zones page first. Throttled to once per 5 minutes.
-        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale();
+        // the Forward Zones page first. Throttled to once per 5 minutes. Reads
+        // the same zone-list variant as the stats call below so both share one
+        // response.
+        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {
@@ -185,10 +192,6 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $showSignedSerial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
-        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
-        // for it when a column actually renders it
-        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $showSignedSerial;
         $zoneStats = $this->backendProvider->getZoneStats($needsDnssec);
         $zones = [];
         foreach ($results as $row) {
@@ -197,8 +200,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 $apiName = $name . '.';
                 $stats = $zoneStats[$apiName] ?? [];
                 $kind = $row['type'] ?? 'NATIVE';
-                // Per-visible-zone API call - bounded by page size. Skipped for
-                // callers that don't render badges (e.g. PTR batch dropdown).
+                // Both of these read the same zone body, so counting first lets
+                // the health check reuse it instead of fetching the zone twice.
+                // Bounded by page size, and skipped for callers that render
+                // neither (e.g. PTR batch dropdown).
+                $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['id']) : 0;
                 $soaHealth = $includeHealth
                     ? $this->backendProvider->getZoneSoaHealth($name, $kind)
                     : null;
@@ -208,9 +214,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
-                    // One API call per zone - the /zones list carries no record
-                    // count. Safe here because the query above is already paged.
-                    'count_records' => $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['id']) : 0,
+                    'count_records' => $countRecords,
                     'is_disabled' => $soaHealth['is_disabled'] ?? false,
                     'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                     'comment' => $row['comment'] ?? '',

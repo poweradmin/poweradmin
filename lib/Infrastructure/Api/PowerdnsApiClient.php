@@ -38,11 +38,43 @@ class PowerdnsApiClient
     private string $serverName;
     private LoggerInterface $logger;
 
+    /** @var array<string, array> Per-request cache of the zone list, which several passes re-read */
+    private array $zoneListCache = [];
+
+    /** @var array{name: string, data: array}|null Most recently fetched complete zone body; one slot, so looping over many zones stays flat in memory */
+    private ?array $lastZone = null;
+
     public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
     {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
         $this->logger = $logger ?? new NullLogger();
+    }
+
+    /**
+     * Issue a request, dropping cached reads whenever something is written so a
+     * read-modify-read sequence never sees pre-write state.
+     */
+    private function request(string $method, string $endpoint, array $data = []): array
+    {
+        if ($method !== 'GET') {
+            $this->zoneListCache = [];
+            $this->lastZone = null;
+        }
+
+        return $this->httpClient->makeRequest($method, $endpoint, $data);
+    }
+
+    /**
+     * Read the zone list, reusing the response within this request. Callers
+     * differ in whether they need DNSSEC state, and that choice changes the
+     * URL, so responses are kept per endpoint - at most two entries.
+     */
+    private function requestZoneList(bool $withDnssec): array
+    {
+        $endpoint = $this->buildZoneListEndpoint($withDnssec);
+
+        return $this->zoneListCache[$endpoint] ??= $this->request('GET', $endpoint);
     }
 
     private function buildEndpoint(string $path): string
@@ -65,7 +97,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/rectify");
-            $response = $this->httpClient->makeRequest('PUT', $endpoint);
+            $response = $this->request('PUT', $endpoint);
 
             return $response &&
                    $response['responseCode'] === 200 &&
@@ -88,7 +120,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName());
             $data = ['dnssec' => true];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -108,7 +140,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName());
             $data = ['dnssec' => false];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -135,8 +167,7 @@ class PowerdnsApiClient
      */
     public function getAllZones(bool $withDnssec = true): array
     {
-        $endpoint = $this->buildZoneListEndpoint($withDnssec);
-        $response = $this->httpClient->makeRequest('GET', $endpoint);
+        $response = $this->requestZoneList($withDnssec);
 
         $zones = [];
         if ($response && $response['responseCode'] === 200) {
@@ -159,8 +190,7 @@ class PowerdnsApiClient
      */
     public function getAllZoneStats(bool $withDnssec = true): array
     {
-        $endpoint = $this->buildZoneListEndpoint($withDnssec);
-        $response = $this->httpClient->makeRequest('GET', $endpoint);
+        $response = $this->requestZoneList($withDnssec);
 
         $stats = [];
         if ($response && $response['responseCode'] === 200) {
@@ -185,13 +215,17 @@ class PowerdnsApiClient
      * local zones-table cache aligned with PowerDNS when zone kinds change
      * outside Poweradmin (e.g. via pdnsutil set-kind).
      *
+     * Only kind/masters are read here, so the DNSSEC lookup is skipped by
+     * default. Callers that also read the zone list with DNSSEC state should
+     * pass true so both reads share one response rather than fetching the
+     * list under two different URLs.
+     *
+     * @param bool $withDnssec Match the endpoint a companion list call uses
      * @return array<string, array{kind: string, masters: array<int, string>}>
      */
-    public function getAllZoneKinds(): array
+    public function getAllZoneKinds(bool $withDnssec = false): array
     {
-        // Only kind/masters are read, so never pay for the DNSSEC lookup
-        $endpoint = $this->buildZoneListEndpoint(false);
-        $response = $this->httpClient->makeRequest('GET', $endpoint);
+        $response = $this->requestZoneList($withDnssec);
 
         $kinds = [];
         if ($response && $response['responseCode'] === 200) {
@@ -221,7 +255,7 @@ class PowerdnsApiClient
             $data = [
                 'name' => $zone->getName(),
             ];
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             return $response && $response['responseCode'] === 201;
         } catch (ApiErrorException $e) {
@@ -243,7 +277,7 @@ class PowerdnsApiClient
             $data = [
                 'name' => $zone->getName(),
             ];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -262,7 +296,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName());
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -281,7 +315,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 $keys = [];
@@ -331,7 +365,7 @@ class PowerdnsApiClient
                 'bits' => $key->getSize(),
                 'algorithm' => $key->getAlgorithm(),
             ];
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             return $response && $response['responseCode'] === 201;
         } catch (ApiErrorException $e) {
@@ -355,7 +389,7 @@ class PowerdnsApiClient
                 'algorithm' => $algorithm,
                 'privatekey' => $privateKeyPem,
             ];
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             return $response && $response['responseCode'] === 201;
         } catch (ApiErrorException $e) {
@@ -373,7 +407,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$keyId}");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200 && isset($response['data'])) {
                 return $response['data'];
@@ -397,7 +431,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $data = ['active' => true];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -418,7 +452,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $data = ['active' => false];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -438,7 +472,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -457,7 +491,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName());
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             return $response &&
                    $response['responseCode'] === 200 &&
@@ -482,7 +516,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'];
@@ -506,7 +540,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'];
@@ -535,7 +569,7 @@ class PowerdnsApiClient
                 'kind' => $kind,
                 'metadata' => $metadata,
             ];
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -560,7 +594,7 @@ class PowerdnsApiClient
                 'kind' => $kind,
                 'metadata' => $metadata,
             ];
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 200;
         } catch (ApiErrorException $e) {
@@ -580,7 +614,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -598,7 +632,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/config");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
@@ -618,7 +652,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
@@ -638,7 +672,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/statistics");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
@@ -668,6 +702,27 @@ class PowerdnsApiClient
     }
 
     /**
+     * Narrow a zone body to the RRsets an equivalent filtered request would
+     * have returned, so a reused whole body answers with the same shape.
+     *
+     * @param array<string, string> $filters
+     */
+    private static function applyRrsetFilters(array $zoneData, array $filters): array
+    {
+        if (!isset($filters['rrset_name']) || !isset($zoneData['rrsets'])) {
+            return $zoneData;
+        }
+
+        $zoneData['rrsets'] = array_values(array_filter(
+            $zoneData['rrsets'],
+            static fn(array $rrset): bool => ($rrset['name'] ?? null) === $filters['rrset_name']
+                && (!isset($filters['rrset_type']) || ($rrset['type'] ?? null) === $filters['rrset_type'])
+        ));
+
+        return $zoneData;
+    }
+
+    /**
      * Get a single zone with its RRsets
      *
      * @param string $zoneName Zone name (with trailing dot)
@@ -677,17 +732,27 @@ class PowerdnsApiClient
      */
     public function getZone(string $zoneName, bool $includeRrsets = true, array $filters = []): ?array
     {
+        // A whole body answers any narrower read of the same zone, so reuse it
+        // rather than asking again for a subset we already hold
+        if ($includeRrsets && ($this->lastZone['name'] ?? null) === $zoneName) {
+            return self::applyRrsetFilters($this->lastZone['data'], $filters);
+        }
+
         try {
             $params = $includeRrsets ? [] : ['rrsets' => 'false'];
             $params += $filters;
             $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
             $endpoint = $this->buildZoneEndpoint($zoneName, $query === '' ? '' : '?' . $query);
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 // Mirror getZones(): a successful read clears any stale API error
                 // so the outage banner doesn't linger after the API recovers.
                 (new ApiStatusService())->clearError();
+                // Only a complete body may be reused; a filtered one holds a subset
+                if ($params === []) {
+                    $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
+                }
                 return $response['data'];
             }
 
@@ -718,7 +783,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/zones");
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $zoneData);
+            $response = $this->request('POST', $endpoint, $zoneData);
 
             if ($response && $response['responseCode'] === 201) {
                 return $response['data'] ?? [];
@@ -742,7 +807,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName);
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -764,7 +829,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName, '/axfr-retrieve');
-            $response = $this->httpClient->makeRequest('PUT', $endpoint);
+            $response = $this->request('PUT', $endpoint);
 
             return $response && $response['responseCode'] === 200;
         } catch (ApiErrorException $e) {
@@ -790,7 +855,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $data = ['rrsets' => $rrsets];
             $this->logger->debug('patchZoneRRsets: endpoint={endpoint}, data={data}', ['endpoint' => $endpoint, 'data' => json_encode($data)]);
-            $response = $this->httpClient->makeRequest('PATCH', $endpoint, $data);
+            $response = $this->request('PATCH', $endpoint, $data);
             $this->logger->debug('patchZoneRRsets: response={response}', ['response' => json_encode($response)]);
 
             return $response && $response['responseCode'] === 204;
@@ -821,7 +886,7 @@ class PowerdnsApiClient
                 'object_type' => $objectType,
             ]);
             $endpoint = $this->buildEndpoint("/search-data?{$params}");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'] ?? [];
@@ -847,7 +912,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/autoprimaries");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'] ?? [];
@@ -877,7 +942,7 @@ class PowerdnsApiClient
                 'nameserver' => $nameserver,
                 'account' => $account,
             ];
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             return $response && ($response['responseCode'] === 201 || $response['responseCode'] === 204);
         } catch (ApiErrorException $e) {
@@ -897,7 +962,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/autoprimaries/" . rawurlencode($ip) . "/" . rawurlencode($nameserver));
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -919,7 +984,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/tsigkeys");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+            $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'] ?? [];
@@ -951,7 +1016,7 @@ class PowerdnsApiClient
             if ($key !== '') {
                 $data['key'] = $key;
             }
-            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+            $response = $this->request('POST', $endpoint, $data);
 
             if ($response && $response['responseCode'] === 201) {
                 return $response['data'] ?? [];
@@ -974,7 +1039,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/tsigkeys/" . rawurlencode($keyId));
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
@@ -994,7 +1059,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint("/tsigkeys/" . rawurlencode($keyId));
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+            $response = $this->request('PUT', $endpoint, $data);
 
             return $response && $response['responseCode'] === 200;
         } catch (ApiErrorException $e) {
@@ -1013,7 +1078,7 @@ class PowerdnsApiClient
     public function listViews(): array
     {
         try {
-            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/views'));
+            $response = $this->request('GET', $this->buildEndpoint('/views'));
             if ($response && $response['responseCode'] === 200) {
                 $views = $response['data']['views'] ?? [];
                 return is_array($views) ? array_values(array_filter($views, 'is_string')) : [];
@@ -1034,7 +1099,7 @@ class PowerdnsApiClient
     public function listViewZones(string $view): array
     {
         try {
-            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/views/' . rawurlencode($view)));
+            $response = $this->request('GET', $this->buildEndpoint('/views/' . rawurlencode($view)));
             if ($response && $response['responseCode'] === 200) {
                 $zones = $response['data']['zones'] ?? [];
                 return is_array($zones) ? array_values(array_filter($zones, 'is_string')) : [];
@@ -1054,7 +1119,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view));
-            $response = $this->httpClient->makeRequest('POST', $endpoint, ['name' => $zoneName]);
+            $response = $this->request('POST', $endpoint, ['name' => $zoneName]);
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to add zone {zone} to view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
@@ -1066,7 +1131,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view) . '/' . rawurlencode($zoneName));
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to remove zone {zone} from view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
@@ -1085,7 +1150,7 @@ class PowerdnsApiClient
     public function listNetworks(): array
     {
         try {
-            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/networks'));
+            $response = $this->request('GET', $this->buildEndpoint('/networks'));
             if ($response && $response['responseCode'] === 200) {
                 $networks = $response['data']['networks'] ?? [];
                 if (!is_array($networks)) {
@@ -1117,7 +1182,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint('/networks/' . $cidr);
-            $response = $this->httpClient->makeRequest('PUT', $endpoint, ['view' => $view]);
+            $response = $this->request('PUT', $endpoint, ['view' => $view]);
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to set network {cidr} -> view {view}: {error}', ['cidr' => $cidr, 'view' => $view, 'error' => $e->getMessage()]);
@@ -1129,7 +1194,7 @@ class PowerdnsApiClient
     {
         try {
             $endpoint = $this->buildEndpoint('/networks/' . $cidr);
-            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            $response = $this->request('DELETE', $endpoint);
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete network {cidr}: {error}', ['cidr' => $cidr, 'error' => $e->getMessage()]);

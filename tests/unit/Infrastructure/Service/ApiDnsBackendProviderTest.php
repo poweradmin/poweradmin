@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -1289,6 +1290,36 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(5, $result[0]['id']);
         $this->assertEquals('example.com', $result[0]['name']);
         $this->assertEquals('NATIVE', $result[0]['type']);
+    }
+
+    /**
+     * Both list reads must hit the same endpoint, otherwise the client's
+     * per-request cache cannot collapse them into one HTTP request.
+     */
+    #[DataProvider('zoneListDnssecProvider')]
+    public function testGetZonesReadsTheListUnderOneEndpoint(bool $withDnssec): void
+    {
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('example.com.');
+        $mockZone->method('isSecured')->willReturn(false);
+
+        $this->mockClient->expects($this->once())
+            ->method('getAllZones')->with($withDnssec)->willReturn([$mockZone]);
+        $this->mockClient->expects($this->once())
+            ->method('getAllZoneKinds')->with($withDnssec)->willReturn([
+                'example.com.' => ['kind' => 'NATIVE', 'masters' => []],
+            ]);
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturn(false);
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $this->provider->getZones($withDnssec);
+    }
+
+    public static function zoneListDnssecProvider(): array
+    {
+        return ['with dnssec' => [true], 'without dnssec' => [false]];
     }
 
     // ---------------------------------------------------------------

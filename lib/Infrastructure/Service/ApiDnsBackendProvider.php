@@ -769,9 +769,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // sync when changed externally (e.g. pdnsutil set-kind). Reading the
         // local zones cache here would lock in stale values and prevent
         // ZoneSyncService from ever detecting the drift.
+        // Same endpoint as the call above, so the two reads share one response
         $apiKinds = null;
         try {
-            $apiKinds = $this->client->getAllZoneKinds();
+            $apiKinds = $this->client->getAllZoneKinds($withDnssec);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zone kinds from API: {error}', ['error' => $e->getMessage()]);
         }
@@ -849,9 +850,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return ['is_disabled' => false, 'is_missing_soa' => false];
         }
 
-        // Only the apex SOA matters here, so ask for just that RRset. PowerDNS
-        // before 4.7 ignores the filter and returns the whole zone, which the
-        // scan below handles either way.
+        // Only the apex SOA matters here, so ask for just that RRset - the
+        // client serves this from a whole body it already holds for the zone.
         $apiName = self::ensureTrailingDot($zoneName);
         $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
         if ($zoneData === null) {

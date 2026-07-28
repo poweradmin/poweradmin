@@ -526,4 +526,136 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertSame(5, $stats['example.com.']['serial']);
         $this->assertTrue($stats['example.com.']['dnssec']);
     }
+
+    // ---------------------------------------------------------------
+    // Per-request GET cache
+    // ---------------------------------------------------------------
+
+    public function testRepeatedGetsOfTheSameEndpointIssueOneRequest(): void
+    {
+        // One page render asks for the zone list several times over
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn(['responseCode' => 200, 'data' => [['name' => 'example.com.', 'dnssec' => false]]]);
+
+        $this->apiClient->getAllZones();
+        $this->apiClient->getAllZones();
+        $stats = $this->apiClient->getAllZoneStats();
+
+        $this->assertArrayHasKey('example.com.', $stats);
+    }
+
+    public function testDifferentEndpointsAreCachedSeparately(): void
+    {
+        $seen = [];
+        $this->mockHttpClient
+            ->expects($this->exactly(2))
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$seen): array {
+                $seen[] = $endpoint;
+                return ['responseCode' => 200, 'data' => []];
+            });
+
+        $this->apiClient->getAllZones();
+        $this->apiClient->getAllZones(false);
+
+        $this->assertSame([
+            '/api/v1/servers/localhost/zones',
+            '/api/v1/servers/localhost/zones?dnssec=false',
+        ], $seen);
+    }
+
+    public function testWriteClearsTheCacheSoLaterReadsSeeFreshState(): void
+    {
+        // Guards the check-then-create loops in BatchReverseRecordCreator: a
+        // second existence check after a write must not be served from the
+        // pre-write body, or duplicate records get created.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZone('example.com.');
+        $this->apiClient->getZone('example.com.');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZone('example.com.');
+
+        $this->assertSame([
+            'GET /api/v1/servers/localhost/zones/example.com.',
+            'PATCH /api/v1/servers/localhost/zones/example.com.',
+            'GET /api/v1/servers/localhost/zones/example.com.',
+        ], $calls, 'the write must evict the cached body');
+    }
+
+    public function testAWholeZoneBodyAnswersALaterFilteredReadOfTheSameZone(): void
+    {
+        // The record count fetches the whole body; the SOA badge then wants one
+        // RRset out of it. Asking PowerDNS again would double the per-row cost,
+        // and the reused body must be narrowed to what the filter asked for.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [
+                    ['name' => 'example.com.', 'type' => 'SOA', 'records' => []],
+                    ['name' => 'example.com.', 'type' => 'NS', 'records' => []],
+                    ['name' => 'www.example.com.', 'type' => 'A', 'records' => []],
+                ],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $rrset = $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
+
+        $this->assertSame('example.com.', $rrset['name']);
+        $this->assertCount(1, $rrset['rrsets']);
+        $this->assertSame('SOA', $rrset['rrsets'][0]['type']);
+    }
+
+    public function testOnlyOneZoneBodyIsHeldAtATime(): void
+    {
+        // Listing pages loop over a page of zones; retaining every body would
+        // scale memory with the page size
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'zone.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZone('a.example.com.');
+        $this->apiClient->getZone('b.example.com.');
+        $this->apiClient->getZone('a.example.com.');
+
+        $this->assertSame([
+            '/api/v1/servers/localhost/zones/a.example.com.',
+            '/api/v1/servers/localhost/zones/b.example.com.',
+            '/api/v1/servers/localhost/zones/a.example.com.',
+        ], $calls, 'a second zone must evict the first');
+    }
+
+    public function testAFilteredFetchIsNotReusedAsAWholeZoneBody(): void
+    {
+        // A filtered response holds a subset, so it must not satisfy a caller
+        // asking for the entire zone
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
+        $this->apiClient->getZone('example.com.');
+
+        $this->assertSame(2, $calls);
+    }
 }

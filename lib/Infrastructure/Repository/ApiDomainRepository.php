@@ -146,7 +146,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
         // Sync local zones table with PowerDNS API before listing
         $syncService = new ZoneSyncService($this->db, $this->backendProvider);
-        $syncService->syncIfStale();
+        $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);
 
@@ -187,14 +187,8 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
         }
 
-        // Each record count costs an API round-trip, so this runs after paging
-        // to keep the cost proportional to the page, not the whole zone set
-        if ($includeRecordCount) {
-            $this->enrichWithRecordCounts($allZones);
-        }
-
         $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial)
-            ? $this->backendProvider->getZoneStats($needsEditedSerial)
+            ? $this->backendProvider->getZoneStats($needsDnssec)
             : [];
         $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
 
@@ -205,8 +199,11 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $utf8Name = DnsIdnService::toUtf8($name);
             $zoneId = (int)($zone['id'] ?? 0);
 
-            // Per-visible-zone API call - bounded by page size. Skipped for callers
-            // that don't render badges (DeleteUser, log iteration, etc).
+            // Both of these read the same zone body, so counting first lets the
+            // health check reuse it instead of fetching the zone twice. Bounded
+            // by page size, and skipped for callers that render neither
+            // (DeleteUser, log iteration, etc).
+            $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords($zoneId) : 0;
             $soaHealth = $includeHealth
                 ? $this->backendProvider->getZoneSoaHealth($name, $zone['type'] ?? 'NATIVE')
                 : null;
@@ -216,7 +213,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
                 'name' => $name,
                 'utf8_name' => $utf8Name,
                 'type' => $zone['type'] ?? 'NATIVE',
-                'count_records' => $zone['count_records'] ?? 0,
+                'count_records' => $countRecords,
                 'is_disabled' => $soaHealth['is_disabled'] ?? false,
                 'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                 'comment' => $zone['comment'] ?? '',
@@ -361,14 +358,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         return $this->backendProvider->getBestMatchingReverseZoneId($domain);
-    }
-
-    private function enrichWithRecordCounts(array &$zones): void
-    {
-        foreach ($zones as &$zone) {
-            $zone['count_records'] = $this->backendProvider->countZoneRecords($zone['id'] ?? 0);
-        }
-        unset($zone);
     }
 
     private function enrichZonesWithOwnership(array $zones): array
