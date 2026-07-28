@@ -36,8 +36,6 @@ namespace Poweradmin\Domain\Service;
  */
 class PermissionTemplateAssignmentGuard
 {
-    public const REJECT_MESSAGE = ApiPermissionService::TEMPLATE_ASSIGN_DENIED;
-
     /**
      * Apply the gate to a create/update input array.
      *
@@ -54,7 +52,7 @@ class PermissionTemplateAssignmentGuard
         ?int $defaultUserTemplateId,
         int $callerId,
         array &$input,
-        ?int $targetUserId = null
+        ?int $targetUserId
     ): ?string {
         $providesTemplate = array_key_exists('perm_templ', $input) && $input['perm_templ'] !== null;
 

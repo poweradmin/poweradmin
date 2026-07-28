@@ -589,17 +589,43 @@ class UserProvisioningServiceTest extends TestCase
 
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
     {
-        $db = $this->createMock(\PDO::class);
-        $db->method('prepare')->willThrowException(new \RuntimeException('connection lost'));
+        $service = $this->createServiceWithMocks();
 
-        $service = $this->createServiceWithMocks($db);
+        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository->method('hasAdminPermission')->willThrowException(new \RuntimeException('connection lost'));
 
-        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('userHoldsSuperuserPermission');
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $repositoryProp = $reflection->getProperty('userRepository');
+        $repositoryProp->setAccessible(true);
+        $repositoryProp->setValue($service, $repository);
+
+        $method = $reflection->getMethod('userHoldsSuperuserPermission');
         $method->setAccessible(true);
 
         $this->assertTrue(
             $method->invoke($service, 1),
             'An unreadable permission state must block email linking rather than allow it'
         );
+    }
+
+    public function testUserHoldsSuperuserPermissionDelegatesToRepository(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository->method('hasAdminPermission')->willReturnCallback(
+            static fn(int $userId): bool => $userId === 1
+        );
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $repositoryProp = $reflection->getProperty('userRepository');
+        $repositoryProp->setAccessible(true);
+        $repositoryProp->setValue($service, $repository);
+
+        $method = $reflection->getMethod('userHoldsSuperuserPermission');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($service, 1));
+        $this->assertFalse($method->invoke($service, 2));
     }
 }

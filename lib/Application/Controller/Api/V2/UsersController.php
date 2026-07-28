@@ -520,7 +520,8 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
                 $input,
-                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user')
+                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
+                null
             );
             if ($templateGate !== null) {
                 return $templateGate;
@@ -985,13 +986,14 @@ class UsersController extends PublicApiController
 
             // canEditPermissionTemplates() alone would let a delegated template
             // manager put their own account on the Administrator template.
-            $assignError = $this->apiPermissionService->checkPermissionTemplateAssignment(
+            $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
-                $targetUserId,
-                $permTemplId
+                $input,
+                null,
+                $targetUserId
             );
-            if ($assignError !== null) {
-                return $this->returnApiError($assignError, 403);
+            if ($templateGate !== null) {
+                return $templateGate;
             }
 
             // Use the domain service to assign permission template
@@ -1021,7 +1023,7 @@ class UsersController extends PublicApiController
         }
     }
 
-    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId = null): ?JsonResponse
+    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(
             $this->apiPermissionService,

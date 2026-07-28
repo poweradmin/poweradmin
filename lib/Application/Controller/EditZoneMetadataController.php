@@ -123,18 +123,24 @@ class EditZoneMetadataController extends BaseController
             $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
 
+            // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
+            // calls in API-backend mode and is only needed past this point.
+            $validationErrors = $this->validateMetadataRows($submittedMetadata);
+
+            if (!empty($validationErrors)) {
+                $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
+                $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
+                return;
+            }
+
             // Capture the current metadata state for the change-log diff and for
             // the operator-only comparison. Done before the write so we record
             // what was actually replaced.
             $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
 
-            $validationErrors = array_merge(
-                $this->validateMetadataRows($submittedMetadata),
-                $this->operatorOnlyViolations($submittedMetadata, $beforeMetadata)
-            );
-
-            if (!empty($validationErrors)) {
-                $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
+            $restrictionErrors = $this->operatorOnlyViolations($submittedMetadata, $beforeMetadata);
+            if (!empty($restrictionErrors)) {
+                $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }

@@ -65,7 +65,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
         $input = ['perm_templ' => 1, 'username' => 'x'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(1, $input['perm_templ'], 'ueberuser-supplied template stays as-is');
@@ -76,7 +76,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: true);
         $input = ['perm_templ' => 1];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(1, $input['perm_templ']);
@@ -87,9 +87,9 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: false);
         $input = ['perm_templ' => 1, 'username' => 'attacker'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
-        $this->assertSame(PermissionTemplateAssignmentGuard::REJECT_MESSAGE, $error);
+        $this->assertSame(ApiPermissionService::TEMPLATE_ASSIGN_DENIED, $error);
     }
 
     public function testNonPrivilegedCallerWithSuppliedTemplateAsStringIsRejected(): void
@@ -98,9 +98,9 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: false);
         $input = ['perm_templ' => '1'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
-        $this->assertSame(PermissionTemplateAssignmentGuard::REJECT_MESSAGE, $error);
+        $this->assertSame(ApiPermissionService::TEMPLATE_ASSIGN_DENIED, $error);
     }
 
     public function testNonPrivilegedCallerWithoutTemplateGetsMinimalDefault(): void
@@ -108,7 +108,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: false);
         $input = ['username' => 'x', 'password' => 'y'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(4, $input['perm_templ'], 'Caller did not choose; safe minimal template injected');
@@ -122,7 +122,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: false);
         $input = ['perm_templ' => null, 'username' => 'x'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(4, $input['perm_templ']);
@@ -135,7 +135,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: false);
         $input = ['email' => 'updated@example.com'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertArrayNotHasKey('perm_templ', $input);
@@ -149,7 +149,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
         $input = ['username' => 'x'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(4, $input['perm_templ']);
@@ -160,7 +160,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: true);
         $input = ['username' => 'x'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertSame(4, $input['perm_templ']);
@@ -173,7 +173,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $svc = $this->permissionService(isUeberuser: true, canEditTemplPerm: false);
         $input = ['email' => 'updated@example.com'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, null);
 
         $this->assertNull($error);
         $this->assertArrayNotHasKey('perm_templ', $input);
@@ -241,7 +241,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         );
         $input = ['perm_templ' => 1, 'username' => 'attacker'];
 
-        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
     }
