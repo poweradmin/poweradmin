@@ -52,12 +52,14 @@ test.describe('Zone list in API backend mode', () => {
         .map(r => r.querySelectorAll('td')[idx]?.innerText.trim() ?? '');
     }, recordsIdx);
 
-    // A zone that exists in PowerDNS always has at least an SOA record, so a
-    // blank or zero count means the per-page fetch did not run
+    // Every row carries a number. Zero is legitimate - a secondary zone that
+    // has not transferred yet holds no records - so the signal that the
+    // per-page fetch actually ran is that some row is non-zero.
     expect(counts.length).toBeGreaterThan(0);
     for (const count of counts) {
-      expect(Number.parseInt(count, 10)).toBeGreaterThan(0);
+      expect(count).toMatch(/^\d+$/);
     }
+    expect(counts.some(count => Number.parseInt(count, 10) > 0)).toBe(true);
   });
 
   test('name and type columns stay sortable', async ({ page }) => {
