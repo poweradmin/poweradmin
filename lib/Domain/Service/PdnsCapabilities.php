@@ -126,10 +126,10 @@ final class PdnsCapabilities
 
     /* ----- API endpoints ---------------------------------------------- */
 
-    /** Individual RRset fetch endpoint added in 4.6. */
+    /** Filtering a zone read down to one RRset (rrset_name/rrset_type) added in 4.7. */
     public function supportsIndividualRrsetFetch(): bool
     {
-        return $this->isAtLeast('4.6.0');
+        return $this->isAtLeast('4.7.0');
     }
 
     /** Autoprimary management via API added in 4.6. */

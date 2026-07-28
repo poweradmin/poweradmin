@@ -111,8 +111,10 @@ class PdnsCapabilitiesTest extends TestCase
     {
         $v45 = PdnsCapabilities::fromVersion('4.5.9');
         $v46 = PdnsCapabilities::fromVersion('4.6.0');
-        $this->assertFalse($v45->supportsIndividualRrsetFetch());
-        $this->assertTrue($v46->supportsIndividualRrsetFetch());
+        $v47 = PdnsCapabilities::fromVersion('4.7.0');
+        // rrset_name/rrset_type landed in auth-4.7.0, not 4.6
+        $this->assertFalse($v46->supportsIndividualRrsetFetch());
+        $this->assertTrue($v47->supportsIndividualRrsetFetch());
         $this->assertFalse($v45->supportsAutoprimariesApi());
         $this->assertTrue($v46->supportsAutoprimariesApi());
 
