@@ -32,6 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -78,7 +80,20 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->permissionTemplate->addPermissionTemplate($this->getRequest());
+        $request = $this->getRequest();
+        $guardError = PermissionTemplateContentGuard::apply(
+            $this->callerIsSuperuser(),
+            $this->permissionTemplate->getPermissionsByTemplateId(),
+            [],
+            is_array($request['perm_id'] ?? null) ? $request['perm_id'] : []
+        );
+        if ($guardError !== null) {
+            $this->setMessage('list_perm_templ', 'error', $this->guardMessage($guardError));
+            $this->redirect('/permissions/templates');
+            return;
+        }
+
+        $this->permissionTemplate->addPermissionTemplate($request);
 
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:add_perm_template name:%s',
@@ -94,7 +109,10 @@ class AddPermTemplController extends BaseController
     private function showForm(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+            'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
+                $this->permissionTemplate->getPermissionsByTemplateId(),
+                $this->callerIsSuperuser()
+            ),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -115,5 +133,17 @@ class AddPermTemplController extends BaseController
         ]);
 
         return $this->doValidateRequest();
+    }
+
+    private function callerIsSuperuser(): bool
+    {
+        return UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+    }
+
+    private function guardMessage(string $code): string
+    {
+        return $code === PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED
+            ? _('Granting administrator rights in a permission template requires administrator rights.')
+            : _('The permission template could not be added.');
     }
 }
