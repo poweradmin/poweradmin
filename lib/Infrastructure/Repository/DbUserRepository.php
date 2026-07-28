@@ -680,6 +680,13 @@ class DbUserRepository implements UserRepository
     {
         $useLdap = (int)($userData['use_ldap'] ?? 0);
 
+        // No implicit template: defaulting to id 1 handed the bundled
+        // Administrator template to every caller that omitted perm_templ.
+        $permTemplId = (int)($userData['perm_templ'] ?? 0);
+        if ($permTemplId <= 0) {
+            return null;
+        }
+
         $query = "INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap, auth_method)
                   VALUES (:username, :password, :fullname, :email, :description, :active, :perm_templ, :use_ldap, :auth_method)";
 
@@ -691,7 +698,7 @@ class DbUserRepository implements UserRepository
             ':email' => $userData['email'] ?? '',
             ':description' => $userData['description'] ?? '',
             ':active' => (int)($userData['active'] ?? 1),
-            ':perm_templ' => (int)($userData['perm_templ'] ?? 1),
+            ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
             ':auth_method' => $useLdap ? 'ldap' : 'sql'
         ]);
