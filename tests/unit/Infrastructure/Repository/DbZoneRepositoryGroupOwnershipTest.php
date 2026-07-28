@@ -262,4 +262,23 @@ class DbZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertStringNotContainsString('LEFT JOIN user_groups', $capturedQuery, 'Non-group sort must not join user_groups');
         $this->assertStringContainsString('ORDER BY users.username', $capturedQuery, 'Owner sort must order by users.username');
     }
+
+    #[Test]
+    public function getReverseZonesFallsBackWhenSortingByAHiddenRecordCountColumn(): void
+    {
+        // Turning the Records column off drops count_records from the allowed
+        // sort keys, but a session set while it was visible still asks for it
+        $this->setupConfig();
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+        $stmt->method('bindValue')->willReturn(true);
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $repository = new DbZoneRepository($this->db, $this->config);
+        $result = $repository->getReverseZones('all', 5, 'all', 0, 25, 'count_records', 'ASC', false, false, false, true, false);
+
+        $this->assertSame([], $result);
+    }
 }

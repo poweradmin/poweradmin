@@ -167,6 +167,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $allowedSortColumns = $includeRecordCount
             ? ['name', 'type', 'count_records', 'owner', 'group']
             : ['name', 'type', 'owner', 'group'];
+        // Hiding the Records column drops its sort key, but a session set while
+        // the column was visible still asks for it - fall back instead of failing
+        if (!$includeRecordCount && $sortby === 'count_records') {
+            $sortby = 'name';
+        }
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 

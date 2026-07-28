@@ -133,6 +133,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $allowedSortColumns = $includeRecordCount
             ? ['name', 'owner', 'count_records', 'type', 'group']
             : ['name', 'owner', 'type', 'group'];
+        // Hiding the Records column drops its sort key, but a session set while
+        // the column was visible still asks for it - fall back instead of failing
+        if (!$includeRecordCount && $sortBy === 'count_records') {
+            $sortBy = 'name';
+        }
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
