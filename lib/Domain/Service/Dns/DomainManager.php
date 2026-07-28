@@ -410,7 +410,9 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+        // Authorise the zone this call actually writes, not whatever id the request
+        // happens to carry.
+        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $zone_id)) {
             if (UserManager::isValidUser($db, $user_id)) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
                 $stmt->execute([$user_id, $zone_id]);
@@ -447,7 +449,7 @@ class DomainManager implements DomainManagerInterface
      */
     public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $zone_id)) {
             if (UserManager::isValidUser($db, $user_id)) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE domain_id = ?");
                 $stmt->execute([$zone_id]);

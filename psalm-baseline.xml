@@ -124,8 +124,6 @@
   </file>
   <file src="lib/Domain/Service/Dns/DomainManager.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$_GET["id"]]]></code>
-      <code><![CDATA[$_GET["id"]]]></code>
       <code><![CDATA[$zone_template]]></code>
     </InvalidScalarArgument>
   </file>
