@@ -202,7 +202,7 @@ class AddUserController extends BaseController
         $email = $this->request->getPostParam('email', '');
 
         // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db) ?? '1';
+        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'user') ?? '';
         $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->request->getPostParam('descr', '');
