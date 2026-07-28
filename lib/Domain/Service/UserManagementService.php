@@ -275,19 +275,25 @@ class UserManagementService
             ];
         }
 
-        // Reject invalid permission template ids; missing/null is allowed (repo defaults to 1).
-        // Group templates are rejected to match the web UI flow.
-        if (array_key_exists('perm_templ', $userData) && $userData['perm_templ'] !== null) {
-            $permTemplId = $this->normalizePermTemplId($userData['perm_templ']);
-            if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
-                return [
-                    'success' => false,
-                    'message' => 'Permission template not found',
-                    'status' => 404
-                ];
-            }
-            $userData['perm_templ'] = $permTemplId;
+        // A template must be resolved by now; without one the row would inherit
+        // Administrator. Group templates are rejected to match the web UI flow.
+        if (!array_key_exists('perm_templ', $userData) || $userData['perm_templ'] === null) {
+            return [
+                'success' => false,
+                'message' => 'No permission template available to assign',
+                'status' => 400
+            ];
         }
+
+        $permTemplId = $this->normalizePermTemplId($userData['perm_templ']);
+        if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
+            return [
+                'success' => false,
+                'message' => 'Permission template not found',
+                'status' => 404
+            ];
+        }
+        $userData['perm_templ'] = $permTemplId;
 
         try {
             // Hash the password before storing

@@ -415,13 +415,17 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByEmail')
             ->willReturn(null);
 
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
         $this->userRepository->method('createUser')
             ->willReturn(42);
 
         $result = $this->service->createUser([
             'username' => 'newuser',
             'password' => 'test123',
-            'email' => 'new@test.com'
+            'email' => 'new@test.com',
+            'perm_templ' => 3
         ]);
 
         $this->assertTrue($result['success']);
@@ -434,12 +438,16 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')
             ->willReturn(null);
 
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
         $this->userRepository->method('createUser')
             ->willReturn(null);
 
         $result = $this->service->createUser([
             'username' => 'newuser',
-            'password' => 'test123'
+            'password' => 'test123',
+            'perm_templ' => 3
         ]);
 
         $this->assertFalse($result['success']);
@@ -453,12 +461,16 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserByUsername')
             ->willReturn(null);
 
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
         $this->userRepository->method('createUser')
             ->willThrowException(new Exception('Database error'));
 
         $result = $this->service->createUser([
             'username' => 'newuser',
-            'password' => 'test123'
+            'password' => 'test123',
+            'perm_templ' => 3
         ]);
 
         $this->assertFalse($result['success']);
@@ -598,26 +610,25 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
-    public function testCreateUserAllowsOmittedPermissionTemplate(): void
+    public function testCreateUserRejectsOmittedPermissionTemplate(): void
     {
         $this->userRepository->method('getUserByUsername')->willReturn(null);
-        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
-        $this->userRepository->method('createUser')->willReturn(7);
+        $this->userRepository->expects($this->never())->method('createUser');
 
         $result = $this->service->createUser([
             'username' => 'newuser',
             'password' => 'test123',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
     }
 
     #[Test]
-    public function testCreateUserAllowsNullPermissionTemplate(): void
+    public function testCreateUserRejectsNullPermissionTemplate(): void
     {
         $this->userRepository->method('getUserByUsername')->willReturn(null);
-        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
-        $this->userRepository->method('createUser')->willReturn(8);
+        $this->userRepository->expects($this->never())->method('createUser');
 
         $result = $this->service->createUser([
             'username' => 'newuser',
@@ -625,7 +636,8 @@ class UserManagementServiceTest extends TestCase
             'perm_templ' => null,
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
     }
 
     // ========== updateUser tests ==========
