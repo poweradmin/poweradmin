@@ -186,12 +186,15 @@ interface UserRepository
     public function templateGrantsUberuser(int $permTemplId): bool;
 
     /**
-     * Resolve a permission id from its name
+     * Resolve every permission id carrying a given name
+     *
+     * perm_items.name has no unique constraint, so a name can map to several rows and
+     * all of them grant the permission.
      *
      * @param string $name Permission name as stored in perm_items
-     * @return int|null Permission id, or null when the permission is not installed
+     * @return array<int, int> Matching permission ids, empty when the permission is absent
      */
-    public function getPermissionIdByName(string $name): ?int;
+    public function getPermissionIdsByName(string $name): array;
 
     /**
      * Create a new user

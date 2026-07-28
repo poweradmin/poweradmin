@@ -676,14 +676,13 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
-    public function getPermissionIdByName(string $name): ?int
+    public function getPermissionIdsByName(string $name): array
     {
-        // perm_items.name carries no unique constraint, so order for a stable answer
+        // Every row with this name grants it, matching templateGrantsUberuser()
         $stmt = $this->db->prepare("SELECT id FROM perm_items WHERE name = :name ORDER BY id");
         $stmt->execute([':name' => $name]);
-        $id = $stmt->fetchColumn();
 
-        return $id === false ? null : (int)$id;
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function createUser(array $userData): ?int

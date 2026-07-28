@@ -69,14 +69,14 @@ class PermissionTemplateContentGuard
             return null;
         }
 
-        $uberuserPermId = $userRepository->getPermissionIdByName(self::UBERUSER_PERMISSION);
-        if ($uberuserPermId === null) {
+        $uberuserPermIds = $userRepository->getPermissionIdsByName(self::UBERUSER_PERMISSION);
+        if ($uberuserPermIds === []) {
             return null;
         }
 
         foreach ($permIds as $permId) {
             // Posted ids arrive as strings; non-scalars would cast to a colliding int.
-            if (is_scalar($permId) && (int)$permId === $uberuserPermId) {
+            if (is_scalar($permId) && in_array((int)$permId, $uberuserPermIds, true)) {
                 return self::CONTENT_SUPERUSER_DENIED;
             }
         }

@@ -126,7 +126,7 @@ class PermissionTemplateContentGuardTest extends TestCase
     {
         // perm_items has no unique constraint and no fixed ids, so the name is resolved
         // at run time; a hardcoded 53 would fail both halves of this test.
-        $repository = $this->userRepository(isSuperuser: false, uberuserPermId: 900);
+        $repository = $this->userRepository(isSuperuser: false, uberuserPermIds: [900]);
 
         $this->assertSame(
             PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED,
@@ -137,11 +137,23 @@ class PermissionTemplateContentGuardTest extends TestCase
         );
     }
 
+    public function testEveryRowCarryingTheNameIsBlocked(): void
+    {
+        // perm_items has no unique constraint, and templateGrantsUberuser() matches by
+        // name, so checking only the lowest id would leave the duplicate exploitable.
+        $repository = $this->userRepository(isSuperuser: false, uberuserPermIds: [53, 91]);
+
+        $this->assertSame(
+            PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED,
+            PermissionTemplateContentGuard::apply($repository, self::CALLER_ID, 9, [91])
+        );
+    }
+
     public function testMissingUberuserPermissionAllowsTheWrite(): void
     {
         // No such row means no template can grant it, so there is nothing to deny.
         $error = PermissionTemplateContentGuard::apply(
-            $this->userRepository(isSuperuser: false, uberuserPermId: null),
+            $this->userRepository(isSuperuser: false, uberuserPermIds: []),
             self::CALLER_ID,
             9,
             [self::UBERUSER_PERM_ID]
@@ -154,7 +166,7 @@ class PermissionTemplateContentGuardTest extends TestCase
     {
         // (int)[1] is 1 in PHP, so non-scalars must be skipped rather than cast.
         $error = PermissionTemplateContentGuard::apply(
-            $this->userRepository(isSuperuser: false, uberuserPermId: 1),
+            $this->userRepository(isSuperuser: false, uberuserPermIds: [1]),
             self::CALLER_ID,
             9,
             [[42]]
@@ -180,7 +192,7 @@ class PermissionTemplateContentGuardTest extends TestCase
         $repository = $this->createMock(UserRepository::class);
         $repository->method('hasAdminPermission')->willReturn(true);
         $repository->expects($this->never())->method('templateGrantsUberuser');
-        $repository->expects($this->never())->method('getPermissionIdByName');
+        $repository->expects($this->never())->method('getPermissionIdsByName');
 
         $this->assertNull(
             PermissionTemplateContentGuard::apply($repository, self::CALLER_ID, 1, [self::UBERUSER_PERM_ID])
@@ -210,12 +222,12 @@ class PermissionTemplateContentGuardTest extends TestCase
     private function userRepository(
         bool $isSuperuser,
         bool $templateGrantsUberuser = false,
-        ?int $uberuserPermId = self::UBERUSER_PERM_ID
+        ?array $uberuserPermIds = [self::UBERUSER_PERM_ID]
     ): UserRepository {
         $repository = $this->createMock(UserRepository::class);
         $repository->method('hasAdminPermission')->willReturn($isSuperuser);
         $repository->method('templateGrantsUberuser')->willReturn($templateGrantsUberuser);
-        $repository->method('getPermissionIdByName')->willReturn($uberuserPermId);
+        $repository->method('getPermissionIdsByName')->willReturn($uberuserPermIds ?? []);
 
         return $repository;
     }
