@@ -62,17 +62,17 @@ class RoutingConfigurationTest extends TestCase
         }
     }
 
-    public function testApiV1RoutesExist(): void
+    public function testApiV2RoutesExist(): void
     {
         $apiRoutes = [
-            'api_v1_zones',
-            'api_v1_zone',
-            'api_v1_zone_records',
-            'api_v1_zone_record',
-            'api_v1_users',
-            'api_v1_user',
-            'api_v1_permission_templates',
-            'api_v1_permission_template'
+            'api_v2_zones',
+            'api_v2_zone',
+            'api_v2_zone_records',
+            'api_v2_zone_record',
+            'api_v2_users',
+            'api_v2_user',
+            'api_v2_permission_templates',
+            'api_v2_permission_template'
         ];
 
         foreach ($apiRoutes as $routeName) {
@@ -81,6 +81,26 @@ class RoutingConfigurationTest extends TestCase
                 "API route '{$routeName}' should exist"
             );
         }
+    }
+
+    public function testApiV1IsServedOnlyByTheGoneHandler(): void
+    {
+        foreach ($this->routes->all() as $routeName => $route) {
+            if (!str_starts_with($route->getPath(), '/api/v1')) {
+                continue;
+            }
+
+            $this->assertEquals(
+                'api_v1_gone',
+                $routeName,
+                "API v1 route '{$routeName}' should have been removed"
+            );
+        }
+
+        $goneRoute = $this->routes->get('api_v1_gone');
+        $this->assertNotNull($goneRoute);
+        $this->assertEquals('/api/v1/{path}', $goneRoute->getPath());
+        $this->assertEmpty($goneRoute->getMethods(), 'Every verb must reach the 410 handler');
     }
 
     public function testInternalApiRoutesExist(): void
@@ -112,7 +132,7 @@ class RoutingConfigurationTest extends TestCase
         $this->assertNotNull($userEditRoute);
         $this->assertEquals('\d+', $userEditRoute->getRequirement('id'));
 
-        $zoneRecordRoute = $this->routes->get('api_v1_zone_record');
+        $zoneRecordRoute = $this->routes->get('api_v2_zone_record');
         $this->assertNotNull($zoneRecordRoute);
         $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('id'));
         // record_id accepts both numeric IDs (SQL mode) and encoded strings (API mode)
@@ -126,11 +146,11 @@ class RoutingConfigurationTest extends TestCase
         $this->assertNotNull($loginRoute);
         $this->assertEquals(['GET', 'POST'], $loginRoute->getMethods());
 
-        $apiZonesRoute = $this->routes->get('api_v1_zones');
+        $apiZonesRoute = $this->routes->get('api_v2_zones');
         $this->assertNotNull($apiZonesRoute);
         $this->assertEquals(['GET', 'POST'], $apiZonesRoute->getMethods());
 
-        $apiZoneRoute = $this->routes->get('api_v1_zone');
+        $apiZoneRoute = $this->routes->get('api_v2_zone');
         $this->assertNotNull($apiZoneRoute);
         $this->assertEquals(['GET', 'PUT', 'DELETE'], $apiZoneRoute->getMethods());
     }
@@ -150,9 +170,9 @@ class RoutingConfigurationTest extends TestCase
             $loginRoute->getDefault('_controller')
         );
 
-        $apiZonesRoute = $this->routes->get('api_v1_zones');
+        $apiZonesRoute = $this->routes->get('api_v2_zones');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\Api\V1\ZonesController::run',
+            'Poweradmin\Application\Controller\Api\V2\ZonesController::run',
             $apiZonesRoute->getDefault('_controller')
         );
     }
@@ -166,8 +186,8 @@ class RoutingConfigurationTest extends TestCase
         $recordEditRoute = $this->routes->get('record_edit');
         $this->assertEquals('/zones/{zone_id}/records/{id}/edit', $recordEditRoute->getPath());
 
-        $apiZoneRecordRoute = $this->routes->get('api_v1_zone_record');
-        $this->assertEquals('/api/v1/zones/{id}/records/{record_id}', $apiZoneRecordRoute->getPath());
+        $apiZoneRecordRoute = $this->routes->get('api_v2_zone_record');
+        $this->assertEquals('/api/v2/zones/{id}/records/{record_id}', $apiZoneRecordRoute->getPath());
     }
 
     public function testNoRouteConflicts(): void
@@ -208,7 +228,7 @@ class RoutingConfigurationTest extends TestCase
         // Simulate route matching performance
         for ($i = 0; $i < 100; $i++) {
             $this->routes->get('home');
-            $this->routes->get('api_v1_zones');
+            $this->routes->get('api_v2_zones');
             $this->routes->get('user_edit');
         }
 

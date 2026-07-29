@@ -36,7 +36,6 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
     {
         return [
             'v2' => [\Poweradmin\Application\Controller\Api\V2\UsersController::class],
-            'v1' => [\Poweradmin\Application\Controller\Api\V1\UsersController::class],
         ];
     }
 
