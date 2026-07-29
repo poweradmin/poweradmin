@@ -499,7 +499,7 @@ parameters:
 			path: lib/Domain/Model/UserManager.php
 
 		-
-			message: '#^Class cognitive complexity is 136, keep it under 60$#'
+			message: '#^Class cognitive complexity is 138, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Domain/Model/ZoneTemplate.php

@@ -33,6 +33,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -45,6 +47,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     private ApiPermissionService $apiPermissionService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -53,6 +56,30 @@ class ZoneTemplateRecordsController extends PublicApiController
         $this->apiPermissionService = new ApiPermissionService($this->db);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+    }
+
+    /**
+     * Check a template record against the validator for its type.
+     *
+     * Built on demand because the validator registry instantiates every record-type
+     * validator, which is wasted work on the read endpoints.
+     */
+    private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
+    {
+        $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry($this->config, $this->db)
+        );
+
+        $result = $this->recordValidationService->validate(
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $priority,
+            (int)$this->config->get('dns', 'ttl', 3600)
+        );
+
+        return $result->isValid() ? null : $this->returnApiError($result->getFirstError(), 400);
     }
 
     /**
@@ -279,6 +306,11 @@ class ZoneTemplateRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
             }
 
+            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            if ($validationError !== null) {
+                return $validationError;
+            }
+
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
             $this->auditLogger->logInfo(sprintf(
@@ -469,6 +501,11 @@ class ZoneTemplateRecordsController extends PublicApiController
                 || !$this->apiPermissionService->canWriteTemplateRecordType($userId, $type)
             ) {
                 return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
+            }
+
+            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            if ($validationError !== null) {
+                return $validationError;
             }
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
