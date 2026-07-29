@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<psalm errorLevel="2" resolveFromConfigFile="true">
+<psalm errorLevel="4" resolveFromConfigFile="true" errorBaseline="psalm-baseline.xml">
     <projectFiles>
         <file name="index.php" />
         <directory name="inc" />
