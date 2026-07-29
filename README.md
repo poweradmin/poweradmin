@@ -181,12 +181,6 @@ JetBrains provides IDE licenses used for development of this project.
       </a>
       <br>VISTEC Internet Service GmbH
     </td>
-    <td align="center" width="200">
-      <a href="https://www.ybaca.net/">
-        <img src="https://docs.poweradmin.org/img/sponsors/ybaca.svg" alt="yBaca s.r.o." height="40">
-      </a>
-      <br>yBaca s.r.o.
-    </td>
   </tr>
 </table>
 
@@ -200,6 +194,7 @@ JetBrains provides IDE licenses used for development of this project.
 * Dylan Blanqué
 * Tony Johnson
 * Deeefje
+* yBaca s.r.o.
 
 For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas). Donations via invoice are also possible for organizations within the EU.
 
