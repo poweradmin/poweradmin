@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -48,6 +49,7 @@ class LdapAuthenticator extends LoggingService
     private UserContextService $userContextService;
     private array $serverParams;
     private ?MfaService $mfaService = null;
+    private string $dbType = '';
 
     public function __construct(
         PDO $connection,
@@ -71,6 +73,7 @@ class LdapAuthenticator extends LoggingService
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
         $this->serverParams = $serverParams ?: $_SERVER;
+        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         // Initialize MFA service
         $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
@@ -229,7 +232,10 @@ class LdapAuthenticator extends LoggingService
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        // Directory usernames are accent-sensitive, so a folding collation here would
+        // let a look-alike directory account resolve to another user's local row.
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
@@ -436,7 +442,8 @@ class LdapAuthenticator extends LoggingService
      */
     private function validateUserActiveStatus(string $username): bool
     {
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute(['username' => $username]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
