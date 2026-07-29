@@ -51,6 +51,75 @@ class PowerdnsApiClientExtendedTest extends TestCase
     }
 
     // ---------------------------------------------------------------
+    // getZoneRrset
+    // ---------------------------------------------------------------
+
+    public function testGetZoneRrsetRequestsOnlyTheNamedRrset(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->with(
+                'GET',
+                '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.&rrset_type=A'
+            )
+            ->willReturn([
+                'responseCode' => 200,
+                'data' => [
+                    'name' => 'example.com.',
+                    'rrsets' => [['name' => 'www.example.com.', 'type' => 'A', 'records' => []]],
+                ],
+            ]);
+
+        $result = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertNotNull($result);
+        $this->assertCount(1, $result['rrsets']);
+    }
+
+    public function testGetZoneRrsetReturnsNullOnNotFound(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 404, 'data' => []]);
+
+        $result = $this->apiClient->getZoneRrset('nonexistent.com.', 'www.nonexistent.com.', 'A');
+
+        $this->assertNull($result);
+    }
+
+    // ---------------------------------------------------------------
+    // getZoneWithoutRrsets
+    // ---------------------------------------------------------------
+
+    public function testGetZoneWithoutRrsetsAsksTheServerToOmitRecords(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false')
+            ->willReturn([
+                'responseCode' => 200,
+                'data' => ['name' => 'example.com.', 'kind' => 'Master', 'soa_edit_api' => 'DEFAULT'],
+            ]);
+
+        $result = $this->apiClient->getZoneWithoutRrsets('example.com.');
+
+        $this->assertNotNull($result);
+        $this->assertSame('DEFAULT', $result['soa_edit_api']);
+        $this->assertArrayNotHasKey('rrsets', $result);
+    }
+
+    public function testGetZoneWithoutRrsetsReturnsNullOnNotFound(): void
+    {
+        $this->mockHttpClient->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 404, 'data' => []]);
+
+        $result = $this->apiClient->getZoneWithoutRrsets('nonexistent.com.');
+
+        $this->assertNull($result);
+    }
+
+    // ---------------------------------------------------------------
     // createZoneWithData
     // ---------------------------------------------------------------
 
