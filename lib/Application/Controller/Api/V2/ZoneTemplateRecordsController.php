@@ -33,6 +33,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -41,12 +43,37 @@ class ZoneTemplateRecordsController extends PublicApiController
 {
     private DbZoneTemplateRepository $repository;
     private ApiPermissionService $apiPermissionService;
+    private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
         $this->apiPermissionService = new ApiPermissionService($this->db);
+    }
+
+    /**
+     * Check a template record against the validator for its type.
+     *
+     * Built on demand because the validator registry instantiates every record-type
+     * validator, which is wasted work on the read endpoints.
+     */
+    private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
+    {
+        $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry($this->config, $this->db)
+        );
+
+        $result = $this->recordValidationService->validate(
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $priority,
+            (int)$this->config->get('dns', 'ttl', 3600)
+        );
+
+        return $result->isValid() ? null : $this->returnApiError($result->getFirstError(), 400);
     }
 
     /**
@@ -263,6 +290,11 @@ class ZoneTemplateRecordsController extends PublicApiController
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$this->config->get('dns', 'ttl');
             $priority = isset($data['priority']) ? (int)$data['priority'] : 0;
 
+            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            if ($validationError !== null) {
+                return $validationError;
+            }
+
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
             return $this->returnApiResponse(['id' => $recordId], true, null, 201);
@@ -435,6 +467,11 @@ class ZoneTemplateRecordsController extends PublicApiController
             $content = trim($data['content']);
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$record['ttl'];
             $priority = isset($data['priority']) ? (int)$data['priority'] : (int)($record['prio'] ?? 0);
+
+            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            if ($validationError !== null) {
+                return $validationError;
+            }
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 

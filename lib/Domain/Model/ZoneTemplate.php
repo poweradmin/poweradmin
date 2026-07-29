@@ -26,7 +26,11 @@ use Exception;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -49,6 +53,7 @@ class ZoneTemplate
     private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
+    private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(PDOCommon $db, ConfigurationInterface $config)
     {
@@ -59,6 +64,28 @@ class ZoneTemplate
         $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
         $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
+    }
+
+    /**
+     * Check a template record against the validator for its type.
+     *
+     * Built on demand because the validator registry instantiates every record-type
+     * validator, which is wasted work on the paths that never store a record.
+     */
+    private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
+    {
+        $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry(ConfigurationManager::getInstance(), $this->db)
+        );
+
+        return $this->recordValidationService->validate(
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $prio,
+            (int)$this->config->get('dns', 'ttl', 3600)
+        );
     }
 
     /**
@@ -464,6 +491,12 @@ class ZoneTemplate
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
 
+        $validationResult = $this->validateTemplateRecord($name, $type, $content, $ttl, $prio);
+        if (!$validationResult->isValid()) {
+            $this->messageService->addSystemError($validationResult->getFirstError());
+            return false;
+        }
+
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -532,6 +565,18 @@ class ZoneTemplate
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
+
+        $validationResult = $this->validateTemplateRecord(
+            $record['name'],
+            $record['type'],
+            $record['content'],
+            $record['ttl'],
+            $record['prio'] ?? 0
+        );
+        if (!$validationResult->isValid()) {
+            $this->messageService->addSystemError($validationResult->getFirstError());
+            return false;
+        }
 
         try {
             $stmt = $this->db->prepare("UPDATE zone_templ_records

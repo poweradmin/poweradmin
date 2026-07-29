@@ -104,7 +104,42 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
             return $nameResult;
         }
 
-        // 4. Validate CNAME hostname
+        // 4. Validate the record on its own terms (hostname, target, TTL, priority)
+        $syntaxResult = $this->validateSyntax($content, $name, $prio, $ttl, $defaultTTL);
+        if (!$syntaxResult->isValid()) {
+            return $syntaxResult;
+        }
+        $validated = $syntaxResult->getData();
+
+        // 5. Check that zone does not have an empty CNAME RR
+        if (!empty($zone)) {
+            $emptyResult = $this->validateNotEmptyCnameRR($validated['name'], $zone);
+            if (!$emptyResult->isValid()) {
+                return $emptyResult;
+            }
+        }
+
+        return $syntaxResult;
+    }
+
+    /**
+     * Validate the parts of a CNAME record that do not depend on the zone it lives in.
+     *
+     * Callers holding a record with no zone context - zone template records, for
+     * instance - use this to check the record itself without the existence lookups
+     * that only make sense against a real zone.
+     *
+     * @param string $content Target hostname
+     * @param string $name CNAME hostname
+     * @param mixed $prio Priority (not used for CNAME records)
+     * @param int|string|null $ttl TTL value
+     * @param int $defaultTTL Default TTL value
+     *
+     * @return ValidationResult ValidationResult containing validated data or error messages
+     */
+    public function validateSyntax(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    {
+        // Validate CNAME hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
             return $hostnameResult;
@@ -112,7 +147,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
 
-        // 5. Validate target hostname
+        // Validate target hostname
         $contentHostnameResult = $this->hostnameValidator->validate($content, false);
         if (!$contentHostnameResult->isValid()) {
             return $contentHostnameResult;
@@ -120,21 +155,13 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $contentData = $contentHostnameResult->getData();
         $content = $contentData['hostname'];
 
-        // 5a. Validate that target is a FQDN (RFC 1035 requirement)
+        // Validate that target is a FQDN (RFC 1035 requirement)
         $fqdnResult = $this->validateTargetFqdn($content);
         if (!$fqdnResult->isValid()) {
             return $fqdnResult;
         }
 
-        // 6. Check that zone does not have an empty CNAME RR
-        if (!empty($zone)) {
-            $emptyResult = $this->validateNotEmptyCnameRR($name, $zone);
-            if (!$emptyResult->isValid()) {
-                return $emptyResult;
-            }
-        }
-
-        // 7. Validate TTL
+        // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
             return $ttlResult;
@@ -142,7 +169,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        // 8. Validate priority (should be 0 for CNAME records)
+        // Validate priority (should be 0 for CNAME records)
         $prioResult = $this->validatePriority($prio);
         if (!$prioResult->isValid()) {
             return $prioResult;
