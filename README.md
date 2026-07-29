@@ -187,7 +187,6 @@ JetBrains provides IDE licenses used for development of this project.
 * Arthur Mayer
 * Dylan Blanqué
 * Tony Johnson
-* trendymail
 * Deeefje
 * yBaca s.r.o.
 
