@@ -53,6 +53,7 @@ class UserProvisioningService extends LoggingService
 
     /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
     private string $binaryCollation;
+    private string $dbType;
 
     public function __construct(
         PDOCommon $connection,
@@ -66,7 +67,8 @@ class UserProvisioningService extends LoggingService
         $this->configManager = $configManager;
         $this->userManager = new UserManager($connection, $configManager);
         $this->userRepository = new DbUserRepository($connection, $configManager);
-        $this->binaryCollation = DbCompat::binaryCollation($connection->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $this->binaryCollation = DbCompat::binaryCollation($this->dbType);
     }
 
     public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
@@ -234,7 +236,9 @@ class UserProvisioningService extends LoggingService
     private function findUserByEmail(string $email): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM users WHERE email = ? AND active = 1");
+            // Accent-exact match, so a look-alike email cannot link to another account.
+            $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+            $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
             $stmt->execute([$email]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
