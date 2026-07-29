@@ -40,6 +40,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
+use RuntimeException;
 
 class OidcService extends LoggingService
 {
@@ -505,56 +506,16 @@ class OidcService extends LoggingService
 
     private function getCallbackUrl(): string
     {
-        // Prefer the explicitly configured base so the OAuth redirect_uri sent to
-        // the IdP cannot be poisoned via the Host header. Operators already need
-        // to set interface.application_url for password-reset emails.
         $configuredUrl = $this->configManager->get('interface', 'application_url', '');
         if ($configuredUrl !== '') {
             return rtrim($configuredUrl, '/') . '/oidc/callback';
         }
 
-        // Fall back to SERVER_NAME (webserver-configured hostname), not HTTP_HOST,
-        // so the redirect_uri can't be flipped by a request-time Host header.
-        // Matches UrlService::getEmailUrlWithServerFallback().
-        $this->logWarning(
-            'OIDC: deriving callback URL from SERVER_NAME because interface.application_url is unset. Set application_url to a fixed value to make the OAuth redirect_uri stable.'
+        // The redirect_uri is never derived from the request: SERVER_NAME follows the client
+        // Host header under FrankenPHP and Apache defaults, so a forged Host would receive the code.
+        throw new RuntimeException(
+            'interface.application_url must be configured before OIDC can be used: it defines the OAuth redirect_uri registered with the provider.'
         );
-
-        $scheme = $this->detectScheme();
-        $host = $this->request->getServerParam('SERVER_NAME', 'localhost');
-        $basePrefix = $this->configManager->get('interface', 'base_url_prefix', '');
-
-        return $scheme . '://' . $host . $basePrefix . '/oidc/callback';
-    }
-
-    private function detectScheme(): string
-    {
-        // Check for reverse proxy headers first (common in Docker/Kubernetes environments)
-        $forwardedProto = $this->request->getServerParam('HTTP_X_FORWARDED_PROTO');
-        if ($forwardedProto) {
-            return strtolower($forwardedProto) === 'https' ? 'https' : 'http';
-        }
-
-        // Alternative header format
-        $forwardedSsl = $this->request->getServerParam('HTTP_X_FORWARDED_SSL');
-        if ($forwardedSsl && strtolower($forwardedSsl) === 'on') {
-            return 'https';
-        }
-
-        // Check standard HTTPS indicator
-        $https = $this->request->getServerParam('HTTPS');
-        if ($https && strtolower($https) !== 'off') {
-            return 'https';
-        }
-
-        // Check for secure port
-        $port = $this->request->getServerParam('SERVER_PORT');
-        if ($port && (int)$port === 443) {
-            return 'https';
-        }
-
-        // Fall back to REQUEST_SCHEME or default to https for security
-        return $this->request->getServerParam('REQUEST_SCHEME', 'https');
     }
 
     private function isProviderEnabled(string $providerId, array $config): bool

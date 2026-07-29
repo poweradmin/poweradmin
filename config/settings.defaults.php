@@ -146,7 +146,7 @@ return [
         'favicon_path' => '',                 // Custom favicon path or URL; empty uses the bundled favicon.ico (added in 4.4.0)
         'logo_path' => '',                    // Custom header logo path or URL; empty uses the bundled assets/logo.png (added in 4.4.0)
         'base_url_prefix' => '',              // Base URL prefix for deployments (default: '', subdirectory example: '/poweradmin') (added in 4.1.0)
-        'application_url' => '',              // Full application URL for emails and absolute links - required when password_reset is enabled (example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
+        'application_url' => '',              // Full application URL for emails and absolute links - required for password reset, OIDC and SAML (example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
 
         // UI Element Settings
         'show_record_id' => false,             // Show record ID column in edit mode (added in 3.9.0)

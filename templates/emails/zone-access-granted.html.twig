@@ -24,11 +24,13 @@
 
     <p>You can now view and edit DNS records for this zone.</p>
 
+    {% if zoneEditUrl %}
     <div style="text-align: center; margin: 30px 0;">
         <a href="{{ zoneEditUrl }}" style="display: inline-block; padding: 12px 30px; text-decoration: none; border-radius: 4px;" class="button-primary">
             Manage Zone
         </a>
     </div>
+    {% endif %}
 
     <p style="font-size: 14px;" class="disclaimer-text">
         If you believe you received this notification in error, please contact your system administrator.

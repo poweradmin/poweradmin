@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Api;
 
 use Poweradmin\Application\Controller\Api\DocsController;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 
 /**
@@ -20,11 +21,16 @@ class TestableDocsController extends DocsController
         // Empty implementation for testing
     }
 
+    public function setConfig(ConfigurationManager $config): void
+    {
+        $this->config = $config;
+    }
+
     // Make the method public for testing
-    public function getValidatedHostPublic(): string
+    public function getDocsBaseUrlPublic(): string
     {
         $reflection = new ReflectionClass(parent::class);
-        $method = $reflection->getMethod('getValidatedHost');
+        $method = $reflection->getMethod('getDocsBaseUrl');
         $method->setAccessible(true);
         return $method->invoke($this);
     }

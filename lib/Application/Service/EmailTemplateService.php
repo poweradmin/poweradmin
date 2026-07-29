@@ -208,7 +208,7 @@ class EmailTemplateService
      * @param string $grantedByName Name of person who granted access
      * @param string $grantedByEmail Email of person who granted access
      * @param string $grantedAt Timestamp of when access was granted
-     * @param string $zoneEditUrl URL to edit the zone
+     * @param string|null $zoneEditUrl URL to edit the zone, or null to omit the link
      * @return array ['html' => string, 'text' => string, 'subject' => string]
      * @throws LoaderError
      * @throws RuntimeError
@@ -220,7 +220,7 @@ class EmailTemplateService
         string $grantedByName,
         string $grantedByEmail,
         string $grantedAt,
-        string $zoneEditUrl
+        ?string $zoneEditUrl
     ): array {
         $greeting = $recipientName ? "Hi $recipientName," : "Hi,";
 

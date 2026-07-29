@@ -37,7 +37,6 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
 class LogoutController extends BaseController
 {
@@ -96,7 +95,8 @@ class LogoutController extends BaseController
             if ($providerConfig && !empty($providerConfig['logout_url'])) {
                 // The id_token captured at login lets the provider honor post_logout_redirect_uri
                 $idToken = $_SESSION['oidc_id_token'] ?? null;
-                $returnUrl = $this->getBaseUrl() . '/login';
+                $baseUrl = $this->getBaseUrl();
+                $returnUrl = $baseUrl !== null ? $baseUrl . '/login' : null;
                 $logoutUrl = $this->buildOidcLogoutUrl($providerConfig, $returnUrl, $idToken);
 
                 // Clear local session first
@@ -163,27 +163,33 @@ class LogoutController extends BaseController
         }
     }
 
-    private function buildOidcLogoutUrl(array $providerConfig, string $returnUrl, ?string $idToken): string
+    private function buildOidcLogoutUrl(array $providerConfig, ?string $returnUrl, ?string $idToken): string
     {
         $logoutUrl = $providerConfig['logout_url'];
+        $params = [];
 
-        // Determine the redirect parameter name based on provider
-        $paramName = $this->getLogoutParameterName($logoutUrl);
-
-        $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
-        $logoutUrl .= $separator . $paramName . '=' . urlencode($returnUrl);
+        // Null when interface.application_url is unset, so no request-derived host reaches the IdP
+        if ($returnUrl !== null) {
+            $params[$this->getLogoutParameterName($logoutUrl)] = $returnUrl;
+        }
 
         // Add client_id if required by provider
         if ($this->requiresClientIdInLogout($providerConfig)) {
-            $logoutUrl .= '&client_id=' . urlencode($providerConfig['client_id']);
+            $params['client_id'] = $providerConfig['client_id'];
         }
 
         // RP-initiated logout: providers such as SimpleSAML reject a redirect without this
         if (is_string($idToken) && $idToken !== '') {
-            $logoutUrl .= '&id_token_hint=' . urlencode($idToken);
+            $params['id_token_hint'] = $idToken;
         }
 
-        return $logoutUrl;
+        if ($params === []) {
+            return $logoutUrl;
+        }
+
+        $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
+
+        return $logoutUrl . $separator . http_build_query($params);
     }
 
     private function getLogoutParameterName(string $logoutUrl): string
@@ -274,24 +280,22 @@ class LogoutController extends BaseController
         );
     }
 
-    private function getBaseUrl(): string
+    /**
+     * @return string|null Configured base URL, or null when it cannot be determined safely
+     */
+    private function getBaseUrl(): ?string
     {
-        // Prefer the explicitly configured base so the IdP-bound post-logout URL
-        // cannot be poisoned via the Host header. Matches OidcService::getCallbackUrl().
         $configuredUrl = $this->config->get('interface', 'application_url', '');
         if ($configuredUrl !== '') {
             return rtrim($configuredUrl, '/');
         }
 
+        // The IdP-bound post-logout URL is never derived from the request: SERVER_NAME follows
+        // the client Host header under FrankenPHP and Apache defaults, so logout could be redirected.
         $this->logger->warning(
-            'Logout: deriving base URL from SERVER_NAME because interface.application_url is unset. Set application_url to keep the OIDC post_logout_redirect_uri stable.'
+            'Logout: omitting post_logout_redirect_uri because interface.application_url is unset. Set application_url to return users to the login page after provider logout.'
         );
 
-        $protocolDetector = new ProtocolDetector();
-        $scheme = $protocolDetector->detect();
-        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
-        $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        return $scheme . '://' . $host . $basePrefix;
+        return null;
     }
 }
