@@ -25,9 +25,11 @@
     <p>You can use any of these usernames to log in to your account.</p>
     {% endif %}
 
+    {% if loginUrl %}
     <p style="margin: 20px 0;">
         <a href="{{ loginUrl }}" style="padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;" class="button-primary">Go to Login Page</a>
     </p>
+    {% endif %}
 
     <p><strong>Security Notice:</strong></p>
     <ul>
