@@ -380,9 +380,6 @@
     <TypeDoesNotContainNull>
       <code><![CDATA[!isset($ttl)]]></code>
     </TypeDoesNotContainNull>
-    <UndefinedVariable>
-      <code><![CDATA[$first]]></code>
-    </UndefinedVariable>
   </file>
   <file src="lib/Domain/Service/DnsRecord.php">
     <InvalidNullableReturnType>

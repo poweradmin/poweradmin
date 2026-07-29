@@ -361,8 +361,11 @@ class Dns
             return false;
         }
 
+        // Only the leftmost label may be a wildcard.
+        $is_first_label = true;
+
         foreach ($hostname_labels as $hostname_label) {
-            if ($wildcard == 1 && !isset($first)) {
+            if ($wildcard == 1 && $is_first_label) {
                 if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
                     $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
                     $errorPresenter = new ErrorPresenter();
@@ -370,7 +373,7 @@ class Dns
 
                     return false;
                 }
-                $first = 1;
+                $is_first_label = false;
             } else {
                 if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
                     $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
