@@ -241,9 +241,10 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        // Mock getRRsetFromApi - no existing records
-        $this->mockClient->method('getZone')
-            ->with('example.com.')
+        // Pin all three arguments here: the filter only matches when the names
+        // carry a trailing dot, and a silent mismatch returns zero rrsets.
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.', 'www.example.com.', 'A')
             ->willReturn(['rrsets' => []]);
 
         $this->mockClient->expects($this->once())
@@ -275,7 +276,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // Mock getRRsetFromApi - one existing A record
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -318,7 +319,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -350,7 +351,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -382,7 +383,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -415,8 +416,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        // getZone returns null (API failure)
-        $this->mockClient->method('getZone')
+        // getZoneRrset returns null (API failure)
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
 
@@ -453,7 +454,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmtZoneId);
 
         // Mock getRRsetFromApi - only this one record
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -494,7 +495,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmtZoneId);
 
         // Mock getRRsetFromApi - two records in the RRset
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -542,7 +543,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
 
@@ -559,7 +560,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         // Mock getRRsetFromApi
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -605,7 +606,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
 
@@ -622,8 +623,8 @@ class ApiDnsBackendProviderTest extends TestCase
         // Old record at www.example.com A, moving to web.example.com A
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        // getZone returns both old and new RRsets
-        $this->mockClient->method('getZone')
+        // getZoneRrset returns both old and new RRsets
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -672,7 +673,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         // API returns an RRset with a different record (old record not present)
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -700,7 +701,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
                 'rrsets' => [
@@ -741,7 +742,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         $callCount = 0;
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturnCallback(function () use (&$callCount) {
                 $callCount++;
@@ -767,7 +768,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->expects($this->never())
             ->method('patchZoneRRsets');
 
-        // Name change: www -> web, second getZone fails
+        // Name change: www -> web, second getZoneRrset fails
         $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
 
         $this->assertFalse($result);
@@ -786,7 +787,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -817,7 +818,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // API fetch fails -> addRecord returns false
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
 
@@ -839,7 +840,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -866,7 +867,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // API fetch fails
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
 
@@ -884,7 +885,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 
@@ -904,7 +905,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        $this->mockClient->method('getZone')
+        $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(['rrsets' => []]);
 

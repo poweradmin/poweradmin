@@ -612,6 +612,64 @@ class PowerdnsApiClient
     }
 
     /**
+     * Get a zone filtered down to a single RRset.
+     *
+     * PowerDNS below 4.7 ignores the filter and returns the whole zone, so
+     * callers must still pick their RRset out of the response.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @param string $rrsetName RRset name (with trailing dot)
+     * @param string $rrsetType Record type, e.g. "A"
+     * @return array|null Zone data or null if not found
+     */
+    public function getZoneRrset(string $zoneName, string $rrsetName, string $rrsetType): ?array
+    {
+        try {
+            $query = http_build_query(['rrset_name' => $rrsetName, 'rrset_type' => $rrsetType]);
+            $endpoint = $this->buildZoneEndpoint($zoneName, '?' . $query);
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'];
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to get RRset {name}/{type} in zone {zone}: {error}', [
+                'name' => $rrsetName,
+                'type' => $rrsetType,
+                'zone' => $zoneName,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Get a zone's properties without any of its records, for callers that read
+     * only zone-level fields such as kind, masters, dnssec or soa_edit_api.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return array|null Zone data or null if not found
+     */
+    public function getZoneWithoutRrsets(string $zoneName): ?array
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName, '?rrsets=false');
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'];
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to get zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
      * Create a zone with full data and return the response
      *
      * @param array $zoneData Zone creation payload
