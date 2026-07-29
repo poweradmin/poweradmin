@@ -47,7 +47,7 @@ final class RequestContext
      * Checks if the current request is any API route
      *
      * @param bool $requireTrailingSlash Require a path segment after the API
-     *                                   root (e.g. /api/v1/zones but not /api/v1);
+     *                                   root (e.g. /api/v2/zones but not /api/v2);
      *                                   used where a bare root should fall
      *                                   through to web handling
      * @return bool True if this is an API request, false otherwise
@@ -82,7 +82,7 @@ final class RequestContext
      * Whether the request path mentions an /api/ segment. Looser than
      * isApiRequest(): any /api/ occurrence counts, matching the historical
      * JSON-negotiation behavior. Keyed off the path so a web URL such as
-     * /zones/1/edit?next=/api/v1/x is not mistaken for an API call.
+     * /zones/1/edit?next=/api/v2/x is not mistaken for an API call.
      */
     public static function isApiPath(): bool
     {

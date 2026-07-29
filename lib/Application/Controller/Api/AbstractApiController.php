@@ -66,7 +66,7 @@ abstract class AbstractApiController extends BaseController
 
         // Check if API is enabled in the system
         if (!$config->get('api', 'enabled', false)) {
-            // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
+            // v2 wraps errors as {success:false,data,message}; the internal API keeps {error:true}.
             $message = 'The API feature is disabled in the system configuration.';
             $body = str_contains(static::class, '\\V2\\')
                 ? ['success' => false, 'data' => null, 'message' => $message]

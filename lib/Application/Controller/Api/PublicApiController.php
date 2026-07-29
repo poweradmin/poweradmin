@@ -54,12 +54,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class PublicApiController extends AbstractApiController
 {
-    /**
-     * RFC 8594 sunset date for API v1. V1 is superseded by v2 and scheduled
-     * for removal in Poweradmin 4.4.0. Clients should migrate before this date.
-     */
-    private const V1_SUNSET_DATE = 'Tue, 01 Sep 2026 00:00:00 GMT';
-
     protected const MAX_PAGE_SIZE = 10000;
 
     protected array $pathParameters;
@@ -101,19 +95,10 @@ abstract class PublicApiController extends AbstractApiController
         $this->enforceApiKeyMethodScope();
 
         // HEAD passes the read-only scope check above; route it to the GET handler so
-        // each v2 controller answers it instead of falling through to a 405. The
+        // each controller answers it instead of falling through to a 405. The
         // bootstrap buffers away the GET body so the client still gets headers only.
-        if ($this->isV2Controller() && strtoupper($this->request->getMethod()) === 'HEAD') {
+        if (strtoupper($this->request->getMethod()) === 'HEAD') {
             $this->request->setMethod('GET');
-        }
-
-        // Log deprecation warning for V1 API requests
-        if (!$this->isV2Controller()) {
-            $this->logger->warning('Deprecated API v1 request: {method} {path} from {ip}', [
-                'method' => $this->request->getMethod(),
-                'path' => $this->request->getPathInfo(),
-                'ip' => $this->request->getClientIp(),
-            ]);
         }
     }
 
@@ -156,9 +141,7 @@ abstract class PublicApiController extends AbstractApiController
             // lookup error (e.g. transient DB failure); fail closed rather than fall
             // back to an unrestricted scope and grant more than the key allows.
             if ($this->apiKeyScope === null) {
-                $response = $this->isV2Controller()
-                    ? $this->returnApiError('Unable to verify API key permissions', 403)
-                    : $this->returnErrorResponse('Unable to verify API key permissions', 403);
+                $response = $this->returnApiError('Unable to verify API key permissions', 403);
                 $response->send();
                 exit;
             }
@@ -173,12 +156,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // If all authentication methods failed, return 401 Unauthorized
         if (!$authenticated) {
-            // Use V2 response format for V2 controllers, V1 format for V1 controllers
-            if ($this->isV2Controller()) {
-                $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
-            } else {
-                $response = $this->returnErrorResponse('Unauthorized: Invalid credentials', 401);
-            }
+            $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
             $response->send();
             exit;
         }
@@ -231,16 +209,6 @@ abstract class PublicApiController extends AbstractApiController
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);
-    }
-
-    /**
-     * Check if this controller is a V2 API controller
-     *
-     * @return bool True if V2 controller, false if V1
-     */
-    protected function isV2Controller(): bool
-    {
-        return str_contains(get_class($this), '\\V2\\');
     }
 
     /**
@@ -341,17 +309,12 @@ abstract class PublicApiController extends AbstractApiController
 
     /**
      * Reject the request with 403 when the API key's read-only/operation scope
-     * does not permit the HTTP method. This is a request-global gate and only
-     * applies to the v2 API; v1 keys remain unrestricted.
+     * does not permit the HTTP method. This is a request-global gate.
      *
      * @return void
      */
     protected function enforceApiKeyMethodScope(): void
     {
-        if (!$this->isV2Controller()) {
-            return;
-        }
-
         $scope = $this->getApiKeyScope();
         $method = strtoupper($this->request->getMethod());
 
@@ -420,7 +383,7 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Override to inject deprecation headers for V1 API responses
+     * Override to record every public API response in the audit log
      *
      * @param mixed $data The data to return
      * @param int $status HTTP status code
@@ -429,12 +392,6 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
     {
-        if (!$this->isV2Controller()) {
-            $headers['Deprecation'] = 'true';
-            $headers['Sunset'] = self::V1_SUNSET_DATE;
-            $headers['Link'] = '</api/v2/>; rel="successor-version"';
-        }
-
         $this->logApiRequest($status);
 
         return parent::returnJsonResponse($data, $status, $headers);

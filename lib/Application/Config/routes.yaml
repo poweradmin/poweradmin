@@ -502,69 +502,14 @@ delete_supermaster:
   controller: Poweradmin\Application\Controller\DeleteSupermasterController::run
   methods: [GET, POST]
 
-# API v1 Routes - RESTful
-api_v1_zones:
-  path: /api/v1/zones
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesController::run
-  methods: [GET, POST]
-
-api_v1_zone:
-  path: /api/v1/zones/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesController::run
+# API v1 was removed in 4.5.0 - answer 410 with a pointer to v2
+api_v1_gone:
+  path: /api/v1/{path}
+  controller: Poweradmin\Application\Controller\Api\V1GoneController::run
   requirements:
-    id: '\d+'
-  methods: [GET, PUT, DELETE]
-
-api_v1_zone_records:
-  path: /api/v1/zones/{id}/records
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, POST]
-
-api_v1_zone_record:
-  path: /api/v1/zones/{id}/records/{record_id}
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
-  requirements:
-    id: '\d+'
-    record_id: '[\w\-=.]+'
-  methods: [GET, PUT, DELETE]
-
-api_v1_users:
-  path: /api/v1/users
-  controller: Poweradmin\Application\Controller\Api\V1\UsersController::run
-  methods: [GET, POST]
-
-api_v1_user:
-  path: /api/v1/users/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\UsersController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, PUT, PATCH, DELETE]
-
-api_v1_permission_templates:
-  path: /api/v1/permission-templates
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController::run
-  methods: [GET, POST]
-
-api_v1_permission_template:
-  path: /api/v1/permission-templates/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, PUT, DELETE]
-
-api_v1_permissions:
-  path: /api/v1/permissions
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
-  methods: [GET]
-
-api_v1_permission:
-  path: /api/v1/permissions/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
-  requirements:
-    id: '\d+'
-  methods: [GET]
+    path: '.*'
+  defaults:
+    path: ''
 
 # API v2 Routes - RESTful with wrapped responses
 api_v2_zones:
@@ -771,25 +716,19 @@ api_docs:
   path: /api/docs
   controller: Poweradmin\Application\Controller\Api\DocsController::run
 
-# Versioned API Documentation (V1 and V2)
-api_docs_json_v1:
-  path: /api/docs/v1/json
-  controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
-  defaults:
-    version: V1
-
+# Versioned API Documentation
 api_docs_json_v2:
   path: /api/docs/v2/json
   controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
   defaults:
     version: V2
 
-# Legacy endpoint (defaults to V1 for backward compatibility)
+# Unversioned endpoint kept so existing bookmarks reach the current spec
 api_docs_json:
   path: /api/docs/json
   controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
   defaults:
-    version: V1
+    version: V2
 
 # Internal API Routes
 api_internal_validation:

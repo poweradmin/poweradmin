@@ -81,7 +81,7 @@ final class BootstrapErrorResponder
             header('Content-Type: application/json');
         }
 
-        // v2 wraps errors as {success:false,data,message}; v1 keeps its {error:true} contract.
+        // v2 wraps errors as {success:false,data,message}; other JSON callers keep {error:true}.
         $isV2Api = RequestContext::isV2ApiRequest();
 
         if ($e->getCode() === 404) {

@@ -69,7 +69,7 @@ class AuthenticationService
     private function isApiRequest(): bool
     {
         // Trailing slash required: only requests below a real API root get the
-        // JSON 401; a bare /api/v1 still falls through to the login redirect
+        // JSON 401; a bare /api/v2 still falls through to the login redirect
         return RequestContext::isApiRequest(requireTrailingSlash: true);
     }
 
