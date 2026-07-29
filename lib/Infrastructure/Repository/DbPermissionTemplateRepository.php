@@ -44,7 +44,7 @@ class DbPermissionTemplateRepository
      *
      * @return boolean true on success, false otherwise
      */
-    /** @internal Write through PermissionTemplateWriteService; it carries the content guard. */
+    /** Write through PermissionTemplateWriteService; it carries the content guard. */
     public function addPermissionTemplate(array $details): bool
     {
         $template_type = $details['template_type'] ?? 'user';
@@ -136,7 +136,7 @@ class DbPermissionTemplateRepository
      *
      * @return boolean true on success, false otherwise
      */
-    /** @internal Write through PermissionTemplateWriteService; it carries the content guard. */
+    /** Write through PermissionTemplateWriteService; it carries the content guard. */
     public function updatePermissionTemplateDetails(array $details): bool
     {
         $template_type = $details['template_type'] ?? 'user';
