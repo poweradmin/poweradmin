@@ -720,8 +720,11 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            // Metadata and description are gated separately below; this only rejects
+            // callers who may write neither.
+            $mayEditMeta = $this->permissionService->canEditZoneMeta($userId, $zoneId);
+            $mayEditContent = $this->permissionService->canEditZone($userId, $zoneId);
+            if (!$mayEditMeta && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
@@ -771,8 +774,12 @@ class ZonesController extends PublicApiController
 
             // name/type/master are zone metadata, so they need the metadata permission
             // the web edit form requires - content-edit rights are not enough.
-            if (!empty($updates) && !$this->permissionService->canEditZoneMeta($userId, $zoneId)) {
+            if (!empty($updates) && !$mayEditMeta) {
                 return $this->returnApiError('You do not have permission to edit this zone\'s settings', 403);
+            }
+
+            if ($hasDescriptionUpdate && !$mayEditContent) {
+                return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             // Converting a zone is equivalent to creating one of the target type.
