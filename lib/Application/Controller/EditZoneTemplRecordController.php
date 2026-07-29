@@ -94,7 +94,7 @@ class EditZoneTemplRecordController extends BaseController
 
     public function showZoneTemplateRecordForm(int $record_id, int $zone_templ_id): void
     {
-        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
+        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
         // Get count of zones using this template
         $userId = $this->userContext->getLoggedInUserId();

@@ -91,7 +91,7 @@ class DeleteZoneTemplRecordController extends BaseController
         }
 
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
+        $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
         $this->render('delete_zone_templ_record.html', [
             'record_id' => $record_id,

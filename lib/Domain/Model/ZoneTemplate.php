@@ -526,14 +526,25 @@ class ZoneTemplate
      * Retrieve all fields of the record and send it back to the function caller.
      *
      * @param int $id zone template record id
+     * @param int|null $zone_templ_id restrict the lookup to this template; callers that
+     *                                authorised a template must pass it so a record id
+     *                                from another template cannot be read
      *
      * @return array zone template record
      * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
      */
-    public static function getZoneTemplRecordFromId($db, int $id): array
+    public static function getZoneTemplRecordFromId($db, int $id, ?int $zone_templ_id = null): array
     {
-        $stmt = $db->prepare("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $query = "SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id";
+        $params = [':id' => $id];
+
+        if ($zone_templ_id !== null) {
+            $query .= " AND zone_templ_id = :zone_templ_id";
+            $params[':zone_templ_id'] = $zone_templ_id;
+        }
+
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
         $result = $stmt->fetch();
         return $result ? array(
             "id" => $result["id"],
@@ -603,6 +614,11 @@ class ZoneTemplate
     {
         if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone template."));
+            return false;
+        }
+
+        if (Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db))) {
+            $this->messageService->addSystemError(_('You do not have the permission to add this record type to a zone template.'));
             return false;
         }
 
@@ -695,6 +711,11 @@ class ZoneTemplate
         // Reject a record id that lives in another template, even when the caller owns this one.
         if (!$this->recordBelongsToTemplate((int)($record['rid'] ?? 0), $zone_templ_id)) {
             $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
+            return false;
+        }
+
+        if (Permission::isTemplateRecordTypeRestricted($record['type'] ?? '', Permission::getEditPermission($this->db))) {
+            $this->messageService->addSystemError(_('You do not have the permission to add this record type to a zone template.'));
             return false;
         }
 

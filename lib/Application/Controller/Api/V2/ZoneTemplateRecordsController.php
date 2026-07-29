@@ -275,6 +275,10 @@ class ZoneTemplateRecordsController extends PublicApiController
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$this->config->get('dns', 'ttl');
             $priority = isset($data['priority']) ? (int)$data['priority'] : 0;
 
+            if (!$this->apiPermissionService->canWriteTemplateRecordType($userId, $type)) {
+                return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
+            }
+
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
             $this->auditLogger->logInfo(sprintf(
@@ -457,6 +461,10 @@ class ZoneTemplateRecordsController extends PublicApiController
             $content = trim($data['content']);
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$record['ttl'];
             $priority = isset($data['priority']) ? (int)$data['priority'] : (int)($record['prio'] ?? 0);
+
+            if (!$this->apiPermissionService->canWriteTemplateRecordType($userId, $type)) {
+                return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
+            }
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 
