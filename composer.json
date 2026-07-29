@@ -72,8 +72,7 @@
     "squizlabs/php_codesniffer": "^4.0.1",
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^v3.89",
-    "vimeo/psalm": "^6.15",
-    "phpmd/phpmd": "^2.15"
+    "vimeo/psalm": "^6.15"
   },
   "scripts": {
     "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
@@ -92,7 +91,6 @@
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
     "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:psalm": "psalm",
-    "quality:all": "phpmd addons,config,index.php,install,lib,dynamic_update.php ansi phpmd.xml",
     "lint:twig": [
         "! grep -rn 'name=\"csrf_token\"' templates/ lib/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
         "! grep -rn 'name=\"_token\"' templates/ lib/ --include='*.html' | grep -v '_macros.html' || (echo 'ERROR: Use the csrf_field() macro from _macros.html instead of a raw _token input' && false)"
@@ -162,7 +160,6 @@
       "package.json",
       "phpcs.xml",
       "phpdoc.dist.xml",
-      "phpmd.xml",
       "phpstan.neon",
       "phpunit.xml.dist",
       "psalm-baseline.xml",

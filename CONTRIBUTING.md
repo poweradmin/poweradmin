@@ -86,7 +86,7 @@ Stable branches accept bug fixes and security updates only - no breaking changes
 ### Code Quality
 
 ```bash
-composer check:all       # Lint (PHPCS + PHPMD)
+composer check:all       # Lint (PHPCS)
 composer format:all      # Auto-fix style
 composer analyse:all     # PHPStan + Psalm
 composer compat:8.2      # PHP compatibility check (also :8.3, :8.4, :8.5)
