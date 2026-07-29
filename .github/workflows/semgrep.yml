@@ -18,7 +18,7 @@ jobs:
     name: Semgrep scan
     runs-on: ubuntu-latest
     container:
-      image: semgrep/semgrep:latest@sha256:98c2572fced2474539fd27cab3207ebd8e95e4e7aab4c3b381fdc5e2641d9941
+      image: semgrep/semgrep:latest@sha256:bdf7013b2c3634a487671158da77c554f531742326b543a9464d2adf6c433ac8
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
