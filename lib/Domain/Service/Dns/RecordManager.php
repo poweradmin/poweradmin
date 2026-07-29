@@ -241,7 +241,11 @@ class RecordManager implements RecordManagerInterface
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                $this->config,
+                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+            );
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if (is_string($zone_name)) {
                 $dnssecProvider->rectifyZone($zone_name);
@@ -352,7 +356,11 @@ class RecordManager implements RecordManagerInterface
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                $this->config,
+                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+            );
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if (is_string($zone_name)) {
                 $dnssecProvider->rectifyZone($zone_name);

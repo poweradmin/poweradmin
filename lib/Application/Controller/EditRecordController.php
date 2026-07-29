@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -44,7 +43,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
@@ -254,7 +252,7 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zid);
+        $this->createSOARecordManager()->updateSOASerial($zid);
 
         $new_record_info = $recordRepository->getRecordFromId($rid);
         if ($new_record_info === null) {
@@ -339,7 +337,7 @@ class EditRecordController extends BaseController
         if ($this->config->get('dnssec', 'enabled', false)) {
             $zone_name = $domainRepository->getDomainNameById($zid);
             if ($zone_name !== null) {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                $dnssecProvider = $this->createDnssecProvider();
                 $dnssecProvider->rectifyZone($zone_name);
             }
         }

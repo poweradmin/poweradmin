@@ -90,7 +90,10 @@ class RepositoryFactory
     public function createRecordCommentRepository(): RecordCommentRepositoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
-            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            // Reuse the provider's client so comment reads share its caches; the
+            // fallback covers a test double that reports API mode without being one
+            $apiClient = DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+                ?? DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
             if ($apiClient !== null) {
                 return new ApiRecordCommentRepository($apiClient, $this->backendProvider);
             }

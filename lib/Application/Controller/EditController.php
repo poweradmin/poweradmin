@@ -39,7 +39,6 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -73,7 +72,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -116,7 +114,7 @@ class EditController extends BaseController
 
         // Initialize services for record addition
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
+        $this->soaRecordManager = $this->createSOARecordManager();
 
         $this->dnsRecordManager = $this->createRecordManager();
         $this->recordManager = new RecordManagerService(
@@ -321,7 +319,7 @@ class EditController extends BaseController
             $this->handleZoneMetadataPost($zone_id);
         }
 
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = $this->createDnssecProvider();
 
         if ($this->request->getPostParam('sign_zone') !== null) {
             $this->validateCsrfToken();
@@ -898,7 +896,7 @@ class EditController extends BaseController
                 }
 
                 if ($this->config->get('dnssec', 'enabled', false)) {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                    $dnssecProvider = $this->createDnssecProvider();
                     $dnssecProvider->rectifyZone($zone_name);
                 }
             }

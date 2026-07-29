@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -40,7 +39,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\RecordManager;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -187,13 +185,13 @@ class DeleteRecordsController extends BaseController
         }
 
         // Update SOA serials and rectify zones
-        $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig());
+        $soaRecordManager = $this->createSOARecordManager();
         foreach (array_keys($affected_zones) as $zone_id) {
             $soaRecordManager->updateSOASerial($zone_id);
 
             if ($this->config->get('dnssec', 'enabled', false)) {
                 $zone_name = $domainRepository->getDomainNameById($zone_id);
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                $dnssecProvider = $this->createDnssecProvider();
                 $dnssecProvider->rectifyZone($zone_name);
             }
         }

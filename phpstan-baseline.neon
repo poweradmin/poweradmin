@@ -913,7 +913,7 @@ parameters:
 			path: lib/Infrastructure/Api/HttpClient.php
 
 		-
-			message: '#^Class cognitive complexity is 149, keep it under 60$#'
+			message: '#^Class cognitive complexity is 150, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Infrastructure/Api/PowerdnsApiClient.php
@@ -1015,7 +1015,7 @@ parameters:
 			path: lib/Infrastructure/Repository/SqlDomainRepository.php
 
 		-
-			message: '#^Class cognitive complexity is 211, keep it under 60$#'
+			message: '#^Class cognitive complexity is 214, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
@@ -1027,7 +1027,7 @@ parameters:
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:getZoneRecords\(\)" is 18, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:flattenRrsets\(\)" is 17, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php

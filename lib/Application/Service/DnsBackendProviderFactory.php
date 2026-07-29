@@ -105,4 +105,13 @@ class DnsBackendProviderFactory
 
         return new PowerdnsApiClient($httpClient, $serverName, $logger);
     }
+
+    /**
+     * Reach the client a provider already holds, so callers reuse its per-request
+     * read caches instead of constructing a second client against the same server.
+     */
+    public static function apiClientFrom(?DnsBackendProvider $provider): ?PowerdnsApiClient
+    {
+        return $provider instanceof ApiDnsBackendProvider ? $provider->getApiClient() : null;
+    }
 }

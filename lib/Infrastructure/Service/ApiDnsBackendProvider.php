@@ -56,6 +56,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $this->logger = $logger ?? new NullLogger();
     }
 
+    /**
+     * The client carries per-request read caches, so anything needing raw API
+     * access shares this one rather than building a second.
+     */
+    public function getApiClient(): PowerdnsApiClient
+    {
+        return $this->client;
+    }
+
     // ---------------------------------------------------------------
     // Zone operations
     // ---------------------------------------------------------------
@@ -691,6 +700,32 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $records;
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        $zoneName = $this->getZoneNameByLocalId($domainId);
+        if ($zoneName === null) {
+            return [];
+        }
+
+        $zoneData = $this->client->getZoneRrset(
+            self::ensureTrailingDot($zoneName),
+            self::ensureTrailingDot($name),
+            $type
+        );
+        if ($zoneData === null) {
+            return [];
+        }
+
+        // PowerDNS below 4.7 ignores the filter and hands back the whole zone,
+        // so narrow the result here rather than trusting the server to have done it
+        $records = $this->flattenRrsets($zoneData, $domainId, $zoneName);
+        return array_values(array_filter(
+            $records,
+            fn(array $r): bool => strcasecmp($r['name'], $name) === 0
+                && ($type === null || $r['type'] === $type)
+        ));
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
@@ -904,6 +939,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return [];
         }
 
+        return $this->flattenRrsets($zoneData, $domainId, $zoneName);
+    }
+
+    /**
+     * Expand a zone body's RRsets into one row per record, the shape the
+     * repositories and the SQL backend both expect.
+     */
+    private function flattenRrsets(array $zoneData, int $domainId, string $zoneName): array
+    {
         $records = [];
         foreach ($zoneData['rrsets'] ?? [] as $rrset) {
             $type = $rrset['type'] ?? '';

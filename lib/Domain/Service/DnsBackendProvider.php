@@ -358,6 +358,18 @@ interface DnsBackendProvider
     public function getRecordsByZoneId(int $domainId, ?string $type = null): array;
 
     /**
+     * Get the records at one name in a zone, optionally filtered by type.
+     *
+     * Names match case-insensitively, per RFC 4343.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name, with or without a trailing dot
+     * @param string|null $type Optional record type filter
+     * @return array Array of record data
+     */
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array;
+
+    /**
      * Get SOA record content for a zone.
      *
      * @param int $domainId Domain ID

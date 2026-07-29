@@ -217,6 +217,11 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $this->backendProvider->getRecordsByZoneId($domainId, $recordType);
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        return $this->backendProvider->getRecordsByName($domainId, $name, $type);
+    }
+
     public function getFilteredRecords(
         int $zone_id,
         int $row_start,
@@ -280,14 +285,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
     public function getRRSetRecords(int $domainId, string $name, string $type): array
     {
-        $name = strtolower($name);
-        $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
-        $result = [];
-        foreach ($records as $r) {
-            if (strtolower($r['name']) === $name) {
-                $result[] = $r;
-            }
-        }
+        $result = $this->backendProvider->getRecordsByName($domainId, $name, $type);
         usort($result, fn($a, $b) => strcmp($a['content'] ?? '', $b['content'] ?? ''));
         return $result;
     }

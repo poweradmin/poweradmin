@@ -692,7 +692,8 @@ class PowerdnsApiClient
     // ---------------------------------------------------------------
 
     /**
-     * Fetch a single RRset from a zone instead of the whole zone body.
+     * Fetch the RRsets at one name instead of the whole zone body. Leaving the
+     * type out returns every type at that name.
      *
      * PowerDNS below 4.7 does not know these filters, ignores them and returns
      * the entire zone, so callers must still scan the RRsets they get back.
@@ -700,9 +701,14 @@ class PowerdnsApiClient
      * @param string $zoneName Zone name (with trailing dot)
      * @return array|null Zone data carrying the matching RRsets, or null if not found
      */
-    public function getZoneRrset(string $zoneName, string $rrsetName, string $rrsetType): ?array
+    public function getZoneRrset(string $zoneName, string $rrsetName, ?string $rrsetType = null): ?array
     {
-        return $this->getZone($zoneName, true, ['rrset_name' => $rrsetName, 'rrset_type' => $rrsetType]);
+        $filters = ['rrset_name' => $rrsetName];
+        if ($rrsetType !== null) {
+            $filters['rrset_type'] = $rrsetType;
+        }
+
+        return $this->getZone($zoneName, true, $filters);
     }
 
     /**
@@ -733,9 +739,11 @@ class PowerdnsApiClient
             return $zoneData;
         }
 
+        // PowerDNS matches owner names case-insensitively, so a reused body has
+        // to narrow the same way the server would have
         $zoneData['rrsets'] = array_values(array_filter(
             $zoneData['rrsets'],
-            static fn(array $rrset): bool => ($rrset['name'] ?? null) === $filters['rrset_name']
+            static fn(array $rrset): bool => strcasecmp($rrset['name'] ?? '', $filters['rrset_name']) === 0
                 && (!isset($filters['rrset_type']) || ($rrset['type'] ?? null) === $filters['rrset_type'])
         ));
 

@@ -364,6 +364,33 @@ class SqlRecordRepository implements RecordRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        // LOWER() on both sides rather than a pre-lowercased comparison, so the
+        // match stays case-insensitive on PostgreSQL too
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
+                  FROM $records_table
+                  WHERE domain_id = :domain_id
+                  AND LOWER(name) = LOWER(:name)
+                  AND type IS NOT NULL AND type != ''";
+
+        $params = [':domain_id' => $domainId, ':name' => rtrim($name, '.')];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+
+        $query .= " ORDER BY type, content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getFilteredRecords(
         int $zone_id,
         int $row_start,

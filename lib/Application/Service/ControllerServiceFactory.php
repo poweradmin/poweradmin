@@ -31,12 +31,15 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
@@ -63,6 +66,10 @@ class ControllerServiceFactory
     private ?PermissionService $permissionService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
+    private ?SOARecordManagerInterface $soaRecordManager = null;
+    private ?DnssecProvider $dnssecProvider = null;
+    private ?PowerdnsApiClient $apiClient = null;
+    private bool $apiClientResolved = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
     {
@@ -101,6 +108,34 @@ class ControllerServiceFactory
     public function dnsBackendProvider(): DnsBackendProvider
     {
         return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+    }
+
+    /**
+     * The provider's API client, or null outside API backend mode. Sharing it
+     * keeps one set of per-request read caches for the whole request.
+     */
+    public function apiClient(): ?PowerdnsApiClient
+    {
+        if (!$this->apiClientResolved) {
+            $this->apiClientResolved = true;
+            $this->apiClient = DnsBackendProviderFactory::apiClientFrom($this->dnsBackendProvider());
+        }
+
+        return $this->apiClient;
+    }
+
+    public function soaRecordManager(): SOARecordManagerInterface
+    {
+        return $this->soaRecordManager ??= DnsServiceFactory::createSOARecordManager(
+            $this->db,
+            $this->config,
+            $this->dnsBackendProvider()
+        );
+    }
+
+    public function dnssecProvider(): DnssecProvider
+    {
+        return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->apiClient());
     }
 
     public function dnsDataService(): DnsDataService
@@ -180,7 +215,9 @@ class ControllerServiceFactory
     {
         // Only the default-provider factory is shared; an explicit provider
         // means the caller wants its own wiring
-        if ($backendProvider !== null) {
+        // Handing back the shared provider must not build a second factory. Compare
+        // the property, not the accessor, so an explicit provider never forces one
+        if ($backendProvider !== null && $backendProvider !== $this->dnsBackendProvider) {
             return new RepositoryFactory($this->db, $this->config, $backendProvider, $this->logger);
         }
         return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->dnsBackendProvider(), $this->logger);

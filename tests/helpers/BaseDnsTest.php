@@ -199,7 +199,7 @@ class BaseDnsTest extends TestCase
         $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
         $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
-        $recordRepositoryMock->method('getRecordsByDomainId')->willReturn([]);
+        $recordRepositoryMock->method('getRecordsByName')->willReturn([]);
         $dnsViolationValidator = new DNSViolationValidator($recordRepositoryMock);
 
         // Create validation service with mocked dependencies for tests

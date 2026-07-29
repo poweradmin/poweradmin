@@ -642,6 +642,36 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertArrayNotHasKey('rrsets', $zone);
     }
 
+    public function testGetZoneRrsetWithoutATypeAsksForEveryTypeAtTheName(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
+
+        $this->assertNotNull($this->apiClient->getZoneRrset('example.com.', 'www.example.com.'));
+    }
+
+    public function testAHeldBodyNarrowsTheNameCaseInsensitively(): void
+    {
+        // PowerDNS matches owner names case-insensitively. If the reused body did
+        // not, a narrowed read would come back empty and callers that validate
+        // against it would silently see no conflicting records.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [['name' => 'WWW.example.com.', 'type' => 'A', 'records' => []]],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $rrset = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertCount(1, $rrset['rrsets']);
+    }
+
     public function testRepeatedNarrowedReadsOfTheSameRrsetCostOneRequest(): void
     {
         // A single save reads the same RRset several times, and a narrowed body

@@ -1615,4 +1615,100 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals('SLAVE', $result[0]['type']);
         $this->assertEquals('10.0.0.1,10.0.0.2', $result[0]['master']);
     }
+
+    // ---------------------------------------------------------------
+    // getRecordsByName
+    // ---------------------------------------------------------------
+
+    private function stubZoneNameLookup(string $zoneName = 'example.com'): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn($zoneName);
+        $stmt->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmt);
+    }
+
+    public function testGetRecordsByNameAsksForOnlyThatRrset(): void
+    {
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com.', 'www.example.com.', 'A')
+            ->willReturn(['rrsets' => [
+                ['name' => 'www.example.com.', 'type' => 'A', 'ttl' => 300,
+                 'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+            ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+        $this->assertSame('www.example.com', $result[0]['name']);
+        $this->assertSame('192.0.2.1', $result[0]['content']);
+    }
+
+    public function testGetRecordsByNameWithoutTypeAsksForEveryTypeAtTheName(): void
+    {
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com.', 'example.com.', null)
+            ->willReturn(['rrsets' => [
+                ['name' => 'example.com.', 'type' => 'NS', 'ttl' => 300,
+                 'records' => [['content' => 'ns1.example.com.', 'disabled' => false]]],
+                ['name' => 'example.com.', 'type' => 'MX', 'ttl' => 300,
+                 'records' => [['content' => '10 mail.example.com.', 'disabled' => false]]],
+            ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'example.com');
+
+        $this->assertCount(2, $result);
+        $this->assertSame(['NS', 'MX'], array_column($result, 'type'));
+    }
+
+    public function testGetRecordsByNameNarrowsWhatAnOlderServerReturnsUnfiltered(): void
+    {
+        // PowerDNS below 4.7 ignores the filter and hands back the whole zone
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [
+            ['name' => 'www.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+            ['name' => 'other.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.9', 'disabled' => false]]],
+            ['name' => 'www.example.com.', 'type' => 'TXT', 'ttl' => 300,
+             'records' => [['content' => '"v=spf1"', 'disabled' => false]]],
+        ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+        $this->assertSame('www.example.com', $result[0]['name']);
+        $this->assertSame('A', $result[0]['type']);
+    }
+
+    public function testGetRecordsByNameMatchesTheNameCaseInsensitively(): void
+    {
+        // RFC 4343: a differently-cased owner name is the same name
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [
+            ['name' => 'WWW.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+        ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+    }
+
+    public function testGetRecordsByNameReturnsEmptyWhenTheApiFails(): void
+    {
+        $this->stubZoneNameLookup();
+        $this->mockClient->method('getZoneRrset')->willReturn(null);
+
+        $this->assertSame([], $this->provider->getRecordsByName(1, 'www.example.com', 'A'));
+    }
 }

@@ -56,6 +56,8 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -529,6 +531,16 @@ abstract class BaseController
     protected function createRecordManager(): RecordManagerInterface
     {
         return $this->services()->recordManager();
+    }
+
+    protected function createSOARecordManager(): SOARecordManagerInterface
+    {
+        return $this->services()->soaRecordManager();
+    }
+
+    protected function createDnssecProvider(): DnssecProvider
+    {
+        return $this->services()->dnssecProvider();
     }
 
     protected function createDomainManager(): DomainManagerInterface

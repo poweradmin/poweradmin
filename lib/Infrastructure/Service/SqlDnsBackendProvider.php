@@ -483,6 +483,28 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        // LOWER() on both sides rather than a pre-lowercased comparison, so the
+        // match stays case-insensitive on PostgreSQL too
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+                  FROM $recordsTable
+                  WHERE domain_id = :did AND LOWER(name) = LOWER(:name)
+                    AND type IS NOT NULL AND type != ''";
+        $params = [':did' => $domainId, ':name' => rtrim($name, '.')];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+        $query .= " ORDER BY type, content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);

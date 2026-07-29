@@ -17,6 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 
@@ -62,14 +63,25 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->userPreferenceService(), $factory->userPreferenceService());
     }
 
-    public function testRepositoryFactoryMemoizesOnlyTheDefaultProviderPath(): void
+    public function testRepositoryFactoryMemoizesTheSharedProviderPath(): void
     {
         $factory = $this->makeFactory();
 
         $this->assertSame($factory->repositoryFactory(), $factory->repositoryFactory());
 
-        // An explicit provider asks for dedicated wiring, never the shared one
-        $explicit = $factory->repositoryFactory($factory->dnsBackendProvider());
+        // Controllers routinely hand back the very provider this factory memoized;
+        // that must reuse the shared wiring rather than duplicate it
+        $shared = $factory->repositoryFactory($factory->dnsBackendProvider());
+        $this->assertSame($factory->repositoryFactory(), $shared);
+    }
+
+    public function testRepositoryFactoryGivesDedicatedWiringForAnotherProvider(): void
+    {
+        $factory = $this->makeFactory();
+
+        $other = $this->createMock(DnsBackendProvider::class);
+        $explicit = $factory->repositoryFactory($other);
+
         $this->assertNotSame($factory->repositoryFactory(), $explicit);
     }
 }
