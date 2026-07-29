@@ -778,6 +778,27 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertStringStartsWith('PATCH ', $calls[1]);
     }
 
+    public function testTheSearchCacheIsCapped(): void
+    {
+        // /search-data responses can hold 100 records each, so this must not grow
+        // with the number of distinct names a bulk write touches
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['records' => []]];
+            });
+
+        for ($i = 0; $i < 9; $i++) {
+            $this->apiClient->searchData("*host{$i}.example.com*", 'record', 100);
+        }
+        $this->assertSame(9, $calls);
+
+        $this->apiClient->searchData('*host0.example.com*', 'record', 100);
+        $this->assertSame(10, $calls, 'the oldest entry must have been evicted');
+    }
+
     public function testNarrowedReadsOfDifferentRrsetsAreNotConfused(): void
     {
         $this->mockHttpClient

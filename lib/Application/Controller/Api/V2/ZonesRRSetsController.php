@@ -46,7 +46,6 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -68,7 +67,7 @@ class ZonesRRSetsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->backendProvider = $this->createDnsBackendProvider();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();

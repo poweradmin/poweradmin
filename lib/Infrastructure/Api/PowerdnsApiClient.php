@@ -34,8 +34,8 @@ class PowerdnsApiClient
 
     private const API_VERSION_PATH = '/api/v1';
 
-    /** One save reads a handful of RRsets at a single name, so a small cap covers it with room to spare */
-    private const MAX_NARROWED_ZONES = 8;
+    /** One save reads about five distinct narrowed endpoints for a single name, so this covers it with room for a second name */
+    private const MAX_CACHED_READS = 8;
 
     private HttpClient $httpClient;
     private string $serverName;
@@ -47,10 +47,10 @@ class PowerdnsApiClient
     /** @var array{name: string, data: array}|null Most recently fetched complete zone body; one slot, so looping over many zones stays flat in memory */
     private ?array $lastZone = null;
 
-    /** @var array<string, array> Narrowed zone reads keyed by endpoint. Only single-RRset bodies land here, so this stays small where whole zones would not */
+    /** @var array<string, array> Narrowed zone reads keyed by endpoint, insertion-ordered. Capped because PowerDNS below 4.7 ignores the filter and returns the whole zone, so an entry is not always small */
     private array $narrowedZoneCache = [];
 
-    /** @var array<string, array> Search responses keyed by endpoint; validation repeats the same query once per record */
+    /** @var array<string, array> Search responses keyed by endpoint, capped the same way; validation repeats the same query once per record */
     private array $searchCache = [];
 
     public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
@@ -719,17 +719,18 @@ class PowerdnsApiClient
     }
 
     /**
-     * Hold a narrowed body for reuse, capped because a caller may walk many
-     * names in one request and each entry would otherwise be kept for the
-     * whole of it.
+     * Keep a response for reuse within this request, dropping the oldest once
+     * the cap is reached so a caller walking many names cannot grow it. Eviction
+     * is by insertion order, not recency.
+     *
+     * @param array<string, array> $cache
+     * @return array<string, array>
      */
-    private function rememberNarrowedZone(string $endpoint, array $zoneData): void
+    private static function rememberCapped(array $cache, string $endpoint, array $data): array
     {
-        $this->narrowedZoneCache[$endpoint] = $zoneData;
+        $cache[$endpoint] = $data;
 
-        if (count($this->narrowedZoneCache) > self::MAX_NARROWED_ZONES) {
-            array_shift($this->narrowedZoneCache);
-        }
+        return array_slice($cache, -self::MAX_CACHED_READS, null, true);
     }
 
     /**
@@ -808,7 +809,7 @@ class PowerdnsApiClient
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
                 } else {
-                    $this->rememberNarrowedZone($endpoint, $response['data']);
+                    $this->narrowedZoneCache = self::rememberCapped($this->narrowedZoneCache, $endpoint, $response['data']);
                 }
                 return $response['data'];
             }
@@ -943,7 +944,8 @@ class PowerdnsApiClient
                 'object_type' => $objectType,
             ]);
             $endpoint = $this->buildEndpoint("/search-data?{$params}");
-            $response = $this->searchCache[$endpoint] ??= $this->request('GET', $endpoint);
+            $response = $this->searchCache[$endpoint] ?? $this->request('GET', $endpoint);
+            $this->searchCache = self::rememberCapped($this->searchCache, $endpoint, $response);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'] ?? [];
