@@ -80,7 +80,7 @@ load_test_endpoint() {
             -H "Accept: application/json" \
             -X "$method" \
             --max-time 30 \
-            "${API_BASE_URL}/api/v1${endpoint}" \
+            "${API_BASE_URL}/api/v2${endpoint}" \
             -o /dev/null 2>/dev/null || echo "000")
 
         local request_end=$(date +%s.%N)
@@ -216,13 +216,13 @@ stress_test_zone_creation() {
                 -H "Content-Type: application/json" \
                 -X POST \
                 -d "$zone_data" \
-                "${API_BASE_URL}/api/v1/zones" 2>/dev/null)
+                "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
 
             local status_code="${response: -3}"
             local body="${response%???}"
 
             if [[ "$status_code" == "201" ]]; then
-                local zone_id=$(echo "$body" | jq -r '.data.id' 2>/dev/null || echo "")
+                local zone_id=$(echo "$body" | jq -r '.data.zone_id' 2>/dev/null || echo "")
                 echo "SUCCESS:$zone_id:$zone_name" >> "$results_file"
             else
                 echo "FAILED:$status_code:$zone_name" >> "$results_file"
@@ -265,7 +265,7 @@ stress_test_zone_creation() {
         for zone_id in "${created_zones[@]}"; do
             curl -s -X DELETE \
                 -H "X-API-Key: $API_KEY" \
-                "${API_BASE_URL}/api/v1/zones/$zone_id" >/dev/null 2>&1 || true
+                "${API_BASE_URL}/api/v2/zones/$zone_id" >/dev/null 2>&1 || true
         done
         echo "Cleanup completed"
     fi
@@ -290,7 +290,7 @@ memory_leak_test() {
         curl -s \
             -H "X-API-Key: $API_KEY" \
             -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v1${endpoint}" \
+            "${API_BASE_URL}/api/v2${endpoint}" \
             >/dev/null 2>&1 || true
 
         if (( i % 100 == 0 )); then
@@ -323,7 +323,7 @@ rate_limit_test() {
         local response_code=$(curl -s -w "%{http_code}" \
             -H "X-API-Key: $API_KEY" \
             -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v1${endpoint}" \
+            "${API_BASE_URL}/api/v2${endpoint}" \
             -o /dev/null 2>/dev/null || echo "000")
 
         if [[ "$response_code" == "429" ]]; then

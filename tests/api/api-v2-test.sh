@@ -361,11 +361,11 @@ test_ptr_autocreation() {
         CREATED_REVERSE_ZONE=true
         print_info "Created reverse zone ID: $TEST_REVERSE_ZONE_ID"
     else
-        # Reverse zone already exists from test data - look it up via v1 API
+        # Reverse zone already exists from test data - look it up by name
         print_info "Reverse zone already exists, looking up ID..."
         local existing_zones
         existing_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '[.data[]? | select(.name=="2.0.192.in-addr.arpa") | .zone_id // .id][0] // empty')
+            "${API_BASE_URL}/api/v2/zones?name=2.0.192.in-addr.arpa" 2>/dev/null | jq -r '[.data.zones[]? | select(.name=="2.0.192.in-addr.arpa") | .id][0] // empty')
         if [[ -n "$existing_zones" ]]; then
             TEST_REVERSE_ZONE_ID="$existing_zones"
             print_info "Found existing reverse zone ID: $TEST_REVERSE_ZONE_ID"
@@ -963,7 +963,7 @@ test_zone_status_codes() {
         api_request_v2 "HEAD" "/zones/$dup_zone_id" "" 200 "HEAD on existing zone returns 200 (not 405)"
     fi
 
-    # Unknown v2 endpoints return 404 in the v2 {success:false} wrapper, not the v1 shape
+    # Unknown v2 endpoints return 404 in the v2 {success:false} wrapper
     api_request_v2 "GET" "/this-endpoint-does-not-exist" "" 404 "Unknown v2 endpoint returns 404"
     assert_json "Unknown-endpoint 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
 
@@ -2096,11 +2096,11 @@ cleanup_existing_test_zones() {
 
     local all_zones
     all_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/zones" 2>/dev/null)
+        "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
 
     for zone_name in "${test_zone_names[@]}"; do
         local zone_id
-        zone_id=$(echo "$all_zones" | jq -r ".data[]? | select(.name==\"$zone_name\") | .zone_id // .id" 2>/dev/null)
+        zone_id=$(echo "$all_zones" | jq -r ".data.zones[]? | select(.name==\"$zone_name\") | .id" 2>/dev/null)
         if [[ -n "$zone_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: $API_KEY" \
                 "${API_BASE_URL}/api/v2/zones/$zone_id" >/dev/null 2>&1 || true
@@ -2597,6 +2597,99 @@ test_zone_overlap_guard() {
     db_exec "DELETE FROM api_keys WHERE name='overlaptest-mgr';" >/dev/null 2>&1 || true
 }
 
+test_api_documentation() {
+    print_section "API Documentation"
+
+    local response http_code body
+
+    increment_test
+    print_test "Swagger UI endpoint"
+    response=$(curl -s -w "%{http_code}" "${API_BASE_URL}/api/docs" 2>/dev/null || echo "000")
+    http_code="${response: -3}"
+    if [[ "$http_code" == "200" ]]; then
+        print_pass "Swagger UI endpoint accessible"
+    elif [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+        print_info "Swagger UI endpoint not available in test environment"
+    else
+        print_fail "Swagger UI endpoint - Unexpected status $http_code"
+    fi
+
+    # The unversioned /api/docs/json now serves the v2 spec
+    for docs_path in "/api/docs/json" "/api/docs/v2/json"; do
+        increment_test
+        print_test "OpenAPI spec at ${docs_path}"
+        response=$(curl -s -w "%{http_code}" -H "Accept: application/json" \
+            "${API_BASE_URL}${docs_path}" 2>/dev/null || echo "000")
+        http_code="${response: -3}"
+        body="${response%???}"
+
+        if [[ "$http_code" != "200" ]]; then
+            if [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+                print_info "${docs_path} not available in test environment"
+            else
+                print_fail "${docs_path} - Unexpected status $http_code"
+            fi
+            continue
+        fi
+
+        local spec_version
+        spec_version=$(echo "$body" | jq -r '.info.version // empty' 2>/dev/null)
+        if [[ "$spec_version" == "2.0.0" ]]; then
+            print_pass "${docs_path} serves the v2 spec"
+        else
+            print_fail "${docs_path} - Expected info.version 2.0.0, got '${spec_version}'"
+        fi
+
+        increment_test
+        print_test "OpenAPI spec at ${docs_path} documents only v2 paths"
+        if echo "$body" | jq -e '[.paths | keys[] | select(startswith("/v1"))] | length == 0' >/dev/null 2>&1; then
+            print_pass "${docs_path} has no v1 paths"
+        else
+            print_fail "${docs_path} still documents v1 paths"
+        fi
+    done
+}
+
+test_v1_removed() {
+    print_section "Removed API v1"
+
+    local headers http_code
+
+    for v1_request in "GET /api/v1/zones" "POST /api/v1/zones" "GET /api/v1/users/1" "DELETE /api/v1/permission-templates/1" "GET /api/v1"; do
+        local method="${v1_request%% *}"
+        local path="${v1_request#* }"
+
+        increment_test
+        print_test "${method} ${path} is gone"
+        headers=$(curl -s -o /dev/null -D - -X "$method" \
+            -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+            "${API_BASE_URL}${path}" 2>/dev/null || echo "")
+        http_code=$(echo "$headers" | awk 'NR==1 {print $2}')
+
+        if [[ "$http_code" != "410" ]]; then
+            print_fail "${method} ${path} - Expected 410, got ${http_code:-000}"
+            continue
+        fi
+
+        if echo "$headers" | grep -qi 'successor-version'; then
+            print_pass "${method} ${path} returns 410 with a v2 pointer"
+        else
+            print_fail "${method} ${path} returned 410 without a successor-version Link header"
+        fi
+    done
+
+    increment_test
+    print_test "Removed v1 endpoint keeps the v1 error shape"
+    local body
+    body=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/zones" 2>/dev/null || echo "")
+    if echo "$body" | jq -e '.error == true and (.message | contains("/api/v2"))' >/dev/null 2>&1; then
+        print_pass "410 body reports the error and points at /api/v2"
+    else
+        print_fail "410 body should be {error:true, message:...} mentioning /api/v2"
+    fi
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -2608,7 +2701,10 @@ main() {
 
     echo -e "\n${YELLOW}Starting tests...${NC}\n"
 
-    # Run test suites
+    # Run test suites. The docs and removed-v1 checks are independent of test
+    # data, so they run first and still report if a later suite aborts the run.
+    test_api_documentation
+    test_v1_removed
     test_rrsets
     test_ptr_autocreation
     test_ptr_update
