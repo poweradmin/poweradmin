@@ -60,6 +60,7 @@ composer.json
 composer.lock
 phpcs.xml
 phpdoc.dist.xml
+phpstan-baseline.neon
 phpstan.neon
 phpunit.xml.dist
 psalm-baseline.xml

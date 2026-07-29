@@ -1,6 +1,15 @@
+includes:
+  - phpstan-baseline.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - vendor/spaze/phpstan-disallowed-calls/extension.neon
+  - vendor/tomasvotruba/cognitive-complexity/config/extension.neon
+
 parameters:
   excludePaths:
     - vendor
+  cognitive_complexity:
+    class: 60
+    function: 15
   # Global helpers loaded via require_once in entry points; lets targeted
   # runs (single file, IDE) resolve them without analyzing all of lib/
   scanFiles:
@@ -13,3 +22,23 @@ parameters:
       path: tests/*
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_?config.#'
+  disallowedSuperglobals:
+    -
+      superglobal: ['$_GET', '$_POST', '$_REQUEST']
+      message: 'use Poweradmin\Application\Http\Request instead'
+      allowIn:
+        # Reading the superglobal is the job of these files.
+        - lib/Application/Http/Request.php
+        - lib/Application/Service/SamlService.php  # IdP posts to the ACS URL
+        - tests/*
+        # Not yet migrated to Request. Delete each entry as its file is done.
+        - lib/Application/Presenter/PaginationPresenter.php
+        - lib/Application/Presenter/ZoneStartingLettersPresenter.php
+        - lib/Application/Service/LdapAuthenticator.php
+        - lib/Application/Service/PaginationService.php
+        - lib/Application/Service/SqlAuthenticator.php
+        - lib/Domain/Service/ZoneSortingService.php
+        - lib/Infrastructure/Service/HttpPaginationParameters.php
+        - lib/Infrastructure/Service/SessionAuthenticator.php
+        - lib/Module/DnsWizard/Controller/DnsWizardFormController.php
+        - lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php

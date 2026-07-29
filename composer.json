@@ -72,7 +72,10 @@
     "squizlabs/php_codesniffer": "^4.0.1",
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^v3.89",
-    "vimeo/psalm": "^6.15"
+    "vimeo/psalm": "^6.15",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "tomasvotruba/cognitive-complexity": "^1.1",
+    "spaze/phpstan-disallowed-calls": "^4.13"
   },
   "scripts": {
     "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
@@ -160,6 +163,7 @@
       "package.json",
       "phpcs.xml",
       "phpdoc.dist.xml",
+      "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
       "psalm-baseline.xml",
