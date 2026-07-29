@@ -531,7 +531,7 @@ class ZoneTemplate
      *                                from another template cannot be read
      *
      * @return array zone template record
-     * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
+     * [id,zone_templ_id,name,type,content,ttl,prio] or an empty array if nothing is found
      */
     public static function getZoneTemplRecordFromId($db, int $id, ?int $zone_templ_id = null): array
     {
@@ -617,7 +617,7 @@ class ZoneTemplate
             return false;
         }
 
-        if (Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db))) {
+        if (!$this->canStoreTemplateRecordType($type)) {
             $this->messageService->addSystemError(_('You do not have the permission to add this record type to a zone template.'));
             return false;
         }
@@ -667,9 +667,19 @@ class ZoneTemplate
      */
     private function recordBelongsToTemplate(int $rid, int $zone_templ_id): bool
     {
-        $record = self::getZoneTemplRecordFromId($this->db, $rid);
+        return !empty(self::getZoneTemplRecordFromId($this->db, $rid, $zone_templ_id));
+    }
 
-        return !empty($record) && (int)$record['zone_templ_id'] === $zone_templ_id;
+    /**
+     * Confirm the current user may store this record type in a zone template.
+     *
+     * @param string $type DNS record type
+     *
+     * @return boolean true when the type is allowed
+     */
+    private function canStoreTemplateRecordType(string $type): bool
+    {
+        return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db));
     }
 
     /**
@@ -709,12 +719,18 @@ class ZoneTemplate
         }
 
         // Reject a record id that lives in another template, even when the caller owns this one.
-        if (!$this->recordBelongsToTemplate((int)($record['rid'] ?? 0), $zone_templ_id)) {
+        $storedRecord = self::getZoneTemplRecordFromId($this->db, (int)($record['rid'] ?? 0), $zone_templ_id);
+        if (empty($storedRecord)) {
             $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
             return false;
         }
 
-        if (Permission::isTemplateRecordTypeRestricted($record['type'] ?? '', Permission::getEditPermission($this->db))) {
+        // Both types are gated: checking only the submitted one would let a
+        // protected record be overwritten by relabelling it as an allowed type.
+        if (
+            !$this->canStoreTemplateRecordType((string)$storedRecord['type'])
+            || !$this->canStoreTemplateRecordType($record['type'] ?? '')
+        ) {
             $this->messageService->addSystemError(_('You do not have the permission to add this record type to a zone template.'));
             return false;
         }
@@ -776,8 +792,15 @@ class ZoneTemplate
         }
 
         // Reject a record id that lives in another template, even when the caller owns this one.
-        if (!$this->recordBelongsToTemplate($rid, $zone_templ_id)) {
+        $storedRecord = self::getZoneTemplRecordFromId($this->db, $rid, $zone_templ_id);
+        if (empty($storedRecord)) {
             $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
+            return false;
+        }
+
+        // A caller who may not create this type may not remove one either.
+        if (!$this->canStoreTemplateRecordType((string)$storedRecord['type'])) {
+            $this->messageService->addSystemError(_('You do not have the permission to delete this record type from a zone template.'));
             return false;
         }
 
@@ -859,7 +882,16 @@ class ZoneTemplate
                     (zone_templ_id, name, type, content, ttl, prio) 
                     VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
 
+                $skippedTypes = [];
+
                 foreach ($records as $record) {
+                    // Skip rather than fail: a saved zone legitimately carries records
+                    // the caller may read but not author. Skipped types are reported below.
+                    if (!$this->canStoreTemplateRecordType((string)$record['type'])) {
+                        $skippedTypes[strtoupper((string)$record['type'])] = true;
+                        continue;
+                    }
+
                     if ($record['type'] === 'SOA') {
                         $hasSOA = true;
                     }
@@ -882,6 +914,14 @@ class ZoneTemplate
                 }
 
                 $this->db->commit();
+
+                if ($skippedTypes !== []) {
+                    $this->messageService->addSystemError(sprintf(
+                        _('These record types were left out of the template because you may not add them: %s'),
+                        implode(', ', array_keys($skippedTypes))
+                    ));
+                }
+
                 return true;
             } catch (Exception $e) {
                 $this->db->rollBack();

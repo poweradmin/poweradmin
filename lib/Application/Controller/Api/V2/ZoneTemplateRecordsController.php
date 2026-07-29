@@ -462,7 +462,12 @@ class ZoneTemplateRecordsController extends PublicApiController
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$record['ttl'];
             $priority = isset($data['priority']) ? (int)$data['priority'] : (int)($record['prio'] ?? 0);
 
-            if (!$this->apiPermissionService->canWriteTemplateRecordType($userId, $type)) {
+            // Both types are gated: checking only the submitted one would let a
+            // protected record be overwritten by relabelling it as an allowed type.
+            if (
+                !$this->apiPermissionService->canWriteTemplateRecordType($userId, (string)$record['type'])
+                || !$this->apiPermissionService->canWriteTemplateRecordType($userId, $type)
+            ) {
                 return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
             }
 
@@ -541,6 +546,11 @@ class ZoneTemplateRecordsController extends PublicApiController
             $record = $this->repository->getZoneTemplateRecordById($recordId);
             if (empty($record) || (int)$record['zone_templ_id'] !== $templateId) {
                 return $this->returnApiError('Record not found in this zone template', 404);
+            }
+
+            // A caller who may not create this type may not remove one either.
+            if (!$this->apiPermissionService->canWriteTemplateRecordType($userId, (string)$record['type'])) {
+                return $this->returnApiError('You do not have permission to delete this record type from a zone template', 403);
             }
 
             $this->repository->deleteRecord($recordId);
