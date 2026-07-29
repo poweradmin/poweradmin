@@ -14041,3 +14041,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "Níor scriosadh an t-úsáideoir toisc gur sháraigh an fhoirm teorainn an fhreastalaí ar líon na réimsí. Iarr ar do riarthóir an socrú PHP \"max_input_vars\" a mhéadú."
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

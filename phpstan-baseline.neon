@@ -349,12 +349,6 @@ parameters:
 			path: lib/Application/Controller/SearchController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\UserPreferencesController\:\:handlePreferencesUpdate\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/UserPreferencesController.php
-
-		-
 			message: '#^Class cognitive complexity is 74, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1

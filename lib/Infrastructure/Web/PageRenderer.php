@@ -54,6 +54,7 @@ class PageRenderer
     private UserContextService $userContextService;
     private Closure $hasPermission;
     private Closure $getDebugQueries;
+    private bool $wideLayout;
 
     private bool $twigEnvironmentReady = false;
     private ?array $languageVars = null;
@@ -64,7 +65,8 @@ class PageRenderer
         CsrfTokenService $csrfTokenService,
         UserContextService $userContextService,
         Closure $hasPermission,
-        Closure $getDebugQueries
+        Closure $getDebugQueries,
+        bool $wideLayout
     ) {
         $this->app = $app;
         $this->config = $config;
@@ -72,6 +74,7 @@ class PageRenderer
         $this->userContextService = $userContextService;
         $this->hasPermission = $hasPermission;
         $this->getDebugQueries = $getDebugQueries;
+        $this->wideLayout = $wideLayout;
     }
 
     private function hasPermission(string $permission): bool
@@ -190,6 +193,7 @@ class PageRenderer
             'show_style_switcher' => true,
             // Defined on every render (incl. unauthenticated) so strict_variables holds
             'api_error' => false,
+            'wide_layout' => $this->wideLayout,
         ], LanguageCode::templateVars($activeLocale));
 
         $vars = array_merge($vars, $this->languageVars());

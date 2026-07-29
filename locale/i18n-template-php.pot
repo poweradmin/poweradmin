@@ -13882,3 +13882,11 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr ""
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr ""

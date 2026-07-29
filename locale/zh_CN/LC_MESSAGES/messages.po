@@ -14104,3 +14104,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "由于表单超出了服务器对字段数量的限制，用户未被删除。请让管理员增大 PHP \"max_input_vars\" 设置。"
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

@@ -14269,3 +14269,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "フォームがサーバーのフィールド数上限を超えたため、ユーザーは削除されませんでした。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してください。"
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

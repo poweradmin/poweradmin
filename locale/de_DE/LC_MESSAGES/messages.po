@@ -15846,3 +15846,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "Der Benutzer wurde nicht gelöscht, da das Formular das Serverlimit für die Anzahl der Felder überschritten hat. Bitten Sie Ihren Administrator, die PHP-Einstellung \"max_input_vars\" zu erhöhen."
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

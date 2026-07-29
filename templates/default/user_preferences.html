@@ -23,6 +23,13 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="wide_layout" name="wide_layout" {% if preferences.wide_layout == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="wide_layout">
+                        <strong>{% trans %}Full browser width{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Use the entire browser width instead of a fixed-width page{% endtrans %}</div>
+                    </label>
+                </div>
             </div>
         </div>
 

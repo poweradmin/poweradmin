@@ -15799,3 +15799,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "L'utente non è stato eliminato perché il modulo ha superato il limite del server sul numero di campi. Chiedi al tuo amministratore di aumentare l'impostazione PHP \"max_input_vars\"."
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

@@ -490,6 +490,15 @@ abstract class BaseController
     }
 
     /**
+     * Whether the logged-in user wants the page to span the full browser width
+     */
+    protected function getWideLayout(): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createUserPreferenceService()->getWideLayout($userId);
+    }
+
+    /**
      * Check if the logged-in user owns the given zone directly or via group membership
      */
     protected function isZoneOwner(int $zoneId): bool
@@ -703,7 +712,8 @@ abstract class BaseController
             $this->csrfTokenService,
             $this->userContextService,
             $this->hasPermission(...),
-            $this->init->getDebugQueries(...)
+            $this->init->getDebugQueries(...),
+            $this->getWideLayout()
         );
     }
 

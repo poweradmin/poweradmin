@@ -14005,3 +14005,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "उपयोगकर्ता हटाया नहीं गया क्योंकि फ़ॉर्म ने फ़ील्ड की संख्या पर सर्वर सीमा को पार कर दिया। अपने व्यवस्थापक से PHP \"max_input_vars\" सेटिंग बढ़ाने के लिए कहें।"
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

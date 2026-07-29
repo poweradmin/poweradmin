@@ -98,6 +98,11 @@ class UserPreferenceService
             $result[$preference->getPreferenceKey()] = $preference->getPreferenceValue();
         }
 
+        // Warm the per-key cache so later single-key reads in the same request are free
+        foreach ($result as $key => $value) {
+            $this->cache[$userId . '_' . $key] = $value;
+        }
+
         return $result;
     }
 
@@ -187,6 +192,11 @@ class UserPreferenceService
         return $this->getPreference($userId, UserPreference::KEY_DISPLAY_HOSTNAME_ONLY) === 'true';
     }
 
+    public function getWideLayout(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_WIDE_LAYOUT) === 'true';
+    }
+
     public function clearCache(): void
     {
         $this->cache = [];
@@ -209,6 +219,7 @@ class UserPreferenceService
             UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => $this->config->get('interface', 'show_record_edit_button', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => $this->config->get('interface', 'show_record_delete_button', false) ? 'true' : 'false',
             UserPreference::KEY_DISPLAY_HOSTNAME_ONLY => $this->config->get('interface', 'display_hostname_only', false) ? 'true' : 'false',
+            UserPreference::KEY_WIDE_LAYOUT => $this->config->get('interface', 'wide_layout', false) ? 'true' : 'false',
         ];
     }
 

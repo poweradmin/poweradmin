@@ -29,7 +29,7 @@
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/helper.js?time={{ file_version }}"></script>
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/userSettings.js?time={{ file_version }}"></script>
 </head>
-<body>
+<body{{ wide_layout ? ' class="layout-wide"' : '' }}>
 
 {% if current_page == 'mfa_verify' %}
 <!-- MFA Verification - Simplified header with no navigation -->

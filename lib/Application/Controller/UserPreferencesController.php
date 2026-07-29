@@ -97,17 +97,13 @@ class UserPreferencesController extends BaseController
             // Update each preference that was submitted (excluding TTL as requested)
             $preferencesToUpdate = [
                 UserPreference::KEY_ROWS_PER_PAGE => $this->request->getPostParam('rows_per_page'),
-                UserPreference::KEY_SHOW_ZONE_SERIAL => $this->request->getPostParam('show_zone_serial') !== null ? 'true' : 'false',
-                UserPreference::KEY_SHOW_ZONE_TEMPLATE => $this->request->getPostParam('show_zone_template') !== null ? 'true' : 'false',
-                UserPreference::KEY_SHOW_ZONE_RECORD_COUNT => $this->request->getPostParam('show_zone_record_count') !== null ? 'true' : 'false',
                 UserPreference::KEY_RECORD_FORM_POSITION => $this->request->getPostParam('record_form_position'),
                 UserPreference::KEY_SAVE_BUTTON_POSITION => $this->request->getPostParam('save_button_position'),
-                UserPreference::KEY_SHOW_RECORD_ID => $this->request->getPostParam('show_record_id') !== null ? 'true' : 'false',
-                UserPreference::KEY_SHOW_ADD_RECORD_FORM => $this->request->getPostParam('show_add_record_form') !== null ? 'true' : 'false',
-                UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => $this->request->getPostParam('show_record_edit_button') !== null ? 'true' : 'false',
-                UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => $this->request->getPostParam('show_record_delete_button') !== null ? 'true' : 'false',
-                UserPreference::KEY_DISPLAY_HOSTNAME_ONLY => $this->request->getPostParam('display_hostname_only') !== null ? 'true' : 'false',
             ];
+
+            foreach (UserPreference::CHECKBOX_KEYS as $key) {
+                $preferencesToUpdate[$key] = $this->request->getPostParam($key) !== null ? 'true' : 'false';
+            }
 
             // The record-ID toggle is hidden in API mode, so its checkbox is never
             // submitted; skip it to keep the user's saved SQL-mode preference intact.

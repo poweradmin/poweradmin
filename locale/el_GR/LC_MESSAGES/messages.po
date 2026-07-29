@@ -14005,3 +14005,11 @@ msgid ""
 "number of fields. Ask your administrator to increase the PHP "
 "\"max_input_vars\" setting."
 msgstr "Ο χρήστης δεν διαγράφηκε επειδή η φόρμα υπερέβη το όριο του διακομιστή στον αριθμό πεδίων. Ζητήστε από τον διαχειριστή σας να αυξήσει τη ρύθμιση PHP \"max_input_vars\"."
+
+#: templates/modern/user_preferences.html:29
+msgid "Full browser width"
+msgstr "Full browser width"
+
+#: templates/modern/user_preferences.html:30
+msgid "Use the entire browser width instead of a fixed-width page"
+msgstr "Use the entire browser width instead of a fixed-width page"

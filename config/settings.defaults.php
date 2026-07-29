@@ -171,6 +171,7 @@ return [
         'show_pdns_status' => false,          // Show PowerDNS server status page and dashboard card (added in 4.0.0)
         'show_dashboard_stats' => true,      // Show zone, record, user, and group counts on dashboard (added in 4.3.0)
         'show_forward_zone_associations' => true, // Show associated forward zones in reverse zone list (added in 4.0.5)
+        'wide_layout' => false,               // Use full browser width instead of a fixed-width page (added in 4.5.0)
 
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)

@@ -49,7 +49,8 @@ class PageRendererTest extends TestCase
             $this->createMock(CsrfTokenService::class),
             $this->createMock(UserContextService::class),
             fn(string $permission): bool => false,
-            fn() => []
+            fn() => [],
+            false
         );
     }
 
