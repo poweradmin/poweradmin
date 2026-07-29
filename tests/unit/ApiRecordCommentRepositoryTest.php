@@ -40,7 +40,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
 
     private function stubZoneData(string $name = 'www.example.com.', string $type = 'A'): void
     {
-        $this->apiClient->method('getZone')
+        $this->apiClient->method('getZoneRrset')
             ->willReturn([
                 'rrsets' => [
                     [
@@ -94,7 +94,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function updateClearsOldRRsetOnNameChange(): void
     {
-        $this->apiClient->method('getZone')
+        $this->apiClient->method('getZoneRrset')
             ->willReturn([
                 'rrsets' => [
                     [
@@ -176,7 +176,11 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function findReturnsCommentFromApi(): void
     {
-        $this->apiClient->method('getZone')
+        // Pin all three arguments: both names must reach the filter with a
+        // trailing dot or PowerDNS matches nothing and the comment silently
+        // reads back as absent.
+        $this->apiClient->method('getZoneRrset')
+            ->with('example.com.', 'www.example.com.', 'A')
             ->willReturn([
                 'rrsets' => [
                     [

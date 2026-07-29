@@ -217,12 +217,12 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
     private function getRRsetComment(string $zoneName, string $name, string $type): ?array
     {
         $apiZoneName = $this->ensureTrailingDot($zoneName);
-        $zoneData = $this->apiClient->getZone($apiZoneName);
+        $apiRecordName = $this->ensureTrailingDot($name);
+        $zoneData = $this->apiClient->getZoneRrset($apiZoneName, $apiRecordName, $type);
         if ($zoneData === null) {
             return null;
         }
 
-        $apiRecordName = $this->ensureTrailingDot($name);
         foreach ($zoneData['rrsets'] ?? [] as $rrset) {
             if ($rrset['name'] === $apiRecordName && $rrset['type'] === $type) {
                 $comments = $rrset['comments'] ?? [];
@@ -242,7 +242,7 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
         $apiRecordName = $this->ensureTrailingDot($name);
 
         // Fetch current RRset to preserve records
-        $zoneData = $this->apiClient->getZone($apiZoneName);
+        $zoneData = $this->apiClient->getZoneRrset($apiZoneName, $apiRecordName, $type);
         if ($zoneData === null) {
             return false;
         }

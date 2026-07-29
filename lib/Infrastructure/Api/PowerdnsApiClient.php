@@ -44,6 +44,9 @@ class PowerdnsApiClient
     /** @var array{name: string, data: array}|null Most recently fetched complete zone body; one slot, so looping over many zones stays flat in memory */
     private ?array $lastZone = null;
 
+    /** @var array{endpoint: string, data: array}|null Most recent narrowed zone read; one slot, so a listing pass stays flat in memory */
+    private ?array $lastNarrowedZone = null;
+
     public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
     {
         $this->httpClient = $httpClient;
@@ -60,6 +63,7 @@ class PowerdnsApiClient
         if ($method !== 'GET') {
             $this->zoneListCache = [];
             $this->lastZone = null;
+            $this->lastNarrowedZone = null;
         }
 
         return $this->httpClient->makeRequest($method, $endpoint, $data);
@@ -702,6 +706,22 @@ class PowerdnsApiClient
     }
 
     /**
+     * Narrow a held whole body to what the caller actually asked for, so a
+     * reused body answers with the same shape a fresh request would have.
+     *
+     * @param array<string, string> $filters
+     */
+    private static function narrowHeldZone(array $zoneData, bool $includeRrsets, array $filters): array
+    {
+        if (!$includeRrsets) {
+            unset($zoneData['rrsets']);
+            return $zoneData;
+        }
+
+        return self::applyRrsetFilters($zoneData, $filters);
+    }
+
+    /**
      * Narrow a zone body to the RRsets an equivalent filtered request would
      * have returned, so a reused whole body answers with the same shape.
      *
@@ -734,8 +754,8 @@ class PowerdnsApiClient
     {
         // A whole body answers any narrower read of the same zone, so reuse it
         // rather than asking again for a subset we already hold
-        if ($includeRrsets && ($this->lastZone['name'] ?? null) === $zoneName) {
-            return self::applyRrsetFilters($this->lastZone['data'], $filters);
+        if (($this->lastZone['name'] ?? null) === $zoneName) {
+            return self::narrowHeldZone($this->lastZone['data'], $includeRrsets, $filters);
         }
 
         try {
@@ -743,16 +763,23 @@ class PowerdnsApiClient
             $params += $filters;
             $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
             $endpoint = $this->buildZoneEndpoint($zoneName, $query === '' ? '' : '?' . $query);
+            // A narrowed body cannot stand in for any other read, but a save
+            // asks for the same RRset repeatedly
+            if (($this->lastNarrowedZone['endpoint'] ?? null) === $endpoint) {
+                return $this->lastNarrowedZone['data'];
+            }
+
             $response = $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 // Mirror getZones(): a successful read clears any stale API error
                 // so the outage banner doesn't linger after the API recovers.
                 (new ApiStatusService())->clearError();
-                // Only a complete body may be reused; a filtered one holds a subset
+                // Only a complete body may stand in for a different, narrower read
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
                 }
+                $this->lastNarrowedZone = ['endpoint' => $endpoint, 'data' => $response['data']];
                 return $response['data'];
             }
 

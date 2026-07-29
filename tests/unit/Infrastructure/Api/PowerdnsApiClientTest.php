@@ -618,6 +618,86 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertSame('SOA', $rrset['rrsets'][0]['type']);
     }
 
+    public function testAWholeZoneBodyAnswersALaterRecordlessReadOfTheSameZone(): void
+    {
+        // Callers reading only zone-level fields must not pay for a second
+        // round trip, and must see the same shape a rrsets=false response has.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'kind' => 'Master',
+                'soa_edit_api' => 'DEFAULT',
+                'rrsets' => [
+                    ['name' => 'example.com.', 'type' => 'SOA', 'records' => []],
+                ],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $zone = $this->apiClient->getZone('example.com.', false);
+
+        $this->assertSame('DEFAULT', $zone['soa_edit_api']);
+        $this->assertArrayNotHasKey('rrsets', $zone);
+    }
+
+    public function testRepeatedNarrowedReadsOfTheSameRrsetCostOneRequest(): void
+    {
+        // A single save reads the same RRset several times, and a narrowed body
+        // is never stored as the whole-zone answer, so without this it pays for
+        // each read.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $narrowed = '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.&rrset_type=A';
+        $this->assertSame([
+            'GET ' . $narrowed,
+            'PATCH /api/v1/servers/localhost/zones/example.com.',
+            'GET ' . $narrowed,
+        ], $calls, 'the write must evict the cached narrowed body');
+    }
+
+    public function testNarrowedReadsOfDifferentRrsetsAreNotConfused(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->exactly(2))
+            ->method('makeRequest')
+            ->willReturnCallback(fn(string $method, string $endpoint): array => [
+                'responseCode' => 200,
+                'data' => ['name' => 'example.com.', 'endpoint' => $endpoint],
+            ]);
+
+        $first = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $second = $this->apiClient->getZoneRrset('example.com.', 'mail.example.com.', 'MX');
+
+        $this->assertStringContainsString('rrset_name=www.example.com.', $first['endpoint']);
+        $this->assertStringContainsString('rrset_name=mail.example.com.', $second['endpoint']);
+    }
+
+    public function testARecordlessReadStillGoesToTheServerWhenNoBodyIsHeld(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'kind' => 'Master']]);
+
+        $zone = $this->apiClient->getZone('example.com.', false);
+
+        $this->assertSame('Master', $zone['kind']);
+    }
+
     public function testOnlyOneZoneBodyIsHeldAtATime(): void
     {
         // Listing pages loop over a page of zones; retaining every body would

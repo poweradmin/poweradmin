@@ -506,7 +506,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     public function zoneExists(string $zoneName): bool
     {
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName);
+        $zoneData = $this->client->getZone($apiName, false);
         return $zoneData !== null;
     }
 
@@ -698,7 +698,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return '';
         }
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName);
+        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
         if ($zoneData === null) {
             return '';
         }
@@ -822,7 +822,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     public function getZoneByName(string $zoneName): ?array
     {
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName);
+        $zoneData = $this->client->getZone($apiName, false);
         if ($zoneData === null) {
             return null;
         }
@@ -1118,7 +1118,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         $apiZoneName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiZoneName);
+        $zoneData = $this->client->getZone($apiZoneName, false);
 
         return $zoneData !== null && !empty($zoneData['soa_edit_api']);
     }
@@ -1221,7 +1221,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      */
     private function getRRsetFromApi(string $apiZoneName, string $apiRecordName, string $type): ?array
     {
-        $zoneData = $this->client->getZone($apiZoneName);
+        $zoneData = $this->client->getZoneRrset($apiZoneName, $apiRecordName, $type);
         if ($zoneData === null) {
             return null;
         }
