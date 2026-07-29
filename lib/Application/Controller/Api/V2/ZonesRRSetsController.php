@@ -495,7 +495,7 @@ class ZonesRRSetsController extends PublicApiController
             try {
                 // Validate all records BEFORE any destructive operations.
                 // This prevents data loss when validation fails after records have been deleted.
-                $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
+                $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
                 $hostnameValidator = new HostnameValidator($this->getConfig());
                 $dnsFormatter = new DnsFormatter($this->getConfig());
                 $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);

@@ -698,6 +698,86 @@ class PowerdnsApiClientTest extends TestCase
         ], $calls, 'the write must evict the cached narrowed body');
     }
 
+    public function testAnInterleavedNarrowedReadDoesNotEvictTheFirst(): void
+    {
+        // Validation reads one type, then another, then the first again. With a
+        // single slot the middle read evicted the first and it had to be refetched.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertCount(2, $calls, 'the repeated read must be served from cache');
+    }
+
+    public function testAWriteEvictsEveryNarrowedEntryNotJustTheLast(): void
+    {
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+
+        $this->assertSame(['GET', 'GET', 'PATCH', 'GET', 'GET'], $calls);
+    }
+
+    public function testTheNarrowedCacheIsCapped(): void
+    {
+        // Walking many names must not retain a body per name for the whole request
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        for ($i = 0; $i < 12; $i++) {
+            $this->apiClient->getZoneRrset('example.com.', "host{$i}.example.com.", 'A');
+        }
+        $this->assertSame(12, $calls);
+
+        // The earliest entries have been evicted, so re-reading them costs again
+        $this->apiClient->getZoneRrset('example.com.', 'host0.example.com.', 'A');
+        $this->assertSame(13, $calls);
+    }
+
+    public function testRepeatedIdenticalSearchesCostOneRequest(): void
+    {
+        // CNAME validation searches the same name once per record in a bulk write
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['records' => []]];
+            });
+
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+
+        $this->assertCount(3, $calls, 'the write must evict the cached search');
+        $this->assertStringStartsWith('GET ', $calls[0]);
+        $this->assertStringStartsWith('PATCH ', $calls[1]);
+    }
+
     public function testNarrowedReadsOfDifferentRrsetsAreNotConfused(): void
     {
         $this->mockHttpClient

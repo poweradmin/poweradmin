@@ -34,6 +34,9 @@ class PowerdnsApiClient
 
     private const API_VERSION_PATH = '/api/v1';
 
+    /** One save reads a handful of RRsets at a single name, so a small cap covers it with room to spare */
+    private const MAX_NARROWED_ZONES = 8;
+
     private HttpClient $httpClient;
     private string $serverName;
     private LoggerInterface $logger;
@@ -44,8 +47,11 @@ class PowerdnsApiClient
     /** @var array{name: string, data: array}|null Most recently fetched complete zone body; one slot, so looping over many zones stays flat in memory */
     private ?array $lastZone = null;
 
-    /** @var array{endpoint: string, data: array}|null Most recent narrowed zone read; one slot, so a listing pass stays flat in memory */
-    private ?array $lastNarrowedZone = null;
+    /** @var array<string, array> Narrowed zone reads keyed by endpoint. Only single-RRset bodies land here, so this stays small where whole zones would not */
+    private array $narrowedZoneCache = [];
+
+    /** @var array<string, array> Search responses keyed by endpoint; validation repeats the same query once per record */
+    private array $searchCache = [];
 
     public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
     {
@@ -63,7 +69,8 @@ class PowerdnsApiClient
         if ($method !== 'GET') {
             $this->zoneListCache = [];
             $this->lastZone = null;
-            $this->lastNarrowedZone = null;
+            $this->narrowedZoneCache = [];
+            $this->searchCache = [];
         }
 
         return $this->httpClient->makeRequest($method, $endpoint, $data);
@@ -712,6 +719,20 @@ class PowerdnsApiClient
     }
 
     /**
+     * Hold a narrowed body for reuse, capped because a caller may walk many
+     * names in one request and each entry would otherwise be kept for the
+     * whole of it.
+     */
+    private function rememberNarrowedZone(string $endpoint, array $zoneData): void
+    {
+        $this->narrowedZoneCache[$endpoint] = $zoneData;
+
+        if (count($this->narrowedZoneCache) > self::MAX_NARROWED_ZONES) {
+            array_shift($this->narrowedZoneCache);
+        }
+    }
+
+    /**
      * Narrow a held whole body to what the caller actually asked for, so a
      * reused body answers with the same shape a fresh request would have.
      *
@@ -773,8 +794,8 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zoneName, $query === '' ? '' : '?' . $query);
             // A narrowed body cannot stand in for any other read, but a save
             // asks for the same RRset repeatedly
-            if (($this->lastNarrowedZone['endpoint'] ?? null) === $endpoint) {
-                return $this->lastNarrowedZone['data'];
+            if (array_key_exists($endpoint, $this->narrowedZoneCache)) {
+                return $this->narrowedZoneCache[$endpoint];
             }
 
             $response = $this->request('GET', $endpoint);
@@ -786,8 +807,9 @@ class PowerdnsApiClient
                 // Only a complete body may stand in for a different, narrower read
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
+                } else {
+                    $this->rememberNarrowedZone($endpoint, $response['data']);
                 }
-                $this->lastNarrowedZone = ['endpoint' => $endpoint, 'data' => $response['data']];
                 return $response['data'];
             }
 
@@ -921,7 +943,7 @@ class PowerdnsApiClient
                 'object_type' => $objectType,
             ]);
             $endpoint = $this->buildEndpoint("/search-data?{$params}");
-            $response = $this->request('GET', $endpoint);
+            $response = $this->searchCache[$endpoint] ??= $this->request('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
                 return $response['data'] ?? [];
