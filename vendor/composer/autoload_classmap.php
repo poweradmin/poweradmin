@@ -1279,6 +1279,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ZoneOwnershipModeService' => $baseDir . '/lib/Domain/Service/ZoneOwnershipModeService.php',
     'Poweradmin\\Domain\\Service\\ZoneOwnershipResolution' => $baseDir . '/lib/Domain/Service/ZoneOwnershipResolution.php',
     'Poweradmin\\Domain\\Service\\ZoneSortingService' => $baseDir . '/lib/Domain/Service/ZoneSortingService.php',
+    'Poweradmin\\Domain\\Service\\ZoneTemplateRecordValidationService' => $baseDir . '/lib/Domain/Service/ZoneTemplateRecordValidationService.php',
     'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => $baseDir . '/lib/Domain/Service/ZoneTemplateSyncService.php',
     'Poweradmin\\Domain\\Service\\ZoneValidationService' => $baseDir . '/lib/Domain/Service/ZoneValidationService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',
