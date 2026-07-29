@@ -1647,6 +1647,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\ZoneCountService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCountService.php',
         'Poweradmin\\Domain\\Service\\ZoneManagementService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneManagementService.php',
         'Poweradmin\\Domain\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneSortingService.php',
+        'Poweradmin\\Domain\\Service\\ZoneTemplateRecordValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneTemplateRecordValidationService.php',
         'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneTemplateSyncService.php',
         'Poweradmin\\Domain\\Service\\ZoneValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneValidationService.php',
         'Poweradmin\\Domain\\Utility\\DnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnsHelper.php',
