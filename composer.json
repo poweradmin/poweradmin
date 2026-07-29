@@ -52,7 +52,6 @@
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^3.64",
     "vimeo/psalm": "^5.0.0",
-    "phpmd/phpmd": "^2.15",
     "phan/phan": "^6.0"
   },
   "scripts": {
@@ -79,12 +78,6 @@
 
     "analyse:all": "phpstan analyse index.php inc install lib tests",
     "check:psalm": "psalm",
-
-    "check:phpmd:index": "phpmd index.php ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:inc": "phpmd inc ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:install": "phpmd install ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:lib": "phpmd lib ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode",
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
     "locale:stats": "./scripts/check_translation_stats.sh",
