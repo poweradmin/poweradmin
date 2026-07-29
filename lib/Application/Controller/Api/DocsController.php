@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -183,9 +182,8 @@ class DocsController extends BaseController
     /**
      * Build the base URL the Swagger UI page embeds when fetching spec JSON.
      *
-     * Prefers interface.application_url so the embedded spec URL cannot be
-     * poisoned via the Host header (otherwise the rendered docs page would
-     * point Swagger UI at an attacker-controlled spec).
+     * Uses interface.application_url when configured; without it the spec URL stays
+     * relative, which Swagger UI resolves against the origin of the docs page itself.
      */
     private function getDocsBaseUrl(): string
     {
@@ -194,69 +192,8 @@ class DocsController extends BaseController
             return rtrim($configuredUrl, '/');
         }
 
-        $this->logger->warning(
-            'API docs: deriving base URL from SERVER_NAME because interface.application_url is unset. Set application_url to keep the embedded spec URL stable.'
-        );
-
-        $protocolDetector = new ProtocolDetector();
-        $protocol = $protocolDetector->detect();
-        $host = $this->getValidatedHost();
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        return $protocol . '://' . $host . $baseUrlPrefix;
-    }
-
-    /**
-     * Validate the SERVER_NAME used as a fallback in getDocsBaseUrl().
-     *
-     * SERVER_NAME comes from webserver config, but a misconfigured vhost
-     * (e.g. one that copies the Host header into ServerName) could still let
-     * unexpected values through, so the hostname format is checked.
-     */
-    private function getValidatedHost(): string
-    {
-        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
-
-        $hostOnly = preg_replace('/:\d+$/', '', $host);
-        if (!$this->isValidHostname($hostOnly)) {
-            return 'localhost';
-        }
-
-        return $host;
-    }
-
-    /**
-     * Validate hostname format
-     *
-     * @param string $hostname The hostname to validate
-     * @return bool True if hostname is valid
-     */
-    private function isValidHostname(string $hostname): bool
-    {
-        // Check for valid hostname format
-        if (!filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
-            // Fallback validation for IP addresses
-            if (!filter_var($hostname, FILTER_VALIDATE_IP)) {
-                return false;
-            }
-        }
-
-        // Additional security checks
-        if (strlen($hostname) > 253) {
-            return false;
-        }
-
-        // Prevent obviously malicious patterns
-        if (
-            strpos($hostname, '\'') !== false ||
-            strpos($hostname, '"') !== false ||
-            strpos($hostname, '<') !== false ||
-            strpos($hostname, '>') !== false ||
-            strpos($hostname, ';') !== false
-        ) {
-            return false;
-        }
-
-        return true;
+        // No host is derived from the request: SERVER_NAME follows the client Host header
+        // under FrankenPHP and Apache defaults, so a forged Host would move the spec URL.
+        return rtrim($this->config->get('interface', 'base_url_prefix', ''), '/');
     }
 }

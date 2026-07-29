@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DocsControllerTest extends TestCase
 {
@@ -14,145 +15,54 @@ class DocsControllerTest extends TestCase
         $this->controller = new TestableDocsController();
     }
 
-    public function testGetValidatedHostWithValidDomain(): void
+    private function withConfig(string $applicationUrl, string $baseUrlPrefix = ''): void
     {
-        $_SERVER['SERVER_NAME'] = 'example.com';
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(
+            function (string $group, string $key) use ($applicationUrl, $baseUrlPrefix) {
+                if ($group !== 'interface') {
+                    return '';
+                }
 
-        $result = $this->controller->getValidatedHostPublic();
+                return match ($key) {
+                    'application_url' => $applicationUrl,
+                    'base_url_prefix' => $baseUrlPrefix,
+                    default => '',
+                };
+            }
+        );
 
-        $this->assertEquals('example.com', $result);
+        $this->controller->setConfig($config);
     }
 
-    public function testGetValidatedHostWithValidDomainAndPort(): void
+    public function testUsesApplicationUrlWhenConfigured(): void
     {
-        $_SERVER['SERVER_NAME'] = 'example.com:8080';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $this->withConfig('https://dns.example.com/');
 
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('example.com:8080', $result);
+        $this->assertEquals('https://dns.example.com', $this->controller->getDocsBaseUrlPublic());
     }
 
-    public function testGetValidatedHostWithValidIPv4(): void
+    public function testIgnoresForgedHostWhenApplicationUrlIsUnset(): void
     {
-        $_SERVER['SERVER_NAME'] = '192.168.1.100';
+        // SERVER_NAME follows the client Host header under FrankenPHP and Apache
+        // defaults, so the docs page falls back to a relative spec URL instead
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $this->withConfig('');
 
-        $result = $this->controller->getValidatedHostPublic();
+        $baseUrl = $this->controller->getDocsBaseUrlPublic();
 
-        $this->assertEquals('192.168.1.100', $result);
+        $this->assertEquals('', $baseUrl);
+        $this->assertStringNotContainsString('evil.attacker.test', $baseUrl);
     }
 
-    public function testGetValidatedHostWithValidIPv4AndPort(): void
+    public function testFallsBackToBaseUrlPrefixWhenApplicationUrlIsUnset(): void
     {
-        $_SERVER['SERVER_NAME'] = '192.168.1.100:3000';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $this->withConfig('', '/poweradmin');
 
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('192.168.1.100:3000', $result);
-    }
-
-    public function testGetValidatedHostWithBareIPv6ShouldFallbackToLocalhost(): void
-    {
-        // Bare IPv6 addresses are not valid in SERVER_NAME and should fallback to localhost
-        $_SERVER['SERVER_NAME'] = '2001:db8::1';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithMaliciousSingleQuote(): void
-    {
-        $_SERVER['SERVER_NAME'] = "evil.com'; alert('xss'); var x='";
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithMaliciousDoubleQuote(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'evil.com"; alert("xss"); var x="';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithMaliciousScript(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'evil.com<script>alert("xss")</script>';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithSemicolon(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'evil.com; rm -rf /';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithExcessiveLength(): void
-    {
-        $_SERVER['SERVER_NAME'] = str_repeat('a', 254) . '.com';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithInvalidCharacters(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'invalid@host.com';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithEmptyHost(): void
-    {
-        $_SERVER['SERVER_NAME'] = '';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithMissingHost(): void
-    {
-        unset($_SERVER['SERVER_NAME']);
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithLocalhostFallback(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'localhost';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('localhost', $result);
-    }
-
-    public function testGetValidatedHostWithSubdomain(): void
-    {
-        $_SERVER['SERVER_NAME'] = 'api.example.com';
-
-        $result = $this->controller->getValidatedHostPublic();
-
-        $this->assertEquals('api.example.com', $result);
-    }
-
-    protected function tearDown(): void
-    {
-        // Clean up $_SERVER state after each test
-        unset($_SERVER['SERVER_NAME']);
+        $this->assertEquals('/poweradmin', $this->controller->getDocsBaseUrlPublic());
     }
 }
