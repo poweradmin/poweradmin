@@ -72,6 +72,10 @@ class DeleteRecordsController extends BaseController
 
     public function run(): void
     {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
+        }
+
         $record_ids = $_POST['record_id'] ?? null;
         if (!$record_ids) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
