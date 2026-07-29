@@ -570,7 +570,6 @@ class OidcService extends LoggingService
 
         // Fall back to SERVER_NAME (webserver-configured hostname), not HTTP_HOST,
         // so the redirect_uri can't be flipped by a request-time Host header.
-        // Matches UrlService::getEmailUrlWithServerFallback().
         $this->logWarning(
             'OIDC: deriving callback URL from SERVER_NAME because interface.application_url is unset. Set application_url to a fixed value to make the OAuth redirect_uri stable.'
         );

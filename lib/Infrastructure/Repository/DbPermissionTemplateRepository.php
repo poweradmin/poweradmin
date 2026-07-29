@@ -40,11 +40,12 @@ class DbPermissionTemplateRepository
     /**
      * Add a Permission Template
      *
+     * Write through PermissionTemplateWriteService; it carries the content guard.
+     *
      * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
      *
      * @return boolean true on success, false otherwise
      */
-    /** Write through PermissionTemplateWriteService; it carries the content guard. */
     public function addPermissionTemplate(array $details): bool
     {
         $template_type = $details['template_type'] ?? 'user';
@@ -132,11 +133,12 @@ class DbPermissionTemplateRepository
     /**
      * Update permission template details
      *
+     * Write through PermissionTemplateWriteService; it carries the content guard.
+     *
      * @param array $details Permission Template Details
      *
      * @return boolean true on success, false otherwise
      */
-    /** Write through PermissionTemplateWriteService; it carries the content guard. */
     public function updatePermissionTemplateDetails(array $details): bool
     {
         $template_type = $details['template_type'] ?? 'user';
