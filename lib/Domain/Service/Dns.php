@@ -2187,7 +2187,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('DHCID record content is required');
+            $error = new ErrorMessage(_('DHCID record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2201,7 +2201,7 @@ class Dns
         $decoded = base64_decode($content, true);
 
         if ($decoded === false) {
-            $error = _('DHCID record must contain valid Base64-encoded data');
+            $error = new ErrorMessage(_('DHCID record must contain valid Base64-encoded data'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2211,7 +2211,7 @@ class Dns
 
         // Check minimum length (35 bytes minimum for valid DHCID)
         if (strlen($decoded) < 35) {
-            $error = _('DHCID record data is too short (minimum 35 bytes required)');
+            $error = new ErrorMessage(_('DHCID record data is too short (minimum 35 bytes required)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2243,7 +2243,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('SMIMEA record content is required');
+            $error = new ErrorMessage(_('SMIMEA record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2254,7 +2254,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 4) {
-            $error = _('SMIMEA record must have at least 4 fields: usage, selector, matching-type, and certificate data');
+            $error = new ErrorMessage(_('SMIMEA record must have at least 4 fields: usage, selector, matching-type, and certificate data'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2269,7 +2269,7 @@ class Dns
 
         // Validate usage (0-255)
         if (!is_numeric($usage) || $usage < 0 || $usage > 255 || $usage != (int)$usage) {
-            $error = _('SMIMEA usage must be an integer between 0 and 255');
+            $error = new ErrorMessage(_('SMIMEA usage must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2279,7 +2279,7 @@ class Dns
 
         // Validate selector (0-255)
         if (!is_numeric($selector) || $selector < 0 || $selector > 255 || $selector != (int)$selector) {
-            $error = _('SMIMEA selector must be an integer between 0 and 255');
+            $error = new ErrorMessage(_('SMIMEA selector must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2289,7 +2289,7 @@ class Dns
 
         // Validate matching type (0-255)
         if (!is_numeric($matchingType) || $matchingType < 0 || $matchingType > 255 || $matchingType != (int)$matchingType) {
-            $error = _('SMIMEA matching type must be an integer between 0 and 255');
+            $error = new ErrorMessage(_('SMIMEA matching type must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2299,7 +2299,7 @@ class Dns
 
         // Validate certificate data (must be hexadecimal)
         if (empty($certData)) {
-            $error = _('SMIMEA certificate data is required');
+            $error = new ErrorMessage(_('SMIMEA certificate data is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2308,7 +2308,7 @@ class Dns
         }
 
         if (!ctype_xdigit($certData)) {
-            $error = _('SMIMEA certificate data must be a valid hexadecimal string');
+            $error = new ErrorMessage(_('SMIMEA certificate data must be a valid hexadecimal string'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2318,7 +2318,7 @@ class Dns
 
         // Validate minimum certificate data length (at least 1 byte = 2 hex chars)
         if (strlen($certData) < 2) {
-            $error = _('SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)');
+            $error = new ErrorMessage(_('SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2328,7 +2328,7 @@ class Dns
 
         // Validate certificate data length must be even (each byte = 2 hex chars)
         if (strlen($certData) % 2 !== 0) {
-            $error = _('SMIMEA certificate data must have an even number of hexadecimal characters');
+            $error = new ErrorMessage(_('SMIMEA certificate data must have an even number of hexadecimal characters'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2365,7 +2365,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('TKEY record content is required');
+            $error = new ErrorMessage(_('TKEY record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2378,7 +2378,7 @@ class Dns
         // Minimum 6 fields: algorithm, inception, expiration, mode, error, keysize
         // Plus optionally: keydata (if keysize > 0), othersize, otherdata (if othersize > 0)
         if (count($fields) < 6) {
-            $error = _('TKEY record must have at least 6 fields: algorithm, inception, expiration, mode, error, and keysize');
+            $error = new ErrorMessage(_('TKEY record must have at least 6 fields: algorithm, inception, expiration, mode, error, and keysize'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2395,7 +2395,7 @@ class Dns
 
         // Validate algorithm (domain name format)
         if (empty($algorithm) || !preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $algorithm)) {
-            $error = _('TKEY algorithm must be a valid domain name');
+            $error = new ErrorMessage(_('TKEY algorithm must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2405,7 +2405,7 @@ class Dns
 
         // Validate inception (32-bit unsigned integer)
         if (!is_numeric($inception) || $inception < 0 || $inception > 4294967295 || $inception != (int)$inception) {
-            $error = _('TKEY inception must be a 32-bit unsigned integer (0-4294967295)');
+            $error = new ErrorMessage(_('TKEY inception must be a 32-bit unsigned integer (0-4294967295)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2415,7 +2415,7 @@ class Dns
 
         // Validate expiration (32-bit unsigned integer)
         if (!is_numeric($expiration) || $expiration < 0 || $expiration > 4294967295 || $expiration != (int)$expiration) {
-            $error = _('TKEY expiration must be a 32-bit unsigned integer (0-4294967295)');
+            $error = new ErrorMessage(_('TKEY expiration must be a 32-bit unsigned integer (0-4294967295)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2425,7 +2425,7 @@ class Dns
 
         // Validate mode (16-bit unsigned integer)
         if (!is_numeric($mode) || $mode < 0 || $mode > 65535 || $mode != (int)$mode) {
-            $error = _('TKEY mode must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TKEY mode must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2435,7 +2435,7 @@ class Dns
 
         // Validate error code (16-bit unsigned integer)
         if (!is_numeric($error_code) || $error_code < 0 || $error_code > 65535 || $error_code != (int)$error_code) {
-            $error = _('TKEY error must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TKEY error must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2445,7 +2445,7 @@ class Dns
 
         // Validate keysize (16-bit unsigned integer)
         if (!is_numeric($keysize) || $keysize < 0 || $keysize > 65535 || $keysize != (int)$keysize) {
-            $error = _('TKEY keysize must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TKEY keysize must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2459,7 +2459,7 @@ class Dns
         // If keysize > 0, expect keydata
         if ($keysize_int > 0) {
             if (!isset($fields[$current_field])) {
-                $error = _('TKEY keydata is required when keysize > 0');
+                $error = new ErrorMessage(_('TKEY keydata is required when keysize > 0'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -2471,7 +2471,7 @@ class Dns
 
             // Validate keydata is Base64
             if (base64_decode($keydata, true) === false) {
-                $error = _('TKEY keydata must be valid Base64-encoded data');
+                $error = new ErrorMessage(_('TKEY keydata must be valid Base64-encoded data'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -2484,7 +2484,7 @@ class Dns
 
         // Expect othersize field
         if (!isset($fields[$current_field])) {
-            $error = _('TKEY othersize field is required');
+            $error = new ErrorMessage(_('TKEY othersize field is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2496,7 +2496,7 @@ class Dns
 
         // Validate othersize (16-bit unsigned integer)
         if (!is_numeric($othersize) || $othersize < 0 || $othersize > 65535 || $othersize != (int)$othersize) {
-            $error = _('TKEY othersize must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TKEY othersize must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2510,7 +2510,7 @@ class Dns
         // If othersize > 0, expect otherdata
         if ($othersize_int > 0) {
             if (!isset($fields[$current_field])) {
-                $error = _('TKEY otherdata is required when othersize > 0');
+                $error = new ErrorMessage(_('TKEY otherdata is required when othersize > 0'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -2522,7 +2522,7 @@ class Dns
 
             // Validate otherdata is Base64
             if (base64_decode($otherdata, true) === false) {
-                $error = _('TKEY otherdata must be valid Base64-encoded data');
+                $error = new ErrorMessage(_('TKEY otherdata must be valid Base64-encoded data'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -2554,7 +2554,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('URI record content is required');
+            $error = new ErrorMessage(_('URI record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2565,7 +2565,7 @@ class Dns
         // URI format: <priority> <weight> "<target>"
         // The target must be in quotes
         if (!preg_match('/^(\d+)\s+(\d+)\s+"(.+)"$/', $content, $matches)) {
-            $error = _('URI record must have format: <priority> <weight> "<target>" (target must be in quotes)');
+            $error = new ErrorMessage(_('URI record must have format: <priority> <weight> "<target>" (target must be in quotes)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2579,7 +2579,7 @@ class Dns
 
         // Validate priority (16-bit unsigned integer)
         if (!is_numeric($priority) || $priority < 0 || $priority > 65535 || $priority != (int)$priority) {
-            $error = _('URI priority must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('URI priority must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2589,7 +2589,7 @@ class Dns
 
         // Validate weight (16-bit unsigned integer)
         if (!is_numeric($weight) || $weight < 0 || $weight > 65535 || $weight != (int)$weight) {
-            $error = _('URI weight must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('URI weight must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2599,7 +2599,7 @@ class Dns
 
         // Validate target (must not be empty and should be a valid URI)
         if (empty($target)) {
-            $error = _('URI target cannot be empty');
+            $error = new ErrorMessage(_('URI target cannot be empty'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2609,7 +2609,7 @@ class Dns
 
         // Basic URI validation - must contain scheme and colon
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:/', $target)) {
-            $error = sprintf(_('URI target must be a valid URI with a scheme (e.g., %s, %s, %s)'), 'http://', 'ftp://', 'mailto:');
+            $error = new ErrorMessage(sprintf(_('URI target must be a valid URI with a scheme (e.g., %s, %s, %s)'), 'http://', 'ftp://', 'mailto:'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2658,7 +2658,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('SSHFP record content is required');
+            $error = new ErrorMessage(_('SSHFP record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2669,7 +2669,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 3) {
-            $error = _('SSHFP record must have 3 fields: algorithm, fptype, and fingerprint');
+            $error = new ErrorMessage(_('SSHFP record must have 3 fields: algorithm, fptype, and fingerprint'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2683,7 +2683,7 @@ class Dns
 
         // Validate algorithm (8-bit integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('SSHFP algorithm must be an 8-bit integer (0-255)');
+            $error = new ErrorMessage(_('SSHFP algorithm must be an 8-bit integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2693,7 +2693,7 @@ class Dns
 
         // Validate fptype (8-bit integer)
         if (!is_numeric($fptype) || $fptype < 0 || $fptype > 255 || $fptype != (int)$fptype) {
-            $error = _('SSHFP fingerprint type must be an 8-bit integer (0-255)');
+            $error = new ErrorMessage(_('SSHFP fingerprint type must be an 8-bit integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2703,7 +2703,7 @@ class Dns
 
         // Validate fingerprint (hexadecimal)
         if (empty($fingerprint)) {
-            $error = _('SSHFP fingerprint is required');
+            $error = new ErrorMessage(_('SSHFP fingerprint is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2712,7 +2712,7 @@ class Dns
         }
 
         if (!ctype_xdigit($fingerprint)) {
-            $error = _('SSHFP fingerprint must be a valid hexadecimal string');
+            $error = new ErrorMessage(_('SSHFP fingerprint must be a valid hexadecimal string'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2722,7 +2722,7 @@ class Dns
 
         // Validate fingerprint length is even (each byte = 2 hex chars)
         if (strlen($fingerprint) % 2 !== 0) {
-            $error = _('SSHFP fingerprint must have an even number of hexadecimal characters');
+            $error = new ErrorMessage(_('SSHFP fingerprint must have an even number of hexadecimal characters'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2748,7 +2748,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('NAPTR record content is required');
+            $error = new ErrorMessage(_('NAPTR record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2758,7 +2758,7 @@ class Dns
 
         // NAPTR format: <order> <preference> "<flags>" "<services>" "<regexp>" <replacement>
         if (!preg_match('/^(\d+)\s+(\d+)\s+"([^"]*)"\s+"([^"]*)"\s+"([^"]*)"\s+(.+)$/', $content, $matches)) {
-            $error = _('NAPTR record must have format: <order> <preference> "<flags>" "<services>" "<regexp>" <replacement>');
+            $error = new ErrorMessage(_('NAPTR record must have format: <order> <preference> "<flags>" "<services>" "<regexp>" <replacement>'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2775,7 +2775,7 @@ class Dns
 
         // Validate order (16-bit unsigned integer)
         if (!is_numeric($order) || $order < 0 || $order > 65535 || $order != (int)$order) {
-            $error = _('NAPTR order must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('NAPTR order must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2785,7 +2785,7 @@ class Dns
 
         // Validate preference (16-bit unsigned integer)
         if (!is_numeric($preference) || $preference < 0 || $preference > 65535 || $preference != (int)$preference) {
-            $error = _('NAPTR preference must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('NAPTR preference must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2796,7 +2796,7 @@ class Dns
         // Validate replacement (domain name or ".")
         // Allow underscores for service names like _http._tcp.example.com
         if ($replacement !== '.' && !preg_match('/^[a-zA-Z0-9_]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $replacement)) {
-            $error = _('NAPTR replacement must be a valid domain name or "."');
+            $error = new ErrorMessage(_('NAPTR replacement must be a valid domain name or "."'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2822,7 +2822,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('RP record content is required');
+            $error = new ErrorMessage(_('RP record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2833,7 +2833,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 2) {
-            $error = _('RP record must have 2 fields: mbox-dname and txt-dname');
+            $error = new ErrorMessage(_('RP record must have 2 fields: mbox-dname and txt-dname'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2846,7 +2846,7 @@ class Dns
 
         // Validate mbox-dname (mailbox domain name)
         if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $mbox)) {
-            $error = _('RP mbox-dname must be a valid domain name');
+            $error = new ErrorMessage(_('RP mbox-dname must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2856,7 +2856,7 @@ class Dns
 
         // Validate txt-dname (domain name pointing to TXT record)
         if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $txt)) {
-            $error = _('RP txt-dname must be a valid domain name');
+            $error = new ErrorMessage(_('RP txt-dname must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2882,7 +2882,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('DNSKEY record content is required');
+            $error = new ErrorMessage(_('DNSKEY record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2893,7 +2893,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 4) {
-            $error = _('DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and public key');
+            $error = new ErrorMessage(_('DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and public key'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2908,7 +2908,7 @@ class Dns
 
         // Validate flags (16-bit unsigned integer)
         if (!is_numeric($flags) || $flags < 0 || $flags > 65535 || $flags != (int)$flags) {
-            $error = _('DNSKEY flags must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('DNSKEY flags must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2918,7 +2918,7 @@ class Dns
 
         // Validate protocol (8-bit unsigned integer, must be 3)
         if (!is_numeric($protocol) || $protocol != 3) {
-            $error = _('DNSKEY protocol must be 3');
+            $error = new ErrorMessage(_('DNSKEY protocol must be 3'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2928,7 +2928,7 @@ class Dns
 
         // Validate algorithm (8-bit unsigned integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('DNSKEY algorithm must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('DNSKEY algorithm must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2938,7 +2938,7 @@ class Dns
 
         // Validate public key (Base64)
         if (empty($publicKey)) {
-            $error = _('DNSKEY public key is required');
+            $error = new ErrorMessage(_('DNSKEY public key is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2947,7 +2947,7 @@ class Dns
         }
 
         if (base64_decode($publicKey, true) === false) {
-            $error = _('DNSKEY public key must be valid Base64-encoded data');
+            $error = new ErrorMessage(_('DNSKEY public key must be valid Base64-encoded data'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2973,7 +2973,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('NSEC record content is required');
+            $error = new ErrorMessage(_('NSEC record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2984,7 +2984,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 2) {
-            $error = _('NSEC record must have at least 2 fields: next domain name and type list');
+            $error = new ErrorMessage(_('NSEC record must have at least 2 fields: next domain name and type list'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -2996,7 +2996,7 @@ class Dns
 
         // Validate next domain name (allow underscores for service names)
         if (!preg_match('/^[a-zA-Z0-9_]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $nextDomain)) {
-            $error = _('NSEC next domain must be a valid domain name');
+            $error = new ErrorMessage(_('NSEC next domain must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3009,7 +3009,7 @@ class Dns
         for ($i = 1; $i < count($fields); $i++) {
             $type = $fields[$i];
             if (!preg_match('/^[A-Z0-9]+$/', $type)) {
-                $error = _('NSEC type list must contain valid DNS record type names');
+                $error = new ErrorMessage(_('NSEC type list must contain valid DNS record type names'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3036,7 +3036,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('NSEC3 record content is required');
+            $error = new ErrorMessage(_('NSEC3 record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3047,7 +3047,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 5) {
-            $error = _('NSEC3 record must have at least 5 fields: algorithm, flags, iterations, salt, and next hash');
+            $error = new ErrorMessage(_('NSEC3 record must have at least 5 fields: algorithm, flags, iterations, salt, and next hash'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3063,7 +3063,7 @@ class Dns
 
         // Validate algorithm (8-bit unsigned integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('NSEC3 algorithm must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('NSEC3 algorithm must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3073,7 +3073,7 @@ class Dns
 
         // Validate flags (8-bit unsigned integer)
         if (!is_numeric($flags) || $flags < 0 || $flags > 255 || $flags != (int)$flags) {
-            $error = _('NSEC3 flags must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('NSEC3 flags must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3083,7 +3083,7 @@ class Dns
 
         // Validate iterations (16-bit unsigned integer)
         if (!is_numeric($iterations) || $iterations < 0 || $iterations > 65535 || $iterations != (int)$iterations) {
-            $error = _('NSEC3 iterations must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('NSEC3 iterations must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3093,7 +3093,7 @@ class Dns
 
         // Validate salt (hex or "-" for no salt)
         if ($salt !== '-' && !ctype_xdigit($salt)) {
-            $error = _('NSEC3 salt must be hexadecimal or "-" for no salt');
+            $error = new ErrorMessage(_('NSEC3 salt must be hexadecimal or "-" for no salt'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3103,7 +3103,7 @@ class Dns
 
         // Validate next hash (Base32hex encoded - RFC 4648)
         if (!preg_match('/^[0-9A-Va-v]+$/', $nextHash)) {
-            $error = _('NSEC3 next hash must be Base32hex-encoded (0-9, A-V)');
+            $error = new ErrorMessage(_('NSEC3 next hash must be Base32hex-encoded (0-9, A-V)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3116,7 +3116,7 @@ class Dns
             $typeList = array_slice($fields, 5);
             foreach ($typeList as $type) {
                 if ($type !== strtoupper($type)) {
-                    $error = _('NSEC3 type list must contain uppercase type names');
+                    $error = new ErrorMessage(_('NSEC3 type list must contain uppercase type names'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3144,7 +3144,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('NSEC3PARAM record content is required');
+            $error = new ErrorMessage(_('NSEC3PARAM record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3155,7 +3155,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 4) {
-            $error = _('NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt');
+            $error = new ErrorMessage(_('NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3170,7 +3170,7 @@ class Dns
 
         // Validate algorithm (8-bit unsigned integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3180,7 +3180,7 @@ class Dns
 
         // Validate flags (8-bit unsigned integer)
         if (!is_numeric($flags) || $flags < 0 || $flags > 255 || $flags != (int)$flags) {
-            $error = _('NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3190,7 +3190,7 @@ class Dns
 
         // Validate iterations (16-bit unsigned integer)
         if (!is_numeric($iterations) || $iterations < 0 || $iterations > 65535 || $iterations != (int)$iterations) {
-            $error = _('NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3200,7 +3200,7 @@ class Dns
 
         // Validate salt (hex or "-" for no salt)
         if ($salt !== '-' && !ctype_xdigit($salt)) {
-            $error = _('NSEC3PARAM salt must be hexadecimal or "-" for no salt');
+            $error = new ErrorMessage(_('NSEC3PARAM salt must be hexadecimal or "-" for no salt'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3244,7 +3244,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('TSIG record content is required');
+            $error = new ErrorMessage(_('TSIG record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3256,7 +3256,7 @@ class Dns
 
         // Minimum 8 fields required (other-data is optional if other-len is 0)
         if (count($fields) < 8) {
-            $error = _('TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-size, mac, original-id, error, and other-len');
+            $error = new ErrorMessage(_('TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-size, mac, original-id, error, and other-len'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3275,7 +3275,7 @@ class Dns
 
         // Validate algorithm (domain name format)
         if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-_.]*[a-zA-Z0-9])?\.?$/', $algorithm)) {
-            $error = _('TSIG algorithm must be a valid domain name');
+            $error = new ErrorMessage(_('TSIG algorithm must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3285,7 +3285,7 @@ class Dns
 
         // Validate time-signed (48-bit timestamp - can be large)
         if (!is_numeric($timeSigned) || $timeSigned < 0) {
-            $error = _('TSIG time-signed must be a non-negative integer');
+            $error = new ErrorMessage(_('TSIG time-signed must be a non-negative integer'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3295,7 +3295,7 @@ class Dns
 
         // Validate fudge (16-bit unsigned integer)
         if (!is_numeric($fudge) || $fudge < 0 || $fudge > 65535 || $fudge != (int)$fudge) {
-            $error = _('TSIG fudge must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TSIG fudge must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3305,7 +3305,7 @@ class Dns
 
         // Validate mac-size (16-bit unsigned integer)
         if (!is_numeric($macSize) || $macSize < 0 || $macSize > 65535 || $macSize != (int)$macSize) {
-            $error = _('TSIG mac-size must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TSIG mac-size must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3315,7 +3315,7 @@ class Dns
 
         // Validate MAC (Base64)
         if ((int)$macSize > 0 && base64_decode($mac, true) === false) {
-            $error = _('TSIG MAC must be valid Base64-encoded data');
+            $error = new ErrorMessage(_('TSIG MAC must be valid Base64-encoded data'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3325,7 +3325,7 @@ class Dns
 
         // Validate original-id (16-bit unsigned integer)
         if (!is_numeric($originalId) || $originalId < 0 || $originalId > 65535 || $originalId != (int)$originalId) {
-            $error = _('TSIG original-id must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TSIG original-id must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3335,7 +3335,7 @@ class Dns
 
         // Validate error (16-bit unsigned integer)
         if (!is_numeric($error_code) || $error_code < 0 || $error_code > 65535 || $error_code != (int)$error_code) {
-            $error = _('TSIG error must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TSIG error must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3345,7 +3345,7 @@ class Dns
 
         // Validate other-len (16-bit unsigned integer)
         if (!is_numeric($otherLen) || $otherLen < 0 || $otherLen > 65535 || $otherLen != (int)$otherLen) {
-            $error = _('TSIG other-len must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('TSIG other-len must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3356,7 +3356,7 @@ class Dns
         // If other-len > 0, validate other-data (Base64)
         if ((int)$otherLen > 0) {
             if (!isset($fields[8])) {
-                $error = _('TSIG other-data is required when other-len > 0');
+                $error = new ErrorMessage(_('TSIG other-data is required when other-len > 0'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3366,7 +3366,7 @@ class Dns
 
             $otherData = $fields[8];
             if (base64_decode($otherData, true) === false) {
-                $error = _('TSIG other-data must be valid Base64-encoded data');
+                $error = new ErrorMessage(_('TSIG other-data must be valid Base64-encoded data'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3392,7 +3392,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('EUI48 record content is required');
+            $error = new ErrorMessage(_('EUI48 record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3402,7 +3402,7 @@ class Dns
 
         // EUI48 format: 6 octets separated by dashes (e.g., 00-11-22-33-44-55)
         if (!preg_match('/^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/', $content)) {
-            $error = _('EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)');
+            $error = new ErrorMessage(_('EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3427,7 +3427,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('EUI64 record content is required');
+            $error = new ErrorMessage(_('EUI64 record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3437,7 +3437,7 @@ class Dns
 
         // EUI64 format: 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)
         if (!preg_match('/^([0-9A-Fa-f]{2}-){7}[0-9A-Fa-f]{2}$/', $content)) {
-            $error = _('EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)');
+            $error = new ErrorMessage(_('EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3462,7 +3462,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('NID record content is required');
+            $error = new ErrorMessage(_('NID record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3473,7 +3473,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) != 2) {
-            $error = _('NID record must have 2 fields: preference and node-id');
+            $error = new ErrorMessage(_('NID record must have 2 fields: preference and node-id'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3486,7 +3486,7 @@ class Dns
 
         // Validate preference (16-bit unsigned integer)
         if (!is_numeric($preference) || $preference < 0 || $preference > 65535 || $preference != (int)$preference) {
-            $error = _('NID preference must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('NID preference must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3496,7 +3496,7 @@ class Dns
 
         // Validate node-id (64-bit in format XXXX:XXXX:XXXX:XXXX)
         if (!preg_match('/^([0-9A-Fa-f]{4}:){3}[0-9A-Fa-f]{4}$/', $nodeId)) {
-            $error = _('NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)');
+            $error = new ErrorMessage(_('NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3521,7 +3521,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('KX record content is required');
+            $error = new ErrorMessage(_('KX record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3532,7 +3532,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) != 2) {
-            $error = _('KX record must have 2 fields: preference and exchanger');
+            $error = new ErrorMessage(_('KX record must have 2 fields: preference and exchanger'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3545,7 +3545,7 @@ class Dns
 
         // Validate preference (16-bit unsigned integer)
         if (!is_numeric($preference) || $preference < 0 || $preference > 65535 || $preference != (int)$preference) {
-            $error = _('KX preference must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('KX preference must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3556,7 +3556,7 @@ class Dns
         // Validate exchanger (domain name)
         // Each label must start with alphanumeric, end with alphanumeric, and can contain hyphens in the middle
         if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $exchanger)) {
-            $error = _('KX exchanger must be a valid domain name');
+            $error = new ErrorMessage(_('KX exchanger must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3581,7 +3581,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('IPSECKEY record content is required');
+            $error = new ErrorMessage(_('IPSECKEY record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3592,7 +3592,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 3) {
-            $error = _('IPSECKEY record must have at least 3 fields: precedence, gateway-type, and algorithm');
+            $error = new ErrorMessage(_('IPSECKEY record must have at least 3 fields: precedence, gateway-type, and algorithm'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3606,7 +3606,7 @@ class Dns
 
         // Validate precedence (8-bit unsigned integer)
         if (!is_numeric($precedence) || $precedence < 0 || $precedence > 255 || $precedence != (int)$precedence) {
-            $error = _('IPSECKEY precedence must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('IPSECKEY precedence must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3616,7 +3616,7 @@ class Dns
 
         // Validate gateway-type (8-bit unsigned integer, 0-3)
         if (!is_numeric($gatewayType) || $gatewayType < 0 || $gatewayType > 3 || $gatewayType != (int)$gatewayType) {
-            $error = _('IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)');
+            $error = new ErrorMessage(_('IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3626,7 +3626,7 @@ class Dns
 
         // Validate algorithm (8-bit unsigned integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3643,7 +3643,7 @@ class Dns
                 // Has public key - validate Base64
                 $publicKey = $fields[3];
                 if (!preg_match('/^[A-Za-z0-9+\/]+=*$/', $publicKey)) {
-                    $error = _('IPSECKEY public key must be Base64-encoded');
+                    $error = new ErrorMessage(_('IPSECKEY public key must be Base64-encoded'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3654,7 +3654,7 @@ class Dns
         } elseif ($gatewayTypeInt == 1) {
             // IPv4 gateway
             if (count($fields) < 4) {
-                $error = _('IPSECKEY with gateway-type 1 requires an IPv4 address');
+                $error = new ErrorMessage(_('IPSECKEY with gateway-type 1 requires an IPv4 address'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3663,7 +3663,7 @@ class Dns
             }
             $gateway = $fields[3];
             if (!filter_var($gateway, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                $error = _('IPSECKEY gateway must be a valid IPv4 address');
+                $error = new ErrorMessage(_('IPSECKEY gateway must be a valid IPv4 address'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3674,7 +3674,7 @@ class Dns
             if (count($fields) > 4) {
                 $publicKey = $fields[4];
                 if (!preg_match('/^[A-Za-z0-9+\/]+=*$/', $publicKey)) {
-                    $error = _('IPSECKEY public key must be Base64-encoded');
+                    $error = new ErrorMessage(_('IPSECKEY public key must be Base64-encoded'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3685,7 +3685,7 @@ class Dns
         } elseif ($gatewayTypeInt == 2) {
             // IPv6 gateway
             if (count($fields) < 4) {
-                $error = _('IPSECKEY with gateway-type 2 requires an IPv6 address');
+                $error = new ErrorMessage(_('IPSECKEY with gateway-type 2 requires an IPv6 address'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3694,7 +3694,7 @@ class Dns
             }
             $gateway = $fields[3];
             if (!filter_var($gateway, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                $error = _('IPSECKEY gateway must be a valid IPv6 address');
+                $error = new ErrorMessage(_('IPSECKEY gateway must be a valid IPv6 address'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3705,7 +3705,7 @@ class Dns
             if (count($fields) > 4) {
                 $publicKey = $fields[4];
                 if (!preg_match('/^[A-Za-z0-9+\/]+=*$/', $publicKey)) {
-                    $error = _('IPSECKEY public key must be Base64-encoded');
+                    $error = new ErrorMessage(_('IPSECKEY public key must be Base64-encoded'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3716,7 +3716,7 @@ class Dns
         } elseif ($gatewayTypeInt == 3) {
             // Domain gateway
             if (count($fields) < 4) {
-                $error = _('IPSECKEY with gateway-type 3 requires a domain name');
+                $error = new ErrorMessage(_('IPSECKEY with gateway-type 3 requires a domain name'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3726,7 +3726,7 @@ class Dns
             $gateway = $fields[3];
             // Each label must start with alphanumeric, end with alphanumeric, and can contain hyphens in the middle
             if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $gateway)) {
-                $error = _('IPSECKEY gateway must be a valid domain name');
+                $error = new ErrorMessage(_('IPSECKEY gateway must be a valid domain name'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3737,7 +3737,7 @@ class Dns
             if (count($fields) > 4) {
                 $publicKey = $fields[4];
                 if (!preg_match('/^[A-Za-z0-9+\/]+=*$/', $publicKey)) {
-                    $error = _('IPSECKEY public key must be Base64-encoded');
+                    $error = new ErrorMessage(_('IPSECKEY public key must be Base64-encoded'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3809,7 +3809,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('MINFO record content is required');
+            $error = new ErrorMessage(_('MINFO record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3820,7 +3820,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) != 2) {
-            $error = _('MINFO record must have 2 fields: rmailbx and emailbx');
+            $error = new ErrorMessage(_('MINFO record must have 2 fields: rmailbx and emailbx'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3833,7 +3833,7 @@ class Dns
 
         // Validate rmailbx (responsible mailbox - domain name)
         if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $rmailbx)) {
-            $error = _('MINFO rmailbx must be a valid domain name');
+            $error = new ErrorMessage(_('MINFO rmailbx must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3843,7 +3843,7 @@ class Dns
 
         // Validate emailbx (error mailbox - domain name)
         if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $emailbx)) {
-            $error = _('MINFO emailbx must be a valid domain name');
+            $error = new ErrorMessage(_('MINFO emailbx must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3868,7 +3868,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('MR record content is required');
+            $error = new ErrorMessage(_('MR record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3878,7 +3878,7 @@ class Dns
 
         // Validate newname (domain name)
         if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $content)) {
-            $error = _('MR newname must be a valid domain name');
+            $error = new ErrorMessage(_('MR newname must be a valid domain name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3903,7 +3903,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('WKS record content is required');
+            $error = new ErrorMessage(_('WKS record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3914,7 +3914,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 3) {
-            $error = _('WKS record must have at least 3 fields: address, protocol, and services');
+            $error = new ErrorMessage(_('WKS record must have at least 3 fields: address, protocol, and services'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3927,7 +3927,7 @@ class Dns
 
         // Validate address (IPv4)
         if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $error = _('WKS address must be a valid IPv4 address');
+            $error = new ErrorMessage(_('WKS address must be a valid IPv4 address'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -3938,7 +3938,7 @@ class Dns
         // Validate protocol (8-bit unsigned integer or protocol name)
         if (is_numeric($protocol)) {
             if ($protocol < 0 || $protocol > 255 || $protocol != (int)$protocol) {
-                $error = _('WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name');
+                $error = new ErrorMessage(_('WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3948,7 +3948,7 @@ class Dns
         } else {
             // Protocol name (e.g., "tcp", "udp")
             if (!preg_match('/^[a-zA-Z][a-zA-Z0-9]*$/', $protocol)) {
-                $error = _('WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name');
+                $error = new ErrorMessage(_('WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -3962,7 +3962,7 @@ class Dns
             $service = $fields[$i];
             if (is_numeric($service)) {
                 if ($service < 0 || $service > 65535 || $service != (int)$service) {
-                    $error = _('WKS service must be a 16-bit port number (0-65535) or service name');
+                    $error = new ErrorMessage(_('WKS service must be a 16-bit port number (0-65535) or service name'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3972,7 +3972,7 @@ class Dns
             } else {
                 // Service name (e.g., "http", "smtp")
                 if (!preg_match('/^[a-zA-Z][a-zA-Z0-9\-]*$/', $service)) {
-                    $error = _('WKS service must be a 16-bit port number (0-65535) or service name');
+                    $error = new ErrorMessage(_('WKS service must be a 16-bit port number (0-65535) or service name'));
                     if ($answer) {
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
@@ -3999,7 +3999,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('A6 record content is required');
+            $error = new ErrorMessage(_('A6 record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4012,7 +4012,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 2) {
-            $error = _('A6 record must have at least 2 fields: prefix-length and address-suffix or prefix-name');
+            $error = new ErrorMessage(_('A6 record must have at least 2 fields: prefix-length and address-suffix or prefix-name'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4024,7 +4024,7 @@ class Dns
 
         // Validate prefix length (0-128)
         if (!is_numeric($prefixLength) || $prefixLength < 0 || $prefixLength > 128 || $prefixLength != (int)$prefixLength) {
-            $error = _('A6 prefix length must be an integer (0-128)');
+            $error = new ErrorMessage(_('A6 prefix length must be an integer (0-128)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4049,7 +4049,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('CSYNC record content is required');
+            $error = new ErrorMessage(_('CSYNC record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4060,7 +4060,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) < 3) {
-            $error = _('CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list');
+            $error = new ErrorMessage(_('CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4073,7 +4073,7 @@ class Dns
 
         // Validate SOA serial (32-bit unsigned integer)
         if (!is_numeric($serial) || $serial < 0 || $serial > 4294967295 || $serial != (int)$serial) {
-            $error = _('CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)');
+            $error = new ErrorMessage(_('CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4083,7 +4083,7 @@ class Dns
 
         // Validate flags (16-bit unsigned integer)
         if (!is_numeric($flags) || $flags < 0 || $flags > 65535 || $flags != (int)$flags) {
-            $error = _('CSYNC flags must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('CSYNC flags must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4095,7 +4095,7 @@ class Dns
         for ($i = 2; $i < count($fields); $i++) {
             $type = $fields[$i];
             if ($type !== strtoupper($type)) {
-                $error = _('CSYNC type list must contain uppercase type names');
+                $error = new ErrorMessage(_('CSYNC type list must contain uppercase type names'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -4121,7 +4121,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('ZONEMD record content is required');
+            $error = new ErrorMessage(_('ZONEMD record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4132,7 +4132,7 @@ class Dns
         $fields = preg_split('/\s+/', $content);
 
         if (count($fields) != 4) {
-            $error = _('ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest');
+            $error = new ErrorMessage(_('ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4147,7 +4147,7 @@ class Dns
 
         // Validate serial (32-bit unsigned integer)
         if (!is_numeric($serial) || $serial < 0 || $serial > 4294967295 || $serial != (int)$serial) {
-            $error = _('ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)');
+            $error = new ErrorMessage(_('ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4157,7 +4157,7 @@ class Dns
 
         // Validate scheme (8-bit unsigned integer)
         if (!is_numeric($scheme) || $scheme < 0 || $scheme > 255 || $scheme != (int)$scheme) {
-            $error = _('ZONEMD scheme must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('ZONEMD scheme must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4167,7 +4167,7 @@ class Dns
 
         // Validate algorithm (8-bit unsigned integer)
         if (!is_numeric($algorithm) || $algorithm < 0 || $algorithm > 255 || $algorithm != (int)$algorithm) {
-            $error = _('ZONEMD algorithm must be an 8-bit unsigned integer (0-255)');
+            $error = new ErrorMessage(_('ZONEMD algorithm must be an 8-bit unsigned integer (0-255)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4177,7 +4177,7 @@ class Dns
 
         // Validate digest (hex string)
         if (!ctype_xdigit($digest)) {
-            $error = _('ZONEMD digest must be hexadecimal');
+            $error = new ErrorMessage(_('ZONEMD digest must be hexadecimal'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4217,7 +4217,7 @@ class Dns
         $content = trim($content);
 
         if (empty($content)) {
-            $error = _('SVCB record content is required');
+            $error = new ErrorMessage(_('SVCB record content is required'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4228,7 +4228,7 @@ class Dns
         $fields = preg_split('/\s+/', $content, 2);
 
         if (count($fields) < 2) {
-            $error = _('SVCB record must have at least 2 fields: priority and target');
+            $error = new ErrorMessage(_('SVCB record must have at least 2 fields: priority and target'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4241,7 +4241,7 @@ class Dns
 
         // Validate priority (16-bit unsigned integer)
         if (!is_numeric($priority) || $priority < 0 || $priority > 65535 || $priority != (int)$priority) {
-            $error = _('SVCB priority must be a 16-bit unsigned integer (0-65535)');
+            $error = new ErrorMessage(_('SVCB priority must be a 16-bit unsigned integer (0-65535)'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -4252,7 +4252,7 @@ class Dns
         // Validate target (domain name or ".")
         if ($target !== '.') {
             if (!preg_match('/^([a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9_]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.?$/', $target)) {
-                $error = _('SVCB target must be a valid domain name or "."');
+                $error = new ErrorMessage(_('SVCB target must be a valid domain name or "."'));
                 if ($answer) {
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
