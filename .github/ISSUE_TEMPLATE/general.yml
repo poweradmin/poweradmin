@@ -3,8 +3,6 @@ description: For questions, discussions, or issues that don't fit other categori
 title: ""
 labels: ["question"]
 projects: ["poweradmin/1"]
-assignees:
-  - edmondas
 body:
   - type: markdown
     attributes:
