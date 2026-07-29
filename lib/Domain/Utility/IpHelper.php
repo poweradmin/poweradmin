@@ -110,7 +110,14 @@ class IpHelper
             return null;
         }
 
-        return inet_ntop(inet_pton($ipv6));
+        $packed = inet_pton($ipv6);
+        if ($packed === false) {
+            return null;
+        }
+
+        $normalized = inet_ntop($packed);
+
+        return $normalized === false ? null : $normalized;
     }
 
     /**
@@ -345,7 +352,9 @@ class IpHelper
             return null;
         }
 
-        return inet_ntop($binary);
+        $shortened = inet_ntop($binary);
+
+        return $shortened === false ? null : $shortened;
     }
 
     /**

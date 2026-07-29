@@ -265,6 +265,8 @@ class RdapService
 
     public function formatRdapResponse(array $response): string
     {
-        return json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $json = json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return $json === false ? '' : $json;
     }
 }

@@ -52,8 +52,8 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private PDO $db;
 
     // SOA-specific parameters
-    private string $dns_hostmaster;
-    private string $zone;
+    private ?string $dns_hostmaster = null;
+    private ?string $zone = null;
 
     public function __construct(ConfigurationManager $config, PDO $db)
     {

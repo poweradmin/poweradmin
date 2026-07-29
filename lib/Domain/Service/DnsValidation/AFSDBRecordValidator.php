@@ -126,10 +126,6 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        if (count($errors) > 0) {
-            return ValidationResult::errors($errors);
-        }
-
         // Return success with data and any warnings
         $result = [
             'content' => $content,

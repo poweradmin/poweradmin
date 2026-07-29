@@ -69,7 +69,6 @@ class NSRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        $errors = [];
 
         // Validate content (nameserver hostname)
         $contentResult = $this->hostnameValidator->validate($content, false);
@@ -101,10 +100,6 @@ class NSRecordValidator implements DnsRecordValidatorInterface
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
-
-        if (count($errors) > 0) {
-            return ValidationResult::errors($errors);
-        }
 
         return ValidationResult::success([
             'content' => $content,

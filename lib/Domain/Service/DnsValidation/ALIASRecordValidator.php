@@ -78,7 +78,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        $errors = [];
         $warnings = [];
 
         // 1. Validate ALIAS hostname
@@ -122,10 +121,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
-
-        if (count($errors) > 0) {
-            return ValidationResult::errors($errors);
-        }
 
         $result = [
             'content' => $content,
