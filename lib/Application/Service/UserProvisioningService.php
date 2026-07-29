@@ -1121,23 +1121,16 @@ class UserProvisioningService extends LoggingService
     }
 
     /**
-     * True when a mapping key equals a group value exactly, or equals the first
-     * RDN value of a DN-shaped group (e.g. 'dns-admins' matches
-     * 'cn=dns-admins,ou=groups,dc=example,dc=com').
+     * True when a mapping key equals a group value exactly.
+     *
+     * Matching only the first RDN of a DN would discard the OU and DC that
+     * distinguish two identically named groups, so a directory user able to
+     * create a group in their own OU could satisfy a mapping meant for another.
+     * DN-shaped groups must therefore be configured as the full DN.
      */
     private function groupMatches(string $configKey, array $groups): bool
     {
-        if (in_array($configKey, $groups, true)) {
-            return true;
-        }
-
-        foreach ($groups as $group) {
-            if (preg_match('/^[a-z0-9-]+=([^,]+)/i', (string)$group, $matches) && $matches[1] === $configKey) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($configKey, $groups, true);
     }
 
     /**

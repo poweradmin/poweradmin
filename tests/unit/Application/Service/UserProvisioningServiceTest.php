@@ -442,17 +442,30 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertEquals(UserProvisioningService::AUTH_METHOD_LDAP, $result, 'Should detect LDAP from LdapUserInfo');
     }
 
-    public function testGroupMatchesExactValueAndFirstRdn(): void
+    public function testGroupMatchesRequiresTheWholeValue(): void
     {
         $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
         $groups = ['cn=dns-admins,ou=groups,dc=example,dc=com', 'plain-group'];
 
         $this->assertTrue($groupMatches('plain-group', $groups), 'Exact value matches');
         $this->assertTrue($groupMatches('cn=dns-admins,ou=groups,dc=example,dc=com', $groups), 'Full DN matches');
-        $this->assertTrue($groupMatches('dns-admins', $groups), 'First RDN value of a DN matches');
+        $this->assertFalse($groupMatches('dns-admins', $groups), 'A bare RDN value must not match a DN');
         $this->assertFalse($groupMatches('ou=groups', $groups), 'Later RDNs do not match');
         $this->assertFalse($groupMatches('dns-operators', $groups));
         $this->assertFalse($groupMatches('dns-admins', []), 'No groups, no match');
+    }
+
+    public function testGroupMatchesRejectsLookalikeDnInAnotherContainer(): void
+    {
+        // A directory user who can create groups in their own OU must not be able to
+        // satisfy a mapping written for the same name in a different container.
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+        $configuredDn = 'cn=dns-admins,ou=groups,dc=example,dc=com';
+
+        $this->assertFalse(
+            $groupMatches($configuredDn, ['cn=dns-admins,ou=lab,dc=example,dc=com']),
+            'Same CN in a different OU must not match'
+        );
     }
 
     /**
