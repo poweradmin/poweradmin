@@ -24,8 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use ReflectionClass;
+use RuntimeException;
 
 class SamlConfigurationService extends LoggingService
 {
@@ -91,13 +91,24 @@ class SamlConfigurationService extends LoggingService
 
         // Provide defaults for required fields
         $defaults = [
-            'entity_id' => $this->generateDefaultEntityId(),
-            'assertion_consumer_service_url' => $this->generateDefaultAcsUrl(),
-            'single_logout_service_url' => $this->generateDefaultSloUrl(),
             'name_id_format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
             'x509cert' => '',
             'private_key' => '',
         ];
+
+        // Derived only where the operator gave no URL: deriving needs
+        // interface.application_url, which an explicit sp config does not require.
+        $derived = [
+            'entity_id' => fn(): string => $this->generateDefaultEntityId(),
+            'assertion_consumer_service_url' => fn(): string => $this->generateDefaultAcsUrl(),
+            'single_logout_service_url' => fn(): string => $this->generateDefaultSloUrl(),
+        ];
+
+        foreach ($derived as $key => $generate) {
+            if (!array_key_exists($key, $spConfig)) {
+                $defaults[$key] = $generate();
+            }
+        }
 
         return array_merge($defaults, $spConfig);
     }
@@ -122,9 +133,6 @@ class SamlConfigurationService extends LoggingService
 
     private function getBaseUrl(): string
     {
-        // Prefer application_url so the SAML SP metadata advertised to the IdP
-        // (entityID, ACS, SLO) cannot be poisoned via the Host header. Matches
-        // OidcService::getCallbackUrl().
         $configuredUrl = $this->configManager->get('interface', 'application_url', '');
         if (!empty($configuredUrl)) {
             return rtrim($configuredUrl, '/');
@@ -137,16 +145,11 @@ class SamlConfigurationService extends LoggingService
             return rtrim($configuredBaseUrl, '/');
         }
 
-        $this->logWarning(
-            'SAML: deriving SP base URL from SERVER_NAME because interface.application_url is unset. Set application_url to keep the advertised entityID/ACS URLs stable.'
+        // The entityID/ACS/SLO advertised to the IdP are never derived from the request:
+        // SERVER_NAME follows the client Host header under FrankenPHP and Apache defaults.
+        throw new RuntimeException(
+            'interface.application_url must be configured before SAML can be used: it defines the entityID and ACS URL advertised to the identity provider.'
         );
-
-        $protocolDetector = new ProtocolDetector();
-        $scheme = $protocolDetector->detect();
-        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
-        $prefix = $this->configManager->get('interface', 'base_url_prefix', '');
-
-        return $scheme . '://' . $host . $prefix;
     }
 
     private function processUrlTemplates(array $config): array

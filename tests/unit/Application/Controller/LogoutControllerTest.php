@@ -40,7 +40,7 @@ class LogoutControllerTest extends TestCase
         return $method->invoke($controller, $logoutUrl);
     }
 
-    private function buildOidcLogoutUrl(array $providerConfig, string $returnUrl, ?string $idToken): string
+    private function buildOidcLogoutUrl(array $providerConfig, ?string $returnUrl, ?string $idToken): string
     {
         $reflection = new ReflectionClass(LogoutController::class);
         $controller = $reflection->newInstanceWithoutConstructor();
@@ -160,5 +160,30 @@ class LogoutControllerTest extends TestCase
         );
 
         $this->assertStringContainsString('?foo=bar&post_logout_redirect_uri=', $url);
+    }
+
+    public function testLogoutUrlOmitsRedirectWhenReturnUrlIsNull(): void
+    {
+        // Null when interface.application_url is unset: the request-derived host
+        // must never reach the IdP as a post-logout redirect target
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            null,
+            'the-id-token'
+        );
+
+        $this->assertStringNotContainsString('post_logout_redirect_uri', $url);
+        $this->assertSame('https://idp.example.com/logout?id_token_hint=the-id-token', $url);
+    }
+
+    public function testLogoutUrlStaysUnchangedWhenNoParametersApply(): void
+    {
+        $url = $this->buildOidcLogoutUrl(
+            ['logout_url' => 'https://idp.example.com/logout', 'name' => 'simplesaml'],
+            null,
+            null
+        );
+
+        $this->assertSame('https://idp.example.com/logout', $url);
     }
 }

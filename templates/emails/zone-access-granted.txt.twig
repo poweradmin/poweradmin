@@ -15,8 +15,9 @@ Date: {{ grantedAt }}
 
 You can now view and edit DNS records for this zone.
 
-To manage the zone, visit:
+{% if zoneEditUrl %}To manage the zone, visit:
 {{ zoneEditUrl }}
+{% endif %}
 
 If you believe you received this notification in error, please contact your system administrator.
 {% endblock %}
