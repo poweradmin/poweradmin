@@ -61,6 +61,53 @@ class SamlConfigurationServiceTest extends TestCase
         $this->assertStringStartsWith('https://canonical.example/poweradmin/', $settings['sp']['assertionConsumerService']['url']);
     }
 
+    public function testGenerateOneLoginSettingsRefusesForgedHostWhenApplicationUrlIsUnset(): void
+    {
+        // SERVER_NAME follows the client Host header under FrankenPHP and Apache
+        // defaults, so it must never reach the entityID/ACS advertised to the IdP
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
+                ['saml', 'providers', [], [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                    ],
+                ]],
+                ['interface', 'application_url', '', ''],
+                ['interface', 'base_url', '', ''],
+            ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('interface.application_url must be configured');
+
+        $this->service->generateOneLoginSettings('azure');
+    }
+
+    public function testServiceProviderConfigKeepsExplicitUrlsWithoutApplicationUrl(): void
+    {
+        // Explicit sp URLs need no derivation, so they must not be forced to
+        // configure application_url just to read the SP config back
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], [
+                    'entity_id' => 'https://sp.example.com/saml/metadata',
+                    'assertion_consumer_service_url' => 'https://sp.example.com/saml/acs',
+                    'single_logout_service_url' => 'https://sp.example.com/saml/sls',
+                ]],
+                ['interface', 'application_url', '', ''],
+                ['interface', 'base_url', '', ''],
+            ]);
+
+        $config = $this->service->getServiceProviderConfig();
+
+        $this->assertSame('https://sp.example.com/saml/metadata', $config['entity_id']);
+        $this->assertSame('https://sp.example.com/saml/acs', $config['assertion_consumer_service_url']);
+    }
+
     public function testGetProviderConfigReturnsNullForMissingProvider(): void
     {
         $this->mockConfig->method('get')

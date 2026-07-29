@@ -45,7 +45,7 @@ class UrlService
      *
      * Priority order for base URL:
      * 1. Configured application_url (if set)
-     * 2. Auto-detected from HTTP_HOST and HTTPS headers
+     * 2. A localhost base built from the detected protocol and base path prefix
      *
      * @param string $path Relative path (e.g., '/zones/123/edit')
      * @return string Full absolute URL (e.g., 'https://example.com/poweradmin/zones/123/edit')
@@ -99,9 +99,10 @@ class UrlService
     }
 
     /**
-     * Build base URL from server variables
+     * Build base URL without a configured application_url
      *
-     * Auto-detects protocol, host, and base path prefix from server environment.
+     * Auto-detects protocol and base path prefix from the server environment; the host
+     * is fixed because no request-derived host can be trusted.
      *
      * @return string Base URL built from server variables
      */
@@ -126,78 +127,18 @@ class UrlService
     }
 
     /**
-     * Get host from server variables with validation
+     * Get the host used for auto-detected base URLs
      *
-     * Validates HTTP_HOST against configured application_url to prevent
-     * host header injection attacks that could lead to phishing emails.
+     * Only reached when interface.application_url is unset, and no request-derived host is
+     * trustworthy then, so a fixed host is returned.
      *
-     * @return string Host (e.g., 'example.com' or 'example.com:8080')
+     * @return string Host
      */
     private function getHost(): string
     {
-        $host = '';
-        $configuredHost = $this->config->get('interface', 'application_url', '');
-
-        // Only trust HTTP_HOST when application_url is set, because the mismatch check
-        // below then forces the configured host. Without it, fall back to SERVER_NAME.
-        if (!empty($configuredHost) && !empty($_SERVER['HTTP_HOST'])) {
-            $host = $_SERVER['HTTP_HOST'];
-        } elseif (!empty($_SERVER['SERVER_NAME'])) {
-            $host = $_SERVER['SERVER_NAME'];
-
-            // Add port if non-standard
-            $port = $_SERVER['SERVER_PORT'] ?? '80';
-            if (($port != '80' && $port != '443')) {
-                $host .= ':' . $port;
-            }
-        } else {
-            // Ultimate fallback
-            return 'localhost';
-        }
-
-        // Validate host against configured application_url to prevent host header injection
-        $configuredUrl = $this->config->get('interface', 'application_url', '');
-        if (!empty($configuredUrl)) {
-            $expectedHost = $this->extractHostFromUrl($configuredUrl);
-
-            // If configured URL exists, validate the detected host matches
-            if (!empty($expectedHost) && strcasecmp($host, $expectedHost) !== 0) {
-                // Log suspicious activity - possible host header injection attempt
-                error_log("UrlService: Host header mismatch - got '$host', expected '$expectedHost' from configuration. Using configured host for security.");
-                return $expectedHost;
-            }
-        }
-
-        return $host;
-    }
-
-    /**
-     * Extract host (with port if present) from a URL
-     *
-     * @param string $url Full URL
-     * @return string Host with port (e.g., 'example.com:8080') or empty string on failure
-     */
-    private function extractHostFromUrl(string $url): string
-    {
-        $parsedUrl = parse_url($url);
-        if (!$parsedUrl || !isset($parsedUrl['host'])) {
-            return '';
-        }
-
-        $host = $parsedUrl['host'];
-
-        // Add port if present and non-standard
-        if (isset($parsedUrl['port'])) {
-            $port = $parsedUrl['port'];
-            $scheme = $parsedUrl['scheme'] ?? 'http';
-
-            // Only add port if it's not the default for the scheme
-            if (($scheme === 'http' && $port != 80) || ($scheme === 'https' && $port != 443)) {
-                $host .= ':' . $port;
-            }
-        }
-
-        return $host;
+        // Neither HTTP_HOST nor SERVER_NAME may reach an emitted URL: SERVER_NAME follows
+        // the client Host header under FrankenPHP and Apache defaults.
+        return 'localhost';
     }
 
     /**
@@ -244,15 +185,13 @@ class UrlService
     }
 
     /**
-     * Get a zone edit URL
-     *
-     * Convenience method for building zone edit URL.
+     * Get a zone edit URL for use inside outbound emails
      *
      * @param int $zoneId Zone ID
-     * @return string Full URL to zone edit page
+     * @return string|null Full URL to zone edit page, or null if application_url is not configured
      */
-    public function getZoneEditUrl(int $zoneId): string
+    public function getZoneEditUrl(int $zoneId): ?string
     {
-        return $this->getAbsoluteUrl("/zones/$zoneId/edit");
+        return $this->getEmailUrl("/zones/$zoneId/edit");
     }
 }

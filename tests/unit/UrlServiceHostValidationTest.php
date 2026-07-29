@@ -108,11 +108,12 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertEquals('https://legitimate.com/login', $loginUrl);
     }
 
-    public function testAutoDetectionUsesServerNameNotHostHeaderWhenNoConfigurationExists(): void
+    public function testAutoDetectionIgnoresServerNameWhenNoConfigurationExists(): void
     {
-        // Without application_url, a forged Host must be ignored in favour of SERVER_NAME
+        // SERVER_NAME follows the client Host header under FrankenPHP and Apache
+        // defaults, so without application_url neither header may reach the output
         $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
-        $_SERVER['SERVER_NAME'] = 'autodetect.com';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
         $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
@@ -127,7 +128,7 @@ class UrlServiceHostValidationTest extends TestCase
 
         $url = $urlService->getAbsoluteUrl('/test');
 
-        $this->assertEquals('https://autodetect.com/test', $url);
+        $this->assertEquals('https://localhost/test', $url);
         $this->assertStringNotContainsString('evil.attacker.test', $url);
     }
 
@@ -149,10 +150,50 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertNull($urlService->getEmailUrl('/login'));
     }
 
-    public function testCaseInsensitiveHostComparison(): void
+    public function testZoneEditUrlRefusesWhenApplicationUrlEmpty(): void
     {
-        // Simulate host with different case
+        // Regression: the emailed zone-access link must not honour a forged Host
+        // header, and SERVER_NAME is forgeable on the shipped Docker image
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['SERVER_PORT'] = '443';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getZoneEditUrl(42));
+    }
+
+    public function testZoneEditUrlUsesApplicationUrlWhenConfigured(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => 'https://dns.legitimate.example',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $url = $urlService->getZoneEditUrl(42);
+
+        $this->assertEquals('https://dns.legitimate.example/zones/42/edit', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string)$url);
+    }
+
+    public function testConfiguredHostWinsRegardlessOfHostHeaderCase(): void
+    {
+        // A case-variant Host must not change the emitted URL either
         $_SERVER['HTTP_HOST'] = 'LEGITIMATE.COM';
+        $_SERVER['SERVER_NAME'] = 'EVIL.ATTACKER.TEST';
         $_SERVER['HTTPS'] = 'on';
 
         $config = $this->createMockConfig([
@@ -164,25 +205,22 @@ class UrlServiceHostValidationTest extends TestCase
 
         $urlService = new UrlService($config);
 
-        // Get URL
         $url = $urlService->getAbsoluteUrl('/test');
 
-        // Should accept uppercase host as legitimate
-        $this->assertStringContainsString('legitimate.com', strtolower($url));
+        $this->assertSame('https://legitimate.com/test', $url);
     }
 
     public function testCliContextDoesNotUseScriptName(): void
     {
         // Simulate CLI context (like PHPUnit, cron jobs, queue workers)
         $_SERVER['SCRIPT_NAME'] = 'bin/console';
-        $_SERVER['SERVER_NAME'] = 'example.com';
+        $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
-        // No configured application_url or base_url_prefix
         $config = $this->createMockConfig([
             'interface' => [
-                'application_url' => '',
+                'application_url' => 'https://example.com',
                 'base_url_prefix' => ''
             ]
         ]);
@@ -270,6 +308,55 @@ class UrlServiceHostValidationTest extends TestCase
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('https://', $url);
+    }
+
+    public function testGetEmailUrlIgnoresForgedHostWhenApplicationUrlConfigured(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => 'https://dns.legitimate.example',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getEmailUrl('/password/reset?token=abc');
+
+        $this->assertSame('https://dns.legitimate.example/password/reset?token=abc', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
+    }
+
+    public function testGetEmailUrlReturnsNullWhenApplicationUrlEmpty(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getEmailUrl('/password/reset?token=abc'));
+    }
+
+    public function testGetEmailUrlNormalizesSlashes(): void
+    {
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => 'https://dns.legitimate.example/',
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('/x'));
+        $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('x'));
     }
 
     public function testProtocolDetectionDefaultsToHttp(): void
