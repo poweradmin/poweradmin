@@ -84,33 +84,6 @@ class UrlService
     }
 
     /**
-     * Build an absolute URL for emails, falling back to SERVER_NAME when application_url is unset
-     *
-     * Suitable for non-secret-bearing emails (e.g., username recovery). HTTP_HOST is
-     * never consulted. SERVER_PORT is intentionally not appended - it's the backend
-     * port, not the public-facing one, so deployments on non-standard public ports
-     * must set interface.application_url to get correct links.
-     *
-     * @param string $path Relative path
-     * @return string|null Absolute URL, or null if neither application_url nor SERVER_NAME is available
-     */
-    public function getEmailUrlWithServerFallback(string $path): ?string
-    {
-        $configuredUrl = $this->config->get('interface', 'application_url', '');
-        if (!empty($configuredUrl)) {
-            return rtrim($configuredUrl, '/') . '/' . ltrim($path, '/');
-        }
-
-        $serverName = $_SERVER['SERVER_NAME'] ?? '';
-        if ($serverName === '') {
-            $this->logger->warning('UrlService: refusing to build email URL - interface.application_url and SERVER_NAME are both unset');
-            return null;
-        }
-
-        return $this->getProtocol() . '://' . $serverName . $this->getBasePath() . '/' . ltrim($path, '/');
-    }
-
-    /**
      * Get the base URL for the application
      *
      * Returns the full base URL including protocol, host, and base path prefix.

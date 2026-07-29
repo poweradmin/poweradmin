@@ -312,29 +312,12 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertNull($urlService->getEmailUrl('/password/reset?token=abc'));
     }
 
-    public function testGetEmailUrlWithServerFallbackPrefersApplicationUrl(): void
+    public function testLoginUrlForEmailIgnoresForgedHostAndServerName(): void
     {
+        // The username-recovery mail goes to the account owner, so a link built from
+        // request state would let an attacker phish a third party with a genuine mail.
         $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
-        $_SERVER['SERVER_NAME'] = 'server.example';
-        $_SERVER['HTTPS'] = 'on';
-
-        $config = $this->createMockConfig([
-            'interface' => ['application_url' => 'https://configured.example']
-        ]);
-
-        $urlService = new UrlService($config);
-
-        $this->assertSame(
-            'https://configured.example/login',
-            $urlService->getEmailUrlWithServerFallback('/login')
-        );
-    }
-
-    public function testGetEmailUrlWithServerFallbackUsesServerNameWhenApplicationUrlEmpty(): void
-    {
-        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
-        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
-        $_SERVER['SERVER_NAME'] = 'server.example';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
         $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
@@ -344,65 +327,24 @@ class UrlServiceHostValidationTest extends TestCase
 
         $urlService = new UrlService($config);
 
-        $url = $urlService->getEmailUrlWithServerFallback('/login');
-        $this->assertSame('https://server.example/login', $url);
-        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
+        $this->assertNull($urlService->getEmailUrl('/login'));
     }
 
-    public function testGetEmailUrlWithServerFallbackHonorsForwardedProtoForTlsTerminatingProxy(): void
+    public function testLoginUrlForEmailUsesApplicationUrlWhenConfigured(): void
     {
-        // Reverse proxy terminates TLS; PHP-FPM sees plain HTTP with X-Forwarded-Proto=https.
-        // Host is pinned to SERVER_NAME (server-config), so honoring the protocol header
-        // is safe and produces correct https links instead of broken http ones.
-        $_SERVER['SERVER_NAME'] = 'server.example';
-        $_SERVER['SERVER_PORT'] = '80';
-        unset($_SERVER['HTTPS']);
-        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
-
-        $config = $this->createMockConfig([
-            'interface' => ['application_url' => '', 'base_url_prefix' => '']
-        ]);
-
-        $urlService = new UrlService($config);
-
-        $this->assertSame(
-            'https://server.example/login',
-            $urlService->getEmailUrlWithServerFallback('/login')
-        );
-    }
-
-    public function testGetEmailUrlWithServerFallbackDropsBackendPort(): void
-    {
-        // SERVER_PORT is the backend port - omitting it avoids leaking internal ports
-        // into emails when the deployment is behind a reverse proxy.
-        $_SERVER['SERVER_NAME'] = 'server.example';
-        $_SERVER['SERVER_PORT'] = '8443';
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
         $_SERVER['HTTPS'] = 'on';
 
         $config = $this->createMockConfig([
-            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+            'interface' => ['application_url' => 'https://configured.example']
         ]);
 
         $urlService = new UrlService($config);
 
-        $this->assertSame(
-            'https://server.example/login',
-            $urlService->getEmailUrlWithServerFallback('/login')
-        );
-    }
-
-    public function testGetEmailUrlWithServerFallbackReturnsNullWhenBothEmpty(): void
-    {
-        $_SERVER['HTTP_HOST'] = 'attacker.test';
-        unset($_SERVER['SERVER_NAME']);
-
-        $config = $this->createMockConfig([
-            'interface' => ['application_url' => '']
-        ]);
-
-        $urlService = new UrlService($config);
-
-        $this->assertNull($urlService->getEmailUrlWithServerFallback('/login'));
+        $url = $urlService->getEmailUrl('/login');
+        $this->assertSame('https://configured.example/login', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
     }
 
     public function testGetEmailUrlNormalizesSlashes(): void
