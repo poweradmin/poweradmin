@@ -199,10 +199,9 @@ class MfaService
      */
     public function generateEmailVerificationCode(): string
     {
-        // Generate a simple numeric verification code (6 digits)
-        $numericCode = mt_rand(100000, 999999);
-        // Convert to string explicitly
-        return (string)$numericCode;
+        // A second factor must not come from a predictable generator: mt_rand()
+        // state is recoverable from codes an attacker mints on their own account.
+        return (string)random_int(100000, 999999);
     }
 
     /**

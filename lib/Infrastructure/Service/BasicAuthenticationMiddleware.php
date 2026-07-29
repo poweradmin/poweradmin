@@ -302,10 +302,12 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        // Search for the user
+        // Search for the user, escaping the username as the web login path does -
+        // usernames are not character-restricted, so they can carry filter syntax.
+        $escapedUsername = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
         $filter = $ldapSearchFilter
-            ? "(&($ldapUserAttribute=$username)$ldapSearchFilter)"
-            : "($ldapUserAttribute=$username)";
+            ? "(&($ldapUserAttribute=$escapedUsername)$ldapSearchFilter)"
+            : "($ldapUserAttribute=$escapedUsername)";
 
         $attributes = array($ldapUserAttribute, 'dn');
         $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);
