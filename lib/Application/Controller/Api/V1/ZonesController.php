@@ -631,6 +631,17 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('No valid fields provided for update', 400);
             }
 
+            // name/type/master are zone metadata, so they need the metadata permission
+            // the web edit form requires - content-edit rights are not enough.
+            if (!$this->permissionService->canEditZoneMeta($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to edit this zone\'s settings', 403);
+            }
+
+            // Converting a zone is equivalent to creating one of the target type.
+            if (isset($updates['type']) && !$this->permissionService->canCreateZone($userId, $updates['type'])) {
+                return $this->returnApiError('You do not have permission to change this zone to that type', 403);
+            }
+
             // Use the zone management service to update zone
             $result = $this->zoneManagementService->updateZone($zoneId, $updates);
 
