@@ -142,8 +142,8 @@ class InstallStepHandler
             'current_step' => $this->currentStep,
             'language' => $this->language,
             'errors' => $errors,
-            'charsets' => $charsets ?? [],
-            'collations' => $collations ?? [],
+            'charsets' => $charsets,
+            'collations' => $collations,
         ], $inputData));
     }
 

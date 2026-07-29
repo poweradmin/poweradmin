@@ -338,7 +338,7 @@ class DomainManager implements DomainManagerInterface
 
                             $dns_ttl = $this->config->get('dns', 'ttl');
 
-                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
+                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
                             if (!empty($templ_records)) {
                                 // Process the template records
                                 foreach ($templ_records as $r) {

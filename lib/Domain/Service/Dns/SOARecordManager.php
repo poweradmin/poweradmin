@@ -186,8 +186,8 @@ class SOARecordManager implements SOARecordManagerInterface
 
         $today = date('Ymd');
 
-        $revision = (int)substr($curr_serial, -2);
-        $ser_date = substr($curr_serial, 0, 8);
+        $revision = (int)substr((string)$curr_serial, -2);
+        $ser_date = substr((string)$curr_serial, 0, 8);
 
         if ($curr_serial == $today . '99') {
             return self::getNextDate($today) . '00';
@@ -214,7 +214,7 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         // Create new serial out of existing/updated date and revision
-        return $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+        return $today . str_pad((string)$revision, 2, "0", STR_PAD_LEFT);
     }
 
     /**
@@ -281,7 +281,7 @@ class SOARecordManager implements SOARecordManagerInterface
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {
-            return self::setSOASerial($soa_rec, $new_serial);
+            return self::setSOASerial($soa_rec, (string)$new_serial);
         }
 
         return self::setSOASerial($soa_rec, $curr_serial);
@@ -314,7 +314,7 @@ class SOARecordManager implements SOARecordManagerInterface
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {
-            $soa_rec = self::setSOASerial($soa_rec, $new_serial);
+            $soa_rec = self::setSOASerial($soa_rec, (string)$new_serial);
             return $this->updateSOARecord($domain_id, $soa_rec);
         }
 

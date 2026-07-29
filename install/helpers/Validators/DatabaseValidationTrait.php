@@ -160,8 +160,8 @@ trait DatabaseValidationTrait
         $port = (int)$port;
         if ($input['db_type'] != 'sqlite' && $port < DatabaseValidationConstants::MIN_PORT->value || $port > DatabaseValidationConstants::MAX_PORT->value) {
             $context->buildViolation('Port must be between {{ min }} and {{ max }}')
-                ->setParameter('{{ min }}', DatabaseValidationConstants::MIN_PORT->value)
-                ->setParameter('{{ max }}', DatabaseValidationConstants::MAX_PORT->value)
+                ->setParameter('{{ min }}', (string)DatabaseValidationConstants::MIN_PORT->value)
+                ->setParameter('{{ max }}', (string)DatabaseValidationConstants::MAX_PORT->value)
                 ->atPath('db_port')
                 ->addViolation();
         }

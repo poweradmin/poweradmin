@@ -80,7 +80,7 @@ class DeleteUserController extends BaseController
         }
 
         // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = $this->createPermissionService()->isAdmin($uid);
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin((int)$uid);
 
         if ($targetIsSuperuser && !$perm_is_godlike) {
             $this->showError(_('You do not have permission to delete a superuser account.'));
@@ -132,7 +132,7 @@ class DeleteUserController extends BaseController
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
-        if ($legacyUsers->deleteUser($uid, $zones)) {
+        if ($legacyUsers->deleteUser((int)$uid, $zones)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_user target_user:%s',
                 $this->ipAddressRetriever->getClientIp(),
@@ -180,7 +180,7 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = $this->createUserRepository()->getFullNameById($uid);
+        $name = $this->createUserRepository()->getFullNameById((int)$uid);
         if (!$name) {
             $name = UserEntity::getUserNameById($this->db, $uid);
         }

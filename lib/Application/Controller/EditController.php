@@ -1080,7 +1080,7 @@ class EditController extends BaseController
             $name,
             $type,
             $content,
-            $zone_id,
+            (int)$zone_id,
             $ttl,
             $prio,
             $comment,
@@ -1110,7 +1110,7 @@ class EditController extends BaseController
             $name,
             $type,
             $content,
-            $zone_id,
+            (int)$zone_id,
             $comment,
             $this->userContextService->getLoggedInUsername()
         );

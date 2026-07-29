@@ -74,7 +74,7 @@ class NSECRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content part of the record
      * @param string $name The name part of the record
      * @param mixed $prio The priority value (not used for NSEC records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or error messages

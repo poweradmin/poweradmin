@@ -255,7 +255,7 @@ class DeleteRecordController extends BaseController
 
         // Permission already validated with zone-aware check at top of method
 
-        $this->showQuestion($record_id, $zid, $domain_id);
+        $this->showQuestion((string)$record_id, $zid, $domain_id);
     }
 
     public function showQuestion(string $record_id, $zid, int $zone_id): void

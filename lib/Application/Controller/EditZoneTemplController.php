@@ -151,7 +151,7 @@ class EditZoneTemplController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -159,7 +159,7 @@ class EditZoneTemplController extends BaseController
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/templates/' . $id . '/edit?start={PageNumber}', $id);
+        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/templates/' . $id . '/edit?start={PageNumber}', (string)$id);
 
         return $presenter->present();
     }

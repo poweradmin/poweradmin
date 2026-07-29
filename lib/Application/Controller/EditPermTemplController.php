@@ -132,8 +132,8 @@ class EditPermTemplController extends BaseController
         $id = $this->getSafeRequestValue('id');
         $this->render('edit_perm_templ.html', [
             'id' => $id,
-            'templ' => $this->permissionTemplate->getPermissionTemplateDetails($id),
-            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId($id),
+            'templ' => $this->permissionTemplate->getPermissionTemplateDetails((int)$id),
+            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId((int)$id),
             'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
                 $this->permissionTemplate->getPermissionsByTemplateId(),
                 $this->permissionTemplateWriteService->callerMaySetSuperuser($this->callerId())

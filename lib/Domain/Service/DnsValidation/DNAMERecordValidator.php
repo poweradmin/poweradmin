@@ -66,7 +66,7 @@ class DNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the DNAME record (target domain)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for DNAME records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult Validation result with data or errors

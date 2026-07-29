@@ -335,7 +335,7 @@ class ListForwardZonesController extends BaseController
         return $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();

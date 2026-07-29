@@ -56,7 +56,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the HTTPS record (priority target [key=value...])
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for HTTPS records, priority is part of content)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult Validation result with data or errors

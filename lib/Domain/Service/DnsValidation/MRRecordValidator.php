@@ -77,7 +77,7 @@ class MRRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content part of the record (new mailbox name)
      * @param string $name The name part of the record (old mailbox name)
      * @param mixed $prio The priority value (not used for MR records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult Validation result with data or errors

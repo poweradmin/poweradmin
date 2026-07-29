@@ -101,9 +101,6 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 
         // Get the appropriate validator for this record type
         $validator = $this->validatorRegistry->getValidator($type);
-        if ($validator === null) {
-            return ValidationResult::failure(_('Unknown record type.'));
-        }
 
         // Perform common validation for all record types
         $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);

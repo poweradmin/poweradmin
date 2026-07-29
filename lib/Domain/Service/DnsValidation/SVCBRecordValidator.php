@@ -64,7 +64,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the SVCB record
      * @param string $name The name of the record
      * @param mixed $prio The priority value
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or error messages

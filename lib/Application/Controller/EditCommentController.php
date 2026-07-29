@@ -69,7 +69,7 @@ class EditCommentController extends BaseController
         }
         $zone_id = htmlspecialchars($zone_id);
 
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
+        $user_is_zone_owner = $this->isZoneOwner((int)$zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }
@@ -79,7 +79,7 @@ class EditCommentController extends BaseController
             return;
         }
 
-        $zone_type = $domainRepository->getDomainType($zone_id);
+        $zone_type = $domainRepository->getDomainType((int)$zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
         $is_admin = $this->hasPermission('user_is_ueberuser');
@@ -104,7 +104,7 @@ class EditCommentController extends BaseController
                 $messageService = new MessageService();
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
-                $this->createRecordManager()->editZoneComment($zone_id, $this->request->getPostParam('comment'));
+                $this->createRecordManager()->editZoneComment((int)$zone_id, $this->request->getPostParam('comment'));
 
                 $zoneIdInt = (int)$zone_id;
                 $auditService = new AuditService($this->db);
@@ -121,7 +121,7 @@ class EditCommentController extends BaseController
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
         $domainRepository = $this->createDomainRepository();
-        $zone_name = $domainRepository->getDomainNameById($zone_id);
+        $zone_name = $domainRepository->getDomainNameById((int)$zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -131,7 +131,7 @@ class EditCommentController extends BaseController
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => RecordManager::getZoneComment($this->db, $zone_id),
+            'comment' => RecordManager::getZoneComment($this->db, (int)$zone_id),
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

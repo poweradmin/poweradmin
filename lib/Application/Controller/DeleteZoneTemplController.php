@@ -65,7 +65,7 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate((int)$zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
         $perm_templ_edit = $this->hasPermission('zone_templ_edit');
 
@@ -91,7 +91,7 @@ class DeleteZoneTemplController extends BaseController
 
         if ($this->doValidateRequest($this->requestData)) {
             $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-            $this->zoneTemplate->deleteZoneTempl($zone_templ_id);
+            $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
 
             $auditService = new AuditService($this->db);
             $auditService->logZoneTemplateDelete((int)$zone_templ_id);
@@ -105,7 +105,7 @@ class DeleteZoneTemplController extends BaseController
     private function showDeleteZoneTempl(): void
     {
         $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
+        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, (int)$zone_templ_id);
 
         $this->render('delete_zone_templ.html', [
             'templ_name' => $templ_details['name'],
