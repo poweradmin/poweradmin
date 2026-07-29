@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\AppConfiguration;
@@ -158,7 +159,11 @@ class LdapAuthenticator extends LoggingService
             return;
         }
 
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        // Directory usernames are accent-sensitive, so a folding collation here would
+        // let a look-alike directory account resolve to another user's local row.
+        $driverName = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $match = DbCompat::accentSensitiveEquals(is_string($driverName) ? $driverName : null, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $_SESSION["userlogin"]
         ]);
