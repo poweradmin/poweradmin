@@ -108,10 +108,12 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertEquals('https://legitimate.com/login', $loginUrl);
     }
 
-    public function testAutoDetectionWhenNoConfigurationExists(): void
+    public function testAutoDetectionUsesServerNameNotHostHeaderWhenNoConfigurationExists(): void
     {
-        // Simulate environment without configured application_url
-        $_SERVER['HTTP_HOST'] = 'autodetect.com';
+        // Without application_url, a forged Host must be ignored in favour of SERVER_NAME
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'autodetect.com';
+        $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
         $config = $this->createMockConfig([
@@ -123,11 +125,28 @@ class UrlServiceHostValidationTest extends TestCase
 
         $urlService = new UrlService($config);
 
-        // Get absolute URL
         $url = $urlService->getAbsoluteUrl('/test');
 
-        // Auto-detection should work when no configuration exists
         $this->assertEquals('https://autodetect.com/test', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', $url);
+    }
+
+    public function testLoginUrlForEmailIgnoresForgedHostAndServerName(): void
+    {
+        // The username-recovery mail goes to the account owner, so a link built from
+        // request state would let an attacker phish a third party with a genuine mail.
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['SERVER_PORT'] = '443';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getEmailUrl('/login'));
     }
 
     public function testCaseInsensitiveHostComparison(): void
@@ -156,7 +175,8 @@ class UrlServiceHostValidationTest extends TestCase
     {
         // Simulate CLI context (like PHPUnit, cron jobs, queue workers)
         $_SERVER['SCRIPT_NAME'] = 'bin/console';
-        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['SERVER_NAME'] = 'example.com';
+        $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['HTTPS'] = 'on';
 
         // No configured application_url or base_url_prefix

@@ -59,6 +59,26 @@ class UrlService
     }
 
     /**
+     * Build an absolute URL for use inside outbound emails
+     *
+     * Only uses the configured interface.application_url. Request-time values are
+     * intentionally ignored: an emailed link goes to the account owner, so a forged
+     * host would point a third party at an attacker's site.
+     *
+     * @param string $path Relative path (e.g., '/login')
+     * @return string|null Full absolute URL, or null if application_url is not configured
+     */
+    public function getEmailUrl(string $path): ?string
+    {
+        $configuredUrl = $this->config->get('interface', 'application_url', '');
+        if (empty($configuredUrl)) {
+            return null;
+        }
+
+        return rtrim($configuredUrl, '/') . '/' . ltrim($path, '/');
+    }
+
+    /**
      * Get the base URL for the application
      *
      * Returns the full base URL including protocol, host, and base path prefix.
@@ -116,9 +136,11 @@ class UrlService
     private function getHost(): string
     {
         $host = '';
+        $configuredHost = $this->config->get('interface', 'application_url', '');
 
-        // Prefer HTTP_HOST as it includes port if non-standard
-        if (!empty($_SERVER['HTTP_HOST'])) {
+        // Only trust HTTP_HOST when application_url is set, because the mismatch check
+        // below then forces the configured host. Without it, fall back to SERVER_NAME.
+        if (!empty($configuredHost) && !empty($_SERVER['HTTP_HOST'])) {
             $host = $_SERVER['HTTP_HOST'];
         } elseif (!empty($_SERVER['SERVER_NAME'])) {
             $host = $_SERVER['SERVER_NAME'];

@@ -243,14 +243,24 @@ class UsernameRecoveryService
     }
 
     /**
-     * Get login page URL
+     * Get login page URL for use in the recovery email
      *
-     * @return string Full URL to login page
+     * Built strictly from interface.application_url. The mail goes to the account
+     * owner, so a link derived from the request would let an attacker point them
+     * at their own site. Without the setting the email carries no link.
+     *
+     * @return string|null Full URL to login page, or null if application_url is not configured
      */
-    private function getLoginUrl(): string
+    private function getLoginUrl(): ?string
     {
         $urlService = new UrlService($this->config);
-        return $urlService->getLoginUrl();
+        $loginUrl = $urlService->getEmailUrl('/login');
+
+        if ($loginUrl === null) {
+            $this->logger->warning('Username recovery email sent without a login link: interface.application_url is not configured');
+        }
+
+        return $loginUrl;
     }
 
     /**
