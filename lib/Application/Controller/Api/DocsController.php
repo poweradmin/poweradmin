@@ -97,8 +97,6 @@ class DocsController extends BaseController
     {
         $baseUrl = $this->getDocsBaseUrl();
 
-        // Support multiple API versions
-        $v1JsonUrl = $baseUrl . '/api/docs/v1/json';
         $v2JsonUrl = $baseUrl . '/api/docs/v2/json';
 
         return '<!DOCTYPE html>
@@ -121,76 +119,21 @@ class DocsController extends BaseController
             margin:0;
             background: #fafafa;
         }
-        .version-selector-wrapper {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            background: white;
-            padding: 12px 16px;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e1e1e1;
-        }
-        .version-selector-wrapper label {
-            margin-right: 8px;
-            font-weight: 600;
-            color: #3b4151;
-            font-size: 14px;
-        }
-        .version-selector {
-            padding: 6px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            background-color: #fff;
-            color: #3b4151;
-        }
-        .version-selector:hover {
-            border-color: #89bf04;
-        }
-        .version-selector:focus {
-            outline: none;
-            border-color: #89bf04;
-            box-shadow: 0 0 0 2px rgba(137, 191, 4, 0.1);
-        }
     </style>
 </head>
 <body>
-    <div class="version-selector-wrapper">
-        <label for="api-version">API Version:</label>
-        <select id="api-version" class="version-selector">
-            <option value="v1">V1 (Legacy)</option>
-            <option value="v2" selected>V2 (Latest)</option>
-        </select>
-    </div>
     <div id="swagger-ui"></div>
     <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
     <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
     <script>
-        // API version URLs
-        const apiUrls = {
-            v1: \'' . $v1JsonUrl . '\',
-            v2: \'' . $v2JsonUrl . '\'
-        };
-
-        // Get initial version from URL hash or default to v2
-        const urlParams = new URLSearchParams(window.location.search);
-        const initialVersion = urlParams.get(\'version\') || \'v2\';
-        document.getElementById(\'api-version\').value = initialVersion;
+        const specUrl = \'' . $v2JsonUrl . '\';
 
         let ui;
 
-        function loadSwaggerUI(version) {
-            // Update URL without reloading
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.set(\'version\', version);
-            window.history.pushState({}, \'\', newUrl);
-
+        function loadSwaggerUI() {
             // Build Swagger UI
             ui = SwaggerUIBundle({
-                url: apiUrls[version],
+                url: specUrl,
                 dom_id: \'#swagger-ui\',
                 deepLinking: true,
                 presets: [
@@ -216,14 +159,8 @@ class DocsController extends BaseController
             window.ui = ui;
         }
 
-        // Load initial version
         window.onload = function() {
-            loadSwaggerUI(initialVersion);
-
-            // Add version selector change handler
-            document.getElementById(\'api-version\').addEventListener(\'change\', function(e) {
-                loadSwaggerUI(e.target.value);
-            });
+            loadSwaggerUI();
 
             // Add custom CSS
             const style = document.createElement(\'style\');

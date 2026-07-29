@@ -78,8 +78,8 @@
   "scripts": {
     "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
     "docs": ["@phpdoc:install", "php .phpdoc/phpDocumentor.phar"],
-    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.json",
-    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.yaml --format yaml",
+    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.json",
+    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.yaml --format yaml",
     "docs:api": ["@docs:api:json", "@docs:api:yaml"],
 
     "tests": "phpunit --testsuite unit",

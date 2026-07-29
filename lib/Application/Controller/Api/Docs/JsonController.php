@@ -40,7 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class JsonController
  *
  * This controller serves the OpenAPI JSON specification generated from annotations.
- * Supports both V1 and V2 API versions.
  */
 class JsonController extends BaseController
 {
@@ -92,7 +91,7 @@ class JsonController extends BaseController
         try {
             // Generate OpenAPI specification from annotations
             // Current path: /lib/Application/Controller/Api/Docs/JsonController.php
-            // Target path: /lib/Application/Controller/Api/V1/ or V2/
+            // Target path: /lib/Application/Controller/Api/V2/
             $scanPath = dirname(dirname(__FILE__)) . '/' . $version;
 
             if (!is_dir($scanPath)) {
@@ -112,7 +111,7 @@ class JsonController extends BaseController
             }
 
             // Update version info in the spec
-            $decoded['info']['version'] = $version === 'V1' ? '1.0.0' : '2.0.0';
+            $decoded['info']['version'] = '2.0.0';
             $decoded['info']['title'] = 'Poweradmin API ' . $version;
 
             // Set response headers
