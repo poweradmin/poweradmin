@@ -1246,6 +1246,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ZoneCountService' => $baseDir . '/lib/Domain/Service/ZoneCountService.php',
     'Poweradmin\\Domain\\Service\\ZoneManagementService' => $baseDir . '/lib/Domain/Service/ZoneManagementService.php',
     'Poweradmin\\Domain\\Service\\ZoneSortingService' => $baseDir . '/lib/Domain/Service/ZoneSortingService.php',
+    'Poweradmin\\Domain\\Service\\ZoneTemplateRecordValidationService' => $baseDir . '/lib/Domain/Service/ZoneTemplateRecordValidationService.php',
     'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => $baseDir . '/lib/Domain/Service/ZoneTemplateSyncService.php',
     'Poweradmin\\Domain\\Service\\ZoneValidationService' => $baseDir . '/lib/Domain/Service/ZoneValidationService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',
