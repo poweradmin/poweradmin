@@ -1948,6 +1948,27 @@ test_users_crud() {
         else
             print_fail "Expected username 'api_crud_test_user', got '$username'"
         fi
+
+        # Test 3b: permission template is reported by ID and by name (#1330)
+        increment_test
+        local templ_id templ_name
+        templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ' 2>/dev/null)
+        templ_name=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ_name' 2>/dev/null)
+        if [[ "$templ_id" == "1" && -n "$templ_name" && "$templ_name" != "null" ]]; then
+            print_pass "User reports perm_templ $templ_id ($templ_name)"
+        else
+            print_fail "Expected perm_templ 1 with a name, got id '$templ_id' name '$templ_name'"
+        fi
+
+        # Test 3c: groups is present and empty for a user created without groups
+        increment_test
+        local group_count
+        group_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.user.groups | length' 2>/dev/null)
+        if [[ "$group_count" == "0" ]]; then
+            print_pass "User with no memberships reports an empty groups array"
+        else
+            print_fail "Expected 0 groups, got '$group_count'"
+        fi
     fi
 
     # Test 4: Update user
@@ -1988,6 +2009,101 @@ test_users_crud() {
 
     # Test 9: Delete non-existent user
     api_request_v2 "DELETE" "/users/999999" "" 404 "Delete non-existent user"
+
+    test_users_group_assignment
+}
+
+# Group assignment at user-creation time (#1330)
+test_users_group_assignment() {
+    local group_id group_name="Viewers"
+    group_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/groups" 2>/dev/null \
+        | jq -r --arg n "$group_name" '.data.groups[]? | select(.name == $n) | .id' 2>/dev/null)
+
+    if [[ -z "$group_id" || "$group_id" == "null" ]]; then
+        print_info "Skipping group-assignment tests: seeded group '$group_name' not found"
+        return
+    fi
+
+    # An ID and that same group's name in one list must collapse to a single membership
+    local create_data
+    create_data=$(jq -nc --argjson gid "$group_id" --arg gname "$group_name" '{
+        username: "api_groups_test_user",
+        password: "SecureTestPass1234",
+        fullname: "API Groups Test",
+        email: "api_groups_test@example.com",
+        perm_templ: 1,
+        active: true,
+        groups: [$gid, $gname]
+    }')
+
+    local grouped_user_id=""
+    if api_request_v2 "POST" "/users" "$create_data" 201 "Create user with groups by ID and name"; then
+        grouped_user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+        increment_test
+        local assigned
+        assigned=$(echo "$LAST_RESPONSE_BODY" | jq '.data.groups | length' 2>/dev/null)
+        if [[ "$assigned" == "1" ]]; then
+            print_pass "Duplicate ID and name collapsed into one membership"
+        else
+            print_fail "Expected 1 assigned group, got '$assigned'"
+        fi
+    fi
+
+    if [[ -n "$grouped_user_id" && "$grouped_user_id" != "null" ]]; then
+        api_request_v2 "GET" "/users/${grouped_user_id}" "" 200 "Get user created with groups"
+
+        increment_test
+        local read_back
+        read_back=$(echo "$LAST_RESPONSE_BODY" | jq -r --arg n "$group_name" \
+            '.data.user.groups[]? | select(.name == $n) | .name' 2>/dev/null)
+        if [[ "$read_back" == "$group_name" ]]; then
+            print_pass "Group membership visible on user read"
+        else
+            print_fail "Expected group '$group_name' on user read, got '$read_back'"
+        fi
+
+        api_request_v2 "DELETE" "/users/${grouped_user_id}" "" 200 "Delete grouped test user"
+    fi
+
+    # Unknown group name is rejected before the user row is written
+    local unknown_data
+    unknown_data=$(jq -nc '{
+        username: "api_groups_reject_user",
+        password: "SecureTestPass1234",
+        perm_templ: 1,
+        groups: ["no-such-group-1330"]
+    }')
+    api_request_v2 "POST" "/users" "$unknown_data" 400 "Create user with unknown group name (should fail)"
+
+    increment_test
+    local leaked
+    leaked=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null \
+        | jq -r '.data.users[]? | select(.username == "api_groups_reject_user") | .user_id' 2>/dev/null)
+    if [[ -z "$leaked" || "$leaked" == "null" ]]; then
+        print_pass "Rejected group reference left no user behind"
+    else
+        print_fail "User api_groups_reject_user was created despite a bad group reference"
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/users/$leaked" >/dev/null 2>&1 || true
+    fi
+
+    # Name matching is exact on every backend, including MySQL's case-insensitive collation
+    local case_data
+    case_data=$(jq -nc --arg gname "$(echo "$group_name" | tr '[:lower:]' '[:upper:]')" '{
+        username: "api_groups_case_user",
+        password: "SecureTestPass1234",
+        perm_templ: 1,
+        groups: [$gname]
+    }')
+    api_request_v2 "POST" "/users" "$case_data" 400 "Create user with wrong-case group name (should fail)"
+
+    # Non-integer, non-string entries are rejected
+    api_request_v2 "POST" "/users" \
+        '{"username":"api_groups_type_user","password":"SecureTestPass1234","perm_templ":1,"groups":[3.5]}' \
+        400 "Create user with a non-integer group entry (should fail)"
 }
 
 cleanup_existing_test_crud_user() {

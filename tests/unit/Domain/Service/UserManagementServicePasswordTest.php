@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -35,15 +36,18 @@ class UserManagementServicePasswordTest extends TestCase
 {
     private $userRepository;
     private $permissionService;
+    private $groupRepository;
     private UserManagementService $userManagementService;
 
     protected function setUp(): void
     {
         $this->userRepository = $this->createMock(DbUserRepository::class);
         $this->permissionService = $this->createMock(PermissionService::class);
+        $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
         $this->userManagementService = new UserManagementService(
             $this->userRepository,
-            $this->permissionService
+            $this->permissionService,
+            $this->groupRepository
         );
     }
 

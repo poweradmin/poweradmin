@@ -28,6 +28,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -38,6 +40,7 @@ class UserManagementServiceTest extends TestCase
     private UserManagementService $service;
     private UserRepository&MockObject $userRepository;
     private PermissionService&MockObject $permissionService;
+    private UserGroupRepositoryInterface&MockObject $groupRepository;
 
     protected function setUp(): void
     {
@@ -45,10 +48,12 @@ class UserManagementServiceTest extends TestCase
 
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->permissionService = $this->createMock(PermissionService::class);
+        $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
 
         $this->service = new UserManagementService(
             $this->userRepository,
-            $this->permissionService
+            $this->permissionService,
+            $this->groupRepository
         );
     }
 
@@ -76,6 +81,8 @@ class UserManagementServiceTest extends TestCase
             'email' => 'test@example.com',
             'description' => 'Test description',
             'active' => 1,
+            'perm_templ' => 2,
+            'perm_templ_name' => 'Zone Manager',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-02 00:00:00'
         ];
@@ -93,6 +100,10 @@ class UserManagementServiceTest extends TestCase
             ->with($userId)
             ->willReturn(false);
 
+        $this->groupRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn([new UserGroup(3, 'dns-operators', null, 7)]);
+
         $result = $this->service->getUserById($userId);
 
         $this->assertEquals($userId, $result['user_id']);
@@ -102,6 +113,27 @@ class UserManagementServiceTest extends TestCase
         $this->assertTrue($result['active']);
         $this->assertFalse($result['is_admin']);
         $this->assertEquals($permissions, $result['permissions']);
+        $this->assertSame(2, $result['perm_templ']);
+        $this->assertSame('Zone Manager', $result['perm_templ_name']);
+        $this->assertSame([['id' => 3, 'name' => 'dns-operators']], $result['groups']);
+    }
+
+    #[Test]
+    public function testGetUserByIdReturnsNullTemplateNameWhenTemplateIsMissing(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(1)
+            ->willReturn(['id' => 1, 'username' => 'orphan', 'active' => 1, 'perm_templ' => 99]);
+
+        $this->permissionService->method('getUserPermissions')->willReturn([]);
+        $this->permissionService->method('isAdmin')->willReturn(false);
+        $this->groupRepository->method('findByUserId')->willReturn([]);
+
+        $result = $this->service->getUserById(1);
+
+        $this->assertSame(99, $result['perm_templ']);
+        $this->assertNull($result['perm_templ_name']);
+        $this->assertSame([], $result['groups']);
     }
 
     // ========== getUsersList tests ==========
@@ -129,8 +161,8 @@ class UserManagementServiceTest extends TestCase
         $pagination = new Pagination(1, 10, 2);
 
         $users = [
-            ['id' => 1, 'username' => 'admin', 'fullname' => 'Admin', 'email' => 'admin@test.com', 'active' => 1, 'zone_count' => 5],
-            ['id' => 2, 'username' => 'user', 'fullname' => 'User', 'email' => 'user@test.com', 'active' => 1, 'zone_count' => 2]
+            ['id' => 1, 'username' => 'admin', 'fullname' => 'Admin', 'email' => 'admin@test.com', 'active' => 1, 'zone_count' => 5, 'perm_templ' => 1, 'perm_templ_name' => 'Administrator'],
+            ['id' => 2, 'username' => 'user', 'fullname' => 'User', 'email' => 'user@test.com', 'active' => 1, 'zone_count' => 2, 'perm_templ' => 4, 'perm_templ_name' => 'Viewer']
         ];
 
         $this->userRepository->method('getUsersList')->willReturn($users);
@@ -142,6 +174,12 @@ class UserManagementServiceTest extends TestCase
                 [2, false]
             ]);
 
+        // One batched call for the whole page, not one per user
+        $this->groupRepository->expects($this->once())
+            ->method('findByUserIds')
+            ->with([1, 2])
+            ->willReturn([1 => [new UserGroup(1, 'Administrators', null, 6)]]);
+
         $result = $this->service->getUsersList($pagination);
 
         $this->assertCount(2, $result['data']);
@@ -149,6 +187,10 @@ class UserManagementServiceTest extends TestCase
         $this->assertTrue($result['data'][0]['is_admin']);
         $this->assertFalse($result['data'][1]['is_admin']);
         $this->assertEquals(5, $result['data'][0]['zone_count']);
+        $this->assertSame(1, $result['data'][0]['perm_templ']);
+        $this->assertSame('Administrator', $result['data'][0]['perm_templ_name']);
+        $this->assertSame([['id' => 1, 'name' => 'Administrators']], $result['data'][0]['groups']);
+        $this->assertSame([], $result['data'][1]['groups']);
     }
 
     // ========== userExists tests ==========
@@ -233,7 +275,7 @@ class UserManagementServiceTest extends TestCase
     #[Test]
     public function testGetUserByUsernameReturnsEnrichedData(): void
     {
-        $userData = ['id' => 1, 'username' => 'testuser', 'fullname' => 'Test', 'email' => 'test@test.com', 'active' => 1];
+        $userData = ['id' => 1, 'username' => 'testuser', 'fullname' => 'Test', 'email' => 'test@test.com', 'active' => 1, 'perm_templ' => 3, 'perm_templ_name' => 'Editor'];
 
         $this->userRepository->method('getUserByUsername')
             ->with('testuser')
@@ -243,11 +285,18 @@ class UserManagementServiceTest extends TestCase
             ->with(1)
             ->willReturn(false);
 
+        $this->groupRepository->method('findByUserId')
+            ->with(1)
+            ->willReturn([new UserGroup(8, 'Editors', null, 8)]);
+
         $result = $this->service->getUserByUsername('testuser');
 
         $this->assertEquals(1, $result['user_id']);
         $this->assertEquals('testuser', $result['username']);
         $this->assertFalse($result['is_admin']);
+        $this->assertSame(3, $result['perm_templ']);
+        $this->assertSame('Editor', $result['perm_templ_name']);
+        $this->assertSame([['id' => 8, 'name' => 'Editors']], $result['groups']);
     }
 
     // ========== getUserByEmail tests ==========
@@ -276,10 +325,17 @@ class UserManagementServiceTest extends TestCase
             ->with(1)
             ->willReturn(true);
 
+        $this->groupRepository->method('findByUserId')
+            ->with(1)
+            ->willReturn([]);
+
         $result = $this->service->getUserByEmail('test@test.com');
 
         $this->assertEquals(1, $result['user_id']);
         $this->assertTrue($result['is_admin']);
+        $this->assertNull($result['perm_templ']);
+        $this->assertNull($result['perm_templ_name']);
+        $this->assertSame([], $result['groups']);
     }
 
     // ========== getUserForVerification tests ==========

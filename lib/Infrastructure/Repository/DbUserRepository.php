@@ -84,7 +84,15 @@ class DbUserRepository implements UserRepository
      */
     public function getUserById(int $userId): ?array
     {
-        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active, perm_templ, use_ldap, auth_method FROM users WHERE id = ?');
+        // The join is restricted to user-type templates so a row pointing at a group
+        // template reports a NULL name rather than that group template's name.
+        $stmt = $this->db->prepare('SELECT users.id, users.username, users.fullname, users.email,
+            users.description, users.active, users.perm_templ, users.use_ldap, users.auth_method,
+            perm_templ.name AS perm_templ_name
+            FROM users
+            LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                 AND perm_templ.template_type = \'user\'
+            WHERE users.id = ?');
         $stmt->execute([$userId]);
 
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -244,9 +252,12 @@ class DbUserRepository implements UserRepository
             users.description AS description,
             users.active AS active,
             users.perm_templ AS perm_templ,
-            COUNT(zones.owner) AS zone_count 
+            perm_templ.name AS perm_templ_name,
+            COUNT(zones.owner) AS zone_count
             FROM users
             LEFT JOIN zones ON users.id = zones.owner
+            LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                 AND perm_templ.template_type = 'user'
             GROUP BY
             users.id,
             users.username,
@@ -254,6 +265,7 @@ class DbUserRepository implements UserRepository
             users.email,
             users.description,
             users.perm_templ,
+            perm_templ.name,
             users.active
             ORDER BY users.id
             LIMIT :limit OFFSET :offset";
@@ -273,6 +285,7 @@ class DbUserRepository implements UserRepository
                 'description' => $row['description'],
                 'active' => $row['active'],
                 'perm_templ' => $row['perm_templ'],
+                'perm_templ_name' => $row['perm_templ_name'],
                 'zone_count' => $row['zone_count']
             ];
         }
@@ -721,7 +734,11 @@ class DbUserRepository implements UserRepository
 
     public function getUserByUsername(string $username): ?array
     {
-        $query = "SELECT * FROM users WHERE username = :username LIMIT 1";
+        $query = "SELECT users.*, perm_templ.name AS perm_templ_name
+                  FROM users
+                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                       AND perm_templ.template_type = 'user'
+                  WHERE users.username = :username LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':username' => $username]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -731,7 +748,11 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
-        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $query = "SELECT users.*, perm_templ.name AS perm_templ_name
+                  FROM users
+                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                       AND perm_templ.template_type = 'user'
+                  WHERE users.email = :email LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);

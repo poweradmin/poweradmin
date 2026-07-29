@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Model\Pagination;
 
@@ -35,14 +36,15 @@ use Poweradmin\Domain\Model\Pagination;
 class UserManagementService
 {
     private UserRepository $userRepository;
-    private PermissionService $permissionService;
+    private UserProfileAssembler $profileAssembler;
 
     public function __construct(
         UserRepository $userRepository,
-        PermissionService $permissionService
+        PermissionService $permissionService,
+        UserGroupRepositoryInterface $groupRepository
     ) {
         $this->userRepository = $userRepository;
-        $this->permissionService = $permissionService;
+        $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
     }
 
     /**
@@ -55,26 +57,7 @@ class UserManagementService
     {
         $user = $this->userRepository->getUserById($userId);
 
-        if (!$user) {
-            return null;
-        }
-
-        // Enrich user data with permissions and admin status
-        $permissions = $this->permissionService->getUserPermissions($userId);
-        $isAdmin = $this->permissionService->isAdmin($userId);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'is_admin' => $isAdmin,
-            'permissions' => $permissions,
-            'created_at' => $user['created_at'] ?? null,
-            'updated_at' => $user['updated_at'] ?? null
-        ];
+        return $user ? $this->profileAssembler->assembleDetail($user) : null;
     }
 
     /**
@@ -90,27 +73,9 @@ class UserManagementService
             $pagination->getLimit()
         );
 
-        $totalCount = $this->userRepository->getTotalUserCount();
-
-        // Enrich each user with admin status and zone count
-        $enrichedUsers = array_map(function ($user) {
-            $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-            return [
-                'user_id' => (int)$user['id'],
-                'username' => $user['username'],
-                'fullname' => $user['fullname'] ?? '',
-                'email' => $user['email'] ?? '',
-                'description' => $user['description'] ?? '',
-                'active' => (bool)$user['active'],
-                'zone_count' => (int)($user['zone_count'] ?? 0),
-                'is_admin' => $isAdmin
-            ];
-        }, $users);
-
         return [
-            'data' => $enrichedUsers,
-            'total_count' => $totalCount
+            'data' => $this->profileAssembler->assembleList($users),
+            'total_count' => $this->userRepository->getTotalUserCount()
         ];
     }
 
@@ -161,18 +126,7 @@ class UserManagementService
             return null;
         }
 
-        $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'zone_count' => 0, // Would need additional query to get exact count
-            'is_admin' => $isAdmin
-        ];
+        return $this->profileAssembler->assembleLookup($user);
     }
 
     /**
@@ -189,18 +143,7 @@ class UserManagementService
             return null;
         }
 
-        $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'zone_count' => 0, // Would need additional query to get exact count
-            'is_admin' => $isAdmin
-        ];
+        return $this->profileAssembler->assembleLookup($user);
     }
 
     /**
