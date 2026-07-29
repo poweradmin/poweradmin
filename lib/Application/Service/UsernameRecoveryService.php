@@ -245,16 +245,17 @@ class UsernameRecoveryService
     /**
      * Get login page URL for use in the recovery email
      *
-     * Prefers interface.application_url; falls back to SERVER_NAME (set by the
-     * web server config, not the request) so deployments without a configured
-     * URL still get a usable link. HTTP_HOST is never consulted.
+     * Built strictly from interface.application_url. SERVER_NAME reflects the
+     * client Host under FrankenPHP and Apache's default UseCanonicalName, so an
+     * attacker could otherwise put their own host in a mail sent to the account
+     * owner. Without the setting the email goes out with no link at all.
      *
-     * @return string|null Login URL, or null if neither application_url nor SERVER_NAME is available
+     * @return string|null Login URL, or null if application_url is not configured
      */
     private function getLoginUrl(): ?string
     {
         $urlService = new UrlService($this->config, $this->logger);
-        return $urlService->getEmailUrlWithServerFallback('/login');
+        return $urlService->getEmailUrl('/login');
     }
 
     /**
