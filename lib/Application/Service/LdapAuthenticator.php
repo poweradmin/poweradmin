@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -47,6 +48,7 @@ class LdapAuthenticator extends LoggingService
     private UserContextService $userContextService;
     private array $serverParams;
     private ?MfaService $mfaService = null;
+    private string $dbType = '';
 
     public function __construct(
         PDO $connection,
@@ -63,6 +65,7 @@ class LdapAuthenticator extends LoggingService
         parent::__construct($logger, $shortClassName);
 
         $this->db = $connection;
+        $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->configManager = $configManager;
         $this->ldapUserEventLogger = $ldapUserEventLogger;
         $this->authenticationService = $authService;
@@ -222,7 +225,8 @@ class LdapAuthenticator extends LoggingService
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
@@ -429,7 +433,8 @@ class LdapAuthenticator extends LoggingService
      */
     private function validateUserActiveStatus(string $username): bool
     {
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute(['username' => $username]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
