@@ -4121,57 +4121,45 @@ msgstr "RFC 9276 mengesyorkan penggunaan Opt-Out hanya untuk zon yang sangat bes
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr ""
-"Nilai bendera lebih dari 1 disimpan untuk penggunaan di masa depan. "
-"Pelaksanaan lampion tidak dapat menangani nilai ini dengan benar."
+msgstr "Nilai bendera yang lebih besar daripada 1 dikhaskan untuk kegunaan masa hadapan. Pelaksanaan semasa mungkin tidak mengendalikan nilai ini dengan betul."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
-msgstr "iterasi NSEC3PARAM harus antara 0 dan 2500."
+msgstr "Iterations NSEC3PARAM mestilah antara 0 dan 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:236
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr ""
-"Legane RFC 9276 menyarankan penggunaan 0 iterasi. Lelaran tambahan "
-"menambahkan biaya komputasi tanpa keselamatan pemeringkatan."
+msgstr "RFC 9276 mengesyorkan penggunaan 0 iterations. Iterations tambahan menambah kos pengiraan tanpa meningkatkan keselamatan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr ""
-"Nilai iterasi yang tinggi (>100) dapat menyebabkan penegasan menolak zona "
-"Anda. STRONGLY merekomendasikan menggunakan 0 iterasi."
+msgstr "Nilai iterations yang tinggi (>100) boleh menyebabkan penyelesai yang mengesahkan menolak zon anda. RFC 9276 SANGAT mengesyorkan penggunaan 0 iterations."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
 "Iteration values >10 create unnecessary computational load without security "
 "benefits. RFC 9276 recommends using 0 iterations."
-msgstr ""
-"Nilai iterasi leleance >10 membuat beban komputasi yang tidak perlu tanpa "
-"manfaat keselamatan. Legane RFC 9276 menyarankan penggunaan 0 iterasi."
+msgstr "Nilai iterations >10 mewujudkan beban pengiraan yang tidak perlu tanpa manfaat keselamatan. RFC 9276 mengesyorkan penggunaan 0 iterations."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "Garam NSEC3PARAM harus - (untuk kosong) atau nilai heksadesimal."
+msgstr "Salt NSEC3PARAM mestilah - (untuk kosong) atau nilai heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr ""
-"RFC 9276 menyarankan TIDAK menggunakan garam (ditandakan dengan \"-\") untuk "
-"memudahkan operasi tanpa mengurangi keselamatan."
+msgstr "RFC 9276 mengesyorkan supaya TIDAK menggunakan salt (ditandakan dengan \"-\") bagi memudahkan operasi tanpa mengurangkan keselamatan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
-msgstr ""
-"Garam - garam panjang tidak memberikan manfaat keselamatan tambahan. "
-"Sarankan penggunaan garam yang lebih pendek atau tanpa garam (-)."
+msgstr "Salt yang panjang tidak memberikan sebarang manfaat keselamatan tambahan. Pertimbangkan penggunaan salt yang lebih pendek atau tanpa salt (-)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
@@ -4185,94 +4173,73 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
-"Pencatatan LPN hanya boleh digunakan dengan Protokol Jaringan Identifier-"
-"Lokator (ILNP)."
+msgstr "Rekod LP hanya patut digunakan dengan Identifier-Locator Network Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr ""
-"Rekod LP viceno TIDAK hadir untuk node yang tidak ILNP-mampu (RFC 6742 "
-"Bagian 3.4)."
+msgstr "Rekod LP MESTI TIDAK hadir bagi nod yang tidak berkeupayaan ILNP (RFC 6742 Section 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr ""
-"PERINGATAN: FQDN dalam rekod LP TIDAK HARUS memiliki nilai yang sama dengan "
-"nama pemilik (RFC 6742)."
+msgstr "Amaran: FQDN dalam rekod LP SEPATUTNYA TIDAK mempunyai nilai yang sama dengan nama pemilik (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr ""
-"Merekomendasikan untuk mengakhiri nilai FQDN dengan titik berikut untuk "
-"memastikan mereka diperlakukan sebagai nama domain absolut daripada yang "
-"relatif."
+msgstr "Adalah disyorkan supaya nilai FQDN diakhiri dengan noktah mengekor bagi memastikan ia dianggap sebagai nama domain mutlak dan bukannya relatif."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr ""
-"mempertimbangkan penggunaan nilai TTL yang lebih panjang untuk rekod LP. "
-"Tidak seperti rekod L32/L64, rekod LP stabil dan menguntungkan dari waktu "
-"cache yang lebih lama (RFC 6742)."
+msgstr "Pertimbangkan penggunaan nilai TTL yang lebih panjang bagi rekod LP. Tidak seperti rekod L32/L64, rekod LP adalah stabil dan mendapat manfaat daripada masa cache yang lebih panjang (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr ""
-"Rekod LP harus mengandung preferensi dan FQDN yang dipisahkan oleh ruang."
+msgstr "Rekod LP mesti mengandungi preference dan FQDN yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
-msgstr "Preferensi langgoen harus berupa angka antara 0 dan 65535."
+msgstr "Preference LP mestilah nombor antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:169
 msgid "LP FQDN must be a valid fully qualified domain name."
-msgstr "LP FQDN haruslah nama domain yang memenuhi syarat yang sah."
+msgstr "FQDN LP mestilah nama domain layak sepenuhnya yang sah."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:82
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr ""
-"Rekod-rekod AFSDB telah usang oleh RFC 5864 mendukung rekod SRV untuk lokasi "
-"layanan AFS."
+msgstr "Rekod AFSDB telah ditamatkan oleh RFC 5864 dan digantikan dengan rekod SRV untuk lokasi perkhidmatan AFS."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
-msgstr "Nama host AFSDB tak valid."
+msgstr "Nama hos AFSDB tidak sah."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr ""
-"Nama host server AFSDB haruslah nama domain yang sepenuhnya memenuhi syarat "
-"(FQDN)."
+msgstr "Nama hos pelayan AFSDB mestilah nama domain layak sepenuhnya (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
-msgstr ""
-"Nama host server AFSDB harus merupakan nama domain yang sepenuhnya memenuhi "
-"syarat dengan setidaknya dua bagian."
+msgstr "Nama hos pelayan AFSDB mestilah nama domain layak sepenuhnya dengan sekurang-kurangnya dua bahagian."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:160
 msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
-msgstr ""
-"Subtipe AFSDB tak valid. Mestilah 1 (server basis data sel AAFS) atau 2 "
-"(server nama terotentikasi DCE)."
+msgstr "Subjenis AFSDB tidak sah. Mestilah 1 (pelayan pangkalan data sel AFS) atau 2 (pelayan nama disahkan DCE)."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
-msgstr "Lapangan keutamaan untuk rekod LOC harus 0 atau kosong."
+msgstr "Medan keutamaan bagi rekod LOC mestilah 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:118
 msgid ""
@@ -4286,70 +4253,59 @@ msgstr ""
 msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
-msgstr ""
-"Rekod LOC jarang digunakan tetapi dapat membantu pemetaan sumber daya secara "
-"geografis."
+msgstr "Rekod LOC jarang digunakan tetapi boleh membantu untuk pemetaan geografi sumber."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
 "Exact 90 degrees North latitude (the North Pole) detected. This is an "
 "extreme point and might indicate incorrect data entry."
-msgstr ""
-"Latitud utara 90 derajat ( Kutub Utara) diketahui. Ini adalah titik ekstrem "
-"dan mungkin menunjukkan entri data yang salah."
+msgstr "Latitud 90 darjah Utara tepat (Kutub Utara) dikesan. Ini ialah titik ekstrem dan mungkin menunjukkan kemasukan data yang salah."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:130
 msgid ""
 "Zero latitude detected (the Equator). If this is intentional, it is fine; "
 "otherwise, please verify your coordinates."
-msgstr ""
-"Latitud molid dideteksi (the Equator). Jika ini disengaja, itu baik-baik "
-"saja; jika tidak, sila periksa koordinat Anda."
+msgstr "Latitud sifar dikesan (Khatulistiwa). Jika ini disengajakan, ia tidak menjadi masalah; jika tidak, sila sahkan koordinat anda."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
 "Default precision values detected (1m size, 10000m horizontal precision, 10m "
 "vertical precision). Consider using more accurate values if you have them."
-msgstr ""
-"Nilai ketelitian baku pra-precision default terdeteksi (1m size, 10000m "
-"presisi horizontal, 10m presisi vertikal). Coba pertimbangkan menggunakan "
-"nilai - nilai yang lebih akurat jika Anda memilikinya."
+msgstr "Nilai ketepatan lalai dikesan (saiz 1m, ketepatan mendatar 10000m, ketepatan menegak 10m). Pertimbangkan penggunaan nilai yang lebih tepat jika anda memilikinya."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
-msgstr "derajat Latitude harus antara 0 dan 90."
+msgstr "Darjah latitud mestilah antara 0 dan 90."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:165
 msgid "Latitude direction must be specified as N or S."
-msgstr "Arah Latitude harus dinyatakan sebagai N atau S."
+msgstr "Arah latitud mesti dinyatakan sebagai N atau S."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:169
 msgid "Longitude direction must be specified as E or W."
-msgstr "Arah Longitude harus dinyatakan sebagai E atau W."
+msgstr "Arah longitud mesti dinyatakan sebagai E atau W."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:176
 msgid "Longitude degrees must be between 0 and 180."
-msgstr "Derajat Longitude harus berada di antara 0 dan 180."
+msgstr "Darjah longitud mestilah antara 0 dan 180."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:184
 msgid "Minutes must be between 0 and 59."
-msgstr "Minits harus antara 0 dan 59."
+msgstr "Minit mestilah antara 0 dan 59."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:191
 msgid "Seconds must be between 0 and 59.999."
-msgstr "Detik harus antara 0 dan 59.999."
+msgstr "Saat mestilah antara 0 dan 59.999."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:200
 msgid "Altitude must be between -100000 and 42849672.95 meters."
-msgstr "Ketinggian harus antara -1000 dan 42849672.95 meter."
+msgstr "Ketinggian mestilah antara -100000 dan 42849672.95 meter."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:218
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr ""
-"Ukuran tak valid, ketepatan horizontal, atau nilai presisi vertikal. Ini "
-"harus antara 0 dan 90000 meter."
+msgstr "Nilai saiz, ketepatan mendatar, atau ketepatan menegak tidak sah. Nilai ini mestilah antara 0 dan 90000000 meter."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
@@ -4359,23 +4315,21 @@ msgstr "Format rekod LOC tidak sah. Format harus: d1 [m1 [s1]] {\"N\"|\"S\"} d2 
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
-msgstr "Karakter tidak sah dalam bidang nama."
+msgstr "Aksara tidak sah dalam medan nama."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:167
 msgid "Invalid characters in content field."
-msgstr "Karakter tidak sah dalam bidang konten."
+msgstr "Aksara tidak sah dalam medan kandungan."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:141
 msgid "Priority field for RKEY records must be 0 or empty."
-msgstr "Lapangan keutamaan untuk rekod RKEY harus 0 atau kosong."
+msgstr "Medan keutamaan bagi rekod RKEY mestilah 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr ""
-"Rekod-rekod URKEY harus digunakan dengan hati-hati kerana tidak banyak "
-"didukung oleh server dan resolver DNS."
+msgstr "Rekod RKEY patut digunakan dengan berhati-hati kerana ia tidak disokong secara meluas oleh pelayan dan penyelesai DNS."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4384,28 +4338,23 @@ msgstr "Kandungan rekod RKEY tidak boleh kosong."
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
-msgstr ""
-"Rekod RKEY harus berisi bendera, protokol, algoritma, dan data kunci publik."
+msgstr "Rekod RKEY mesti mengandungi flags, protocol, algorithm, dan data kunci awam."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
-msgstr "Medan bendera RKEY HANCIS harus bernilai numerik."
+msgstr "Medan flags RKEY mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr ""
-"Nilai bendera tak biasa. Nilai yang umum adalah 0, 256 (Zone Key), atau 257 "
-"(Zone Key + SEP)."
+msgstr "Nilai flags luar biasa. Nilai yang lazim ialah 0, 256 (Zone Key), atau 257 (Zone Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
-msgstr ""
-"Bendera Kunci Bit 7 (Zone Key flag) ditetapkan dalam medan bendera, "
-"menunjukkan ini adalah kunci zona."
+msgstr "Bit 7 (bendera Zone Key) ditetapkan dalam medan flags, menunjukkan bahawa ini ialah kunci zon."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
@@ -4415,158 +4364,125 @@ msgstr "Bit 0 (bendera SEP) ditetapkan dalam medan flags, menunjukkan bahawa ini
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
-msgstr "Medan protokol RKEY harus bernilai numerik."
+msgstr "Medan protocol RKEY mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:208
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
-msgstr ""
-"Bidang protokolocol protokolo seharusnya 3 untuk kepatuhan dengan standar "
-"berdasarkan format DNSKEY."
+msgstr "Medan protocol sepatutnya 3 untuk mematuhi piawaian berasaskan format DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "Algoritme field RKEY harus bernilai numerik."
+msgstr "Medan algorithm RKEY mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
-msgstr ""
-"Algoritme medan algoritma RKEY haruslah nombor algoritma DNSSEC (0-16) yang "
-"sah."
+msgstr "Medan algorithm RKEY mestilah nombor algoritma DNSSEC yang sah (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr ""
-"Algoritma agoritme 1 (RSA/MD5) sudah usang (RFC 6725) dan seharusnya TIDAK "
-"digunakan."
+msgstr "Algoritma 1 (RSA/MD5) telah ditamatkan (RFC 6725) dan sepatutnya TIDAK digunakan."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr ""
-"Algoritma 3 (DSA/SHA1) dianggap tidak aman dan harus diganti dengan "
-"algoritme yang lebih kuat."
+msgstr "Algoritma 3 (DSA/SHA1) dianggap tidak selamat dan patut digantikan dengan algoritma yang lebih kukuh."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr ""
-"Algoritma fagoritma 5 (RSA/SHA-1) dianggap tidak aman dan harus diganti "
-"dengan algoritme yang lebih kuat."
+msgstr "Algoritma 5 (RSA/SHA-1) dianggap tidak selamat dan patut digantikan dengan algoritma yang lebih kukuh."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure."
-msgstr ""
-"Algoritma agoritma 7 (RSASHA1-NSEC3-SHA1) menggunakan SHA-1 yang tidak lagi "
-"dianggap aman."
+msgstr "Algoritma 7 (RSASHA1-NSEC3-SHA1) menggunakan SHA-1 yang tidak lagi dianggap selamat."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
-msgstr ""
-"Algoritme 258 (RSA/SHA-256) saat ini disarankan untuk penyebaran DNSSEC."
+msgstr "Algoritma 8 (RSA/SHA-256) kini disyorkan untuk penggunaan DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
-msgstr "Algoritma 10 (RSA/SHA-512) menyediakan keselamatan yang kuat."
+msgstr "Algoritma 10 (RSA/SHA-512) memberikan keselamatan yang kukuh."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:236
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr ""
-"Algoritma 13 (ECDSA Curve P-256 dengan SHA-256) memberikan keselamatan yang "
-"baik dengan tanda tangan yang lebih kecil daripada RSA."
+msgstr "Algoritma 13 (ECDSA Curve P-256 with SHA-256) memberikan keselamatan yang baik dengan tandatangan yang lebih kecil daripada RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr ""
-"Algoritma agoz 14 (ECDSA Curve P-384 with SHA-384) menyediakan keselamatan "
-"yang kuat dengan tanda tangan yang lebih kecil dari RSA."
+msgstr "Algoritma 14 (ECDSA Curve P-384 with SHA-384) memberikan keselamatan yang kukuh dengan tandatangan yang lebih kecil daripada RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr ""
-"Algoritma keserasian 15 (Ed25519) menawarkan keselamatan modern tetapi "
-"mungkin memiliki masalah keserasian dengan validator yang lebih tua."
+msgstr "Algoritma 15 (Ed25519) menawarkan keselamatan moden tetapi mungkin mempunyai isu keserasian dengan pengesah yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
-msgstr ""
-"Algoritma keserasian 16 (Ed448) menawarkan keselamatan modern yang kuat "
-"tetapi mungkin memiliki masalah keserasian dengan validator yang lebih tua."
+msgstr "Algoritma 16 (Ed448) menawarkan keselamatan moden yang kukuh tetapi mungkin mempunyai isu keserasian dengan pengesah yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr ""
-"Algoritma ini dianggap tidak aman. Algoritma menggunakan 8 (RSA/SHA-256) "
-"atau nanti."
+msgstr "KRITIKAL: Algoritma ini dianggap tidak selamat. Gunakan algoritma 8 (RSA/SHA-256) atau yang lebih baharu."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
-msgstr "Data kunci publik RKEY tidak boleh kosong."
+msgstr "Data kunci awam RKEY tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr ""
-"Data kunci publik untuk database harus Base64 dikodekan menurut RFC 4034."
+msgstr "Data kunci awam sepatutnya dikodkan Base64 mengikut RFC 4034."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr ""
-"Rekod RKEY tidak pernah distandardisasi secara formal sebagai RFC, hanya "
-"diusulkan dalam draft-reid-dnsext-rkey-00."
+msgstr "Rekod RKEY tidak pernah dipiawaikan secara rasmi sebagai RFC, hanya dicadangkan dalam draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
-msgstr "Rekod-rekod RKEY tidak jarang digunakan dalam implementasi DNS modern."
+msgstr "Rekod RKEY jarang digunakan dalam pelaksanaan DNS moden."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr ""
-"mempertimbangkan penggunaan standardisasi jenis rekod untuk tujuan "
-"kriptografi."
+msgstr "Pertimbangkan penggunaan jenis rekod yang dipiawaikan bagi tujuan kriptografi."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
-msgstr "Rekod APL kosong mewakili daftar kosong awalan alamat."
+msgstr "Rekod APL kosong mewakili senarai kosong awalan alamat."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr ""
-"APL 3123 menyarankan agar oktet nol belakang tidak boleh hadir di bagian "
-"alamat APL."
+msgstr "RFC 3123 mengesyorkan supaya oktet sifar mengekor tidak hadir dalam bahagian alamat APL."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr ""
-"Rekod RFC 3123 Ketika menggunakan rekod APL untuk daftar kontrol akses."
+msgstr "RFC 3123 mencatatkan pertimbangan keselamatan apabila menggunakan rekod APL untuk senarai kawalan akses."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. Rekod APL IA harus memiliki "
-"nilai keutamaan 0."
+msgstr "Nilai tidak sah bagi medan keutamaan. Rekod APL mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
@@ -4575,82 +4491,67 @@ msgstr "Format elemen APL tidak sah. Diharapkan [!]afi:address/prefix."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr ""
-"Pengenal Keluarga Alamat Tak Valid (AFI). Harus menjadi 1 untuk IPv4 atau 2 "
-"untuk IPv6."
+msgstr "Address Family Identifier (AFI) tidak sah. Mestilah 1 untuk IPv4 atau 2 untuk IPv6."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
-msgstr "Alamat IPv4 tak valid dalam rekod APL."
+msgstr "Alamat IPv4 tidak sah dalam rekod APL."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:279
 msgid "IPv4 prefix must be between 0 and 32."
-msgstr "Awalan IPB4 harus antara 0 dan 32."
+msgstr "Awalan IPv4 mestilah antara 0 dan 32."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:301
 msgid "Invalid IPv6 address in APL record."
-msgstr "Alamat IPv6 tak valid IPv6 dalam rekod APL."
+msgstr "Alamat IPv6 tidak sah dalam rekod APL."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:306
 msgid "IPv6 prefix must be between 0 and 128."
-msgstr "Awalan IPv6 harus antara 0 dan 128."
+msgstr "Awalan IPv6 mestilah antara 0 dan 128."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:315
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
-msgstr ""
-"Wourdon Menggunakan rekod APL untuk kontrol akses AXFR harus dikombinasikan "
-"dengan langkah keselamatan lain seperti yang dicatat dalam RFC 3123."
+msgstr "Penggunaan rekod APL untuk kawalan akses AXFR patut digabungkan dengan langkah keselamatan lain seperti yang dicatatkan dalam RFC 3123."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr ""
-"Catatan: Rekod NID digunakan untuk protokol ILNP, yaitu eksperimental (RFC "
-"6740, 6742)."
+msgstr "Nota: Rekod NID digunakan untuk protokol ILNP, yang bersifat eksperimen (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
-msgstr "Kandungan record NID tidak boleh kosong."
+msgstr "Kandungan rekod NID tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:155
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr ""
-"Kandungan rekod NID harus dalam format xxxx:xxxx:xxxx:xxxxx dengan 4 grup "
-"dari 4 digit heksadesimal."
+msgstr "Kandungan rekod NID mestilah dalam format xxxx:xxxx:xxxx:xxxx dengan 4 kumpulan 4 digit heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
-msgstr ""
-"Kandungan rekod NID harus memiliki tepat 4 kumpulan digit heksadesimal."
+msgstr "Kandungan rekod NID mesti mempunyai tepat 4 kumpulan digit heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:174
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr ""
-"Kandungan rekod NID harus berupa nilai heksadesimal 64-bit (16 karakter "
-"heksa atau xxxx:xxxx:xxxx:xxxx format)."
+msgstr "Kandungan rekod NID mestilah nilai heksadesimal 64-bit (16 aksara heks atau format xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr ""
-"Rekod NID harus menggunakan format presentasi RFC 6742 (xxxx:xxxx:xxxx:xxxx) "
-"dengan kolon untuk kemampuan baca yang lebih baik."
+msgstr "Rekod NID patut menggunakan format persembahan RFC 6742 (xxxx:xxxx:xxxx:xxxx) dengan titik bertindih untuk kebolehbacaan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr ""
-"Rekod NID tidak sah: Bit Grup (g bit, bit paling tidak signifikan dari byte "
-"pertama) MUST adalah 0 dalam ILNP seperti yang dinyatakan dalam RFC 6742."
+msgstr "Rekod NID tidak sah: Bit Group (g bit, bit paling tidak bererti bagi bait pertama) MESTI 0 dalam ILNP seperti yang dinyatakan dalam RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
@@ -4664,149 +4565,117 @@ msgstr ""
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
-msgstr ""
-"Kata serapan universal/lokal (u/l bit) ditetapkan ke lokal (1), menunjukkan "
-"NID ini secara lokal ditugaskan dan tidak unik secara global."
+msgstr "Bit universal/tempatan (u/l bit) ditetapkan kepada tempatan (1), menunjukkan NID ini diumpukkan secara tempatan dan tidak unik secara global."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr ""
-"Nilai NodeID nol tidak biasa dan mungkin menunjukkan kesalahan konfigurasi."
+msgstr "Nilai NodeID sifar adalah luar biasa dan mungkin menunjukkan ralat konfigurasi."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
-msgstr ""
-"Nilai semua orang NodeID tidak biasa dan mungkin menunjukkan kesalahan "
-"konfigurasi."
+msgstr "Nilai NodeID yang semuanya satu adalah luar biasa dan mungkin menunjukkan ralat konfigurasi."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
-msgstr "Preferensi rekod NID harus nombor."
+msgstr "Preference rekod NID mestilah nombor."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:280
 msgid "NID record preference must be between 0 and 65535."
-msgstr "Preferensi rekod NISAN harus antara 0 dan 65535."
+msgstr "Preference rekod NID mestilah antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:101
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr ""
-"Target ALIAS KALUR haruslah nama domain yang sepenuhnya memenuhi syarat "
-"(FQDN)."
+msgstr "Sasaran ALIAS mestilah nama domain layak sepenuhnya (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:106
 msgid ""
 "ALIAS target cannot point to itself, as this would create a resolution loop."
-msgstr ""
-"Target ALIAS tidak dapat menunjuk ke dirinya sendiri, kerana ini akan "
-"membuat resolusi loop."
+msgstr "Sasaran ALIAS tidak boleh menghala kepada dirinya sendiri kerana ini akan mewujudkan gelung resolusi."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:155
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. rekod ALIAS harus memiliki "
-"nilai keutamaan 0."
+msgstr "Nilai tidak sah bagi medan keutamaan. Rekod ALIAS mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
-msgstr "Ruas konten tak boleh kosong."
+msgstr "Medan kandungan tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
-msgstr "Kandungan rekod NSEC tidak dapat kosong."
+msgstr "Kandungan rekod NSEC tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:102
 msgid "NSEC record contains invalid characters."
-msgstr "Rekod NSEC berisi aksara tidak sah."
+msgstr "Rekod NSEC mengandungi aksara tidak sah."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:123
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr ""
-"Menurut RFC 4034, rekod NSEC harus memiliki TTL yang sama dengan ladang TTL "
-"minimum SOA."
+msgstr "Menurut RFC 4034, rekod NSEC sepatutnya mempunyai TTL yang sama dengan medan TTL minimum SOA."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
-msgstr ""
-"Rekod-rekod NSEC memungkinkan \"zone berjalan\", memungkinkan enumerasi "
-"semua nama dalam sebuah zona, yang mungkin menjadi perhatian privasi."
+msgstr "Rekod NSEC membolehkan \"zone walking\", yang membenarkan penyenaraian semua nama dalam sesuatu zon, dan ini mungkin menjadi kebimbangan privasi."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr ""
-"Jika enumerasi zona adalah kekhawatiran, pertimbangkan menggunakan rekod "
-"NSEC3 (RFC 5155) sebagai gantinya, yang menggunakan nama pemilik hashed."
+msgstr "Jika penyenaraian zon menjadi kebimbangan, pertimbangkan penggunaan rekod NSEC3 (RFC 5155) sebagai gantinya, yang menggunakan nama pemilik tercincang."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"Rekod NSEEC adalah bagian dari DNSSEC dan seharusnya hanya dikelola bersama "
-"dengan rekod DNSSEC lainnya (DNSKEY, RRSIG, dll)."
+msgstr "Rekod NSEC ialah sebahagian daripada DNSSEC dan sepatutnya diurus bersama rekod DNSSEC yang lain sahaja (DNSKEY, RRSIG, dll.)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Secara manual editing rekod NSEC tidak disarankan kerana biasanya "
-"dijangkitkan secara otomatis oleh server nama DNSSEC-aware."
+msgstr "Mengedit rekod NSEC secara manual tidak disyorkan kerana ia biasanya dijana secara automatik oleh pelayan nama yang menyokong DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
-msgstr ""
-"Nama wildcard dalam rekod NSEC membutuhkan penanganan khusus. Menurut RFC "
-"4035, nama pemilik wildcard muncul dalam rekod NSEC tanpa perluasan."
+msgstr "Nama kad bebas dalam rekod NSEC memerlukan pengendalian khas. Menurut RFC 4035, nama pemilik kad bebas muncul dalam rekod NSEC tanpa pengembangan."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 msgid "NSEC record must contain a valid next domain name."
-msgstr "Rekod NSEC harus berisi nama domain berikutnya yang sah."
+msgstr "Rekod NSEC mesti mengandungi nama domain seterusnya yang sah."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr ""
-"lapangan nama domain berikutnya harus nama pemilik berikutnya dalam "
-"pemesanan kanonik zona. Pemesananan Canonical adalah kasus-insensitif dan "
-"macam-macam oleh label dari kanan ke kiri."
+msgstr "Medan nama domain seterusnya mestilah nama pemilik seterusnya dalam susunan kanonik zon. Susunan kanonik tidak mengambil kira huruf besar atau kecil dan disusun mengikut label dari kanan ke kiri."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
-msgstr ""
-"Jika ini adalah rekod NSEC terakhir di zona tersebut, nama domain berikutnya "
-"seharusnya zon apex (nama pemilik zona SOA RR)."
+msgstr "Jika ini ialah rekod NSEC terakhir dalam zon, nama domain seterusnya sepatutnya ialah apeks zon (nama pemilik SOA RR zon tersebut)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the NSEC "
 "owner name. An empty type bitmap is unusual."
-msgstr ""
-"Peta bit Type harus hadir untuk menunjukkan jenis RR mana yang ada pada nama "
-"pemilik NSEC. Bitmap jenis kosong tidak biasa."
+msgstr "Peta bit jenis sepatutnya hadir untuk menunjukkan jenis RR yang wujud pada nama pemilik NSEC. Peta bit jenis yang kosong adalah luar biasa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
 msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
-msgstr ""
-"Jenis angka  \"%s\" seharusnya diwakili menggunakan format RFC 3597 "
-"(TYPE####)."
+msgstr "Jenis berangka \"%s\" sepatutnya diwakili menggunakan format RFC 3597 (TYPE###)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
@@ -4817,228 +4686,184 @@ msgstr "Rekod NSEC berisi jenis rekod tidak sah: %s"
 msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
-msgstr ""
-"Jenis NSEC biasanya harus hadir dalam peta bit tipenya sendiri, kerana "
-"setiap nama dalam zona yang ditandatangani harus memiliki rekod NSEC."
+msgstr "Jenis NSEC biasanya patut hadir dalam peta bit jenisnya sendiri, kerana setiap nama dalam zon yang ditandatangani patut mempunyai rekod NSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"Jenis RRISIG biasanya harus hadir dalam peta bit jenis NSEC untuk zona "
-"DNSSEC-signed."
+msgstr "Jenis RRSIG biasanya patut hadir dalam peta bit jenis NSEC bagi zon yang ditandatangani DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"Rekod NSEC ini berisi baik jenis SOA maupun NS, menunjukkan mungkin untuk "
-"apex zona."
+msgstr "Rekod NSEC ini mengandungi kedua-dua jenis SOA dan NS, menunjukkan ia mungkin bagi apeks zon."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Nama rekod tidak mengikut format OPENPGPKEY standard (<hash>._openpgpkey."
-"<domain>). Format standard disyorkan untuk saling kendali."
+msgstr "Nama rekod tidak mengikut format OPENPGPKEY piawai (<hash>._openpgpkey.<domain>). Format piawai disyorkan untuk salingoperasian."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "Lapangan keutamaan untuk rekod OPENPGPKEY harus 0 atau kosong"
+msgstr "Medan keutamaan bagi rekod OPENPGPKEY mestilah 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"Rekod OPENPGPKEY biasanya harus dibuat menggunakan alat khusus seperti GnuPG "
-"dengan pilihan --print-dane-records, daripada dibuat secara manual."
+msgstr "Rekod OPENPGPKEY biasanya patut dijana menggunakan alat khusus seperti GnuPG dengan pilihan --print-dane-records, dan bukannya dicipta secara manual."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "Kandungan rekod OPENPGPKEY tidak dapat kosong."
+msgstr "Kandungan rekod OPENPGPKEY tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Karakter tak valid dalam konten rekod OPENPGPKEY."
+msgstr "Aksara tidak sah dalam kandungan rekod OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr "Rekod OPENPGPKEY harus mengandung data terenkode basis64 yang valid."
+msgstr "Rekod OPENPGPKEY mesti mengandungi data berkod base64 yang sah."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "Rekam OPENPGPKEY berisi data base64 yang tidak sah."
+msgstr "Rekod OPENPGPKEY mengandungi data base64 yang tidak sah."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
-"Rekod OPENPGPKEY melebihi 4KB dalam ukuran. merekomendasikan untuk menjaga "
-"rekod DNS sekecil mungkin untuk memastikan transportasi yang dapat "
-"diandalkan. Anda akan menggunakan format ekspor kunci minimal."
+msgstr "Rekod OPENPGPKEY melebihi 4KB dari segi saiz. RFC 7929 mengesyorkan supaya rekod DNS dikekalkan sekecil mungkin bagi memastikan pengangkutan yang boleh dipercayai. Pertimbangkan penggunaan format eksport kunci yang minimum."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"Rekod OPENPGPKEY luar biasa kecil. Verifikasi bahwa ini adalah kunci publik "
-"OpenPGP yang valid."
+msgstr "Rekod OPENPGPKEY adalah luar biasa kecil. Sahkan bahawa ini ialah kunci awam OpenPGP yang sah."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
-msgstr ""
-"Konten yang didekode tidak muncul sebagai paket OpenPGP yang valid. Paket "
-"OpenPGP harus dimulai dengan byte yang memiliki set bit tinggi (RFC 9580)."
+msgstr "Kandungan yang dinyahkod tidak kelihatan seperti paket OpenPGP yang sah. Paket OpenPGP mesti bermula dengan bait yang mempunyai bit tinggi ditetapkan (RFC 9580)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
-msgstr ""
-"Konten terdecode tidak tampak berisi paket kunci publik (tag 6) atau paket "
-"subkey publik (tag 14) sebagai paket pertamanya."
+msgstr "Kandungan yang dinyahkod tidak kelihatan mengandungi paket kunci awam (tag 6) atau paket subkunci awam (tag 14) sebagai paket pertamanya."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr ""
-"Rekod OPENPGPKEY mencatat REQUIRE DNSSEC untuk kepentingan keselamatan "
-"apapun. Tanpa validasi DNSSEC, rekod ini tidak menawarkan keuntungan "
-"keselamatan."
+msgstr "Rekod OPENPGPKEY MEMERLUKAN DNSSEC untuk sebarang manfaat keselamatan. Tanpa pengesahan DNSSEC, rekod ini tidak menawarkan sebarang kelebihan keselamatan."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr ""
-"Rekod-rekod OPENPGPKEY adalah EXPERIMENTAL sebagai per RFC 7929 dan mungkin "
-"tidak didukung oleh semua klien email atau implementasi OpenPGP."
+msgstr "Rekod OPENPGPKEY adalah EKSPERIMEN mengikut RFC 7929 dan mungkin tidak disokong oleh semua klien e-mel atau pelaksanaan OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
-"Rekod-rekod OPENPGPKEY bukan merupakan pengganti OpenPGP Web of Trust. "
-"Metode verifikasi tambahan belum disarankan."
+msgstr "Rekod OPENPGPKEY bukan pengganti OpenPGP Web of Trust. Kaedah pengesahan tambahan masih disyorkan."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr ""
-"Untuk membuat rekod OPENPGPKEY, gunakan alat khusus seperti GnuPG dengan "
-"pilihan --print-dane-records untuk memastikan format dan konten yang benar."
+msgstr "Untuk mencipta rekod OPENPGPKEY, gunakan alat khusus seperti GnuPG dengan pilihan --print-dane-records bagi memastikan format dan kandungan yang betul."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. Rekod NS harus memiliki nilai "
-"keutamaan 0."
+msgstr "Nilai tidak sah bagi medan keutamaan. Rekod NS mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr ""
-"Peringatan: Rekod HINFO mengungkapkan informasi yang berpotensi sensitif "
-"tentang perangkat keras host dan perangkat lunak yang dapat berguna bagi "
-"penyerang. Pertimbangkan implikasi keselamatan sebelum menggunakan di DNS "
-"public-facing."
+msgstr "Amaran: Rekod HINFO mendedahkan maklumat yang berpotensi sensitif tentang perkakasan dan perisian hos yang boleh berguna kepada penyerang. Pertimbangkan implikasi keselamatan sebelum menggunakannya dalam DNS yang menghadap awam."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
-msgstr "Lapangan keutamaan untuk rekod HINFO harus 0 atau kosong"
+msgstr "Medan keutamaan bagi rekod HINFO mestilah 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:173
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "Rekod HINFO harus memiliki jenis CPU dan OS field."
+msgstr "Rekod HINFO mesti mempunyai medan jenis CPU dan OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:189
 msgid "HINFO record must have exactly two fields: CPU type and OS."
-msgstr "Rekod HINFO harus memiliki tepat dua bidang: jenis CPU dan OS."
+msgstr "Rekod HINFO mesti mempunyai tepat dua medan: jenis CPU dan OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Kutipan tidak sah dalam HINFO"
+msgstr "Petikan tidak sah dalam HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "INFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Tanda kutipan quot tidak sah di dalam HINFO"
+msgstr "Tanda petikan tidak sah dalam HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
 "CPU type does not contain any standard values. Consider using a standard CPU "
 "type for better interoperability."
-msgstr "Jenis CPU morfonia tidak mengandung nilai standar apapun. Apa?"
+msgstr "Jenis CPU tidak mengandungi sebarang nilai piawai. Pertimbangkan penggunaan jenis CPU piawai untuk salingoperasian yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:260
 msgid ""
 "OS type does not contain any standard values. Consider using a standard OS "
 "type for better interoperability."
-msgstr "Jenis OS OFIN tidak mengandung nilai standar apapun. Apa?"
+msgstr "Jenis OS tidak mengandungi sebarang nilai piawai. Pertimbangkan penggunaan jenis OS piawai untuk salingoperasian yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:125
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
-"TSIG timestamp lebih dari 24 jam. Ini boleh menunjukkan serangan replay atau "
-"isu penyelarasan jam."
+msgstr "Setem masa TSIG sudah lebih daripada 24 jam. Ini boleh menunjukkan serangan main semula atau isu penyegerakan jam."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr ""
-"Masa depan TSIG sudah ditetapkan. Ini boleh menunjukkan isu penyelarasan jam."
+msgstr "Setem masa TSIG ditetapkan pada masa hadapan. Ini boleh menunjukkan isu penyegerakan jam."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr ""
-"Kunci TSIG harus diputar secara berkala sebagai praktik terbaik keselamatan."
+msgstr "Kunci TSIG patut diputarkan secara berkala sebagai amalan terbaik keselamatan."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr ""
-"TSIG OTAIN menyediakan otentikasi transaksi tetapi bukan integritas data. "
-"Anda juga menggunakan DNSSEC sebagai tambahan TSIG."
+msgstr "TSIG menyediakan pengesahan transaksi tetapi bukan integriti data. Pertimbangkan penggunaan DNSSEC sebagai tambahan kepada TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Jam sistem akurat diperlukan pada klien maupun server agar TSIG dapat "
-"bekerja dengan benar."
+msgstr "Jam sistem yang tepat diperlukan pada kedua-dua klien dan pelayan supaya TSIG berfungsi dengan betul."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"Rekod TSIG harus mengandung setidaknya algoritma-nama, timestamp, fudge, "
-"mac, original-id, error, dan lain-len dipisahkan oleh spasi."
+msgstr "Rekod TSIG mesti mengandungi sekurang-kurangnya algorithm-name, timestamp, fudge, mac, original-id, error, dan other-len yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5050,96 +4875,78 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "DAFTAR TSIG harus integer non-negatif."
+msgstr "Timestamp TSIG mestilah integer bukan negatif."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "Fumdge TSIG harus integer non-negatif."
+msgstr "Fudge TSIG mestilah integer bukan negatif."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"TSIG MAC TSIG harus berupa string terenkode basa64 atau string heksadesimal "
-"yang valid."
+msgstr "MAC TSIG mestilah rentetan berkod base64 atau rentetan heksadesimal yang sah."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
-msgstr ""
-"TSIG MAC terlalu pendek. Vox RFC 8945 menyarankan minimal 16 oktet untuk "
-"keselamatan."
+msgstr "MAC TSIG terlalu pendek. RFC 8945 mengesyorkan minimum 16 oktet untuk keselamatan."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "ID asli TSIG harus nombor antara 0 dan 65535."
+msgstr "Original ID TSIG mestilah nombor antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr "Ralat TSIG harus berupa nombor DNS RCODE yang sah antara 0 dan 23."
+msgstr "Error TSIG mestilah nombor DNS RCODE yang sah antara 0 dan 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:250
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
-msgstr ""
-"Nama kesalahan TSIG kode 16 (BADSIG) menunjukkan bahwa tanda tangan dalam "
-"rekod TSIG tidak sah. Periksa kunci dan konfigurasi kripto."
+msgstr "Kod ralat TSIG 16 (BADSIG) menunjukkan bahawa tandatangan dalam rekod TSIG tidak sah. Semak kunci dan konfigurasi kripto."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr ""
-"Kode kesalahan TSIG 17 (BADKEY) menunjukkan bahwa kunci yang digunakan dalam "
-"rekod TSIG tidak sah. Mengesahkan kunci dikonfigurasi di kedua server DNS."
+msgstr "Kod ralat TSIG 17 (BADKEY) menunjukkan bahawa kunci yang digunakan dalam rekod TSIG tidak sah. Sahkan bahawa kunci itu dikonfigurasikan pada kedua-dua pelayan DNS."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr ""
-"Kode kesalahan TSIG 18 (BADTIME) menunjukkan bahwa timestamp dalam rekod "
-"TSIG berada di luar jendela waktu yang diizinkan. Periksa sinkronisasi jam."
+msgstr "Kod ralat TSIG 18 (BADTIME) menunjukkan bahawa timestamp dalam rekod TSIG berada di luar tetingkap masa yang dibenarkan. Semak penyegerakan jam."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
-"Kode kesalahan TSIG 22 (BADTRUNC) menunjukkan bahwa MAC terpangkas dalam "
-"rekod TSIG tidak sah. Periksa konfigurasi ukuran MAC."
+msgstr "Kod ralat TSIG 22 (BADTRUNC) menunjukkan bahawa MAC terpangkas dalam rekod TSIG tidak sah. Semak konfigurasi saiz MAC."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len harus berupa integer non-negatif."
+msgstr "Other-len TSIG mestilah integer bukan negatif."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"TSIG lainnya-data harus berupa string terenkode basa64 atau string "
-"heksadesimal yang sah."
+msgstr "Other-data TSIG mestilah rentetan berkod base64 atau rentetan heksadesimal yang sah."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
-msgstr ""
-"Wadi HMAC-MD5 dianggap lemah oleh standar modern. merekomendasikan untuk "
-"menggunakan algoritma HMAC-SHA256 atau lebih kuat."
+msgstr "HMAC-MD5 dianggap lemah mengikut piawaian moden. RFC 8945 mengesyorkan penggunaan HMAC-SHA256 atau algoritma yang lebih kukuh."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
-"Anjurkan oleh RFC 8945 sebagai algoritma TSIG yang disukai untuk sebagian "
-"besar penyebaran."
+msgstr "HMAC-SHA256 disyorkan oleh RFC 8945 sebagai algoritma TSIG pilihan untuk kebanyakan penggunaan."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
-msgstr "Nama algoritma TSIG harus diakhiri dengan titik."
+msgstr "Nama algoritma TSIG mesti berakhir dengan noktah."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
@@ -5149,140 +4956,114 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
-msgstr ""
-"Nama algoritma TSIG non-standar. Ini mungkin tidak didukung secara luas."
+msgstr "Menggunakan nama algoritma TSIG bukan piawai. Ini mungkin tidak disokong secara meluas."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr ""
-"merekomendasikan untuk menggunakan HMAC-SHA256 sebagai algoritme TSIG "
-"standar."
+msgstr "RFC 8945 mengesyorkan penggunaan HMAC-SHA256 sebagai algoritma TSIG piawai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr ""
-"AZONEMD didefinisikan dalam RFC 8976 (Februari 2021) dan mungkin tidak "
-"didukung oleh semua server DNS."
+msgstr "ZONEMD ditakrifkan dalam RFC 8976 (Februari 2021) dan mungkin tidak disokong oleh semua pelayan DNS."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "Rekod ZONEMD harus ditempatkan di apex zona (sama seperti rekod SOA)."
+msgstr "Rekod ZONEMD mesti diletakkan di apeks zon (sama seperti rekod SOA)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
 "For proper security, zones with ZONEMD records should also be signed with "
 "DNSSEC."
-msgstr ""
-"Untuk keselamatan yang tepat, zona dengan rekod ZONEMD juga harus "
-"ditandatangani dengan DNSSEC."
+msgstr "Untuk keselamatan yang wajar, zon yang mempunyai rekod ZONEMD patut juga ditandatangani dengan DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:113
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr "Nombor seri di ZONEMD harus sepadan dengan nombor seri SOA zona."
+msgstr "Nombor siri dalam rekod ZONEMD patut sepadan dengan nombor siri SOA zon tersebut."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"Nilai skema ZONEMD 240-255 disediakan untuk penggunaan pribadi dan mungkin "
-"tidak dapat diinteroperabelkan."
+msgstr "Nilai scheme ZONEMD 240-255 dikhaskan untuk kegunaan persendirian dan mungkin tidak saling beroperasi."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr ""
-"SHA384 (algoritma 1) adalah algoritme hash yang disarankan untuk rekod "
-"ZONEMD."
+msgstr "SHA-384 (algoritma 1) ialah algoritma hash yang disyorkan bagi rekod ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr ""
-"SHA-512 (algoritm 2) menyediakan keselamatan yang lebih kuat tetapi "
-"membutuhkan lebih banyak sumber daya pengolahan daripada SHA-384."
+msgstr "SHA-512 (algoritma 2) memberikan keselamatan yang lebih kukuh tetapi memerlukan lebih banyak sumber pemprosesan berbanding SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"Nilai algoritma hash ZONEMD 240-255 disediakan untuk penggunaan pribadi dan "
-"mungkin tidak dapat diinteroperabelkan."
+msgstr "Nilai algoritma hash ZONEMD 240-255 dikhaskan untuk kegunaan persendirian dan mungkin tidak saling beroperasi."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Rekod ZONEMD harus berisi serial, skema, hash-algoritma, dan digest yang "
-"dipisahkan oleh spasi."
+msgstr "Rekod ZONEMD mesti mengandungi serial, scheme, hash-algorithm, dan digest yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr ""
-"Serial ZONEMD harus berupa angka antara 0 dan 4294967295 (32-bit unsigned "
-"integer)."
+msgstr "Serial ZONEMD mestilah nombor antara 0 dan 4294967295 (integer tanpa tanda 32-bit)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
-msgstr "Skema ZONEMD harus nombor antara 0 dan 255."
+msgstr "Scheme ZONEMD mestilah nombor antara 0 dan 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:185
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
-"Skema ZONEMD harus 1 (Skema ZONEMD sederhana) untuk penggunaan standar. "
-"Nilai-nilai lain dipesan atau tidak ditugaskan."
+msgstr "Scheme ZONEMD mestilah 1 (skema ZONEMD ringkas) untuk kegunaan piawai. Nilai lain adalah dikhaskan atau belum diumpukkan."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "Skema ZONEMD 0 disimpan dan bukan untuk penggunaan standar."
+msgstr "Scheme ZONEMD 0 adalah dikhaskan dan bukan untuk kegunaan piawai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "Algoritme hash ZONEMD harus nombor antara 0 dan 255."
+msgstr "Algoritma hash ZONEMD mestilah nombor antara 0 dan 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "Algoritma hash ZONEMD 0 disimpan dan bukan untuk penggunaan standar."
+msgstr "Algoritma hash ZONEMD 0 adalah dikhaskan dan bukan untuk kegunaan piawai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "Digest ZONEMD harus berupa string heksadesimal."
+msgstr "Digest ZONEMD mestilah rentetan heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "Digest ZONEMD haruslah setidaknya 24 karakter heksadesimal (12 oktet)."
+msgstr "Digest ZONEMD mestilah sekurang-kurangnya 24 aksara heksadesimal (12 oktet)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"Digest ZONEMD untuk SHA-384 (algoritma 1) harus tepat 96 karakter "
-"heksadesimal (48 oktet)."
+msgstr "Digest ZONEMD bagi SHA-384 (algoritma 1) mestilah tepat 96 aksara heksadesimal (48 oktet)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
-msgstr "Bidang keutamaan untuk rekod CERT harus 0 atau kosong"
+msgstr "Medan keutamaan bagi rekod CERT mestilah 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:108
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr ""
-"Aeroline Per RFC 4398, pertimbangkan keterbatasan ukuran rekod DNS ketika "
-"menggunakan rekod CERT. Sijil yang besar dapat menyebabkan fragmentasi pesan "
-"DNS."
+msgstr "Mengikut RFC 4398, pertimbangkan had saiz rekod DNS apabila menggunakan rekod CERT. Sijil yang besar boleh menyebabkan pemecahan mesej DNS."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
@@ -5296,241 +5077,196 @@ msgstr "Aksara tidak sah dalam kandungan rekod CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Rekam CERT LUAR harus mengandung jenis, key-tag, algoritma dan data-sijil "
-"yang dipisahkan oleh spasi."
+msgstr "Rekod CERT mesti mengandungi type, key-tag, algorithm dan certificate-data yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr ""
-"Jenis CERT HANCAN harus berupa angka antara 0 hingga 65535 atau mnemonik "
-"yang valid."
+msgstr "Type CERT mestilah nombor antara 0 dan 65535 atau mnemonik yang sah."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "Nilai jenis CERT"
+msgstr "Nilai type CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr ""
-"Jenis CERT HANCAN harus berupa angka antara 0 hingga 65535 atau mnemonik "
-"valid (PKIX, SPKI, PGP, dll)."
+msgstr "Type CERT mestilah nombor antara 0 dan 65535 atau mnemonik yang sah (PKIX, SPKI, PGP, dll.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr ""
-"Jenis sijil berbasis URL (IPKIX, ISPKI, IPGP, IACPKIX) memperkenalkan "
-"indirect tambahan dan potensi kekhawatiran keselamatan."
+msgstr "Jenis sijil berasaskan URL (IPKIX, ISPKI, IPGP, IACPKIX) memperkenalkan lapisan tidak langsung tambahan dan kebimbangan keselamatan yang berpotensi."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
-msgstr "Tag kunci 666 CERT harus berupa angka antara 0 dan 65535."
+msgstr "Key tag CERT mestilah nombor antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr ""
-"Algoritme CERT harus berupa angka antara 0 dan 255 atau mnemonik yang valid."
+msgstr "Algorithm CERT mestilah nombor antara 0 dan 255 atau mnemonik yang sah."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr ""
-"Algoritme CERT harus berupa angka antara 0 dan 255 atau mnemonik yang valid "
-"(RSASHA1, DSA, dll)."
+msgstr "Algorithm CERT mestilah nombor antara 0 dan 255 atau mnemonik yang sah (RSASHA1, DSA, dll.)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algoritma"
+msgstr "Algoritma "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
-msgstr ""
-"Untuk jenis CERT berbasis URL, data sijil harus merupakan URL yang valid."
+msgstr "Bagi jenis CERT berasaskan URL, data sijil mestilah URL yang sah."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Data sijil untuk program ini adalah"
+msgstr "Data sijil ialah "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr ""
-"Data sijil CERT harus hanya memuat karakter base64 yang valid (A-Z, a-z, "
-"0-9, +, /, =)."
+msgstr "Data sijil CERT mesti mengandungi hanya aksara base64 yang sah (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
 "CERT certificate data has invalid base64 padding. Equals signs (=) should "
 "only appear at the end of the data."
-msgstr ""
-"Data sijil CERT XVO memiliki padding base64 yang tidak sah. Tanda-tanda "
-"falks (=) seharusnya hanya muncul di akhir data."
+msgstr "Data sijil CERT mempunyai padding base64 yang tidak sah. Tanda sama dengan (=) sepatutnya hanya muncul di penghujung data."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:293
 msgid ""
 "CERT certificate data has invalid base64 length. Base64 data must be a "
 "multiple of 4 characters (with padding)."
-msgstr ""
-"Data sijil CERT UDARA memiliki panjang base64 yang tidak sah. Data Base64 "
-"harus kelipatan 4 karakter (dengan padding)."
+msgstr "Data sijil CERT mempunyai panjang base64 yang tidak sah. Data Base64 mestilah gandaan 4 aksara (dengan padding)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:299
 msgid "CERT certificate data must be valid base64-encoded data."
-msgstr "Data sijil CERT KANTOR harus data terenkode basis64 yang valid."
+msgstr "Data sijil CERT mestilah data berkod base64 yang sah."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "Data sijil CERT tidak boleh kosong setelah decoding base64."
+msgstr "Data sijil CERT mesti tidak kosong selepas penyahkodan base64."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr ""
-"POMPORLANT: rekod DLV telah usang oleh RFC 8749 (Maret 2020). Penafsir DNS "
-"major telah menghapus atau mendukung DLV yang sudah usang. Sebagai gantinya, "
-"ia mempertimbangkan untuk menggunakan validasi DNSSEC standar dengan rekod "
-"DS."
+msgstr "PENTING: Rekod DLV telah dimansuhkan oleh RFC 8749 (Mac 2020). Penyelesai DNS utama telah membuang atau menamatkan sokongan DLV. Pertimbangkan penggunaan pengesahan DNSSEC piawai dengan rekod DS sebagai gantinya."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr ""
-"Nama ini tampaknya berada dalam domain pencarian DLV. Catatan bahwa "
-"dlv.isc.org, registry utama DLV, dilumpuhkan pada 2017."
+msgstr "Nama ini kelihatan berada dalam domain carian DLV. Ambil perhatian bahawa dlv.isc.org, pendaftaran DLV utama, telah ditamatkan pada 2017."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
-msgstr "Lapangan keutamaan untuk rekod DLV harus 0 atau kosong."
+msgstr "Medan keutamaan bagi rekod DLV mestilah 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:125
 msgid ""
 "DLV records were typically placed in special DLV registry domains, not in "
 "the same domain as the DNSKEY records they reference."
-msgstr ""
-"Rekod-rekod DLV umumnya ditempatkan dalam domain registry DLV khusus, tidak "
-"dalam domain yang sama dengan rekod DNSKEY yang mereka referensi."
+msgstr "Rekod DLV biasanya diletakkan dalam domain pendaftaran DLV khas, bukan dalam domain yang sama dengan rekod DNSKEY yang dirujuknya."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:149
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"format rekod DLV tidak sah. Diharapkan: <key-tag>Z <algorithm> <digest-type> "
-"<digest>."
+msgstr "Format rekod DLV tidak sah. Dijangka: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
-msgstr "format rekod DLV tidak sah. Seharusnya mengandung 4 bagian."
+msgstr "Format rekod DLV tidak sah. Ia sepatutnya mengandungi tepat 4 bahagian."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:162
 msgid "Invalid key tag. Must be a number between 1 and 65535."
-msgstr "Tag kunci tidak sah. Pasti angka antara 1 dan 65535."
+msgstr "Key tag tidak sah. Mestilah nombor antara 1 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
-msgstr ""
-"Medan tag kunci tidak unik mengidentifikasi sebuah DNSKEY. Lebih dari satu "
-"kunci dapat memiliki tag kunci yang sama."
+msgstr "Medan key tag tidak mengenal pasti DNSKEY secara unik. Lebih daripada satu kunci boleh mempunyai key tag yang sama."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr ""
-"Algoritma tidak sah. Mesti merupakan salah satu algoritme DNSSEC yang valid "
-"(1-16)."
+msgstr "Algoritma tidak sah. Mestilah salah satu algoritma DNSSEC yang sah (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr ""
-"Jenis digest tidak sah. Mestia adalah 1 (SHA-1), 2 (SHA-256, atau 4 "
-"(SHA-384)."
+msgstr "Digest type tidak sah. Mestilah 1 (SHA-1), 2 (SHA-256), atau 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
 "SHA-1 (digest type 1) is considered weak for cryptographic use. Consider "
 "using SHA-256 (type 2) or SHA-384 (type 4) instead."
-msgstr ""
-"SHA-1 (jenis terdigest 1) dianggap lemah untuk penggunaan kriptografi. "
-"mempertimbangkan penggunaan SHA-256 (jenis 2) atau SHA-384 (jenis 4) sebagai "
-"gantinya."
+msgstr "SHA-1 (digest type 1) dianggap lemah untuk kegunaan kriptografi. Pertimbangkan penggunaan SHA-256 (jenis 2) atau SHA-384 (jenis 4) sebagai gantinya."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr ""
-"Panjang mencerna tidak sah untuk SHA-1. Seharusnya 40 karakter heksadesimal."
+msgstr "Panjang digest tidak sah bagi SHA-1. Ia sepatutnya 40 aksara heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr ""
-"Panjang digest tidak sah untuk SHA-256. Seharusnya 64 karakter heksadesimal."
+msgstr "Panjang digest tidak sah bagi SHA-256. Ia sepatutnya 64 aksara heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr ""
-"Panjang digest tak valid untuk SHA-384. Harus ada 96 karakter heksadesimal."
+msgstr "Panjang digest tidak sah bagi SHA-384. Ia sepatutnya 96 aksara heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr ""
-"Digest hemodesimal harus hanya mengandung karakter heksadesimal (0-9, a-f)."
+msgstr "Digest mesti mengandungi hanya aksara heksadesimal (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
-msgstr "Rekod Null MX (.) harus memiliki keutamaan 0 menurut RFC 7505."
+msgstr "Rekod Null MX (.) mesti mempunyai keutamaan 0 mengikut RFC 7505."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:98
 msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
-msgstr ""
-"Ini adalah rekod null MX (RFC 7505) yang mengindikasikan domain ini tidak "
-"menerima email."
+msgstr "Ini ialah rekod null MX (RFC 7505) yang menunjukkan domain ini tidak menerima e-mel."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
-msgstr "Domain A dengan rekod null MX tidak boleh memiliki rekod MX lainnya."
+msgstr "Domain yang mempunyai rekod null MX mesti tidak mempunyai sebarang rekod MX lain."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
-msgstr "Nama host server surat tidak sah."
+msgstr "Nama hos pelayan mel tidak sah."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:112
 msgid "MX records should not point to CNAME records (RFC 2181)."
-msgstr "Rekod-rekod MX tidak boleh menunjuk ke rekod CNAME (RFC 2181)."
+msgstr "Rekod MX tidak patut menghala kepada rekod CNAME (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr "Nilai keutamaan di atas 100 tidak biasa dan mungkin tidak perlu."
+msgstr "Nilai keutamaan melebihi 100 adalah luar biasa dan mungkin tidak diperlukan."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr "Nilai tidak sah untuk bidang keutamaan MX. Pasti antara 0 dan 65535."
+msgstr "Nilai tidak sah bagi medan keutamaan MX. Mestilah antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr ""
-"Bidang Priority market tidak boleh digunakan untuk rekod HTTPS sebagai "
-"keutamaan adalah bagian dari konten."
+msgstr "Medan keutamaan tidak patut digunakan bagi rekod HTTPS kerana keutamaan ialah sebahagian daripada kandungan."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "Rekod HTTPA harus mengandung setidaknya nilai keutamaan dan target."
+msgstr "Rekod HTTPS mesti mengandungi sekurang-kurangnya nilai keutamaan dan sasaran."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "Keutamaan rekod NAMEIN HTTPS harus berupa angka antara 0 dan 65535."
+msgstr "Keutamaan rekod HTTPS mestilah nombor antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
@@ -5551,16 +5287,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Parameter rekod HTTPS harus dalam format key=value yang dipisahkan oleh "
-"spasi."
+msgstr "Parameter rekod HTTPS mestilah dalam format key=value yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr ""
-"Parameter trans title= yang tidak diketahui akan diabaikan (bantuan) HTTPS: "
-"%s\". Lihat RFC 9660 untuk kunci sah."
+msgstr "Kunci parameter HTTPS tidak diketahui: \"%s\". Lihat RFC 9460 untuk kunci yang sah."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
@@ -5571,9 +5303,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr ""
-"Nilai AAPPN harus berupa daftar tanda pengenal protokol yang dipisahkan "
-"dengan koma."
+msgstr "Nilai ALPN mestilah senarai pengecam protokol yang dipisahkan dengan koma."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
@@ -5581,7 +5311,7 @@ msgstr "Parameter no-default-alpn harus memiliki nilai kosong."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "Port value must be a number between 1 and 65535."
-msgstr "Nilai port opacity harus berupa angka antara 1 dan 65535."
+msgstr "Nilai port mestilah nombor antara 1 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
@@ -5595,46 +5325,38 @@ msgstr "Alamat IPv6 tidak sah dalam ipv6hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "Jalur DoH vinah harus dimulai dengan garis miring ke depan (/)."
+msgstr "Laluan DoH mesti bermula dengan garis miring ke hadapan (/)."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parameter %s\" ditandai sebagai wajib tetapi tidak termasuk dalam rekod."
+msgstr "Parameter \"%s\" ditandakan sebagai wajib tetapi tidak disertakan dalam rekod."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr ""
-"RFC 2930 membutuhkan rekod TKEY untuk memiliki TTL=0 untuk mencegah caching. "
-"Nama-nama non-nol TTL saat ini mungkin menyebabkan masalah dengan "
-"implementasi DNS yang lebih tua."
+msgstr "RFC 2930 memerlukan rekod TKEY mempunyai TTL=0 bagi mengelakkan cache. TTL bukan sifar semasa mungkin menyebabkan masalah dengan pelaksanaan DNS yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
-msgstr "Lapangan keutamaan untuk rekod TKEY harus 0 atau kosong"
+msgstr "Medan keutamaan bagi rekod TKEY mestilah 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:142
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr ""
-"Rekod TKEY tidak untuk otentikasi data DNS, mereka adalah untuk pendirian "
-"kunci antara server/resolvers DNS."
+msgstr "Rekod TKEY bukan untuk pengesahan data DNS, ia adalah untuk pewujudan kunci antara pelayan/penyelesai DNS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
-msgstr "Aksara tak valid dalam konten rekod TKEY."
+msgstr "Aksara tidak sah dalam kandungan rekod TKEY."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"Rekod TKEY harus mengandung nama algoritma, waktu awal, waktu-kedaluwarsa, "
-"mode, kesalahan, dan data kunci yang dipisahkan oleh spasi."
+msgstr "Rekod TKEY mesti mengandungi algorithm-name, inception-time, expiration-time, mode, error, dan key-data yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -5647,52 +5369,39 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr ""
-"Waktu insepsi TKEY haruslah suatu setem masa Unix yang sah atau format "
-"YYYYMMHHMMSS."
+msgstr "Inception time TKEY mestilah setem masa Unix yang sah atau format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr ""
-"Waktu kadaluarsa TKEY haruslah suatu setem masa Unix atau format "
-"YYYYMMHHMMSS yang sah."
+msgstr "Expiration time TKEY mestilah setem masa Unix yang sah atau format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr ""
-"Moda TKEY Zodiak harus berupa angka antara 1 dan 5 (1: Tugas server, 2: "
-"Pertukaran Diffie-Hellman, 3: negosiasi GSS-API, 4: Tugas Resolver, 5: "
-"Penghapusan kunci)."
+msgstr "Mode TKEY mestilah nombor antara 1 dan 5 (1: Umpukan pelayan, 2: Pertukaran Diffie-Hellman, 3: Rundingan GSS-API, 4: Umpukan penyelesai, 5: Pemadaman kunci)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr ""
-"Mode GSS-API GSS (3) mengabaikan inception dan exhibition kali per RFC 3645."
+msgstr "Mode GSS-API (3) mengabaikan inception time dan expiration time mengikut RFC 3645."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
-msgstr ""
-"Moda klausa GSS-API membutuhkan data kunci untuk mengandung token GSS-API."
+msgstr "Mode GSS-API memerlukan key data mengandungi token GSS-API."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
-"Mode Diffie-Hellman yang diotentikasi harus diotentikasi menggunakan TSIG "
-"atau SIG(0) untuk mencegah serangan man-in-the-middle."
+msgstr "Mode Diffie-Hellman patut disahkan menggunakan TSIG atau SIG(0) bagi mengelakkan serangan man-in-the-middle."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr ""
-"Operasi penghapusan kunci MASUK disahkan menggunakan TIG dengan kunci "
-"dipadam."
+msgstr "Operasi pemadaman kunci MESTI disahkan menggunakan TSIG dengan kunci yang sedang dipadam."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
