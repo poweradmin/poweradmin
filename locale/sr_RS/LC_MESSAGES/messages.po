@@ -2368,19 +2368,17 @@ msgstr "Дневници групе"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Izvoz PEM ključa zahteva PowerDNS 4.7 ili noviji."
+msgstr "Извоз PEM кључа захтева PowerDNS 4.7 или новији."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Došlo je do greške prilikom izvoza PEM ključa: "
+msgstr "Дошло је до грешке приликом извоза PEM кључа: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
-msgstr ""
-"Nije bilo moguće preuzeti PEM ključ. Server možda ne izlaže privatni ključni "
-"materijal za ovaj ključ."
+msgstr "Није било могуће преузети PEM кључ. Сервер можда не излаже приватни кључни материјал за овај кључ."
 
 #: lib/Domain/Service/Dns/DomainManager.php:435
 msgid "You do not have the permission to add a master zone."
@@ -2480,9 +2478,7 @@ msgstr "Неважеће прослеђивање форме."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tabela record_type_defaults nedostaje. Primenite ažuriranje šeme 4.5.0 pre "
-"čuvanja podrazumevanih vrednosti."
+msgstr "Табела record_type_defaults недостаје. Примените ажурирање шеме 4.5.0 пре чувања подразумеваних вредности."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -2521,44 +2517,44 @@ msgstr "Група је успешно креирана."
 
 #: lib/Application/Controller/ListViewsController.php:47
 msgid "You do not have permission to manage PowerDNS views."
-msgstr "Nemate dozvolu za upravljanje PowerDNS pregledima."
+msgstr "Немате дозволу за управљање PowerDNS прегледима."
 
 #: lib/Application/Controller/ListViewsController.php:52
 msgid "Views require PowerDNS 5.0 or newer."
-msgstr "Pregledi zahtevaju PowerDNS 5.0 ili noviji."
+msgstr "Прегледи захтевају PowerDNS 5.0 или новији."
 
 #: lib/Application/Controller/ListViewsController.php:58
 msgid "Views are only available with the PowerDNS API backend."
-msgstr "Pregledi su dostupni samo sa PowerDNS API pozadinom."
+msgstr "Прегледи су доступни само са PowerDNS API позадином."
 
 #: lib/Application/Controller/ListViewsController.php:69
 msgid "Provide a valid view name and zone identifier."
-msgstr "Navedite važeće ime pregleda i identifikator zone."
+msgstr "Наведите важеће име прегледа и идентификатор зоне."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Zone assigned to view."
-msgstr "Zona dodeljena pregledu."
+msgstr "Зона додељена прегледу."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Failed to assign zone to view."
-msgstr "Dodela zone pregledu nije uspela."
+msgstr "Додела зоне прегледу није успела."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Zone removed from view."
-msgstr "Zona uklonjena iz pregleda."
+msgstr "Зона уклоњена из прегледа."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Failed to remove zone from view."
-msgstr "Uklanjanje zone iz pregleda nije uspelo."
+msgstr "Уклањање зоне из прегледа није успело."
 
 #: lib/Application/Controller/ListNetworksController.php:89
 msgid "Unknown action."
-msgstr "Nepoznata akcija."
+msgstr "Непозната акција."
 
 #: lib/Application/Controller/ListViewsController.php:104
 #: templates/modern/list_views.html:2 templates/modern/list_views.html:5
 msgid "Views"
-msgstr "Pregledi"
+msgstr "Прегледи"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
@@ -2858,25 +2854,24 @@ msgstr "Супермастер је успешно додат."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Uvoz PEM ključa zahteva PowerDNS 4.7 ili noviji."
+msgstr "Увоз PEM кључа захтева PowerDNS 4.7 или новији."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:113
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Navedite privatni ključ kodiran PEM-om (mora sadržati BEGIN/END oznake)."
+msgstr "Наведите приватни кључ кодиран PEM-ом (мора садржати BEGIN/END ознаке)."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:121
 msgid "PEM key imported successfully."
-msgstr "PEM ključ uspešno uvezen."
+msgstr "PEM кључ успешно увезен."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:124
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr "Uvoz PEM ključa nije uspeo. PowerDNS server je možda odbio format."
+msgstr "Увоз PEM кључа није успео. PowerDNS сервер је можда одбио формат."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "Došlo je do greške prilikom uvoza PEM ključa: "
+msgstr "Дошло је до грешке приликом увоза PEM кључа: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -2929,44 +2924,44 @@ msgstr[2] ""
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
-msgstr "Nemate dozvolu za upravljanje mrežnim pregledima."
+msgstr "Немате дозволу за управљање мрежним прегледима."
 
 #: lib/Application/Controller/ListNetworksController.php:52
 msgid "Network views require PowerDNS 5.0 or newer."
-msgstr "Mrežni pregledi zahtevaju PowerDNS 5.0 ili noviji."
+msgstr "Мрежни прегледи захтевају PowerDNS 5.0 или новији."
 
 #: lib/Application/Controller/ListNetworksController.php:58
 msgid "Network views are only available with the PowerDNS API backend."
-msgstr "Mrežni pregledi dostupni su samo sa PowerDNS API pozadinom."
+msgstr "Мрежни прегледи доступни су само са PowerDNS API позадином."
 
 #: lib/Application/Controller/ListNetworksController.php:69
 msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
-msgstr "Navedite važeći CIDR (npr. 192.168.0.0/16)."
+msgstr "Наведите важећи CIDR (нпр. 192.168.0.0/16)."
 
 #: lib/Application/Controller/ListNetworksController.php:72
 msgid "Provide a valid view name."
-msgstr "Navedite važeće ime pregleda."
+msgstr "Наведите важеће име прегледа."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Network mapping saved."
-msgstr "Mrežno mapiranje sačuvano."
+msgstr "Мрежно мапирање сачувано."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Failed to save network mapping."
-msgstr "Čuvanje mrežnog mapiranja nije uspelo."
+msgstr "Чување мрежног мапирања није успело."
 
 #: lib/Application/Controller/ListNetworksController.php:86
 msgid "Network mapping removed."
-msgstr "Mrežno mapiranje uklonjeno."
+msgstr "Мрежно мапирање уклоњено."
 
 #: lib/Application/Controller/ListNetworksController.php:86
 msgid "Failed to remove network mapping."
-msgstr "Uklanjanje mrežnog mapiranja nije uspelo."
+msgstr "Уклањање мрежног мапирања није успело."
 
 #: lib/Application/Controller/ListNetworksController.php:101
 #: templates/modern/list_networks.html:5
 msgid "Network views"
-msgstr "Mrežni pregledi"
+msgstr "Мрежни прегледи"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
@@ -3438,7 +3433,7 @@ msgstr "Супермастер"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "Dodaj autoprimary"
+msgstr "Додај autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
@@ -3446,7 +3441,7 @@ msgstr "Додај супермастера"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Uredi autoprimary"
+msgstr "Уреди autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
@@ -3454,7 +3449,7 @@ msgstr "уреди супер главни"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "Obriši autoprimary"
+msgstr "Обриши autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
@@ -3462,7 +3457,7 @@ msgstr "обриши супермастера"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
-msgstr "O Autoprimaries"
+msgstr "О Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
@@ -3470,7 +3465,7 @@ msgstr "О супермастерима"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
-msgstr "Šta je Autoprimary?"
+msgstr "Шта је Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
@@ -3478,7 +3473,7 @@ msgstr "Шта је супермастер?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
-msgstr "Pretraži autoprimaries..."
+msgstr "Претражи autoprimaries..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
@@ -3486,7 +3481,7 @@ msgstr "Претражи супермастере..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
-msgstr "Nema autoprimaries za prikaz u listi."
+msgstr "Нема autoprimaries за приказ у листи."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
@@ -3494,7 +3489,7 @@ msgstr "Нема супермастера за приказ у овом спис
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "IP adresa autoprimary"
+msgstr "IP адреса autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
@@ -3502,7 +3497,7 @@ msgstr "IP адреса супермастера"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "Izaberite nalog koji će biti vlasnik ovog autoprimary"
+msgstr "Изаберите налог који ће бити власник овог autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
@@ -3510,7 +3505,7 @@ msgstr "Изаберите налог који ће поседовати ово�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
-msgstr "O uređivanju Autoprimaries"
+msgstr "О уређивању Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
@@ -3519,7 +3514,7 @@ msgstr "О уређивању супермастера"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr "Možete izmeniti IP adresu, ime hosta ili nalog ovog autoprimary."
+msgstr "Можете изменити IP адресу, име хоста или налог овог autoprimary."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
@@ -3528,7 +3523,7 @@ msgstr "Можете изменити IP, име хоста или налог з
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
-msgstr "Detalji autoprimary"
+msgstr "Детаљи autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
@@ -3536,7 +3531,7 @@ msgstr "Детаљи супер главног"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "Upravo ćete obrisati autoprimary"
+msgstr "Управо ћете обрисати autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
@@ -3544,7 +3539,7 @@ msgstr "Уклонићете супермастера"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "Da, obriši ovaj autoprimary"
+msgstr "Да, обриши овај autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
@@ -3552,7 +3547,7 @@ msgstr "Да, обриши овог супермастера"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "Ne, sačuvaj ovaj autoprimary"
+msgstr "Не, сачувај овај autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
@@ -4392,7 +4387,7 @@ msgstr "Неважећа величина или прецизност. 0-9000000
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "Неважећи LOC формат."
+msgstr "Неважећи формат LOC записа. Формат треба да буде: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5425,7 +5420,7 @@ msgstr "Параметар \"%s\" је обавезан али није укљу
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930: TKEY TTL=0."
+msgstr "RFC 2930 захтева да TKEY записи имају TTL=0 како би се спречило кеширање. Тренутни TTL различит од нуле може изазвати проблеме са старијим DNS имплементацијама."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -6002,7 +5997,7 @@ msgstr "RRSIG запис садржи неважеће знакове."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG мора садржати 9 поља."
+msgstr "RRSIG запис мора да садржи покривени тип, алгоритам, број ознака, оригинални TTL, време истека, време почетка важења, ознаку кључа, име потписника и потпис."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -9194,11 +9189,11 @@ msgstr "Активирај"
 
 #: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
 msgid "Download this key as PEM"
-msgstr "Preuzmi ovaj ključ kao PEM"
+msgstr "Преузми овај кључ као PEM"
 
 #: templates/default/dnssec.html:125 templates/modern/dnssec.html:125
 msgid "Export PEM"
-msgstr "Izvezi PEM"
+msgstr "Извези PEM"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
@@ -9206,16 +9201,13 @@ msgstr "Обриши"
 
 #: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
 msgid "Import key from PEM"
-msgstr "Uvezi ključ iz PEM-a"
+msgstr "Увези кључ из PEM-а"
 
 #: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
 msgid ""
 "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
 "key size from the PEM contents - select the matching algorithm and key role."
-msgstr ""
-"Nalepite privatni ključ kodiran PEM-om (RSA ili ECDSA). PowerDNS 4.7+ izvodi "
-"veličinu ključa iz PEM sadržaja - izaberite odgovarajući algoritam i ulogu "
-"ključa."
+msgstr "Налепите приватни кључ кодиран PEM-ом (RSA или ECDSA). PowerDNS 4.7+ изводи величину кључа из PEM садржаја - изаберите одговарајући алгоритам и улогу кључа."
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
@@ -9223,11 +9215,11 @@ msgstr "тип кључа"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
-msgstr "PEM privatni ključ"
+msgstr "PEM приватни кључ"
 
 #: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
 msgid "Import key"
-msgstr "Uvezi ključ"
+msgstr "Увези кључ"
 
 #: templates/default/list_networks.html:8 templates/modern/list_networks.html:8
 msgid "Network Mapping:"
@@ -9244,23 +9236,23 @@ msgstr "Свака мрежа (CIDR блок) се мапира на тачно 
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
-msgstr "Još nema konfigurisanih mreža. Mapirajte CIDR na pregled ispod."
+msgstr "Још нема конфигурисаних мрежа. Мапирајте CIDR на преглед испод."
 
 #: templates/modern/list_networks.html:22
 msgid "Network"
-msgstr "Mreža"
+msgstr "Мрежа"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "Pregled"
+msgstr "Преглед"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"
-msgstr "Ukloni mapiranje"
+msgstr "Уклони мапирање"
 
 #: templates/modern/list_networks.html:51
 msgid "Map network to view"
-msgstr "Mapiraj mrežu na pregled"
+msgstr "Мапирај мрежу на преглед"
 
 #: templates/modern/list_networks.html:58
 msgid "CIDR"
@@ -9268,7 +9260,7 @@ msgstr "CIDR"
 
 #: templates/modern/list_networks.html:76
 msgid "Save"
-msgstr "Sačuvaj"
+msgstr "Сачувај"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9365,7 +9357,7 @@ msgstr "Овај тип записа је застарео и не треба г
 
 #: templates/modern/add_record.html:195
 msgid "Saving..."
-msgstr "Čuvanje..."
+msgstr "Чување..."
 
 #: templates/modern/edit_perm_templ.html:50
 msgid "Update"
@@ -9550,9 +9542,7 @@ msgstr "Верзија повезаног PowerDNS-а"
 msgid ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
 "is reachable."
-msgstr ""
-"Nije bilo moguće otkriti verziju PowerDNS-a. Novije funkcije su skrivene dok "
-"API ne bude dostupan."
+msgstr "Није било могуће открити верзију PowerDNS-а. Новије функције су скривене док API не буде доступан."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS: unknown"
@@ -9586,7 +9576,7 @@ msgstr "Шаблони"
 
 #: templates/default/index.html:124 templates/modern/index.html:124
 msgid "Networks"
-msgstr "Mreže"
+msgstr "Мреже"
 
 #: templates/default/index.html:139 templates/modern/index.html:139
 msgid "Zone Operations"
@@ -9666,9 +9656,7 @@ msgstr "Save defaults"
 msgid ""
 "When a record is created without an explicit TTL, Poweradmin looks up the "
 "record type here first. Leave a field empty to fall back to"
-msgstr ""
-"Kada se zapis kreira bez eksplicitnog TTL-a, Poweradmin prvo traži tip "
-"zapisa ovde. Ostavite polje prazno da biste koristili"
+msgstr "Када се запис креира без експлицитног TTL-а, Poweradmin прво тражи тип записа овде. Оставите поље празно да бисте користили"
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
@@ -10293,15 +10281,15 @@ msgstr "Шаблон"
 
 #: templates/modern/list_forward_zones.html:157
 msgid "SOA record is disabled, the zone will not be served"
-msgstr "SOA zapis je onemogućen, zona neće biti posluživana"
+msgstr "SOA запис је онемогућен, зона неће бити послуживана"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "Zone has no SOA record"
-msgstr "Zona nema SOA zapis"
+msgstr "Зона нема SOA запис"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
-msgstr "Bez SOA"
+msgstr "Без SOA"
 
 #: templates/modern/list_forward_zones.html:162
 msgid ""
@@ -10343,15 +10331,13 @@ msgstr "Додај кључ за зону"
 
 #: templates/modern/dnssec_add_key.html:28
 msgid "Legacy PowerDNS detected"
-msgstr "Otkriven stariji PowerDNS"
+msgstr "Откривен старији PowerDNS"
 
 #: templates/modern/dnssec_add_key.html:29
 msgid ""
 "This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
 "by default. Pick KSK or ZSK explicitly to add a key here."
-msgstr ""
-"Ovaj server stariji je od PowerDNS 4.0 i podrazumevano ne pravi Combined "
-"Signing Key. Izaberite KSK ili ZSK izričito da biste dodali ključ."
+msgstr "Овај сервер старији је од PowerDNS 4.0 и подразумевано не прави Combined Signing Key. Изаберите KSK или ZSK изричито да бисте додали кључ."
 
 #: templates/modern/dnssec_add_key.html:46
 msgid "Select key type"
@@ -11306,7 +11292,7 @@ msgstr "total records"
 
 #: templates/default/edit.html:393 templates/modern/edit.html:393
 msgid "Last modified"
-msgstr "Poslednja izmena"
+msgstr "Последња измена"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
@@ -12054,7 +12040,7 @@ msgstr "Врста"
 
 #: templates/modern/edit_zone_metadata.html:114
 msgid "requires"
-msgstr "zahteva"
+msgstr "захтева"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
@@ -12488,11 +12474,11 @@ msgstr "Ставки по страни"
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Puna širina pregledača"
+msgstr "Пуна ширина прегледача"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Koristi celu širinu pregledača umesto stranice fiksne širine"
+msgstr "Користи целу ширину прегледача уместо странице фиксне ширине"
 
 #: templates/modern/user_preferences.html:39
 msgid "Timezone"
@@ -12514,9 +12500,7 @@ msgstr "City"
 msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
-msgstr ""
-"Koristi se za vremenske oznake u e-porukama koje su vam poslate (npr. MFA "
-"kodovi). Prazno nasleđuje globalnu vremensku zonu servera."
+msgstr "Користи се за временске ознаке у е-порукама које су вам послате (нпр. MFA кодови). Празно наслеђује глобалну временску зону сервера."
 
 #: templates/modern/user_preferences.html:98
 msgid "Zone Options"
@@ -12754,23 +12738,23 @@ msgstr "Прегледи различитим клијентима достав�
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
-msgstr "Još nema konfigurisanih pregleda. Dodajte varijantu zone ispod."
+msgstr "Још нема конфигурисаних прегледа. Додајте варијанту зоне испод."
 
 #: templates/default/list_views.html:34 templates/modern/list_views.html:34
 msgid "Remove from view"
-msgstr "Ukloni iz pregleda"
+msgstr "Уклони из прегледа"
 
 #: templates/default/list_views.html:48 templates/modern/list_views.html:48
 msgid "Assign zone to view"
-msgstr "Dodeli zonu pregledu"
+msgstr "Додели зону прегледу"
 
 #: templates/default/list_views.html:55 templates/modern/list_views.html:55
 msgid "View name"
-msgstr "Ime pregleda"
+msgstr "Име прегледа"
 
 #: templates/default/list_views.html:59 templates/modern/list_views.html:59
 msgid "Zone (zone..variant)"
-msgstr "Zona (zone..varijanta)"
+msgstr "Зона (zone..variant)"
 
 #: templates/modern/email_previews.html:8
 msgid "Email Template Previews"
@@ -13062,9 +13046,7 @@ msgstr "PowerDNS је одбио захтев. Проверите дневник
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr ""
-"Neke funkcije možda neće biti dostupne dok API ponovo ne postane dostupan. "
-"Pogledajte zapisnik PowerDNS servera za detalje."
+msgstr "Неке функције можда неће бити доступне док API поново не постане доступан. Погледајте записник PowerDNS сервера за детаље."
 
 #: templates/modern/dnssec_ds_dnskey.html:9
 msgid "DS and DNS keys"
@@ -13084,11 +13066,11 @@ msgstr "DNSKEY записи"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
-msgstr "Kopiraj sve DNSKEY zapise u privremenu memoriju"
+msgstr "Копирај све DNSKEY записе у привремену меморију"
 
 #: templates/modern/dnssec_ds_dnskey.html:61
 msgid "Copy this record"
-msgstr "Kopiraj ovaj zapis"
+msgstr "Копирај овај запис"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
@@ -13096,7 +13078,7 @@ msgstr "DS записи"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
-msgstr "Kopiraj sve DS zapise u privremenu memoriju"
+msgstr "Копирај све DS записе у привремену меморију"
 
 #: templates/modern/dnssec_ds_dnskey.html:66
 msgid ""
@@ -13859,11 +13841,7 @@ msgid ""
 "Poweradmin to connect to the database. They are NOT the credentials you will "
 "use to log in to the Poweradmin web interface - that account is configured "
 "below."
-msgstr ""
-"Ovo su podaci za prijavu na server baze podataka (MySQL/PostgreSQL), koje "
-"Poweradmin koristi za povezivanje sa bazom podataka. Ovo NISU podaci kojima "
-"ćete se prijaviti na Poweradmin veb interfejs - taj nalog se konfiguriše "
-"ispod."
+msgstr "Ово су подаци за пријаву на сервер базе података (MySQL/PostgreSQL), које Poweradmin користи за повезивање са базом података. Ово НИСУ подаци којима ћете се пријавити на Poweradmin веб интерфејс - тај налог се конфигурише испод."
 
 #: install/templates/step4.html.twig:100
 msgid "Database type"
@@ -13968,21 +13946,18 @@ msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:231
 msgid "Web interface login:"
-msgstr "Prijava na veb interfejs:"
+msgstr "Пријава на веб интерфејс:"
 
 #: install/templates/step4.html.twig:231
 msgid ""
 "This is the account you will use to sign in to Poweradmin. The username is "
 "fixed as \"admin\" during installation; you can create additional users from "
 "the web interface after logging in."
-msgstr ""
-"Ovo je nalog kojim ćete se prijavljivati na Poweradmin. Korisničko ime je "
-"tokom instalacije fiksno postavljeno na \"admin\"; dodatne korisnike možete "
-"kreirati iz veb interfejsa nakon prijave."
+msgstr "Ово је налог којим ћете се пријављивати на Poweradmin. Корисничко име је током инсталације фиксно постављено на \"admin\"; додатне кориснике можете креирати из веб интерфејса након пријаве."
 
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
-msgstr "Fiksno postavljeno za početni administratorski nalog."
+msgstr "Фиксно постављено за почетни администраторски налог."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
@@ -13990,7 +13965,7 @@ msgstr "Унесите лозинку"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
-msgstr "Lozinka za nalog \"admin\"."
+msgstr "Лозинка за налог \"admin\"."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -14204,9 +14179,7 @@ msgstr "Уклоните директоријум \"install/\" са вашег �
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
-msgstr ""
-"Prijavite se u <a href=\"../index.php\">Poweradmin</a> koristeći korisničko "
-"ime \"admin\" i lozinku koju ste postavili u koraku 4"
+msgstr "Пријавите се у <a href=\"../index.php\">Poweradmin</a> користећи корисничко име \"admin\" и лозинку коју сте поставили у кораку 4"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"

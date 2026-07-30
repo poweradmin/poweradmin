@@ -86,7 +86,7 @@ msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr "TLSA vaatii DNSSEC:n tälle alueelle."
+msgstr "TLSA-tietueet vaativat, että DNSSEC on otettu käyttöön tälle alueelle. Ilman DNSSEC:iä TLSA-tietueet eivät tuo tietoturvahyötyä ja asiakasohjelmat voivat sivuuttaa ne."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
@@ -252,7 +252,7 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr "Heksa-tiiviste tai varmenne. SHA-256: openssl."
+msgstr "Heksadesimaalinen tiiviste tai koko varmennedata (riippuu vastaavuustyypistä). SHA-256:lle käytä \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -663,14 +663,14 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr "SPF ylittää rajan (%d/10)."
+msgstr "SPF-tietue ylittää DNS-hakujen rajan (%d/10). Tämä saa SPF-tarkistuksen epäonnistumaan. Poista joitakin include/a/mx-mekanismeja tai käytä niiden sijaan ip4/ip6."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr "SPF %d DNS-hakua (raja 10)."
+msgstr "SPF-tietueessa on %d DNS-hakua (raja on 10). Harkitse ip4/ip6:n käyttöä include-mekanismien sijaan tai yhdistä include-viittauksia pysyäksesi rajan alapuolella."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
@@ -3927,7 +3927,7 @@ msgstr "1. Koko SRV-hakujen ketjun on oltava DNSSEC-allekirjoitettu"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "TLSA: _port._protocol.hostname."
+msgstr "2. TLSA-tietueiden tulee löytyä nimestä _$port._$protocol.$hostname, jossa $port, $protocol ja $hostname tulevat SRV-haun kohteesta"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4108,7 +4108,7 @@ msgstr "RFC 5155/9077:n mukaan NSEC3PARAM TTL = SOA minimum."
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3PARAM on DNSSEC:n osa."
+msgstr "NSEC3PARAM-tietueet ovat osa DNSSEC:iä, ja niitä tulisi hallita vain muiden DNSSEC-tietueiden (DNSKEY, RRSIG jne.) yhteydessä."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
@@ -4228,7 +4228,7 @@ msgstr ""
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr "FQDN lopussa piste."
+msgstr "FQDN-arvot on suositeltavaa päättää pisteeseen, jotta ne tulkitaan absoluuttisiksi verkkotunnuksiksi eikä suhteellisiksi."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
@@ -4348,7 +4348,7 @@ msgstr "Virheellinen koko tai tarkkuus. 0-90000000 metriä."
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "Virheellinen LOC-muoto."
+msgstr "Virheellinen LOC-tietueen muoto. Muodon tulee olla: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4696,7 +4696,7 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr "Seuraava nimi kanonisessa järjestyksessä."
+msgstr "Seuraavan verkkotunnuksen kentän on oltava alueen kanonisessa järjestyksessä seuraava omistajanimi. Kanoninen järjestys ei erottele kirjainkokoa ja lajittelee nimiosat oikealta vasemmalle."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4745,7 +4745,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Ei vakio OPENPGPKEY-muoto."
+msgstr "Tietueen nimi ei noudata vakiomuotoista OPENPGPKEY-muotoa (<hash>._openpgpkey.<domain>). Vakiomuotoa suositellaan yhteentoimivuuden vuoksi."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -4756,7 +4756,7 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "OPENPGPKEY luodaan GnuPG:llä."
+msgstr "OPENPGPKEY-tietueet tulisi yleensä luoda erikoistyökaluilla, kuten GnuPG:llä ja sen --print-dane-records-valitsimella, eikä käsin."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4779,7 +4779,7 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "OPENPGPKEY ylittää 4KB."
+msgstr "OPENPGPKEY-tietueen koko ylittää 4KB. RFC 7929 suosittelee pitämään DNS-tietueet mahdollisimman pieninä luotettavan siirron varmistamiseksi. Harkitse mahdollisimman suppean avaimen vientimuodon käyttöä."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4804,7 +4804,7 @@ msgstr "Dekoodatussa sisällössä ei julkisen avaimen pakettia."
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr "OPENPGPKEY VAATII DNSSEC:n."
+msgstr "OPENPGPKEY-tietueet VAATIVAT DNSSEC:iä tuottaakseen mitään tietoturvahyötyä. Ilman DNSSEC-varmennusta nämä tietueet eivät anna lainkaan tietoturvaetua."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -4822,7 +4822,7 @@ msgstr "OPENPGPKEY ei korvaa OpenPGP Web of Trustia."
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr "OPENPGPKEY:lle käytä GnuPG:tä."
+msgstr "Luo OPENPGPKEY-tietueet erikoistyökaluilla, kuten GnuPG:llä ja sen --print-dane-records-valitsimella, jotta muoto ja sisältö ovat oikeat."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -4834,7 +4834,7 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr "Varoitus: HINFO paljastaa arkaluonteisia tietoja."
+msgstr "Varoitus: HINFO-tietueet paljastavat mahdollisesti arkaluonteisia tietoja palvelimen laitteistosta ja ohjelmistosta, joista voi olla hyötyä hyökkääjille. Arvioi tietoturvavaikutukset ennen käyttöä julkisessa DNS:ssä."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -5107,7 +5107,7 @@ msgstr "CERT-tietueiden prioriteettikentän on oltava 0 tai tyhjä"
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr "RFC 4398: huomioi CERT-koko."
+msgstr "RFC 4398:n mukaisesti huomioi DNS-tietueiden kokorajoitukset CERT-tietueita käyttäessäsi. Suuret varmenteet voivat aiheuttaa DNS-viestien pirstoutumista."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
@@ -5142,7 +5142,7 @@ msgstr "CERT-tyypin on oltava 0-65535 tai kelvollinen mnemoninen."
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr "URL CERT lisää turvariskejä."
+msgstr "URL-pohjaiset varmennetyypit (IPKIX, ISPKI, IPGP, IACPKIX) tuovat ylimääräisen epäsuoran viittauksen ja mahdollisia tietoturvariskejä."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -5201,7 +5201,7 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr "TÄRKEÄÄ: DLV on vanhentunut (RFC 8749)."
+msgstr "TÄRKEÄÄ: DLV-tietueet on todettu vanhentuneiksi RFC 8749:ssä (maaliskuu 2020). Suuret DNS-selvittäjät ovat poistaneet DLV-tuen tai merkinneet sen vanhentuneeksi. Harkitse sen sijaan tavanomaista DNSSEC-varmennusta DS-tietueiden avulla."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5379,7 +5379,7 @@ msgstr "Parametri \"%s\" on pakollinen mutta ei ole tietueessa."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 vaatii TKEY TTL=0."
+msgstr "RFC 2930 vaatii, että TKEY-tietueiden TTL on 0 välimuistiin tallentamisen estämiseksi. Nykyinen nollasta poikkeava TTL voi aiheuttaa ongelmia vanhemmissa DNS-toteutuksissa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5399,7 +5399,7 @@ msgstr "Virheellisiä merkkejä TKEY-tietueen sisällössä."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY-tietueessa 6 kenttää."
+msgstr "TKEY-tietueen on sisällettävä välilyönneillä eroteltuina kentät algorithm-name, inception-time, expiration-time, mode, error ja key-data."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -5422,7 +5422,7 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY-tila 1-5."
+msgstr "TKEY-tilan on oltava luku väliltä 1-5 (1: palvelimen määritys, 2: Diffie-Hellman-vaihto, 3: GSS-API-neuvottelu, 4: selvittäjän määritys, 5: avaimen poisto)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5850,7 +5850,7 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "RFC 4703 DHCID törmäykset."
+msgstr "RFC 4703:n mukaan DHCID-tietueita käytetään törmäysten havaitsemiseen, kun useampi DHCP-asiakas vaatii samaa nimeä. DHCID-tietueen olemassaolo kertoo, että nimi on DHCP-asiakkaan käytössä."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
@@ -5898,7 +5898,7 @@ msgstr "DHCID-tiivistetyyppi %d ei ole vakiotyyppi (RFC 4701)."
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "DHCID SHA-256 vähintään 35 tavua."
+msgstr "SHA-256-tiivisteen (tyyppi 1) sisältävän DHCID-tietueen on oltava purettuna vähintään 35 tavua (2 tunnistetyypille, 1 tiivistetyypille ja 32 SHA-256-tiivisteelle)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -5944,7 +5944,7 @@ msgstr "RRSIG-tietue sisältää virheellisiä merkkejä."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG-tietueessa 9 kenttää."
+msgstr "RRSIG-tietueen on sisällettävä katettu tyyppi, algoritmi, nimiosien lukumäärä, alkuperäinen TTL, vanhentumisaika, voimaantuloaika, avaintunniste, allekirjoittajan nimi ja allekirjoitus."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6078,7 +6078,7 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "Allekirjoituksen kelpoisuus > 90 päivää."
+msgstr "Allekirjoituksen voimassaoloaika on yli 90 päivää, mikä on suositeltua pidempi. Pitkät voimassaoloajat kasvattavat haavoittuvuutta, jos avain vaarantuu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6493,7 +6493,7 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS-tietueet luovat luottamusketjun."
+msgstr "DS-tietueet muodostavat luottamusketjun ylemmästä alueesta alialueeseen. Ylemmällä alueella on oltava tämä DS-tietue ja alialueella sitä vastaava DNSKEY-tietue."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
@@ -6505,7 +6505,7 @@ msgstr "CSYNC-tietueet vain alueen juuressa (RFC 7477)."
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC vaatii DNSSEC (RFC 7477)."
+msgstr "CSYNC-tietueet vaativat DNSSEC-allekirjoituksen, jotta ylemmän tason toimijat käsittelevät ne (RFC 7477). Varmista, että alueesi on allekirjoitettu oikein DNSSEC:llä."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -6639,7 +6639,7 @@ msgstr "Tämä on yleislähetysosoite, ei välttämättä kelvollinen kaikkialla
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Ei vakio käänteis-DNS-nimi."
+msgstr "Tietueen nimi ei näytä olevan tavanomainen käänteisen DNS-alueen nimi (sen tulisi päättyä .in-addr.arpa IPv4:llä tai .ip6.arpa IPv6:lla)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -7060,7 +7060,7 @@ msgstr "SMIMEA-nimi: SHA256._smimecert.domain.tld (%s)."
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Epästandardi SMIMEA-muoto."
+msgstr "Tämä ei käytä vakiomuotoista SMIMEA-nimeä. SMIMEA-tietueiden tulisi yleensä käyttää muotoa: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7104,20 +7104,20 @@ msgstr "PKIX-TA (0) vaatii CA:n validointipolulla."
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE vaatii PKIX-validoinnin."
+msgstr "PKIX-EE-käyttötapa (1) vaatii, että loppukohteen varmenne tarkistetaan PKIX-varmennussääntöjen mukaan. Varmista, että tarvittavat välivarmenteet ovat saatavilla."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA (2) on luottamusankkuri."
+msgstr "DANE-TA-käyttötapa (2) määrittää tämän varmenteen luottamusankkuriksi, jolla loppukohteen varmenne tarkistetaan. Varmista, että tämä varmenne on suojattu asianmukaisesti."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE (3) suositellaan."
+msgstr "DANE-EE-käyttötapaa (3) suositellaan, koska se on yksinkertaisin ottaa käyttöön: varmennetta käytetään suoraan ilman lisätarkistuksia."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
@@ -7137,7 +7137,7 @@ msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "Valitsin 1 (SPKI) suositellaan."
+msgstr "Valitsinta 1 (SubjectPublicKeyInfo) suositellaan, koska se mahdollistaa varmenteen uusimisen ilman SMIMEA-tietueen päivitystä niin kauan kuin julkinen avain pysyy samana."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7496,7 +7496,7 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "KRIITTINEN: SSHFP VAATII DNSSEC:n."
+msgstr "KRIITTINEN: SSHFP-tietueet VAATIVAT DNSSEC-varmennuksen tuottaakseen mitään tietoturvahyötyä. Ilman DNSSEC:iä ne eivät suojaa lainkaan välimieshyökkäyksiltä."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -7742,7 +7742,7 @@ msgstr "DMARC ei määritä rua/ruf-URI:a. Rajoittaa valvontaa."
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "DMARC TXT alkaa \"v=DMARC1\"."
+msgstr "Tämä on DMARC-tietue, joka käsitellään TXT-tietuetyyppinä. DMARC-tietueiden tulee käyttää TXT-tietuetyyppiä, ja niiden sisällön tulee alkaa merkinnällä \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -7810,7 +7810,7 @@ msgstr "Virheellisiä merkkejä CDS-tietueen sisällössä."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "CDS-poistotietue (RFC 8078)."
+msgstr "Tämä on RFC 8078:ssa määritelty CDS-poistotietue. Se ilmoittaa, että vastaavat DS-tietueet tulee poistaa ylemmältä alueelta."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -8006,7 +8006,7 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "NSEC3 omistajanimi Base32hex + alue."
+msgstr "NSEC3-tietueen omistajanimen tulisi yleensä olla Base32hex-koodattu tiiviste, jonka perässä on alueen nimi (esim. \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8185,7 +8185,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR-palvelun muoto."
+msgstr "NAPTR-palvelun on noudatettava muotoa: [protocol][+rs][+rs]... jossa protocol ja rs alkavat kirjaimella ja sisältävät kirjaimia, numeroita, väliviivoja, kaksoispisteitä tai plusmerkkejä (enintään 32 merkkiä kumpikin)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8259,7 +8259,7 @@ msgstr "Lippu 0: ei ole DNSSEC-alueavain."
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr "Arvo 256 = ZSK."
+msgstr "Lippuarvo 256 tarkoittaa, että tämä on Zone Signing Key (ZSK), jossa Zone Key -bitti on asetettu ja SEP-bitti ei ole asetettu."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
@@ -8874,14 +8874,14 @@ msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr "Varoitus: CNAME juuressa ei suositeltu."
+msgstr "Varoitus: CNAME-tietueita ei suositella verkkotunnuksen juuressa (alueen kärjessä), ja ne voivat aiheuttaa ongelmia. SOA- ja NS-tietueet vaaditaan verkkotunnuksen juuressa, eivätkä ne voi esiintyä yhdessä CNAME-tietueen kanssa."
 
 #: templates/modern/add_zone_templ_record.html:75
 msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "Vihje: SOA-tietueille <code>[ZONE]</code> nimeksi."
+msgstr "Vihje: Käytä SOA-tietueissa nimenä <code>[ZONE]</code> ja sisältönä <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>. SOA-tietueet vaaditaan, jotta DNS-alue toimii oikein."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -10001,7 +10001,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Emme takaa 100%% käyttöaikaa."
+msgstr "Vaikka pyrimme ylläpitämään järjestelmän saatavuutta, emme voi taata 100 %:n käyttöaikaa. Käyttäjät eivät saa luottaa pelkästään tähän järjestelmään kriittisissä DNS-toiminnoissa ilman asianmukaisia varmuuskopioita ja valvontaa."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -11081,7 +11081,7 @@ msgstr "Luo API-avain"
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr "Uusi API-avain näytetään vain KERRAN."
+msgstr "Kun luot uuden API-avaimen, avain näytetään vain KERRAN. Tallenna se turvalliseen paikkaan, sillä et voi hakea sitä enää myöhemmin."
 
 #: templates/default/api_key_add.html:80 templates/modern/api_key_add.html:81
 msgid "If you lose the key, you'll need to regenerate it."
@@ -11752,7 +11752,7 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr "Mallin vaihto säilyttää käsin lisätyn."
+msgstr "Alueen mallin vaihtaminen korvaa malliin perustuvat tietueet mutta säilyttää käsin lisätyt. Mallin muutokset eivät päivitä alueita automaattisesti - ota muutokset käyttöön mallia muokatessasi \"Päivitä alueet\" -painikkeella."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -11879,7 +11879,7 @@ msgstr "Mallin tietueet"
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr "Tällä mallilla ei ole SOA-tietuetta."
+msgstr "Tällä mallilla ei ole SOA-tietuetta. DNS-alueet vaativat yleensä SOA-tietueen toimiakseen oikein, ja DNSSEC-allekirjoitus voi epäonnistua ilman sitä."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."
@@ -13182,7 +13182,7 @@ msgstr "Käyttöoikeusryhmät"
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
-msgstr "Oikeudet ryhmissä. Käytä hakua."
+msgstr "Käyttöoikeudet on jaettu alla ryhmiin hallinnan helpottamiseksi. Käytä hakutoimintoa löytääksesi tietyt käyttöoikeudet nopeasti."
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"

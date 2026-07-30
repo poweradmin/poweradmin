@@ -298,7 +298,7 @@ msgstr "Zgjedhësi duhet të jetë 0 ose 1"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:243
 msgid "Matching type must be 0, 1, or 2"
-msgstr "lloji"
+msgstr "Lloji i përputhjes duhet të jetë 0, 1 ose 2"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:248
 msgid "Certificate association data is required"
@@ -365,7 +365,7 @@ msgstr "Politika"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:68
 msgid "None (monitor only)"
-msgstr "Asnjë"
+msgstr "None (vetëm monitorim)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:68
 msgid "No action taken, just collect reports for analysis"
@@ -385,7 +385,7 @@ msgstr "Refuzo"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:70
 msgid "Block delivery of suspicious emails entirely"
-msgstr "Blloqe nga"
+msgstr "Blloko plotësisht dorëzimin e e-maileve të dyshimta"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
@@ -684,15 +684,15 @@ msgstr "Që ai (pejgamberi) do të jetë i lejuar"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:148
 msgid "Neutral (no policy)"
-msgstr "Jo"
+msgstr "Neutral (pa politikë)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:149
 msgid "Soft fail (mark as spam but accept)"
-msgstr "Zgjidh"
+msgstr "Dështim i lehtë (shënoje si spam, por pranoje)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:150
 msgid "Fail (reject unauthorized emails)"
-msgstr "Dështoi"
+msgstr "Dështim (refuzo e-mailet e paautorizuara)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:152
 msgid ""
@@ -1058,7 +1058,7 @@ msgstr "Regjistri SRV"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:69
 msgid "Service location (hostname and port)"
-msgstr "pozicioni"
+msgstr "Vendndodhja e shërbimit (emri i hostit dhe porta)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:95
 msgid "Service"
@@ -1478,7 +1478,7 @@ msgstr "Asnjë i regjistruar nuk mund të eleminohet. Të drejtat e delegimit"
 #: lib/Application/Controller/DeleteRecordsController.php:289
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
-msgstr "Jo për."
+msgstr "Nuk është zgjedhur asnjë regjistrim i vlefshëm për fshirje ose nuk ke leje për t'i fshirë."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:72
 msgid "Invalid or unexpected input given."
@@ -1948,7 +1948,7 @@ msgstr "Kërkohet ID e zonës."
 
 #: lib/Application/Controller/ListPermTemplController.php:41
 msgid "You do not have the permission to edit permission templates."
-msgstr "nuk nga."
+msgstr "Nuk ke leje të ndryshosh modelet e lejeve."
 
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
@@ -1995,7 +1995,7 @@ msgstr "Kërko"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Log"
+msgstr "Historiku i ndryshimeve të regjistrimeve"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2107,7 +2107,7 @@ msgstr "Nuk është dhënë asnjë model identifikimi."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "You do not have the permission to edit zone templates."
-msgstr "Ti nuk nga."
+msgstr "Nuk ke leje të ndryshosh modelet e zonave."
 
 #: lib/Application/Controller/EditZoneTemplController.php:78
 msgid "Edit Zone Template"
@@ -2168,7 +2168,7 @@ msgstr "Logs e përdoruesit"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
-msgstr "Ti nga."
+msgstr "Nuk ke leje të shkëputësh zonat nga modelet."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:55
 msgid "No zones selected."
@@ -2190,11 +2190,11 @@ msgstr[1] "%d zona nuk mundën të çlidhen."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
-msgstr "nga."
+msgstr "Shkëputja e zonave nga modeli dështoi."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "No valid zones selected."
-msgstr "Jo."
+msgstr "Nuk është zgjedhur asnjë zonë e vlefshme."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:146
 msgid "Template not found."
@@ -2441,7 +2441,7 @@ msgstr "Zonat janë fshirë me sukses."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:85
 msgid "You do not have the permission to edit zone template records."
-msgstr "nuk nga."
+msgstr "Nuk ke leje të ndryshosh regjistrimet e modelit të zonës."
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
@@ -2498,7 +2498,7 @@ msgstr "Nuk ke të drejtë të shtosh një zonë master."
 
 #: lib/Application/Controller/AddZoneMasterController.php:80
 msgid "Add Primary Zone"
-msgstr "Shto"
+msgstr "Shto zonë parësore"
 
 #: lib/Application/Controller/BulkRegistrationController.php:95
 msgid ""
@@ -2771,7 +2771,7 @@ msgstr[1] "%d zona nuk mundën të hiqen."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
-msgstr "nuk nga shto."
+msgstr "Nuk ke leje të shtosh modele të lejeve."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
 #: templates/modern/add_perm_templ.html:16
@@ -2903,7 +2903,7 @@ msgstr "Nuk keni të drejtë të shtoni një zonë skllevërish."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:72
 msgid "Add Secondary Zone"
-msgstr "Shto"
+msgstr "Shto zonë sekondare"
 
 #: lib/Domain/Model/ZoneTemplate.php:465 lib/Domain/Model/ZoneTemplate.php:506
 msgid "You do not have the permission to delete zone templates."
@@ -3063,7 +3063,7 @@ msgstr "Jep një emër të vlefshëm për paraqitjen."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Network mapping saved."
-msgstr "Rrjeti"
+msgstr "Harta e rrjetit u ruajt."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Failed to save network mapping."
@@ -3084,7 +3084,7 @@ msgstr "Paraqitja e rrjetit"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
-msgstr "Ti nga elemino."
+msgstr "Nuk ke leje të fshish modelet e lejeve."
 
 #: lib/Application/Controller/DeletePermTemplController.php:91
 msgid "The permission template has been deleted successfully."
@@ -3788,7 +3788,7 @@ msgstr "Gabim prezgjedhur"
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Gabim:"
+msgstr "Gabim gjatë heqjes së modelit të parazgjedhur të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
@@ -3835,7 +3835,7 @@ msgstr "Regjistrimi nuk i përket këtij modeli zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Gabim:"
+msgstr "Gabim gjatë përditësimit të regjistrimit të modelit të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 #, auto-english-fallback
@@ -4024,7 +4024,7 @@ msgstr "IPSECKEY përparësi duhet të jetë një numër midis 0 dhe 255."
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
-msgstr "lloji jo"
+msgstr "Lloji i portës IPSECKEY duhet të jetë 0 (Pa portë), 1 (IPv4), 2 (IPv6) ose 3 (Emër domaini)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
@@ -4036,7 +4036,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "për lloji jo."
+msgstr "Për portën e llojit 0 (Pa portë), porta duhet të jetë \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -4296,7 +4296,7 @@ msgstr "Të dhënat e çertifikatës TLSA duhet të jenë një string hexadecima
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
-msgstr "TLSA SHA-256"
+msgstr "Të dhënat e certifikatës TLSA SHA-256 duhet të jenë 64 shkronja të gjata."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:317
 msgid "TLSA SHA-512 certificate data must be 128 characters long."
@@ -5605,13 +5605,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "Lloji"
+msgstr "Vlera e llojit CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr "lloji a dhe j"
+msgstr "Lloji CERT duhet të jetë një numër midis 0 dhe 65535 ose një mnemonik i vlefshëm (PKIX, SPKI, PGP, etj.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -6900,7 +6900,7 @@ msgstr ""
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "Për a nuk a."
+msgstr "Sigurohu që ekzistojnë regjistrimet TXT përkatëse për fushën txt-dname, nëse nuk përdor një pikë (.)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
@@ -7046,7 +7046,7 @@ msgstr ""
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EI64"
+msgstr "Regjistrimi EUI64 përdor dy pika si ndarës (xx:xx:xx:xx:xx:xx:xx:xx), por kërkon ndarës me vijë (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -7423,7 +7423,7 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EPI48"
+msgstr "Regjistrimi EUI48 përdor dy pika si ndarës (xx:xx:xx:xx:xx:xx), por kërkon ndarës me vijë (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -7440,7 +7440,7 @@ msgstr "Rekordi i EUI48 duket të jetë në formatin Cisco. Formati"
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 a në është a."
+msgstr "Regjistrimi EUI48 duhet të jetë një adresë MAC e vlefshme në formatin xx-xx-xx-xx-xx-xx (ku x është një shifër heksadecimale)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -8059,7 +8059,7 @@ msgstr "Të dhënat çertifikate SMIMEA duhet të jenë një stringë hexadecima
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "SMIMEA SHA-256"
+msgstr "Të dhënat e certifikatës SMIMEA SHA-256 duhet të jenë 64 shkronja të gjata."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
@@ -8493,7 +8493,7 @@ msgstr "përmbajtja a emri."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "përmbajtja a emri."
+msgstr "Përmbajtja e regjistrimit MR (kutia e re postare) duhet të jetë një emër domaini plotësisht i kualifikuar (të përfundojë me pikë)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -8653,11 +8653,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "Tag"
+msgstr "Etiketa e versionit DMARC (v) duhet të jetë DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "Tag"
+msgstr "Etiketa e politikës DMARC (p) duhet të jetë një nga: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -8672,15 +8672,15 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "DMARC"
+msgstr "Etiketa e politikës së nëndomainit DMARC (sp) duhet të jetë një nga: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM Tag"
+msgstr "Etiketa e përputhjes DKIM të DMARC (adkim) duhet të jetë r (relaksuar) ose s (strikt)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "Tag"
+msgstr "Etiketa e përputhjes SPF të DMARC (aspf) duhet të jetë r (relaksuar) ose s (strikt)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8697,7 +8697,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "Tag"
+msgstr "Etiketa e intervalit të raportimit DMARC (ri) duhet të jetë një numër i plotë pozitiv"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
@@ -8720,7 +8720,7 @@ msgstr "Adresë e-maili e pavlefshme në etiketën DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "DMARC"
+msgstr "Etiketa e formatit të raportit DMARC (rf) duhet të jetë afrf ose iodef"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
@@ -9698,7 +9698,7 @@ msgstr "Rigjenerohet kyçi"
 
 #: templates/modern/api_key_regenerated.html:10
 msgid "API Key Regenerated Successfully"
-msgstr "API"
+msgstr "Kyçi API u rigjenerua me sukses"
 
 #: templates/modern/api_key_regenerated.html:15
 msgid "IMPORTANT: Save your new API key now!"
@@ -9975,7 +9975,7 @@ msgstr "Ndrysho në"
 
 #: templates/modern/edit_zone_templ_record.html:26
 msgid "Modify the record for this zone template"
-msgstr "Ndrysho"
+msgstr "Ndrysho regjistrimin për këtë model zone"
 
 #: templates/modern/add_zone_templ_record.html:35
 msgid "Provide a name for your record"
@@ -10138,7 +10138,7 @@ msgstr "TXT për SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
-msgstr "Shto nga"
+msgstr "Shkruaj adresën IP të serverit master të emrave"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
@@ -10150,7 +10150,7 @@ msgstr "Emri i host në NS"
 
 #: templates/modern/add_supermaster.html:25
 msgid "Enter the hostname as it appears in the NS record"
-msgstr "Shto në"
+msgstr "Shkruaj emrin e hostit ashtu siç shfaqet në regjistrimin NS"
 
 #: templates/modern/add_supermaster.html:26
 msgid "Provide host name"
@@ -10540,7 +10540,7 @@ msgstr "Konfermo zonën Removal"
 
 #: templates/default/edit_group.html:205 templates/modern/edit_group.html:205
 msgid "Are you sure you want to remove zone"
-msgstr "nga hiq"
+msgstr "Jeni i sigurt që doni të hiqni zonën"
 
 #: templates/default/edit_group.html:206 templates/modern/edit_group.html:206
 msgid ""
@@ -10795,7 +10795,7 @@ msgstr "Përcakto këtë model në dispozicion të të gjithë përdoruesve"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "Shto"
+msgstr "Shto model zone"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10854,7 +10854,7 @@ msgstr ""
 
 #: templates/default/list_log_api.html:8 templates/modern/list_log_api.html:8
 msgid "API Activity Logs"
-msgstr "Log"
+msgstr "Historiku i aktivitetit të API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
@@ -10939,7 +10939,7 @@ msgstr "Jep të paktën një regjistrim"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formati emri j"
+msgstr "Formati: name,type,content,priority,ttl,comment (një regjistrim për rresht)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11494,7 +11494,7 @@ msgstr "Bit në gjatësi"
 
 #: templates/modern/dnssec_add_key.html:71
 msgid "Select bits length"
-msgstr "Zgjidh"
+msgstr "Zgjidh gjatësinë në bit"
 
 #: templates/modern/dnssec_add_key.html:128
 msgid "Recommended bits for"
@@ -11507,7 +11507,7 @@ msgstr "Kujdes:"
 
 #: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
-msgstr "për"
+msgstr "bit nuk rekomandohet për"
 
 #: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
@@ -11666,7 +11666,7 @@ msgstr "Bazuar në këtë model, ky përdorues ka të drejtat në vazhdim"
 
 #: templates/default/edit_user.html:195 templates/modern/edit_user.html:195
 msgid "No permissions are assigned to this template"
-msgstr "Jo"
+msgstr "Këtij modeli nuk i është caktuar asnjë leje"
 
 #: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
 msgid "Group Memberships"
@@ -11784,7 +11784,7 @@ msgstr "Shto"
 
 #: templates/modern/edit_perm_templ.html:25
 msgid "A short, descriptive name for this permission set"
-msgstr "për"
+msgstr "Një emër i shkurtër dhe përshkrues për këtë grup lejesh"
 
 #: templates/modern/edit_perm_templ.html:30
 msgid "Optional: more detailed description of this permission set"
@@ -11976,7 +11976,7 @@ msgstr "Zgjidh nga"
 
 #: templates/modern/batch_ptr_record.html:51
 msgid "Please provide a network prefix"
-msgstr "a"
+msgstr "Ju lutem jepni një prefiks rrjeti"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
@@ -12124,7 +12124,7 @@ msgstr "Përdor fushën e Prefiksit të Host"
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "Kontrolli A AAAA përpara"
+msgstr "Shëno \"Krijo regjistrime A/AAAA në zonën parësore\" për të krijuar automatikisht regjistrimet përkatëse të përparme (i çaktivizuar kur përdoret modaliteti i përputhjes)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -12164,7 +12164,7 @@ msgstr "Nuk janë caktuar grupe në këtë zonë."
 
 #: templates/modern/zone-ownership.html:130
 msgid "Add Group Ownership"
-msgstr "Shto"
+msgstr "Shto pronësi grupi"
 
 #: templates/modern/edit_zone_templ.html:94 templates/modern/add_record.html:5
 msgid "Add record"
@@ -12180,7 +12180,7 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:23
 msgid "Add record to zone template"
-msgstr "Shto"
+msgstr "Shto regjistrim në modelin e zonës"
 
 #: templates/modern/add_zone_templ_record.html:26
 msgid "Create a new record for this zone template"
@@ -12337,7 +12337,7 @@ msgstr "Ndrysho"
 
 #: templates/modern/edit.html:11 templates/modern/edit.html:610
 msgid "Add new record"
-msgstr "Shto"
+msgstr "Shto regjistrim të ri"
 
 #: templates/modern/edit.html:189 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
@@ -12803,7 +12803,7 @@ msgstr "Shkruaj fjalëkalimin"
 
 #: templates/default/add_user.html:47 templates/modern/add_user.html:47
 msgid "Auto-generate password"
-msgstr "Auto"
+msgstr "Gjenero automatikisht fjalëkalimin"
 
 #: templates/default/add_user.html:49 templates/modern/add_user.html:49
 msgid "Generate a secure password that meets all requirements"
@@ -12869,7 +12869,7 @@ msgstr "E prezgjedhur"
 
 #: templates/modern/add_zone_master.html:53
 msgid "Optional: Apply predefined records from a template"
-msgstr "Apliko a"
+msgstr "Opsionale: Apliko regjistrime të parapërcaktuara nga një model"
 
 #: templates/modern/add_zone_master.html:59
 msgid "SOA serial policy"
@@ -12927,7 +12927,7 @@ msgstr "Shto zonën"
 
 #: templates/modern/list_zone_templ.html:6
 msgid "Zone templates for"
-msgstr "për"
+msgstr "Modelet e zonave për"
 
 #: templates/modern/list_zone_templ.html:16
 msgid "Search templates..."
@@ -12993,7 +12993,7 @@ msgstr "prezgjedhur"
 
 #: templates/modern/edit_zone_templ.html:105
 msgid "No zones are using this template"
-msgstr "Jo"
+msgstr "Asnjë zonë nuk po e përdor këtë model"
 
 #: templates/modern/list_zone_templ.html:125
 msgid "View zones using this template"
@@ -13168,7 +13168,7 @@ msgstr "Ruaj si"
 
 #: templates/modern/edit_zone_templ.html:175
 msgid "The following placeholders can be used in template records"
-msgstr "në"
+msgstr "Në regjistrimet e modelit mund të përdoren vendmbajtësit e mëposhtëm"
 
 #: templates/modern/edit_zone_templ.html:312
 msgid "Warning: Missing SOA Record"
@@ -13476,7 +13476,7 @@ msgstr "Ç'aktivo MFA"
 
 #: templates/modern/mfa_recovery_codes.html:69
 msgid "Continue to Dashboard"
-msgstr "Vazhdo"
+msgstr "Vazhdo në Dashboard"
 
 #: templates/modern/mfa_recovery_codes.html:98
 msgid "Poweradmin MFA Recovery Codes"
@@ -13631,11 +13631,11 @@ msgstr "Zona duke përdorur shabllon"
 
 #: templates/modern/list_template_zones.html:64
 msgid "No domains using this template"
-msgstr "Jo"
+msgstr "Asnjë domain nuk po e përdor këtë model"
 
 #: templates/modern/list_template_zones.html:110
 msgid "Back to templates"
-msgstr "Mbrapa"
+msgstr "Mbrapa te modelet"
 
 #: templates/modern/list_template_zones.html:116
 msgid "Unlink selected zones"
@@ -13729,7 +13729,7 @@ msgstr "Shfaq numrat serialë në listat e zonës"
 
 #: templates/modern/user_preferences.html:113
 msgid "Display template information in zone lists"
-msgstr "Shfaq në"
+msgstr "Shfaq informacionin e modelit në listat e zonave"
 
 #: templates/modern/user_preferences.html:120
 msgid "Zone record count"
@@ -13765,7 +13765,7 @@ msgstr "Shfaq kollonën e ID gjatë ndryshimit"
 
 #: templates/modern/user_preferences.html:173
 msgid "Show add record form"
-msgstr "Shfaq"
+msgstr "Shfaq formularin e shtimit të regjistrimit"
 
 #: templates/modern/user_preferences.html:174
 msgid "Display inline add record form in edit view"
@@ -13785,7 +13785,7 @@ msgstr "Shfaq pulsantët e eleminuar"
 
 #: templates/modern/user_preferences.html:190
 msgid "Display individual delete button per record"
-msgstr "Shfaq"
+msgstr "Shfaq një buton fshirjeje veç për çdo regjistrim"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
@@ -13839,7 +13839,7 @@ msgstr "U gjetën regjistrime"
 
 #: templates/default/search.html:502 templates/modern/search.html:502
 msgid "Try different search terms or filters"
-msgstr "Kërko"
+msgstr "Provo terma ose filtra të tjerë kërkimi"
 
 #: templates/default/search.html:665 templates/modern/search.html:665
 msgid "Confirm Zone Deletion"
@@ -14067,11 +14067,11 @@ msgstr "Mund të krijoni shabllone email të personalizuara duke i vendosur në 
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
-msgstr "Shfaq"
+msgstr "Rreth pamjeve paraprake të e-mailit"
 
 #: templates/modern/email_previews.html:92
 msgid "Previews use sample data to demonstrate email appearance"
-msgstr "Shikoje"
+msgstr "Pamjet paraprake përdorin të dhëna shembull për të demonstruar pamjen e e-mailit"
 
 #: templates/modern/email_previews.html:93
 msgid "Light mode is the default appearance for most email clients"
@@ -14261,7 +14261,7 @@ msgstr "Dokumentë"
 
 #: templates/default/header.html:327 templates/modern/header.html:500
 msgid "PowerDNS API error"
-msgstr "gabim"
+msgstr "Gabim i API të PowerDNS"
 
 #: templates/default/header.html:331 templates/modern/header.html:504
 msgid ""
@@ -14340,7 +14340,7 @@ msgstr ""
 
 #: templates/modern/add_record.html:13 templates/modern/add_record.html:15
 msgid "Add record to zone"
-msgstr "Shto"
+msgstr "Shto regjistrim në zonë"
 
 #: templates/default/add_record.html:27 templates/modern/add_record.html:27
 msgid "Record could not be added. Please check the record data and try again."
@@ -14395,7 +14395,7 @@ msgstr "Shto të zgjedhurin"
 
 #: templates/modern/manage_group_members.html:136
 msgid "Are you sure you want to remove"
-msgstr "nga hiq"
+msgstr "Jeni i sigurt që doni të hiqni"
 
 #: templates/modern/manage_group_zones.html:233
 msgid "zone(s) from this group?"
@@ -14435,7 +14435,7 @@ msgstr "Ç'aktivo kyçin API"
 
 #: templates/default/api_keys.html:112 templates/modern/api_keys.html:112
 msgid "Are you sure you want to disable the API key"
-msgstr "ç'aktivo"
+msgstr "Jeni i sigurt që doni të çaktivizoni çelësin API"
 
 #: templates/default/api_keys.html:113 templates/modern/api_keys.html:113
 msgid "External applications using this key will lose access."
@@ -14447,7 +14447,7 @@ msgstr "Aktivo kyçin API"
 
 #: templates/default/api_keys.html:142 templates/modern/api_keys.html:142
 msgid "Are you sure you want to enable the API key"
-msgstr "nga aktiv"
+msgstr "Jeni i sigurt që doni të aktivizoni çelësin API"
 
 #: templates/default/api_keys.html:143 templates/modern/api_keys.html:143
 msgid "External applications will be able to authenticate using this key."
@@ -14792,7 +14792,7 @@ msgstr "Regjistrat anashkaluan (dilogët)."
 
 #: lib/Module/ZoneImportExport/templates/import.html:34
 msgid "records skipped (duplicates),"
-msgstr "nuk"
+msgstr "regjistrime u kapërcyen (dublikate),"
 
 #: lib/Module/ZoneImportExport/templates/import.html:36
 msgid "records failed."
@@ -15002,7 +15002,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Vazhdo"
+msgstr "Vazhdo në hapin"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -15099,7 +15099,7 @@ msgstr "Emri i serverit"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "Për."
+msgstr "Emri i serverit PowerDNS për thirrjet API (zakonisht \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -15315,7 +15315,7 @@ msgstr "Nuk arrij të diktoj (PHP-FPM) - Sigurohu që të jetë aktivizuar"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "është j"
+msgstr "Sigurohu që rishkrimi i URL-ve është konfiguruar (shih nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
@@ -15416,7 +15416,7 @@ msgstr "Lokale emri"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Shto"
+msgstr "Jep serverin sekondar të emrave"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
@@ -15462,7 +15462,7 @@ msgstr "Shënim i rëndësishëm i sigurisë:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr "nga."
+msgstr "Duhet të hiqni direktorinë \"install/\" nga direktoria rrënjë e Poweradmin."
 
 #: install/templates/step8.html.twig:17
 msgid ""

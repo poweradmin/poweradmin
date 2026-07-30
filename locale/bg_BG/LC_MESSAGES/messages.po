@@ -1999,7 +1999,7 @@ msgstr "Търсене"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Запис"
+msgstr "Дневник за промяна на записите"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -11330,7 +11330,7 @@ msgstr "Промяна на паролата"
 
 #: templates/modern/reset_password.html:12
 msgid "Go to Login"
-msgstr "Вход"
+msgstr "Отиди към входа"
 
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"

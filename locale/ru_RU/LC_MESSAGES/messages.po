@@ -1810,20 +1810,20 @@ msgstr "У вас нет прав для просмотра метаданных
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "U vas net prav dlya redaktirovaniya metadannykh zony."
+msgstr "У вас нет прав для редактирования метаданных зоны."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Metadannye zony uspeshno obnovleny."
+msgstr "Метаданные зоны успешно обновлены."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Ne udalos' obnovit' metadannye zony."
+msgstr "Не удалось обновить метаданные зоны."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Redaktirovat' metadannye zony"
+msgstr "Редактировать метаданные зоны"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -1834,9 +1834,7 @@ msgstr "Метаданные зоны"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Tip metadannykh %s prinimaet tolko odno znachenie. Dobavte tolko odnu stroku "
-"dlya etogo tipa."
+msgstr "Тип метаданных %s принимает только одно значение. Добавьте только одну строку для этого типа."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1853,9 +1851,7 @@ msgstr "Тип метаданных %s может изменить только 
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Polzovatelskiy tip metadannykh, khranyashchiysya neposredstvenno v tablitse "
-"domainmetadata PowerDNS."
+msgstr "Пользовательский тип метаданных, сохраняемый напрямую в таблице domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -9616,9 +9612,7 @@ msgstr "Неверный формат. Ожидается как минимум:
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Nevernyy format SRV. Ispolzuyte: name,SRV,\"weight port "
-"target\",priority,ttl ili name,SRV,target,weight,port,ttl"
+msgstr "Неверный формат SRV. Используйте: name,SRV,\"weight port target\",priority,ttl или name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -13254,9 +13248,7 @@ msgstr "Neskolko znacheniy"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Dlya metadannykh, takikh kak ALLOW-AXFR-FROM, dobavte neskolko strok s tem "
-"zhe tipom. Kazhdoe znachenie khranitsya otdelno, odna stroka na znachenie."
+msgstr "Для метаданных вроде ALLOW-AXFR-FROM добавьте несколько строк с одинаковым типом. Каждое значение хранится отдельно, по одной строке на значение."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -13276,7 +13268,7 @@ msgstr "требует"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Dobavit' stroku metadannykh"
+msgstr "Добавить строку метаданных"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"

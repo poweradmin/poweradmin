@@ -407,7 +407,7 @@ msgstr "Úsáid an polasaí céanna leis an bhfearann is mó"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "None"
-msgstr "Gan a bheith ráite"
+msgstr "Gan aon cheann"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "Monitor only for subdomains"
@@ -807,7 +807,7 @@ msgstr "Clib"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:106
 msgid "Issue"
-msgstr "Amharc ar gach eolas"
+msgstr "Eisiúint"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:106
 msgid "Authorize issuance of standard certificates"
@@ -847,7 +847,7 @@ msgstr "Roghanna Casta"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:130
 msgid "Flags"
-msgstr "Amharc ar gach eolas"
+msgstr "Bratacha"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Non-critical"
@@ -1143,7 +1143,7 @@ msgstr "Deontais Ardoideachais (DAO)"
 #: lib/Module/DnsWizard/Service/SRVWizard.php:163
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Priority"
-msgstr "Amharc ar gach eolas"
+msgstr "Tosaíocht"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:169
 msgid ""
@@ -1411,7 +1411,7 @@ msgstr "Ní gá duit cead a dhéanamh lookups WHOIS."
 
 #: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
-msgstr "Amharc ar gach eolas"
+msgstr "WHOIS"
 
 #: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
@@ -3497,7 +3497,7 @@ msgstr "Tá sé"
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
 #: templates/modern/users.html:198
 msgid "No"
-msgstr "Níl an Tweet seo ar fáil"
+msgstr "Níl"
 
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Account is temporarily locked. Please try again later."
@@ -9855,7 +9855,7 @@ msgstr "Daoine faoi Mhíchumas"
 
 #: templates/modern/api_keys.html:55 templates/modern/api_key_delete.html:50
 msgid "Expired"
-msgstr "Ag dul in éag"
+msgstr "Imithe in éag"
 
 #: templates/modern/dnssec_delete_key.html:91
 msgid "Active"
@@ -9891,7 +9891,7 @@ msgstr "Gníomhachtaigh DNSSEC Key"
 
 #: templates/modern/dnssec_delete_key.html:13
 msgid "Warning"
-msgstr "Ag dul i ngleic"
+msgstr "Rabhadh"
 
 #: templates/modern/dnssec_edit_key.html:23
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -10160,7 +10160,7 @@ msgstr "Suí iomlánach"
 
 #: templates/modern/list_perm_templ.html:28
 msgid "Description"
-msgstr "Cur síos ar an Táirge"
+msgstr "Cur síos"
 
 #: templates/modern/edit_zone_templ.html:187
 msgid "Substituted with current zone name"
@@ -10375,7 +10375,7 @@ msgstr "Gníomhachtaigh an eochair"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Deactivate"
-msgstr "An bhfuil a fhios agat..."
+msgstr "Díghníomhachtaigh"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Activate"
@@ -10447,7 +10447,7 @@ msgstr "Líonra na Líonraí"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "Féach ar an roghchlár"
+msgstr "Amharc"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"
@@ -10791,7 +10791,7 @@ msgstr "Uisce agus Séarachas"
 
 #: templates/modern/index.html:434 templates/modern/header.html:300
 msgid "Templates"
-msgstr "Plean Gníomhaíochta don Oideachas"
+msgstr "Teimpléid"
 
 #: templates/default/index.html:124 templates/modern/index.html:124
 msgid "Networks"
@@ -11054,7 +11054,7 @@ msgstr "Cuir taifid leis an mbulaíocht"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
-msgstr "Amharc ar gach eolas"
+msgstr "Taifid"
 
 #: templates/modern/bulk_record_add.html:28
 msgid "Provide at least one record"
@@ -11238,7 +11238,7 @@ msgstr "Sábháil Crios mar Teimpléad"
 
 #: templates/modern/save-zone-template.html:14
 msgid "Source Zone"
-msgstr "Foinse do níos ísle bhfianaise Lawn voltage"
+msgstr "Crios Foinse"
 
 #: templates/modern/save-zone-template.html:26
 msgid "Template Name"
@@ -11524,7 +11524,7 @@ msgstr "Níl aon chriosanna droim ar ais a thaispeáint sa liosta seo."
 
 #: templates/modern/search.html:179 templates/modern/delete_domains.html:28
 msgid "Owner"
-msgstr "Amharc ar gach eolas"
+msgstr "Úinéir"
 
 #: templates/modern/list_perm_templ.html:70
 msgid "Group"
@@ -11697,7 +11697,7 @@ msgstr "Tabhair ainm úsáideora"
 
 #: templates/modern/users.html:44 templates/modern/add_user.html:22
 msgid "Fullname"
-msgstr "Iomlán na gCeantar Tuaithe"
+msgstr "Ainm iomlán"
 
 #: templates/modern/edit_user.html:37 templates/modern/add_user.html:24
 msgid "User's full name for identification"
@@ -12377,7 +12377,7 @@ msgstr "taifid a onnmhairiú"
 
 #: templates/modern/list_record_changes.html:175
 msgid "Format"
-msgstr "Amharc ar gach eolas"
+msgstr "Formáid"
 
 #: templates/modern/_partials/log_list.html:170
 msgid "Log Details"
@@ -12445,7 +12445,7 @@ msgstr "Molta"
 
 #: templates/modern/dns_wizard_select.html:69
 msgid "Back"
-msgstr "Ar ais chuig clár"
+msgstr "Ar ais"
 
 #: templates/modern/api_key_add.html:5 templates/modern/api_key_add.html:12
 msgid "Add API Key"
@@ -12478,7 +12478,7 @@ msgstr "Má chailleann tú an eochair, beidh ort é a athghiniúint."
 
 #: templates/modern/list_perm_templ.html:53
 msgid "Edit"
-msgstr "Toir agus Crainn bláthanna"
+msgstr "Cuir in eagar"
 
 #: templates/modern/edit.html:11 templates/modern/edit.html:610
 msgid "Add new record"
@@ -12826,7 +12826,7 @@ msgstr "Déan teagmháil linn"
 
 #: templates/modern/database_consistency.html:35
 msgid "Summary"
-msgstr "Amharc ar gach eolas"
+msgstr "Achoimre"
 
 #: templates/modern/database_consistency.html:36
 msgid "Total Issues Found"
@@ -12838,7 +12838,7 @@ msgstr "Seirbhís do Chustaiméirí"
 
 #: templates/modern/database_consistency.html:38
 msgid "Warnings"
-msgstr "An bhfuil a fhios agat?"
+msgstr "Rabhaidh"
 
 #: templates/modern/database_consistency.html:44
 msgid "Zones Without Owners"
@@ -12867,7 +12867,7 @@ msgstr "Sannadh úinéir"
 
 #: templates/modern/database_consistency.html:284
 msgid "Fix"
-msgstr "Amharc ar gach eolas"
+msgstr "Ceartaigh"
 
 #: templates/modern/database_consistency.html:104
 msgid "Slave Zones Without Master IP Addresses"
@@ -13011,7 +13011,7 @@ msgstr "Cineál Crios (de ghnáth NATIVE)"
 
 #: templates/modern/list_zone_templ.html:50
 msgid "default"
-msgstr "cineál gas: in airde"
+msgstr "réamhshocraithe"
 
 #: templates/modern/add_zone_master.html:53
 msgid "Optional: Apply predefined records from a template"
@@ -13061,7 +13061,7 @@ msgstr "Roghnach: Roghnaigh úsáideoir atá freagrach as an gcrios seo"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:209
 msgid "members"
-msgstr "baill de na baill"
+msgstr "baill"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:215
 msgid "Optional: Select one or more groups"
@@ -14322,11 +14322,11 @@ msgstr "OK"
 
 #: templates/default/pdns_status.html:123 templates/modern/pdns_status.html:123
 msgid "Unreachable"
-msgstr "Gan a bheith indéanta"
+msgstr "Neamh-inrochtana"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
 msgid "Error"
-msgstr "Amharc ar gach eolas"
+msgstr "Earráid"
 
 #: templates/default/pdns_status.html:156 templates/modern/pdns_status.html:156
 msgid "Server Statistics"
@@ -15224,7 +15224,7 @@ msgstr "Naisc Bunachar Sonraí a Chigireacht"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "Cumhacht cúltaca Amharc ar gach eolas"
+msgstr "Backend PowerDNS"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"

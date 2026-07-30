@@ -233,7 +233,7 @@ msgstr "1 - SHA-256 हैश"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
-msgstr "SHA-256 hash of Certificate/key"
+msgstr "प्रमाणपत्र/कुंजी का SHA-256 हैश"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
@@ -1590,7 +1590,7 @@ msgstr "आपको समूहों को हटाने की अनु�
 
 #: lib/Application/Controller/EditGroupController.php:90
 msgid "Invalid group ID."
-msgstr "Invalid Group ID."
+msgstr "अमान्य समूह ID।"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
 #: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
@@ -1919,7 +1919,7 @@ msgstr "आपको अनुमति टेम्पलेट संपाद
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
-msgstr "A book of a book of a book"
+msgstr "अनुमति टेम्पलेट संपादित करें"
 
 #: lib/Application/Controller/EditPermTemplController.php:126
 msgid "The permission template has been updated successfully."
@@ -9695,7 +9695,7 @@ msgstr "अपने रिकॉर्ड के लिए एक नाम प
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "उदाहरण:"
+msgstr "उदाहरण: क्षेत्र के लिए [ZONE], या किसी सबडोमेन के लिए subdomain.[ZONE]"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"

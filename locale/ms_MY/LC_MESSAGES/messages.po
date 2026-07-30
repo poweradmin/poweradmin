@@ -3730,7 +3730,7 @@ msgstr "Ralat sewaktu menyahlink zona dari templat:"
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "zon:"
+msgstr "Ralat semasa mendapatkan zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
@@ -3882,7 +3882,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "\". For"
+msgstr "Untuk jenis gateway 0 (Tiada gateway), gateway mestilah \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -8640,7 +8640,7 @@ msgstr "Pengkodean basis64 tidak sah."
 #: lib/Domain/Service/DomainRecordCreator.php:79
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "%s."
+msgstr "Tiada zon terurus untuk domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:97
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -8766,7 +8766,7 @@ msgstr "Jenis database tak dikenal."
 #: lib/Domain/Service/ReverseRecordCreator.php:102
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "%s."
+msgstr "Tiada zon songsang yang sepadan untuk: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:110
 #, php-format
@@ -9654,7 +9654,7 @@ msgstr "Tidak ada anggota dalam kumpulan ini belum."
 
 #: templates/modern/edit_group.html:136 templates/modern/edit_user.html:236
 msgid "Remove from group"
-msgstr "Name"
+msgstr "Keluarkan dari kumpulan"
 
 #: templates/modern/manage_group_members.html:144
 msgid "Remove"
@@ -10814,7 +10814,7 @@ msgstr "Pengguna ini bukan anggota dari kumpulan manapun."
 
 #: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
 msgid "Add to Groups"
-msgstr "Name"
+msgstr "Tambah ke Kumpulan"
 
 #: templates/default/edit_user.html:253 templates/modern/edit_user.html:253
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
@@ -11175,7 +11175,7 @@ msgstr "Hanya untuk pasangan"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr "Apa?"
+msgstr "Mencipta rekod PTR hanya untuk IP yang mempunyai rekod A/AAAA sedia ada dalam zon hadapan"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11916,7 +11916,7 @@ msgstr "Janakan kata sandi aman yang memenuhi semua persyaratan"
 
 #: templates/default/add_user.html:57 templates/modern/add_user.html:57
 msgid "Send password by email"
-msgstr "Name"
+msgstr "Hantar kata laluan melalui e-mel"
 
 #: templates/default/add_user.html:59 templates/modern/add_user.html:59
 msgid "Send login credentials to user's email address"
@@ -12005,7 +12005,7 @@ msgstr "Terpilih:"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:151
 msgid "No user owner"
-msgstr "owner"
+msgstr "Tiada pemilik pengguna"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:152
 msgid "Zone will be owned only by groups"
@@ -12091,7 +12091,7 @@ msgstr "Tak berguna sebagai default"
 
 #: templates/modern/list_zone_templ.html:117
 msgid "Set as default"
-msgstr "font"
+msgstr "Tetapkan sebagai lalai"
 
 #: templates/modern/edit_zone_templ.html:105
 msgid "No zones are using this template"
@@ -12834,7 +12834,7 @@ msgstr "Paparan Variabel Edit Zone"
 
 #: templates/modern/user_preferences.html:164
 msgid "Show record ID"
-msgstr "maniak"
+msgstr "Tunjukkan ID rekod"
 
 #: templates/modern/user_preferences.html:165
 msgid "Display record ID column in edit view"
@@ -13115,13 +13115,13 @@ msgstr "Templat standar berikut saat ini ditindih oleh templat tersendiri:"
 
 #: templates/modern/email_previews.html:77
 msgid "using custom template"
-msgstr "Name"
+msgstr "menggunakan templat tersendiri"
 
 #: templates/modern/email_previews.html:80
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Exemails/custom/</code>."
+msgstr "Untuk kembali kepada templat standard, buang atau namakan semula fail templat tersuai dalam <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -13372,7 +13372,7 @@ msgstr "Rekod publik DNSSEC untuk zona"
 
 #: templates/modern/dnssec_ds_dnskey.html:26
 msgid "Back to DNSSEC keys"
-msgstr "Name"
+msgstr "Kembali ke kunci DNSSEC"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
@@ -14225,7 +14225,7 @@ msgstr "Nama Pangkalan Data (akan digunakan untuk tabel Poweradmin)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Name"
+msgstr "Laluan penuh ke fail pangkalan data SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."

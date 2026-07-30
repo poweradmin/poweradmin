@@ -254,7 +254,7 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr "Hex hash vai sertifikāts. SHA-256: openssl."
+msgstr "Heksadecimāls jaucējkods vai pilni sertifikāta dati (atkarībā no atbilstības veida). SHA-256 gadījumā izmantojiet: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -668,14 +668,14 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr "SPF pārsniedz limitu (%d/10)."
+msgstr "SPF ieraksts pārsniedz DNS uzmeklēšanu ierobežojumu (%d/10). Tā dēļ SPF pārbaude neizdosies. Noņemiet dažus include/a/mx mehānismus vai izmantojiet to vietā ip4/ip6."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr "SPF %d DNS meklēšanas (limits 10)."
+msgstr "SPF ierakstā ir %d DNS uzmeklēšanas (ierobežojums ir 10). Apsveriet ip4/ip6 izmantošanu include mehānismu vietā vai apvienojiet include ierakstus, lai nepārsniegtu ierobežojumu."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
@@ -3044,7 +3044,7 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr "SSO lietotāji nevar mainīt paroli šeit."
+msgstr "Lietotāji, kas autentificēti ar vienoto pieteikšanos (Single Sign-On), šeit nevar nomainīt savu paroli. Lūdzu, sazinieties ar administratoru vai nomainiet paroli pie sava identitātes nodrošinātāja."
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
@@ -3953,7 +3953,7 @@ msgstr "1. Visai SRV meklēšanas ķēdei jābūt parakstītai ar DNSSEC"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "TLSA: _port._protocol.hostname."
+msgstr "2. TLSA ierakstiem jāatrodas nosaukumā _$port._$protocol.$hostname, kur $port, $protocol un $hostname ir no SRV uzmeklēšanas mērķa"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4137,7 +4137,7 @@ msgstr "RFC 5155/9077: NSEC3PARAM TTL = SOA min."
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3PARAM ir DNSSEC daļa."
+msgstr "NSEC3PARAM ieraksti ir DNSSEC daļa, un tos vajadzētu pārvaldīt tikai kopā ar citiem DNSSEC ierakstiem (DNSKEY, RRSIG utt.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
@@ -4256,7 +4256,7 @@ msgstr ""
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr "FQDN beigās punkts."
+msgstr "FQDN vērtības ir ieteicams beigt ar punktu, lai nodrošinātu, ka tās tiek uzskatītas par absolūtiem domēna vārdiem, nevis relatīviem."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
@@ -4375,7 +4375,7 @@ msgstr "Nederīgs izmērs vai precizitāte. Jābūt 0-90000000 metru."
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "Nederīgs LOC formāts."
+msgstr "Nederīgs LOC ieraksta formāts. Formātam jābūt: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4726,7 +4726,7 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr "Nākamajam vārdam jābūt kanoniskā kārtībā."
+msgstr "Nākamā domēna vārda laukam jābūt nākamajam īpašnieka vārdam zonas kanoniskajā kārtībā. Kanoniskā kārtība neņem vērā reģistru un kārto pēc etiķetēm no labās uz kreiso pusi."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4775,7 +4775,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Nav standarta OPENPGPKEY formāts."
+msgstr "Ieraksta nosaukums neatbilst standarta OPENPGPKEY formātam (<hash>._openpgpkey.<domain>). Savietojamības nolūkos ir ieteicams standarta formāts."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -4786,7 +4786,7 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "OPENPGPKEY jāģenerē ar GnuPG."
+msgstr "OPENPGPKEY ieraksti parasti jāģenerē ar specializētiem rīkiem, piemēram, GnuPG ar opciju --print-dane-records, nevis jāizveido manuāli."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4809,7 +4809,7 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "OPENPGPKEY pārsniedz 4KB."
+msgstr "OPENPGPKEY ieraksta izmērs pārsniedz 4KB. RFC 7929 iesaka DNS ierakstus uzturēt pēc iespējas mazākus, lai nodrošinātu uzticamu pārsūtīšanu. Apsveriet minimāla atslēgas eksporta formāta izmantošanu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4833,7 +4833,7 @@ msgstr "Dekodētais saturs nesatur publiskās atslēgas paketi (tag 6/14)."
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr "OPENPGPKEY PRASA DNSSEC."
+msgstr "OPENPGPKEY ierakstiem NEPIECIEŠAMS DNSSEC, lai tie sniegtu jebkādu drošības ieguvumu. Bez DNSSEC pārbaudes šie ieraksti nedod nekādas drošības priekšrocības."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -4863,7 +4863,7 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr "Brīdinājums: HINFO atklāj sensitīvu informāciju."
+msgstr "Brīdinājums: HINFO ieraksti atklāj potenciāli sensitīvu informāciju par resursdatora aparatūru un programmatūru, kas var būt noderīga uzbrucējiem. Pirms izmantošanas publiski pieejamā DNS apsveriet drošības sekas."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -5231,7 +5231,7 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr "SVARĪGI: DLV novecojis (RFC 8749)."
+msgstr "SVARĪGI: DLV ieraksti ir atzīti par novecojušiem ar RFC 8749 (2020. gada marts). Lielākie DNS atrisinātāji DLV atbalstu ir noņēmuši vai atzinuši par novecojušu. Apsveriet to vietā standarta DNSSEC pārbaudi ar DS ierakstiem."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5408,7 +5408,7 @@ msgstr "Parametrs \"%s\" ir obligāts, bet nav iekļauts ierakstā."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 prasa TKEY TTL=0."
+msgstr "RFC 2930 nosaka, ka TKEY ierakstiem TTL jābūt 0, lai novērstu kešošanu. Pašreizējais no nulles atšķirīgais TTL var radīt problēmas vecākām DNS implementācijām."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5451,7 +5451,7 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY režīms 1-5."
+msgstr "TKEY režīmam jābūt skaitlim no 1 līdz 5 (1: servera piešķiršana, 2: Diffie-Hellman apmaiņa, 3: GSS-API sarunas, 4: atrisinātāja piešķiršana, 5: atslēgas dzēšana)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5881,7 +5881,7 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "RFC 4703 DHCID kolīzijas."
+msgstr "Saskaņā ar RFC 4703 DHCID ieraksti tiek izmantoti sadursmju noteikšanai, kad vairāki DHCP klienti pieprasa vienu un to pašu nosaukumu. DHCID ieraksta esamība norāda, ka nosaukumu izmanto DHCP klients."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
@@ -5929,7 +5929,7 @@ msgstr "DHCID digesta veids %d nav standarta veids saskaņā ar RFC 4701."
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "DHCID SHA-256 vismaz 35 baiti."
+msgstr "DHCID ierakstam ar SHA-256 jaucējkodu (1. veids) atkodētā veidā jābūt vismaz 35 baitus garam (2 identifikatora veidam, 1 jaucējkoda veidam un 32 SHA-256 jaucējkodam)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -5975,7 +5975,7 @@ msgstr "RRSIG ieraksts satur nederīgas rakstzīmes."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG ierakstam jāsatur 9 lauki."
+msgstr "RRSIG ierakstam jāsatur segtais tips, algoritms, etiķešu skaits, sākotnējais TTL, derīguma beigas, derīguma sākums, atslēgas identifikators, parakstītāja nosaukums un paraksts."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6107,7 +6107,7 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "Paraksta derīgums > 90 dienas."
+msgstr "Paraksta derīguma periods pārsniedz 90 dienas, kas ir ilgāk, nekā ieteicams. Ilgi derīguma periodi palielina apdraudējumu atslēgas kompromitēšanas gadījumā."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6520,7 +6520,7 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS ieraksti izveido uzticamības ķēdi."
+msgstr "DS ieraksti izveido uzticamības ķēdi no vecākzonas uz bērnzonu. Vecākzonā jābūt šim DS ierakstam, bet bērnzonā - atbilstošajam DNSKEY ierakstam."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
@@ -6532,7 +6532,7 @@ msgstr "CSYNC tikai zonas virsotnē (RFC 7477)."
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC prasa DNSSEC (RFC 7477)."
+msgstr "CSYNC ierakstiem nepieciešama DNSSEC parakstīšana, lai vecākzonas aģenti tos apstrādātu (RFC 7477). Pārliecinieties, ka jūsu zona ir pareizi parakstīta ar DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -6665,7 +6665,7 @@ msgstr ""
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Nav standarta reversā DNS vārds."
+msgstr "Ieraksta nosaukums neizskatās pēc standarta reversās DNS zonas nosaukuma (tam jābeidzas ar .in-addr.arpa IPv4 gadījumā vai .ip6.arpa IPv6 gadījumā)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -7083,7 +7083,7 @@ msgstr "SMIMEA nosaukuma formāts: SHA256._smimecert.domain.tld (%s)."
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Nestandarta SMIMEA formāts."
+msgstr "Šis neizmanto standarta SMIMEA nosaukuma formātu. SMIMEA ierakstiem parasti jāizmanto: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7126,20 +7126,20 @@ msgstr "PKIX-TA (0) prasa CA validācijas ceļā."
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE prasa PKIX validāciju."
+msgstr "PKIX-EE lietojums (1) prasa, lai galasubjekta sertifikāts tiktu pārbaudīts pēc PKIX pārbaudes noteikumiem. Pārliecinieties, ka ir pieejami nepieciešamie starpsertifikāti."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA (2) ir uzticamības enkurs."
+msgstr "DANE-TA lietojums (2) nosaka šo sertifikātu par uzticamības enkuru galasubjekta sertifikāta pārbaudei. Pārliecinieties, ka šis sertifikāts ir pienācīgi aizsargāts."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE (3) ieteicams."
+msgstr "DANE-EE lietojums (3) ir ieteicams, jo tas nodrošina vienkāršāko ieviešanu ar tiešu sertifikāta izmantošanu bez papildu pārbaudes."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
@@ -7159,7 +7159,7 @@ msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "Selektors 1 (SPKI) ieteicams."
+msgstr "Selektors 1 (SubjectPublicKeyInfo) ir ieteicams, jo tas ļauj atjaunot sertifikātu bez SMIMEA ierakstu atjaunināšanas, kamēr publiskā atslēga paliek nemainīga."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7519,7 +7519,7 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "KRITISKI: SSHFP PRASA DNSSEC."
+msgstr "KRITISKI: SSHFP ierakstiem NEPIECIEŠAMA DNSSEC pārbaude, lai tie sniegtu jebkādu drošības ieguvumu. Bez DNSSEC tie nesniedz nekādu aizsardzību pret starpnieka (man-in-the-middle) uzbrukumiem."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -7762,7 +7762,7 @@ msgstr "DMARC nav rua/ruf URI. Ierobežo uzraudzību."
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "DMARC TXT jāsākas ar \"v=DMARC1\"."
+msgstr "Šis ir DMARC ieraksts, kas tiek apstrādāts kā TXT ieraksta tips. DMARC ierakstiem jāizmanto TXT ieraksta tips ar saturu, kas sākas ar \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -8047,7 +8047,7 @@ msgstr "NSEC3 ieraksti ir DNSSEC daļa un jāpārvalda kopā ar citiem."
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "NSEC3 tiek veidoti automātiski."
+msgstr "NSEC3 ierakstu manuāla rediģēšana nav ieteicama, jo tos parasti automātiski ģenerē DNSSEC atbalstoši vārdu serveri."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -8203,7 +8203,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR pakalpojuma formāts."
+msgstr "NAPTR pakalpojumam jāatbilst formātam: [protocol][+rs][+rs]... kur protocol un rs sākas ar burtu un satur burtus un ciparus, defises, kolus vai plusa zīmes (katrs ne vairāk par 32 rakstzīmēm)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -10030,7 +10030,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Necenšamies garantēt 100%% pieejamību."
+msgstr "Lai gan mēs cenšamies uzturēt sistēmas pieejamību, mēs nevaram garantēt 100% darbspējas laiku. Lietotājiem nevajadzētu paļauties tikai uz šo sistēmu kritiskās DNS darbībās bez atbilstošām rezerves kopijām un uzraudzības."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10041,7 +10041,7 @@ msgid ""
 "This system is provided \"as is\" without any warranties. The administrators "
 "are not liable for any damages or losses resulting from the use of this "
 "system."
-msgstr "Sistēma \"kā ir\" bez garantijām."
+msgstr "Šī sistēma tiek nodrošināta \"kā tāda\" bez jebkādām garantijām. Administratori nav atbildīgi par zaudējumiem vai bojājumiem, kas radušies šīs sistēmas lietošanas rezultātā."
 
 #: templates/modern/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -11785,7 +11785,7 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr "Veidnes maiņa saglabā manuālos papildinājumus."
+msgstr "Zonas veidnes maiņa pārraksta uz veidni balstītos ierakstus, bet saglabā manuāli pievienotos. Veidnes izmaiņas zonas automātiski neatjaunina - lai piemērotu izmaiņas, veidnes rediģēšanas laikā izmantojiet pogu \"Atjaunināt zonas\"."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -11912,7 +11912,7 @@ msgstr "Veidnes ieraksti"
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr "Šai veidnei nav SOA."
+msgstr "Šai veidnei nav SOA ieraksta. DNS zonām pareizai darbībai parasti ir nepieciešams SOA ieraksts, un bez tā DNSSEC parakstīšana var neizdoties."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."

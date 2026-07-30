@@ -9363,7 +9363,7 @@ msgstr "ตัวอย่างเนื้อหา"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "SOA: SOA SOICE[NS1] [STSTMER] 28800 7200 6048800 86,400ZA</code>."
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""

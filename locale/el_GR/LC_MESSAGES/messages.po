@@ -15390,7 +15390,7 @@ msgstr "Πειραματικό"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "Settings API PowerDNS"
+msgstr "Ρυθμίσεις API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"

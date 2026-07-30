@@ -32,7 +32,7 @@ msgstr "دستیارهای DNS فعال نیستند."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:46
 msgid "Invalid zone ID."
-msgstr "Invalid Zone ID"
+msgstr "شناسه منطقه نامعتبر است."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:94
 msgid "Zone not found."
@@ -334,7 +334,7 @@ msgstr ""
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
 #: templates/modern/edit.html:79 templates/modern/edit.html:679
 msgid "Invalid hostname format"
-msgstr "Invalid Hostname Format"
+msgstr "فرمت نام میزبان نامعتبر است"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:278
 msgid ""
@@ -553,7 +553,7 @@ msgstr "آدرس ایمیل Invalid"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:287
 msgid "Invalid forensic report email address"
-msgstr "Invalid Medical Report"
+msgstr "آدرس ایمیل گزارش قانونی نامعتبر است"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:292
 msgid ""
@@ -871,7 +871,7 @@ msgstr "دامنه سفارشی CA زمانی مورد نیاز است که “C
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:215
 msgid "Invalid CA domain format"
-msgstr "Invalid CA Domain Format"
+msgstr "فرمت دامنه CA نامعتبر است"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:221
 msgid ""
@@ -1073,7 +1073,7 @@ msgstr "پروتکل کنترل انتقال – رایج ترین"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:119
 msgid "User Datagram Protocol - connectionless"
-msgstr "User Datagram Protocol – Connectless"
+msgstr "پروتکل داده‌نگار کاربر - بدون اتصال"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:120
 msgid "Transport Layer Security"
@@ -1167,7 +1167,7 @@ msgstr "نام کاربری هدف مورد نیاز است"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:277
 msgid "Invalid target hostname format"
-msgstr "Invalid Target Hostname"
+msgstr "فرمت نام میزبان هدف نامعتبر است"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:282
 msgid ""
@@ -1194,7 +1194,7 @@ msgstr "وزن باید بین 0 تا 6535 باشد."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:310
 msgid "Invalid domain format"
-msgstr "Invalid Domain Format"
+msgstr "فرمت دامنه نامعتبر است"
 
 #: lib/Module/DnsWizard/DnsWizardModule.php:85
 msgid "Record Wizard"
@@ -1511,7 +1511,7 @@ msgstr "این نظر با موفقیت به روز شده است."
 
 #: lib/Application/Controller/EditRecordController.php:102
 msgid "Invalid record ID."
-msgstr "Invalid Record ID"
+msgstr "شناسه رکورد نامعتبر است."
 
 #: lib/Application/Controller/DeleteRecordController.php:120
 msgid "You do not have permission to delete records in this zone."
@@ -1596,7 +1596,7 @@ msgstr "شما اجازه حذف گروه ها را ندارید."
 
 #: lib/Application/Controller/EditGroupController.php:90
 msgid "Invalid group ID."
-msgstr "Invalid group ID"
+msgstr "شناسه گروه نامعتبر است."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
 #: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
@@ -2122,7 +2122,7 @@ msgstr "مناطق الگو"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:60
 msgid "Invalid template ID."
-msgstr "Invalid Template ID"
+msgstr "شناسه قالب نامعتبر است."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:54
 msgid "Template does not exist."
@@ -2642,7 +2642,7 @@ msgstr "دیدگاه ها"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
-msgstr "Invalid key ID"
+msgstr "شناسه کلید نامعتبر است."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:107
 msgid "DNSSEC key not found or no longer exists."
@@ -2741,7 +2741,7 @@ msgstr "شما اجازه اضافه کردن قالب های مجوز را ند
 #: lib/Application/Controller/AddPermTemplController.php:67
 #: templates/modern/add_perm_templ.html:16
 msgid "Add Permission Template"
-msgstr "Add License Template"
+msgstr "افزودن قالب مجوز"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -4460,7 +4460,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
-msgstr "Invalid AFSDB Hostname"
+msgstr "نام میزبان AFSDB نامعتبر است."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
@@ -6139,7 +6139,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Invalid Error Hostname (EMAILBX)"
+msgstr "نام میزبان صندوق پستی خطا (EMAILBX) نامعتبر است."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
@@ -9852,8 +9852,7 @@ msgstr "[[ویرایش] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400BP1"
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
-msgstr ""
-"MX for Microsoft 365: Zi0AZ[DOMAIN]- [TLD].mail. Protection.outlook.comAZ12.8"
+msgstr "MX برای Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
@@ -9861,7 +9860,7 @@ msgstr "یک رکورد: Zi0251 192.0.2.102.1"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "آدرس: AB0ODMCOM"
+msgstr "CNAME: <code>target.[ZONE]</code> یا <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -10503,7 +10502,7 @@ msgstr "Add Template"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
-msgstr "Add Zone Template for"
+msgstr "افزودن قالب منطقه برای"
 
 #: templates/modern/edit_perm_templ.html:24
 msgid "Provide a name for your template"
@@ -10523,7 +10522,7 @@ msgstr "این قالب را در دسترس همه کاربران قرار ده
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "Add Zone Template"
+msgstr "افزودن قالب منطقه"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11064,7 +11063,7 @@ msgstr "خانه"
 
 #: templates/modern/add_zone_master.html:4 templates/modern/header.html:161
 msgid "Add master zone"
-msgstr "Add Master Zone"
+msgstr "افزودن منطقه اصلی"
 
 #: templates/modern/add_zone_slave.html:4 templates/modern/header.html:168
 msgid "Add slave zone"
@@ -13466,7 +13465,7 @@ msgstr "نمایش Add Record form"
 
 #: templates/modern/user_preferences.html:174
 msgid "Display inline add record form in edit view"
-msgstr "Display inline Add Record form in Edit View"
+msgstr "نمایش فرم درون‌خطی افزودن رکورد در نمای ویرایش"
 
 #: templates/modern/user_preferences.html:181
 msgid "Show edit buttons"
@@ -13594,7 +13593,7 @@ msgstr "گزارش‌های فعالیت کاربر"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior :"
+msgstr "رفتار لاگ کاربر:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13811,7 +13810,7 @@ msgstr "سرور دویدن"
 
 #: templates/default/pdns_status.html:33 templates/modern/pdns_status.html:33
 msgid "Server Not Running"
-msgstr "Server Not Run"
+msgstr "سرور در حال اجرا نیست"
 
 #: templates/default/pdns_status.html:47 templates/modern/pdns_status.html:47
 msgid "Server Information"
@@ -14587,7 +14586,7 @@ msgstr "دستورالعمل های Zi0AZ و Zi1251"
 
 #: lib/Module/ZoneImportExport/templates/import.html:225
 msgid "Multi-line records"
-msgstr "Multi-line Records"
+msgstr "رکوردهای چندخطی"
 
 #: lib/Module/ZoneImportExport/templates/import.html:226
 msgid "IDN domain names"
@@ -14779,7 +14778,7 @@ msgstr "URL API"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API Endpoint URL"
+msgstr "آدرس URL نقطه پایانی API در PowerDNS."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"

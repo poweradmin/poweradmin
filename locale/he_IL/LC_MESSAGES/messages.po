@@ -845,7 +845,7 @@ msgstr "תחום CA Custom נדרש כאשר \"Custom\" נבחר"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:215
 msgid "Invalid CA domain format"
-msgstr "Invalid CA Domain"
+msgstr "פורמט דומיין CA לא חוקי"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:221
 msgid ""
@@ -1372,7 +1372,7 @@ msgstr "לא הצליח לשחזר מידע RDAP באמצעות שרת %s"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:147
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token"
+msgstr "אסימון CSRF לא חוקי."
 
 #: lib/BaseController.php:592
 msgid ""
@@ -1881,7 +1881,7 @@ msgstr "אין לך רשות לערוך תבניות אישור."
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
-msgstr "Edit Permission Format"
+msgstr "עריכת תבנית הרשאות"
 
 #: lib/Application/Controller/EditPermTemplController.php:126
 msgid "The permission template has been updated successfully."
@@ -2036,7 +2036,7 @@ msgstr "אין לך רשות לערוך תבניות אזור."
 
 #: lib/Application/Controller/EditZoneTemplController.php:78
 msgid "Edit Zone Template"
-msgstr "Edit Zone"
+msgstr "ערוך תבנית אזור"
 
 #: lib/Application/Controller/EditZoneTemplController.php:94
 msgid "There is no zone template with this ID."
@@ -2770,7 +2770,7 @@ msgstr "המונחים: type"
 
 #: lib/Application/Controller/LogoutController.php:121
 msgid "You have logged out."
-msgstr "נרשמת."
+msgstr "התנתקת מהמערכת."
 
 #: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:898
 msgid "You do not have the permission to add a zone template."
@@ -3348,7 +3348,7 @@ msgstr "Authentication נכשלה: אין קוד אישור"
 
 #: lib/Application/Service/SamlService.php:222
 msgid "Authentication failed: Invalid session"
-msgstr "Authentication Fail: Invalid"
+msgstr "האימות נכשל: הפעלה לא חוקית"
 
 #: lib/Application/Service/SamlService.php:385
 msgid "Authentication failed: Unable to create or update user account"
@@ -3756,7 +3756,7 @@ msgstr "שגיאה מביטה בתבנית בשם:"
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "המונחים:"
+msgstr "שגיאה בבדיקת קיום התבנית: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5968,7 +5968,7 @@ msgstr "השימוש ב-\"RMAILBX מציין כי הבעלים של שיא ה-MI
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Invalid Error boxname (EMAILBX)."
+msgstr "שם המארח של תיבת דואר השגיאות (EMAILBX) לא חוקי."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
@@ -7089,7 +7089,7 @@ msgstr "זו לא כתובת IPv6 בתוקף."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "IPv4 invalid IPv4-mapped IPv6."
+msgstr "החלק של IPv4 בכתובת IPv6 ממופת-IPv4 לא חוקי."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
@@ -7166,7 +7166,7 @@ msgstr "ערך ריק אינו מותר. השתמש ב- \";\" כדי לאפשר 
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:205
 msgid "Invalid CA domain in issue tag."
-msgstr "Invalid CA domain in Issue tag"
+msgstr "דומיין CA לא חוקי בתג issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
@@ -7182,7 +7182,7 @@ msgstr "שיטת אימות ריקה שצוין."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:239
 msgid "Invalid CA domain in issuewild tag."
-msgstr "Invalid CA domain in Issue tag"
+msgstr "דומיין CA לא חוקי בתג issuewild."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:252
 #, php-format
@@ -9397,7 +9397,7 @@ msgstr "פעולות נוספות"
 
 #: templates/modern/api_key_regenerate.html:10
 msgid "Regenerate API Key"
-msgstr "Reenerate API Key"
+msgstr "יצירת מפתח API מחדש"
 
 #: templates/modern/api_key_edit.html:139
 msgid "Creates a new key, invalidating the old one"
@@ -9600,7 +9600,7 @@ msgstr "<code>target[עריכת קוד מקור | עריכה]"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0/24 - All</code>"
+msgstr "TXT עבור SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -9880,7 +9880,7 @@ msgstr "קבוצת Delete"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
-msgstr "Edit record in Zone"
+msgstr "עריכת רשומה באזור"
 
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
@@ -10218,7 +10218,7 @@ msgstr "ערוך הערה"
 
 #: templates/modern/edit_comment.html:9 templates/modern/edit_comment.html:11
 msgid "Edit comment in zone"
-msgstr "Edit comment in Zone"
+msgstr "עריכת הערה באזור"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
@@ -10498,7 +10498,7 @@ msgstr "אתה עומד למחוק את המשתמש"
 
 #: templates/default/delete_user.html:22 templates/modern/delete_user.html:22
 msgid "Zone Ownership Transfer"
-msgstr "העברה"
+msgstr "העברת בעלות על אזור"
 
 #: templates/default/delete_user.html:26 templates/modern/delete_user.html:26
 msgid ""
@@ -10709,7 +10709,7 @@ msgstr "איפוס סיסמה"
 
 #: templates/modern/reset_password.html:12
 msgid "Go to Login"
-msgstr "כניסה"
+msgstr "מעבר לדף ההתחברות"
 
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
@@ -14421,7 +14421,7 @@ msgstr "API"
 
 #: install/templates/step4.html.twig:32
 msgid "PowerDNS REST API"
-msgstr "PowerDNS API REST"
+msgstr "ממשק REST API של PowerDNS"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -14746,7 +14746,7 @@ msgstr "לספק את מנהל ה-DNS"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default Hostmaster for SOA Records"
+msgstr "ברירת המחדל של hostmaster עבור רשומות SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
