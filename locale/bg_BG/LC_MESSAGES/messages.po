@@ -4060,7 +4060,7 @@ msgstr "За портал тип 3, порталът трябва да бъде 
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
-msgstr "Когато алгоритъмът не е 0."
+msgstr "Публичният ключ IPSECKEY е задължителен, когато алгоритъмът не е 0."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:232
 msgid "IPSECKEY public key must be properly Base64 encoded."

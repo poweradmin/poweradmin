@@ -7621,7 +7621,7 @@ msgstr "يجب أن يكون هدف SVCB إما \".\" أو اسم مضيف صا�
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "لا يمكن أن يكون الهدف"
+msgstr "في وضع الاسم المستعار (priority = 0)، لا يمكن أن يكون الهدف \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -10773,7 +10773,7 @@ msgstr "مالك يضاف"
 
 #: templates/default/delete_user.html:91 templates/modern/delete_user.html:91
 msgid "Delete: The zone will be completely removed from the system"
-msgstr "تحذف المنطقة تماما من النظام"
+msgstr "الحذف: ستتم إزالة المنطقة بالكامل من النظام"
 
 #: templates/default/delete_user.html:92 templates/modern/delete_user.html:92
 msgid "Leave: The zone will remain in the system but without an owner"
@@ -11446,7 +11446,7 @@ msgstr "مضاف"
 
 #: templates/modern/edit_perm_templ.html:25
 msgid "A short, descriptive name for this permission set"
-msgstr "اسم وصفي قصير لهذا الأذن"
+msgstr "اسم قصير ووصفي لمجموعة الأذونات هذه"
 
 #: templates/modern/edit_perm_templ.html:30
 msgid "Optional: more detailed description of this permission set"

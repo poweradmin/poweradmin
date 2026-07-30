@@ -8013,7 +8013,7 @@ msgstr "الگوریتم CDSKEY باید بین 1 تا 16 باشد."
 msgid ""
 "Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to "
 "shorter key and signature size, resulting in smaller DNS packets."
-msgstr "الگوریتم 8 (RSASHA256) با ECDSAP256SHA256 جایگزین می شود."
+msgstr "الگوریتم 8 (RSASHA256) با ECDSAP256SHA256 (13) جایگزین می‌شود، زیرا اندازه کلید و امضای آن کوتاه‌تر است و در نتیجه بسته‌های DNS کوچک‌تری تولید می‌شود."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:208
 msgid ""

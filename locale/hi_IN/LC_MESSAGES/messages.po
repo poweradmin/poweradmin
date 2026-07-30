@@ -8447,7 +8447,7 @@ msgstr "DMARC %s टैग में वैध मेल्टो होना �
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "DMARC %s टैग: %s"
+msgstr "DMARC %s टैग में अमान्य ईमेल पता: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"

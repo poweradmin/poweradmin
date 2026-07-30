@@ -4681,7 +4681,7 @@ msgstr ""
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr "Ini adalah titik masuk aman."
+msgstr "Bit 0 (bendera SEP) ditetapkan dalam medan flags, menunjukkan bahawa ini ialah titik masuk selamat."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
@@ -11118,7 +11118,7 @@ msgstr "Terminologi Penggunaan"
 #: templates/modern/user_agreement_content.html:2
 msgid ""
 "By using this Poweradmin installation, you agree to the following terms:"
-msgstr "Anda setuju dengan syarat berikut:"
+msgstr "Dengan menggunakan pemasangan Poweradmin ini, anda bersetuju dengan terma berikut:"
 
 #: templates/modern/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -12111,7 +12111,7 @@ msgstr ""
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "Periksa nilai tanggal di: accessdate= (bantuan)"
+msgstr "Tandakan \"Create forward A/AAAA records\" untuk mencipta rekod hadapan yang sepadan secara automatik (dilumpuhkan apabila mod padanan digunakan)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"

@@ -8573,7 +8573,7 @@ msgstr ""
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "Cóipeáil nasc leis an tweet Leabaigh an Tweet ."
+msgstr "Cumraigh cliaint SSH le \"VerifyHostKeyDNS yes\" chun úsáid a bhaint as taifid SSHFP le haghaidh fíorú freastalaí."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
