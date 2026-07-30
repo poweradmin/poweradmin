@@ -134,9 +134,7 @@ msgstr "Tên máy chủ"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Tên máy chủ cho dịch vụ (để trống cho đỉnh vùng @). Bản ghi sẽ được tạo tại "
-"_cổng._giao_thức.tên_máy_chủ"
+msgstr "Tên máy chủ cho dịch vụ (để trống cho đỉnh vùng @). Bản ghi sẽ được tạo tại _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1092,9 +1090,7 @@ msgstr "Tên miền"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Tên miền (để trống cho đỉnh vùng @). Tên bản ghi đầy đủ sẽ là: "
-"_dịch_vụ._giao_thức.tên_miền"
+msgstr "Tên miền (để trống cho đỉnh vùng @). Tên bản ghi đầy đủ sẽ là: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1783,20 +1779,20 @@ msgstr "Bạn không có quyền xem siêu dữ liệu vùng."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Ban khong co quyen chinh sua sieu du lieu vung."
+msgstr "Bạn không có quyền chỉnh sửa siêu dữ liệu vùng."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Sieu du lieu vung da duoc cap nhat thanh cong."
+msgstr "Siêu dữ liệu vùng đã được cập nhật thành công."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Cap nhat sieu du lieu vung that bai."
+msgstr "Không thể cập nhật siêu dữ liệu vùng."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Chinh sua sieu du lieu vung"
+msgstr "Chỉnh sửa siêu dữ liệu vùng"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -1807,9 +1803,7 @@ msgstr "Siêu dữ liệu vùng"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Loai sieu du lieu %s chi chap nhan mot gia tri duy nhat. Chi them mot dong "
-"cho loai nay."
+msgstr "Loại siêu dữ liệu %s chỉ chấp nhận một giá trị duy nhất. Chỉ thêm một dòng cho loại này."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1826,9 +1820,7 @@ msgstr "Chỉ quản trị viên mới có thể thay đổi loại siêu dữ l
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Loai sieu du lieu tuy chinh duoc luu truc tiep trong bang domainmetadata cua "
-"PowerDNS."
+msgstr "Loại siêu dữ liệu tùy chỉnh được lưu trực tiếp trong bảng domainmetadata của PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -1842,11 +1834,11 @@ msgstr "Tùy chỉnh"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:661
 msgid "Multi"
-msgstr "Nhieu"
+msgstr "Nhiều"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:662
 msgid "Single"
-msgstr "Don"
+msgstr "Đơn"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
@@ -1859,7 +1851,7 @@ msgstr "Bạn không có quyền quản lý khóa API."
 #: lib/Application/Controller/ApiKeysController.php:101
 #: templates/modern/api_key_delete.html:4
 msgid "API Keys"
-msgstr "SAML assertion không hợp lệ."
+msgstr "Khóa API"
 
 #: lib/Application/Controller/ApiKeysController.php:255
 msgid "API key name is required."
@@ -2060,7 +2052,7 @@ msgstr "Không thể xóa bản ghi."
 #: lib/Application/Controller/ListLogZonesController.php:72
 #: templates/default/index.html:246 templates/modern/index.html:246
 msgid "Zone Logs"
-msgstr "Không tương thích phiên bản."
+msgstr "Nhật ký vùng"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2142,7 +2134,7 @@ msgstr "Bạn không có quyền xem vùng này."
 #: lib/Application/Controller/ListLogUsersController.php:68
 #: templates/default/index.html:256 templates/modern/index.html:256
 msgid "User Logs"
-msgstr "Schema version không khớp."
+msgstr "Nhật ký người dùng"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2538,7 +2530,7 @@ msgstr "Bạn không có quyền chỉnh sửa bản ghi DNS."
 #: lib/Application/Controller/BatchPtrRecordController.php:93
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
-msgstr "Cấu hình phiên bản không hợp lệ."
+msgstr "Bản ghi PTR hàng loạt"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -2693,7 +2685,7 @@ msgstr "Bạn không có đủ quyền để xem trang này."
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Reverse Zones"
-msgstr "JWT issuer không hợp lệ."
+msgstr "Vùng đảo ngược"
 
 #: lib/Application/Controller/ListForwardZonesController.php:284
 msgid "You do not have the permission to see any zones."
@@ -2910,7 +2902,7 @@ msgstr "Vùng không thuộc sở hữu của nhóm này."
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Forward Zones"
-msgstr "JWT audience không hợp lệ."
+msgstr "Vùng chuyển tiếp"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
@@ -3513,7 +3505,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Assertion thất bại."
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3521,7 +3513,7 @@ msgstr "Thêm autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Fixture không tìm thấy."
+msgstr "Thêm supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3529,7 +3521,7 @@ msgstr "Chỉnh sửa autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Tải xuống S3 thất bại."
+msgstr "Chỉnh sửa supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3577,7 +3569,7 @@ msgstr "Địa chỉ IP của autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Hạn mức S3 vượt quá."
+msgstr "Địa chỉ IP của supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3585,7 +3577,7 @@ msgstr "Chọn tài khoản sẽ sở hữu autoprimary này"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Từ chối người gửi SMTP."
+msgstr "Chọn tài khoản sẽ sở hữu supermaster này"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3593,7 +3585,7 @@ msgstr "Về việc chỉnh sửa Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Lỗi giao thức SMTP."
+msgstr "Về việc chỉnh sửa Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
@@ -3605,7 +3597,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Kết nối IMAP thất bại."
+msgstr "Bạn có thể sửa đổi địa chỉ IP, tên máy chủ hoặc tài khoản cho supermaster này."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3839,7 +3831,7 @@ msgstr "Lỗi khi kiểm tra mẫu tồn tại: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
-msgstr "OAuth state tham số không hợp lệ."
+msgstr "Bạn không có quyền thêm bản ghi NS."
 
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
@@ -3848,11 +3840,11 @@ msgstr "Bạn không có quyền thêm bản ghi LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
-msgstr "OAuth scope không hợp lệ."
+msgstr "Bạn không có quyền thêm bản ghi SOA."
 
 #: lib/Domain/Model/Permission.php:169
 msgid "You do not have the permission to edit this NS record."
-msgstr "OAuth refresh token không hợp lệ."
+msgstr "Bạn không có quyền chỉnh sửa bản ghi NS này."
 
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
@@ -3861,11 +3853,11 @@ msgstr "Bạn không có quyền chỉnh sửa bản ghi LUA này."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
-msgstr "OAuth access token không hợp lệ."
+msgstr "Bạn không có quyền chỉnh sửa bản ghi SOA này."
 
 #: lib/Domain/Model/Permission.php:174
 msgid "You do not have the permission to delete NS records."
-msgstr "OAuth token bị thu hồi."
+msgstr "Bạn không có quyền xóa bản ghi NS."
 
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
@@ -3874,7 +3866,7 @@ msgstr "Bạn không có quyền xóa bản ghi LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
-msgstr "OAuth token hết hạn."
+msgstr "Bạn không có quyền xóa bản ghi SOA."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
@@ -4577,10 +4569,7 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Định dạng bản ghi LOC không hợp lệ. Định dạng phải là: d1 [m1 [s1]] {\"N\"|"
-"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-"[vp[\"m\"]]]]."
+msgstr "Định dạng bản ghi LOC không hợp lệ. Định dạng phải là: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5990,232 +5979,195 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr "Trường ưu tiên cho bản ghi URI phải là 0 hoặc rỗng"
+msgstr "Cân nhắc sử dụng HTTPS thay vì HTTP để bảo mật tốt hơn."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr ""
-"Trọng số không hợp lệ cho bản ghi URI. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "FTP được coi là kém an toàn hơn các lựa chọn khác như SFTP hoặc HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Ưu tiên không hợp lệ cho bản ghi URI. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "Cân nhắc sử dụng LDAPS (LDAP over SSL/TLS) để bảo mật các kết nối LDAP."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr ""
-"URI không hợp lệ. Phải bắt đầu bằng scheme (ví dụ: http://, https://, "
-"ftp://)."
+msgstr "Các scheme URI liên quan đến điện thoại có thể chứa thông tin cá nhân nhạy cảm."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr ""
-"Ký tự không hợp lệ trong URI. Chỉ cho phép ký tự ASCII có thể in và phải "
-"được mã hóa URL đúng cách."
+msgstr "Scheme URI \"file\" có thể gây rủi ro bảo mật và không được khuyến nghị cho bản ghi DNS công khai."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr ""
-"Bản ghi NAPTR không nên trỏ đến CNAME. Sử dụng bản ghi A/AAAA thay thế."
+msgstr "Bản ghi URI phải ở định dạng: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr ""
-"Thứ tự không hợp lệ cho bản ghi NAPTR. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "Ưu tiên URI phải từ 0 đến 65535 (số nguyên không dấu 16-bit)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr ""
-"Ưu tiên không hợp lệ cho bản ghi NAPTR. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "Trọng số URI phải từ 0 đến 65535 (số nguyên không dấu 16-bit)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "Cờ không hợp lệ cho bản ghi NAPTR. Chỉ cho phép: S, A, U, P hoặc rỗng."
+msgstr "URI không được để trống."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:262
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr ""
-"Dịch vụ không hợp lệ cho bản ghi NAPTR. Phải theo định dạng "
-"'protocol+service' (ví dụ: E2U+sip)."
+msgstr "URI phải bắt đầu bằng một scheme hợp lệ, mở đầu bằng chữ cái và tiếp theo là chữ cái, chữ số, dấu cộng, dấu chấm hoặc dấu gạch ngang."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr ""
-"Regex không hợp lệ cho bản ghi NAPTR. Phải theo định dạng delimiter-pattern-"
-"delimiter-replacement-delimiter-flags."
+msgstr "URI sử dụng giao thức không phổ biến. Cân nhắc sử dụng scheme URI tiêu chuẩn để tương thích tốt hơn."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr ""
-"Replacement không hợp lệ cho bản ghi NAPTR. Phải là tên miền đầy đủ hợp lệ "
-"hoặc '.'."
+msgstr "URI với giao thức này phải có \"://\" sau tên giao thức."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr ""
-"Cờ 'S' hoặc 'A' yêu cầu replacement là tên miền đầy đủ, không phải '.'."
+msgstr "URI HTTP/HTTPS phải có tên máy chủ."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
-msgstr "Cờ 'U' yêu cầu regex không rỗng và replacement phải là '.'."
+msgstr "URI không được chứa ký tự điều khiển."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:301
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "Khi có regex, replacement phải là '.' (trừ khi dùng cờ P)."
+msgstr "URI chứa ký tự gạch chéo ngược, có thể được hiểu khác nhau giữa các hệ thống."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr "Bản ghi NAPTR với cờ 'P' yêu cầu cả regex và replacement."
+msgstr "URI chứa chuỗi \"..\", có thể bị dùng cho tấn công duyệt thư mục."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "Khi có cờ terminal (S hoặc A), dịch vụ không được rỗng."
+msgstr "URI chứa ký tự phần trăm không dùng cho mã hóa phần trăm đúng định dạng."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "Regex NAPTR không thể chứa ký tự null hoặc ký tự điều khiển."
+msgstr "URI chứa ký tự không thuộc ASCII trong tên máy chủ. Cân nhắc sử dụng Punycode cho tên miền quốc tế."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr ""
-"Cờ regex NAPTR không hợp lệ. Chỉ cho phép 'i' (không phân biệt hoa thường)."
+msgstr "Tên máy chủ key exchanger không hợp lệ. Trường exchanger phải là tên miền hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr ""
-"Pattern regex NAPTR có vẻ không hợp lệ. Không thể biên dịch dưới dạng biểu "
-"thức chính quy."
+msgstr "QUAN TRỌNG: RFC 2230 yêu cầu bản ghi KX phải được ký bằng DNSSEC. Bản ghi KX chưa ký PHẢI bị bỏ qua vì lý do bảo mật."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr ""
-"Nội dung bản ghi NAPTR phải chứa: order preference flags service regexp "
-"replacement."
+msgstr "Theo RFC 2230, các hệ thống không triển khai Secure DNS nên bỏ qua hoàn toàn bản ghi KX."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "Ký tự không hợp lệ trong nội dung bản ghi NAPTR."
+msgstr "Đảm bảo máy chủ key exchanger đã được cấu hình bản ghi DNS xuôi và ngược phù hợp."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr "Trường ưu tiên cho bản ghi NAPTR phải là 0 hoặc rỗng"
+msgstr "Máy chủ key exchanger nên có bản ghi A/AAAA phù hợp để xử lý phần bổ sung loại A/AAAA."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
-msgstr ""
-"Hàm băm không hợp lệ cho bản ghi SSHFP. Phải nằm trong khoảng từ 1 đến 2 "
-"(1=SHA-1, 2=SHA-256)."
+msgstr "Giá trị không hợp lệ cho trường preference của KX. Phải nằm trong khoảng từ 0 đến 65535."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr ""
-"Thuật toán không hợp lệ cho bản ghi SSHFP. Phải nằm trong khoảng từ 1 đến 4 "
-"(1=RSA, 2=DSA, 3=ECDSA, 4=Ed25519)."
+msgstr "LƯU Ý: Loại bản ghi MINFO được đánh dấu là THỬ NGHIỆM trong RFC 1035. Nó có thể không được hỗ trợ rộng rãi."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr ""
-"Fingerprint không hợp lệ cho bản ghi SSHFP. Phải là chuỗi thập lục phân."
+msgstr "Nội dung bản ghi MINFO không được để trống."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr "Độ dài fingerprint không chính xác cho loại hàm băm đã chỉ định."
+msgstr "Bản ghi MINFO phải chứa cả hộp thư phụ trách và hộp thư lỗi, phân tách bằng một khoảng trắng (RFC 1035 Phần 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr ""
-"SHA-1 không còn được khuyến nghị cho mục đích bảo mật. Hãy cân nhắc sử dụng "
-"SHA-256."
+msgstr "Tên máy chủ hộp thư phụ trách (RMAILBX) không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr ""
-"DSA không còn được khuyến nghị cho mục đích bảo mật. Hãy cân nhắc sử dụng "
-"Ed25519 hoặc ECDSA."
+msgstr "RFC 1035 lưu ý rằng nhiều danh sách gửi thư sử dụng hộp thư \"list-name-request\" cho trường hộp thư phụ trách."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr ""
-"Nội dung bản ghi SSHFP phải ở định dạng: algorithm hashtype fingerprint."
+msgstr "Sử dụng \".\" (gốc) cho RMAILBX chỉ ra rằng chủ sở hữu bản ghi MINFO tự chịu trách nhiệm."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Ký tự không hợp lệ trong nội dung bản ghi SSHFP."
+msgstr "Tên máy chủ hộp thư lỗi (EMAILBX) không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "Trường ưu tiên cho bản ghi SSHFP phải là 0 hoặc rỗng"
+msgstr "Sử dụng \".\" (gốc) cho EMAILBX chỉ ra rằng lỗi nên được trả về cho người gửi thông điệp."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr ""
-"Cờ không hợp lệ cho bản ghi CAA. Phải là 0 (không quan trọng) hoặc 128 (quan "
-"trọng)."
+msgstr "Hộp thư phụ trách và hộp thư lỗi giống nhau. Cân nhắc sử dụng các hộp thư khác nhau cho những chức năng này."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr ""
-"Tag không hợp lệ cho bản ghi CAA. Các tag hợp lệ: issue, issuewild, iodef."
+msgstr "Trường ưu tiên cho bản ghi MINFO phải là 0 hoặc để trống. MINFO không sử dụng giá trị ưu tiên theo RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
-msgstr "Giá trị không hợp lệ cho bản ghi CAA."
+msgstr "Trường ưu tiên cho bản ghi SPF phải là 0 hoặc để trống"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
-msgstr ""
-"Tag 'issue' và 'issuewild' phải chỉ định tên miền CA hợp lệ hoặc ';' để cấm "
-"phát hành."
+msgstr "Bản ghi SPF phải bắt đầu bằng \"v=spf1\""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr ""
-"Tag 'iodef' phải chứa URL hoặc địa chỉ email hợp lệ để báo cáo vi phạm."
+msgstr "Bản ghi SPF vượt quá giới hạn 255 ký tự. Hãy chia thành nhiều bản ghi TXT."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
 "Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr "Nội dung bản ghi CAA phải ở định dạng: flags tag value."
+msgstr "Tìm thấy nhiều cơ chế \"all\". Chỉ cơ chế đầu tiên có hiệu lực."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -6226,11 +6178,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
-msgstr "Ký tự không hợp lệ trong nội dung bản ghi CAA."
+msgstr "Địa chỉ hoặc mạng IPv4 không hợp lệ trong cơ chế ip4."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:224
 msgid "Invalid IPv6 address or network in ip6 mechanism."
-msgstr "Trường ưu tiên cho bản ghi CAA phải là 0 hoặc rỗng"
+msgstr "Địa chỉ hoặc mạng IPv6 không hợp lệ trong cơ chế ip6."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
@@ -6244,34 +6196,27 @@ msgstr "Ký hiệu CIDR không hợp lệ với cơ chế %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
-msgstr ""
-"Bản ghi CAA 'issuewild' của bạn bị ghi đè bởi bản ghi 'issue ;' hoặc "
-"'issuewild ;' nghiêm ngặt hơn."
+msgstr "Độ dài CIDR không hợp lệ trong cơ chế."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr ""
-"Có cả 'issue' và 'issuewild' cho cùng một CA. Bản ghi 'issuewild' sẽ được ưu "
-"tiên cho wildcard."
+msgstr "Cơ chế ptr không được khuyến nghị do các vấn đề về hiệu suất (RFC 7208 Phần 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "Chứng chỉ wildcard yêu cầu tag 'issuewild', không chỉ 'issue'."
+msgstr "Cơ chế \"all\" nên là cơ chế cuối cùng trong bản ghi (RFC 7208 Phần 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
-msgstr ""
-"Giá trị không hợp lệ cho loại chứng chỉ. Phải nằm trong khoảng từ 0 đến 255."
+msgstr "Tên miền không hợp lệ trong bộ điều chỉnh redirect."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
-msgstr ""
-"Giá trị không hợp lệ cho loại key selector. Phải là 0 (Full cert) hoặc 1 "
-"(SubjectPublicKeyInfo)."
+msgstr "Tên miền không hợp lệ trong bộ điều chỉnh exp."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
@@ -6287,58 +6232,45 @@ msgstr "Cơ chế không xác định: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr ""
-"Độ dài dữ liệu chứng chỉ không chính xác cho loại matching đã chỉ định."
+msgstr "Bản ghi SPF nên có cơ chế \"all\" kết thúc hoặc bộ điều chỉnh \"redirect\" (RFC 7208 Phần 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr ""
-"SHA-256 (matching type 1) được khuyến nghị hơn Full (matching type 0) để cải "
-"thiện hiệu suất và quyền riêng tư."
+msgstr "Bản ghi SPF có cả cơ chế \"all\" và bộ điều chỉnh \"redirect\". Bộ điều chỉnh \"redirect\" sẽ bị bỏ qua khi có \"all\" (RFC 7208 Phần 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr ""
-"SHA-512 (matching type 2) cung cấp bảo mật tốt hơn SHA-256 nhưng có kích "
-"thước bản ghi lớn hơn."
+msgstr "Giá trị trường ưu tiên không hợp lệ. Bản ghi CNAME phải có giá trị ưu tiên là 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr ""
-"Loại chứng chỉ 0 (PKIX-TA) đang được dùng. Hãy đảm bảo chứng chỉ đáng tin "
-"cậy."
+msgstr "Đây không phải CNAME hợp lệ. Đã tồn tại một bản ghi với tên này."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-"Loại chứng chỉ 1 (PKIX-EE) đang được dùng. Hãy đảm bảo chứng chỉ end-entity "
-"khớp."
+msgstr "Đây không phải CNAME hợp lệ. Bạn có gán bản ghi MX hoặc NS cho bản ghi này không?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
-msgstr ""
-"Loại chứng chỉ 255 (Private) đang được dùng. Hãy đảm bảo cấu hình tùy chỉnh "
-"của bạn chính xác."
+msgstr "Không cho phép bản ghi CNAME trống."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "Loại chứng chỉ không xác định. RFC 6698 chỉ định các loại 0-3 và 255."
+msgstr "Đây không phải bản ghi hợp lệ. Đã tồn tại một CNAME với tên này."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr ""
-"Nội dung bản ghi TLSA phải ở định dạng: usage selector matchingtype "
-"certificatedata."
+msgstr "Đích CNAME phải là tên miền đầy đủ (FQDN). Không cho phép tên chỉ có một nhãn."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -8559,21 +8491,21 @@ msgstr "Giao thức \"%s\" không nằm trong danh sách các giao thức phổ 
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
-msgstr "Modifier biểu thức chính quy không hợp lệ."
+msgstr "Tên miền không hợp lệ trong bản ghi SRV."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr "Delimiter biểu thức chính quy không hợp lệ."
+msgstr "Nội dung bản ghi SRV phải có weight, port và target (3 trường). Độ ưu tiên phải nằm trong trường priority."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Biểu thức chính quy gây lỗi thời gian chạy."
+msgstr "Giá trị không hợp lệ cho trường weight của bản ghi SRV. Phải từ 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Độ ưu tiên tác vụ không hợp lệ."
+msgstr "Giá trị không hợp lệ cho trường port của bản ghi SRV. Phải từ 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -8584,56 +8516,56 @@ msgstr "Cổng %d khác với cổng tiêu chuẩn %d của dịch vụ %s. Đi�
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "Loại tác vụ không hợp lệ."
+msgstr "Target của bản ghi SRV không thể để trống."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "Cấu hình tác vụ không hợp lệ."
+msgstr "Khi target là \".\" (không có dịch vụ), port và weight đều phải là 0."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "Lịch trình tác vụ không hợp lệ."
+msgstr "Target SRV không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Biểu thức cron không hợp lệ."
+msgstr "Giá trị không hợp lệ cho trường priority của bản ghi SRV."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "Khoảng thời gian tác vụ không hợp lệ."
+msgstr "Không nên dùng địa chỉ IPv6 không xác định (::) hoặc loopback (::1) trong bản ghi AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "Thời gian chờ tác vụ vượt quá giới hạn tối đa."
+msgstr "Địa chỉ IPv6 site-local (fec0::/10) đã lỗi thời và không nên được sử dụng."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Số lần thử lại tác vụ vượt quá giới hạn tối đa."
+msgstr "Giá trị không hợp lệ cho trường ưu tiên. Bản ghi AAAA phải có giá trị ưu tiên là 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "Delay thử lại tác vụ không hợp lệ."
+msgstr "Tên chủ sở hữu của bản ghi NSEC3 thường phải là một chuỗi băm mã hóa Base32hex theo sau là tên vùng (ví dụ: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "Phụ thuộc tác vụ không hợp lệ."
+msgstr "Nội dung bản ghi NSEC3 không thể để trống."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "Phụ thuộc tác vụ vòng tròn phát hiện."
+msgstr "Bản ghi NSEC3 chứa các ký tự không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "Độ ưu tiên hàng đợi không hợp lệ."
+msgstr "Theo RFC 5155 và RFC 9077, bản ghi NSEC3 phải có cùng TTL với trường TTL tối thiểu của SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -8645,7 +8577,7 @@ msgstr "Bản ghi NSEC3 là một phần của DNSSEC và chỉ nên được qu
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "Kích thước hàng đợi vượt quá giới hạn tối đa."
+msgstr "Không khuyến nghị chỉnh sửa thủ công bản ghi NSEC3 vì chúng thường được các nameserver hỗ trợ DNSSEC tạo tự động."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -8661,19 +8593,19 @@ msgstr "Bản ghi NSEC3 phải chứa tối thiểu thuật toán băm, cờ, s�
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
-msgstr "Thời gian chờ hàng đợi hết hạn."
+msgstr "Thuật toán băm NSEC3 phải là 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "Cấu hình worker không hợp lệ."
+msgstr "Cờ NSEC3 phải là 0 hoặc 1."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
-msgstr "Số lượng worker vượt quá giới hạn tối đa."
+msgstr "Số lần lặp NSEC3 phải nằm trong khoảng từ 0 đến 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
-msgstr "Worker không khả dụng."
+msgstr "Salt của NSEC3 phải là - (nếu để trống) hoặc một giá trị thập lục phân."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
@@ -8696,7 +8628,7 @@ msgstr "Bản ghi NSEC3 chứa loại bản ghi không hợp lệ: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr "Khóa cache không hợp lệ."
+msgstr "Loại RRSIG thường phải có mặt trong type bit maps của NSEC3 đối với các vùng đã ký DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -8716,33 +8648,33 @@ msgstr "Các ký tự không hợp lệ đã được sử dụng trong bản gh
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:60
 msgid "You cannot use html tags for this type of record."
-msgstr "Không tìm thấy cache."
+msgstr "Bạn không thể dùng thẻ html cho loại bản ghi này."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "Cache hết hạn."
+msgstr "Hãy thêm dấu ngoặc kép quanh nội dung bản ghi TXT."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:156
 msgid "Invalid domain name format."
-msgstr "Backend cache không khả dụng."
+msgstr "Định dạng tên miền không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "Tuần tự hóa cache thất bại."
+msgstr "Đây có vẻ là một tên miền ENUM. Bản ghi NAPTR nên dùng trường service E2U và tuân theo RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "Bỏ tuần tự hóa cache thất bại."
+msgstr "Các mẫu regexp phức tạp trong bản ghi NAPTR có thể khó gỡ lỗi và bảo trì."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr "Cấu hình phiên không hợp lệ."
+msgstr "Bản ghi này tuân theo RFC 3403. Lưu ý rằng một số máy chủ DNS có thể không hỗ trợ đầy đủ mọi tính năng NAPTR."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -8758,27 +8690,27 @@ msgstr "Bản ghi NAPTR phải chứa các giá trị order, preference, flags, 
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
-msgstr "Phiên không tìm thấy."
+msgstr "Giá trị order của bản ghi NAPTR phải là một số từ 0 đến 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "Dữ liệu phiên bị hỏng."
+msgstr "Giá trị preference của bản ghi NAPTR phải là một số từ 0 đến 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
-msgstr "Thời gian chờ phiên không hợp lệ."
+msgstr "Giá trị flags của bản ghi NAPTR phải là một chuỗi trong dấu ngoặc kép."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
-msgstr "Handler phiên không khả dụng."
+msgstr "Giá trị flags của bản ghi NAPTR chỉ được chứa A, P, S hoặc U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr "Không thể ghi phiên."
+msgstr "Giá trị service của bản ghi NAPTR phải là một chuỗi trong dấu ngoặc kép."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "Không thể đọc phiên."
+msgstr "Giá trị regexp của bản ghi NAPTR phải là một chuỗi trong dấu ngoặc kép."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -8788,7 +8720,7 @@ msgstr "Giá trị replacement của bản ghi NAPTR phải là \".\" hoặc m�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "Cookie phiên không hợp lệ."
+msgstr "Bản ghi NAPTR có regexp phải dùng \".\" làm giá trị replacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -8801,23 +8733,23 @@ msgstr "Dịch vụ NAPTR phải theo định dạng: [protocol][+rs][+rs]... tr
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr "Tên cookie không hợp lệ."
+msgstr "Các cờ kết thúc \"S\", \"A\", \"U\" và \"P\" không nên được kết hợp với các cờ khác."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "Giá trị cookie quá lớn."
+msgstr "Regexp của NAPTR phải bắt đầu bằng một ký tự phân cách."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "Miền cookie không hợp lệ."
+msgstr "Regexp của NAPTR phải theo định dạng delimiter+pattern+delimiter+replacement+delimiter+flags."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "Đường dẫn cookie không hợp lệ."
+msgstr "Cờ regexp của NAPTR (sau dấu phân cách thứ ba) chỉ được chứa \"i\" hoặc để trống."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8827,15 +8759,15 @@ msgstr "Đây có vẻ là một bản ghi NAPTR ENUM (RFC 6116). Hãy đảm b�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "Thiết đặt cookie SameSite không hợp lệ."
+msgstr "Bản ghi ENUM phải có cờ \"U\" để cho biết đầu ra là URI."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "Cookie yêu cầu HTTPS (cờ Secure)."
+msgstr "Regexp của NAPTR chứa mẫu có thể gây nguy hiểm: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "Cấu hình header không hợp lệ."
+msgstr "Regexp của NAPTR quá dài. Độ dài tối đa là 1000 ký tự."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -8845,7 +8777,7 @@ msgstr "Bản ghi DNSKEY thường được đặt tại đỉnh vùng. Bản gh
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Giá trị header không hợp lệ."
+msgstr "Trường ưu tiên của bản ghi DNSKEY phải là 0 hoặc để trống."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
@@ -8855,7 +8787,7 @@ msgstr "Bản ghi DNSKEY phải chứa flags, protocol, algorithm và public-key
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "Header bắt buộc thiếu."
+msgstr "Giá trị flags của DNSKEY phải là 0, 256 hoặc 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -8867,27 +8799,27 @@ msgstr "Giá trị cờ 0 cho biết khóa này KHÔNG dùng làm khóa vùng tr
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr "Giá trị Content-Type không hợp lệ."
+msgstr "Giá trị cờ 256 cho biết đây là Zone Signing Key (ZSK) với bit Zone Key được đặt và bit SEP không được đặt."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr "Giá trị Content-Length không hợp lệ."
+msgstr "Giá trị cờ 257 cho biết đây là Key Signing Key (KSK) với cả bit Zone Key và bit SEP đều được đặt."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "Giá trị Authorization không hợp lệ."
+msgstr "Giá trị protocol của DNSKEY phải là 3."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
-msgstr "Header Authorization thiếu."
+msgstr "Thuật toán DNSKEY phải là một số từ 1 đến 16."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "Schema xác thực không hợp lệ."
+msgstr "ECDSAP256SHA256 (thuật toán 13) là thuật toán ĐƯỢC KHUYẾN NGHỊ để ký DNSSEC theo RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8917,7 +8849,7 @@ msgstr "Thuật toán %d KHÔNG ĐƯỢC triển khai theo RFC 8624. Không nên
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "API key hết hạn."
+msgstr "Khóa công khai DNSKEY phải là dữ liệu mã hóa base64 hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -8927,15 +8859,15 @@ msgstr "Kích thước khóa RSA nhỏ hơn 2048 bit. RFC 8624 khuyến nghị t
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "Giới hạn tốc độ API vượt quá."
+msgstr "Mã hóa Base64 có phần đệm không đúng."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
-msgstr "Hạn mức API vượt quá."
+msgstr "Phát hiện ký tự base64 không hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
-msgstr "Phiên bản API không được hỗ trợ."
+msgstr "Mã hóa base64 không hợp lệ."
 
 #: lib/Domain/Service/DomainRecordCreator.php:79
 #, php-format
@@ -8944,52 +8876,52 @@ msgstr "Không có vùng được quản lý cho miền: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:97
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Phương thức API không được phép."
+msgstr "Việc thêm bản ghi miền IPv6 từ các vùng ngược chưa được hỗ trợ."
 
 #: lib/Domain/Service/DomainRecordCreator.php:140
 msgid "This domain record was not valid and could not be added."
-msgstr "Body request API không hợp lệ."
+msgstr "Bản ghi miền này không hợp lệ và không thể được thêm."
 
 #: lib/Domain/Service/DomainRecordCreator.php:136
 msgid "The domain record was successfully added."
-msgstr "Tham số truy vấn API không hợp lệ."
+msgstr "Bản ghi miền đã được thêm thành công."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:99
 msgid "Unable to find domain with the given ID."
-msgstr "Header API thiếu tham số bắt buộc."
+msgstr "Không tìm thấy miền với ID đã cho."
 
 #: lib/Domain/Service/ApiKeyService.php:198
 msgid "API functionality is disabled."
-msgstr "Mã trạng thái API không mong đợi."
+msgstr "Chức năng API đã bị tắt."
 
 #: lib/Domain/Service/ApiKeyService.php:207
 msgid "You do not have permission to create API keys."
-msgstr "Lỗi API timeout."
+msgstr "Bạn không có quyền tạo khóa API."
 
 #: lib/Domain/Service/ApiKeyService.php:214 templates/default/api_keys.html:17
 #: templates/modern/api_keys.html:17
 msgid "You have reached the maximum number of API keys allowed."
-msgstr "Dịch vụ API không khả dụng."
+msgstr "Bạn đã đạt số lượng khóa API tối đa được phép."
 
 #: lib/Domain/Service/ApiKeyService.php:365
 msgid "You do not have permission to update API keys."
-msgstr "Lỗi mạng API."
+msgstr "Bạn không có quyền cập nhật khóa API."
 
 #: lib/Domain/Service/ApiKeyService.php:307
 msgid "You do not have permission to delete API keys."
-msgstr "Kết nối API bị từ chối."
+msgstr "Bạn không có quyền xóa khóa API."
 
 #: lib/Domain/Service/ApiKeyService.php:334
 msgid "You do not have permission to regenerate API keys."
-msgstr "Xác minh SSL API thất bại."
+msgstr "Bạn không có quyền tạo lại khóa API."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "Lỗi chứng chỉ SSL API."
+msgstr "Không có bản ghi SOA nào hiện diện hoặc đang hoạt động trong vùng. Bản ghi này là bắt buộc cho DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr "Handshake API timeout."
+msgstr "Hãy thêm một bản ghi SOA vào vùng trước khi ký vùng."
 
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
@@ -8998,7 +8930,7 @@ msgstr "Vùng có %d bản ghi SOA. Chỉ cho phép một bản ghi SOA cho mỗ
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
-msgstr "Vòng lặp chuyển hướng API phát hiện."
+msgstr "Hãy xóa các bản ghi SOA trùng lặp, chỉ giữ lại một bản."
 
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
@@ -9007,43 +8939,43 @@ msgstr "Bản ghi SOA không ở apex. Tìm thấy tại \"%s\" nhưng vùng là
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
-msgstr "URL webhook không hợp lệ."
+msgstr "Hãy chuyển bản ghi SOA về đỉnh vùng."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
-msgstr "Payload webhook không hợp lệ."
+msgstr "Bản ghi SOA có định dạng nội dung không hợp lệ."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "Chữ ký webhook không hợp lệ."
+msgstr "Định dạng SOA phải là: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Xác minh webhook thất bại."
+msgstr "Vùng không có bản ghi NS (Name Server) nào tại đỉnh. Cần ít nhất một bản ghi NS tại đỉnh cho DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
-msgstr "Giao hàng webhook thất bại."
+msgstr "Hãy thêm bản ghi NS tại đỉnh vùng cho các name server có thẩm quyền của bạn."
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
-msgstr "Webhook timeout."
+msgstr "Không thể tiến hành ký DNSSEC do các lỗi sau:"
 
 #: lib/Domain/Service/ZoneValidationService.php:253
 msgid "Additionally, the following warnings were found:"
-msgstr "Thử lại webhook vượt quá."
+msgstr "Ngoài ra, đã tìm thấy các cảnh báo sau:"
 
 #: lib/Domain/Service/ZoneValidationService.php:255
 msgid "The following warnings were found:"
-msgstr "Endpoint webhook không thể truy cập."
+msgstr "Đã tìm thấy các cảnh báo sau:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Dong trong."
+msgstr "Dòng trống."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
@@ -9053,13 +8985,11 @@ msgstr "Định dạng không hợp lệ. Yêu cầu tối thiểu: tên,loại,
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Dinh dang SRV khong hop le. Su dung: name,SRV,\"weight port "
-"target\",priority,ttl hoac name,SRV,target,weight,port,ttl"
+msgstr "Định dạng SRV không hợp lệ. Sử dụng: name,SRV,\"weight port target\",priority,ttl hoặc name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
-msgstr "Phương thức OAuth không hợp lệ."
+msgstr "Loại cơ sở dữ liệu không xác định."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:102
 #, php-format
@@ -9088,7 +9018,7 @@ msgstr "Đã xóa bản ghi PTR cũ."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
-msgstr "OAuth authorization code không hợp lệ."
+msgstr "Đã tồn tại một bản ghi với tên máy chủ, loại và nội dung này."
 
 #: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "Failed to add record to DNS backend."
@@ -9105,7 +9035,7 @@ msgstr "Đối số không hợp lệ được truyền cho hàm %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "OAuth response type không được hỗ trợ."
+msgstr "Đã tồn tại một supermaster với địa chỉ IP và tên máy chủ này."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -9158,7 +9088,7 @@ msgstr "Không thể cập nhật máy chủ chính của vùng trong backend DN
 
 #: lib/Domain/Service/Dns/DomainManager.php:851
 msgid "The selected user already owns the zone."
-msgstr "Máy chủ OAuth authorization không khả dụng."
+msgstr "Người dùng đã chọn vốn đã sở hữu vùng này."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
 #, auto-english-fallback
@@ -9168,15 +9098,15 @@ msgstr "Không thể cập nhật các bản ghi của vùng: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
-msgstr "Chữ ký SAML không hợp lệ."
+msgstr "Đã tạo lại khóa API"
 
 #: templates/modern/api_key_regenerated.html:10
 msgid "API Key Regenerated Successfully"
-msgstr "Phản hồi SAML không hợp lệ."
+msgstr "Đã tạo lại khóa API thành công"
 
 #: templates/modern/api_key_regenerated.html:15
 msgid "IMPORTANT: Save your new API key now!"
-msgstr "SAML assertion hết hạn."
+msgstr "QUAN TRỌNG: Hãy lưu khóa API mới của bạn ngay!"
 
 #: templates/modern/api_key_regenerated.html:16
 msgid ""
@@ -9190,7 +9120,7 @@ msgstr "Tên:"
 
 #: templates/modern/api_key_regenerated.html:26
 msgid "New API Key:"
-msgstr "SAML destination không hợp lệ."
+msgstr "Khóa API mới:"
 
 #: templates/modern/api_key_created.html:31
 msgid "Copy"
@@ -9198,7 +9128,7 @@ msgstr "Sao chép"
 
 #: templates/modern/api_key_created.html:39
 msgid "Created at:"
-msgstr "Thuộc tính SAML thiếu."
+msgstr "Tạo lúc:"
 
 #: templates/modern/api_key_created.html:50
 msgid "Expires at:"
@@ -9226,7 +9156,7 @@ msgstr "Đang hoạt động"
 
 #: templates/modern/api_key_created.html:58
 msgid "Return to API Keys"
-msgstr "JWT token hết hạn."
+msgstr "Quay lại danh sách khóa API"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
@@ -9238,7 +9168,7 @@ msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:118
 msgid "Deactivate key"
-msgstr "JWT subject không hợp lệ."
+msgstr "Vô hiệu hóa khóa"
 
 #: templates/modern/dnssec_edit_key.html:120
 msgid "Activate key"
@@ -9246,11 +9176,11 @@ msgstr "Kích hoạt khóa"
 
 #: templates/modern/dnssec_edit_key.html:13
 msgid "Deactivate DNSSEC Key"
-msgstr "Claim JWT bắt buộc thiếu."
+msgstr "Vô hiệu hóa khóa DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:15
 msgid "Activate DNSSEC Key"
-msgstr "Cấu hình LDAP không hợp lệ."
+msgstr "Kích hoạt khóa DNSSEC"
 
 #: templates/modern/dnssec_delete_key.html:13
 msgid "Warning"
@@ -9258,7 +9188,7 @@ msgstr "Warning"
 
 #: templates/modern/dnssec_edit_key.html:23
 msgid "You are about to deactivate a DNSSEC key (ID"
-msgstr "Kết nối LDAP thất bại."
+msgstr "Bạn đang chuẩn bị vô hiệu hóa một khóa DNSSEC (ID"
 
 #: templates/modern/dnssec_edit_key.html:24
 msgid ""
@@ -9268,17 +9198,17 @@ msgstr "Vô hiệu hóa một khóa đang hoạt động sẽ ảnh hưởng đ�
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
-msgstr "Truy vấn LDAP thất bại."
+msgstr "Bạn có chắc chắn muốn tiếp tục?"
 
 #: templates/modern/dnssec_edit_key.html:30
 msgid "You are about to activate a DNSSEC key (ID"
-msgstr "DN LDAP không hợp lệ."
+msgstr "Bạn đang chuẩn bị kích hoạt một khóa DNSSEC (ID"
 
 #: templates/modern/dnssec_edit_key.html:31
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "Bộ lọc LDAP không hợp lệ."
+msgstr "Kích hoạt khóa này sẽ đưa nó vào chuỗi ký DNSSEC đang hoạt động của vùng này."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
@@ -9314,7 +9244,7 @@ msgstr "Hủy"
 
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
-msgstr "Lỗi cú pháp SQL."
+msgstr "Sửa khóa API"
 
 #: lib/Module/ZoneImportExport/templates/import.html:76
 msgid "Name"
@@ -9322,11 +9252,11 @@ msgstr "Tên"
 
 #: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
 msgid "Please provide a name for this API key"
-msgstr "Vi phạm khóa duy nhất cơ sở dữ liệu."
+msgstr "Vui lòng cung cấp tên cho khóa API này"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
-msgstr "Vi phạm khóa ngoại cơ sở dữ liệu."
+msgstr "Một tên mô tả giúp bạn nhận diện khóa này"
 
 #: templates/modern/api_key_delete.html:40
 msgid "Expires at"
@@ -9334,15 +9264,15 @@ msgstr "Hết hạn vào"
 
 #: templates/modern/api_key_edit.html:28 templates/modern/api_key_add.html:28
 msgid "Leave empty for a key that never expires"
-msgstr "Timeout giao dịch cơ sở dữ liệu."
+msgstr "Để trống nếu muốn khóa không bao giờ hết hạn"
 
 #: templates/default/api_key_edit.html:33 templates/modern/api_key_edit.html:34
 msgid "Disable this API key"
-msgstr "Rollback cơ sở dữ liệu thất bại."
+msgstr "Tắt khóa API này"
 
 #: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
 msgid "Disabled keys cannot be used for authentication"
-msgstr "Commit cơ sở dữ liệu thất bại."
+msgstr "Các khóa đã tắt không thể dùng để xác thực"
 
 #: templates/modern/api_key_add.html:32 templates/modern/header.html:275
 msgid "Permissions"
@@ -9370,7 +9300,7 @@ msgstr "Để trống để cho phép truy cập tất cả các vùng khả d�
 
 #: templates/default/api_key_edit.html:70 templates/modern/api_key_edit.html:71
 msgid "Update API Key"
-msgstr "Bảng cơ sở dữ liệu không tồn tại."
+msgstr "Cập nhật khóa API"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:235
 msgid "* Required fields"
@@ -9378,7 +9308,7 @@ msgstr "* Các trường bắt buộc"
 
 #: templates/default/api_key_edit.html:86 templates/modern/api_key_edit.html:87
 msgid "API Key Information"
-msgstr "Chỉ mục cơ sở dữ liệu không tồn tại."
+msgstr "Thông tin khóa API"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
@@ -9390,7 +9320,7 @@ msgstr "Không xác định"
 
 #: templates/modern/api_keys.html:30 templates/modern/api_key_delete.html:31
 msgid "Created at"
-msgstr "Cơ sở dữ liệu đầy."
+msgstr "Tạo lúc"
 
 #: templates/modern/api_keys.html:31 templates/modern/api_key_delete.html:35
 msgid "Last used"
@@ -9402,19 +9332,19 @@ msgstr "Hành động bổ sung"
 
 #: templates/modern/api_key_regenerate.html:10
 msgid "Regenerate API Key"
-msgstr "Cấu hình Redis không hợp lệ."
+msgstr "Tạo lại khóa API"
 
 #: templates/modern/api_key_edit.html:139
 msgid "Creates a new key, invalidating the old one"
-msgstr "Kết nối Redis thất bại."
+msgstr "Tạo một khóa mới và làm khóa cũ mất hiệu lực"
 
 #: templates/modern/api_key_delete.html:9
 msgid "Delete API Key"
-msgstr "Lệnh Redis thất bại."
+msgstr "Xóa khóa API"
 
 #: templates/modern/api_key_edit.html:143
 msgid "Permanently removes this key"
-msgstr "Khóa Redis không tồn tại."
+msgstr "Xóa vĩnh viễn khóa này"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
@@ -9422,7 +9352,7 @@ msgstr "Mẫu vùng"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
-msgstr "Timeout Redis."
+msgstr "Sửa bản ghi"
 
 #: templates/modern/add_zone_templ_record.html:12
 msgid "Reminder"
@@ -9432,32 +9362,32 @@ msgstr "Nhắc nhở"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "Cấu hình Memcached không hợp lệ."
+msgstr "Sau khi sửa bản ghi này, hãy nhớ cập nhật các vùng đang dùng mẫu này bằng cách nhấn \"Cập nhật vùng\" trên trang mẫu."
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
-msgstr "Kết nối Memcached thất bại."
+msgstr "Sửa bản ghi trong mẫu vùng"
 
 #: templates/modern/edit_zone_templ_record.html:26
 msgid "Modify the record for this zone template"
-msgstr "Máy chủ Memcached không khả dụng."
+msgstr "Chỉnh sửa bản ghi cho mẫu vùng này"
 
 #: templates/modern/add_zone_templ_record.html:35
 msgid "Provide a name for your record"
-msgstr "Cấu hình Elasticsearch không hợp lệ."
+msgstr "Cung cấp tên cho bản ghi của bạn"
 
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "Kết nối Elasticsearch thất bại."
+msgstr "Ví dụ: [ZONE] cho chính vùng đó, hoặc subdomain.[ZONE] cho một tên miền con"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
-msgstr "Truy vấn Elasticsearch thất bại."
+msgstr "Khoảng hợp lệ: 0-65535"
 
 #: templates/modern/add_zone_templ_record.html:55
 msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Chỉ mục Elasticsearch không tồn tại."
+msgstr "Chỉ dành cho MX, SRV, KX, NAPTR"
 
 #: lib/Module/ZoneImportExport/templates/import.html:79
 msgid "TTL"
@@ -9465,7 +9395,7 @@ msgstr "TTL"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
-msgstr "Tài liệu Elasticsearch không tìm thấy."
+msgstr "Khoảng hợp lệ: 0-2147483647"
 
 #: lib/Module/ZoneImportExport/templates/import.html:78
 msgid "Content"
@@ -9473,7 +9403,7 @@ msgstr "Nội dung"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Provide content for your zone record"
-msgstr "Cluster Elasticsearch không khả dụng."
+msgstr "Cung cấp nội dung cho bản ghi vùng của bạn"
 
 #: templates/modern/add_record.html:90 templates/modern/add_record.html:142
 msgid ""
@@ -9491,7 +9421,7 @@ msgstr "Mẹo: Với bản ghi SOA, hãy dùng <code>[ZONE]</code> làm tên và
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
-msgstr "RabbitMQ channel không hợp lệ."
+msgstr "Cập nhật bản ghi"
 
 #: templates/modern/edit.html:556 templates/modern/users.html:222
 msgid "Reset"
@@ -9499,7 +9429,7 @@ msgstr "Đặt lại"
 
 #: templates/modern/edit_zone_templ.html:173
 msgid "Template Placeholders"
-msgstr "RabbitMQ exchange không tồn tại."
+msgstr "Ký hiệu thay thế trong mẫu"
 
 #: templates/modern/edit_zone_templ.html:180
 msgid "Placeholder"
@@ -9511,19 +9441,19 @@ msgstr "Mô tả"
 
 #: templates/modern/edit_zone_templ.html:187
 msgid "Substituted with current zone name"
-msgstr "Kết nối Kafka thất bại."
+msgstr "Được thay bằng tên vùng hiện tại"
 
 #: templates/modern/edit_zone_templ.html:191
 msgid "Substituted with domain name without TLD"
-msgstr "Kafka topic không tồn tại."
+msgstr "Được thay bằng tên miền không có TLD"
 
 #: templates/modern/edit_zone_templ.html:195
 msgid "Substituted with top-level domain"
-msgstr "Kafka producer thất bại."
+msgstr "Được thay bằng tên miền cấp cao nhất"
 
 #: templates/modern/edit_zone_templ.html:199
 msgid "Substituted with current date and 2 numbers"
-msgstr "Kafka consumer thất bại."
+msgstr "Được thay bằng ngày hiện tại và 2 chữ số"
 
 #: templates/modern/edit_zone_templ.html:203
 msgid "Substituted with current UNIX timestamp"
@@ -9535,23 +9465,23 @@ msgstr "Được thay bằng giá trị bộ đếm ban đầu"
 
 #: templates/modern/edit_zone_templ.html:211
 msgid "Substituted with 1st name server"
-msgstr "Kafka offset không hợp lệ."
+msgstr "Được thay bằng name server thứ 1"
 
 #: templates/modern/edit_zone_templ.html:215
 msgid "Substituted with 2nd name server"
-msgstr "Broker Kafka không khả dụng."
+msgstr "Được thay bằng name server thứ 2"
 
 #: templates/modern/edit_zone_templ.html:219
 msgid "Substituted with 3rd name server"
-msgstr "Cấu hình MongoDB không hợp lệ."
+msgstr "Được thay bằng name server thứ 3"
 
 #: templates/modern/edit_zone_templ.html:223
 msgid "Substituted with 4th name server"
-msgstr "Kết nối MongoDB thất bại."
+msgstr "Được thay bằng name server thứ 4"
 
 #: templates/modern/edit_zone_templ.html:227
 msgid "Substituted with hostmaster"
-msgstr "Truy vấn MongoDB thất bại."
+msgstr "Được thay bằng hostmaster"
 
 #: templates/modern/add_zone_templ_record.html:158
 msgid "Example Records"
@@ -9563,19 +9493,19 @@ msgstr "Ví dụ về tên"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "Chỉ mục MongoDB không hợp lệ."
+msgstr "Cho một tên miền con: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "Máy chủ MongoDB không khả dụng."
+msgstr "Cho một bản ghi wildcard: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "Cấu hình S3 không hợp lệ."
+msgstr "Cho chính tên miền: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
-msgstr "Kết nối S3 thất bại."
+msgstr "Ví dụ về nội dung"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
@@ -9589,11 +9519,11 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "Bucket S3 không tồn tại."
+msgstr "Bản ghi A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "S3 object không tìm thấy."
+msgstr "CNAME: <code>target.[ZONE]</code> hoặc <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -9601,23 +9531,23 @@ msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
-msgstr "Endpoint S3 không hợp lệ."
+msgstr "Nhập địa chỉ IP của nameserver master"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
-msgstr "Cấu hình SMTP không hợp lệ."
+msgstr "Cung cấp địa chỉ ip"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
-msgstr "Kết nối SMTP thất bại."
+msgstr "Tên máy chủ trong bản ghi NS"
 
 #: templates/modern/add_supermaster.html:25
 msgid "Enter the hostname as it appears in the NS record"
-msgstr "Xác thực SMTP thất bại."
+msgstr "Nhập tên máy chủ đúng như nó xuất hiện trong bản ghi NS"
 
 #: templates/modern/add_supermaster.html:26
 msgid "Provide host name"
-msgstr "Máy chủ SMTP không khả dụng."
+msgstr "Cung cấp tên máy chủ"
 
 #: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
 msgid "Account"
@@ -9629,7 +9559,7 @@ msgstr "Lưu thay đổi"
 
 #: templates/modern/change_password.html:49
 msgid "All fields are required"
-msgstr "SMTP timeout."
+msgstr "Tất cả các trường là bắt buộc"
 
 #: templates/modern/edit_supermaster.html:73
 msgid "Update Credentials"
@@ -9643,7 +9573,7 @@ msgstr "Quan trọng"
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr "Hộp thư IMAP không tồn tại."
+msgstr "Hãy đảm bảo tên máy chủ khớp chính xác với những gì xuất hiện trong bản ghi NS, nếu không việc tạo vùng Slave có thể thất bại."
 
 #: templates/modern/edit_supermaster.html:81
 msgid "Validation"
@@ -9651,24 +9581,24 @@ msgstr "Kiểm tra tính hợp lệ"
 
 #: templates/modern/edit_supermaster.html:82
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "Máy chủ IMAP không khả dụng."
+msgstr "Tất cả các trường sẽ được kiểm tra để đảm bảo chứa giá trị đúng."
 
 #: templates/default/dnssec.html:9 templates/modern/dnssec.html:9
 msgid "Confirm Unsign Zone"
-msgstr "Cấu hình FTP không hợp lệ."
+msgstr "Xác nhận hủy ký vùng"
 
 #: templates/default/dnssec.html:15 templates/modern/dnssec.html:15
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr "Kết nối FTP thất bại."
+msgstr "Hành động này sẽ xóa tất cả khóa DNSSEC và tắt DNSSEC cho vùng này."
 
 #: templates/default/dnssec.html:17 templates/modern/dnssec.html:17
 msgid "Are you sure you want to unsign the zone"
-msgstr "Đăng nhập FTP thất bại."
+msgstr "Bạn có chắc chắn muốn hủy ký vùng"
 
 #: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
 msgid "Unsign Zone"
-msgstr "File FTP không tồn tại."
+msgstr "Hủy ký vùng"
 
 #: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -9680,15 +9610,15 @@ msgstr "Số sê-ri đã ký"
 
 #: templates/modern/dnssec.html:53 templates/modern/dnssec.html:55
 msgid "DNSSEC keys for zone"
-msgstr "Tải lên FTP thất bại."
+msgstr "Khóa DNSSEC cho vùng"
 
 #: templates/default/dnssec.html:61 templates/modern/dnssec.html:61
 msgid "Add new key"
-msgstr "Tải xuống FTP thất bại."
+msgstr "Thêm khóa mới"
 
 #: templates/modern/dnssec.html:65 templates/modern/edit.html:866
 msgid "Show DS and DNSKEY"
-msgstr "Máy chủ FTP không khả dụng."
+msgstr "Hiển thị DS và DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
@@ -9704,15 +9634,15 @@ msgstr "Hành động"
 
 #: templates/default/dnssec.html:91 templates/modern/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
-msgstr "Xác thực SFTP thất bại."
+msgstr "Không tìm thấy khóa DNSSEC nào cho vùng này"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate this key"
-msgstr "Khóa SFTP không hợp lệ."
+msgstr "Vô hiệu hóa khóa này"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Activate this key"
-msgstr "Cấu hình SSH không hợp lệ."
+msgstr "Kích hoạt khóa này"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Deactivate"
@@ -9805,28 +9735,28 @@ msgstr "Quên mật khẩu"
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
-msgstr "Thực thi lệnh SSH thất bại."
+msgstr "Trở lại trang đăng nhập"
 
 #: templates/modern/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr "Cấu hình DNS không hợp lệ."
+msgstr "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu."
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr "Tra cứu DNS thất bại."
+msgstr "Địa chỉ email"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
-msgstr "Bản ghi DNS không tìm thấy."
+msgstr "Vui lòng cung cấp một địa chỉ email hợp lệ"
 
 #: templates/modern/forgot_password.html:41
 msgid "Send Reset Link"
-msgstr "Máy chủ DNS không phản hồi."
+msgstr "Gửi liên kết đặt lại"
 
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
-msgstr "Zone DNS không tồn tại."
+msgstr "Quản lý nhóm"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
@@ -9834,11 +9764,11 @@ msgstr "Nhật ký nhóm"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
-msgstr "Cập nhật DNS thất bại."
+msgstr "Thêm nhóm"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
-msgstr "Chuyển giao zone DNS thất bại."
+msgstr "Không tìm thấy nhóm nào"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:193
 msgid "Search groups..."
@@ -9870,11 +9800,11 @@ msgstr "Xóa nhóm"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
-msgstr "Chứng chỉ SSL/TLS bị thu hồi."
+msgstr "Sửa bản ghi trong vùng"
 
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
-msgstr "Phiên bản giao thức SSL/TLS không được hỗ trợ."
+msgstr "Chỉnh sửa các thuộc tính của bản ghi DNS"
 
 #: templates/modern/add_record.html:55
 msgid "Comment"
@@ -9886,11 +9816,11 @@ msgstr "không còn dùng"
 
 #: templates/modern/add_record.html:88 templates/modern/add_record.html:140
 msgid "Provide content"
-msgstr "Kết nối proxy thất bại."
+msgstr "Cung cấp nội dung"
 
 #: templates/modern/add_record.html:93 templates/modern/add_record.html:145
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "Xác thực proxy thất bại."
+msgstr "Loại bản ghi này đã lỗi thời và không nên dùng cho bản ghi mới."
 
 #: templates/modern/add_record.html:195
 msgid "Saving..."
@@ -9898,7 +9828,7 @@ msgstr "Đang lưu..."
 
 #: templates/modern/edit_perm_templ.html:50
 msgid "Update"
-msgstr "Proxy timeout."
+msgstr "Cập nhật"
 
 #: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
 msgid "Group Name"
@@ -9906,15 +9836,15 @@ msgstr "Tên nhóm"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:18
 msgid "Unique name for this group"
-msgstr "Tất cả backend không khả dụng."
+msgstr "Tên duy nhất cho nhóm này"
 
 #: templates/modern/edit_group.html:24 templates/modern/add_group.html:19
 msgid "Provide group name"
-msgstr "Health check thất bại."
+msgstr "Cung cấp tên nhóm"
 
 #: templates/modern/edit_group.html:30 templates/modern/add_group.html:25
 msgid "Optional information about this group"
-msgstr "Thuật toán cân bằng tải không hợp lệ."
+msgstr "Thông tin tùy chọn về nhóm này"
 
 #: templates/modern/add_user.html:66 templates/modern/add_group.html:29
 msgid "Permission template"
@@ -9939,11 +9869,11 @@ msgstr "Quản lý"
 
 #: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
 msgid "No members in this group yet."
-msgstr "Quá nhiều request."
+msgstr "Nhóm này chưa có thành viên nào."
 
 #: templates/modern/edit_group.html:136 templates/modern/edit_user.html:236
 msgid "Remove from group"
-msgstr "Thử lại sau %d giây."
+msgstr "Loại khỏi nhóm"
 
 #: templates/modern/manage_group_members.html:144
 msgid "Remove"
@@ -9959,66 +9889,66 @@ msgstr "nữa..."
 
 #: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
 msgid "This group doesn't own any zones yet."
-msgstr "Hạn mức hàng phút vượt quá."
+msgstr "Nhóm này chưa sở hữu vùng nào."
 
 #: templates/default/edit_group.html:174 templates/modern/edit_group.html:174
 msgid "Confirm Member Removal"
-msgstr "Cố gắng truy cập trái phép."
+msgstr "Xác nhận loại bỏ thành viên"
 
 #: templates/default/edit_group.html:179 templates/modern/edit_group.html:179
 msgid "Are you sure you want to remove user"
-msgstr "SQL injection phát hiện."
+msgstr "Bạn có chắc chắn muốn loại bỏ người dùng"
 
 #: templates/modern/edit_group.html:179 templates/modern/edit_group.html:205
 msgid "from this group?"
-msgstr "XSS injection phát hiện."
+msgstr "khỏi nhóm này?"
 
 #: templates/modern/manage_group_members.html:137
 msgid ""
 "This action will immediately revoke any permissions granted by this group."
-msgstr "CSRF attack phát hiện."
+msgstr "Hành động này sẽ ngay lập tức thu hồi mọi quyền do nhóm này cấp."
 
 #: templates/default/edit_group.html:200 templates/modern/edit_group.html:200
 msgid "Confirm Zone Removal"
-msgstr "DDoS attack phát hiện."
+msgstr "Xác nhận loại bỏ vùng"
 
 #: templates/default/edit_group.html:205 templates/modern/edit_group.html:205
 msgid "Are you sure you want to remove zone"
-msgstr "Malware phát hiện."
+msgstr "Bạn có chắc chắn muốn loại bỏ vùng"
 
 #: templates/default/edit_group.html:206 templates/modern/edit_group.html:206
 msgid ""
 "The zone will remain in the system but this group will no longer have "
 "ownership."
-msgstr "Lỗ hổng path traversal phát hiện."
+msgstr "Vùng sẽ vẫn còn trong hệ thống nhưng nhóm này sẽ không còn quyền sở hữu."
 
 #: templates/default/delete_group.html:12 templates/modern/delete_group.html:12
 msgid "You are about to delete the group"
-msgstr "Lỗ hổng command injection phát hiện."
+msgstr "Bạn đang chuẩn bị xóa nhóm"
 
 #: templates/modern/dnssec_delete_key.html:22
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "Lỗ hổng code injection phát hiện."
+msgstr "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn tiếp tục?"
 
 #: templates/default/delete_group.html:18 templates/modern/delete_group.html:18
 msgid "Deletion Impact"
-msgstr "Lỗ hổng XXE phát hiện."
+msgstr "Ảnh hưởng của việc xóa"
 
 #: templates/default/delete_group.html:25 templates/modern/delete_group.html:25
 msgid "member will be removed from this group"
-msgstr "Lỗ hổng SSRF phát hiện."
+msgstr "thành viên sẽ bị loại khỏi nhóm này"
 
 #: templates/default/delete_group.html:27 templates/modern/delete_group.html:27
 msgid "members will be removed from this group"
-msgstr "Lỗ hổng deserialization phát hiện."
+msgstr "thành viên sẽ bị loại khỏi nhóm này"
 
 #: templates/default/delete_group.html:33 templates/modern/delete_group.html:33
 msgid "zone will lose this group ownership"
-msgstr "Cấu hình sao lưu không hợp lệ."
+msgstr "vùng sẽ mất quyền sở hữu của nhóm này"
 
 #: templates/default/delete_group.html:35 templates/modern/delete_group.html:35
 msgid "zones will lose this group ownership"
-msgstr "Tạo sao lưu thất bại."
+msgstr "vùng sẽ mất quyền sở hữu của nhóm này"
 
 #: templates/default/delete_group.html:45 templates/modern/delete_group.html:45
 msgid "Affected Zones"
@@ -10026,11 +9956,11 @@ msgstr "Các vùng bị ảnh hưởng"
 
 #: templates/default/delete_group.html:47 templates/modern/delete_group.html:47
 msgid "showing first 20"
-msgstr "File sao lưu không tìm thấy."
+msgstr "hiển thị 20 mục đầu tiên"
 
 #: templates/default/delete_group.html:64 templates/modern/delete_group.html:64
 msgid "more zones..."
-msgstr "File sao lưu bị hỏng."
+msgstr "vùng nữa..."
 
 #: templates/modern/delete_domain.html:50
 msgid "Important Note"
@@ -10044,11 +9974,11 @@ msgstr "Các thành viên sẽ mất quyền truy cập vào tất cả các vù
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "Yes, delete this group"
-msgstr "Cấu hình nhân bản không hợp lệ."
+msgstr "Có, xóa nhóm này"
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "No, keep this group"
-msgstr "Kết nối nhân bản thất bại."
+msgstr "Không, giữ nhóm này"
 
 #: templates/default/index.html:2 templates/modern/index.html:2
 msgid "Welcome"
@@ -10126,7 +10056,7 @@ msgstr "Vùng Master"
 
 #: templates/modern/index.html:160 templates/modern/index.html:464
 msgid "Slave Zone"
-msgstr "Breakpoint đạt đến."
+msgstr "Vùng Slave"
 
 #: templates/modern/index.html:190 templates/modern/index.html:494
 msgid "PTR Records"
@@ -10155,7 +10085,7 @@ msgstr "TTL defaults"
 
 #: templates/modern/index.html:359 templates/modern/index.html:546
 msgid "My Profile"
-msgstr "Split-brain phát hiện."
+msgstr "Hồ sơ của tôi"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:35
 #: install/templates/step5.html.twig:72
@@ -10208,35 +10138,35 @@ msgstr "Sửa bình luận"
 
 #: templates/modern/edit_comment.html:9 templates/modern/edit_comment.html:11
 msgid "Edit comment in zone"
-msgstr "Mạng không khả dụng."
+msgstr "Sửa bình luận trong vùng"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "Lỗi kết nối mạng."
+msgstr "Thêm mẫu"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
-msgstr "Network timeout."
+msgstr "Thêm mẫu vùng cho"
 
 #: templates/modern/edit_perm_templ.html:24
 msgid "Provide a name for your template"
-msgstr "Network unreachable."
+msgstr "Cung cấp tên cho mẫu của bạn"
 
 #: templates/modern/edit_zone_templ.html:138
 msgid "Optional description to help identify this template"
-msgstr "Host unreachable."
+msgstr "Mô tả tùy chọn giúp nhận diện mẫu này"
 
 #: templates/modern/edit_zone_templ.html:146
 msgid "Global template"
-msgstr "Cổng đang sử dụng."
+msgstr "Mẫu toàn cục"
 
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
-msgstr "Cổng bị chặn."
+msgstr "Cho phép tất cả người dùng sử dụng mẫu này"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "Không có route đến host."
+msgstr "Thêm mẫu vùng"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10244,7 +10174,7 @@ msgstr "Thông tin mẫu"
 
 #: templates/modern/add_zone_templ.html:63
 msgid "About Templates"
-msgstr "Không thể giải quyết hostname."
+msgstr "Về mẫu"
 
 #: templates/modern/add_zone_templ.html:64
 msgid ""
@@ -10254,23 +10184,23 @@ msgstr "Mẫu vùng cho phép bạn tạo các tập hợp bản ghi DNS định
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
-msgstr "Cấu hình bandwidth không hợp lệ."
+msgstr "Sau khi tạo mẫu, bạn có thể thêm các mẫu bản ghi vào đó."
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Usage"
-msgstr "Giới hạn bandwidth vượt quá."
+msgstr "Cách dùng mẫu"
 
 #: templates/modern/add_zone_templ.html:70
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Mất gói tin quá cao."
+msgstr "Áp dụng cấu hình nhất quán cho nhiều vùng"
 
 #: templates/modern/add_zone_templ.html:71
 msgid "Save time when creating new domains"
-msgstr "Độ trễ mạng quá cao."
+msgstr "Tiết kiệm thời gian khi tạo tên miền mới"
 
 #: templates/modern/add_zone_templ.html:72
 msgid "Maintain standardized DNS setups"
-msgstr "Jitter mạng quá cao."
+msgstr "Duy trì các thiết lập DNS chuẩn hóa"
 
 #: templates/modern/add_zone_templ.html:80
 msgid "Tips & Examples"
@@ -10280,12 +10210,12 @@ msgstr "Mẹo & Ví dụ"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Cấu hình VPN không hợp lệ."
+msgstr "Tạo các mẫu khác nhau cho các loại website khác nhau (ví dụ: \"Basic Website\", \"Email Server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr "Kết nối VPN thất bại."
+msgstr "Dùng tên và mô tả rõ nghĩa để dễ nhận diện các mẫu"
 
 #: templates/default/list_log_api.html:8 templates/modern/list_log_api.html:8
 msgid "API Activity Logs"
@@ -10317,7 +10247,7 @@ msgstr "Nhật ký"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "Tunnel VPN không hoạt động."
+msgstr "Nhật ký vùng"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -10325,7 +10255,7 @@ msgstr "Hiển thị nhật ký cho các vùng bạn sở hữu."
 
 #: templates/modern/list_log_zones.html:26
 msgid "Zone Change Logs"
-msgstr "Chứng chỉ VPN không hợp lệ."
+msgstr "Nhật ký thay đổi vùng"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
@@ -10444,7 +10374,7 @@ msgstr "Bản ghi nâng cao"
 
 #: templates/modern/bulk_record_add.html:99
 msgid "legacy"
-msgstr "cu"
+msgstr "cũ"
 
 #: templates/modern/dns_wizard_select.html:5
 msgid "DNS Wizard"
@@ -10776,11 +10706,11 @@ msgstr "Trang chủ"
 
 #: templates/modern/add_zone_master.html:4 templates/modern/header.html:161
 msgid "Add master zone"
-msgstr "Cấu hình debug không hợp lệ."
+msgstr "Thêm vùng master"
 
 #: templates/modern/add_zone_slave.html:4 templates/modern/header.html:168
 msgid "Add slave zone"
-msgstr "Cấu hình kiểm thử không hợp lệ."
+msgstr "Thêm vùng slave"
 
 #: templates/modern/list_reverse_zones.html:32
 msgid "Reverse Zone Types"
@@ -10971,7 +10901,7 @@ msgstr ""
 
 #: templates/modern/edit_user.html:3 templates/modern/header.html:383
 msgid "Edit profile"
-msgstr "Đồng bộ cluster thất bại."
+msgstr "Sửa hồ sơ"
 
 #: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
 msgid "Edit user"
@@ -11769,7 +11699,7 @@ msgstr "Thêm bản ghi mới"
 
 #: templates/modern/edit.html:189 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Trình hướng dẫn cho DMARC, SPF, DKIM, CAA, TLSA và SRV"
+msgstr "Trình hướng dẫn cho các bản ghi DMARC, SPF, DKIM, CAA, TLSA và SRV"
 
 #: templates/modern/edit.html:21 templates/modern/edit.html:620
 msgid "Multi-record mode"
@@ -11841,7 +11771,7 @@ msgstr "Sửa vùng"
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
-msgstr "Sieu du lieu"
+msgstr "Siêu dữ liệu"
 
 #: templates/modern/edit.html:215 templates/modern/edit_zone_metadata.html:5
 msgid "View Metadata"
@@ -12439,7 +12369,7 @@ msgstr ""
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
-msgstr "Plugin dependency thiếu."
+msgstr "Đổi mật khẩu"
 
 #: templates/modern/change_password.html:17
 msgid "Current password"
@@ -12620,31 +12550,29 @@ msgstr "Tiếp tục không có SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "Chinh sua sieu du lieu"
+msgstr "Chỉnh sửa siêu dữ liệu"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
-msgstr "Nhieu gia tri"
+msgstr "Nhiều giá trị"
 
 #: templates/modern/edit_zone_metadata.html:23
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Doi voi sieu du lieu nhu ALLOW-AXFR-FROM, them nhieu dong voi cung loai. Moi "
-"gia tri duoc luu rieng, mot dong cho moi gia tri."
+msgstr "Đối với siêu dữ liệu như ALLOW-AXFR-FROM, hãy thêm nhiều dòng có cùng loại. Mỗi giá trị được lưu riêng, một dòng cho mỗi giá trị."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
-msgstr "Nhieu gia tri"
+msgstr "Đa giá trị"
 
 #: templates/modern/edit_zone_metadata.html:29
 msgid "Single value"
-msgstr "Gia tri don"
+msgstr "Giá trị đơn"
 
 #: templates/modern/edit_zone_metadata.html:39
 msgid "Kind"
-msgstr "Loai"
+msgstr "Loại"
 
 #: templates/modern/edit_zone_metadata.html:114
 msgid "requires"
@@ -12652,15 +12580,15 @@ msgstr "yêu cầu"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Them dong sieu du lieu"
+msgstr "Thêm dòng siêu dữ liệu"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "Luu sieu du lieu"
+msgstr "Lưu siêu dữ liệu"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"
-msgstr "Quay lai vung"
+msgstr "Quay lại vùng"
 
 #: templates/modern/api_key_created.html:5
 msgid "API Key Created"
@@ -13487,8 +13415,7 @@ msgstr ""
 
 #: templates/modern/email_previews.html:95
 msgid "These previews reflect the actual templates used in production"
-msgstr ""
-"Các bản xem trước này phản ánh các mẫu thực tế được sử dụng trong sản xuất"
+msgstr "Các bản xem trước này phản ánh các mẫu thực tế được sử dụng trong môi trường thực tế"
 
 #: templates/modern/pdns_status.html:3 templates/modern/pdns_status.html:7
 msgid "PowerDNS Server Status"
@@ -13653,7 +13580,7 @@ msgstr "Thêm mẫu quyền hạn"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
-msgstr "Cấu hình logging không hợp lệ."
+msgstr "Danh sách mẫu vùng"
 
 #: templates/default/header.html:242 templates/modern/header.html:347
 msgid "API Documentation"
@@ -13762,7 +13689,7 @@ msgstr "Nhóm này chưa sở hữu vùng nào"
 
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
-msgstr "Xóa đã chọn"
+msgstr "Xóa mục đã chọn"
 
 #: templates/modern/manage_group_zones.html:70
 msgid "Available Zones"
@@ -13778,7 +13705,7 @@ msgstr "Tìm kiếm vùng..."
 
 #: templates/modern/manage_group_members.html:115
 msgid "Add Selected"
-msgstr "Thêm đã chọn"
+msgstr "Thêm mục đã chọn"
 
 #: templates/modern/manage_group_members.html:136
 msgid "Are you sure you want to remove"
@@ -13892,7 +13819,7 @@ msgstr ""
 
 #: templates/modern/edit_perm_templ.html:75
 msgid "Users vs Groups"
-msgstr "Người dùng và nhóm"
+msgstr "Người dùng so với nhóm"
 
 #: templates/modern/edit_perm_templ.html:76
 msgid ""
@@ -14279,7 +14206,7 @@ msgstr "Tên miền IDN"
 
 #: lib/Module/Whois/templates/whois.html:9
 msgid "WHOIS Lookup"
-msgstr "Container không tìm thấy."
+msgstr "Tra cứu WHOIS"
 
 #: lib/Module/Rdap/templates/rdap.html:19
 msgid "Enter domain name"
@@ -14303,7 +14230,7 @@ msgstr "Vui lòng nhập tên miền để thực hiện tra cứu WHOIS."
 
 #: lib/Module/Rdap/templates/rdap.html:4 lib/Module/Rdap/templates/rdap.html:9
 msgid "RDAP Lookup"
-msgstr "Dừng container thất bại."
+msgstr "Tra cứu RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"

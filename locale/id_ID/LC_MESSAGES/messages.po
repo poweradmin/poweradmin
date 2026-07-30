@@ -1627,7 +1627,7 @@ msgstr "ID grup tidak valid."
 #: lib/Application/Controller/DeleteGroupController.php:89
 #: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
 msgid "Delete Group"
-msgstr "NS menunjuk ke CNAME."
+msgstr "Hapus Grup"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -1881,7 +1881,7 @@ msgstr "Anda tidak memiliki izin untuk mengelola kunci API."
 #: lib/Application/Controller/ApiKeysController.php:101
 #: templates/modern/api_key_delete.html:4
 msgid "API Keys"
-msgstr "Zone exported successfully."
+msgstr "Kunci API"
 
 #: lib/Application/Controller/ApiKeysController.php:255
 msgid "API key name is required."
@@ -1986,7 +1986,7 @@ msgstr "Templat izin tidak dapat diperbarui."
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
 msgid "Groups"
-msgstr "Hapus pencarian tersimpan"
+msgstr "Grup"
 
 #: lib/Application/Controller/SearchController.php:61
 msgid "You do not have the permission to perform searches."
@@ -1995,7 +1995,7 @@ msgstr "Anda tidak memiliki izin untuk melakukan pencarian."
 #: lib/Application/Controller/SearchController.php:65
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
-msgstr "Sehat"
+msgstr "Cari"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
@@ -2085,7 +2085,7 @@ msgstr "Rekaman tidak dapat dihapus."
 #: lib/Application/Controller/ListLogZonesController.php:72
 #: templates/default/index.html:246 templates/modern/index.html:246
 msgid "Zone Logs"
-msgstr "Zone dimodifikasi"
+msgstr "Log Zona"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2094,7 +2094,7 @@ msgstr "Anda tidak memiliki izin untuk melihat daftar pengguna."
 #: lib/Application/Controller/UsersController.php:68
 #: templates/modern/list_perm_templ.html:2
 msgid "Users"
-msgstr "Zone diekspor"
+msgstr "Pengguna"
 
 #: lib/Application/Controller/UsersController.php:102
 msgid "User details updated"
@@ -2167,7 +2167,7 @@ msgstr "Anda tidak memiliki izin untuk melihat zona ini."
 #: lib/Application/Controller/ListLogUsersController.php:68
 #: templates/default/index.html:256 templates/modern/index.html:256
 msgid "User Logs"
-msgstr "DNSSEC enabled"
+msgstr "Log Pengguna"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2570,7 +2570,7 @@ msgstr "Anda tidak memiliki izin untuk mengedit rekaman DNS."
 #: lib/Application/Controller/BatchPtrRecordController.php:93
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
-msgstr "Zone modified"
+msgstr "Rekaman PTR Massal"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -2725,7 +2725,7 @@ msgstr "Anda tidak memiliki izin yang cukup untuk melihat halaman ini."
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Reverse Zones"
-msgstr "Pilih semua zone"
+msgstr "Zona Reverse"
 
 #: lib/Application/Controller/ListForwardZonesController.php:284
 msgid "You do not have the permission to see any zones."
@@ -2792,7 +2792,7 @@ msgstr "Templat izin tidak dapat ditambahkan."
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
 msgid "Database Consistency"
-msgstr "Activity date"
+msgstr "Konsistensi Basis Data"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:55
 msgid "Database consistency checks are disabled."
@@ -2945,7 +2945,7 @@ msgstr "Zona bukan milik grup ini."
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Forward Zones"
-msgstr "Deselect all zones"
+msgstr "Zona Forward"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
@@ -3228,7 +3228,7 @@ msgstr "Anda tidak memiliki izin untuk mengedit grup."
 #: lib/Application/Controller/EditGroupController.php:97
 #: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
 msgid "Edit Group"
-msgstr "Zone valid."
+msgstr "Edit Grup"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -3257,7 +3257,7 @@ msgstr "Supermaster telah berhasil dihapus."
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
 msgid "Bulk Registration"
-msgstr "Record modified"
+msgstr "Pendaftaran Massal"
 
 #: lib/Application/Controller/BulkRegistrationController.php:134
 msgid "Owner must be a numeric user ID."
@@ -3527,7 +3527,7 @@ msgstr "Secondary"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:114
 #: lib/Module/ZoneImportExport/templates/import.html:129
 msgid "Native"
-msgstr "Invalid CNAME configuration."
+msgstr "Native"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:115
 msgid "Producer"
@@ -3540,7 +3540,7 @@ msgstr "Consumer"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:112
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Master"
-msgstr "Duplicate records found."
+msgstr "Master"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:113
 msgid "Slave"
@@ -3552,7 +3552,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Quick add record"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3568,7 +3568,7 @@ msgstr "Tambahkan autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Record ditambahkan"
+msgstr "Tambah supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3576,7 +3576,7 @@ msgstr "Edit autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Tambah record cepat"
+msgstr "Edit supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3624,7 +3624,7 @@ msgstr "Alamat IP autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Pencarian cepat"
+msgstr "Alamat IP supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3632,7 +3632,7 @@ msgstr "Pilih akun yang akan memiliki autoprimary ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Add to favorites"
+msgstr "Pilih akun yang akan memiliki supermaster ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3640,7 +3640,7 @@ msgstr "Tentang Penyuntingan Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Hapus dari favorit"
+msgstr "Tentang Penyuntingan Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
@@ -3651,7 +3651,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Ditambahkan ke favorit."
+msgstr "Anda dapat memodifikasi alamat IP, hostname, atau akun untuk supermaster ini."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3888,7 +3888,7 @@ msgstr "Kesalahan memeriksa keberadaan template: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
-msgstr "Impor zone dari file"
+msgstr "Anda tidak memiliki izin untuk menambahkan rekaman NS."
 
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
@@ -3897,7 +3897,7 @@ msgstr "Anda tidak memiliki izin untuk menambahkan rekaman LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
-msgstr "Import zone from file"
+msgstr "Anda tidak memiliki izin untuk menambahkan rekaman SOA."
 
 #: lib/Domain/Model/Permission.php:169
 msgid "You do not have the permission to edit this NS record."
@@ -3910,11 +3910,11 @@ msgstr "Anda tidak memiliki izin untuk mengedit rekaman LUA ini."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
-msgstr "Impor zone dari AXFR"
+msgstr "Anda tidak memiliki izin untuk mengedit rekaman SOA ini."
 
 #: lib/Domain/Model/Permission.php:174
 msgid "You do not have the permission to delete NS records."
-msgstr "Select zone file to import"
+msgstr "Anda tidak memiliki izin untuk menghapus rekaman NS."
 
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
@@ -4637,9 +4637,7 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Format rekaman LOC tidak valid. Format harus: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Format rekaman LOC tidak valid. Format harus: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5686,10 +5684,7 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr ""
-"PENTING: Rekaman DLV telah dihapus oleh RFC 8749 (Maret 2020). Resolver DNS "
-"utama telah menghapus atau menghentikan dukungan DLV. Pertimbangkan "
-"menggunakan validasi DNSSEC standar dengan rekaman DS sebagai gantinya."
+msgstr "PENTING: Rekaman DLV telah dinyatakan usang oleh RFC 8749 (Maret 2020). Resolver DNS utama telah menghapus atau menghentikan dukungan DLV. Pertimbangkan menggunakan validasi DNSSEC standar dengan rekaman DS sebagai gantinya."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5792,11 +5787,11 @@ msgstr "Domain dengan null MX record tidak boleh memiliki MX record lainnya."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
-msgstr "Zone type must be either NATIVE, MASTER or SLAVE."
+msgstr "Nama host server email tidak valid."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:112
 msgid "MX records should not point to CNAME records (RFC 2181)."
-msgstr "Zone type harus NATIVE, MASTER, atau SLAVE."
+msgstr "Rekaman MX tidak boleh mengarah ke rekaman CNAME (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
@@ -5810,21 +5805,21 @@ msgstr "Nilai tidak valid untuk kolom prioritas MX. Harus antara 0 dan 65535."
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "SOA content is mandatory for this zone type."
+msgstr "Kolom prioritas tidak boleh digunakan untuk rekaman HTTPS karena prioritas merupakan bagian dari konten."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "Konten SOA wajib untuk tipe zone ini."
+msgstr "Rekaman HTTPS harus berisi setidaknya nilai prioritas dan target."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "SOA content format is invalid."
+msgstr "Prioritas rekaman HTTPS harus berupa angka antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "Format konten SOA tidak valid."
+msgstr "Target rekaman HTTPS harus berupa \".\" atau nama domain yang sepenuhnya terkualifikasi yang valid."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5853,15 +5848,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr "Primary nameserver format is invalid."
+msgstr "Nilai ALPN harus berupa daftar pengenal protokol yang dipisahkan oleh koma."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
-msgstr "Format nameserver utama tidak valid."
+msgstr "Parameter no-default-alpn harus memiliki nilai kosong."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "Port value must be a number between 1 and 65535."
-msgstr "Hostmaster email"
+msgstr "Nilai port harus berupa angka antara 1 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
@@ -5875,7 +5870,7 @@ msgstr "Alamat IPv6 tidak valid pada ipv6hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "Email hostmaster wajib diisi."
+msgstr "Jalur DoH harus dimulai dengan garis miring (/)."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
@@ -5886,11 +5881,11 @@ msgstr "Parameter \"%s\" ditandai sebagai wajib tetapi tidak disertakan dalam re
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "Format email hostmaster tidak valid."
+msgstr "RFC 2930 mewajibkan rekaman TKEY memiliki TTL=0 untuk mencegah caching. TTL bukan nol saat ini dapat menyebabkan masalah dengan implementasi DNS yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
-msgstr "Serial number"
+msgstr "Kolom prioritas untuk rekaman TKEY harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:142
 msgid ""
@@ -5900,7 +5895,7 @@ msgstr "Rekaman TKEY bukan untuk autentikasi data DNS, melainkan untuk pembentuk
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
-msgstr "Serial number is mandatory."
+msgstr "Karakter tidak valid dalam konten rekaman TKEY."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
@@ -5912,12 +5907,12 @@ msgstr "Rekaman TKEY harus berisi algorithm-name, inception-time, expiration-tim
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "Serial number must be a positive integer."
+msgstr "Nama algoritma TKEY harus berupa nama domain valid yang diakhiri dengan titik (mis., hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "Nomor serial harus berupa bilangan bulat positif."
+msgstr "Waktu inception TKEY harus berupa timestamp Unix yang valid atau format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
@@ -5933,23 +5928,23 @@ msgstr "Mode TKEY harus berupa angka antara 1 dan 5 (1: Penetapan server, 2: Per
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "Refresh interval is mandatory."
+msgstr "Mode GSS-API (3) mengabaikan waktu inception dan kedaluwarsa sesuai RFC 3645."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
-msgstr "Interval refresh wajib diisi."
+msgstr "Mode GSS-API mewajibkan data kunci berisi token GSS-API."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr "Refresh interval must be a positive integer."
+msgstr "Mode Diffie-Hellman harus diautentikasi menggunakan TSIG atau SIG(0) untuk mencegah serangan man-in-the-middle."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr "Interval refresh harus berupa bilangan bulat positif."
+msgstr "Operasi penghapusan kunci HARUS diautentikasi menggunakan TSIG dengan kunci yang sedang dihapus."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -5963,25 +5958,25 @@ msgstr "Data kunci TKEY harus berupa data yang dikodekan base64 dengan benar ata
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr "Retry interval is mandatory."
+msgstr "Kunci yang dibentuk TKEY diasosiasikan dengan server/resolver DNS, bukan dengan zona."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "Interval retry wajib diisi."
+msgstr "Pertukaran rekaman TKEY harus diamankan - autentikasi bergantung pada mode yang digunakan."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "Retry interval must be a positive integer."
+msgstr "HMAC-MD5 dianggap lemah menurut standar modern. HMAC-SHA256 atau yang lebih kuat direkomendasikan."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "Interval retry harus berupa bilangan bulat positif."
+msgstr "Algoritma lama terdeteksi. HMAC-SHA256 atau yang lebih kuat direkomendasikan untuk keamanan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -5996,11 +5991,11 @@ msgstr "Nilai tidak valid untuk TTL default. Harus berupa angka antara 0 dan 214
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
-msgstr "Expiry time is mandatory."
+msgstr "Nilai tidak valid untuk kolom TTL. Harus berupa angka."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
-msgstr "Waktu expiry wajib diisi."
+msgstr "Nilai TTL tidak boleh negatif. Harus 0 atau lebih tinggi."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
@@ -6033,99 +6028,99 @@ msgstr "TTL rekaman SOA (%d) berada di bawah minimum yang disarankan yaitu %d de
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "Negative TTL is mandatory."
+msgstr "Rekaman URI harus dilindungi dengan DNSSEC untuk mencegah manipulasi oleh penyerang."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr "TTL negatif wajib diisi."
+msgstr "Pertimbangkan menggunakan HTTPS sebagai ganti HTTP untuk keamanan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr "Negative TTL must be a positive integer."
+msgstr "FTP dianggap kurang aman dibandingkan alternatif seperti SFTP atau HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "TTL negatif harus berupa bilangan bulat positif."
+msgstr "Pertimbangkan menggunakan LDAPS (LDAP over SSL/TLS) untuk mengamankan koneksi LDAP."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "SOA record priority must be 0."
+msgstr "Skema URI terkait telepon mungkin berisi informasi pribadi yang sensitif."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "Prioritas SOA record harus 0."
+msgstr "Skema URI \"file\" dapat menimbulkan risiko keamanan dan tidak direkomendasikan untuk rekaman DNS publik."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "SOA record disabled field must be 0."
+msgstr "Rekaman URI harus dalam format: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "Field disabled SOA record harus 0."
+msgstr "Prioritas URI harus antara 0 dan 65535 (bilangan bulat unsigned 16-bit)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "MX record priority is mandatory."
+msgstr "Bobot URI harus antara 0 dan 65535 (bilangan bulat unsigned 16-bit)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "Prioritas MX record wajib diisi."
+msgstr "URI tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:262
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "MX record priority must be between 0 and 65535."
+msgstr "URI harus dimulai dengan skema valid yang dimulai dengan huruf diikuti oleh huruf, angka, plus, titik, atau tanda hubung."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "Prioritas MX record harus antara 0 dan 65535."
+msgstr "URI menggunakan protokol yang tidak umum. Pertimbangkan menggunakan skema URI standar untuk kompatibilitas yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr "SRV record priority is mandatory."
+msgstr "URI dengan protokol ini harus menyertakan \"://\" setelah nama protokol."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr "Prioritas SRV record wajib diisi."
+msgstr "URI HTTP/HTTPS harus menyertakan nama host."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
-msgstr "SRV record priority must be between 0 and 65535."
+msgstr "URI tidak boleh berisi karakter kontrol."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:301
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "Prioritas SRV record harus antara 0 dan 65535."
+msgstr "URI berisi karakter garis miring terbalik, yang mungkin diinterpretasikan berbeda di berbagai sistem."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr "SRV record weight is mandatory."
+msgstr "URI berisi urutan \"..\", yang dapat digunakan untuk serangan directory traversal."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "Weight SRV record wajib diisi."
+msgstr "URI berisi karakter persen yang tidak digunakan untuk percent-encoding dengan format yang benar."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "SRV record weight must be between 0 and 65535."
+msgstr "URI berisi karakter non-ASCII dalam nama host. Pertimbangkan menggunakan Punycode untuk nama domain internasional."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr "Weight SRV record harus antara 0 dan 65535."
+msgstr "Nama host key exchanger tidak valid. Kolom exchanger harus berupa nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
@@ -6137,95 +6132,95 @@ msgstr "PENTING: RFC 2230 mewajibkan rekaman KX ditandatangani menggunakan DNSSE
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "Port SRV record wajib diisi."
+msgstr "Sistem yang tidak mengimplementasikan Secure DNS harus mengabaikan rekaman KX sepenuhnya sesuai RFC 2230."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "SRV record port must be between 0 and 65535."
+msgstr "Pastikan host key exchanger memiliki rekaman DNS maju dan mundur yang sesuai."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr "Port SRV record harus antara 0 dan 65535."
+msgstr "Host key exchanger harus memiliki rekaman A/AAAA yang sesuai untuk pemrosesan bagian tambahan tipe A/AAAA."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
-msgstr "CAA record flags is mandatory."
+msgstr "Nilai tidak valid untuk kolom preferensi KX. Harus antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "Flags CAA record wajib diisi."
+msgstr "CATATAN: Jenis rekaman MINFO ditandai sebagai EKSPERIMENTAL dalam RFC 1035. Mungkin tidak didukung secara universal."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr "CAA record flags must be between 0 and 255."
+msgstr "Konten rekaman MINFO tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr "Flags CAA record harus antara 0 dan 255."
+msgstr "Rekaman MINFO harus berisi baik responsible mailbox maupun error mailbox yang dipisahkan oleh spasi (RFC 1035 Bagian 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr "CAA record tag is mandatory."
+msgstr "Nama host responsible mailbox (RMAILBX) tidak valid."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "Tag CAA record wajib diisi."
+msgstr "RFC 1035 mencatat bahwa banyak mailing list menggunakan mailbox \"list-name-request\" untuk kolom responsible mailbox."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "CAA record tag must be one of: issue, issuewild, iodef."
+msgstr "Menggunakan \".\" (root) untuk RMAILBX menunjukkan bahwa pemilik rekaman MINFO bertanggung jawab atas dirinya sendiri."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Tag CAA record harus salah satu dari: issue, issuewild, iodef."
+msgstr "Nama host error mailbox (EMAILBX) tidak valid."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "CAA record value is mandatory."
+msgstr "Menggunakan \".\" (root) untuk EMAILBX menunjukkan bahwa error harus dikembalikan ke pengirim pesan."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "Value CAA record wajib diisi."
+msgstr "Responsible mailbox dan error mailbox identik. Pertimbangkan menggunakan mailbox yang berbeda untuk fungsi-fungsi ini."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "SSHFP record algorithm is mandatory."
+msgstr "Kolom prioritas untuk rekaman MINFO harus 0 atau kosong. MINFO tidak menggunakan nilai prioritas sesuai RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
-msgstr "Algorithm SSHFP record wajib diisi."
+msgstr "Kolom prioritas untuk rekaman SPF harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
-msgstr "SSHFP record algorithm must be between 0 and 255."
+msgstr "Rekaman SPF harus dimulai dengan \"v=spf1\""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr "Algorithm SSHFP record harus antara 0 dan 255."
+msgstr "Rekaman SPF melebihi batas 255 karakter. Pisahkan ke beberapa rekaman TXT."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
 "Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr "SSHFP record fingerprint type is mandatory."
+msgstr "Beberapa mekanisme \"all\" ditemukan. Hanya yang pertama yang akan berlaku."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -6235,11 +6230,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
-msgstr "SSHFP record fingerprint type must be between 0 and 255."
+msgstr "Alamat atau jaringan IPv4 tidak valid dalam mekanisme ip4."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:224
 msgid "Invalid IPv6 address or network in ip6 mechanism."
-msgstr "Tipe fingerprint SSHFP record harus antara 0 dan 255."
+msgstr "Alamat atau jaringan IPv6 tidak valid dalam mekanisme ip6."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
@@ -6253,27 +6248,27 @@ msgstr "Notasi CIDR tidak valid dengan mekanisme %s."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
-msgstr "TLSA record certificate usage is mandatory."
+msgstr "Panjang CIDR tidak valid dalam mekanisme."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "Certificate usage TLSA record wajib diisi."
+msgstr "Mekanisme ptr tidak direkomendasikan karena masalah kinerja (RFC 7208 Bagian 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "TLSA record certificate usage must be between 0 and 255."
+msgstr "Mekanisme \"all\" harus menjadi mekanisme terakhir dalam rekaman (RFC 7208 Bagian 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
-msgstr "Certificate usage TLSA record harus antara 0 dan 255."
+msgstr "Domain tidak valid dalam modifier redirect."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
-msgstr "TLSA record selector is mandatory."
+msgstr "Domain tidak valid dalam modifier exp."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
@@ -6289,65 +6284,65 @@ msgstr "Mekanisme tidak dikenal: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "Selector TLSA record harus antara 0 dan 255."
+msgstr "Rekaman SPF harus memiliki mekanisme \"all\" penutup atau modifier \"redirect\" (RFC 7208 Bagian 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "TLSA record matching type is mandatory."
+msgstr "Rekaman SPF memiliki mekanisme \"all\" sekaligus modifier \"redirect\". Modifier \"redirect\" akan diabaikan saat \"all\" ada (RFC 7208 Bagian 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "Matching type TLSA record wajib diisi."
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman CNAME harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr "TLSA record matching type must be between 0 and 255."
+msgstr "Ini bukan CNAME yang valid. Sudah ada rekaman dengan nama ini."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "Matching type TLSA record harus antara 0 dan 255."
+msgstr "Ini bukan CNAME yang valid. Apakah Anda menetapkan rekaman MX atau NS ke rekaman ini?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
-msgstr "TLSA record certificate data is mandatory."
+msgstr "Rekaman CNAME kosong tidak diizinkan."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "Data certificate TLSA record wajib diisi."
+msgstr "Ini bukan rekaman yang valid. Sudah ada CNAME dengan nama ini."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "DS record key tag is mandatory."
+msgstr "Target CNAME harus berupa nama domain yang sepenuhnya terkualifikasi (FQDN). Nama label tunggal tidak diizinkan."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "Key tag DS record wajib diisi."
+msgstr "Target CNAME harus berupa nama domain yang sepenuhnya terkualifikasi (FQDN) dengan domain tingkat atas yang valid."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
-msgstr "DS record key tag must be between 0 and 65535."
+msgstr "Karakter tidak valid dalam konten rekaman DHCID."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "Key tag DS record harus antara 0 dan 65535."
+msgstr "Sesuai RFC 4701 dan RFC 4703, rekaman DHCID harus ditempatkan pada nama yang sama dengan rekaman A atau AAAA yang bersangkutan."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
-msgstr "DS record algorithm is mandatory."
+msgstr "Kolom prioritas untuk rekaman DHCID harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:124
 msgid ""
@@ -6360,29 +6355,29 @@ msgstr "Sesuai RFC 4703, rekaman DHCID digunakan untuk deteksi tabrakan ketika b
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DS record algorithm must be between 0 and 255."
+msgstr "Rekaman DHCID hanya boleh berisi karakter base64 yang valid (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "Algorithm DS record harus antara 0 dan 255."
+msgstr "Rekaman DHCID memiliki padding base64 yang tidak valid. Tanda sama dengan (=) hanya boleh muncul di akhir data."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "DS record digest type is mandatory."
+msgstr "Rekaman DHCID memiliki panjang base64 yang tidak valid. Data base64 harus merupakan kelipatan 4 karakter (dengan padding)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
-msgstr "Tipe digest DS record wajib diisi."
+msgstr "Rekaman DHCID harus berisi data berkode base64 yang valid."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:181
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DS record digest type must be between 0 and 255."
+msgstr "Rekaman DHCID terlalu pendek. Data yang didekode harus berisi setidaknya 3 byte (kode tipe dan digest)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
@@ -6408,172 +6403,172 @@ msgstr "Rekaman DHCID dengan digest SHA-256 (tipe 1) harus berukuran minimal 35 
 msgid ""
 "DHCID records should be updated only by authorized DHCP clients or servers "
 "to prevent conflicts and unauthorized DNS updates."
-msgstr "DNSKEY record flags is mandatory."
+msgstr "Rekaman DHCID sebaiknya diperbarui hanya oleh klien atau server DHCP yang berwenang untuk mencegah konflik dan pembaruan DNS yang tidak sah."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:208
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "Flags DNSKEY record wajib diisi."
+msgstr "Pertimbangkan menggunakan autentikasi DNSSEC atau TSIG (RFC 3007) untuk pembaruan DHCID yang aman sebagaimana direkomendasikan oleh RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
-msgstr "DNSKEY record flags must be between 0 and 65535."
+msgstr "Nama host mengandung karakter yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
-msgstr "Flags DNSKEY record harus antara 0 dan 65535."
+msgstr "Kolom prioritas untuk rekaman RRSIG harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr "DNSKEY record protocol is mandatory."
+msgstr "Rekaman RRSIG sebaiknya hanya dibuat oleh server DNS Anda saat menandatangani zona. Manipulasi manual tidak disarankan."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "Protocol DNSKEY record wajib diisi."
+msgstr "Rollover kunci secara berkala adalah praktik keamanan yang disarankan: ZSK setiap 1-3 bulan, KSK setiap 1-2 tahun."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "DNSKEY record protocol must be 3."
+msgstr "Konten rekaman RRSIG tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
-msgstr "Protocol DNSKEY record harus 3."
+msgstr "Rekaman RRSIG mengandung karakter yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "DNSKEY record algorithm is mandatory."
+msgstr "Rekaman RRSIG harus berisi covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name, dan signature."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr "Algorithm DNSKEY record wajib diisi."
+msgstr "Covered type RRSIG harus berupa tipe rekaman DNS yang valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "DNSKEY record algorithm must be between 0 and 255."
+msgstr "Kolom algorithm RRSIG harus berupa nilai numerik."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "Algorithm DNSKEY record harus antara 0 dan 255."
+msgstr "Algoritma 1 (RSA/MD5) sudah tidak digunakan lagi dan TIDAK boleh dipakai karena kelemahan kriptografis."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "DNSKEY record public key is mandatory."
+msgstr "Algoritma 3 (DSA/SHA1) dianggap tidak aman dan sebaiknya diganti dengan algoritma yang lebih kuat."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Public key DNSKEY record wajib diisi."
+msgstr "Algoritma 5 (RSA/SHA-1) dianggap tidak aman dan sebaiknya diganti dengan algoritma yang lebih kuat."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr "NSEC3PARAM record hash algorithm is mandatory."
+msgstr "Algoritma 7 (RSASHA1-NSEC3-SHA1) menggunakan SHA-1 yang tidak lagi dianggap aman. Pertimbangkan menggunakan RSA/SHA-256 atau algoritma yang lebih baru."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr "Hash algorithm NSEC3PARAM record wajib diisi."
+msgstr "Algoritma 10 (RSA/SHA-512) memberikan keamanan yang kuat tetapi mungkin memiliki masalah interoperabilitas dengan beberapa validator."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "NSEC3PARAM record hash algorithm must be between 0 and 255."
+msgstr "Algoritma 13 (ECDSA P-256 dengan SHA-256) memberikan keamanan yang baik dengan tanda tangan yang lebih kecil daripada RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Hash algorithm NSEC3PARAM record harus antara 0 dan 255."
+msgstr "Algoritma 14 (ECDSA P-384 dengan SHA-384) memberikan keamanan yang kuat dengan tanda tangan yang lebih kecil daripada RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr "NSEC3PARAM record flags is mandatory."
+msgstr "Algoritma 15 (ED25519) menawarkan keamanan modern tetapi mungkin memiliki masalah kompatibilitas dengan validator DNSSEC yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
-msgstr "Flags NSEC3PARAM record wajib diisi."
+msgstr "Algoritma 16 (ED448) menawarkan keamanan modern yang kuat tetapi mungkin memiliki masalah kompatibilitas dengan validator DNSSEC yang lebih lama."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
-msgstr "NSEC3PARAM record flags must be between 0 and 255."
+msgstr "Nilai algoritma tidak dikenal. Hanya algoritma yang didefinisikan dalam RFC yang sebaiknya digunakan."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
-msgstr "Flags NSEC3PARAM record harus antara 0 dan 255."
+msgstr "Kolom labels RRSIG harus berupa nilai numerik."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "NSEC3PARAM record iterations is mandatory."
+msgstr "Kolom labels RRSIG harus berupa nilai yang wajar (0-128)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
-msgstr "Iterations NSEC3PARAM record wajib diisi."
+msgstr "Kolom original TTL RRSIG harus berupa nilai numerik."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr "NSEC3PARAM record iterations must be between 0 and 65535."
+msgstr "Original TTL RRSIG harus berupa bilangan bulat positif yang valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr "Iterations NSEC3PARAM record harus antara 0 dan 65535."
+msgstr "Original TTL lebih besar dari 1 hari (86400). Untuk rekaman DNSSEC, TTL yang lebih pendek umumnya lebih disukai agar pemulihan lebih cepat jika kunci disusupi."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
-msgstr "NSEC3PARAM record salt is mandatory."
+msgstr "Expiration RRSIG harus dalam format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
-msgstr "Salt NSEC3PARAM record wajib diisi."
+msgstr "Inception RRSIG harus dalam format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr "LOC record version is mandatory."
+msgstr "Waktu expiration harus lebih lambat daripada waktu inception. Tanda tangan ini tampaknya sudah kedaluwarsa sebelum menjadi valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr "Versi LOC record wajib diisi."
+msgstr "KRITIS: Tanda tangan ini sudah kedaluwarsa. Tanda tangan ini tidak akan divalidasi oleh resolver DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "LOC record version must be 0."
+msgstr "PERINGATAN: Tanda tangan ini akan kedaluwarsa dalam 7 hari ke depan. Pertimbangkan untuk segera memperbaruinya."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "Versi LOC record harus 0."
+msgstr "Tanda tangan ini akan kedaluwarsa dalam 30 hari ke depan. Rencanakan pembaruannya."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr "LOC record latitude is mandatory."
+msgstr "PERINGATAN: Tanda tangan ini belum valid. Tanda tangan ini tidak akan divalidasi oleh resolver DNSSEC sampai waktu inception tercapai."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
@@ -6584,34 +6579,34 @@ msgstr "Masa berlaku tanda tangan lebih dari 90 hari, yang lebih lama daripada p
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
-msgstr "LOC record latitude format is invalid."
+msgstr "Tidak dapat mengurai timestamp tanda tangan untuk memeriksa masa berlaku."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
-msgstr "Format latitude LOC record tidak valid."
+msgstr "Kolom key tag RRSIG harus berupa nilai numerik."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
-msgstr "LOC record longitude is mandatory."
+msgstr "Key tag RRSIG harus berupa nilai yang valid antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "Longitude LOC record wajib diisi."
+msgstr "Signer name RRSIG harus berupa nama domain yang sepenuhnya terkualifikasi (diakhiri dengan titik)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "LOC record longitude format is invalid."
+msgstr "Signer name RRSIG harus berupa nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "Format longitude LOC record tidak valid."
+msgstr "Signature RRSIG tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr "LOC record altitude is mandatory."
+msgstr "Tanda tangan tersebut tampaknya bukan data berkode base64 yang valid. Tanda tangan RRSIG harus dikodekan base64."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
@@ -6623,76 +6618,76 @@ msgstr "Rekaman RRSIG merupakan bagian dari DNSSEC dan menyediakan tanda tangan 
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "LOC record altitude must be a valid number."
+msgstr "Ingat bahwa rekaman RRSIG harus dibuat ulang sebelum tanggal kedaluwarsanya untuk menjaga validasi DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
-msgstr "Altitude LOC record harus berupa angka yang valid."
+msgstr "Kolom prioritas untuk rekaman RP harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "LOC record size is mandatory."
+msgstr "Rekaman RP didefinisikan dalam RFC 1183 (1990) dan tidak banyak digunakan dalam konfigurasi DNS modern."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr "Size LOC record wajib diisi."
+msgstr "Pertimbangkan menyertakan metode kontak lain selain rekaman RP untuk domain yang penting."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
-msgstr "LOC record size must be a valid number."
+msgstr "Kode tipe untuk rekaman RP adalah 17."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
 msgid "RP record content cannot be empty."
-msgstr "Size LOC record harus berupa angka yang valid."
+msgstr "Konten rekaman RP tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:159
 msgid "RP record contains invalid characters."
-msgstr "LOC record horizontal precision is mandatory."
+msgstr "Rekaman RP mengandung karakter yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:165
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "Horizontal precision LOC record wajib diisi."
+msgstr "Rekaman RP harus berisi mailbox-domain (mbox-dname) dan txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "LOC record horizontal precision must be a valid number."
+msgstr "Rekaman RP menampilkan informasi kontak di DNS yang dapat menimbulkan masalah privasi dan keamanan."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr "Horizontal precision LOC record harus berupa angka yang valid."
+msgstr "Rekaman RP kini lebih jarang digunakan. Pertimbangkan menggunakan rekaman WHOIS atau mekanisme kontak lain sebagai gantinya."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "LOC record vertical precision is mandatory."
+msgstr "Pastikan rekaman TXT yang sesuai tersedia untuk kolom txt-dname jika tidak menggunakan titik (.)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr "Vertical precision LOC record wajib diisi."
+msgstr "Menggunakan \".\" untuk domain kotak surat menandakan tidak ada penanggung jawab yang ditentukan. Ini tidak disarankan untuk domain produksi."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "LOC record vertical precision must be a valid number."
+msgstr "Domain kotak surat RP harus berupa nama domain yang sepenuhnya terkualifikasi (diakhiri dengan titik)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
-msgstr "Vertical precision LOC record harus berupa angka yang valid."
+msgstr "Bagian lokal kotak surat RP mengandung karakter yang tidak valid. Hanya karakter yang valid dalam alamat email yang diizinkan."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
@@ -6703,73 +6698,73 @@ msgstr "Domain kotak surat mewakili alamat email: %s"
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr "Order NAPTR record wajib diisi."
+msgstr "Bagian domain kotak surat RP mengandung garis bawah, yang tidak diizinkan dalam nama domain."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
-msgstr "NAPTR record order must be between 0 and 65535."
+msgstr "Domain kotak surat RP harus mencakup bagian lokal dan bagian domain."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
-msgstr "Order NAPTR record harus antara 0 dan 65535."
+msgstr "Domain kotak surat RP mengandung label kosong."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "NAPTR record preference is mandatory."
+msgstr "Label domain kotak surat RP melebihi panjang maksimum 63 karakter."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
-msgstr "Preference NAPTR record wajib diisi."
+msgstr "Domain kotak surat RP mengandung karakter atau format yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
-msgstr "NAPTR record preference must be between 0 and 65535."
+msgstr "Domain kotak surat RP melebihi panjang maksimum 253 karakter."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
-msgstr "Preference NAPTR record harus antara 0 dan 65535."
+msgstr "Bagian domain kotak surat RP bukan nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:281
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr "NAPTR record flags is mandatory."
+msgstr "Domain kotak surat harus menggunakan format yang sama dengan kolom RNAME dalam rekaman SOA, dengan @ diganti oleh titik."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr "Flags NAPTR record wajib diisi."
+msgstr "Menggunakan \".\" untuk domain TXT menandakan tidak ada rekaman TXT informasi tambahan yang tersedia."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "NAPTR record service is mandatory."
+msgstr "Domain TXT RP harus berupa nama domain yang sepenuhnya terkualifikasi (diakhiri dengan titik)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
-msgstr "Service NAPTR record wajib diisi."
+msgstr "Domain TXT RP bukan nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:320
 msgid "RP TXT domain contains empty label."
-msgstr "NAPTR record regexp is mandatory."
+msgstr "Domain TXT RP mengandung label kosong."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "Regexp NAPTR record wajib diisi."
+msgstr "Label domain TXT RP melebihi panjang maksimum 63 karakter."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
-msgstr "NAPTR record replacement is mandatory."
+msgstr "Domain TXT RP mengandung karakter atau format yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
 msgid "RP TXT domain exceeds maximum length of 253 characters."
-msgstr "Replacement NAPTR record wajib diisi."
+msgstr "Domain TXT RP melebihi panjang maksimum 253 karakter."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr "HINFO record CPU is mandatory."
+msgstr "Pastikan ada rekaman TXT pada nama domain ini yang berisi informasi kontak penanggung jawab."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -6780,7 +6775,7 @@ msgstr "Anda harus membuat rekaman TXT pada domain: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr "HINFO record OS is mandatory."
+msgstr "Ini tampaknya merupakan alamat EUI-64 yang diturunkan dari alamat EUI-48 (mengandung FF-FE di tengah)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -6790,13 +6785,13 @@ msgstr "Ini tampaknya merupakan identifier antarmuka IPv6 (bit universal/local d
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
-msgstr "RP record mailbox is mandatory."
+msgstr "Kolom prioritas untuk rekaman EUI64 harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:132
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "Mailbox RP record wajib diisi."
+msgstr "RFC 7043 tidak menyarankan penerbitan alamat EUI-64 di DNS publik karena potensi implikasi privasi."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
@@ -6808,53 +6803,53 @@ msgstr "Rekaman EUI64 menggunakan pemisah titik dua (xx:xx:xx:xx:xx:xx:xx:xx) te
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "Text RP record wajib diisi."
+msgstr "Rekaman EUI64 tidak memiliki pemisah. Format harus xx-xx-xx-xx-xx-xx-xx-xx dengan tanda hubung di antara oktet."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "CERT record type is mandatory."
+msgstr "Rekaman EUI64 tampaknya menggunakan format bertitik. Format harus xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "Tipe CERT record wajib diisi."
+msgstr "Rekaman EUI64 harus berupa alamat EUI-64 yang valid dalam format xx-xx-xx-xx-xx-xx-xx-xx (di mana x adalah digit heksadesimal)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
 "This appears to be a multicast address (the least significant bit of the "
 "first octet is set to 1)."
-msgstr "CERT record type must be between 0 and 65535."
+msgstr "Ini tampaknya merupakan alamat multicast (bit paling tidak signifikan pada oktet pertama disetel ke 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:163
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr "Tipe CERT record harus antara 0 dan 65535."
+msgstr "Ini tampaknya merupakan alamat yang dikelola secara lokal (bit kedua paling tidak signifikan pada oktet pertama disetel ke 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "CERT record key tag is mandatory."
+msgstr "Ini adalah alamat semua-nol, yang mungkin tidak valid dalam semua konteks."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
-msgstr "Key tag CERT record wajib diisi."
+msgstr "Ini tampaknya merupakan alamat OUI IANA (00-00-5E)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:91
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr "CERT record key tag must be between 0 and 65535."
+msgstr "Rekaman DNAME ini tampaknya berada di apex zona. Menurut RFC 6672, penggunaan DNAME di apex zona memerlukan penanganan khusus untuk rekaman NS dan rekaman terkait."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "Key tag CERT record harus antara 0 dan 65535."
+msgstr "Target DNAME harus berupa nama domain yang sepenuhnya terkualifikasi dan valid."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
-msgstr "CERT record algorithm is mandatory."
+msgstr "Rekaman DNAME tidak boleh menunjuk ke dirinya sendiri."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:109
 msgid ""
@@ -6864,64 +6859,64 @@ msgstr "Target DNAME tampaknya merupakan subdomain dari nama pemilik. Hal ini da
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
-msgstr "CERT record algorithm must be between 0 and 255."
+msgstr "Kolom prioritas untuk rekaman DNAME harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:126
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "Algorithm CERT record harus antara 0 dan 255."
+msgstr "Menurut RFC 6672, rekaman DNAME harus unik pada nama pemilik tertentu (aturan singleton)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "CERT record certificate is mandatory."
+msgstr "Rekaman DNAME dan CNAME TIDAK BOLEH berdampingan pada nama pemilik yang sama (RFC 6672 Bagian 2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr "Certificate CERT record wajib diisi."
+msgstr "Rekaman DNAME TIDAK BOLEH muncul pada nama pemilik yang sama dengan rekaman NS, kecuali jika nama pemilik tersebut adalah apex zona."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr "SMIMEA record certificate usage is mandatory."
+msgstr "DNAME membuat alias sintetis untuk semua subdomain dari nama pemiliknya. Pertimbangkan hal ini dengan cermat saat merencanakan struktur zona Anda."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr "Certificate usage SMIMEA record wajib diisi."
+msgstr "Rekaman DS biasanya harus ditempatkan pada titik delegasi, bukan di apex zona. Periksa apakah ini memang disengaja."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr "SMIMEA record certificate usage must be between 0 and 255."
+msgstr "Ini adalah rekaman penghapusan CDS khusus (RFC 8078) yang memberi tahu zona induk untuk menghapus rekaman DS."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
-msgstr "Certificate usage SMIMEA record harus antara 0 dan 255."
+msgstr "Kolom prioritas untuk rekaman DS harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "SMIMEA record selector is mandatory."
+msgstr "Rekaman DS harus dalam format: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
-msgstr "Selector SMIMEA record wajib diisi."
+msgstr "Rekaman DS harus berisi tepat 4 kolom"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:182
 msgid "Key tag must be a number between 1 and 65535"
-msgstr "SMIMEA record selector must be between 0 and 255."
+msgstr "Key tag harus berupa angka antara 1 dan 65535"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr "Selector SMIMEA record harus antara 0 dan 255."
+msgstr "Algoritma harus salah satu dari: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
@@ -6950,38 +6945,38 @@ msgstr "%s (algoritme %d) TIDAK DISARANKAN untuk digunakan menurut RFC 8624. Per
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "SMIMEA record certificate data is mandatory."
+msgstr "Tipe digest harus salah satu dari: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr "Data certificate SMIMEA record wajib diisi."
+msgstr "SHA-1 (tipe digest 1) TIDAK DISARANKAN untuk digunakan menurut RFC 8624. SHA-256 (tipe digest 2) adalah algoritma digest yang disarankan."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "OPENPGPKEY record public key is mandatory."
+msgstr "SHA-256 (tipe digest 2) adalah algoritma digest yang DISARANKAN menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr "Public key OPENPGPKEY record wajib diisi."
+msgstr "SHA-384 (tipe digest 4) adalah pilihan yang baik untuk kebutuhan keamanan yang lebih tinggi, tetapi SHA-256 (tipe digest 2) sudah memadai untuk sebagian besar penerapan dan didukung lebih luas."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
-msgstr "ALIAS record target is mandatory."
+msgstr "Digest SHA-1 harus terdiri dari tepat 40 karakter heksadesimal"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
-msgstr "Target ALIAS record wajib diisi."
+msgstr "Digest SHA-256 harus terdiri dari tepat 64 karakter heksadesimal"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:260
 msgid "SHA-384 digest must be exactly 96 hexadecimal characters"
-msgstr "ALIAS record target format is invalid."
+msgstr "Digest SHA-384 harus terdiri dari tepat 96 karakter heksadesimal"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
@@ -6994,7 +6989,7 @@ msgstr "Rekaman DS membangun rantai kepercayaan dari zona induk ke zona anak. Zo
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr "URI record priority is mandatory."
+msgstr "Rekaman CSYNC hanya boleh ditempatkan di apex zona (RFC 7477). Rekaman ini mungkin tidak diproses oleh agen induk."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
@@ -7006,60 +7001,60 @@ msgstr "Rekaman CSYNC memerlukan penandatanganan DNSSEC agar dapat diproses oleh
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "URI record priority must be between 0 and 65535."
+msgstr "Hanya boleh ada satu rekaman CSYNC per zona (RFC 7477). Beberapa rekaman dapat menyebabkan perilaku yang tidak terduga."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr "Prioritas URI record harus antara 0 dan 65535."
+msgstr "Tidak ada flag yang disetel dalam rekaman CSYNC ini. Rekaman tersebut mungkin tidak langsung diproses oleh agen induk."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "URI record weight is mandatory."
+msgstr "Flag \"immediate\" (0x0001) tidak disetel. Agen induk mungkin menunda pemrosesan rekaman ini."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "Weight URI record wajib diisi."
+msgstr "Flag \"soaminimum\" (0x0002) tidak disetel. Validasi nomor serial SOA mungkin tidak diberlakukan."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "URI record weight must be between 0 and 65535."
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman CSYNC harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Weight URI record harus antara 0 dan 65535."
+msgstr "SOA Serial tidak valid dalam rekaman CSYNC. Nilainya harus berupa bilangan bulat tak bertanda 32-bit (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "URI record target is mandatory."
+msgstr "Flags tidak valid dalam rekaman CSYNC. Flags harus berupa nilai numerik."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Target URI record wajib diisi."
+msgstr "Flags tidak valid dalam rekaman CSYNC. Flags harus antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr "DHCID record digest is mandatory."
+msgstr "Flags tidak valid dalam rekaman CSYNC. Hanya bit 0-1 yang didefinisikan (nilai 0-3). Nilai yang valid adalah 0, 1, 2, atau 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
 "CSYNC record must specify at least one record type in the Type Bit Map field."
-msgstr "Digest DHCID record wajib diisi."
+msgstr "Rekaman CSYNC harus menentukan setidaknya satu tipe rekaman dalam kolom Type Bit Map."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
-msgstr "SPF record content is mandatory."
+msgstr "Tipe tidak valid \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
 msgid "Type \""
@@ -7073,7 +7068,7 @@ msgstr "Tipe duplikat \""
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
-msgstr "Komentar tidak boleh melebihi 255 karakter."
+msgstr "Sinkronisasi rekaman NS memerlukan pertimbangan yang cermat. Zona induk mungkin memiliki kebijakan rekaman NS tertentu yang dapat mencegah keberhasilan sinkronisasi."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
@@ -7086,11 +7081,11 @@ msgstr "Catatan: Format wire yang sebenarnya untuk CSYNC Type Bit Map mengikuti 
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "Komentar mengandung karakter tidak valid."
+msgstr "RFC 7477 mengharuskan pendekatan \"semua atau tidak sama sekali\" untuk pemrosesan CSYNC. Jika ada tipe yang tidak dapat disinkronkan, tidak ada perubahan yang akan dilakukan oleh zona induk."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Record is disabled"
+msgstr "Prioritas harus 0 untuk rekaman EUI48."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:115
 msgid ""
@@ -7113,37 +7108,37 @@ msgstr "Rekaman EUI48 tidak memiliki pemisah. Format harus xx-xx-xx-xx-xx-xx den
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr "Cannot modify system records."
+msgstr "Rekaman EUI48 tampaknya menggunakan format Cisco. Format harus xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "Tidak dapat memodifikasi record sistem."
+msgstr "Rekaman EUI48 harus berupa alamat MAC yang valid dalam format xx-xx-xx-xx-xx-xx (di mana x adalah digit heksadesimal)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Cannot delete system records."
+msgstr "Ini adalah alamat broadcast (semua-satu), yang mungkin tidak valid dalam semua konteks."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Tidak dapat menghapus record sistem."
+msgstr "Nama rekaman tampaknya bukan nama zona reverse DNS standar (harus diakhiri dengan .in-addr.arpa untuk IPv4 atau .ip6.arpa untuk IPv6)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr "Record not found or access denied."
+msgstr "Kolom prioritas untuk rekaman PTR harus 0 atau kosong. Nilai yang ditentukan akan diabaikan."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr "Record tidak ditemukan atau akses ditolak."
+msgstr "Rekaman PTR sebaiknya memiliki rekaman forward (A/AAAA) yang sesuai untuk menghindari masalah dengan layanan yang memeriksa reverse DNS."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
@@ -7153,35 +7148,35 @@ msgstr "Server email sering kali memerlukan reverse DNS yang dikonfigurasi denga
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
-msgstr "ID record tidak valid."
+msgstr "Ini bukan alamat IPv4 yang valid."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:93
 msgid "This is not a valid IPv6 address."
-msgstr "You do not have permission to modify this record."
+msgstr "Ini bukan alamat IPv6 yang valid."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Anda tidak memiliki izin untuk memodifikasi record ini."
+msgstr "Bagian IPv4 tidak valid dalam alamat IPv6 yang dipetakan ke IPv4."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
-msgstr "You do not have permission to delete this record."
+msgstr "Alamat IPv6 yang kompatibel dengan IPv4 (::a.b.c.d) sudah tidak digunakan lagi."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr "Anda tidak memiliki izin untuk menghapus record ini."
+msgstr "Alamat IPv6 tidak valid: lebih dari dua titik dua berurutan."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
-msgstr "You do not have permission to add records to this zone."
+msgstr "Alamat IPv6 tidak valid: harus memiliki 8 hextet saat diperluas."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr "Anda tidak memiliki izin untuk menambah record ke zone ini."
+msgstr "Alamat IPv6 tidak valid: setiap hextet harus terdiri dari 4 digit heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
-msgstr "Record content is mandatory."
+msgstr "Daftar alamat IP tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
@@ -7210,7 +7205,7 @@ msgstr "Alamat IP tidak valid: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
-msgstr "TTL is mandatory."
+msgstr "Kolom prioritas untuk rekaman CAA harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
@@ -7218,11 +7213,11 @@ msgstr "Rekaman CAA harus berisi flags, tag, dan value yang dipisahkan oleh spas
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "TTL must be a positive integer."
+msgstr "Flags CAA harus berupa angka antara 0 dan 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
-msgstr "TTL harus berupa bilangan bulat positif."
+msgstr "Tag CAA hanya boleh berisi huruf dan angka ASCII."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
@@ -7233,27 +7228,27 @@ msgstr "Flag critical disetel untuk tag tidak dikenal \"%s\". Hal ini dapat meny
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "TTL harus minimal %d detik."
+msgstr "Nilai kosong tidak diizinkan. Gunakan \";\" untuk mengizinkan semua CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:205
 msgid "Invalid CA domain in issue tag."
-msgstr "Priority must be a number between 0 and 65535."
+msgstr "Domain CA tidak valid dalam tag issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Prioritas harus berupa angka antara 0 dan 65535."
+msgstr "Parameter tag issue harus dalam format key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
-msgstr "Priority is only applicable for MX and SRV records."
+msgstr "Parameter accounturi tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:231
 msgid "Empty validation method specified."
-msgstr "Prioritas hanya berlaku untuk record MX dan SRV."
+msgstr "Metode validasi yang ditentukan kosong."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:239
 msgid "Invalid CA domain in issuewild tag."
-msgstr "Record type is not supported."
+msgstr "Domain CA tidak valid dalam tag issuewild."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:252
 #, php-format
@@ -7272,23 +7267,23 @@ msgstr "Nilai contactphone hanya boleh berisi angka, spasi, dan tanda baca nomor
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
-msgstr "Add reverse record"
+msgstr "Nilai harus diapit tanda kutip ganda."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:314
 msgid "Backslashes must precede all quotes (\") in value content."
-msgstr "Tambah reverse record"
+msgstr "Garis miring terbalik harus mendahului semua tanda kutip (\") dalam konten nilai."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:320
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "Add reverse records for A/AAAA records in this zone"
+msgstr "Nilai properti CAA melebihi panjang maksimum 512 karakter."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:326
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr "Tambah reverse record untuk record A/AAAA di zone ini"
+msgstr "Nilai properti CAA tidak boleh berisi karakter NUL (0)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
-msgstr "Search zones"
+msgstr "Nama host terlalu panjang."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:79
 msgid "Single-label hostnames are not allowed."
@@ -7296,19 +7291,19 @@ msgstr "Nama host dengan label tunggal tidak diizinkan."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:92
 msgid "You have invalid characters in your zone name."
-msgstr "List all zones"
+msgstr "Ada karakter tidak valid dalam nama zona Anda."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
-msgstr "Daftar semua zone"
+msgstr "Nama host tidak boleh dimulai atau diakhiri dengan tanda hubung."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:105
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "No zones found matching your criteria."
+msgstr "Nama host yang diberikan atau salah satu labelnya terlalu pendek atau terlalu panjang."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:129
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
-msgstr "Tidak ada zone yang sesuai dengan kriteria Anda."
+msgstr "Beberapa garis miring dalam label yang berbeda tidak diizinkan dalam zona ARPA."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:139
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
@@ -7316,7 +7311,7 @@ msgstr "Format RFC 2317 tidak valid. Gunakan format: subnet/prefix (mis., 0/26).
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:155
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr "Tidak ada zone yang ditemukan."
+msgstr "Nomor subnet tidak valid dalam notasi RFC 2317. Harus 0-255 untuk IPv4."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
@@ -7325,7 +7320,7 @@ msgstr "Subnet tidak valid dalam notasi RFC 2317. Harus heksadesimal (0-9, a-f) 
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr "Tampilkan detail zone"
+msgstr "Subnet tidak valid dalam notasi RFC 2317. Harus berupa angka atau heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:173
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
@@ -7344,25 +7339,25 @@ msgstr "Subnet %d tidak selaras dengan prefiks /%d. Harus kelipatan %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:204
 msgid "Invalid IPv6 prefix length. Must be 0-128."
-msgstr "Zone tidak ditemukan atau akses ditolak."
+msgstr "Panjang prefix IPv6 tidak valid. Harus 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:210
 msgid "Invalid prefix length. Must be 0-128."
-msgstr "Invalid zone ID."
+msgstr "Panjang prefix tidak valid. Harus 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:218
 msgid "Given hostname has too many slashes."
-msgstr "ID zone tidak valid."
+msgstr "Nama host yang diberikan memiliki terlalu banyak garis miring."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:226
 msgid "You are using an invalid top level domain."
-msgstr "You do not have permission to view this zone."
+msgstr "Anda menggunakan top level domain yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "Anda tidak memiliki izin untuk melihat zone ini."
+msgstr "Parameter validasi SOA belum disetel. Panggil setSOAParams() terlebih dahulu atau berikan sebagai argumen."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -7375,7 +7370,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:177
 msgid "SOA record must have between 1 and 7 fields."
-msgstr "Anda tidak memiliki izin untuk mengedit zone ini."
+msgstr "Rekaman SOA harus memiliki antara 1 dan 7 kolom."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
 #, php-format
@@ -7388,7 +7383,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:195
 msgid "Invalid primary nameserver in SOA record."
-msgstr "You do not have permission to delete this zone."
+msgstr "Primary nameserver tidak valid dalam rekaman SOA."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
 msgid ""
@@ -7400,11 +7395,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:226
 msgid "Serial number must be numeric."
-msgstr "You do not have permission to add zones."
+msgstr "Nomor serial harus berupa angka."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:232
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Anda tidak memiliki izin untuk menambah zone."
+msgstr "Nomor serial harus berupa bilangan bulat tak bertanda 32-bit (0 hingga 4294967295)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid ""
@@ -7439,7 +7434,7 @@ msgstr "Nilai SOA %s (%d) berada di bawah minimum yang disarankan RFC 2308 (%d).
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr "Nama zone harus berupa nama domain yang valid."
+msgstr "Nilai retry SOA sebaiknya lebih kecil daripada nilai refresh menurut RFC 2308. Ini diizinkan tetapi tidak disarankan."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:310
 msgid ""
@@ -7471,7 +7466,7 @@ msgstr "Rekaman SVCB harus dimulai dengan prioritas dan target: <priority> <targ
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
-msgstr "Zone type is mandatory."
+msgstr "Prioritas SVCB harus antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
@@ -7495,7 +7490,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "Server master wajib untuk zone slave."
+msgstr "Parameter SVCB harus dalam format key=value yang dipisahkan oleh spasi."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7551,21 +7546,21 @@ msgstr "Ini tidak menggunakan format nama SMIMEA standar. Rekaman SMIMEA biasany
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "Zone template applied successfully."
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman SMIMEA harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "Template zone berhasil diterapkan."
+msgstr "SMIMEA membuat alamat email terlihat di DNS. Pertimbangkan implikasi privasi saat menerbitkan rekaman SMIMEA."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
-msgstr "Failed to apply zone template."
+msgstr "Konten rekaman SMIMEA tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:189
 msgid "SMIMEA record contains invalid characters."
-msgstr "Gagal menerapkan template zone."
+msgstr "Rekaman SMIMEA mengandung karakter yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -7606,7 +7601,7 @@ msgstr "Usage DANE-EE (3) direkomendasikan karena memberikan penerapan paling se
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "Failed to change zone owner."
+msgstr "Kolom selector SMIMEA harus 0 (Sertifikat penuh) atau 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7620,7 +7615,7 @@ msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "You do not have permission to change zone ownership."
+msgstr "Selector 1 (SubjectPublicKeyInfo) direkomendasikan karena memungkinkan pembaruan sertifikat tanpa memperbarui rekaman SMIMEA, selama kunci publiknya tetap sama."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7632,12 +7627,12 @@ msgstr "Anda tidak memiliki izin untuk mengubah kepemilikan zone."
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr "The zone has been deleted successfully."
+msgstr "Matching type 0 (Exact match) menggunakan data sertifikat mentah. SHA-256 (tipe 1) direkomendasikan untuk performa dan kompatibilitas yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
 "Matching type 1 (SHA-256) provides a good balance of security and efficiency."
-msgstr "Zone berhasil dihapus."
+msgstr "Matching type 1 (SHA-256) memberikan keseimbangan yang baik antara keamanan dan efisiensi."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
 msgid ""
@@ -7647,27 +7642,27 @@ msgstr "Matching type 2 (SHA-512) memberikan keamanan tertinggi tetapi mungkin m
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "Gagal menghapus zone."
+msgstr "Data sertifikat SMIMEA harus berupa string heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "Are you sure you want to delete this zone?"
+msgstr "Data sertifikat SHA-256 SMIMEA harus terdiri dari 64 karakter."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
-msgstr "Apakah Anda yakin ingin menghapus zone ini?"
+msgstr "Data sertifikat SHA-512 SMIMEA harus terdiri dari 128 karakter."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:269
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "Deleting this zone will remove all associated records."
+msgstr "Konfigurasi SMIMEA yang direkomendasikan adalah usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo), dan matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "Menghapus zone ini akan menghapus semua record terkait."
+msgstr "PERINGATAN: SMIMEA (RFC 8162) saat ini merupakan protokol EKSPERIMENTAL dan mungkin belum didukung secara luas."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7788,7 +7783,7 @@ msgstr "Rekaman CDNSKEY harus berisi flags, protocol, algorithm, dan public-key 
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
-msgstr "Edit komentar"
+msgstr "Flags CDNSKEY harus 0, 256, atau 257."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:184
 msgid ""
@@ -7798,11 +7793,11 @@ msgstr "Flag 257 menandakan Key Signing Key (KSK). Pastikan kunci ini dikelola d
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
-msgstr "Komentar berhasil diperbarui."
+msgstr "Protokol CDNSKEY harus 3."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:195
 msgid "CDNSKEY algorithm must be a number between 1 and 16."
-msgstr "Failed to update comment."
+msgstr "Algoritma CDNSKEY harus berupa angka antara 1 dan 16."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:205
 msgid ""
@@ -7814,21 +7809,21 @@ msgstr "Algoritma 8 (RSASHA256) sedang digantikan oleh ECDSAP256SHA256 (13) kare
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "Comment deleted successfully."
+msgstr "Algoritma 10 (RSASHA512) TIDAK DISARANKAN untuk penandatanganan meskipun harus didukung untuk validasi."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "Komentar berhasil dihapus."
+msgstr "Data berkode Base64 harus diberi padding hingga menjadi kelipatan 4 byte menggunakan karakter \"=\"."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "Failed to delete comment."
+msgstr "Kunci publik CDNSKEY hanya boleh berisi karakter base64 yang valid."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
-msgstr "Gagal menghapus komentar."
+msgstr "Kunci publik CDNSKEY harus berupa data berkode base64 yang valid."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
@@ -7840,7 +7835,7 @@ msgstr "Karakter tidak valid dalam konten rekaman LUA."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:119
 msgid "Priority field for LUA records must be 0 or empty"
-msgstr "Zone created successfully."
+msgstr "Kolom prioritas untuk rekaman LUA harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:127
 msgid ""
@@ -7864,15 +7859,15 @@ msgstr "Rekaman LUA ini tampaknya tidak menggunakan fungsi Lua PowerDNS yang umu
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "Zone updated successfully."
+msgstr "PERINGATAN: Rekaman LUA ini tampaknya memiliki tanda kutip yang tidak seimbang, yang dapat menyebabkan kesalahan sintaksis."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "Zone berhasil diperbarui."
+msgstr "Rekaman LUA memiliki tanda kurung yang tidak sesuai. Periksa sintaksis Anda."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "Failed to update zone."
+msgstr "Rekaman LUA memiliki kurung kurawal yang tidak sesuai. Periksa sintaksis Anda."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
@@ -7894,13 +7889,13 @@ msgstr "Rekaman LUA berisi fungsi akses sistem yang berpotensi berbahaya. Fungsi
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
-msgstr "Add master nameserver"
+msgstr "Kolom prioritas untuk rekaman SSHFP harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:130
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "Tambah nameserver master"
+msgstr "Rekaman SSHFP dapat dibuat dengan perintah \"ssh-keygen -r hostname\" pada sistem yang memiliki OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -7930,24 +7925,23 @@ msgstr "Kunci DSA dianggap lemah dan sudah tidak digunakan lagi di banyak implem
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Enter master nameserver IP address"
+msgstr "Kunci Ed25519 direkomendasikan untuk keamanan dan performa yang baik dengan implementasi SSH modern."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr "Masukkan alamat IP nameserver master"
+msgstr "Kunci Ed448 menawarkan keamanan yang sangat tinggi tetapi mungkin tidak didukung oleh semua implementasi SSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr "You can enter multiple master servers separated by commas"
+msgstr "Tipe fingerprint SSHFP harus 1 (SHA-1) atau 2 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr ""
-"Anda dapat memasukkan beberapa server master yang dipisahkan dengan koma"
+msgstr "Fingerprint SHA-1 sudah tidak digunakan lagi. RFC 6594 merekomendasikan penggunaan fingerprint SHA-256 (tipe 2) untuk keamanan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
@@ -7957,11 +7951,11 @@ msgstr "Fingerprint SHA-256 direkomendasikan oleh RFC 6594 dan memberikan keaman
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
-msgstr "Informasi zone"
+msgstr "Fingerprint SSHFP harus berupa string heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
-msgstr "DNSSEC status"
+msgstr "Fingerprint SHA-1 SSHFP harus terdiri dari 40 karakter."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
@@ -7982,11 +7976,11 @@ msgstr "Konfigurasikan klien SSH dengan \"VerifyHostKeyDNS yes\" untuk memanfaat
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
-msgstr "DNSSEC disabled"
+msgstr "Nama rekaman MR (kotak surat lama) tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
-msgstr "DNSSEC dinonaktifkan"
+msgstr "Nama rekaman MR harus berupa nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:106
 msgid "MR record content (new mailbox) cannot be empty."
@@ -7994,7 +7988,7 @@ msgstr "Konten rekaman MR (kotak surat baru) tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "Aktifkan DNSSEC"
+msgstr "Konten rekaman MR harus berupa nama domain yang valid."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
@@ -8031,7 +8025,7 @@ msgstr "Rekaman MR menandakan bahwa pengguna surat telah berpindah dari kotak su
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
-msgstr "View DNSSEC keys"
+msgstr "Kolom prioritas untuk rekaman KEY harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:129
 msgid ""
@@ -8041,7 +8035,7 @@ msgstr "Rekaman KEY telah dinyatakan usang oleh RFC 4034. Untuk DNSSEC, gunakan 
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
-msgstr "Delete DNSSEC key"
+msgstr "Rekaman KEY mungkin tidak didukung oleh semua server DNS dan resolver."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
@@ -8117,49 +8111,49 @@ msgstr "Rekaman DMARC harus ditempatkan di _dmarc.<domain>."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "DS records for parent zone"
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman DMARC harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
-msgstr "DS record untuk parent zone"
+msgstr "Rekaman DMARC harus dimulai dengan \"v=DMARC1\""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:167
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "Copy DS records to clipboard"
+msgstr "Rekaman DMARC melebihi batas 255 karakter. Untuk kebijakan yang kompleks, pertimbangkan menyederhanakannya atau menggunakan referensi URI."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "Salin DS record ke clipboard"
+msgstr "Tag versi DMARC (v) harus DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "DS records copied to clipboard."
+msgstr "Tag kebijakan DMARC (p) harus salah satu dari: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr "DS record berhasil disalin ke clipboard."
+msgstr "Menggunakan \"p=none\" memberikan visibilitas terhadap autentikasi email tanpa memengaruhi pengiriman. Pertimbangkan kebijakan yang lebih ketat setelah Anda meninjau laporannya."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "Failed to copy DS records."
+msgstr "Tag kebijakan subdomain DMARC (sp) harus salah satu dari: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "Gagal menyalin DS record."
+msgstr "Tag penyelarasan DKIM DMARC (adkim) harus r (relaxed) atau s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DNSSEC enabled successfully."
+msgstr "Tag penyelarasan SPF DMARC (aspf) harus r (relaxed) atau s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "DNSSEC berhasil diaktifkan."
+msgstr "Tag persentase DMARC (pct) harus antara 0 dan 100"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -8170,13 +8164,13 @@ msgstr "Kebijakan DMARC hanya diterapkan pada %d%% pesan. Ini sebaiknya hanya di
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "Gagal mengaktifkan DNSSEC."
+msgstr "Tag interval pelaporan DMARC (ri) harus berupa bilangan bulat positif"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DNSSEC disabled successfully."
+msgstr "Tag opsi pelaporan kegagalan DMARC (fo) hanya boleh berisi 0, 1, d, s, atau kombinasi yang dipisahkan titik dua"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8190,7 +8184,7 @@ msgstr "Alamat email tidak valid pada tag DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "Gagal menonaktifkan DNSSEC."
+msgstr "Tag format laporan DMARC (rf) harus afrf atau iodef"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
@@ -8216,11 +8210,11 @@ msgstr "Ini adalah rekaman DMARC yang diproses melalui tipe rekaman TXT. Rekaman
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
-msgstr "DNSSEC key deleted successfully."
+msgstr "Konten rekaman TXT harus diapit tanda kutip."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Key DNSSEC berhasil dihapus."
+msgstr "Garis miring terbalik harus mendahului semua tanda kutip (\") dalam konten TXT"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:197
 #, php-format
@@ -8233,7 +8227,7 @@ msgstr "Konten rekaman TXT melebihi panjang maksimum %d byte. Silakan kurangi uk
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "Gagal menghapus key DNSSEC."
+msgstr "Setiap string rekaman TXT harus berukuran 255 byte atau kurang. Pecah konten yang panjang menjadi beberapa string."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
@@ -8245,16 +8239,16 @@ msgstr "Total konten rekaman TXT melebihi panjang maksimum %d byte. Silakan kura
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "Apakah Anda yakin ingin menghapus key DNSSEC ini?"
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman TXT harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
-msgstr "Key signing key (KSK)"
+msgstr "Format alamat IPv4 tidak valid."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Key Signing Key (KSK)"
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman A harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
@@ -8264,17 +8258,17 @@ msgstr "Rekaman CDS hanya boleh ditempatkan di apex zona, bukan di subdomain, se
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
-msgstr "Zone Signing Key (ZSK)"
+msgstr "Kolom prioritas untuk rekaman CDS harus 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr "Combined signing key (CSK)"
+msgstr "Menurut RFC 8078, rekaman CDS sebaiknya stabil selama beberapa waktu sebelum zona induk menerimanya."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
-msgstr "Combined Signing Key (CSK)"
+msgstr "Karakter tidak valid dalam konten rekaman CDS."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:154
 msgid ""
@@ -8353,15 +8347,15 @@ msgstr "Rekaman L32 harus berisi preferensi dan locator yang dipisahkan oleh spa
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "DNSSEC information"
+msgstr "Preferensi L32 harus berupa angka antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
-msgstr "Informasi DNSSEC"
+msgstr "Locator L32 harus berupa alamat IPv4 yang valid."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
-msgstr "Zone transfer"
+msgstr "Locator L32 harus berupa alamat IPv4 yang ditentukan sepenuhnya."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
@@ -8377,7 +8371,7 @@ msgstr "Prioritas 0 valid tetapi tidak umum. Biasanya rekaman SRV dimulai pada p
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Izinkan zone transfer"
+msgstr "Nama rekaman SRV harus dalam format _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8389,7 +8383,7 @@ msgstr "Nilai service tidak valid dalam rekaman SRV. Nama service harus dimulai 
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr "IP yang diizinkan untuk zone transfer"
+msgstr "Nilai protocol tidak valid dalam rekaman SRV. Protocol harus dimulai dengan garis bawah diikuti karakter alfanumerik."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
@@ -8407,21 +8401,21 @@ msgstr "Protokol \"%s\" tidak ada dalam daftar protokol yang umum dikenal. Proto
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
-msgstr "Zone transfer settings updated successfully."
+msgstr "Nama domain tidak valid dalam rekaman SRV."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr "Pengaturan zone transfer berhasil diperbarui."
+msgstr "Konten rekaman SRV harus memiliki weight, port dan target (3 kolom). Prioritas harus berada di kolom prioritas."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Failed to update zone transfer settings."
+msgstr "Nilai tidak valid untuk kolom weight pada rekaman SRV. Harus 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Gagal memperbarui pengaturan zone transfer."
+msgstr "Nilai tidak valid untuk kolom port pada rekaman SRV. Harus 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -8440,27 +8434,27 @@ msgstr "Ketika target adalah \".\" (tanpa layanan), port dan weight keduanya har
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "Kirim NOTIFY"
+msgstr "Target SRV tidak valid."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "NOTIFY sent successfully."
+msgstr "Nilai tidak valid untuk kolom prioritas pada rekaman SRV."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "NOTIFY berhasil dikirim."
+msgstr "Alamat IPv6 unspecified (::) atau loopback (::1) sebaiknya tidak digunakan dalam rekaman AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "Failed to send NOTIFY."
+msgstr "Alamat IPv6 site-local (fec0::/10) sudah tidak digunakan lagi dan sebaiknya tidak dipakai."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Gagal mengirim NOTIFY."
+msgstr "Nilai tidak valid untuk kolom prioritas. Rekaman AAAA harus memiliki nilai prioritas 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -8471,11 +8465,11 @@ msgstr "Nama pemilik rekaman NSEC3 biasanya harus berupa hash yang dikodekan Bas
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "Also-notify"
+msgstr "Konten rekaman NSEC3 tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "Also-notify servers"
+msgstr "Rekaman NSEC3 berisi karakter yang tidak valid."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
@@ -8487,33 +8481,33 @@ msgstr "Menurut RFC 5155 dan RFC 9077, rekaman NSEC3 harus memiliki TTL yang sam
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "Enter also-notify servers separated by commas"
+msgstr "Rekaman NSEC3 merupakan bagian dari DNSSEC dan sebaiknya hanya dikelola bersama rekaman DNSSEC lainnya (DNSKEY, RRSIG, dll.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "Masukkan server also-notify yang dipisahkan dengan koma"
+msgstr "Mengedit rekaman NSEC3 secara manual tidak disarankan karena rekaman ini biasanya dibuat secara otomatis oleh nameserver yang mendukung DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr "Also-notify servers updated successfully."
+msgstr "Rekaman NSEC3 memerlukan rekaman NSEC3PARAM yang sesuai di apex zona untuk menandakan parameter NSEC3 yang digunakan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "Server also-notify berhasil diperbarui."
+msgstr "Rekaman NSEC3 harus berisi setidaknya hash algorithm, flags, iterations, salt, dan next hashed owner name."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
-msgstr "Failed to update also-notify servers."
+msgstr "Hash algorithm NSEC3 harus 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "Gagal memperbarui server also-notify."
+msgstr "Flags NSEC3 harus 0 atau 1."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
@@ -8568,23 +8562,23 @@ msgstr "Anda tidak dapat menggunakan tag html untuk tipe rekaman ini."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "TSIG settings updated successfully."
+msgstr "Tambahkan tanda kutip di sekitar konten rekaman TXT."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:156
 msgid "Invalid domain name format."
-msgstr "Pengaturan TSIG berhasil diperbarui."
+msgstr "Format nama domain tidak valid."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "Failed to update TSIG settings."
+msgstr "Ini tampaknya merupakan domain ENUM. Rekaman NAPTR harus menggunakan kolom service E2U dan mengikuti RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "Gagal memperbarui pengaturan TSIG."
+msgstr "Pola regexp yang rumit dalam rekaman NAPTR dapat sulit di-debug dan dipelihara."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
@@ -8614,7 +8608,7 @@ msgstr "Preference rekaman NAPTR harus berupa angka antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
-msgstr "Value metadata"
+msgstr "Flags rekaman NAPTR harus berupa string dalam tanda kutip."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
@@ -8622,11 +8616,11 @@ msgstr "Flags rekaman NAPTR hanya boleh berisi A, P, S, atau U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr "Tambah metadata"
+msgstr "Service rekaman NAPTR harus berupa string dalam tanda kutip."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "Edit metadata"
+msgstr "Regexp rekaman NAPTR harus berupa string dalam tanda kutip."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -8649,41 +8643,41 @@ msgstr "Service NAPTR harus mengikuti format: [protocol][+rs][+rs]... di mana pr
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr "Metadata added successfully."
+msgstr "Flags terminal \"S\", \"A\", \"U\", dan \"P\" sebaiknya tidak digabungkan dengan flags lain."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "Metadata berhasil ditambahkan."
+msgstr "Regexp NAPTR harus dimulai dengan karakter pembatas."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "Failed to add metadata."
+msgstr "Regexp NAPTR harus mengikuti format delimiter+pattern+delimiter+replacement+delimiter+flags."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "Gagal menambahkan metadata."
+msgstr "Flags regexp NAPTR (setelah pembatas ketiga) hanya boleh berisi \"i\" atau kosong."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr "Metadata updated successfully."
+msgstr "Ini tampaknya merupakan rekaman NAPTR ENUM (RFC 6116). Pastikan domain berada di bawah e164.arpa atau pohon ENUM privat."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "Metadata berhasil diperbarui."
+msgstr "Rekaman ENUM harus memiliki flag \"U\" untuk menandakan keluaran URI."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "Failed to update metadata."
+msgstr "Regexp NAPTR berisi pola yang berpotensi berbahaya: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "Gagal memperbarui metadata."
+msgstr "Regexp NAPTR terlalu panjang. Panjang maksimum adalah 1000 karakter."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -8693,17 +8687,17 @@ msgstr "Rekaman DNSKEY biasanya ditempatkan di apex zona. Rekaman ini tampaknya 
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Metadata berhasil dihapus."
+msgstr "Kolom prioritas untuk rekaman DNSKEY harus 0 atau kosong."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "Failed to delete metadata."
+msgstr "Rekaman DNSKEY harus berisi flags, protocol, algorithm dan public-key yang dipisahkan oleh spasi."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "Gagal menghapus metadata."
+msgstr "Flags DNSKEY harus 0, 256, atau 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -8725,11 +8719,11 @@ msgstr "Nilai flag 257 menandakan ini adalah Key Signing Key (KSK) dengan bit Zo
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "SOA-EDIT-API"
+msgstr "Protocol DNSKEY harus 3."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
-msgstr "SOA-EDIT-DNSUPDATE"
+msgstr "Algorithm DNSKEY harus berupa angka antara 1 dan 16."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
@@ -8775,15 +8769,15 @@ msgstr "Ukuran kunci RSA kurang dari 2048 bit. RFC 8624 merekomendasikan minimal
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "AXFR-SOURCE"
+msgstr "Padding pengodean base64 tidak benar."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
-msgstr "AXFR-SOURCE"
+msgstr "Karakter base64 tidak valid terdeteksi."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
-msgstr "ALLOW-AXFR-FROM"
+msgstr "Pengodean base64 tidak valid."
 
 #: lib/Domain/Service/DomainRecordCreator.php:79
 #, php-format
@@ -8792,52 +8786,52 @@ msgstr "Tidak ada zona yang dikelola untuk domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:97
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "ALLOW-DNSUPDATE-FROM"
+msgstr "Menambahkan rekaman domain IPv6 dari zona balik belum didukung."
 
 #: lib/Domain/Service/DomainRecordCreator.php:140
 msgid "This domain record was not valid and could not be added."
-msgstr "ALLOW-DNSUPDATE-FROM"
+msgstr "Rekaman domain ini tidak valid dan tidak dapat ditambahkan."
 
 #: lib/Domain/Service/DomainRecordCreator.php:136
 msgid "The domain record was successfully added."
-msgstr "TSIG-ALLOW-AXFR"
+msgstr "Rekaman domain berhasil ditambahkan."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:99
 msgid "Unable to find domain with the given ID."
-msgstr "TSIG-ALLOW-AXFR"
+msgstr "Tidak dapat menemukan domain dengan ID yang diberikan."
 
 #: lib/Domain/Service/ApiKeyService.php:198
 msgid "API functionality is disabled."
-msgstr "TSIG-ALLOW-DNSUPDATE"
+msgstr "Fungsionalitas API dinonaktifkan."
 
 #: lib/Domain/Service/ApiKeyService.php:207
 msgid "You do not have permission to create API keys."
-msgstr "LUA-AXFR-SCRIPT"
+msgstr "Anda tidak memiliki izin untuk membuat API key."
 
 #: lib/Domain/Service/ApiKeyService.php:214 templates/default/api_keys.html:17
 #: templates/modern/api_keys.html:17
 msgid "You have reached the maximum number of API keys allowed."
-msgstr "LUA-AXFR-SCRIPT"
+msgstr "Anda telah mencapai jumlah maksimum API key yang diizinkan."
 
 #: lib/Domain/Service/ApiKeyService.php:365
 msgid "You do not have permission to update API keys."
-msgstr "AXFR-MASTER-TSIG"
+msgstr "Anda tidak memiliki izin untuk memperbarui API key."
 
 #: lib/Domain/Service/ApiKeyService.php:307
 msgid "You do not have permission to delete API keys."
-msgstr "AXFR-MASTER-TSIG"
+msgstr "Anda tidak memiliki izin untuk menghapus API key."
 
 #: lib/Domain/Service/ApiKeyService.php:334
 msgid "You do not have permission to regenerate API keys."
-msgstr "GSS-ALLOW-AXFR-PRINCIPAL"
+msgstr "Anda tidak memiliki izin untuk membuat ulang API key."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "GSS-ALLOW-AXFR-PRINCIPAL"
+msgstr "Tidak ada rekaman SOA yang tersedia, atau aktif, di zona. Ini diperlukan untuk DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr "GSS-ACCEPTOR-PRINCIPAL"
+msgstr "Tambahkan rekaman SOA ke zona sebelum mencoba menandatanganinya."
 
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
@@ -8863,7 +8857,7 @@ msgstr "Pindahkan rekaman SOA ke apex zona."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
-msgstr "Daftar zone"
+msgstr "Rekaman SOA memiliki format konten yang tidak valid."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
@@ -8891,7 +8885,7 @@ msgstr "Selain itu, peringatan berikut ditemukan:"
 
 #: lib/Domain/Service/ZoneValidationService.php:255
 msgid "The following warnings were found:"
-msgstr "Ekspor zone"
+msgstr "Peringatan berikut ditemukan:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
@@ -8911,7 +8905,7 @@ msgstr ""
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
-msgstr "Export zone as BIND format"
+msgstr "Tipe basis data tidak diketahui."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:102
 #, php-format
@@ -8940,7 +8934,7 @@ msgstr "Rekaman PTR usang telah dihapus."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
-msgstr "Import zone from AXFR"
+msgstr "Rekaman dengan nama host, tipe, dan konten ini sudah ada."
 
 #: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "Failed to add record to DNS backend."
@@ -8957,7 +8951,7 @@ msgstr "Argumen tidak valid diberikan ke fungsi %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Zone imported successfully."
+msgstr "Sudah ada supermaster dengan alamat IP dan nama host ini."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -9010,7 +9004,7 @@ msgstr "Gagal memperbarui master zona di backend DNS."
 
 #: lib/Domain/Service/Dns/DomainManager.php:851
 msgid "The selected user already owns the zone."
-msgstr "Failed to import zone."
+msgstr "Pengguna yang dipilih sudah memiliki zona ini."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
 #, auto-english-fallback
@@ -9020,15 +9014,15 @@ msgstr "Gagal memperbarui rekaman zona: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
-msgstr "Zone berhasil diekspor."
+msgstr "API Key Dibuat Ulang"
 
 #: templates/modern/api_key_regenerated.html:10
 msgid "API Key Regenerated Successfully"
-msgstr "Failed to export zone."
+msgstr "API Key Berhasil Dibuat Ulang"
 
 #: templates/modern/api_key_regenerated.html:15
 msgid "IMPORTANT: Save your new API key now!"
-msgstr "Gagal mengekspor zone."
+msgstr "PENTING: Simpan API key baru Anda sekarang!"
 
 #: templates/modern/api_key_regenerated.html:16
 msgid ""
@@ -9042,19 +9036,19 @@ msgstr "Nama:"
 
 #: templates/modern/api_key_regenerated.html:26
 msgid "New API Key:"
-msgstr "Zone file is empty."
+msgstr "API Key Baru:"
 
 #: templates/modern/api_key_created.html:31
 msgid "Copy"
-msgstr "File zone kosong."
+msgstr "Salin"
 
 #: templates/modern/api_key_created.html:39
 msgid "Created at:"
-msgstr "Zone file is too large."
+msgstr "Dibuat pada:"
 
 #: templates/modern/api_key_created.html:50
 msgid "Expires at:"
-msgstr "File zone terlalu besar."
+msgstr "Kedaluwarsa pada:"
 
 #: templates/modern/api_keys.html:62 templates/modern/api_key_delete.html:36
 msgid "Never"
@@ -9066,23 +9060,23 @@ msgstr "Status:"
 
 #: templates/modern/api_key_delete.html:48
 msgid "Disabled"
-msgstr "Bulk zone operations"
+msgstr "Dinonaktifkan"
 
 #: templates/modern/api_keys.html:55 templates/modern/api_key_delete.html:50
 msgid "Expired"
-msgstr "Operasi zone massal"
+msgstr "Kedaluwarsa"
 
 #: templates/modern/dnssec_delete_key.html:91
 msgid "Active"
-msgstr "Select zones"
+msgstr "Aktif"
 
 #: templates/modern/api_key_created.html:58
 msgid "Return to API Keys"
-msgstr "Pilih zone"
+msgstr "Kembali ke API Keys"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
-msgstr "Select all zones"
+msgstr "Tersalin!"
 
 #: templates/modern/dnssec_delete_key.html:5
 msgid "DNSSEC"
@@ -9090,19 +9084,19 @@ msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:118
 msgid "Deactivate key"
-msgstr "Batalkan pilihan semua zone"
+msgstr "Nonaktifkan kunci"
 
 #: templates/modern/dnssec_edit_key.html:120
 msgid "Activate key"
-msgstr "Delete selected zones"
+msgstr "Aktifkan kunci"
 
 #: templates/modern/dnssec_edit_key.html:13
 msgid "Deactivate DNSSEC Key"
-msgstr "Hapus zone yang dipilih"
+msgstr "Nonaktifkan Kunci DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:15
 msgid "Activate DNSSEC Key"
-msgstr "Export selected zones"
+msgstr "Aktifkan Kunci DNSSEC"
 
 #: templates/modern/dnssec_delete_key.html:13
 msgid "Warning"
@@ -9110,31 +9104,31 @@ msgstr "Warning"
 
 #: templates/modern/dnssec_edit_key.html:23
 msgid "You are about to deactivate a DNSSEC key (ID"
-msgstr "Ekspor zone yang dipilih"
+msgstr "Anda akan menonaktifkan kunci DNSSEC (ID"
 
 #: templates/modern/dnssec_edit_key.html:24
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "Change owner for selected zones"
+msgstr "Menonaktifkan kunci yang aktif akan mempengaruhi keamanan zona Anda dan dapat menyebabkan kegagalan validasi."
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
-msgstr "Ubah pemilik untuk zone yang dipilih"
+msgstr "Apakah Anda yakin ingin melanjutkan?"
 
 #: templates/modern/dnssec_edit_key.html:30
 msgid "You are about to activate a DNSSEC key (ID"
-msgstr "Apply template to selected zones"
+msgstr "Anda akan mengaktifkan kunci DNSSEC (ID"
 
 #: templates/modern/dnssec_edit_key.html:31
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "Terapkan template ke zone yang dipilih"
+msgstr "Mengaktifkan kunci ini akan menjadikannya bagian dari rantai penandatanganan DNSSEC yang aktif untuk zona ini."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
-msgstr "No zones selected."
+msgstr "Detail Kunci"
 
 #: templates/modern/dnssec_delete_key.html:46
 msgid "Key ID"
@@ -9166,7 +9160,7 @@ msgstr "Batal"
 
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
-msgstr "Gagal menghapus beberapa zone."
+msgstr "Edit API Key"
 
 #: lib/Module/ZoneImportExport/templates/import.html:76
 msgid "Name"
@@ -9174,11 +9168,11 @@ msgstr "Nama"
 
 #: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
 msgid "Please provide a name for this API key"
-msgstr "Berhasil mengubah pemilik untuk %d zone."
+msgstr "Berikan nama untuk API key ini"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
-msgstr "Failed to change owner for some zones."
+msgstr "Nama deskriptif untuk membantu Anda mengidentifikasi kunci ini"
 
 #: templates/modern/api_key_delete.html:40
 msgid "Expires at"
@@ -9186,15 +9180,15 @@ msgstr "Kedaluwarsa pada"
 
 #: templates/modern/api_key_edit.html:28 templates/modern/api_key_add.html:28
 msgid "Leave empty for a key that never expires"
-msgstr "Template applied to %d zones successfully."
+msgstr "Biarkan kosong untuk kunci yang tidak pernah kedaluwarsa"
 
 #: templates/default/api_key_edit.html:33 templates/modern/api_key_edit.html:34
 msgid "Disable this API key"
-msgstr "Berhasil menerapkan template ke %d zone."
+msgstr "Nonaktifkan API key ini"
 
 #: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
 msgid "Disabled keys cannot be used for authentication"
-msgstr "Failed to apply template to some zones."
+msgstr "Kunci yang dinonaktifkan tidak dapat digunakan untuk autentikasi"
 
 #: templates/modern/api_key_add.html:32 templates/modern/header.html:275
 msgid "Permissions"
@@ -9224,15 +9218,15 @@ msgstr ""
 
 #: templates/default/api_key_edit.html:70 templates/modern/api_key_edit.html:71
 msgid "Update API Key"
-msgstr "Gagal menerapkan template ke beberapa zone."
+msgstr "Perbarui API Key"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:235
 msgid "* Required fields"
-msgstr "Zone search"
+msgstr "* Bidang wajib"
 
 #: templates/default/api_key_edit.html:86 templates/modern/api_key_edit.html:87
 msgid "API Key Information"
-msgstr "Pencarian zone"
+msgstr "Informasi API Key"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
@@ -9244,31 +9238,31 @@ msgstr "Tidak Diketahui"
 
 #: templates/modern/api_keys.html:30 templates/modern/api_key_delete.html:31
 msgid "Created at"
-msgstr "Search by zone name"
+msgstr "Dibuat pada"
 
 #: templates/modern/api_keys.html:31 templates/modern/api_key_delete.html:35
 msgid "Last used"
-msgstr "Cari berdasarkan nama zone"
+msgstr "Terakhir digunakan"
 
 #: templates/modern/api_key_edit.html:133
 msgid "Additional Actions"
-msgstr "Search by zone type"
+msgstr "Tindakan Tambahan"
 
 #: templates/modern/api_key_regenerate.html:10
 msgid "Regenerate API Key"
-msgstr "Cari berdasarkan tipe zone"
+msgstr "Buat Ulang API Key"
 
 #: templates/modern/api_key_edit.html:139
 msgid "Creates a new key, invalidating the old one"
-msgstr "Search by owner"
+msgstr "Membuat kunci baru dan membatalkan kunci lama"
 
 #: templates/modern/api_key_delete.html:9
 msgid "Delete API Key"
-msgstr "Cari berdasarkan pemilik"
+msgstr "Hapus API Key"
 
 #: templates/modern/api_key_edit.html:143
 msgid "Permanently removes this key"
-msgstr "Show only DNSSEC enabled zones"
+msgstr "Menghapus kunci ini secara permanen"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
@@ -9276,7 +9270,7 @@ msgstr "Template zona"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
-msgstr "Show only zones with records"
+msgstr "Edit rekaman"
 
 #: templates/modern/add_zone_templ_record.html:12
 msgid "Reminder"
@@ -9290,28 +9284,28 @@ msgstr "Setelah mengedit rekaman ini, jangan lupa memperbarui zona yang mengguna
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
-msgstr "Urutkan berdasarkan nama"
+msgstr "Edit rekaman di templat zona"
 
 #: templates/modern/edit_zone_templ_record.html:26
 msgid "Modify the record for this zone template"
-msgstr "Sort by type"
+msgstr "Ubah rekaman untuk templat zona ini"
 
 #: templates/modern/add_zone_templ_record.html:35
 msgid "Provide a name for your record"
-msgstr "Urutkan berdasarkan tipe"
+msgstr "Berikan nama untuk rekaman Anda"
 
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "Sort by record count"
+msgstr "Contoh: [ZONE] untuk zona itu sendiri, atau subdomain.[ZONE] untuk subdomain"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
-msgstr "Urutkan berdasarkan jumlah record"
+msgstr "Rentang valid: 0-65535"
 
 #: templates/modern/add_zone_templ_record.html:55
 msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Sort by creation date"
+msgstr "Hanya untuk MX, SRV, KX, NAPTR"
 
 #: lib/Module/ZoneImportExport/templates/import.html:79
 msgid "TTL"
@@ -9319,15 +9313,15 @@ msgstr "TTL"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
-msgstr "Urutkan berdasarkan tanggal pembuatan"
+msgstr "Rentang valid: 0-2147483647"
 
 #: lib/Module/ZoneImportExport/templates/import.html:78
 msgid "Content"
-msgstr "Sort ascending"
+msgstr "Konten"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Provide content for your zone record"
-msgstr "Urutkan naik"
+msgstr "Berikan konten untuk rekaman zona Anda"
 
 #: templates/modern/add_record.html:90 templates/modern/add_record.html:142
 msgid ""
@@ -9345,15 +9339,15 @@ msgstr "Tip: Untuk rekaman SOA, gunakan <code>[ZONE]</code> sebagai nama dan <co
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
-msgstr "Zones per page"
+msgstr "Perbarui rekaman"
 
 #: templates/modern/edit.html:556 templates/modern/users.html:222
 msgid "Reset"
-msgstr "Zone per halaman"
+msgstr "Atur ulang"
 
 #: templates/modern/edit_zone_templ.html:173
 msgid "Template Placeholders"
-msgstr "Show %d zones per page"
+msgstr "Placeholder Templat"
 
 #: templates/modern/edit_zone_templ.html:180
 msgid "Placeholder"
@@ -9365,7 +9359,7 @@ msgstr "Deskripsi"
 
 #: templates/modern/edit_zone_templ.html:187
 msgid "Substituted with current zone name"
-msgstr "Halaman %d dari %d"
+msgstr "Digantikan dengan nama zona saat ini"
 
 #: templates/modern/edit_zone_templ.html:191
 msgid "Substituted with domain name without TLD"
@@ -9373,7 +9367,7 @@ msgstr "Digantikan dengan nama domain tanpa TLD"
 
 #: templates/modern/edit_zone_templ.html:195
 msgid "Substituted with top-level domain"
-msgstr "Halaman pertama"
+msgstr "Digantikan dengan top-level domain"
 
 #: templates/modern/edit_zone_templ.html:199
 msgid "Substituted with current date and 2 numbers"
@@ -9389,43 +9383,43 @@ msgstr "Diganti dengan nilai penghitung awal"
 
 #: templates/modern/edit_zone_templ.html:211
 msgid "Substituted with 1st name server"
-msgstr "Halaman terakhir"
+msgstr "Digantikan dengan name server ke-1"
 
 #: templates/modern/edit_zone_templ.html:215
 msgid "Substituted with 2nd name server"
-msgstr "Previous page"
+msgstr "Digantikan dengan name server ke-2"
 
 #: templates/modern/edit_zone_templ.html:219
 msgid "Substituted with 3rd name server"
-msgstr "Halaman sebelumnya"
+msgstr "Digantikan dengan name server ke-3"
 
 #: templates/modern/edit_zone_templ.html:223
 msgid "Substituted with 4th name server"
-msgstr "Next page"
+msgstr "Digantikan dengan name server ke-4"
 
 #: templates/modern/edit_zone_templ.html:227
 msgid "Substituted with hostmaster"
-msgstr "Halaman berikutnya"
+msgstr "Digantikan dengan hostmaster"
 
 #: templates/modern/add_zone_templ_record.html:158
 msgid "Example Records"
-msgstr "Go to page"
+msgstr "Contoh Rekaman"
 
 #: templates/modern/add_zone_templ_record.html:162
 msgid "Name Examples"
-msgstr "Ke halaman"
+msgstr "Contoh Nama"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "Showing %d to %d of %d zones"
+msgstr "Untuk subdomain: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "Menampilkan %d sampai %d dari %d zone"
+msgstr "Untuk rekaman wildcard: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "Showing %d to %d of %d records"
+msgstr "Untuk domain itu sendiri: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
@@ -9444,7 +9438,7 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "Quick actions"
+msgstr "Rekaman A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
@@ -9456,43 +9450,43 @@ msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
-msgstr "Recent zones"
+msgstr "Masukkan alamat IP dari nameserver master"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
-msgstr "Zone terbaru"
+msgstr "Berikan alamat ip"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
-msgstr "Recently modified zones"
+msgstr "Nama host di rekaman NS"
 
 #: templates/modern/add_supermaster.html:25
 msgid "Enter the hostname as it appears in the NS record"
-msgstr "Zone yang baru dimodifikasi"
+msgstr "Masukkan nama host sesuai yang muncul di rekaman NS"
 
 #: templates/modern/add_supermaster.html:26
 msgid "Provide host name"
-msgstr "Favorite zones"
+msgstr "Berikan nama host"
 
 #: templates/modern/delete_supermaster.html:32 templates/modern/header.html:376
 msgid "Account"
-msgstr "Zone favorit"
+msgstr "Akun"
 
 #: templates/modern/edit.html:176 templates/modern/edit.html:553
 msgid "Save changes"
-msgstr "Tambahkan ke favorit"
+msgstr "Simpan perubahan"
 
 #: templates/modern/change_password.html:49
 msgid "All fields are required"
-msgstr "Remove from favorites"
+msgstr "Semua bidang wajib diisi"
 
 #: templates/modern/edit_supermaster.html:73
 msgid "Update Credentials"
-msgstr "Added to favorites."
+msgstr "Perbarui Kredensial"
 
 #: templates/modern/edit_supermaster.html:77
 msgid "Important"
-msgstr "Removed from favorites."
+msgstr "Penting"
 
 #: templates/modern/edit_supermaster.html:78
 msgid ""
@@ -9506,24 +9500,24 @@ msgstr "Validasi"
 
 #: templates/modern/edit_supermaster.html:82
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "Gagal menambahkan ke favorit."
+msgstr "Semua bidang akan divalidasi untuk memastikan nilainya benar."
 
 #: templates/default/dnssec.html:9 templates/modern/dnssec.html:9
 msgid "Confirm Unsign Zone"
-msgstr "Failed to remove from favorites."
+msgstr "Konfirmasi Pembatalan Penandatanganan Zona"
 
 #: templates/default/dnssec.html:15 templates/modern/dnssec.html:15
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr "Gagal menghapus dari favorit."
+msgstr "Tindakan ini akan menghapus semua kunci DNSSEC dan menonaktifkan DNSSEC untuk zona ini."
 
 #: templates/default/dnssec.html:17 templates/modern/dnssec.html:17
 msgid "Are you sure you want to unsign the zone"
-msgstr "Zone actions"
+msgstr "Apakah Anda yakin ingin membatalkan penandatanganan zona"
 
 #: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
 msgid "Unsign Zone"
-msgstr "Aksi zone"
+msgstr "Batalkan Penandatanganan Zona"
 
 #: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -9536,19 +9530,19 @@ msgstr "Serial yang ditandatangani"
 
 #: templates/modern/dnssec.html:53 templates/modern/dnssec.html:55
 msgid "DNSSEC keys for zone"
-msgstr "Record actions"
+msgstr "Kunci DNSSEC untuk zona"
 
 #: templates/default/dnssec.html:61 templates/modern/dnssec.html:61
 msgid "Add new key"
-msgstr "Aksi record"
+msgstr "Tambah kunci baru"
 
 #: templates/modern/dnssec.html:65 templates/modern/edit.html:866
 msgid "Show DS and DNSKEY"
-msgstr "Batch actions"
+msgstr "Tampilkan DS dan DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
-msgstr "Aksi massal"
+msgstr "Batalkan penandatanganan zona"
 
 #: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
 msgid "ID"
@@ -9556,27 +9550,27 @@ msgstr "ID"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
-msgstr "Advanced search"
+msgstr "Tindakan"
 
 #: templates/default/dnssec.html:91 templates/modern/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
-msgstr "Pencarian lanjutan"
+msgstr "Tidak ada kunci DNSSEC yang ditemukan untuk zona ini"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate this key"
-msgstr "Search filters"
+msgstr "Nonaktifkan kunci ini"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Activate this key"
-msgstr "Filter pencarian"
+msgstr "Aktifkan kunci ini"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Deactivate"
-msgstr "Apply filters"
+msgstr "Nonaktifkan"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Activate"
-msgstr "Terapkan filter"
+msgstr "Aktifkan"
 
 #: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
 msgid "Download this key as PEM"
@@ -9588,7 +9582,7 @@ msgstr "Ekspor PEM"
 
 #: templates/modern/list_perm_templ.html:56
 msgid "Delete"
-msgstr "Clear filters"
+msgstr "Hapus"
 
 #: templates/default/dnssec.html:145 templates/modern/dnssec.html:145
 msgid "Import key from PEM"
@@ -9658,11 +9652,11 @@ msgstr "Simpan"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
-msgstr "Hapus filter"
+msgstr "Lupa Kata Sandi"
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
-msgstr "Save search"
+msgstr "Kembali ke Login"
 
 #: templates/modern/forgot_password.html:21
 msgid ""
@@ -9671,19 +9665,19 @@ msgstr "Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengat
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr "Load saved search"
+msgstr "Alamat Email"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
-msgstr "Muat pencarian tersimpan"
+msgstr "Berikan alamat email yang valid"
 
 #: templates/modern/forgot_password.html:41
 msgid "Send Reset Link"
-msgstr "Delete saved search"
+msgstr "Kirim Tautan Atur Ulang"
 
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
-msgstr "Search saved successfully."
+msgstr "Manajemen Grup"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
@@ -9691,11 +9685,11 @@ msgstr "Log grup"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
-msgstr "Pencarian berhasil disimpan."
+msgstr "Tambah grup"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
-msgstr "Failed to save search."
+msgstr "Tidak ada grup yang ditemukan"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:193
 msgid "Search groups..."
@@ -9703,47 +9697,47 @@ msgstr "Cari grup..."
 
 #: templates/modern/list_groups.html:61 templates/modern/edit_group.html:68
 msgid "Members"
-msgstr "Gagal menyimpan pencarian."
+msgstr "Anggota"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:3
 msgid "Zones"
-msgstr "Search deleted successfully."
+msgstr "Zona"
 
 #: templates/modern/manage_group_members.html:5
 msgid "Manage members"
-msgstr "Pencarian berhasil dihapus."
+msgstr "Kelola anggota"
 
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
-msgstr "Failed to delete search."
+msgstr "Kelola zona"
 
 #: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
 msgid "Edit group"
-msgstr "Gagal menghapus pencarian."
+msgstr "Edit grup"
 
 #: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
 msgid "Delete group"
-msgstr "Tidak ada pencarian tersimpan."
+msgstr "Hapus grup"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
-msgstr "Zone verification"
+msgstr "Edit rekaman di zona"
 
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
-msgstr "Verifikasi zone"
+msgstr "Ubah properti rekaman DNS"
 
 #: templates/modern/add_record.html:55
 msgid "Comment"
-msgstr "Verify zone"
+msgstr "Komentar"
 
 #: templates/modern/add_record.html:80 templates/modern/add_record.html:132
 msgid "deprecated"
-msgstr "Verifikasi zone"
+msgstr "tidak digunakan lagi"
 
 #: templates/modern/add_record.html:88 templates/modern/add_record.html:140
 msgid "Provide content"
-msgstr "Verify DNSSEC"
+msgstr "Berikan konten"
 
 #: templates/modern/add_record.html:93 templates/modern/add_record.html:145
 msgid "This record type is deprecated and should not be used for new records."
@@ -9755,23 +9749,23 @@ msgstr "Menyimpan..."
 
 #: templates/modern/edit_perm_templ.html:50
 msgid "Update"
-msgstr "Zone is valid."
+msgstr "Perbarui"
 
 #: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
 msgid "Group Name"
-msgstr "Zone has errors."
+msgstr "Nama Grup"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:18
 msgid "Unique name for this group"
-msgstr "Zone memiliki error."
+msgstr "Nama unik untuk grup ini"
 
 #: templates/modern/edit_group.html:24 templates/modern/add_group.html:19
 msgid "Provide group name"
-msgstr "Zone has warnings."
+msgstr "Berikan nama grup"
 
 #: templates/modern/edit_group.html:30 templates/modern/add_group.html:25
 msgid "Optional information about this group"
-msgstr "Zone memiliki peringatan."
+msgstr "Informasi opsional tentang grup ini"
 
 #: templates/modern/add_user.html:66 templates/modern/add_group.html:29
 msgid "Permission template"
@@ -9788,19 +9782,19 @@ msgstr "Pilih templat izin"
 
 #: templates/default/edit_group.html:51 templates/modern/edit_group.html:51
 msgid "Update Group"
-msgstr "Peringatan verifikasi"
+msgstr "Perbarui Grup"
 
 #: templates/modern/edit_group.html:72 templates/modern/edit_group.html:116
 msgid "Manage"
-msgstr "Missing SOA record."
+msgstr "Kelola"
 
 #: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
 msgid "No members in this group yet."
-msgstr "SOA record tidak ada."
+msgstr "Belum ada anggota di grup ini."
 
 #: templates/modern/edit_group.html:136 templates/modern/edit_user.html:236
 msgid "Remove from group"
-msgstr "Missing NS records."
+msgstr "Hapus dari grup"
 
 #: templates/modern/manage_group_members.html:144
 msgid "Remove"
@@ -9816,32 +9810,32 @@ msgstr "lainnya..."
 
 #: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
 msgid "This group doesn't own any zones yet."
-msgstr "Serial SOA tidak bertambah."
+msgstr "Grup ini belum memiliki zona apa pun."
 
 #: templates/default/edit_group.html:174 templates/modern/edit_group.html:174
 msgid "Confirm Member Removal"
-msgstr "Konfigurasi CNAME tidak valid."
+msgstr "Konfirmasi Penghapusan Anggota"
 
 #: templates/default/edit_group.html:179 templates/modern/edit_group.html:179
 msgid "Are you sure you want to remove user"
-msgstr "Dangling CNAME record."
+msgstr "Apakah Anda yakin ingin menghapus pengguna"
 
 #: templates/modern/edit_group.html:179 templates/modern/edit_group.html:205
 msgid "from this group?"
-msgstr "CNAME record menggantung."
+msgstr "dari grup ini?"
 
 #: templates/modern/manage_group_members.html:137
 msgid ""
 "This action will immediately revoke any permissions granted by this group."
-msgstr "Invalid MX configuration."
+msgstr "Tindakan ini akan segera mencabut semua izin yang diberikan oleh grup ini."
 
 #: templates/default/edit_group.html:200 templates/modern/edit_group.html:200
 msgid "Confirm Zone Removal"
-msgstr "MX points to CNAME."
+msgstr "Konfirmasi Penghapusan Zona"
 
 #: templates/default/edit_group.html:205 templates/modern/edit_group.html:205
 msgid "Are you sure you want to remove zone"
-msgstr "MX menunjuk ke CNAME."
+msgstr "Apakah Anda yakin ingin menghapus zona"
 
 #: templates/default/edit_group.html:206 templates/modern/edit_group.html:206
 msgid ""
@@ -9851,47 +9845,47 @@ msgstr "Zona akan tetap ada di sistem tetapi grup ini tidak lagi memiliki kepemi
 
 #: templates/default/delete_group.html:12 templates/modern/delete_group.html:12
 msgid "You are about to delete the group"
-msgstr "Glue records missing."
+msgstr "Anda akan menghapus grup"
 
 #: templates/modern/dnssec_delete_key.html:22
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "Glue record tidak ada."
+msgstr "Tindakan ini tidak dapat dibatalkan. Apakah Anda yakin ingin melanjutkan?"
 
 #: templates/default/delete_group.html:18 templates/modern/delete_group.html:18
 msgid "Deletion Impact"
-msgstr "DNSSEC validation failed."
+msgstr "Dampak Penghapusan"
 
 #: templates/default/delete_group.html:25 templates/modern/delete_group.html:25
 msgid "member will be removed from this group"
-msgstr "Validasi DNSSEC gagal."
+msgstr "anggota akan dihapus dari grup ini"
 
 #: templates/default/delete_group.html:27 templates/modern/delete_group.html:27
 msgid "members will be removed from this group"
-msgstr "DNSSEC chain is broken."
+msgstr "anggota akan dihapus dari grup ini"
 
 #: templates/default/delete_group.html:33 templates/modern/delete_group.html:33
 msgid "zone will lose this group ownership"
-msgstr "Chain DNSSEC terputus."
+msgstr "zona akan kehilangan kepemilikan grup ini"
 
 #: templates/default/delete_group.html:35 templates/modern/delete_group.html:35
 msgid "zones will lose this group ownership"
-msgstr "DNSSEC signature expired."
+msgstr "zona akan kehilangan kepemilikan grup ini"
 
 #: templates/default/delete_group.html:45 templates/modern/delete_group.html:45
 msgid "Affected Zones"
-msgstr "Signature DNSSEC kedaluwarsa."
+msgstr "Zona yang Terpengaruh"
 
 #: templates/default/delete_group.html:47 templates/modern/delete_group.html:47
 msgid "showing first 20"
-msgstr "DNSSEC signature not yet valid."
+msgstr "menampilkan 20 pertama"
 
 #: templates/default/delete_group.html:64 templates/modern/delete_group.html:64
 msgid "more zones..."
-msgstr "Signature DNSSEC belum valid."
+msgstr "zona lainnya..."
 
 #: templates/modern/delete_domain.html:50
 msgid "Important Note"
-msgstr "Run verification"
+msgstr "Catatan Penting"
 
 #: templates/default/delete_group.html:73 templates/modern/delete_group.html:73
 msgid ""
@@ -9901,15 +9895,15 @@ msgstr "Anggota akan kehilangan akses ke semua zona yang dimiliki oleh grup ini.
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "Yes, delete this group"
-msgstr "Auto-fix issues"
+msgstr "Ya, hapus grup ini"
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "No, keep this group"
-msgstr "Perbaiki otomatis"
+msgstr "Tidak, pertahankan grup ini"
 
 #: templates/default/index.html:2 templates/modern/index.html:2
 msgid "Welcome"
-msgstr "Issues fixed successfully."
+msgstr "Selamat Datang"
 
 #: templates/modern/list_views.html:22
 msgid "zones"
@@ -9959,7 +9953,7 @@ msgstr "Manajemen DNS"
 
 #: templates/modern/index.html:51 templates/modern/pdns_status.html:168
 msgid "Online"
-msgstr "Masalah berhasil diperbaiki."
+msgstr "Online"
 
 #: templates/modern/index.html:53 templates/modern/pdns_status.html:170
 msgid "Offline"
@@ -9967,7 +9961,7 @@ msgstr "Offline"
 
 #: templates/modern/index.html:434 templates/modern/header.html:300
 msgid "Templates"
-msgstr "Run health check"
+msgstr "Templat"
 
 #: templates/default/index.html:124 templates/modern/index.html:124
 msgid "Networks"
@@ -9979,15 +9973,15 @@ msgstr "Operasi Zona"
 
 #: templates/modern/index.html:150 templates/modern/index.html:454
 msgid "Master Zone"
-msgstr "Belum pernah diperiksa"
+msgstr "Zona Master"
 
 #: templates/modern/index.html:160 templates/modern/index.html:464
 msgid "Slave Zone"
-msgstr "Log aktivitas"
+msgstr "Zona Slave"
 
 #: templates/modern/index.html:190 templates/modern/index.html:494
 msgid "PTR Records"
-msgstr "Zone created"
+msgstr "Rekaman PTR"
 
 #: templates/default/index.html:205 templates/modern/index.html:205
 msgid "Administration"
@@ -10012,20 +10006,20 @@ msgstr "TTL defaults"
 
 #: templates/modern/index.html:359 templates/modern/index.html:546
 msgid "My Profile"
-msgstr "Kesehatan zone"
+msgstr "Profil Saya"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:35
 #: install/templates/step5.html.twig:72
 msgid "Password"
-msgstr "DNSSEC dinonaktifkan"
+msgstr "Kata Sandi"
 
 #: templates/modern/index.html:565 templates/modern/header.html:389
 msgid "Preferences"
-msgstr "DNSSEC key deleted"
+msgstr "Preferensi"
 
 #: templates/modern/header.html:453
 msgid "Logout"
-msgstr "Template applied"
+msgstr "Keluar"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
@@ -10061,19 +10055,19 @@ msgstr "(untuk PTR di zona balik) atau"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
-msgstr "Activity details"
+msgstr "Edit komentar"
 
 #: templates/modern/edit_comment.html:9 templates/modern/edit_comment.html:11
 msgid "Edit comment in zone"
-msgstr "Detail aktivitas"
+msgstr "Edit komentar di zona"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "Performed by"
+msgstr "Tambah templat"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
-msgstr "Dilakukan oleh"
+msgstr "Tambah templat zona untuk"
 
 #: templates/modern/edit_perm_templ.html:24
 msgid "Provide a name for your template"
@@ -10085,23 +10079,23 @@ msgstr "Deskripsi opsional untuk membantu mengidentifikasi template ini"
 
 #: templates/modern/edit_zone_templ.html:146
 msgid "Global template"
-msgstr "Filter by date"
+msgstr "Templat global"
 
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
-msgstr "Filter berdasarkan tanggal"
+msgstr "Jadikan templat ini tersedia untuk semua pengguna"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "Filter by type"
+msgstr "Tambah templat zona"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
-msgstr "Filter berdasarkan tipe"
+msgstr "Informasi Templat"
 
 #: templates/modern/add_zone_templ.html:63
 msgid "About Templates"
-msgstr "Filter by user"
+msgstr "Tentang Templat"
 
 #: templates/modern/add_zone_templ.html:64
 msgid ""
@@ -10111,27 +10105,27 @@ msgstr "Template zona memungkinkan Anda membuat kumpulan rekaman DNS yang telah 
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
-msgstr "Export activity log"
+msgstr "Setelah membuat templat, Anda dapat menambahkan templat rekaman ke dalamnya."
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Usage"
-msgstr "Ekspor log aktivitas"
+msgstr "Penggunaan Templat"
 
 #: templates/modern/add_zone_templ.html:70
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Activity log exported successfully."
+msgstr "Terapkan konfigurasi yang konsisten ke beberapa zona"
 
 #: templates/modern/add_zone_templ.html:71
 msgid "Save time when creating new domains"
-msgstr "Log aktivitas berhasil diekspor."
+msgstr "Hemat waktu saat membuat domain baru"
 
 #: templates/modern/add_zone_templ.html:72
 msgid "Maintain standardized DNS setups"
-msgstr "Failed to export activity log."
+msgstr "Pertahankan penyiapan DNS yang terstandardisasi"
 
 #: templates/modern/add_zone_templ.html:80
 msgid "Tips & Examples"
-msgstr "Gagal mengekspor log aktivitas."
+msgstr "Tips & Contoh"
 
 #: templates/modern/add_zone_templ.html:85
 msgid ""
@@ -10142,7 +10136,7 @@ msgstr "Buat template yang berbeda untuk jenis situs web yang berbeda (mis., \"B
 #: templates/modern/add_zone_templ.html:86
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr "Hapus log aktivitas"
+msgstr "Gunakan nama dan deskripsi yang deskriptif agar templat mudah dikenali"
 
 #: templates/default/list_log_api.html:8 templates/modern/list_log_api.html:8
 msgid "API Activity Logs"
@@ -10174,7 +10168,7 @@ msgstr "Log"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "Activity log cleared successfully."
+msgstr "Log zona"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -10182,7 +10176,7 @@ msgstr "Menampilkan log untuk zona yang Anda miliki."
 
 #: templates/modern/list_log_zones.html:26
 msgid "Zone Change Logs"
-msgstr "Log aktivitas berhasil dihapus."
+msgstr "Log Perubahan Zona"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
@@ -10628,15 +10622,15 @@ msgstr "X"
 
 #: templates/default/_macros.html:38 templates/modern/_macros.html:38
 msgid "Home"
-msgstr "Gagal mengimpor zone."
+msgstr "Beranda"
 
 #: templates/modern/add_zone_master.html:4 templates/modern/header.html:161
 msgid "Add master zone"
-msgstr "Aktivitas zone"
+msgstr "Tambah zona master"
 
 #: templates/modern/add_zone_slave.html:4 templates/modern/header.html:168
 msgid "Add slave zone"
-msgstr "Tampilkan aktivitas"
+msgstr "Tambah zona slave"
 
 #: templates/modern/list_reverse_zones.html:32
 msgid "Reverse Zone Types"
@@ -10828,7 +10822,7 @@ msgstr ""
 
 #: templates/modern/edit_user.html:3 templates/modern/header.html:383
 msgid "Edit profile"
-msgstr "Status kesehatan"
+msgstr "Edit profil"
 
 #: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
 msgid "Edit user"
@@ -12299,7 +12293,7 @@ msgstr ""
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
-msgstr "Key DNSSEC ditambahkan"
+msgstr "Ubah kata sandi"
 
 #: templates/modern/change_password.html:17
 msgid "Current password"
@@ -13509,7 +13503,7 @@ msgstr "Log perubahan rekaman"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
-msgstr "Zone diimpor"
+msgstr "Daftar pengguna"
 
 #: templates/default/header.html:176 templates/modern/header.html:250
 msgid "List groups"
@@ -13525,7 +13519,7 @@ msgstr "Tambah templat izin"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
-msgstr "Last health check"
+msgstr "Daftar templat zona"
 
 #: templates/default/header.html:242 templates/modern/header.html:347
 msgid "API Documentation"
@@ -13869,10 +13863,7 @@ msgstr "Cara Menggunakan Grup"
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
-msgstr ""
-"Setelah membuat grup, Anda dapat menambahkan anggota dan menetapkan zona "
-"kepadanya. Semua anggota akan secara otomatis mendapatkan akses ke zona "
-"grup.kepadanya."
+msgstr "Setelah membuat grup, Anda dapat menambahkan anggota dan menetapkan zona kepadanya. Semua anggota akan secara otomatis mendapatkan akses ke zona grup."
 
 #: templates/modern/list_perm_templ.html:6
 msgid "Group Templates"
@@ -14157,7 +14148,7 @@ msgstr "Nama domain IDN"
 
 #: lib/Module/Whois/templates/whois.html:9
 msgid "WHOIS Lookup"
-msgstr "Metadata ditambahkan"
+msgstr "Pencarian WHOIS"
 
 #: lib/Module/Rdap/templates/rdap.html:19
 msgid "Enter domain name"
@@ -14182,7 +14173,7 @@ msgstr "Silakan masukkan nama domain untuk melakukan pencarian WHOIS."
 
 #: lib/Module/Rdap/templates/rdap.html:4 lib/Module/Rdap/templates/rdap.html:9
 msgid "RDAP Lookup"
-msgstr "Metadata dimodifikasi"
+msgstr "Pencarian RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
