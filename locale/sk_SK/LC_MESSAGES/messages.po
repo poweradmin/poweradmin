@@ -58,7 +58,7 @@ msgstr "Nepodarilo sa vygenerovať záznam:"
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
-msgstr "Záznam nebol platný a nedal sa pridať."
+msgstr "Tento záznam nebol platný a nepodarilo sa ho pridať. Môže už existovať alebo obsahovať neplatné údaje."
 
 #: lib/Application/Controller/AddRecordController.php:280
 msgid "The record was successfully added."
@@ -129,7 +129,7 @@ msgstr "Názov hostiteľa"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Hostiteľ (prázdne = @). _port._protocol.hostname."
+msgstr "Názov hostiteľa pre službu (ponechajte prázdne pre vrchol zóny @). Záznam bude vytvorený na _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -235,7 +235,7 @@ msgstr "SHA-512 hash certifikátu/kľúča (bezpečnejší, ale dlhší)"
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
-msgstr "Ako kódovať. SHA-256 (1) rovnováha."
+msgstr "Ako zakódovať údaje certifikátu. SHA-256 (typ 1) poskytuje dobrú rovnováhu medzi bezpečnosťou a dĺžkou."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:152
 msgid "Certificate Data"
@@ -293,20 +293,20 @@ msgstr "Údaje certifikátu musia byť hexadecimálne (0-9, a-f)"
 msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
-msgstr "SHA-256 má mať 64 hex, má %d."
+msgstr "Hash SHA-256 by mal mať 64 hexadecimálnych znakov, má %d. Uistite sa, že hash je správny."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
 #, php-format
 msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
-msgstr "SHA-512 má mať 128 hex, má %d."
+msgstr "Hash SHA-512 by mal mať 128 hexadecimálnych znakov, má %d. Uistite sa, že hash je správny."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
-msgstr "Údaje certifikátu sú príliš krátke."
+msgstr "Úplné údaje certifikátu sa zdajú príliš krátke. Uistite sa, že ste zadali celý certifikát."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
 #: templates/modern/edit.html:79 templates/modern/edit.html:679
@@ -403,7 +403,7 @@ msgstr "Percento aplikácie politiky"
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "Percento správ (100 = všetky)."
+msgstr "Percento správ, na ktoré sa má politika vzťahovať (100 = všetky správy). Počas zavádzania politiky použite nižšie hodnoty."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -450,7 +450,7 @@ msgstr "Generovať hlásenia pri zlyhaní SPF kontroly"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr "Kedy generovať forenzné správy"
+msgstr "Kedy generovať forenzné správy (uplatňuje sa len vtedy, ak je nastavená forenzná e-mailová adresa)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
@@ -803,7 +803,7 @@ msgstr "Odmietnuť ak nerozumie - striktné vynútenie"
 msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
-msgstr "Nekritické (0) kompatibilné."
+msgstr "Nekritické (0) poskytuje lepšiu kompatibilitu. Kritické (128) vynucuje striktné spracovanie CAA."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
@@ -912,7 +912,7 @@ msgstr "Testovací režim"
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr "Testovací režim (t=y). DKIM nie enforced."
+msgstr "Zapnúť testovací režim (t=y). Podpisy DKIM budú prítomné, ale nebudú vynucované. Použite ho počas úvodného zavádzania."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
@@ -944,13 +944,13 @@ msgstr "Verejný kľúč musí byť platné base64-kódované údaje"
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr "Verejný kľúč je krátky."
+msgstr "Verejný kľúč sa zdá neobvykle krátky. Uistite sa, že ste skopírovali celý kľúč zo svojho poštového servera."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr "SÚKROMNÝ kľúč! Len VEREJNÝ!"
+msgstr "Vložili ste SÚKROMNÝ KĽÚČ. V DNS má byť iba VEREJNÝ KĽÚČ. Nikdy nezdieľajte svoj súkromný kľúč!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
@@ -1033,7 +1033,7 @@ msgstr "Názov hostiteľa servera, ktorý poskytuje túto službu (musí to byť
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
-msgstr "Port služby (automaticky pre bežné)."
+msgstr "Číslo portu, na ktorom služba počúva (pre bežné služby sa vyplní automaticky)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:159
 msgid "Priority & Load Balancing"
@@ -1048,7 +1048,7 @@ msgstr "Priorita"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "Nižšie hodnoty = vyššia priorita."
+msgstr "Nižšie hodnoty majú vyššiu prioritu (10 je dobrá predvolená hodnota). Klienti skúšajú servery v poradí podľa priority."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1361,7 +1361,7 @@ msgstr "Záznam bol úspešne odstránený. Odstránené boli aj príslušné z�
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
-msgstr "%d záznamov vymazaných, PTR tiež."
+msgstr "%d záznamov bolo úspešne vymazaných. Odstránené boli aj všetky príslušné záznamy PTR."
 
 #: lib/Application/Controller/DeleteRecordsController.php:222
 msgid "No records could be deleted. Please check permissions."
@@ -1434,31 +1434,31 @@ msgstr "Záznam sa nenašiel."
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr "Záznam+PTR+A/AAAA vymazané, komentár zachovaný."
+msgstr "Záznam a jemu príslušné záznamy PTR a A/AAAA boli vymazané, ale komentár bol zachovaný, pretože existujú podobné záznamy."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
-msgstr "Záznam a PTR vymazané, komentár zachovaný."
+msgstr "Záznam a jemu príslušný záznam PTR boli vymazané, ale komentár bol zachovaný, pretože existujú podobné záznamy."
 
 #: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr "Záznam a A/AAAA vymazané, komentár zachovaný."
+msgstr "Záznam a jemu príslušný záznam A/AAAA boli vymazané, ale komentár bol zachovaný, pretože existujú podobné záznamy."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr "Záznam vymazaný, komentár zachovaný."
+msgstr "Záznam bol vymazaný, ale komentár bol zachovaný, pretože existujú podobné záznamy."
 
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr "Záznam, PTR a A/AAAA boli úspešne vymazané."
+msgstr "Záznam a jemu príslušné záznamy PTR a A/AAAA boli úspešne vymazané."
 
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
@@ -1626,7 +1626,7 @@ msgstr "E-mailová adresa nie je k dispozícii. Aktualizujte profil."
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr "Overenie e-mailu nedostupné."
+msgstr "Overenie e-mailom nie je dostupné, pretože v tomto systéme nie je zapnutá poštová služba."
 
 #: lib/Application/Controller/MfaSetupController.php:206
 msgid "Email verification method is not enabled on this system."
@@ -1636,7 +1636,7 @@ msgstr "Metóda overenia e-mailu nie je v systéme povolená."
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
-msgstr "Nepodarilo sa odoslať overovací kód."
+msgstr "Nepodarilo sa odoslať overovací kód. Skúste to znova neskôr alebo použite overenie pomocou aplikácie."
 
 #: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been enabled with email verification."
@@ -2181,7 +2181,7 @@ msgstr "Zóna bola úspešne aktualizovaná."
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
-msgstr "Zóna uložená, SOA serial zvýšený."
+msgstr "Zóna bola úspešne uložená. Nevykonali sa žiadne zmeny záznamov, ale sériové číslo SOA bolo zvýšené."
 
 #: lib/Application/Controller/EditController.php:904
 msgid "Zone has not been updated successfully."
@@ -2227,7 +2227,7 @@ msgstr "Vyskytla sa chyba. Skúste to znova."
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
-msgstr "E-mail zakázaný, použite obnovovací kód."
+msgstr "Overenie e-mailom nie je dostupné, pretože poštová služba je zakázaná. Použite obnovovací kód."
 
 #: lib/Application/Controller/MfaVerifyController.php:354
 msgid "A new verification code has been sent to your email."
@@ -2274,7 +2274,7 @@ msgstr "Nepodarilo sa pridať %d záznamov."
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
-msgstr "Niektoré záznamy sa nepodarilo pridať."
+msgstr "Niektoré záznamy sa nepodarilo pridať. Môžu už existovať alebo obsahovať neplatné údaje."
 
 #: lib/Application/Controller/AddRecordController.php:554
 msgid "Failed to add any records. They may contain invalid data."
@@ -2385,7 +2385,7 @@ msgstr ""
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr "Zóna vytvorená, DNSSEC preskočený:"
+msgstr "Zóna bola úspešne vytvorená, ale podpisovanie DNSSEC bolo preskočené kvôli chybám pri kontrole:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:264
 msgid ""
@@ -2959,7 +2959,7 @@ msgstr "Nemáte oprávnenie zobraziť stav servera PowerDNS. K tejto funkcii maj
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr "PowerDNS API nie je nakonfigurované."
+msgstr "Funkcia PowerDNS API nie je nakonfigurovaná. Nastavte URL a kľúč API v systémovej konfigurácii."
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
@@ -3018,7 +3018,7 @@ msgstr "Používatelia prihlásení prostredníctvom Single Sign-On si tu nemô�
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr "Externá auth - zmena hesla inde."
+msgstr "Používatelia s externým overovaním si tu nemôžu zmeniť heslo. Kontaktujte svojho správcu."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:11
@@ -3563,7 +3563,7 @@ msgstr "LDAP overenie je zakázané"
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
-msgstr "Chyba DB: nedá sa overiť autentifikáciu."
+msgstr "Chyba databázy: nie je možné overiť prihlásenie používateľa. Skontrolujte konfiguráciu svojej databázy."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
@@ -3809,19 +3809,19 @@ msgstr "Pole priority pre IPSECKEY musí byť 0 alebo prázdne"
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr "IPSECKEY + DNSSEC (RFC 4025)."
+msgstr "Záznamy IPSECKEY by sa mali používať spolu s DNSSEC, aby bol zaistený bezpečný prenos kľúčového materiálu (RFC 4025 Section 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr "Verejný kľúč IPSECKEY by sa mal rotovať."
+msgstr "Verejný kľúč v záznamoch IPSECKEY by sa mal pravidelne obmieňať pre vyššiu bezpečnosť."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
-msgstr "Doménové gateway: oba smerom DNSSEC."
+msgstr "Ak používate brány zadané doménovým názvom, uistite sa, že existujú priame aj reverzné záznamy DNS a že sú riadne zabezpečené pomocou DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -3841,13 +3841,13 @@ msgstr "Precedencia IPSECKEY musí byť medzi 0 a 255."
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
-msgstr "Typ brány IPSECKEY 0-3"
+msgstr "Typ brány IPSECKEY musí byť 0 (bez brány), 1 (IPv4), 2 (IPv6) alebo 3 (doménový názov)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
-msgstr "Algoritmus IPSECKEY 0-4."
+msgstr "Algoritmus IPSECKEY musí byť 0 (bez kľúča), 1 (RSA), 2 (DSA), 3 (ECDSA) alebo 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -3936,13 +3936,13 @@ msgstr "Názov záznamu TLSA by mal zvyčajne mať formát _port._protocol.hostn
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr "TLSA používa neštandardný protokol."
+msgstr "Záznam TLSA používa neštandardný protokol. Bežné protokoly sú tcp, udp a sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr "TLSA pre SMTP - skontrolujte MX."
+msgstr "Zdá sa, že ide o záznam TLSA pre SMTP. Uistite sa, že aj záznamy MX sú správne nakonfigurované."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -3966,7 +3966,7 @@ msgstr "KRITICKÉ: Záznamy TLSA VYŽADUJÚ DNSSEC, inak neprinesú žiadny bezp
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr "CNAME: celý DNSSEC reťazec (RFC 7671)."
+msgstr "Ak používate záznamy CNAME, uistite sa, že celý reťazec CNAME je podpísaný pomocou DNSSEC, aby TLSA fungovalo správne (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -3976,7 +3976,7 @@ msgstr "Vyzerá ako SMIMEA záznam (RFC 8162)."
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr "SMIMEA ako TLSA ale pre S/MIME."
+msgstr "Záznamy SMIMEA používajú rovnaký formát ako TLSA, ale priraďujú certifikáty S/MIME k e-mailovým adresám."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
@@ -3999,7 +3999,7 @@ msgstr "Neplatná hodnota v poli priority. Záznamy TLSA musia mať prioritu 0."
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA: usage, selector, matching-type, data."
+msgstr "Záznam TLSA musí obsahovať usage, selector, matching-type a certificate-data oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4009,7 +4009,7 @@ msgstr "Pole použitia TLSA musí byť medzi 0 a 3."
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr "PKIX-TA vyžaduje správu CA."
+msgstr "Usage 0 (PKIX-TA) vyžaduje riadnu správu certifikátov CA a môže prestať fungovať, keď certifikáty vypršia."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
@@ -4021,13 +4021,13 @@ msgstr "Použitie 1 (PKIX-EE) závisí od overenia DANE aj od tradičného overe
 msgid ""
 "Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
 "certificates expire."
-msgstr "DANE-TA vyžaduje správu kotvy."
+msgstr "Usage 2 (DANE-TA) vyžaduje riadnu správu dôveryhodnej kotvy a môže prestať fungovať, keď certifikáty vypršia."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
 msgid ""
 "Usage 3 (DANE-EE) is recommended by RFC 7671 as it is not affected by "
 "certificate expiration or CA validation issues."
-msgstr "DANE-EE odporúčané (RFC 7671)."
+msgstr "Usage 3 (DANE-EE) odporúča RFC 7671, pretože ho neovplyvňuje vypršanie certifikátu ani problémy s overovaním CA."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:277
 msgid ""
@@ -4038,7 +4038,7 @@ msgstr "RFC 7671 odporúča ako najrobustnejšiu konfiguráciu usage=3 (DANE-EE)
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr "Selektor TLSA 0 alebo 1."
+msgstr "Pole selector v zázname TLSA musí byť 0 (celý certifikát) alebo 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4050,13 +4050,13 @@ msgstr "Selektor 0 (úplný certifikát) môže prestať fungovať pri zmene atr
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "Typ zhody TLSA 0, 1 alebo 2."
+msgstr "Pole matching type v zázname TLSA musí byť 0 (presná zhoda), 1 (SHA-256) alebo 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching 0 nie odporúčané, SHA-256 lepšie."
+msgstr "Matching-type 0 (presná zhoda) sa neodporúča. SHA-256 (1) poskytuje lepšiu kompatibilitu a bezpečnosť."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4078,7 +4078,7 @@ msgstr "Presné údaje TLSA sú príliš krátke."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM MUSÍ byť iba na vrchole zóny."
+msgstr "Záznamy NSEC3PARAM MUSIA byť prítomné iba na vrchole zóny (koreňová doména, nie subdoména)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4092,7 +4092,7 @@ msgstr "Záznam NSEC3PARAM obsahuje neplatné znaky."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr "RFC 5155/9077: NSEC3PARAM TTL = SOA min."
+msgstr "Podľa RFC 5155 a RFC 9077 by záznamy NSEC3PARAM mali mať rovnaké TTL ako pole minimálneho TTL v zázname SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -4110,13 +4110,13 @@ msgstr "Manuálna úprava záznamov NSEC3PARAM sa neodporúča, pretože ich men
 msgid ""
 "NSEC3PARAM records indicate to authoritative servers which parameters to use "
 "for NSEC3-based authenticated denial of existence."
-msgstr "NSEC3PARAM parametre pre server."
+msgstr "Záznamy NSEC3PARAM oznamujú autoritatívnym serverom, ktoré parametre použiť pre overené odmietnutie existencie založené na NSEC3."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr "Pri zmene NSEC3 regenerovať oba."
+msgstr "Pri zmene parametrov NSEC3 musia byť záznamy NSEC3 aj NSEC3PARAM znovu vygenerované s rovnakými parametrami."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
@@ -4164,7 +4164,7 @@ msgstr "RFC 9276 odporúča použiť 0 iterácií. Ďalšie iterácie zvyšujú 
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr "Iter > 100 môže spôsobiť odmietnutie."
+msgstr "Vysoké počty iterácií (>100) môžu spôsobiť, že overujúce resolvery vaše zóny odmietnu. RFC 9276 NALIEHAVO odporúča použiť 0 iterácií."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -4186,13 +4186,13 @@ msgstr "RFC 9276 odporúča NEPOUŽÍVAŤ soľ (označuje sa znakom \"-\"), čo 
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
-msgstr "Dlhá soľ neposkytuje výhody."
+msgstr "Dlhá soľ neprináša žiadny ďalší prínos pre bezpečnosť. Uvážte použitie kratšej soli alebo žiadnej soli (-)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
-msgstr "LP RFC 6742 experimentálny."
+msgstr "POZNÁMKA: Typ záznamu LP je v RFC 6742 definovaný ako experimentálny protokol, nie ako formálny štandard IETF."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -4204,13 +4204,13 @@ msgstr "Záznamy LP by sa mali používať iba s protokolom Identifier-Locator N
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr "LP NESMÚ byť pre ne-ILNP uzly."
+msgstr "Záznamy LP NESMÚ byť prítomné pre uzly, ktoré nepodporujú ILNP (RFC 6742 Section 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr "LP FQDN nemá byť rovný owner."
+msgstr "Upozornenie: FQDN v zázname LP BY NEMAL mať rovnakú hodnotu ako názov vlastníka (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
@@ -4240,7 +4240,7 @@ msgstr "LP FQDN musí byť platný plne kvalifikovaný názov."
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "AFSDB zastarané (RFC 5864), použite SRV."
+msgstr "Záznamy AFSDB sú podľa RFC 5864 zastarané v prospech záznamov SRV na určenie umiestnenia služby AFS."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4248,13 +4248,13 @@ msgstr "Neplatný AFSDB hostiteľ."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB hostiteľ musí byť FQDN."
+msgstr "Názov hostiteľa servera AFSDB musí byť plne kvalifikovaný doménový názov (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
-msgstr "AFSDB FQDN aspoň 2 časti."
+msgstr "Názov hostiteľa servera AFSDB musí byť plne kvalifikovaný doménový názov s aspoň dvoma časťami."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:160
 msgid ""
@@ -4270,7 +4270,7 @@ msgstr "Pole priority pre LOC musí byť 0 alebo prázdne."
 msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "LOC RFC 1876 experimentálny."
+msgstr "POZNÁMKA: Typ záznamu LOC je v RFC 1876 definovaný ako experimentálny protokol, nie ako formálny štandard IETF."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
@@ -4352,7 +4352,7 @@ msgstr "Pole priority pre RKEY musí byť 0 alebo prázdne."
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr "RKEY opatrne, málo podporované."
+msgstr "Záznamy RKEY sa majú používať opatrne, pretože nie sú široko podporované servermi DNS ani resolvermi."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4384,7 +4384,7 @@ msgstr "Bit 7 (Zone Key) je nastavený, toto je kľúč zóny."
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr "Bit 0 (SEP) - bezpečný vstupný bod."
+msgstr "V poli príznakov je nastavený bit 0 (príznak SEP), čo znamená, že ide o bezpečný vstupný bod."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
@@ -4394,7 +4394,7 @@ msgstr "Pole protokolu RKEY musí byť číselné."
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
-msgstr "Pole protokolu má byť 3 pre DNSKEY."
+msgstr "Pole protokolu by malo mať hodnotu 3, aby bolo v súlade so štandardmi založenými na formáte DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
@@ -4412,19 +4412,19 @@ msgstr "Algoritmus 1 (RSA/MD5) je zastaraný (RFC 6725), NEPOUŽÍVAJTE."
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "DSA/SHA1 je nebezpečný, nahradiť."
+msgstr "Algoritmus 3 (DSA/SHA1) sa považuje za nebezpečný a mal by byť nahradený silnejším algoritmom."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "RSA/SHA-1 je nebezpečný, nahradiť."
+msgstr "Algoritmus 5 (RSA/SHA-1) sa považuje za nebezpečný a mal by byť nahradený silnejším algoritmom."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure."
-msgstr "Algoritmus 7 používa SHA-1 (nebezpečný)."
+msgstr "Algoritmus 7 (RSASHA1-NSEC3-SHA1) používa SHA-1, ktorý sa už nepovažuje za bezpečný."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
@@ -4439,7 +4439,7 @@ msgstr "Algoritmus 10 (RSA/SHA-512) poskytuje silnú bezpečnosť."
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr "ECDSA P-256 menšie podpisy."
+msgstr "Algoritmus 13 (ECDSA Curve P-256 with SHA-256) poskytuje dobrú bezpečnosť s menšími podpismi než RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
@@ -4451,7 +4451,7 @@ msgstr "Algoritmus 14 (ECDSA Curve P-384 with SHA-384) poskytuje silnú bezpečn
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr "Ed25519 moderný, kompatibilita."
+msgstr "Algoritmus 15 (Ed25519) ponúka modernú bezpečnosť, ale môže mať problémy s kompatibilitou so staršími validátormi."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
@@ -4495,13 +4495,13 @@ msgstr "Prázdny záznam APL predstavuje prázdny zoznam prefixov."
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr "RFC 3123: bez koncových nulových oktetov."
+msgstr "RFC 3123 odporúča, aby v adresných častiach APL neboli prítomné koncové nulové oktety."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr "RFC 3123 - APL bezpečnosť pri ACL."
+msgstr "RFC 3123 upozorňuje na bezpečnostné aspekty pri používaní záznamov APL na zoznamy riadenia prístupu."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -4543,7 +4543,7 @@ msgstr "Použitie záznamov APL na riadenie prístupu k AXFR treba kombinovať s
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr "NID ILNP (experimentálny)."
+msgstr "Poznámka: Záznamy NID sa používajú pre protokol ILNP, ktorý je experimentálny (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -4553,7 +4553,7 @@ msgstr "Obsah záznamu NID nemôže byť prázdny."
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "NID: xxxx:xxxx:xxxx:xxxx."
+msgstr "Obsah záznamu NID musí byť vo formáte xxxx:xxxx:xxxx:xxxx so 4 skupinami po 4 hexadecimálnych číslicach."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4637,7 +4637,7 @@ msgstr "Záznam NSEC obsahuje neplatné znaky."
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr "RFC 4034: NSEC TTL = SOA minimum."
+msgstr "Podľa RFC 4034 by záznamy NSEC mali mať rovnaké TTL ako pole minimálneho TTL v zázname SOA."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
@@ -4714,13 +4714,13 @@ msgstr "Typ NSEC má byť obvykle uvedený vo svojej vlastnej bitovej mape typov
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr "RRSIG typ v NSEC bitmape."
+msgstr "V bitových mapách typov NSEC by pri zónach podpísaných pomocou DNSSEC mal byť zvyčajne prítomný typ RRSIG."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "NSEC obsahuje SOA a NS - zrejme apex zóny."
+msgstr "Tento záznam NSEC obsahuje typy SOA aj NS, čo naznačuje, že môže patriť vrcholu zóny."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -4767,7 +4767,7 @@ msgstr "Záznam OPENPGPKEY prekračuje veľkosť 4KB. RFC 7929 odporúča udrži
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr "OPENPGPKEY je príliš krátky."
+msgstr "Záznam OPENPGPKEY je neobvykle malý. Skontrolujte, či ide o platný verejný kľúč OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -4791,13 +4791,13 @@ msgstr "Záznamy OPENPGPKEY VYŽADUJÚ DNSSEC, inak neprinesú žiadny bezpečno
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr "OPENPGPKEY EXPERIMENTÁLNE (RFC 7929)."
+msgstr "Záznamy OPENPGPKEY sú podľa RFC 7929 EXPERIMENTÁLNE a nemusia byť podporované všetkými e-mailovými klientmi ani implementáciami OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr "OPENPGPKEY nenahrádza Web of Trust."
+msgstr "Záznamy OPENPGPKEY nie sú náhradou za OpenPGP Web of Trust. Naďalej sa odporúčajú aj ďalšie spôsoby overenia."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
@@ -4863,7 +4863,7 @@ msgstr "Časová značka TSIG je staršia ako 24 hodín. Môže to znamenať út
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr "TSIG timestamp v budúcnosti."
+msgstr "Časová značka TSIG je nastavená do budúcnosti. Môže to znamenať problém so synchronizáciou hodín."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
@@ -4879,7 +4879,7 @@ msgstr "TSIG zabezpečuje overenie transakcie, nie však integritu údajov. Zvá
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr "TSIG vyžaduje presné hodiny."
+msgstr "Aby TSIG fungoval správne, na klientovi aj na serveri sú potrebné presné systémové hodiny."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -4950,7 +4950,7 @@ msgstr "TSIG other-len musí byť nezáporné celé číslo."
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG other-data base64 alebo hex."
+msgstr "Pole other-data v TSIG musí byť platný reťazec kódovaný pomocou base64 alebo hexadecimálny reťazec."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -4962,7 +4962,7 @@ msgstr "HMAC-MD5 sa podľa súčasných štandardov považuje za slabý. RFC 894
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr "HMAC-SHA256 odporúčaný (RFC 8945)."
+msgstr "RFC 8945 odporúča HMAC-SHA256 ako preferovaný algoritmus TSIG pre väčšinu nasadení."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -4985,7 +4985,7 @@ msgstr "RFC 8945 odporúča HMAC-SHA256 pre TSIG."
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "ZONEMD RFC 8976 (2021)."
+msgstr "ZONEMD je definovaný v RFC 8976 (február 2021) a nemusí byť podporovaný všetkými servermi DNS."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -5001,24 +5001,24 @@ msgstr "Zóny s ZONEMD by mali byť podpísané DNSSEC."
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr "Serial ZONEMD má zodpovedať SOA serial."
+msgstr "Sériové číslo v zázname ZONEMD by malo zodpovedať sériovému číslu SOA danej zóny."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD 240-255 privátne."
+msgstr "Hodnoty scheme 240-255 v zázname ZONEMD sú vyhradené na súkromné použitie a nemusia byť interoperabilné."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr "SHA-384 (1) je odporúčaný pre ZONEMD."
+msgstr "SHA-384 (algoritmus 1) je odporúčaný hašovací algoritmus pre záznamy ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr "SHA-512 (2) silnejší, viac zdrojov."
+msgstr "SHA-512 (algoritmus 2) poskytuje vyššiu bezpečnosť, ale vyžaduje viac výpočtových zdrojov než SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -5030,13 +5030,13 @@ msgstr "Hodnoty hashovacieho algoritmu ZONEMD 240-255 sú rezervované na súkro
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMD: serial, scheme, hash, digest."
+msgstr "Záznam ZONEMD musí obsahovať serial, scheme, hash-algorithm a digest oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "Serial ZONEMD 0-4294967295."
+msgstr "Serial v zázname ZONEMD musí byť číslo od 0 do 4294967295 (32-bitové celé číslo bez znamienka)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -5058,7 +5058,7 @@ msgstr "Hash algoritmus ZONEMD musí byť medzi 0 a 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "Hash ZONEMD 0 je rezervovaný."
+msgstr "Hašovací algoritmus 0 v zázname ZONEMD je vyhradený a nie je určený na štandardné použitie."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5072,7 +5072,7 @@ msgstr "ZONEMD digest aspoň 24 hex znakov (12 oktetov)."
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr "ZONEMD SHA-384 = 96 hex (48 oktetov)."
+msgstr "Digest ZONEMD pre SHA-384 (algoritmus 1) musí mať presne 96 hexadecimálnych znakov (48 oktetov)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5096,7 +5096,7 @@ msgstr "Neplatné znaky v obsahu CERT záznamu."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERT: type, key-tag, algoritmus, data."
+msgstr "Záznam CERT musí obsahovať type, key-tag, algorithm a certificate-data oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5110,7 +5110,7 @@ msgstr "Hodnota typu CERT "
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr "CERT typ 0-65535 alebo mnemonik."
+msgstr "Typ CERT musí byť číslo od 0 do 65535 alebo platný mnemotechnický názov (PKIX, SPKI, PGP a podobne)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -5130,7 +5130,7 @@ msgstr "Algoritmus CERT musí byť 0-255 alebo mnemonik."
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr "CERT algoritmus 0-255 alebo mnemonik."
+msgstr "Algoritmus CERT musí byť číslo od 0 do 255 alebo platný mnemotechnický názov (RSASHA1, DSA a podobne)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5181,7 +5181,7 @@ msgstr "DÔLEŽITÉ: Záznamy DLV boli zrušené dokumentom RFC 8749 (marec 2020
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr "DLV lookup. dlv.isc.org ukončené 2017."
+msgstr "Zdá sa, že tento názov patrí do domény na vyhľadávanie DLV. Upozorňujeme, že dlv.isc.org, hlavný register DLV, bol vyradený z prevádzky v roku 2017."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
@@ -5277,7 +5277,7 @@ msgstr "Neplatná hodnota priority MX. 0-65535."
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "Pri HTTPS priorita je v obsahu."
+msgstr "Pole priority sa pri záznamoch HTTPS nemá používať, pretože priorita je súčasťou obsahu."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
@@ -5291,13 +5291,13 @@ msgstr "Priorita HTTPS záznamu musí byť medzi 0 a 65535."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "Cieľ HTTPS musí byť \".\" alebo FQDN."
+msgstr "Cieľ záznamu HTTPS musí byť buď \".\", alebo platný plne kvalifikovaný názov domény."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr "HTTPS AliasMode \".\" bez params RFC 9460."
+msgstr "Záznam HTTPS v režime AliasMode (priority=0) s cieľom \".\" nemôže mať podľa RFC 9460 žiadne parametre."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
@@ -5359,7 +5359,7 @@ msgstr "Pole priority pre TKEY musí byť 0 alebo prázdne"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY nie je pre auth dát, ale pre kľúče."
+msgstr "Záznamy TKEY neslúžia na overovanie údajov DNS, ale na vytvorenie kľúčov medzi DNS servermi a resolverami."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5385,7 +5385,7 @@ msgstr "Začiatok TKEY Unix timestamp alebo YYYYMMDDHHmmSS."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "Expirácia TKEY Unix/YYYYMMDDHHmmSS."
+msgstr "Čas vypršania TKEY musí byť platná časová značka Unix alebo vo formáte YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
@@ -5432,13 +5432,13 @@ msgstr "TKEY kľúče sú viazané na servery, nie zóny."
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "Výmeny TKEY by mali byť zabezpečené."
+msgstr "Výmeny záznamov TKEY by mali byť zabezpečené - overovanie závisí od použitého režimu."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "HMAC-MD5 slabé. HMAC-SHA256 odporúčané."
+msgstr "HMAC-MD5 sa podľa moderných štandardov považuje za slabý. Odporúča sa HMAC-SHA256 alebo silnejší."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5470,7 +5470,7 @@ msgstr "Hodnota TTL nemôže byť záporná. Musí byť 0 alebo vyššia."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "TTL prekračuje maximum (%d). RFC 2181."
+msgstr "Hodnota TTL prekračuje maximálnu povolenú hodnotu (%d). RFC 2181 ju obmedzuje na 32-bitové celé číslo so znamienkom."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -5496,7 +5496,7 @@ msgstr "SOA TTL (%d) pod odporúčané minimum %d sekúnd (1 hod)."
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "URI záznamy chráňte DNSSEC."
+msgstr "Záznamy URI by mali byť chránené pomocou DNSSEC, aby ich útočníci nemohli zmeniť."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5518,7 +5518,7 @@ msgstr "Telefónne URI schémy môžu obsahovať citlivé údaje."
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "\"file\" URI schéma je riziko."
+msgstr "Schéma URI \"file\" môže predstavovať bezpečnostné riziko a pre verejné záznamy DNS sa neodporúča."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -5530,7 +5530,7 @@ msgstr "Priorita URI musí byť 0-65535 (16-bit unsigned)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "Váha URI musí byť 0-65535."
+msgstr "Váha URI musí byť od 0 do 65535 (16-bitové celé číslo bez znamienka)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
@@ -5540,13 +5540,13 @@ msgstr "URI nesmie byť prázdny."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI schéma: písmeno + alfanum."
+msgstr "URI musí začínať platnou schémou, ktorá začína písmenom a pokračuje písmenami, číslicami, znakom plus, bodkou alebo spojovníkom."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI neštandardný protokol."
+msgstr "URI používa neobvyklý protokol. Pre lepšiu kompatibilitu zvážte použitie štandardnej schémy URI."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -5564,7 +5564,7 @@ msgstr "URI nesmie obsahovať riadiace znaky."
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "URI spätné lomítka - rôzne interpretácie."
+msgstr "URI obsahuje znaky opačnej lomky, ktoré môžu rôzne systémy interpretovať odlišne."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
@@ -5588,7 +5588,7 @@ msgstr "URI obsahuje v názve hostiteľa znaky mimo ASCII. Pre medzinárodné n�
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr "Neplatný exchanger hostiteľ."
+msgstr "Neplatný názov hostiteľa pre výmenu kľúčov. Pole exchanger musí obsahovať platný názov domény."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
@@ -5600,13 +5600,13 @@ msgstr "DÔLEŽITÉ: RFC 2230 vyžaduje, aby boli záznamy KX podpísané pomoco
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "Bez Secure DNS ignorovať KX."
+msgstr "Systémy, ktoré neimplementujú Secure DNS, majú podľa RFC 2230 záznamy KX úplne ignorovať."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "Exchanger má forward aj reverse DNS."
+msgstr "Uistite sa, že hostiteľ pre výmenu kľúčov má nastavené zodpovedajúce priame aj reverzné záznamy DNS."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -5622,7 +5622,7 @@ msgstr "Neplatná hodnota preferencie KX. 0-65535."
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "MINFO EXPERIMENTÁLNE (RFC 1035)."
+msgstr "POZNÁMKA: Typ záznamu MINFO je v RFC 1035 označený ako EXPERIMENTÁLNY. Nemusí byť všeobecne podporovaný."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -5642,13 +5642,13 @@ msgstr "Neplatný hostiteľ zodpovedného mailboxu (RMAILBX)."
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "RFC 1035: list-name-request."
+msgstr "RFC 1035 uvádza, že mnohé konferencie používajú v poli zodpovednej poštovej schránky adresu \"list-name-request\"."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "\".\" RMAILBX = zodpovedá sám za seba."
+msgstr "Použitie \".\" (koreň) pre RMAILBX znamená, že vlastník záznamu MINFO je zodpovedný sám za seba."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -5658,13 +5658,13 @@ msgstr "Neplatný názov hostiteľa mailboxu chýb (EMAILBX)."
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "EMAILBX \".\" = vrátiť odosielateľovi."
+msgstr "Použitie \".\" (koreň) pre EMAILBX znamená, že chyby sa majú vracať odosielateľovi správy."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "Rovnaké mailbox, použite iné."
+msgstr "Zodpovedná poštová schránka a schránka pre chyby sú rovnaké. Zvážte použitie odlišných schránok pre tieto funkcie."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
@@ -5721,13 +5721,13 @@ msgstr "Neplatná dĺžka CIDR v mechanizme."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "ptr neodporúčaný (RFC 7208 §5.5)."
+msgstr "Mechanizmus ptr sa neodporúča kvôli problémom s výkonom (RFC 7208, časť 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\" má byť posledný (RFC 7208 §5.1)."
+msgstr "Mechanizmus \"all\" má byť v zázname posledný (RFC 7208, časť 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -5758,7 +5758,7 @@ msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "SPF all + redirect - redirect ignorované."
+msgstr "Záznam SPF obsahuje mechanizmus \"all\" aj modifikátor \"redirect\". Ak je prítomný \"all\", modifikátor \"redirect\" sa ignoruje (RFC 7208, časť 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
@@ -5789,13 +5789,13 @@ msgstr "Toto nie je platný záznam. CNAME s týmto názvom už existuje."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME FQDN, jednoznačné zakázané."
+msgstr "Cieľ CNAME musí byť plne kvalifikovaný názov domény (FQDN). Názvy tvorené jedinou značkou nie sú povolené."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME cieľ FQDN s platným TLD."
+msgstr "Cieľ CNAME musí byť plne kvalifikovaný názov domény (FQDN) s platnou doménou najvyššej úrovne."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -5822,13 +5822,13 @@ msgstr "Podľa RFC 4703 sa záznamy DHCID používajú na zisťovanie kolízií,
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID len base64 znaky."
+msgstr "Záznam DHCID môže obsahovať iba platné znaky base64 (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID base64 padding iba na konci."
+msgstr "Záznam DHCID má neplatné zarovnanie base64. Znaky rovnosti (=) sa môžu nachádzať iba na konci údajov."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
@@ -5858,7 +5858,7 @@ msgstr "Typ identifikátora DHCID 0x%04X nie je jedným zo štandardných typov 
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "Typ digestu DHCID %d nie je štandardný."
+msgstr "Typ digestu DHCID %d nie je štandardný typ (1 pre SHA-256) definovaný v RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -5896,7 +5896,7 @@ msgstr "Záznamy RRSIG má vytvárať iba váš server DNS pri podpisovaní zón
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "ZSK 1-3 mesiace, KSK 1-2 roky."
+msgstr "Pravidelná obmena kľúčov je odporúčaný bezpečnostný postup: ZSK každé 1-3 mesiace, KSK každé 1-2 roky."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -5924,7 +5924,7 @@ msgstr "Pole algoritmu RRSIG musí byť číselné."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "RSA/MD5 zastaraný, NEPOUŽÍVAJTE."
+msgstr "Algoritmus 1 (RSA/MD5) je zastaraný a kvôli kryptografickým slabinám sa NEMÁ používať."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -5936,7 +5936,7 @@ msgstr "Algoritmus 3 (DSA/SHA1) sa považuje za nezabezpečený a mal by byť na
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "RSA/SHA-1 je nebezpečný."
+msgstr "Algoritmus 5 (RSA/SHA-1) sa považuje za nebezpečný a mal by byť nahradený silnejšími algoritmami."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -5954,13 +5954,13 @@ msgstr "Algoritmus 10 (RSA/SHA-512) poskytuje silnú bezpečnosť, ale s niektor
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "Algoritmus 13 (ECDSA P-256/SHA-256) je dobrý."
+msgstr "Algoritmus 13 (ECDSA P-256 so SHA-256) poskytuje dobrú bezpečnosť s menšími podpismi ako RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Algoritmus 14 (ECDSA P-384/SHA-384) silný."
+msgstr "Algoritmus 14 (ECDSA P-384 so SHA-384) poskytuje silnú bezpečnosť s menšími podpismi ako RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -6019,13 +6019,13 @@ msgstr "Čas vypršania musí byť neskorší ako čas začiatku platnosti. Zdá
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr "KRITICKÉ: Podpis vypršal."
+msgstr "KRITICKÉ: Tomuto podpisu už uplynula platnosť. Resolvery DNSSEC ho nebudú overovať."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "UPOZORNENIE: Podpis vyprší do 7 dní."
+msgstr "UPOZORNENIE: Platnosť tohto podpisu uplynie do 7 dní. Zvážte jeho čo najskoršiu obnovu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
@@ -6085,7 +6085,7 @@ msgstr "Záznamy RRSIG sú súčasťou DNSSEC a poskytujú kryptografické podpi
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "RRSIG regenerovať pred vypršaním."
+msgstr "Nezabudnite, že záznamy RRSIG treba znovu vygenerovať pred dátumom vypršania ich platnosti, aby overovanie DNSSEC naďalej fungovalo."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -6095,7 +6095,7 @@ msgstr "Pole priority pre záznamy RP musí byť 0 alebo prázdne"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "RP RFC 1183 (1990), zriedka."
+msgstr "Záznamy RP boli definované v RFC 1183 (1990) a v moderných konfiguráciách DNS sa už bežne nepoužívajú."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6119,13 +6119,13 @@ msgstr "Záznam RP obsahuje neplatné znaky."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP: mbox-dname a txt-dname."
+msgstr "Záznam RP musí obsahovať doménu poštovej schránky (mbox-dname) a doménu záznamu TXT (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "RP údaje v DNS - súkromie."
+msgstr "Záznamy RP zverejňujú kontaktné údaje v DNS, čo môže vyvolať obavy o súkromie a bezpečnosť."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -6148,7 +6148,7 @@ msgstr "Použitie \".\" ako domény poštovej schránky znamená, že nie je ur�
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP mailbox musí byť FQDN (s bodkou)."
+msgstr "Doména poštovej schránky RP musí byť plne kvalifikovaný názov domény (musí končiť bodkou)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -6177,7 +6177,7 @@ msgstr "Doména mailboxu RP obsahuje prázdnu značku."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "Značka RP mailbox > 63."
+msgstr "Značka domény poštovej schránky RP prekračuje maximálnu dĺžku 63 znakov."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -6201,11 +6201,11 @@ msgstr "Doména poštovej schránky má používať rovnaký formát ako pole RN
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr "\".\" = žiadny extra TXT."
+msgstr "Použitie \".\" pre doménu TXT znamená, že nie je dostupný žiadny záznam TXT s doplňujúcimi informáciami."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT musí byť FQDN (s bodkou)."
+msgstr "Doména záznamu TXT v zázname RP musí byť plne kvalifikovaný názov domény (musí končiť bodkou)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6242,7 +6242,7 @@ msgstr "Mali by ste vytvoriť TXT záznam na doméne: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr "EUI-64 z EUI-48 (FF-FE)."
+msgstr "Zdá sa, že ide o adresu EUI-64 odvodenú z adresy EUI-48 (v strede obsahuje FF-FE)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -6270,19 +6270,19 @@ msgstr "Záznam EUI64 používa ako oddeľovače dvojbodky (xx:xx:xx:xx:xx:xx:xx
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64 xx-xx-xx-xx-xx-xx-xx-xx."
+msgstr "V zázname EUI64 chýbajú oddeľovače. Formát musí byť xx-xx-xx-xx-xx-xx-xx-xx so spojovníkmi medzi oktetmi."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64 v bodkovanom formáte."
+msgstr "Zdá sa, že záznam EUI64 je v bodkovanom formáte. Formát musí byť xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "EUI64 xx-xx-xx-xx-xx-xx-xx-xx."
+msgstr "Záznam EUI64 musí byť platná adresa EUI-64 vo formáte xx-xx-xx-xx-xx-xx-xx-xx (kde x je hexadecimálna číslica)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6332,13 +6332,13 @@ msgstr "Pole priority pre DNAME musí byť 0 alebo prázdne."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "RFC 6672: DNAME unikátny."
+msgstr "Podľa RFC 6672 musia byť záznamy DNAME pre daný názov vlastníka jedinečné (pravidlo singletonu)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "DNAME a CNAME NESMÚ byť spolu (RFC 6672)."
+msgstr "Záznamy DNAME a CNAME NESMÚ existovať súčasne pri tom istom názve vlastníka (RFC 6672, časť 2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -6412,7 +6412,7 @@ msgstr "%s (algoritmus %d) sa podľa RFC 8624 NEODPORÚČA používať. Namiesto
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Typ digestu: 1, 2 alebo 4"
+msgstr "Typ digestu musí byť jeden z: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -6424,7 +6424,7 @@ msgstr "SHA-1 (typ digestu 1) sa podľa RFC 8624 NEODPORÚČA používať. Odpor
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "SHA-256 (2) je ODPORÚČANÝ (RFC 8624)."
+msgstr "SHA-256 (typ digestu 2) je podľa RFC 8624 ODPORÚČANÝ algoritmus digestu."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -6468,7 +6468,7 @@ msgstr "Aby záznamy CSYNC spracovali agenti nadradenej zóny, vyžadujú podpí
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "Jeden CSYNC/zóna (RFC 7477)."
+msgstr "V zóne by mal existovať iba jeden záznam CSYNC (RFC 7477). Viacero záznamov môže spôsobiť neočakávané správanie."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
@@ -6480,13 +6480,13 @@ msgstr "V tomto zázname CSYNC nie sú nastavené žiadne príznaky. Agenti nadr
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "\"immediate\" nie je nastavený."
+msgstr "Príznak \"immediate\" (0x0001) nie je nastavený. Nadradení agenti môžu spracovanie tohto záznamu odložiť."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "\"soaminimum\" nie je nastavený."
+msgstr "Príznak \"soaminimum\" (0x0002) nie je nastavený. Overovanie sériového čísla SOA sa nemusí vynucovať."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -6498,7 +6498,7 @@ msgstr "Neplatná hodnota poľa priority. Záznamy CSYNC musia mať prioritu 0."
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "CSYNC SOA serial 0-4294967295."
+msgstr "Neplatné sériové číslo SOA v zázname CSYNC. Musí to byť 32-bitové celé číslo bez znamienka (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6564,13 +6564,13 @@ msgstr "RFC 7043 neodporúča publikovať adresy EUI-48 vo verejnom DNS kvôli m
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48: pomlčky, nie dvojbodky."
+msgstr "Záznam EUI48 používa ako oddeľovače dvojbodky (xx:xx:xx:xx:xx:xx), no vyžaduje spojovníky (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "EUI48 s pomlčkami: xx-xx-xx-xx-xx-xx."
+msgstr "V zázname EUI48 chýbajú oddeľovače. Formát musí byť xx-xx-xx-xx-xx-xx so spojovníkmi medzi oktetmi."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
@@ -6581,7 +6581,7 @@ msgstr "EUI48 v Cisco formáte. xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 MAC xx-xx-xx-xx-xx-xx."
+msgstr "Záznam EUI48 musí byť platná adresa MAC vo formáte xx-xx-xx-xx-xx-xx (kde x je hexadecimálna číslica)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -6599,7 +6599,7 @@ msgstr "Zdá sa, že meno záznamu nie je štandardným menom reverznej DNS zón
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr "PTR priorita 0 alebo prázdna."
+msgstr "Pole priority pri záznamoch PTR má byť 0 alebo prázdne. Zadaná hodnota sa bude ignorovať."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
@@ -6611,7 +6611,7 @@ msgstr "Záznamy PTR by mali mať zodpovedajúce dopredné záznamy (A/AAAA), ab
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "E-mail servery vyžadujú reverzné DNS."
+msgstr "E-mailové servery často vyžadujú správne nastavené reverzné DNS, aby prijali poštu z vášho servera."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -6658,7 +6658,7 @@ msgstr "Neplatné číslo portu: %d (musí byť 1-65535)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Neplatný formát servera: %s"
+msgstr "Neplatný formát servera: %s (očakáva sa IP:port alebo [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
@@ -6691,7 +6691,7 @@ msgstr "CAA tag môže obsahovať iba ASCII písmená a čísla."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "Kritický príznak pre neznámy tag \"%s\"."
+msgstr "Kritický príznak je nastavený pre neznámy tag \"%s\". Môže to spôsobiť zlyhanie vydávania certifikátov."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6730,7 +6730,7 @@ msgstr "Hodnota contactemail musí byť platná e-mailová adresa."
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr "contactphone: čísla, medzery, interpunkcia."
+msgstr "Hodnota contactphone môže obsahovať iba čísla, medzery a bežnú interpunkciu telefónnych čísel."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
@@ -6783,7 +6783,7 @@ msgstr "Neplatné číslo podsiete v RFC 2317. IPv4: 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Neplatná podsieť RFC 2317. IPv6: hex."
+msgstr "Neplatná podsieť v notácii RFC 2317. Pre IPv6 musí byť hexadecimálna (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -6797,7 +6797,7 @@ msgstr "Neplatná dĺžka prefixu v RFC 2317. Musí byť číselná."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "IPv4 prefix 24-32 RFC 2317."
+msgstr "Neplatná dĺžka prefixu IPv4 pre RFC 2317. Zvyčajne 24-32 (beztriedna delegácia obvykle 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -6824,7 +6824,7 @@ msgstr "Používate neplatnú doménu najvyššej úrovne."
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "SOA parametre nenastavené."
+msgstr "Parametre na overenie SOA nie sú nastavené. Najprv zavolajte setSOAParams() alebo ich zadajte ako argumenty."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -6895,7 +6895,7 @@ msgstr "Pole SOA %s musí byť kladné celé číslo."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA %s (%d) pod RFC 2308 min (%d)."
+msgstr "Hodnota SOA %s (%d) je nižšia ako minimum odporúčané v RFC 2308 (%d). Je to povolené, ale neodporúča sa."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -6929,7 +6929,7 @@ msgstr "Priorita musí byť 0 pre záznamy RESINFO."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "SVCB: <priority> <target> [<params>...]"
+msgstr "Záznam SVCB musí začínať prioritou a cieľom: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -6971,14 +6971,14 @@ msgstr "Duplicitný kľúč SVCB: \"%s\". Každý iba raz."
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Viacero CNAME s rovnakým názvom zakázané."
+msgstr "Viacero záznamov CNAME s rovnakým názvom nie je povolených. Porušilo by to pravidlá DNS."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "CNAME nesmie byť s inými typmi. Existuje %s."
+msgstr "Záznam CNAME nemôže pre ten istý názov existovať spolu s inými typmi záznamov. Našiel sa existujúci záznam %s."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -6997,7 +6997,7 @@ msgstr "Hash lokálnej časti v záznamoch SMIMEA má byť 64-znakový hexadecim
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA: SHA256._smimecert.domain.tld (%s)."
+msgstr "Názov záznamu SMIMEA má formát: SHA256(local-part)._smimecert.domain.tld pre e-mailové adresy ako %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7029,7 +7029,7 @@ msgstr "Záznam SMIMEA obsahuje neplatné znaky."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA: usage, selector, matching-type, data."
+msgstr "Záznam SMIMEA musí obsahovať polia usage, selector, matching-type a certificate-data oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7064,7 +7064,7 @@ msgstr "Použitie DANE-EE (3) sa odporúča, pretože poskytuje najjednoduchšie
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA selektor 0 alebo 1."
+msgstr "Pole selector v zázname SMIMEA musí byť 0 (celý certifikát) alebo 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7084,7 +7084,7 @@ msgstr "Odporúča sa selektor 1 (SubjectPublicKeyInfo), pretože umožňuje obn
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "SMIMEA typ zhody 0, 1 alebo 2."
+msgstr "Pole typu zhody v zázname SMIMEA musí byť 0 (presná zhoda), 1 (SHA-256) alebo 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -7125,7 +7125,7 @@ msgstr "Odporúčaná konfigurácia SMIMEA je usage=3 (DANE-EE), selector=1 (Sub
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "SMIMEA je EXPERIMENTÁLNE (RFC 8162)."
+msgstr "UPOZORNENIE: SMIMEA (RFC 8162) je momentálne EXPERIMENTÁLNY protokol a nemusí byť široko podporovaný."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7137,7 +7137,7 @@ msgstr "KRITICKÉ: Záznamy SMIMEA VYŽADUJÚ DNSSEC, aby poskytovali bezpečnos
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "L64 RFC 6742 experimentálny."
+msgstr "POZNÁMKA: Typ záznamu L64 je v RFC 6742 definovaný ako experimentálny protokol, nie ako formálny štandard IETF."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
@@ -7236,13 +7236,13 @@ msgstr "Neplatné znaky v obsahu CDNSKEY záznamu."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "\"0 3 0 0\" erratum, radšej \"0 3 0 AA==\"."
+msgstr "Používa sa formát \"0 3 0 0\" z erráta k RFC 8078, zvážte použitie štandardného formátu \"0 3 0 AA==\"."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "CDNSKEY: flags, protokol, algoritmus, kľúč."
+msgstr "Záznam CDNSKEY musí obsahovať polia flags, protocol, algorithm a public-key oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -7272,13 +7272,13 @@ msgstr "Algoritmus 8 (RSASHA256) sa nahrádza algoritmom ECDSAP256SHA256 (13) pr
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "RSASHA512 NEODPORÚČANÝ pre podpis."
+msgstr "Algoritmus 10 (RSASHA512) sa NEODPORÚČA na podpisovanie, hoci musí byť podporovaný na overovanie."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "Base64 padding \"=\" na 4 bajty."
+msgstr "Údaje kódované v base64 by mali byť doplnené znakmi \"=\" na násobok 4 bajtov."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
@@ -7322,7 +7322,7 @@ msgstr "Zdá sa, že tento LUA záznam nepoužíva bežné Lua funkcie PowerDNS.
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "LUA: nevyvážené úvodzovky."
+msgstr "UPOZORNENIE: Zdá sa, že tento záznam LUA má nevyvážené úvodzovky, čo môže spôsobiť syntaktické chyby."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -7336,7 +7336,7 @@ msgstr "Záznam LUA má nezhodné zátvorky. Skontrolujte syntax."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "LUA explicit return min. 1."
+msgstr "Záznam LUA v režime explicitného návratu (začína bodkočiarkou) musí obsahovať aspoň jeden príkaz \"return\"."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -7358,7 +7358,7 @@ msgstr "Pole priority pre SSHFP musí byť 0 alebo prázdne"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "SSHFP: ssh-keygen -r hostname."
+msgstr "Záznamy SSHFP možno vygenerovať príkazom \"ssh-keygen -r hostname\" na systémoch s OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -7370,13 +7370,13 @@ msgstr "Pre maximálnu bezpečnosť publikujte kvôli kompatibilite odtlačky SH
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr "SSHFP: algoritmus, fptype, fp."
+msgstr "Záznam SSHFP musí obsahovať polia algorithm, fingerprint-type a fingerprint oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "SSHFP algoritmus 1, 2, 3, 4 alebo 6."
+msgstr "Algoritmus SSHFP musí byť 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) alebo 6 (Ed448)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
@@ -7388,7 +7388,7 @@ msgstr "Kľúče DSA sa považujú za slabé a v mnohých implementáciách SSH 
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Ed25519 odporúčaný pre moderné SSH."
+msgstr "Kľúče Ed25519 sú odporúčané pre dobrú bezpečnosť a výkon v moderných implementáciách SSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -7404,13 +7404,13 @@ msgstr "Typ odtlačku SSHFP musí byť 1 (SHA-1) alebo 2 (SHA-256)."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "SHA-1 zastarané, SHA-256 (RFC 6594)."
+msgstr "Odtlačky SHA-1 sú zastarané. RFC 6594 odporúča používať odtlačky SHA-256 (typ 2) pre vyššiu bezpečnosť."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr "SHA-256 odporúčané (RFC 6594)."
+msgstr "Odtlačky SHA-256 sú odporúčané v RFC 6594 a poskytujú lepšiu bezpečnosť ako odtlačky SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -7435,7 +7435,7 @@ msgstr "KRITICKÉ: Záznamy SSHFP VYŽADUJÚ validáciu DNSSEC, aby priniesli ak
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "SSH klient \"VerifyHostKeyDNS yes\"."
+msgstr "Nastavte SSH klientov s \"VerifyHostKeyDNS yes\", aby na overenie servera využívali záznamy SSHFP."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -7457,13 +7457,13 @@ msgstr "Obsah záznamu MR musí byť platný názov domény."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "MR obsah FQDN (s bodkou)."
+msgstr "Obsah záznamu MR (nová poštová schránka) by mal byť plne kvalifikovaný názov domény (končiaci bodkou)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr "Nový = starý. MR je presmerovanie."
+msgstr "Nová poštová schránka je rovnaká ako stará. Záznamy MR sú určené na presmerovanie na inú poštovú schránku."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -7473,7 +7473,7 @@ msgstr "Pole priority pre MR musí byť 0 alebo prázdne."
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "MR EXPERIMENTÁLNE (RFC 1035)."
+msgstr "Záznamy MR boli v RFC 1035 označené ako EXPERIMENTÁLNE a v moderných poštových systémoch sa používajú zriedka."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -7510,7 +7510,7 @@ msgstr "Algoritmus 1 (RSA/MD5) je kryptograficky slabý."
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "Pre DNSSEC: DNSKEY namiesto KEY."
+msgstr "Pre kľúče zóny DNSSEC (flags=257, protocol=3) by sa namiesto záznamov KEY mali použiť záznamy DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -7612,7 +7612,7 @@ msgstr "DMARC DKIM adkim musí byť r alebo s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF aspf r alebo s"
+msgstr "Značka zarovnania SPF v DMARC (aspf) musí byť r (relaxed) alebo s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -7633,7 +7633,7 @@ msgstr "DMARC ri musí byť kladné celé číslo"
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DMARC fo: 0, 1, d, s."
+msgstr "Značka možností hlásenia chýb v DMARC (fo) môže obsahovať iba 0, 1, d, s alebo ich kombinácie oddelené dvojbodkou"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -7684,20 +7684,20 @@ msgstr "Spätné lomítka musia predchádzať úvodzovkám v TXT"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "TXT prekračuje %d bajtov."
+msgstr "Obsah záznamu TXT prekračuje maximálnu dĺžku %d bajtov. Zmenšite prosím veľkosť obsahu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "TXT ≤255 bajtov, rozdeľte."
+msgstr "Každý reťazec záznamu TXT musí mať najviac 255 bajtov. Dlhý obsah rozdeľte do viacerých reťazcov."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Celkový TXT prekračuje %d bajtov."
+msgstr "Celkový obsah záznamu TXT prekračuje maximálnu dĺžku %d bajtov. Zmenšite prosím veľkosť obsahu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -7727,7 +7727,7 @@ msgstr "Pole priority pre CDS musí byť 0 alebo prázdne"
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr "CDS majú byť stabilné RFC 8078."
+msgstr "Podľa RFC 8078 by záznamy CDS mali byť určitý čas stabilné, kým ich nadradené zóny prijmú."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -7768,13 +7768,13 @@ msgstr "SHA-1 (typ digestu 1) je z bezpečnostných dôvodov zavrhnutý. Namiest
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "CDS digest hex dĺžky %d."
+msgstr "Digest CDS musí byť platný šestnástkový reťazec s dĺžkou %d pre vybraný typ digestu."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "CDS + CDNSKEY (RFC 7344)."
+msgstr "Záznamy CDS musia byť doplnené zodpovedajúcimi záznamami CDNSKEY, ako odporúča RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -7784,7 +7784,7 @@ msgstr "CDS iba na vrchole zóny (nie subdomény)."
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "L32 RFC 6742 experimentálny."
+msgstr "POZNÁMKA: Typ záznamu L32 je v RFC 6742 definovaný ako experimentálny protokol, nie ako formálny štandard IETF."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
@@ -7796,7 +7796,7 @@ msgstr "Záznamy L32 sa majú používať iba s protokolom Identifier-Locator Ne
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "Súkromné IP ako L32 môžu obmedziť dostupnosť."
+msgstr "Použitie súkromných IP adries (RFC 1918) ako lokátorov L32 môže obmedziť dostupnosť v nasadeniach ILNP."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
@@ -7830,7 +7830,7 @@ msgstr "L32 nemôže byť 0.0.0.0 alebo 255.255.255.255."
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr "Priorita 0 neobvyklá. SRV začínajú od 10."
+msgstr "Priorita 0 je platná, ale neobvyklá. Záznamy SRV zvyčajne začínajú prioritou 10 alebo vyššou."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
@@ -7853,14 +7853,14 @@ msgstr "Neplatná hodnota protokolu v zázname SRV. Protokol musí začínať po
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "\"%s\" nie je známa služba."
+msgstr "Názov služby \"%s\" nie je v zozname známych služieb. Je to povolené, ale neobvyklé."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Protokol \"%s\" nie je známy. Bežné _tcp a _udp."
+msgstr "Protokol \"%s\" nie je v zozname známych protokolov. Bežné protokoly sú _tcp a _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7885,7 +7885,7 @@ msgstr "Neplatná hodnota portu SRV. Musí byť 1-65535."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "Port %d sa líši od štandardného %d pre %s."
+msgstr "Port %d sa líši od štandardného portu %d pre službu %s. Je to povolené, ale neobvyklé."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -7907,7 +7907,7 @@ msgstr "Neplatná hodnota pre pole priority SRV."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "(::) alebo (::1) nie v AAAA."
+msgstr "Nespecifikované (::) ani loopback (::1) adresy IPv6 by sa v záznamoch AAAA nemali používať."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -7938,7 +7938,7 @@ msgstr "Záznam NSEC3 obsahuje neplatné znaky."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "RFC 5155/9077: NSEC3 TTL = SOA min."
+msgstr "Podľa RFC 5155 a RFC 9077 by záznamy NSEC3 mali mať rovnaký TTL ako pole minimálneho TTL v zázname SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -7962,7 +7962,7 @@ msgstr "Záznamy NSEC3 vyžadujú zodpovedajúci záznam NSEC3PARAM na vrchole z
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "NSEC3: hash, flags, iterations, salt, next."
+msgstr "Záznam NSEC3 musí obsahovať aspoň hashovací algoritmus, príznaky, počet iterácií, salt a nasledujúci hashovaný názov vlastníka."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -7984,13 +7984,13 @@ msgstr "Soľ NSEC3 musí byť - (prázdne) alebo hexadecimálna."
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "NSEC3 Base32hex (0-9, A-V)."
+msgstr "Nasledujúci hashovaný názov vlastníka v zázname NSEC3 musí byť platná hodnota kódovaná v Base32hex (znaky 0-9 a A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "Type bit maps označujú typy RR."
+msgstr "Mali by byť prítomné bitové mapy typov, ktoré označujú, ktoré typy RR existujú pri pôvodnom názve vlastníka."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8001,19 +8001,19 @@ msgstr "Záznam NSEC3 obsahuje neplatný typ: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr "RRSIG typ v NSEC3 bitmape."
+msgstr "V bitových mapách typov NSEC3 by pri zónach podpísaných pomocou DNSSEC mal byť zvyčajne prítomný typ RRSIG."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "NSEC3 obsahuje SOA a NS - zrejme apex."
+msgstr "Tento záznam NSEC3 obsahuje typy SOA aj NS, čo naznačuje, že môže patriť vrcholu zóny."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "Apex + NSEC3 = NSEC3PARAM + DNSKEY."
+msgstr "Pri vrchole zóny, ktorý používa NSEC3, by mal byť zvyčajne prítomný typ NSEC3PARAM spolu s typom DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8035,7 +8035,7 @@ msgstr "Neplatný formát názvu domény."
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "ENUM domain: E2U + RFC 6116."
+msgstr "Zdá sa, že ide o doménu ENUM. Záznamy NAPTR by mali používať pole služby E2U a dodržiavať RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
@@ -8047,7 +8047,7 @@ msgstr "Zložité regexp v NAPTR sú ťažké na údržbu."
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr "RFC 3403. Nie všetky servery NAPTR."
+msgstr "Tento záznam dodržiava RFC 3403. Nezabudnite, že niektoré DNS servery nemusia plne podporovať všetky funkcie NAPTR."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -8089,7 +8089,7 @@ msgstr "Regexp NAPTR musí byť reťazec v úvodzovkách."
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR náhrada \".\" alebo FQDN."
+msgstr "Pole replacement v zázname NAPTR musí byť buď \".\", alebo platný plne kvalifikovaný názov domény."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -8156,7 +8156,7 @@ msgstr "Pole priority pre DNSKEY musí byť 0 alebo prázdne."
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "DNSKEY: flags, protokol, algoritmus, kľúč."
+msgstr "Záznam DNSKEY musí obsahovať príznaky, protokol, algoritmus a verejný kľúč oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -8178,7 +8178,7 @@ msgstr "Hodnota príznaku 256 označuje, že ide o Zone Signing Key (ZSK) s nast
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr "257 = KSK (Zone Key + SEP)."
+msgstr "Hodnota príznaku 257 znamená, že ide o Key Signing Key (KSK) s nastavenými bitmi Zone Key aj SEP."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
@@ -8192,7 +8192,7 @@ msgstr "Algoritmus DNSKEY musí byť medzi 1 a 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "ECDSAP256SHA256 (13) ODPORÚČANÝ."
+msgstr "ECDSAP256SHA256 (algoritmus 13) je podľa RFC 8624 ODPORÚČANÝ algoritmus na podpisovanie DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8210,7 +8210,7 @@ msgstr "%s (algoritmus %d) je voliteľný (RFC 8624)."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s (%d) ZASTARANÝ (RFC 8624)."
+msgstr "%s (algoritmus %d) je podľa RFC 8624 ZASTARANÝ. Nepoužívajte tento algoritmus pre nové nasadenia."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
@@ -8227,7 +8227,7 @@ msgstr "Verejný kľúč DNSKEY musí byť platný base64."
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr "RSA < 2048 bitov (RFC 8624)."
+msgstr "Veľkosť kľúča RSA je menšia ako 2048 bitov. RFC 8624 odporúča pre kľúče RSA minimálne 2048 bitov."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
@@ -8327,7 +8327,7 @@ msgstr "SOA formát: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Apex NS je nutný pre DNSSEC."
+msgstr "Zóna nemá vo svojom vrchole žiadne záznamy NS (menný server). Pre DNSSEC je potrebný aspoň jeden záznam NS vo vrchole zóny."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -8566,7 +8566,7 @@ msgstr "Chystáte sa deaktivovať DNSSEC kľúč (ID"
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "Deaktivácia aktívneho kľúča je riziko."
+msgstr "Deaktivácia aktívneho kľúča ovplyvní bezpečnosť vašej zóny a môže spôsobiť zlyhania validácie."
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
@@ -8580,7 +8580,7 @@ msgstr "Chystáte sa aktivovať DNSSEC kľúč (ID"
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "Aktivácia zaradí kľúč do DNSSEC reťazca."
+msgstr "Aktiváciou sa tento kľúč zaradí do aktívneho podpisovacieho reťazca DNSSEC pre túto zónu."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
@@ -8954,7 +8954,7 @@ msgstr "Overenie"
 
 #: templates/modern/edit_supermaster.html:82
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "Všetky polia budú overené."
+msgstr "Všetky polia budú overené, aby sa zaistilo, že obsahujú správne hodnoty."
 
 #: templates/default/dnssec.html:9 templates/modern/dnssec.html:9
 msgid "Confirm Unsign Zone"
@@ -9194,7 +9194,7 @@ msgstr "Zadajte obsah"
 
 #: templates/modern/add_record.html:93 templates/modern/add_record.html:145
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "Tento typ záznamu je zastaraný."
+msgstr "Tento typ záznamu je zastaraný a nemal by sa používať pre nové záznamy."
 
 #: templates/modern/add_record.html:195
 msgid "Saving..."
@@ -9554,7 +9554,7 @@ msgstr "O šablónach"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Šablóny zón pre rýchlu tvorbu."
+msgstr "Šablóny zón umožňujú vytvárať preddefinované sady DNS záznamov, ktoré sa dajú rýchlo použiť pri vytváraní nových zón."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -9584,7 +9584,7 @@ msgstr "Tipy a príklady"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Rôzne šablóny pre rôzne typy."
+msgstr "Vytvorte rôzne šablóny pre rôzne typy webových stránok (napr. \"Základná webová stránka\", \"E-mailový server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -9788,7 +9788,7 @@ msgstr "Prevod vlastníctva zóny"
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr "Používateľ vlastní tieto zóny. Rozhodnite:"
+msgstr "Tento používateľ je vlastníkom nasledujúcich zón. Rozhodnite prosím, čo sa má stať s každou zónou:"
 
 #: templates/modern/list_record_changes.html:76
 msgid "Zone"
@@ -9889,7 +9889,7 @@ msgstr "Ochrana údajov"
 msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
-msgstr "Aktivita zaznamenávaná kvôli bezpečnosti"
+msgstr "Vaša prihlasovacia aktivita a akcie správy DNS môžu byť zaznamenávané na bezpečnostné a audítorské účely"
 
 #: templates/modern/user_agreement_content.html:15
 msgid ""
@@ -9900,7 +9900,7 @@ msgstr "Zodpovedáte za správnosť DNS záznamov"
 msgid ""
 "We will protect your personal information in accordance with applicable "
 "privacy laws"
-msgstr "Chránime osobné údaje v súlade so zákonmi"
+msgstr "Vaše osobné údaje budeme chrániť v súlade s platnými zákonmi o ochrane osobných údajov"
 
 #: templates/modern/user_agreement_content.html:19
 msgid "System Availability"
@@ -9932,7 +9932,7 @@ msgstr "Zmeny v zmluve"
 msgid ""
 "These terms may be updated from time to time. Users will be required to "
 "accept any changes before continuing to use the system."
-msgstr "Podmienky môžu byť aktualizované."
+msgstr "Tieto podmienky môžu byť priebežne aktualizované. Používatelia budú musieť prijať všetky zmeny predtým, ako budú pokračovať v používaní systému."
 
 #: templates/modern/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -9958,13 +9958,13 @@ msgstr "Táto akcia zneplatní existujúci kľúč!"
 msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
-msgstr "Regenerácia - aplikácie stratia prístup."
+msgstr "Ak tento API kľúč vygenerujete znova, žiadna aplikácia, ktorá ho používa, sa už nebude môcť overiť, kým v nej nový kľúč neaktualizujete."
 
 #: templates/modern/api_key_regenerate.html:18
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr "Nový kľúč sa zobrazí len raz."
+msgstr "Nový kľúč sa po regenerácii zobrazí iba raz, preto si ho pripravte uložiť."
 
 #: templates/modern/api_key_delete.html:20
 msgid "API Key Details"
@@ -10291,7 +10291,7 @@ msgstr "Ponechajte prázdne pre zachovanie súčasného hesla"
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
-msgstr "Oprávnenia šablóny sú globálne."
+msgstr "Oprávnenia z tejto šablóny sa pre tohto používateľa uplatnia globálne v celom systéme"
 
 #: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
 msgid "Optional information about this user"
@@ -10442,7 +10442,7 @@ msgstr "zón celkom"
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
-msgstr "Toto odpojí zóny od šablóny."
+msgstr "Týmto odpojíte tieto zóny od ich šablóny. Naozaj chcete pokračovať?"
 
 #: templates/modern/confirm_unlink_zones_templ.html:26
 msgid "Zones to be unlinked"
@@ -10584,7 +10584,7 @@ msgstr "Späť"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "Supermaster = push zón automaticky."
+msgstr "Supermaster je autoritatívny server PowerDNS, ktorý automaticky posiela nové zóny svojim sekundárnym serverom."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10699,7 +10699,7 @@ msgstr "Vytvoriť PTR iba pre existujúce A/AAAA záznamy"
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr "PTR iba pre IP s A/AAAA záznamami."
+msgstr "Ak je táto možnosť zaškrtnutá, záznamy PTR sa vytvoria iba pre IP adresy, ktoré majú v zadanej doméne zodpovedajúce záznamy A/AAAA"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
@@ -10747,7 +10747,7 @@ msgstr "Požiadavky"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr "Reverzná zóna musí existovať v PowerDNS."
+msgstr "Pred použitím tejto funkcie musíte mať v PowerDNS už vytvorenú príslušnú reverznú zónu."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -10786,13 +10786,13 @@ msgstr "Použite \"Create PTRs only for existing A/AAAA records\"."
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
-msgstr "Pole Host Prefix pre pridanie predpony."
+msgstr "Pomocou poľa Predpona hostiteľa pridáte predponu ku všetkým názvom hostiteľov pri vytváraní všetkých IP adries"
 
 #: templates/modern/batch_ptr_record.html:166
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "\"Create forward A/AAAA\" = auto."
+msgstr "Zaškrtnite \"Vytvoriť dopredné záznamy A/AAAA\", aby sa automaticky vytvorili zodpovedajúce dopredné záznamy (v režime porovnávania je táto možnosť vypnutá)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -10948,13 +10948,13 @@ msgstr "Sprievodca DNS záznamu"
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr "Sprievodca pre zložité záznamy."
+msgstr "Vyberte sprievodcu, ktorý vám pomôže vytvoriť zložité DNS záznamy pomocou vedených formulárov namiesto ručného zadávania textu."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr "DNS sprievodcovia sú pre dopredné zóny."
+msgstr "DNS sprievodcovia sú určení pre dopredné zóny a pre reverzné zóny nemusia byť vhodní."
 
 #: templates/modern/dns_wizard_select.html:57
 msgid "Recommended"
@@ -11823,7 +11823,7 @@ msgstr "Táto šablóna zóny nemá záznam SOA."
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr "DNS zóna bez SOA nefunguje."
+msgstr "DNS zóny zvyčajne potrebujú záznam SOA, aby fungovali správne, a bez neho môže podpisovanie DNSSEC zlyhať."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
@@ -12050,7 +12050,7 @@ msgstr "Viacfaktorové overenie je teraz povolené"
 
 #: templates/modern/mfa_recovery_codes.html:17
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Váš účet je teraz chránený MFA."
+msgstr "Váš účet je teraz chránený viacfaktorovým overením."
 
 #: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:30
 msgid "Authentication method:"
@@ -12072,7 +12072,7 @@ msgstr "Uložte obnovovacie kódy"
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
-msgstr "Recovery kódy pri strate autenticator."
+msgstr "Obnovovacie kódy môžete použiť na prístup k svojmu účtu, ak stratíte prístup k svojmu autentifikačnému zariadeniu. Každý kód sa dá použiť iba raz."
 
 #: templates/modern/mfa_recovery_codes.html:29
 msgid "Store these codes in a safe place!"
@@ -12110,7 +12110,7 @@ msgstr "Poweradmin MFA obnovovacie kódy"
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
-msgstr "Uložte bezpečne. Každý kód raz."
+msgstr "Uložte tieto kódy na bezpečné miesto. Každý kód sa dá jednorazovo použiť na prihlásenie, ak stratíte prístup k svojmu autentifikačnému zariadeniu."
 
 #: templates/default/mfa_setup.html:10 templates/modern/mfa_setup.html:10
 msgid "MFA Setup Required"
@@ -12120,7 +12120,7 @@ msgstr "Potrebné nastavenie MFA"
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr "MFA je povinné, nastavte ho."
+msgstr "Vaša organizácia vyžaduje viacfaktorové overenie. Nastavte prosím MFA, aby ste mohli systém ďalej používať."
 
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
@@ -12145,7 +12145,7 @@ msgstr "MFA je momentálne zakázané"
 
 #: templates/default/mfa_setup.html:57 templates/modern/mfa_setup.html:57
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Váš účet nie je chránený MFA."
+msgstr "Váš účet nie je chránený viacfaktorovým overením."
 
 #: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
 msgid "Authenticator App"
@@ -12203,13 +12203,13 @@ msgstr "Overenie e-mailu je zakázané administrátorom."
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
-msgstr "E-mail služba nie je povolená."
+msgstr "Overenie e-mailom nie je dostupné, pretože v tomto systéme nie je povolená poštová služba."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
-msgstr "Nastavte e-mail v profile."
+msgstr "Pred použitím overenia e-mailom si musíte vo svojom profile nastaviť e-mailovú adresu."
 
 #: templates/default/mfa_setup.html:113 templates/modern/mfa_setup.html:113
 msgid "Set up email verification"
@@ -12412,7 +12412,7 @@ msgstr "Vyhľadávanie DNS"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr "Zadajte doménu, hostiteľa alebo IP"
+msgstr "Zadajte názov domény, názov hostiteľa alebo IP adresu (napr. example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -12516,7 +12516,7 @@ msgstr "Zadajte IP adresu"
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
-msgstr "IP hlavného NS (IPv4/IPv6, čiarkami)."
+msgstr "IP adresa hlavného menného servera (podporuje IPv4 aj IPv6, viac IP adries oddeľte čiarkami)"
 
 #: templates/modern/delete_zone_templ.html:5
 msgid "Delete template"
@@ -12598,7 +12598,7 @@ msgstr "Vlastné šablóny sú aktívne a prepisujú predvolené šablóny. Toto
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
-msgstr "Štandardné šablóny aktívne."
+msgstr "Štandardné šablóny sú aktívne. Sú to predvolené šablóny používané pri odosielaní e-mailov."
 
 #: templates/modern/email_previews.html:51
 msgid "Subject:"
@@ -12630,7 +12630,7 @@ msgstr "pomocou vlastnej šablóny"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Odstráňte <code>templates/emails/custom/</code>."
+msgstr "Ak sa chcete vrátiť k štandardným šablónam, odstráňte alebo premenujte vlastné súbory šablón v <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -12641,7 +12641,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Vlastné šablóny: templates/emails/custom/."
+msgstr "Vlastné e-mailové šablóny môžete vytvoriť tak, že ich umiestnite do <code>templates/emails/custom/</code>, čím tieto štandardné šablóny prepíšete vlastným dizajnom."
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -12658,7 +12658,7 @@ msgstr "Svetlý režim je predvolený pre väčšinu e-mail klientov"
 #: templates/modern/email_previews.html:94
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
-msgstr "Náhľad tmavého režimu"
+msgstr "Náhľad tmavého režimu zobrazuje, ako e-maily vyzerajú, keď majú používatelia zapnutý tmavý režim"
 
 #: templates/modern/email_previews.html:95
 msgid "These previews reflect the actual templates used in production"
@@ -12676,7 +12676,7 @@ msgstr "Obnoviť stav"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "PowerDNS API nie je nakonfigurované."
+msgstr "PowerDNS API nie je nakonfigurované. Nastavte prosím URL a kľúč PowerDNS API vo svojich nastaveniach."
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13032,7 +13032,7 @@ msgstr "Chystáte sa vymazať API kľúč"
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
-msgstr "Po vymazaní aplikácie neoveria."
+msgstr "Ak tento API kľúč vymažete, žiadna aplikácia, ktorá ho používa, sa už nebude môcť overiť."
 
 #: templates/modern/api_key_delete.html:66
 msgid "Yes, delete this API key"
@@ -13081,7 +13081,7 @@ msgstr "Skupiny oprávnení"
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
-msgstr "Oprávnenia v skupinách, hľadanie."
+msgstr "Oprávnenia sú nižšie usporiadané do skupín pre jednoduchšiu správu. Pomocou vyhľadávania rýchlo nájdete konkrétne oprávnenia."
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"
@@ -13111,7 +13111,7 @@ msgstr "Chystáte sa vymazať aktívny DNSSEC kľúč (ID"
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "Mazanie aktívneho kľúča je riziko."
+msgstr "Vymazanie aktívneho kľúča ovplyvní bezpečnosť vašej zóny a môže spôsobiť zlyhania validácie."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"
@@ -13139,7 +13139,7 @@ msgstr "Čo sú skupiny?"
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
-msgstr "Skupiny pre organizáciu používateľov."
+msgstr "Skupiny umožňujú organizovať používateľov a spravovať prístup k zónam spoločne. Členovia dedia oprávnenia skupiny pre všetky zóny, ktoré skupina vlastní."
 
 #: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid "How to Use Groups"
@@ -13149,7 +13149,7 @@ msgstr "Ako používať skupiny"
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
-msgstr "Po skupine pridajte členov a zóny."
+msgstr "Po vytvorení skupiny do nej môžete pridať členov a priradiť jej zóny. Všetci členovia automaticky získajú prístup k zónam skupiny."
 
 #: templates/modern/list_perm_templ.html:6
 msgid "Group Templates"
