@@ -1340,18 +1340,13 @@ msgstr "Δεν έχετε άδεια να τροποποιήσετε αυτή τ
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"Αδύνατη η εισαγωγή μιας νέας ζώνης: zone  ownership mode είναι μόνο ομάδες "
-"αλλά δεν υπάρχουν ομάδες. Δημιουργήστε μια ομάδα πρώτα."
+msgstr "Δεν είναι δυνατή η εισαγωγή νέας ζώνης: το zone_ownership_mode είναι groups_only αλλά δεν υπάρχουν ομάδες. Δημιουργήστε πρώτα μια ομάδα."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"Αδύνατη η εισαγωγή μιας νέας ζώνης: zone  ownership mode είναι groups only "
-"και δεν είστε μέλος οποιασδήποτε ομάδας. Ζητήστε από έναν διαχειριστή να σας "
-"προσθέσει σε μια ομάδα πρώτα."
+msgstr "Αδύνατη η εισαγωγή μιας νέας ζώνης: zone_ownership_mode είναι groups_only και δεν είστε μέλος οποιασδήποτε ομάδας. Ζητήστε από έναν διαχειριστή να σας προσθέσει σε μια ομάδα πρώτα."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2533,18 +2528,13 @@ msgstr "Προσθήκη πρωτογενούς ζώνης"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Λειτουργία ιδιοκτησίας ζώνης είναι ομάδες μόνο, αλλά δεν υπάρχουν ομάδες. "
-"Δημιουργήστε μια ομάδα πριν προσθέσετε ζώνες."
+msgstr "Η λειτουργία ιδιοκτησίας ζώνης είναι groups_only αλλά δεν υπάρχουν ομάδες. Δημιουργήστε μια ομάδα πριν προσθέσετε ζώνες."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Λειτουργία ιδιοκτησίας ζώνης είναι ομάδες μόνο, αλλά δεν είστε μέλος "
-"οποιασδήποτε ομάδας. Ζητήστε από έναν διαχειριστή να σας προσθέσει σε μια "
-"ομάδα πριν από τη δημιουργία ζωνών."
+msgstr "Η λειτουργία ιδιοκτησίας ζώνης είναι groups_only αλλά δεν είστε μέλος καμίας ομάδας. Ζητήστε από έναν διαχειριστή να σας προσθέσει σε μια ομάδα πριν από τη δημιουργία ζωνών."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2627,9 +2617,7 @@ msgstr "Μη έγκυρη υποβολή φόρμας."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Λείπει ο πίνακας εγγραφής type  defaults. Εφαρμόστε την ενημέρωση σχήματος "
-"4.5.0 πριν την αποθήκευση προεπιλεγμένων."
+msgstr "Λείπει ο πίνακας record_type_defaults. Εφαρμόστε την ενημέρωση σχήματος 4.5.0 πριν από την αποθήκευση των προεπιλογών."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3327,9 +3315,7 @@ msgstr "Δεν έχετε την άδεια να αλλάξετε το προε�
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Η προεπιλεγμένη σημαία καθαρίστηκε, αλλά η ρύθμιση ρυθμίσεων dns.default "
-"zone template είναι ακόμα ενεργή."
+msgstr "Η προεπιλεγμένη σημαία καθαρίστηκε, αλλά η ρύθμιση ρυθμίσεων dns.default_zone_template είναι ακόμα ενεργή."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3360,18 +3346,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Αδυναμία αφαίρεσης του τελευταίου ιδιοκτήτη χρήστη: ο τρόπος ιδιοκτησίας "
-"ζώνης είναι μόνο χρήστες και απαιτεί τουλάχιστον έναν ιδιοκτήτη χρήστη. "
-"Προσθέστε έναν άλλο ιδιοκτήτη χρήστη πρώτα."
+msgstr "Δεν είναι δυνατή η αφαίρεση του τελευταίου ιδιοκτήτη χρήστη: η λειτουργία ιδιοκτησίας ζώνης είναι users_only και απαιτεί τουλάχιστον έναν ιδιοκτήτη χρήστη. Προσθέστε πρώτα έναν άλλο ιδιοκτήτη χρήστη."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"Αδυναμία αφαίρεσης ιδιοκτήτη χρήστη: ο τρόπος ιδιοκτησίας ζώνης είναι μόνο "
-"ομάδες και η ζώνη δεν έχει ιδιοκτήτες ομάδας. Προσθέστε μια ομάδα πρώτα."
+msgstr "Δεν είναι δυνατή η αφαίρεση του ιδιοκτήτη χρήστη: η λειτουργία ιδιοκτησίας ζώνης είναι groups_only και η ζώνη δεν έχει ιδιοκτήτες ομάδας. Προσθέστε πρώτα μια ομάδα."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3396,18 +3377,13 @@ msgstr "Η ομάδα προστέθηκε με επιτυχία."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Αδυναμία αφαίρεσης της τελευταίας ομάδας: ο τρόπος ιδιοκτησίας ζώνης είναι "
-"μόνο ομάδες και απαιτεί τουλάχιστον μία ομάδα. Προσθέστε μια άλλη ομάδα "
-"πρώτα."
+msgstr "Δεν είναι δυνατή η αφαίρεση της τελευταίας ομάδας: η λειτουργία ιδιοκτησίας ζώνης είναι groups_only και απαιτεί τουλάχιστον μία ομάδα. Προσθέστε πρώτα μια άλλη ομάδα."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Αδυναμία αφαίρεσης ομάδας: ο τρόπος ιδιοκτησίας ζώνης είναι μόνο χρήστες και "
-"η ζώνη δεν έχει ιδιοκτήτες χρηστών. Προσθέστε πρώτα έναν ιδιοκτήτη χρήστη."
+msgstr "Δεν είναι δυνατή η αφαίρεση της ομάδας: η λειτουργία ιδιοκτησίας ζώνης είναι users_only και η ζώνη δεν έχει ιδιοκτήτες χρήστες. Προσθέστε πρώτα έναν ιδιοκτήτη χρήστη."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3419,14 +3395,11 @@ msgstr "Προσθέστε έναν άλλο ιδιοκτήτη ή μια ομά
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Προσθήκη ενός άλλου ιδιοκτήτη χρήστη πρώτα (ζώνη λειτουργία ιδιοκτησίας "
-"είναι οι χρήστες μόνο)."
+msgstr "Προσθέστε πρώτα έναν άλλο ιδιοκτήτη χρήστη (η λειτουργία ιδιοκτησίας ζώνης είναι users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr ""
-"Προσθήκη μιας ομάδας πρώτα (κατάσταση ιδιοκτησίας ζώνης είναι ομάδες μόνο)."
+msgstr "Προσθέστε πρώτα μια ομάδα (η λειτουργία ιδιοκτησίας ζώνης είναι groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -10324,9 +10297,7 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
-msgstr ""
-"MX για τη Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection. outlook.com</"
-"code>"
+msgstr "MX για τη Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
@@ -13192,9 +13163,7 @@ msgstr "Προεπιλεγμένη στο έντυπο πρόσθετης ζών
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Configure μέσω dns.default zone template - επεξεργασία ρυθμίσεων.php για "
-"αλλαγή"
+msgstr "Ρυθμισμένο μέσω dns.default_zone_template - επεξεργαστείτε το settings.php για αλλαγή"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14538,17 +14507,13 @@ msgstr "Σφάλμα API PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Ελέγξτε ότι το pdns api.key στο config/setings.php ταιριάζει με το πλήκτρο "
-"API ρυθμισμένο στο PowerDNS."
+msgstr "Ελέγξτε ότι το pdns_api.key στο config/settings.php ταιριάζει με το κλειδί API που έχει ρυθμιστεί στο PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Ελέγξτε ότι το pdns api.server name ταιριάζει με αυτό που αναφέρει το "
-"PowerDNS (προκαθορισμένο 'localhost')."
+msgstr "Ελέγξτε ότι το pdns_api.server_name ταιριάζει με αυτό που αναφέρει το PowerDNS (προκαθορισμένο 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15963,9 +15928,7 @@ msgstr ""
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"Δε βρέθηκε αρχείο ρυθμίσεων. Παρακαλώ δημιουργήστε το αρχείο config/"
-"setings.php πριν προχωρήσετε."
+msgstr "Δεν βρέθηκε αρχείο ρυθμίσεων. Δημιουργήστε το αρχείο config/settings.php πριν προχωρήσετε."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

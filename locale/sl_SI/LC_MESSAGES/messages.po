@@ -1306,17 +1306,13 @@ msgstr "Nimate dovoljenja za spreminjanje tega območja."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"Ni moč uvoziti novega območja: cona lastništvo  način je samo skupina , "
-"vendar ni nobene skupine. Najprej ustvari skupino."
+msgstr "Ni mogoče uvoziti novega območja: zone_ownership_mode je groups_only, vendar ni nobene skupine. Najprej ustvarite skupino."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"Ni moč uvoziti novega območja: cona lastništvo  način je samo skupina  in "
-"niste član nobene skupine. Prosite skrbnika, da vas najprej doda v skupino."
+msgstr "Ni mogoče uvoziti novega območja: zone_ownership_mode je groups_only in niste član nobene skupine. Prosite skrbnika, da vas najprej doda v skupino."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2490,17 +2486,13 @@ msgstr "Dodaj primarno območje"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Način lastništva cone je samo groupe , vendar ni nobene skupine. Ustvari "
-"skupino pred dodajanjem con."
+msgstr "Način lastništva cone je groups_only, vendar ni nobene skupine. Ustvarite skupino pred dodajanjem con."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Način lastništva cone je samo groupe  vendar niste član nobene skupine. "
-"Prosite administratorja, da vas pred ustvarjanjem con doda v skupino."
+msgstr "Način lastništva cone je groups_only, vendar niste član nobene skupine. Prosite skrbnika, da vas doda v skupino, preden ustvarite cone."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2581,9 +2573,7 @@ msgstr "Neveljavna predložitev obrazca."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tabela  vrste zapisa privzetosti manjka. Uveljavi posodobitev sheme 4.5.0 "
-"pred shranjevanjem privzetih vrednosti."
+msgstr "Tabela record_type_defaults manjka. Pred shranjevanjem privzetih vrednosti uveljavite posodobitev sheme 4.5.0."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3287,9 +3277,7 @@ msgstr "Nimate dovoljenja za spremembo predloge za privzeto cono."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Privzeta zastavica je odstranjena, vendar je nastavitev cone  poskusa dns. "
-"default  cone še vedno aktivna."
+msgstr "Privzeta zastavica je odstranjena, vendar je konfiguracijska nastavitev dns.default_zone_template še vedno aktivna."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3319,18 +3307,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Ni moč odstraniti zadnjega uporabnika: način lastništva cone je samo "
-"uporabnik in zahteva vsaj enega uporabnika lastnika. Najprej dodajte drugega "
-"lastnika uporabnika."
+msgstr "Ni mogoče odstraniti zadnjega lastnika uporabnika: način lastništva cone je users_only in zahteva vsaj enega lastnika uporabnika. Najprej dodajte drugega lastnika uporabnika."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"Ni moč odstraniti uporabnika: način lastništva cone je samo groupe le in "
-"cona nima lastnikov skupin. Najprej dodaj skupino."
+msgstr "Ni mogoče odstraniti lastnika uporabnika: način lastništva cone je groups_only in cona nima lastnikov skupin. Najprej dodajte skupino."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3355,17 +3338,13 @@ msgstr "Skupina je bila uspešno dodana."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Ni moč odstraniti zadnje skupine: način lastništva cone je groupe le in "
-"zahteva vsaj eno skupino. Najprej dodamo še eno skupino."
+msgstr "Ni mogoče odstraniti zadnje skupine: način lastništva cone je groups_only in zahteva vsaj eno skupino. Najprej dodajte drugo skupino."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Ni moč odstraniti skupine: način lastništva območja je samo uporabnik  in "
-"cona nima lastnikov uporabnikov. Najprej dodajte lastnika uporabnika."
+msgstr "Ni mogoče odstraniti skupine: način lastništva cone je users_only in cona nima lastnikov uporabnikov. Najprej dodajte lastnika uporabnika."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3377,13 +3356,11 @@ msgstr "Najprej dodajte drugega lastnika ali skupino."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Najprej dodajte drugega lastnika uporabnika (območje lastništva je samo "
-"uporabnik)."
+msgstr "Najprej dodajte drugega lastnika uporabnika (način lastništva cone je users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Najprej dodajte skupino (model lastništva območja je groupe le)."
+msgstr "Najprej dodajte skupino (način lastništva cone je groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -12819,9 +12796,7 @@ msgstr "Predizbrano na obrazcu za dodatno območje"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Nastavi preko dns.default  cone template - uredite nastavitve.php za "
-"spremembo"
+msgstr "Nastavljeno prek dns.default_zone_template - za spremembo uredite settings.php"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14127,17 +14102,13 @@ msgstr "Napaka API PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Preveri, da se pdns api.key v config/setts.php ujema s tipko API, "
-"nastavljeno v PowerDNS."
+msgstr "Preverite, ali se pdns_api.key v config/settings.php ujema s ključem API, nastavljenim v PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Preveri, da se pdns api.server name ujema s tem, kar poroča PowerDNS "
-"(privzeto » localhost«)."
+msgstr "Preveri, da se pdns_api.server_name ujema s tem, kar poroča PowerDNS (privzeto » localhost«)."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15173,7 +15144,7 @@ msgstr "Ni moč zaznati (PHP-FPM) - zagotoviti, da je omogočeno"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Zagotovite, da je nastavljeno prepisovanje URL (glej ginx.conf.primer)"
+msgstr "Zagotovite, da je prepisovanje naslovov URL nastavljeno (glejte nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
@@ -15513,9 +15484,7 @@ msgstr "Pri uporabi hrbtenjače API je potreben ključ PowerDNS API."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"Ni moč najti nastavitvene datoteke. Pred nadaljevanjem ustvarite datoteko "
-"config/setts.php."
+msgstr "Nastavitvena datoteka ni bila najdena. Pred nadaljevanjem ustvarite datoteko config/settings.php."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

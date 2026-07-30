@@ -421,7 +421,7 @@ msgstr "Отхвърляне на подозрителни поддомейни 
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:86
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
-msgstr "Политика за имейли от поддомейни (напр. поща.пример.com)"
+msgstr "Политика за имейли от поддомейни (напр. mail.example.com)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:90
 msgid "Policy Application Percentage"
@@ -1320,17 +1320,13 @@ msgstr "Нямате разрешение да промените тази зо�
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"Не може да се внесе нова зона: zone ownership mode е groups  only but no "
-"groups are. Първо създай група."
+msgstr "Не може да се внесе нова зона: zone_ownership_mode е groups_only but no groups are. Първо създай група."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"Не може да импортирате нова зона: zone ownership mode е groups  only и не "
-"сте член на никоя група. Първо помоли администратор да те добави в група."
+msgstr "Не може да импортирате нова зона: zone_ownership_mode е groups_only и не сте член на никоя група. Първо помоли администратор да те добави в група."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2495,18 +2491,13 @@ msgstr "Добавяне на първична зона"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Режимът на собственост на зона е само група , но не съществуват групи. "
-"Създаване на група преди добавяне на зони."
+msgstr "Режимът на собственост на зоната е groups_only, но не съществуват групи. Създайте група, преди да добавяте зони."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Режимът на собственост на зона е само група но вие не сте член на никоя "
-"група. Помолете администратор да ви добави към група преди създаването на "
-"зони."
+msgstr "Режимът на собственост на зоната е groups_only, но вие не сте член на никоя група. Помолете администратор да ви добави към група, преди да създавате зони."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2587,9 +2578,7 @@ msgstr "Невалиден формуляр за подаване."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Таблицата за записи тип по подразбиране липсва. Прилагане на 4.5.0 ъпдейта "
-"схема преди запис по подразбиране."
+msgstr "Таблицата record_type_defaults липсва. Приложете обновяването на схемата 4.5.0, преди да запазите стойностите по подразбиране."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3279,9 +3268,7 @@ msgstr "Нямате разрешение да променяте шаблона
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Флагът по подразбиране е изчистен, но настройките за конфиденциалност зона "
-"template са все още активни."
+msgstr "Флагът по подразбиране е изчистен, но конфигурационната настройка dns.default_zone_template все още е активна."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3312,18 +3299,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Не може да се премахне последният потребител: режимът на собственост на зона "
-"е само за потребители и изисква поне един потребител. Добавяне на друг "
-"потребител първо."
+msgstr "Не може да се премахне последният потребител собственик: режимът на собственост на зоната е users_only и изисква поне един потребител собственик. Първо добавете друг потребител собственик."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"Потребителят не може да бъде изтрит: режимът на собственост на зона е "
-"groups  only и зоната няма собственици на група. Първо добави група."
+msgstr "Потребителят не може да бъде изтрит: режимът на собственост на зона е groups_only и зоната няма собственици на група. Първо добави група."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3348,17 +3330,13 @@ msgstr "Групата беше добавена успешно."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Не може да се премахне последната група: режимът на собственост на зона е "
-"само groups  и изисква поне една група. Първо добави друга група."
+msgstr "Не може да се премахне последната група: режимът на собственост на зоната е groups_only и изисква поне една група. Първо добавете друга група."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Не може да бъде премахната група: режимът на собственост на зона е само за "
-"потребители и зоната няма собственици. Първо добавете потребител."
+msgstr "Групата не може да бъде премахната: режимът на собственост на зоната е users_only, а зоната няма потребители собственици. Първо добавете потребител собственик."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3370,12 +3348,11 @@ msgstr "Добавяне на друг собственик или група п
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Добавете първо друг потребител (режимът на собственост е само потребител)."
+msgstr "Първо добавете друг потребител собственик (режимът на собственост на зоната е users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Добавяне на група първо (зоната собственост режим е групи само)."
+msgstr "Първо добавете група (режимът на собственост на зоната е groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -12988,9 +12965,7 @@ msgstr "Предварително избран във формуляра за �
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Настройване чрез dns. default zone template - редактиране на настройките.php "
-"за промяна"
+msgstr "Конфигурирано чрез dns.default_zone_template - редактирайте settings.php за промяна"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14312,17 +14287,13 @@ msgstr "Грешка при PowerDNS API"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Проверете този pdns api.key в config/settings.php съвпада с API ключ, "
-"конфигуриран в PowerDNS."
+msgstr "Проверете този pdns_api.key в config/settings.php съвпада с API ключ, конфигуриран в PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Проверете това pdns api.server name съвпада с това, което PowerDNS докладва "
-"(по подразбиране \"localhost\")."
+msgstr "Проверете това pdns_api.server_name съвпада с това, което PowerDNS докладва (по подразбиране \"localhost\")."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15712,9 +15683,7 @@ msgstr "PowerDNS API ключ е необходим при използване 
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"Не е открит конфигурационен файл. Моля, създайте конфигуриране / "
-"настройки.php файл преди да продължите."
+msgstr "Не е намерен конфигурационен файл. Моля, създайте файла config/settings.php, преди да продължите."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

@@ -1326,18 +1326,13 @@ msgstr "Níl cead agat an crios seo a mhodhnú."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"Cannot allmhairiú crios nua: Is crios ownership mode grúpaí only ach níl aon "
-"ghrúpaí ann. Cruthaigh grúpa ar dtús."
+msgstr "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only ach níl aon ghrúpaí ann. Cruthaigh grúpa ar dtús."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"Cannot allmhairiú crios nua: Is crios ownership mode groups only agus nach "
-"bhfuil tú ina bhall d'aon ghrúpa. Iarr ar riarthóir a chur leat le grúpa ar "
-"dtús."
+msgstr "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only agus níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa ar dtús."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2528,17 +2523,13 @@ msgstr "Cuir le Crios na Bunscoile"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Is mód úinéireacht Crios grúpaí only ach níl aon ghrúpaí ann. Cruthaigh "
-"grúpa roimh criosanna a chur leis."
+msgstr "Is é groups_only an mód úinéireachta crios ach níl aon ghrúpaí ann. Cruthaigh grúpa sula gcuirfidh tú criosanna leis."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Is mód úinéireacht Crios grúpaí only ach nach bhfuil tú ina bhall d'aon "
-"ghrúpa. Iarr ar riarthóir a chur leat le grúpa roimh criosanna a chruthú."
+msgstr "Is é groups_only an mód úinéireachta crios ach níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa sula gcruthóidh tú criosanna."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2619,9 +2610,7 @@ msgstr "aighneacht fhoirm luachmhar."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tá an tábla taifead type defaults ar iarraidh. Cuir an 4.5.0 cothrom le dáta "
-"scéimre roimh a shábháil mainneachtainí."
+msgstr "Tá an tábla record_type_defaults ar iarraidh. Cuir nuashonrú scéime 4.5.0 i bhfeidhm sula sábhálfaidh tú na réamhshocruithe."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3335,9 +3324,7 @@ msgstr "Ní gá duit an cead a athrú ar an teimpléad crios réamhshocraithe."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Bratach réamhshocraithe soiléir, ach tá an suíomh config dns.default zone "
-"template gníomhach fós."
+msgstr "Bratach réamhshocraithe soiléir, ach tá an suíomh config dns.default_zone_template gníomhach fós."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3368,18 +3355,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Ní féidir a bhaint as an úinéir úsáideora deiridh: Is modh úinéireacht crios "
-"úsáideoirí only agus éilíonn ar a laghad úinéir úsáideora amháin. Cuir "
-"úinéir úsáideora eile ar dtús."
+msgstr "Ní féidir an t-úinéir úsáideora deireanach a bhaint: is é users_only an mód úinéireachta crios agus teastaíonn úinéir úsáideora amháin ar a laghad. Cuir úinéir úsáideora eile leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"Ní féidir a bhaint úinéir úsáideora: Is mód úinéireacht crios grúpaí only "
-"agus tá an crios aon úinéirí grúpa. Cuir grúpa ar dtús."
+msgstr "Ní féidir an t-úinéir úsáideora a bhaint: is é groups_only an mód úinéireachta crios agus níl aon úinéirí grúpa ag an gcrios. Cuir grúpa leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3404,17 +3386,13 @@ msgstr "Tá Grúpa curtha leis go rathúil."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Ní féidir a bhaint as an ngrúpa deireanach: Is mód úinéireacht crios grúpaí "
-"only agus éilíonn ar a laghad grúpa amháin. Cuir grúpa eile ar dtús."
+msgstr "Ní féidir an grúpa deireanach a bhaint: is é groups_only an mód úinéireachta crios agus teastaíonn grúpa amháin ar a laghad. Cuir grúpa eile leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Ní féidir grúpa a bhaint: Is mód úinéireacht crios úsáideoirí only agus níl "
-"aon úinéirí úsáideora ag an gcrios. Cuir úinéir úsáideora ar dtús."
+msgstr "Ní féidir an grúpa a bhaint: is é users_only an mód úinéireachta crios agus níl aon úinéirí úsáideora ag an gcrios. Cuir úinéir úsáideora leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3426,13 +3404,11 @@ msgstr "Cuir úinéir eile nó grúpa ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Cuir úinéir úsáideora eile ar dtús (Is é an modh úinéireachta ózóin "
-"úsáideoirí only)."
+msgstr "Cuir úinéir úsáideora eile leis ar dtús (is é users_only an mód úinéireachta crios)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Cuir grúpa ar dtús (Is é an modh úinéireachta ózóin grúpaí only)."
+msgstr "Cuir grúpa leis ar dtús (is é groups_only an mód úinéireachta crios)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -13078,8 +13054,7 @@ msgstr "Réamhroghnaithe ar an bhfoirm add-zone"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Cumraithe trí dns.default zone template - suímh eagarthóireacht a athrú.php"
+msgstr "Cumraithe trí dns.default_zone_template - cuir settings.php in eagar chun é a athrú"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14405,17 +14380,13 @@ msgstr "Earráid PowerDNS API"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Seiceáil go pdns api.key i config / settings.php oireann an eochair API "
-"cumraithe i PowerDNS."
+msgstr "Seiceáil go pdns_api.key i config / settings.php oireann an eochair API cumraithe i PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Seiceáil go oireann pdns api.server name cad tuarascálacha PowerDNS "
-"(réamhshocrú 'óstáil áitiúil')."
+msgstr "Seiceáil go oireann pdns_api.server_name cad tuarascálacha PowerDNS (réamhshocrú 'óstáil áitiúil')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15819,9 +15790,7 @@ msgstr "PowerDNS API eochair ag teastáil nuair a úsáid API cúlú."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"Uimh comhad cumraíochta le fáil. Cruthaigh an comhad config/socruithe.php "
-"roimh dhul ar aghaidh."
+msgstr "Níor aimsíodh aon chomhad cumraíochta. Cruthaigh an comhad config/settings.php sula rachaidh tú ar aghaidh."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

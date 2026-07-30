@@ -1266,17 +1266,13 @@ msgstr "אין לך רשות לשנות את האזור הזה."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"אי אפשר לייבא אזור חדש: אזור בעלות מוגדה הוא קבוצות רק אך אין קבוצות קיימות. "
-"ליצור קבוצה ראשונה."
+msgstr "אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only אך לא קיימות קבוצות. צור קבוצה תחילה."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"אי אפשר לייבא אזור חדש: אזור בעלות מוייד הוא קבוצות רק ואתה לא חבר של כל "
-"קבוצה. בקש ממנהל להוסיף אותך לקבוצה ראשונה."
+msgstr "אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only ואינך חבר באף קבוצה. בקש ממנהל להוסיף אותך לקבוצה תחילה."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2409,17 +2405,13 @@ msgstr "הוסף אזור ראשוני"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"מצב הבעלות על האזור הוא קבוצות רק אך לא קיימות קבוצות. ליצור קבוצה לפני "
-"הוספת אזורים."
+msgstr "מצב הבעלות על האזור הוא groups_only אך לא קיימות קבוצות. צור קבוצה לפני הוספת אזורים."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"מצב הבעלות על האזור הוא קבוצות רק אבל אתה לא חבר של כל קבוצה. בקש ממנהל "
-"להוסיף אותך לקבוצה לפני יצירת אזורים."
+msgstr "מצב הבעלות על האזור הוא groups_only אך אינך חבר באף קבוצה. בקש ממנהל להוסיף אותך לקבוצה לפני יצירת אזורים."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2495,8 +2487,7 @@ msgstr "הגשת טופס לא חוקי"
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"שולחן הרשומות type defaults חסר. החל את העדכון 4.5.0 schema לפני שמירת מחדל."
+msgstr "טבלת record_type_defaults חסרה. החל את עדכון הסכימה 4.5.0 לפני שמירת ברירות המחדל."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3168,8 +3159,7 @@ msgstr "אין לך רשות לשנות את תבנית אזור ברירת המ
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"דגל Default הבהיר, אך הגדרת התצורה של dns.default zone template עדיין פעילה."
+msgstr "דגל Default הבהיר, אך הגדרת התצורה של dns.default_zone_template עדיין פעילה."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3196,17 +3186,13 @@ msgstr "לא ניתן להסיר את הבעלים האחרונים: זה יעז
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"לא יכול להסיר את בעל המשתמש האחרון: מצב הבעלות על אזור הוא משתמשים רק ודורש "
-"לפחות בעל משתמש אחד. הוסף בעל משתמש ראשון."
+msgstr "לא ניתן להסיר את בעל המשתמש האחרון: מצב הבעלות על האזור הוא users_only ודורש לפחות בעל משתמש אחד. הוסף בעל משתמש נוסף תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"לא יכול להסיר בעל משתמש: מצב הבעלות על אזור הוא קבוצות רק ולאזור אין בעלי "
-"קבוצה. הוסף קבוצה ראשונה."
+msgstr "לא ניתן להסיר בעל משתמש: מצב הבעלות על האזור הוא groups_only ולאזור אין בעלי קבוצה. הוסף קבוצה תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3229,17 +3215,13 @@ msgstr "הקבוצה נוספה בהצלחה."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"לא ניתן להסיר את הקבוצה האחרונה: מצב הבעלות באזור הוא קבוצות רק ודורש לפחות "
-"קבוצה אחת. הוסף קבוצה ראשונה."
+msgstr "לא ניתן להסיר את הקבוצה האחרונה: מצב הבעלות על האזור הוא groups_only ודורש לפחות קבוצה אחת. הוסף קבוצה נוספת תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"לא ניתן להסיר קבוצה: מצב הבעלות על האזור הוא משתמשים רק ולאזור אין בעלי "
-"משתמשים. הוסף בעל משתמש ראשון."
+msgstr "לא ניתן להסיר קבוצה: מצב הבעלות על האזור הוא users_only ולאזור אין בעלי משתמש. הוסף בעל משתמש תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3251,11 +3233,11 @@ msgstr "הוסף בעל אחר או קבוצה ראשונה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "הוסף בעל משתמש נוסף ראשון (מצב בעלות עלזון הוא משתמשים רק)."
+msgstr "הוסף בעל משתמש נוסף תחילה (מצב הבעלות על האזור הוא users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "הוסף קבוצה ראשונה (מצב בעלות עלזון הוא קבוצות רק)."
+msgstr "הוסף קבוצה תחילה (מצב הבעלות על האזור הוא groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -12335,7 +12317,7 @@ msgstr "נבחר מראש על טופס התוספת"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "מוגדר באמצעות dns.default template - לערוך הגדרות.php כדי לשנות"
+msgstr "מוגדר באמצעות dns.default_zone_template - ערוך את settings.php כדי לשנות"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13621,17 +13603,13 @@ msgstr "שגיאה API PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"בדוק כי pdns api.key ב תצורה / הגדרות.php להתאים את מפתח ה- API המוגדר ב- "
-"PowerDNS."
+msgstr "בדוק כי pdns_api.key בקובץ config/settings.php תואם למפתח ה-API המוגדר ב-PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"בדוק את זה pdns api.server name תואם את דוחות PowerDNS (default "
-"\"localhost\")."
+msgstr "בדוק את זה pdns_api.server_name תואם את דוחות PowerDNS (default \"localhost\")."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14424,7 +14402,7 @@ msgstr "API מפתח"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API מפתח (מתוך pdns)."
+msgstr "מפתח ה-API של PowerDNS (מתוך ההגדרה api-key בקובץ pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14646,7 +14624,7 @@ msgstr "לא יכול לזהות (PHP-FPM) - להבטיח שהוא מופעל"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "ודא שכתובת כתובת URL מוגדרת (ראה nginx.poli.example)"
+msgstr "ודא ששכתוב כתובות URL מוגדר (ראה nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"

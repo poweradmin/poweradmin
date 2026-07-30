@@ -1306,17 +1306,13 @@ msgstr "اجازه ندارید این منطقه را تغییر دهید."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"نمی توان یک منطقه جدید را وارد کرد: منطقه مالکیت دولت فقط گروه است اما هیچ "
-"گروه وجود ندارد. ابتدا یک گروه بسازید."
+msgstr "نمی‌توان منطقه جدیدی را وارد کرد: zone_ownership_mode برابر groups_only است اما هیچ گروهی وجود ندارد. ابتدا یک گروه بسازید."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"نمی توانید یک منطقه جدید را وارد کنید: منطقه مالکیت تنها گروه است و شما عضو "
-"هیچ گروه نیستید. از مدیر بخواهید ابتدا شما را به یک گروه اضافه کند."
+msgstr "نمی‌توان منطقه جدیدی را وارد کرد: zone_ownership_mode برابر groups_only است و شما عضو هیچ گروهی نیستید. از مدیر بخواهید ابتدا شما را به یک گروه اضافه کند."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2465,17 +2461,13 @@ msgstr "اضافه کردن منطقه اولیه"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"حالت مالکیت منطقه فقط گروه است اما هیچ گروه وجود ندارد. ایجاد یک گروه قبل از "
-"اضافه کردن مناطق"
+msgstr "حالت مالکیت منطقه groups_only است اما هیچ گروهی وجود ندارد. پیش از افزودن مناطق، یک گروه ایجاد کنید."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"حالت مالکیت منطقه فقط گروه است، اما شما عضو هیچ گروه نیستید. از مدیر بخواهید "
-"قبل از ایجاد مناطق، شما را به یک گروه اضافه کند."
+msgstr "حالت مالکیت منطقه groups_only است اما شما عضو هیچ گروهی نیستید. از مدیر بخواهید پیش از ایجاد مناطق، شما را به یک گروه اضافه کند."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2554,9 +2546,7 @@ msgstr "ارسال فرم Invalid"
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"جدول رکورد type defaults گم شده است. به روز رسانی طرح 4.5.0 قبل از صرفه جویی "
-"در پیش فرض."
+msgstr "جدول record_type_defaults وجود ندارد. پیش از ذخیره پیش‌فرض‌ها، به‌روزرسانی شمای 4.5.0 را اعمال کنید."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3234,7 +3224,7 @@ msgstr "شما اجازه تغییر الگوی منطقه پیش فرض را ن
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "پرچم پیش فرض پاک شد، اما تنظیمات dns.default zone tempe هنوز فعال است."
+msgstr "نشانه پیش‌فرض پاک شد، اما تنظیم پیکربندی dns.default_zone_template همچنان فعال است."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3261,17 +3251,13 @@ msgstr "نمی توان آخرین مالک را حذف کرد: این منطق�
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"نمی تواند آخرین مالک کاربر را حذف کند: حالت مالکیت منطقه تنها کاربر است و "
-"نیاز به حداقل یک کاربر دارد. ابتدا یک کاربر دیگر اضافه کنید."
+msgstr "نمی‌توان آخرین مالک کاربری را حذف کرد: حالت مالکیت منطقه users_only است و دست‌کم به یک مالک کاربری نیاز دارد. ابتدا مالک کاربری دیگری اضافه کنید."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"نمی توان مالک کاربر را حذف کرد: حالت مالکیت منطقه فقط گروه است و منطقه هیچ "
-"مالک گروه ندارد. ابتدا یک گروه را اضافه کنید."
+msgstr "نمی‌توان مالک کاربری را حذف کرد: حالت مالکیت منطقه groups_only است و منطقه هیچ مالک گروهی ندارد. ابتدا یک گروه اضافه کنید."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3294,17 +3280,13 @@ msgstr "گروه با موفقیت اضافه شده است."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"نمی توان گروه آخر را حذف کرد: حالت مالکیت منطقه فقط گروه است و نیاز به حداقل "
-"یک گروه دارد. ابتدا گروه دیگری را اضافه کنید."
+msgstr "نمی‌توان آخرین گروه را حذف کرد: حالت مالکیت منطقه groups_only است و دست‌کم به یک گروه نیاز دارد. ابتدا گروه دیگری اضافه کنید."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"نمی توان گروه را حذف کرد: حالت مالکیت منطقه فقط کاربران است و منطقه هیچ مالک "
-"کاربر ندارد. ابتدا یک کاربر را اضافه کنید."
+msgstr "نمی‌توان گروه را حذف کرد: حالت مالکیت منطقه users_only است و منطقه هیچ مالک کاربری ندارد. ابتدا یک مالک کاربری اضافه کنید."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3316,11 +3298,11 @@ msgstr "ابتدا یک مالک یا یک گروه دیگر را اضافه ک�
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "ابتدا یک کاربر دیگر را اضافه کنید (حالت مالکیت منطقه فقط کاربران است)."
+msgstr "ابتدا مالک کاربری دیگری اضافه کنید (حالت مالکیت منطقه users_only است)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "اضافه کردن یک گروه اول (حالت مالکیت منطقه فقط گروه است)."
+msgstr "ابتدا یک گروه اضافه کنید (حالت مالکیت منطقه groups_only است)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -12647,8 +12629,7 @@ msgstr "پیش انتخاب شده در فرم Add-zone"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Configured از طریق dns.default zone template - ویرایش تنظیمات.php برای تغییر"
+msgstr "پیکربندی‌شده از طریق dns.default_zone_template - برای تغییر، settings.php را ویرایش کنید"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13947,17 +13928,13 @@ msgstr "خطای PowerDNS API"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"بررسی کنید که pdns api.key در config/sets.php با کلید API پیکربندی شده در "
-"PowerDNS مطابقت دارد."
+msgstr "بررسی کنید که pdns_api.key در config/settings.php با کلید API پیکربندی‌شده در PowerDNS مطابقت داشته باشد."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"بررسی کنید که pdns api.server name با گزارش های PowerDNS مطابقت دارد "
-"(default 'localhost')."
+msgstr "بررسی کنید که pdns_api.server_name با گزارش های PowerDNS مطابقت دارد (default 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14768,7 +14745,7 @@ msgstr "کلید API"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "کلید API PowerDNS (از Pdns.conf api-key settings)"
+msgstr "کلید API PowerDNS (از pdns.conf api-key settings)"
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -15163,9 +15140,7 @@ msgstr "پوشه “install/” را از سرور خود حذف کنید"
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
-msgstr ""
-"ورود به Zi02.8Poweradminsmith1 با استفاده از نام کاربری \"admin\" و رمز عبور "
-"شما در مرحله 4 تنظیم شده است."
+msgstr "ورود به <a href=\"../index.php\">Poweradmin</a> با استفاده از نام کاربری \"admin\" و رمز عبوری که در مرحله 4 تنظیم کردید"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -15328,9 +15303,7 @@ msgstr "کلید API PowerDNS هنگام استفاده از backend API مور�
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"هیچ فایل پیکربندی پیدا نشد. لطفاً فایل config/sets.php را قبل از حرکت ایجاد "
-"کنید."
+msgstr "هیچ فایل پیکربندی پیدا نشد. لطفاً پیش از ادامه، فایل config/settings.php را ایجاد کنید."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

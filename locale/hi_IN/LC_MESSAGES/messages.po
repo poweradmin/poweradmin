@@ -1292,17 +1292,13 @@ msgstr "आपको इस क्षेत्र को संशोधित �
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"एक नया क्षेत्र आयात नहीं कर सकता: जोन ownership mode groups only लेकिन कोई समूह "
-"मौजूद नहीं है। पहले एक समूह बनाएं।"
+msgstr "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है लेकिन कोई समूह मौजूद नहीं है। पहले एक समूह बनाएं।"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"एक नया क्षेत्र आयात नहीं कर सकता: जोन ownership mode groups only है और आप किसी भी "
-"समूह के सदस्य नहीं हैं। आपको पहले एक समूह में जोड़ने के लिए एक प्रशासक से पूछें।"
+msgstr "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है और आप किसी भी समूह के सदस्य नहीं हैं। किसी प्रशासक से कहें कि वह पहले आपको एक समूह में जोड़ दे।"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2449,17 +2445,13 @@ msgstr "प्राथमिक क्षेत्र जोड़ें"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"जोन स्वामित्व मोड groups only है लेकिन कोई समूह मौजूद नहीं है। जोन जोड़ने से पहले एक समूह "
-"बनाएं।"
+msgstr "जोन स्वामित्व मोड groups_only है लेकिन कोई समूह मौजूद नहीं है। जोन जोड़ने से पहले एक समूह बनाएं।"
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"जोन स्वामित्व मोड groups only है, लेकिन आप किसी भी समूह के सदस्य नहीं हैं। जोन बनाने से "
-"पहले आपको एक समूह में जोड़ने के लिए एक प्रशासक से पूछें।"
+msgstr "जोन स्वामित्व मोड groups_only है, लेकिन आप किसी भी समूह के सदस्य नहीं हैं। जोन बनाने से पहले आपको एक समूह में जोड़ने के लिए एक प्रशासक से पूछें।"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2540,9 +2532,7 @@ msgstr "अमान्य रूप प्रस्तुतीकरण।"
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"रिकॉर्ड type defaults तालिका लापता है। डिफ़ॉल्ट सहेजने से पहले 4.5.0 स्कीमा अद्यतन लागू "
-"करें।"
+msgstr "record_type_defaults तालिका मौजूद नहीं है। डिफ़ॉल्ट सहेजने से पहले 4.5.0 स्कीमा अद्यतन लागू करें।"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3219,8 +3209,7 @@ msgstr "आपको डिफ़ॉल्ट क्षेत्र टेम्
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"डिफ़ॉल्ट ध्वज स्पष्ट, लेकिन dns.default zone template config सेटिंग अभी भी सक्रिय है।"
+msgstr "डिफ़ॉल्ट ध्वज स्पष्ट, लेकिन dns.default_zone_template config सेटिंग अभी भी सक्रिय है।"
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3249,17 +3238,13 @@ msgstr "अंतिम मालिक को नहीं हटा सकत�
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"अंतिम उपयोगकर्ता के मालिक को नहीं हटा सकता: जोन स्वामित्व मोड उपयोगकर्ता है। केवल और "
-"कम से कम एक उपयोगकर्ता के मालिक की आवश्यकता होती है। पहले उपयोगकर्ता के मालिक को जोड़ें।"
+msgstr "अंतिम उपयोगकर्ता स्वामी को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और इसके लिए कम से कम एक उपयोगकर्ता स्वामी आवश्यक है। पहले कोई अन्य उपयोगकर्ता स्वामी जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"उपयोगकर्ता मालिक को नहीं हटा सकता: जोन स्वामित्व मोड groups only है और जोन के पास "
-"कोई समूह मालिक नहीं है। पहले समूह जोड़ें।"
+msgstr "उपयोगकर्ता मालिक को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और जोन के पास कोई समूह मालिक नहीं है। पहले समूह जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3282,17 +3267,13 @@ msgstr "समूह को सफलतापूर्वक जोड़ा �
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"अंतिम समूह को नहीं हटा सकता: जोन स्वामित्व मोड groups only है और कम से कम एक समूह की "
-"आवश्यकता है। पहले समूह जोड़ें।"
+msgstr "अंतिम समूह को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और कम से कम एक समूह की आवश्यकता है। पहले समूह जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"समूह को हटा नहीं सकता: जोन स्वामित्व मोड उपयोगकर्ता है केवल और जोन के पास कोई "
-"उपयोगकर्ता मालिक नहीं है। पहले उपयोगकर्ता के मालिक को जोड़ें।"
+msgstr "समूह को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और ज़ोन का कोई उपयोगकर्ता स्वामी नहीं है। पहले एक उपयोगकर्ता स्वामी जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3304,11 +3285,11 @@ msgstr "पहले किसी अन्य मालिक या समू�
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "एक अन्य उपयोगकर्ता मालिक को पहले जोड़ें (जोन का स्वामित्व मोड उपयोगकर्ता है)।"
+msgstr "पहले कोई अन्य उपयोगकर्ता स्वामी जोड़ें (ज़ोन स्वामित्व मोड users_only है)।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "पहले एक समूह जोड़ें (जोन का स्वामित्व मोड groups only है)।"
+msgstr "पहले एक समूह जोड़ें (जोन का स्वामित्व मोड groups_only है)।"
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -12613,9 +12594,7 @@ msgstr "ऐड-जोन फॉर्म पर पूर्व-चयनित"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Dns.default zone template के माध्यम से कॉन्फ़िगर किया गया - सेटिंग्स को संपादित "
-"करें.php बदलने के लिए"
+msgstr "dns.default_zone_template के माध्यम से कॉन्फ़िगर किया गया - बदलने के लिए settings.php संपादित करें"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13911,17 +13890,13 @@ msgstr "PowerDNS API त्रुटि"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"उस pdns api.key को config/settings.php में PowerDNS में कॉन्फ़िगर की गई API कुंजी से "
-"मेल खाता है।"
+msgstr "उस pdns_api.key को config/settings.php में PowerDNS में कॉन्फ़िगर की गई API कुंजी से मेल खाता है।"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"उस pdns api.server name से मेल खाता है जो PowerDNS रिपोर्ट (डिफ़ॉल्ट 'localhost') "
-"है।"
+msgstr "उस pdns_api.server_name से मेल खाता है जो PowerDNS रिपोर्ट (डिफ़ॉल्ट 'localhost') है।"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14726,7 +14701,7 @@ msgstr "एपीआई कुंजी"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API कुंजी (Pdns.conf api कुंजी सेटिंग से)।"
+msgstr "PowerDNS API कुंजी (pdns.conf api कुंजी सेटिंग से)।"
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
