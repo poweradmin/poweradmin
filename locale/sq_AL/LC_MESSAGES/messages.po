@@ -236,7 +236,7 @@ msgstr "Hash i çertifikatës/kesë SHA-256"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "2 - SHA-1 Hash"
+msgstr "2 - SHA-512 Hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -421,7 +421,7 @@ msgstr "Refuzo email-et e dyshimta"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:86
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
-msgstr "Politika për email nga nëndomains (p.sh. mail.exaple.com)"
+msgstr "Politika për email-et nga nëndomenet (p.sh. mail.example.com)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:90
 msgid "Policy Application Percentage"
@@ -1319,17 +1319,13 @@ msgstr "Të drejta të pamjaftueshme për të ndryshuar këtë zonë."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"I pamundur importimi i një zone të re:  pronari i zonës mode është grup "
-"vetëm por nuk ekzistojnë grupe. Bëj një grup së pari."
+msgstr "I pamundur importimi i një zone të re: zone_ownership_mode është groups_only, por nuk ekziston asnjë grup. Krijoni fillimisht një grup."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"I pamundur importimi i një zone të re: Zo pronari mode është vetëm grup ve "
-"dhe nuk je anëtar i asnjë grupi. Kërko nga a i pari."
+msgstr "I pamundur importimi i një zone të re: zone_ownership_mode është groups_only dhe ju nuk jeni anëtar i asnjë grupi. Kërkojini një administratori t'ju shtojë fillimisht në një grup."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2497,17 +2493,13 @@ msgstr "Shto zonë parësore"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Moda e pronësisë së zonës është vetëm grupe, por nuk ekzistojnë grupe. "
-"Krijoni një grup para se të shtoni zona."
+msgstr "Modaliteti i pronësisë së zonës është groups_only, por nuk ekziston asnjë grup. Krijoni një grup përpara se të shtoni zona."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Moda e pronësisë së zonës është vetëm një grup, por ju nuk jeni anëtar i "
-"asnjë grupi. Kërko nga a përpara."
+msgstr "Modaliteti i pronësisë së zonës është groups_only, por ju nuk jeni anëtar i asnjë grupi. Kërkojini një administratori t'ju shtojë në një grup përpara se të krijoni zona."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2588,7 +2580,7 @@ msgstr "Nënshtrim i formës së pavlefshme."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr "Tabela e regjistrimeve type defaults mungon. Apliko para."
+msgstr "Tabela record_type_defaults mungon. Apliko përditësimin e skemës 4.5.0 përpara se të ruash vlerat e parazgjedhura."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3280,8 +3272,7 @@ msgstr "Ti nuk ke të drejtë të ndryshosh shabllonin e zonës së prezgjedhur.
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Flamuri i paracaktuar u pastrua, por default template është ende aktiv."
+msgstr "Flamuri i parazgjedhur u pastrua, por cilësimi i konfigurimit dns.default_zone_template është ende aktiv."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3310,18 +3301,13 @@ msgstr "Nuk mund të heqë pronarin e fundit: kjo do të lërë zonën pa pronë
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"I pamundur heqja e pronarit të fundit të përdoruesit: modaliteti i pronësisë "
-"së zonës është vetëm përdoruesit dhe kërkon të paktën një pronar përdoruesi. "
-"Shto së pari një tjetër pronar përdoruesi."
+msgstr "I pamundur heqja e pronarit të fundit përdorues: modaliteti i pronësisë së zonës është users_only dhe kërkon të paktën një pronar përdorues. Shto së pari një pronar tjetër përdorues."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"I pamundur heqja e pronarit të përdoruesit: modaliteti i pronësisë së zonës "
-"është vetëm me grupe dhe zona nuk ka pronarë grupi. Shto një grup së pari."
+msgstr "I pamundur heqja e pronarit përdorues: modaliteti i pronësisë së zonës është groups_only dhe zona nuk ka pronarë grupi. Shto një grup së pari."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3346,18 +3332,13 @@ msgstr "Grupi është shtuar me sukses."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"E pamundur heqja e grupit të fundit: modaliteti i pronësisë së zonës është "
-"vetëm me grupe dhe kërkon të paktën një grup. Shto një grup tjetër së pari."
+msgstr "E pamundur heqja e grupit të fundit: modaliteti i pronësisë së zonës është groups_only dhe kërkon të paktën një grup. Shto një grup tjetër së pari."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"E pamundur heqja e grupit: modaliteti i pronësisë së zonës është vetëm "
-"përdoruesit dhe zona nuk ka pronarë përdoruesish. Së pari shto një pronar "
-"përdoruesi."
+msgstr "E pamundur heqja e grupit: modaliteti i pronësisë së zonës është users_only dhe zona nuk ka pronarë përdorues. Së pari shto një pronar përdorues."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3369,13 +3350,11 @@ msgstr "Shto një tjetër pronar ose grup së pari."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Shton një tjetër pronar përdoruesi së pari (në mënyrën e pronësisë së zonës "
-"është vetëm përdoruesit)."
+msgstr "Shto së pari një pronar tjetër përdorues (modaliteti i pronësisë së zonës është users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Shto a i pari modaliteti është"
+msgstr "Shto së pari një grup (modaliteti i pronësisë së zonës është groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -4289,7 +4268,7 @@ msgstr "Të dhënat e certifikatës TLSA SHA-256 duhet të jenë 64 shkronja të
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:317
 msgid "TLSA SHA-512 certificate data must be 128 characters long."
-msgstr "TLSA SHA-1 do të jetë 128 shkronja e gjatë."
+msgstr "TLSA SHA-512 do të jetë 128 shkronja e gjatë."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
@@ -5488,9 +5467,7 @@ msgstr ""
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr ""
-"SHA-512 (algoritm 2) siguron siguri më të fortë por kërkon më shumë burime "
-"përpunimi se SHA-1."
+msgstr "SHA-512 (algoritm 2) siguron siguri më të fortë por kërkon më shumë burime përpunimi se SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -5553,9 +5530,7 @@ msgstr ""
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"Tredhja e ZONEMD për SHA-1 (algorith 1) duhet të jetë saktësisht 96 shkronja "
-"hexadecimalë (48 octets)."
+msgstr "Tredhja e ZONEMD për SHA-384 (algorith 1) duhet të jetë saktësisht 96 shkronja hexadecimalë (48 octets)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -8048,7 +8023,7 @@ msgstr "Të dhënat e certifikatës SMIMEA SHA-256 duhet të jenë 64 shkronja t
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
-msgstr "SMIMEA SHA-1 do të ketë 128 shkronja të gjata."
+msgstr "SMIMEA SHA-512 do të ketë 128 shkronja të gjata."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:269
 msgid ""
@@ -12940,9 +12915,7 @@ msgstr "Para-zgjedhur në formën e zonës shtesë"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Konfiguro me anë të Dns.default template-Ndrysho rregullimet.php për të "
-"ndryshuar"
+msgstr "Konfiguruar me anë të dns.default_zone_template - ndrysho settings.php për ta ndryshuar"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14252,17 +14225,13 @@ msgstr "Gabim i API të PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Kontrollo që pdns api.key në konfig/set.php përputhet me kyçin e konfiguruar "
-"në PowerDNS."
+msgstr "Kontrollo që pdns_api.key në config/settings.php të përputhet me çelësin API të konfiguruar në PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Kontrollo që pdns api.server name përputhet me atë që powerDNS raporton (e "
-"prezgjedhur 'localhost')."
+msgstr "Kontrollo që pdns_api.server_name përputhet me atë që powerDNS raporton (e prezgjedhur 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15639,7 +15608,7 @@ msgstr "Pulsanti API është i domosdoshëm kur përdoret aPI."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Nuk u gjet asnjë file konfigurimi. para."
+msgstr "Nuk u gjet asnjë skedar konfigurimi. Ju lutemi krijoni skedarin config/settings.php përpara se të vazhdoni."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

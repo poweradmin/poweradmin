@@ -1253,13 +1253,13 @@ msgstr "Anda tidak memiliki kebenaran untuk mengubah zona ini."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "Tidak dapat mengimpor zona baru: zon ownership mode adalah group only tetapi tidak ada grup yang ada. Buat kumpulan dulu."
+msgstr "Tidak dapat mengimport zon baharu: zone_ownership_mode ialah groups_only tetapi tiada kumpulan wujud. Cipta kumpulan terlebih dahulu."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "Tidak dapat mengimpor zona baru: zon ownership mode adalah group only dan anda bukan anggota dari grup manapun. Mintalah administrator untuk menambahkan Anda ke kumpulan terlebih dahulu."
+msgstr "Tidak dapat mengimport zon baharu: zone_ownership_mode ialah groups_only dan anda bukan ahli mana-mana kumpulan. Minta pentadbir menambah anda ke dalam kumpulan terlebih dahulu."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -2385,13 +2385,13 @@ msgstr "Tak Ada Zona Primer"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "Mod pemilikan zona adalah grup only tetapi tidak ada grup yang ada. Vanakham membuat kumpulan sebelum menambahkan zona."
+msgstr "Mod pemilikan zon ialah groups_only tetapi tiada kumpulan wujud. Cipta kumpulan sebelum menambah zon."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "Mod kepemilikan Zona adalah grup only tetapi Anda bukan anggota dari kumpulan manapun. \\\"Tanyakan administrator untuk menambahkan Anda ke kumpulan sebelum membuat zona."
+msgstr "Mod pemilikan zon ialah groups_only tetapi anda bukan ahli mana-mana kumpulan. Minta pentadbir menambah anda ke dalam kumpulan sebelum mencipta zon."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2471,9 +2471,7 @@ msgstr "Pengiriman formulir tidak sah."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tabel record type defaults table hilang. Terapkan skema 4.5.0 update sebelum "
-"menyimpan default."
+msgstr "Tabel record_type_defaults table hilang. Terapkan skema 4.5.0 update sebelum menyimpan default."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -3146,7 +3144,7 @@ msgstr "Anda tidak memiliki kebenaran untuk mengubah templat zona baku."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "Bendera baku dibersihkan, tetapi tetapan konfigurasi dns.default zone template masih aktif."
+msgstr "Bendera baku dibersihkan, tetapi tetapan konfigurasi dns.default_zone_template masih aktif."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3177,16 +3175,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Tidak dapat menghapus pemilik pengguna terakhir: mod kepemilikan zona adalah "
-"user only dan membutuhkan setidaknya satu pemilik pengguna. Tambahkan "
-"pemilik pengguna lain terlebih dahulu."
+msgstr "Tidak dapat membuang pemilik pengguna terakhir: mod pemilikan zon ialah users_only dan memerlukan sekurang-kurangnya seorang pemilik pengguna. Tambah pemilik pengguna lain terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "Tidak dapat menghapus pemilik pengguna: mod kepemilikan zona adalah group only dan zon tidak memiliki pemilik grup. Tambahkan kumpulan pertama."
+msgstr "Tidak dapat membuang pemilik pengguna: mod pemilikan zon ialah groups_only dan zon ini tiada pemilik kumpulan. Tambah kumpulan terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3211,17 +3206,13 @@ msgstr "Grup Group telah berhasil ditambahkan."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Tidak dapat menghapus grup terakhir: mod kepemilikan zona adalah group only "
-"dan membutuhkan setidaknya satu grup. Tambahkan grup lain terlebih dahulu."
+msgstr "Tidak dapat membuang kumpulan terakhir: mod pemilikan zon ialah groups_only dan memerlukan sekurang-kurangnya satu kumpulan. Tambah kumpulan lain terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Tidak dapat menghapus grup: mod kepemilikan zona adalah user only dan zon "
-"tidak memiliki pemilik pengguna. Addin pemilik pengguna terlebih dahulu."
+msgstr "Tidak dapat membuang kumpulan: mod pemilikan zon ialah users_only dan zon ini tiada pemilik pengguna. Tambah pemilik pengguna terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3233,13 +3224,11 @@ msgstr "Tambah pemilik lain atau kumpulan terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"T ambah pemilik pengguna lain terlebih dahulu (mod pemilikan zon adalah "
-"users only)."
+msgstr "T ambah pemilik pengguna lain terlebih dahulu (mod pemilikan zon adalah users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Add a group first (zone owning mode is group only)."
+msgstr "Tambah kumpulan terlebih dahulu (mod pemilikan zon ialah groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3906,8 +3895,7 @@ msgstr "Kunci publik IPSECKEY harus benar Base64 dikodekan."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr ""
-"Tombol DSA seharusnya mengikuti format yang didefinisikan dalam RFC 3110."
+msgstr "Kunci RSA seharusnya mengikuti format yang ditakrifkan dalam RFC 3110."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
@@ -12055,9 +12043,7 @@ msgstr "Sebelumnya dipilih pada bentuk add-zone"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Dikonfigurasi melalui dns.default zone template - edit settings.php untuk "
-"diubah"
+msgstr "Dikonfigurasi melalui dns.default_zone_template - edit settings.php untuk diubah"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13334,13 +13320,13 @@ msgstr "Ralat API PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Periksa bahwa pdns api.key dalam konfigurasi/setting.php sepadan dengan kunci API yang dikonfigurasikan dalam PowerDNS."
+msgstr "Periksa bahawa pdns_api.key dalam config/settings.php sepadan dengan kunci API yang dikonfigurasikan dalam PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Kenalkan bahwa pdns api.server name sepadan dengan apa yang dilaporkan PowerDNS (default 'host lokal')."
+msgstr "Kenalkan bahwa pdns_api.server_name sepadan dengan apa yang dilaporkan PowerDNS (default 'host lokal')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
