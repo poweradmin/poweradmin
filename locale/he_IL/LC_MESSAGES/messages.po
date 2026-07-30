@@ -578,7 +578,7 @@ msgstr "לאשר את כל השרתים המפורטים ברשומות MX עב�
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AA Records"
+msgstr "רשומות A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -1498,9 +1498,7 @@ msgstr ""
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr ""
-"התיעוד ותיעוד ה-A/AA התואם שלו נמחקו, אך התגובה נשמרה משום שרשומות דומות "
-"קיימות."
+msgstr "הרשומה והרשומה המקבילה A/AAAA שלה נמחקו, אך ההערה נשמרה משום שקיימות רשומות דומות."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
@@ -1523,7 +1521,7 @@ msgstr "הרשומה ורשומת ה-PTR התואמת לה נמחקו בהצלח
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
-msgstr "השיא ורשומות A/AA המקבילות שלו נמחקו בהצלחה."
+msgstr "הרשומה והרשומות המקבילות A/AAAA שלה נמחקו בהצלחה."
 
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
@@ -3836,9 +3834,7 @@ msgstr "שדה עדיפות עבור רשומות IPSECKEY חייב להיות 0
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr ""
-"יש להשתמש ברשומות IPSEC כדי להבטיח שידור מאובטח של חומר מפתח (RFC 4025 סעיף "
-"4)."
+msgstr "יש להשתמש ברשומות IPSECKEY יחד עם DNSSEC כדי להבטיח שידור מאובטח של חומר מפתחות (RFC 4025 סעיף 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -3868,7 +3864,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
-msgstr "חובה להיות מספר בין 0 ל 255."
+msgstr "קדימות IPSECKEY חייבת להיות מספר בין 0 ל-255."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:181
 msgid ""
@@ -5060,9 +5056,7 @@ msgstr ""
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
-"TStimetamp הוא מעל 24 שעות. זה יכול להצביע על התקפה חוזרת או על בעיות "
-"סינכרוניזציה של השעון."
+msgstr "חותמת הזמן של TSIG בת יותר מ-24 שעות. הדבר עשוי להצביע על מתקפת שידור חוזר או על בעיית סנכרון שעון."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
@@ -5105,7 +5099,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TS פעמיםtamp חייב להיות אינפורטר לא שלילי."
+msgstr "חותמת הזמן של TSIG חייבת להיות מספר שלם לא שלילי."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
@@ -5907,7 +5901,7 @@ msgstr "ודא כי המארח החלפת מפתח יש מתאים קדימה ו
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr "המארח הראשי צריך להיות רשומות A /AA עבור סוג A /AA עיבוד נוסף."
+msgstr "מארח חילופי המפתחות צריך לכלול רשומות A/AAAA מתאימות לעיבוד המקטע הנוסף מסוג A/AAAA."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
@@ -6079,21 +6073,21 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr "זה לא דבר חוקי. יש כבר תיעוד עם השם הזה."
+msgstr "זהו אינו CNAME חוקי. כבר קיימת רשומה בשם זה."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "זה לא דבר חוקי. האם סימנת שיא של MX או NS לתיעוד?"
+msgstr "זהו אינו CNAME חוקי. האם שייכת רשומת MX או NS לרשומה?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
-msgstr "תקליטים ריקים אינם מורשים."
+msgstr "רשומות CNAME ריקות אינן מותרות."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "זה לא שיא חוקי. כבר קיים שם עם השם הזה."
+msgstr "זו אינה רשומה חוקית. כבר קיים CNAME בשם זה."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
@@ -6429,7 +6423,7 @@ msgstr "שמו של RRSIG חייב להיות שם דומיין חוקי."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "חתימה לא יכולה להיות ריקה."
+msgstr "חתימת RRSIG לא יכולה להיות ריקה."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
@@ -6657,9 +6651,7 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr ""
-"שיא האיחוד האירופי I64 חסר מפרידים. פורמט חייב להיות xx-xx-xx-xx-xx-xx-xx-xx-"
-"xx-xx עם hyphens בין octets."
+msgstr "ברשומת EUI64 חסרים מפרידים. הפורמט חייב להיות xx-xx-xx-xx-xx-xx-xx-xx עם מקפים בין האוקטטים."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -6912,8 +6904,7 @@ msgstr "דגל \"המתווך\" (0x0001) אינו מוגדר. סוכני הור�
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
-"דגל \"soaminimum\" (0x0002) אינו מוגדר. אימות מספר סידורי לא ניתן לאכוף."
+msgstr "הדגל \"soaminimum\" (0x0002) אינו מוגדר. ייתכן שאימות המספר הסידורי של SOA לא ייאכף."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -7435,7 +7426,7 @@ msgstr "מפתח פרמטר SVCB: \"%s\". כל מפתח יכול להופיע ר
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "מספר רשומות עם אותו שם אינן מותרות. זה יוצר הפרה של DNS."
+msgstr "מספר רשומות CNAME באותו שם אינן מותרות. הדבר ייצור הפרה של DNS."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
@@ -7971,11 +7962,11 @@ msgstr "טביעת אצבע SSHFP חייבת להיות מיתר hexadecimal."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
-msgstr "טביעת אצבע SFPSH SHA-1 חייבת להיות 40 תווים."
+msgstr "טביעת אצבע SSHFP SHA-1 חייבת להיות באורך 40 תווים."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "טביעת אצבע SFPSH SHA-256 חייבת להיות 64 תווים ארוכים."
+msgstr "טביעת אצבע SSHFP SHA-256 חייבת להיות באורך 64 תווים."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -8231,7 +8222,7 @@ msgstr "DMARC דו\"ח פורמט (rf) חייב להיות afrf אוiodef"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "תגית: %s"
+msgstr "תגית DMARC לא ידועה: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
@@ -11397,17 +11388,17 @@ msgstr "שימוש לערך TTL ברירת מחדל מתצורה"
 
 #: templates/modern/batch_ptr_record.html:86
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "יצירת רשומות A/AA באזור הראשי"
+msgstr "יצירת רשומות A/AAAA קדימה באזור הראשי"
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr "יצירת PTRs רק עבור רשומות קיימות באזור קדימה"
+msgstr "יצירת PTR רק עבור רשומות A/AAAA קיימות באזור הקדימה"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr "בעת בדיקה, רשומות PTR ייווצרו רק עבור IP אשר מקבילו רשומות בתחום שצוין"
+msgstr "כאשר מסומן, רשומות PTR ייווצרו רק עבור כתובות IP שיש להן רשומות A/AAAA מתאימות בדומיין שצוין"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
@@ -11441,7 +11432,7 @@ msgstr "התאמה רק"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr "יצירת רשומות PTR רק עבור IP שיש קיימים רשומות באזור קדימה"
+msgstr "יוצר רשומות PTR רק עבור כתובות IP שיש להן רשומות A/AAAA קיימות באזור הקדימה"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11491,9 +11482,7 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr ""
-"השתמש \"Create PTRs רק עבור רשומות קיימות\" כדי למפות PTRs על בסיס אזור "
-"קדימה שלך"
+msgstr "השתמש ב-\"Create PTRs only for existing A/AAAA records\" כדי לאכלס רשומות PTR על בסיס אזור הקדימה שלך"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -12129,7 +12118,7 @@ msgstr "אזורים עם Duplicate SOA Records"
 
 #: templates/modern/database_consistency.html:218
 msgid "SOA Count"
-msgstr "הרוזן"
+msgstr "מספר רשומות SOA"
 
 #: templates/modern/database_consistency.html:234
 msgid "Keep first SOA, delete duplicates"
@@ -12709,7 +12698,7 @@ msgstr ""
 
 #: templates/modern/delete_records.html:60
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "בנוסף, למחוק רשומות מקבילות (אם הן קיימות)"
+msgstr "מחק גם רשומות PTR מקבילות (אם הן קיימות)"
 
 #: templates/modern/delete_records.html:65
 msgid "Yes, delete these records"

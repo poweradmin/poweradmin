@@ -709,7 +709,7 @@ msgstr "โดเมน include ไม่ถูกต้อง: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr "ยังไม่มีการเลือกกลไก บันทึกนี้จะเป็นบันทึกการปฏิบัติการปริยายเท่านั้น"
+msgstr "ยังไม่มีการเลือกกลไก บันทึก SPF นี้จะมีเพียงการดำเนินการเริ่มต้นเท่านั้น"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
@@ -1480,17 +1480,13 @@ msgstr ""
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
-msgstr ""
-"บันทึก และ บันทึก ที่ ตรง กัน ของ แผ่น นั้น ถูก ลบ ออก แต่ ข้อ ความ นั้น ถูก เก็บ รักษา ไว้ "
-"เพราะ มี บันทึก คล้าย ๆ กัน."
+msgstr "บันทึกและบันทึก PTR ที่ตรงกันถูกลบออก แต่ความเห็นถูกเก็บรักษาไว้เพราะมีบันทึกที่คล้ายกันอยู่"
 
 #: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr ""
-"บันทึก และ บันทึก ที่ ตรง กัน นั้น ได้ รับ การ ลบ ออก ไป แต่ ความ เห็น ถูก เก็บ รักษา ไว้ "
-"เพราะ มี บันทึก คล้าย ๆ กัน."
+msgstr "บันทึกและบันทึก A/AAAA ที่ตรงกันถูกลบออก แต่ความเห็นถูกเก็บรักษาไว้เพราะมีบันทึกที่คล้ายกันอยู่"
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
@@ -4848,24 +4844,22 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "ช่องข้อมูลที่สำคัญสำหรับเปิดใช้แท็บ OutPPKEY จะต้องเป็น 0 หรือว่าง"
+msgstr "ช่องลำดับความสำคัญสำหรับบันทึก OPENPGPKEY ต้องเป็น 0 หรือว่าง"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"บันทึกแบบ OpenPPKEY ควรจะถูกสร้างโดยใช้เครื่องมือพิเศษเช่น GnuPG ด้วยตัวเลือก -- print-"
-"den-บันทึกเอกสาร แทนที่จะถูกสร้างด้วยตนเอง"
+msgstr "บันทึก OPENPGPKEY ควรสร้างโดยใช้เครื่องมือเฉพาะทางเช่น GnuPG ด้วยตัวเลือก --print-dane-records แทนที่จะสร้างด้วยตนเอง"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "เปิดใช้งานข้อมูลบันทึกแบบ openPKEY ไม่สามารถว่างได้"
+msgstr "เนื้อหาบันทึก OPENPGPKEY ต้องไม่ว่างเปล่า"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "อักขระไม่ถูกต้องในเนื้อหาบันทึกของ OutlookPGPKE"
+msgstr "อักขระไม่ถูกต้องในเนื้อหาบันทึก OPENPGPKEY"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
@@ -4873,23 +4867,20 @@ msgstr "บันทึก OPENPGPKEY ต้องมีข้อมูลที
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "OutPPKEY บันทึกเสียงด้วยข้อมูล เบส64 ไม่ถูกต้อง"
+msgstr "บันทึก OPENPGPKEY มีข้อมูล base64 ที่ไม่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
-"ขนาดสถิติโอเพนเตอร์พีเคไอมีขนาดมากกว่า 4KB RFC 7929 แนะนำให้เก็บบันทึก DNS "
-"น้อยที่สุดเท่าที่จะทำได้เพื่อรับประกันการขนส่งที่เชื่อถือได้ พิจารณาใช้รูปแบบการส่งออกกุญแจขนาดเล็ก"
+msgstr "บันทึก OPENPGPKEY มีขนาดเกิน 4KB RFC 7929 แนะนำให้เก็บบันทึก DNS ให้เล็กที่สุดเท่าที่จะทำได้เพื่อให้การส่งข้อมูลเชื่อถือได้ พิจารณาใช้รูปแบบการส่งออกกุญแจแบบย่อ"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"สถิติการเปิดให้บริการ มีขนาดเล็กผิดปกติ ตรวจสอบว่านี่เป็นกุญแจสาธารณะของ OpenPGP ที่ถูกต้อง"
+msgstr "บันทึก OPENPGPKEY มีขนาดเล็กผิดปกติ ตรวจสอบว่านี่เป็นกุญแจสาธารณะ OpenPGP ที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -4927,17 +4918,13 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
-"OpenPPKEY บันทึกไม่ได้มาแทนเว็บ OpenPGP ของความไว้วางใจ "
-"ยังขอแนะนำให้ใช้วิธีการตรวจสอบเพิ่มเติม"
+msgstr "บันทึก OPENPGPKEY ไม่ได้มาแทนที่ OpenPGP Web of Trust ยังคงแนะนำให้ใช้วิธีการตรวจสอบเพิ่มเติม"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr ""
-"เพื่อสร้างบันทึกของ OpenPPKE ใช้เครื่องมือพิเศษ เช่น GnuPG กับ -- print-daan- cords "
-"เพื่อตรวจสอบว่า รูปแบบและเนื้อหาถูกต้องหรือไม่"
+msgstr "ในการสร้างบันทึก OPENPGPKEY ให้ใช้เครื่องมือเฉพาะทางเช่น GnuPG ด้วยตัวเลือก --print-dane-records เพื่อให้ได้รูปแบบและเนื้อหาที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -4971,7 +4958,7 @@ msgstr "การอ้างถึงไม่ถูกต้องใน HINFO
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "ไฮน์โฟ "
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
@@ -5129,7 +5116,7 @@ msgstr "ชื่ออัลกอริธึม TSIG ต้องเป็น
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
-msgstr "ใช้อัลกอริธึมแบบไม่มาตรฐาน นี่ อาจ ไม่ ได้ รับ การ สนับสนุน อย่าง กว้าง ขวาง."
+msgstr "ใช้ชื่ออัลกอริทึม TSIG ที่ไม่เป็นมาตรฐาน อาจไม่ได้รับการสนับสนุนอย่างกว้างขวาง"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
@@ -5143,7 +5130,7 @@ msgstr "ZONEMD ถูกกำหนดไว้ใน RFC 8976 (กุมภา
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "ต้องวางบันทึกเพลงไว้ที่โซนสูงสุด (เช่นบันทึก SOA)."
+msgstr "ต้องวางบันทึก ZONEMD ไว้ที่จุดสูงสุดของโซน (เช่นเดียวกับบันทึก SOA)"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -5155,19 +5142,18 @@ msgstr "เพื่อความปลอดภัยที่เหมาะ
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr "ตัวเลขในบันทึกของ Zonemd ควรตรงกับหมายเลข SOA ของโซน"
+msgstr "หมายเลขซีเรียลในบันทึก ZONEMD ควรตรงกับหมายเลขซีเรียล SOA ของโซน"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"Soonemid scheme value 240-255 สงวนไว้สำหรับใช้ส่วนตัวและอาจจะไม่สามารถทับซ้อนได้"
+msgstr "ค่าสกีมา ZONEMD 240-255 สงวนไว้สำหรับใช้ส่วนตัวและอาจไม่สามารถทำงานร่วมกันได้"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr "SHA-384 (Algorithm 1) เป็นอัลกอริทึมแฮชที่แนะนำสำหรับบันทึก ZonemD"
+msgstr "SHA-384 (อัลกอริทึม 1) เป็นอัลกอริทึมแฮชที่แนะนำสำหรับบันทึก ZONEMD"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
@@ -5180,59 +5166,55 @@ msgstr ""
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"Zohnamd อัลกอริทึม Had value 240-255 สงวนไว้สำหรับใช้ส่วนตัวและอาจจะไม่สามารถแทรกได้"
+msgstr "ค่าอัลกอริทึมแฮช ZONEMD 240-255 สงวนไว้สำหรับใช้ส่วนตัวและอาจไม่สามารถทำงานร่วมกันได้"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "สถิติ zonemard ต้องมีต่อเนื่อง, scheme, had-algorith, และย่อยโดยพื้นที่"
+msgstr "บันทึก ZONEMD ต้องมีซีเรียล สกีมา อัลกอริทึมแฮช และไดเจสต์ คั่นด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "อนุกรม zonemond ต้องเป็นเลขระหว่าง 0 ถึง 4294967295 (32-บิตจำนวนเต็มบวก)."
+msgstr "ซีเรียล ZONEMD ต้องเป็นตัวเลขระหว่าง 0 ถึง 4294967295 (จำนวนเต็มไม่มีเครื่องหมาย 32 บิต)"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
-msgstr "Zonemond scheme ต้องเป็นตัวเลขระหว่าง 0 ถึง 255."
+msgstr "สกีมา ZONEMD ต้องเป็นตัวเลขระหว่าง 0 ถึง 255"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:185
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
-"Solid scheme ต้องเป็น 1 (รูปแบบแฟ้ม Simple zonemd) สำหรับการใช้งานมาตรฐาน ค่าอื่น ๆ "
-"จะสงวนหรือไม่มีการเซ็น"
+msgstr "สกีมา ZONEMD ต้องเป็น 1 (สกีมา ZONEMD แบบง่าย) สำหรับการใช้งานมาตรฐาน ค่าอื่นๆ สงวนไว้หรือยังไม่ได้กำหนด"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "Soonemid scheme 0 ถูกจองไว้ และไม่ใช้สำหรับมาตรฐาน"
+msgstr "สกีมา ZONEMD 0 สงวนไว้และไม่ใช้สำหรับงานมาตรฐาน"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "Zonemard อัลกอริทึม Had ต้องเป็นตัวเลขระหว่าง 0 ถึง 255"
+msgstr "อัลกอริทึมแฮช ZONEMD ต้องเป็นตัวเลขระหว่าง 0 ถึง 255"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "อัลกอริธึมแฮชที่ 0 สงวน และไม่ได้ใช้มาตรฐาน"
+msgstr "อัลกอริทึมแฮช ZONEMD 0 สงวนไว้และไม่ใช้สำหรับงานมาตรฐาน"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "การย่อยของ Zonemd ต้องเป็นสายเฮกเซเดซิม"
+msgstr "ไดเจสต์ ZONEMD ต้องเป็นสตริงเลขฐานสิบหก"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "การ ย่อย ตัว อักษร ตัว เมีย ต้อง มี อย่าง น้อย 24 ตัว."
+msgstr "ไดเจสต์ ZONEMD ต้องมีอย่างน้อย 24 อักขระเลขฐานสิบหก (12 ออกเท็ต)"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"Zoonemid ย่อยสำหรับ SHA-384 (Algorithh 1) ต้องมีตัวอักษร 96 ตัวพอดี (48 octets)."
+msgstr "ไดเจสต์ ZONEMD สำหรับ SHA-384 (อัลกอริทึม 1) ต้องมี 96 อักขระเลขฐานสิบหกพอดี (48 ออกเท็ต)"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5999,7 +5981,7 @@ msgstr "นี่ไม่ใช่ CNAME ที่ถูกต้อง มี�
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "นี่ไม่ใช่ CNAME ที่ถูกต้อง คุณได้มอบหมายให้ เอ็มเอ็กซ์ หรือ NSS บันทึกไว้หรือเปล่า?"
+msgstr "นี่ไม่ใช่ CNAME ที่ถูกต้อง คุณได้กำหนดบันทึก MX หรือ NS ให้กับบันทึกนี้หรือไม่?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
@@ -11321,9 +11303,7 @@ msgstr "ใช้ปุ่มหย่อนลง ถัดไปจาก Netw
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr ""
-"ใช้ \"Crate PTRs อย่างเดียวสำหรับบันทึกที่มีอยู่\" เพื่อเพิ่มข้อมูล PTRs "
-"โดยอิงจากพื้นที่ข้างหน้าของคุณ"
+msgstr "ใช้ \"Create PTRs only for existing A/AAAA records\" เพื่อเพิ่มบันทึก PTR โดยอิงจากโซนขาไปของคุณ"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -11964,7 +11944,7 @@ msgstr "เก็บ SOA ตัวแรกไว้ ลบตัวซ้ำ"
 
 #: templates/modern/database_consistency.html:254
 msgid "Zones Without SOA Records"
-msgstr "เขต ที่ ไม่ มี บันทึก เสียง"
+msgstr "โซนที่ไม่มีบันทึก SOA"
 
 #: templates/modern/database_consistency.html:283
 msgid "Create default SOA record"
