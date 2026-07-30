@@ -40,7 +40,7 @@ msgstr "Zone ikke fundet."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
 msgid "You do not have permission to add records to this zone."
-msgstr "Du har ikke tilladelse til at tilføje poster til denne zone."
+msgstr "Du har ikke tilladelse til at tilføje records til denne zone."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:119
 msgid "Invalid wizard type."
@@ -64,11 +64,11 @@ msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:280
 msgid "The record was successfully added."
-msgstr "Posten blev tilføjet med succes."
+msgstr "Recorden blev tilføjet med succes."
 
 #: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:408
 msgid "Record created successfully"
-msgstr "Post oprettet med succes"
+msgstr "Record oprettet med succes"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
@@ -136,7 +136,7 @@ msgstr "Værtsnavn"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Værtsnavn for tjenesten (lad feltet være tomt for zone apex @). Posten oprettes på _port._protocol.hostname"
+msgstr "Værtsnavn for tjenesten (lad feltet være tomt for zone apex @). Recorden oprettes på _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -645,7 +645,7 @@ msgstr "Inkludér domæner"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Domæner, hvis SPF-poster skal medtages (én pr. linje). Almindelige: _spf.google.com, spf.protection.outlook.com"
+msgstr "Domæner, hvis SPF-records skal medtages (én pr. linje). Almindelige: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -734,8 +734,7 @@ msgstr "Ugyldigt omfatter domæne: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr ""
-"Ingen mekanismer valgt. Denne SPF-post vil kun indeholde standardhandlingen."
+msgstr "Ingen mekanismer valgt. Denne SPF-record vil kun indeholde standardhandlingen."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
@@ -1098,7 +1097,7 @@ msgstr "Domæne"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domænenavn (lad feltet være tomt for zone apex @). Det fulde postnavn bliver: _service._protocol.domain"
+msgstr "Domænenavn (lad feltet være tomt for zone apex @). Det fulde recordnavn bliver: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1316,18 +1315,13 @@ msgstr "Du har ikke tilladelse til at ændre zonen."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"Kan ikke importere en ny zone: Zone _ ownership _ mode er grupper _ kun, men "
-"ingen grupper findes. Opret en gruppe først."
+msgstr "Kan ikke importere en ny zone: zone_ownership_mode er groups_only, men der findes ingen grupper. Opret en gruppe først."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"Kan ikke importere en ny zone: zone _ ownership _ mode er kun grupper _ og "
-"du er ikke medlem af nogen gruppe. Bed en administrator om at tilføje dig "
-"til en gruppe først."
+msgstr "Kan ikke importere en ny zone: zone_ownership_mode er groups_only, og du er ikke medlem af nogen gruppe. Bed en administrator om at tilføje dig til en gruppe først."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -1916,7 +1910,7 @@ msgstr "API nøgle %s med succes."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have the permission to add records to this zone."
-msgstr "Du har ikke tilladelse til at tilføje poster til denne zone."
+msgstr "Du har ikke tilladelse til at tilføje records til denne zone."
 
 #: lib/Application/Controller/BulkRecordAddController.php:121
 msgid "Please provide at least one record."
@@ -2399,7 +2393,7 @@ msgstr "%d record (er) blev tilføjet med succes."
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d Der blev også oprettet matchende poster."
+msgstr "%d Der blev også oprettet matchende records."
 
 #: lib/Application/Controller/AddRecordController.php:523
 #, php-format
@@ -2416,7 +2410,7 @@ msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:554
 msgid "Failed to add any records. They may contain invalid data."
-msgstr "Kunne ikke tilføje nogen poster. De kan indeholde ugyldige data."
+msgstr "Kunne ikke tilføje nogen records. De kan indeholde ugyldige data."
 
 #: lib/Application/Controller/DeleteDomainsController.php:80
 msgid "No zone selected for deletion."
@@ -2499,18 +2493,13 @@ msgstr "Tilføj primær zone"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"Zone ejerskab tilstand er grupper _ kun, men ingen grupper findes. Opret en "
-"gruppe før tilføje zoner."
+msgstr "Zoneejerskabstilstanden er groups_only, men der findes ingen grupper. Opret en gruppe, før du tilføjer zoner."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"Zone ejerskab tilstand er grupper _ kun, men du er ikke medlem af nogen "
-"gruppe. Bed en administrator om at tilføje dig til en gruppe, før du "
-"opretter zoner."
+msgstr "Zoneejerskabstilstanden er groups_only, men du er ikke medlem af nogen gruppe. Bed en administrator om at tilføje dig til en gruppe, før du opretter zoner."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2565,7 +2554,7 @@ msgstr "Du har ikke tilladelse til at redigere DNS-optegnelser."
 #: lib/Application/Controller/BatchPtrRecordController.php:93
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
-msgstr "PTR-poster i bulk"
+msgstr "PTR-records i bulk"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -2592,9 +2581,7 @@ msgstr "Ugyldig formular."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tabellen record _ type _ default mangler. Anvend 4.5.0 skema opdatering, før "
-"du gemmer standard."
+msgstr "Tabellen record_type_defaults mangler. Anvend skemaopdateringen 4.5.0, før du gemmer standardværdier."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -2989,7 +2976,7 @@ msgstr "En fejl opstod under import af PEM-tasten:"
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
-msgstr "Du har ikke tilladelse til at tilføje poster til zoneskabeloner."
+msgstr "Du har ikke tilladelse til at tilføje records til zoneskabeloner."
 
 #: lib/Application/Controller/EditUserController.php:83
 #: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
@@ -3278,9 +3265,7 @@ msgstr "Du har ikke tilladelse til at ændre standardområdeskabelonen."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Standardflag ryddet, men indstillingen af dns.default _ zone _ template er "
-"stadig aktiv."
+msgstr "Standardflag ryddet, men indstillingen af dns.default_zone_template er stadig aktiv."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3308,17 +3293,13 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"Kan ikke fjerne den sidste bruger ejer: zone ejerskab tilstand er brugere _ "
-"only og kræver mindst én bruger ejer. Tilføj en anden bruger ejer først."
+msgstr "Kan ikke fjerne den sidste brugerejer: zoneejerskabstilstanden er users_only og kræver mindst én brugerejer. Tilføj en anden brugerejer først."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"Kan ikke fjerne brugeren ejer: zone ejerskab tilstand er grupper _ kun og "
-"zonen har ingen gruppe ejere. Tilføj en gruppe først."
+msgstr "Kan ikke fjerne brugerejer: zoneejerskabstilstanden er groups_only, og zonen har ingen gruppeejere. Tilføj en gruppe først."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3341,17 +3322,13 @@ msgstr "Gruppen er blevet tilføjet med succes."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"Kan ikke fjerne den sidste gruppe: Zoneejerskabstilstand er kun gruppe _ og "
-"kræver mindst én gruppe. Tilføj en anden gruppe først."
+msgstr "Kan ikke fjerne den sidste gruppe: zoneejerskabstilstanden er groups_only og kræver mindst én gruppe. Tilføj en anden gruppe først."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"Kan ikke fjerne gruppe: zone ejerskab tilstand er brugere _ only og zonen "
-"har ingen brugerejere. Tilføj en bruger ejer først."
+msgstr "Kan ikke fjerne gruppe: zoneejerskabstilstanden er users_only, og zonen har ingen brugerejere. Tilføj en brugerejer først."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3363,12 +3340,11 @@ msgstr "Tilføj en anden ejer eller en gruppe først."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"Tilføj en anden bruger ejer først (zone ejerskab mode er brugere _ only)."
+msgstr "Tilføj en anden brugerejer først (zoneejerskabstilstanden er users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "Tilføj en gruppe først (zone ejerskab tilstand er grupper _ kun)."
+msgstr "Tilføj en gruppe først (zoneejerskabstilstanden er groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3796,7 +3772,7 @@ msgstr ""
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr "Du har ikke tilladelse til at tilføje denne posttype til en zoneskabelon."
+msgstr "Du har ikke tilladelse til at tilføje denne recordtype til en zoneskabelon."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3823,7 +3799,7 @@ msgstr "Fejl ved opdatering af skabelon for zone:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr "Du har ikke tilladelse til at slette denne posttype fra en zoneskabelon."
+msgstr "Du har ikke tilladelse til at slette denne recordtype fra en zoneskabelon."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3839,7 +3815,7 @@ msgstr "Fejl ved kontrol af skabelonejerskab:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Disse posttyper blev udeladt af skabelonen, fordi du ikke må tilføje dem: %s"
+msgstr "Disse recordtyper blev udeladt af skabelonen, fordi du ikke må tilføje dem: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3880,7 +3856,7 @@ msgstr "Du har ikke tilladelse til at tilføje NS rekord."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "Du har ikke tilladelse til at tilføje LUA-poster."
+msgstr "Du har ikke tilladelse til at tilføje LUA-records."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3893,7 +3869,7 @@ msgstr "Du har ikke tilladelse til at redigere denne NS rekord."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "Du har ikke tilladelse til at redigere denne LUA-post."
+msgstr "Du har ikke tilladelse til at redigere denne LUA-record."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3901,12 +3877,12 @@ msgstr "Du har ikke tilladelse til at redigere denne SOA rekord."
 
 #: lib/Domain/Model/Permission.php:174
 msgid "You do not have the permission to delete NS records."
-msgstr "Du har ikke tilladelse til at slette NS-poster."
+msgstr "Du har ikke tilladelse til at slette NS-records."
 
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "Du har ikke tilladelse til at slette LUA-poster."
+msgstr "Du har ikke tilladelse til at slette LUA-records."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -4106,7 +4082,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA-postnavnet bør typisk følge formatet _port._protocol.hostname (fx _443._tcp.www.example.com)."
+msgstr "TLSA-recordnavnet bør typisk følge formatet _port._protocol.hostname (fx _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4179,7 +4155,7 @@ msgstr "Den lokale del af en e-mailadresse hashes med SHA-256 og placeres før _
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA-poster bør typisk placeres på \"_port._protocol.hostname\" (fx \"_443._tcp.www.example.com\")."
+msgstr "TLSA-records bør typisk placeres på \"_port._protocol.hostname\" (fx \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4475,10 +4451,7 @@ msgstr ""
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr ""
-"Overvej at bruge længere TTL værdier for LP poster. I modsætning til L32 / "
-"L64 records, LP records er stabile og drage fordel af længere cache gange "
-"(RFC 6742)."
+msgstr "Overvej at bruge længere TTL værdier for LP records. I modsætning til L32 / L64 records, LP records er stabile og drage fordel af længere cache gange (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -4992,9 +4965,7 @@ msgstr ""
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr ""
-"Hvis zoneoptælling er et problem, overveje at bruge NSEC3 poster (RFC 5155) "
-"i stedet, som bruger hashed ejernavne."
+msgstr "Hvis zoneoptælling er et problem, overveje at bruge NSEC3 records (RFC 5155) i stedet, som bruger hashed ejernavne."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
@@ -5093,7 +5064,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Postnavnet følger ikke standardformatet for OPENPGPKEY (<hash>._openpgpkey.<domain>). Standardformatet anbefales af hensyn til interoperabilitet."
+msgstr "Recordnavnet følger ikke standardformatet for OPENPGPKEY (<hash>._openpgpkey.<domain>). Standardformatet anbefales af hensyn til interoperabilitet."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -5104,9 +5075,7 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"OPENPGPKEY poster bør typisk genereres ved hjælp af specialiserede værktøjer "
-"som GnuPG med -- print- dane- records mulighed, snarere end skabt manuelt."
+msgstr "OPENPGPKEY records bør typisk genereres ved hjælp af specialiserede værktøjer som GnuPG med -- print- dane- records mulighed, snarere end skabt manuelt."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -5526,9 +5495,7 @@ msgstr "Prioriteret felt for CERT-registreringer skal være 0 eller tomt"
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr ""
-"Per RFC 4398, overveje DNS rekord størrelsesbegrænsninger, når du bruger "
-"CERT poster. Store certifikater kan medføre fragmentering af DNS-meddelelser."
+msgstr "Per RFC 4398, overveje DNS rekord størrelsesbegrænsninger, når du bruger CERT records. Store certifikater kan medføre fragmentering af DNS-meddelelser."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
@@ -6159,9 +6126,7 @@ msgstr ""
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr ""
-"Sørg for, at nøglen veksler vært har passende fremad og vende DNS-poster "
-"konfigureret."
+msgstr "Sørg for, at nøglen veksler vært har passende fremad og vende DNS-records konfigureret."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -7813,20 +7778,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Hashen af den lokale del i SMIMEA-poster skal være en 64-tegns SHA-256 hex-hash. Formatet skal være: SHA256(local-part)._smimecert.domain.tld"
+msgstr "Hashen af den lokale del i SMIMEA-records skal være en 64-tegns SHA-256 hex-hash. Formatet skal være: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA-postnavnet har formatet: SHA256(local-part)._smimecert.domain.tld for e-mailadresser som %s"
+msgstr "SMIMEA-recordnavnet har formatet: SHA256(local-part)._smimecert.domain.tld for e-mailadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Dette bruger ikke standardformatet for SMIMEA-navne. SMIMEA-poster bør typisk bruge: SHA256(local-part)._smimecert.domain.tld"
+msgstr "Dette bruger ikke standardformatet for SMIMEA-navne. SMIMEA-records bør typisk bruge: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8266,9 +8231,7 @@ msgstr "Prioriteret felt for SSHFP-records skal være 0 eller tomt"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr ""
-"SSHFP poster kan genereres med \"ssh- keygen -r værtsnavn\" kommando på "
-"systemer med OpenSSH."
+msgstr "SSHFP records kan genereres med \"ssh- keygen -r værtsnavn\" kommando på systemer med OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -8521,7 +8484,7 @@ msgstr "Prioritet skal være 0 for BRID-records."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC-poster skal placeres på _dmarc.<domain>."
+msgstr "DMARC-records skal placeres på _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8833,13 +8796,11 @@ msgstr ""
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr ""
-"Prioriteret 0 er gyldigt, men usædvanligt. Typisk SRV poster starter på "
-"prioritet 10 eller højere."
+msgstr "Prioriteret 0 er gyldigt, men usædvanligt. Typisk SRV records starter på prioritet 10 eller højere."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV-postnavnet skal være i formatet _service._protocol.domain"
+msgstr "SRV-recordnavnet skal være i formatet _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8976,9 +8937,7 @@ msgstr ""
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manuel redigering NSEC3 poster anbefales ikke, da de er typisk genereret "
-"automatisk af DNSEC- bevidste navnervere."
+msgstr "Manuel redigering NSEC3 records anbefales ikke, da de er typisk genereret automatisk af DNSEC- bevidste navnervere."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -9085,9 +9044,7 @@ msgstr ""
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr ""
-"Komplekse regexp mønstre i NAPTR poster kan være vanskeligt at debug og "
-"vedligeholde."
+msgstr "Komplekse regexp mønstre i NAPTR records kan være vanskeligt at debug og vedligeholde."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
@@ -9492,7 +9449,7 @@ msgstr "En rekord med dette værtsnavn, type og indhold findes allerede."
 
 #: lib/Domain/Service/Dns/RecordManager.php:222
 msgid "Failed to add record to DNS backend."
-msgstr "Kunne ikke tilføje post til DNS-motor."
+msgstr "Kunne ikke tilføje record til DNS-motor."
 
 #: lib/Domain/Service/Dns/RecordManager.php:456
 msgid "Failed to update record in DNS backend."
@@ -9564,7 +9521,7 @@ msgstr "Den valgte bruger ejer allerede zonen."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Kunne ikke opdatere zonens poster: %s"
+msgstr "Kunne ikke opdatere zonens records: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9840,9 +9797,7 @@ msgstr "Påmindelse"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
-"Efter redigering af denne post, husk at opdatere zonerne ved hjælp af denne "
-"skabelon ved at klikke på \"Opdater zoner\" på skabelonsiden."
+msgstr "Efter redigering af denne record, husk at opdatere zonerne ved hjælp af denne skabelon ved at klikke på \"Opdater zoner\" på skabelonsiden."
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -10001,9 +9956,7 @@ msgstr "SOA: <code> [NS1] [HOSTMASTER] [SERIE] 28800 7200 604800 86400 </code>"
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
-msgstr ""
-"MX til Microsoft 365: <code> [DOMAIN] - [TLD] .mail.protec.outlook.com </"
-"code>"
+msgstr "MX til Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
@@ -10693,9 +10646,7 @@ msgstr "Om skabeloner"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr ""
-"Zone skabeloner giver dig mulighed for at oprette foruddefinerede sæt af DNS-"
-"poster, der kan anvendes hurtigt, når du opretter nye zoner."
+msgstr "Zone skabeloner giver dig mulighed for at oprette foruddefinerede sæt af DNS-records, der kan anvendes hurtigt, når du opretter nye zoner."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -10807,11 +10758,11 @@ msgstr "Alle operationer"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "Bulk tilføje poster"
+msgstr "Bulk tilføje records"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
-msgstr "Tilføj poster i bulk"
+msgstr "Tilføj records i bulk"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10823,8 +10774,7 @@ msgstr "Angiv mindst én record"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Format: navn, type, indhold, prioritet, ttl, kommentar (én post pr. linje)"
+msgstr "Format: navn, type, indhold, prioritet, ttl, kommentar (én record pr. linje)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -10857,7 +10807,7 @@ msgstr "Inputformat"
 
 #: templates/modern/bulk_record_add.html:62
 msgid "Enter one record per line using CSV format"
-msgstr "Indtast én post pr. linje ved hjælp af CSV-format"
+msgstr "Indtast én record pr. linje ved hjælp af CSV-format"
 
 #: templates/modern/bulk_record_add.html:63
 msgid "Required fields: name, type, content"
@@ -10877,7 +10827,7 @@ msgstr "Bedste praksis"
 
 #: templates/modern/bulk_record_add.html:71
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr "For CNAME, MX, SRV poster, sørg for indhold ender med en dot (.)"
+msgstr "For CNAME, MX, SRV records, sørg for indhold ender med en dot (.)"
 
 #: templates/modern/bulk_record_add.html:72
 msgid "Use @ for records at the zone apex (root domain)"
@@ -11055,8 +11005,7 @@ msgstr ""
 #: templates/modern/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
-msgstr ""
-"Du er ansvarlig for nøjagtigheden af DNS-poster, du opretter eller ændrer"
+msgstr "Du er ansvarlig for nøjagtigheden af DNS-records, du opretter eller ændrer"
 
 #: templates/modern/user_agreement_content.html:16
 msgid ""
@@ -11411,7 +11360,7 @@ msgstr "Nøglesigneringsnøgle - signerer DNSKEY-records i zonen"
 
 #: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - signerer alle andre poster i zonen"
+msgstr "Zone Signing Key - signerer alle andre records i zonen"
 
 #: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
@@ -11892,7 +11841,7 @@ msgstr "Opret forward A / AAAA records i primær zone"
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr "Opret kun PTRs for eksisterende A/AAAA-poster i fremadrettet zone"
+msgstr "Opret kun PTRs for eksisterende A/AAAA-records i fremadrettet zone"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
@@ -11908,7 +11857,7 @@ msgstr "Opret PTR Records"
 
 #: templates/modern/batch_ptr_record.html:119
 msgid "PTR Record Information"
-msgstr "Oplysninger om PTR-post"
+msgstr "Oplysninger om PTR-record"
 
 #: templates/modern/api_key_add.html:77
 msgid "Important Information"
@@ -11916,7 +11865,7 @@ msgstr "Vigtige oplysninger"
 
 #: templates/modern/batch_ptr_record.html:124
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "Dette værktøj skaber PTR poster i bulk. Der findes to tilstande:"
+msgstr "Dette værktøj skaber PTR records i bulk. Der findes to tilstande:"
 
 #: templates/modern/batch_ptr_record.html:126
 msgid "All IPs"
@@ -11990,9 +11939,7 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr ""
-"Brug \"Opret PTRs kun for eksisterende A/AAAA-poster\" til at befolke PTRs "
-"baseret på din fremadrettede zone"
+msgstr "Brug \"Opret PTRs kun for eksisterende A/AAAA-records\" til at befolke PTRs baseret på din fremadrettede zone"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -12166,9 +12113,7 @@ msgstr "DNS-postguide"
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr ""
-"Vælg en guide til at hjælpe dig med at oprette komplekse DNS-poster med "
-"guidede formularer i stedet for manuel tekstindgang."
+msgstr "Vælg en guide til at hjælpe dig med at oprette komplekse DNS-records med guidede formularer i stedet for manuel tekstindgang."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
@@ -12245,7 +12190,7 @@ msgstr "record (er). Tjek venligst diagramformatet."
 
 #: templates/modern/edit.html:38 templates/modern/edit.html:637
 msgid "Failed to add records. Please check the record format."
-msgstr "Kunne ikke tilføje poster. Tjek venligst diagramformatet."
+msgstr "Kunne ikke tilføje records. Tjek venligst diagramformatet."
 
 #: templates/modern/edit.html:41 templates/modern/edit.html:640
 msgid "Content validation failed:"
@@ -12838,9 +12783,7 @@ msgstr "Forudvalgt på add-zone-formularen"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr ""
-"Configured via dns.default _ zone _ template - rediger settings.php for at "
-"ændre"
+msgstr "Configured via dns.default_zone_template - rediger settings.php for at ændre"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13215,9 +13158,7 @@ msgstr "Slet optegnelser"
 msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
-msgstr ""
-"Er du sikker på, du vil slette følgende poster? Denne handling kan ikke "
-"bringes til ophør."
+msgstr "Er du sikker på, du vil slette følgende records? Denne handling kan ikke bringes til ophør."
 
 #: templates/modern/delete_records.html:60
 msgid "Also delete corresponding PTR records (if they exist)"
@@ -13657,7 +13598,7 @@ msgstr "Vis redigeringsknapper"
 
 #: templates/modern/user_preferences.html:182
 msgid "Display individual edit button per record"
-msgstr "Vis individuel redigeringsknap pr. post"
+msgstr "Vis individuel redigeringsknap pr. record"
 
 #: templates/modern/user_preferences.html:189
 msgid "Show delete buttons"
@@ -13665,7 +13606,7 @@ msgstr "Vis Slet knapper"
 
 #: templates/modern/user_preferences.html:190
 msgid "Display individual delete button per record"
-msgstr "Vis individuel Slet knap pr. post"
+msgstr "Vis individuel Slet knap pr. record"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
@@ -14155,17 +14096,13 @@ msgstr "PowerDNS API fejl"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Kontroller at pdns _ api.key i config / settings.php matcher API-tasten "
-"indstillet i PowerDNS."
+msgstr "Kontroller at pdns_api.key i config / settings.php matcher API-tasten indstillet i PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Tjek at pdns _ api.server _ name matcher hvad PowerDNS rapporterer (standard "
-"'localhost')."
+msgstr "Tjek at pdns_api.server_name matcher hvad PowerDNS rapporterer (standard 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14215,7 +14152,7 @@ msgstr "DS Records"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
-msgstr "Kopiér alle DS-poster til udklipsholderen"
+msgstr "Kopiér alle DS-records til udklipsholderen"
 
 #: templates/modern/dnssec_ds_dnskey.html:66
 msgid ""

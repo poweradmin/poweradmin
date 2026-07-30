@@ -1689,7 +1689,7 @@ msgstr "Кодови за опоравак су регенерисани. Сач
 #: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:2 templates/modern/header.html:340
 msgid "API Logs"
-msgstr "АПИ логови"
+msgstr "API логови"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
@@ -1766,20 +1766,20 @@ msgstr "Појединачно"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
-msgstr "Функција АПИ је онемогућена у системској конфигурацији."
+msgstr "Функција API је онемогућена у системској конфигурацији."
 
 #: lib/Application/Controller/ApiKeysController.php:95
 msgid "You do not have permission to manage API keys."
-msgstr "Немате дозволу за управљање АПИ кључевима."
+msgstr "Немате дозволу за управљање API кључевима."
 
 #: lib/Application/Controller/ApiKeysController.php:101
 #: templates/modern/api_key_delete.html:4
 msgid "API Keys"
-msgstr "АПИ кључеви"
+msgstr "API кључеви"
 
 #: lib/Application/Controller/ApiKeysController.php:255
 msgid "API key name is required."
-msgstr "Име АПИ кључа је обавезно."
+msgstr "Име API кључа је обавезно."
 
 #: lib/Application/Controller/ApiKeysController.php:265
 msgid "Invalid expiration date format."
@@ -1787,19 +1787,19 @@ msgstr "Неважећи формат датума истека."
 
 #: lib/Domain/Service/ApiKeyService.php:356
 msgid "API key not found or you do not have permission to edit it."
-msgstr "АПИ кључ није пронађен или немате дозволу за уређивање."
+msgstr "API кључ није пронађен или немате дозволу за уређивање."
 
 #: lib/Application/Controller/ApiKeysController.php:290
 msgid "API key updated successfully."
-msgstr "АПИ кључ успешно ажуриран."
+msgstr "API кључ успешно ажуриран."
 
 #: lib/Application/Controller/ApiKeysController.php:335
 msgid "API key deleted successfully."
-msgstr "АПИ кључ успешно обрисан."
+msgstr "API кључ успешно обрисан."
 
 #: lib/Domain/Service/ApiKeyService.php:298
 msgid "API key not found or you do not have permission to delete it."
-msgstr "АПИ кључ није пронађен или немате дозволу за брисање."
+msgstr "API кључ није пронађен или немате дозволу за брисање."
 
 #: lib/Application/Controller/ApiKeysController.php:428
 msgid "disabled"
@@ -1812,7 +1812,7 @@ msgstr "омогућено"
 #: lib/Application/Controller/ApiKeysController.php:429
 #, php-format
 msgid "API key %s successfully."
-msgstr "АПИ кључ %s успешно."
+msgstr "API кључ %s успешно."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have the permission to add records to this zone."
@@ -2147,8 +2147,7 @@ msgstr ""
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr ""
-"Неуспешно потписивање. Валидација прошла, али PowerDNS АПИ јавио грешку."
+msgstr "Неуспешно потписивање. Валидација прошла, али PowerDNS API јавио грешку."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -2989,7 +2988,7 @@ msgstr "Немате дозволу за преглед PowerDNS статуса.
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr "Функција PowerDNS АПИ није конфигурисана. Подесите URL и кључ."
+msgstr "Функција PowerDNS API није конфигурисана. Подесите URL и кључ."
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
@@ -3266,8 +3265,7 @@ msgstr "Ова радња захтева POST захтев."
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
-msgstr ""
-"DNSSEC функционалност није доступна. Проверите PowerDNS АПИ конфигурацију."
+msgstr "DNSSEC функционалност није доступна. Проверите PowerDNS API конфигурацију."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:118
 msgid "Zone key has been successfully deactivated."
@@ -8421,28 +8419,28 @@ msgstr "Није могуће пронаћи домен са датим ИД-о�
 
 #: lib/Domain/Service/ApiKeyService.php:198
 msgid "API functionality is disabled."
-msgstr "АПИ функционалност је онемогућена."
+msgstr "API функционалност је онемогућена."
 
 #: lib/Domain/Service/ApiKeyService.php:207
 msgid "You do not have permission to create API keys."
-msgstr "Немате дозволу за креирање АПИ кључева."
+msgstr "Немате дозволу за креирање API кључева."
 
 #: lib/Domain/Service/ApiKeyService.php:214 templates/default/api_keys.html:17
 #: templates/modern/api_keys.html:17
 msgid "You have reached the maximum number of API keys allowed."
-msgstr "Достигли сте максималан број АПИ кључева."
+msgstr "Достигли сте максималан број API кључева."
 
 #: lib/Domain/Service/ApiKeyService.php:365
 msgid "You do not have permission to update API keys."
-msgstr "Немате дозволу за ажурирање АПИ кључева."
+msgstr "Немате дозволу за ажурирање API кључева."
 
 #: lib/Domain/Service/ApiKeyService.php:307
 msgid "You do not have permission to delete API keys."
-msgstr "Немате дозволу за брисање АПИ кључева."
+msgstr "Немате дозволу за брисање API кључева."
 
 #: lib/Domain/Service/ApiKeyService.php:334
 msgid "You do not have permission to regenerate API keys."
-msgstr "Немате дозволу за регенерацију АПИ кључева."
+msgstr "Немате дозволу за регенерацију API кључева."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
@@ -8630,21 +8628,21 @@ msgstr "Ажурирање записа зоне није успело: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
-msgstr "АПИ кључ регенерисан"
+msgstr "API кључ регенерисан"
 
 #: templates/modern/api_key_regenerated.html:10
 msgid "API Key Regenerated Successfully"
-msgstr "АПИ кључ успешно регенерисан"
+msgstr "API кључ успешно регенерисан"
 
 #: templates/modern/api_key_regenerated.html:15
 msgid "IMPORTANT: Save your new API key now!"
-msgstr "ВАЖНО: Сачувајте свој нови АПИ кључ сада!"
+msgstr "ВАЖНО: Сачувајте свој нови API кључ сада!"
 
 #: templates/modern/api_key_regenerated.html:16
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr "Ово је једини пут да се нови АПИ кључ приказује. Сачувајте сада."
+msgstr "Ово је једини пут да се нови API кључ приказује. Сачувајте сада."
 
 #: templates/modern/api_key_created.html:21
 msgid "Name:"
@@ -8652,7 +8650,7 @@ msgstr "Назив:"
 
 #: templates/modern/api_key_regenerated.html:26
 msgid "New API Key:"
-msgstr "Нови АПИ кључ:"
+msgstr "Нови API кључ:"
 
 #: templates/modern/api_key_created.html:31
 msgid "Copy"
@@ -8688,7 +8686,7 @@ msgstr "Активан"
 
 #: templates/modern/api_key_created.html:58
 msgid "Return to API Keys"
-msgstr "Врати се на АПИ кључеве"
+msgstr "Врати се на API кључеве"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
@@ -8776,7 +8774,7 @@ msgstr "Откажи"
 
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
-msgstr "Уреди АПИ кључ"
+msgstr "Уреди API кључ"
 
 #: lib/Module/ZoneImportExport/templates/import.html:76
 msgid "Name"
@@ -8784,7 +8782,7 @@ msgstr "Назив"
 
 #: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
 msgid "Please provide a name for this API key"
-msgstr "Унесите име за овај АПИ кључ"
+msgstr "Унесите име за овај API кључ"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -8800,7 +8798,7 @@ msgstr "Остави празно за кључ који никада не ис�
 
 #: templates/default/api_key_edit.html:33 templates/modern/api_key_edit.html:34
 msgid "Disable this API key"
-msgstr "Онемогући овај АПИ кључ"
+msgstr "Онемогући овај API кључ"
 
 #: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
 msgid "Disabled keys cannot be used for authentication"
@@ -8833,7 +8831,7 @@ msgstr ""
 
 #: templates/default/api_key_edit.html:70 templates/modern/api_key_edit.html:71
 msgid "Update API Key"
-msgstr "Ажурирај АПИ кључ"
+msgstr "Ажурирај API кључ"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:235
 msgid "* Required fields"
@@ -8841,7 +8839,7 @@ msgstr "* Обавезна поља"
 
 #: templates/default/api_key_edit.html:86 templates/modern/api_key_edit.html:87
 msgid "API Key Information"
-msgstr "Информације о АПИ кључу"
+msgstr "Информације о API кључу"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
@@ -8865,7 +8863,7 @@ msgstr "Додатне акције"
 
 #: templates/modern/api_key_regenerate.html:10
 msgid "Regenerate API Key"
-msgstr "Регенериши АПИ кључ"
+msgstr "Регенериши API кључ"
 
 #: templates/modern/api_key_edit.html:139
 msgid "Creates a new key, invalidating the old one"
@@ -8873,7 +8871,7 @@ msgstr "Креира нови кључ, поништавајући стари"
 
 #: templates/modern/api_key_delete.html:9
 msgid "Delete API Key"
-msgstr "Обриши АПИ кључ"
+msgstr "Обриши API кључ"
 
 #: templates/modern/api_key_edit.html:143
 msgid "Permanently removes this key"
@@ -9750,7 +9748,7 @@ msgstr "Користите описна имена и описе да шабло
 
 #: templates/default/list_log_api.html:8 templates/modern/list_log_api.html:8
 msgid "API Activity Logs"
-msgstr "Дневници АПИ активности"
+msgstr "Дневници API активности"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
@@ -10106,7 +10104,7 @@ msgstr "Обратите се администратору за датум по�
 
 #: templates/modern/api_key_regenerate.html:15
 msgid "You are about to regenerate the API key"
-msgstr "Регенерисаћете АПИ кључ"
+msgstr "Регенерисаћете API кључ"
 
 #: templates/modern/api_key_regenerate.html:16
 msgid "This action will invalidate the existing key!"
@@ -10116,9 +10114,7 @@ msgstr "Ова акција ће поништити постојећи кључ!
 msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
-msgstr ""
-"Ако регенеришете АПИ кључ, апликације неће моћи да се аутентификују док се "
-"не ажурирају."
+msgstr "Ако регенеришете API кључ, апликације неће моћи да се аутентификују док се не ажурирају."
 
 #: templates/modern/api_key_regenerate.html:18
 msgid ""
@@ -10128,11 +10124,11 @@ msgstr "Нови кључ се приказује само једном нако
 
 #: templates/modern/api_key_delete.html:20
 msgid "API Key Details"
-msgstr "Детаљи АПИ кључа"
+msgstr "Детаљи API кључа"
 
 #: templates/modern/api_key_regenerate.html:70
 msgid "Yes, regenerate this API key"
-msgstr "Да, регенериши овај АПИ кључ"
+msgstr "Да, регенериши овај API кључ"
 
 #: templates/modern/api_key_regenerate.html:73
 msgid "No, keep current key"
@@ -11138,7 +11134,7 @@ msgstr "Назад"
 
 #: templates/modern/api_key_add.html:5 templates/modern/api_key_add.html:12
 msgid "Add API Key"
-msgstr "Додај АПИ кључ"
+msgstr "Додај API кључ"
 
 #: templates/default/api_key_add.html:19 templates/modern/api_key_add.html:20
 msgid "My application"
@@ -11146,17 +11142,17 @@ msgstr "Моја апликација"
 
 #: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
 msgid "Provide a name for this API key"
-msgstr "Унесите име за овај АПИ кључ"
+msgstr "Унесите име за овај API кључ"
 
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
-msgstr "Креирај АПИ кључ"
+msgstr "Креирај API кључ"
 
 #: templates/default/api_key_add.html:79 templates/modern/api_key_add.html:80
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr "Нови АПИ кључ се приказује само ЈЕДНОМ. Сачувајте га сигурно."
+msgstr "Нови API кључ се приказује само ЈЕДНОМ. Сачувајте га сигурно."
 
 #: templates/default/api_key_add.html:80 templates/modern/api_key_add.html:81
 msgid "If you lose the key, you'll need to regenerate it."
@@ -12056,25 +12052,25 @@ msgstr "Назад на зону"
 
 #: templates/modern/api_key_created.html:5
 msgid "API Key Created"
-msgstr "АПИ кључ креиран"
+msgstr "API кључ креиран"
 
 #: templates/modern/api_key_created.html:10
 msgid "API Key Created Successfully"
-msgstr "АПИ кључ успешно креиран"
+msgstr "API кључ успешно креиран"
 
 #: templates/modern/api_key_created.html:15
 msgid "IMPORTANT: Save your API key now!"
-msgstr "ВАЖНО: Сачувајте свој АПИ кључ сада!"
+msgstr "ВАЖНО: Сачувајте свој API кључ сада!"
 
 #: templates/modern/api_key_created.html:16
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
-msgstr "Ово је једини пут да се АПИ кључ приказује. Сачувајте га сада."
+msgstr "Ово је једини пут да се API кључ приказује. Сачувајте га сада."
 
 #: templates/modern/api_key_created.html:26
 msgid "API Key:"
-msgstr "АПИ кључ:"
+msgstr "API кључ:"
 
 #: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
 msgid "Bulk registration"
@@ -12864,7 +12860,7 @@ msgstr "Освежи статус"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "PowerDNS АПИ није конфигурисан. Подесите URL и кључ."
+msgstr "PowerDNS API није конфигурисан. Подесите URL и кључ."
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13017,7 +13013,7 @@ msgstr "Листа шаблона зоне"
 
 #: templates/default/header.html:242 templates/modern/header.html:347
 msgid "API Documentation"
-msgstr "АПИ документација"
+msgstr "API документација"
 
 #: templates/default/header.html:327 templates/modern/header.html:500
 msgid "PowerDNS API error"
@@ -13153,11 +13149,11 @@ msgstr "Зоне ће остати у систему."
 
 #: templates/default/api_keys.html:6 templates/modern/api_keys.html:6
 msgid "API Keys Management"
-msgstr "Управљање АПИ кључевима"
+msgstr "Управљање API кључевима"
 
 #: templates/default/api_keys.html:9 templates/modern/api_keys.html:9
 msgid "Add new API key"
-msgstr "Додај нови АПИ кључ"
+msgstr "Додај нови API кључ"
 
 #: templates/default/api_keys.html:65 templates/modern/api_keys.html:65
 msgid "Regenerate"
@@ -13173,15 +13169,15 @@ msgstr "Онемогући"
 
 #: templates/default/api_keys.html:94 templates/modern/api_keys.html:94
 msgid "No API keys found."
-msgstr "Нема пронађених АПИ кључева."
+msgstr "Нема пронађених API кључева."
 
 #: templates/default/api_keys.html:107 templates/modern/api_keys.html:107
 msgid "Disable API Key"
-msgstr "Онемогући АПИ кључ"
+msgstr "Онемогући API кључ"
 
 #: templates/default/api_keys.html:112 templates/modern/api_keys.html:112
 msgid "Are you sure you want to disable the API key"
-msgstr "Да ли сте сигурни да желите да онемогућите АПИ кључ"
+msgstr "Да ли сте сигурни да желите да онемогућите API кључ"
 
 #: templates/default/api_keys.html:113 templates/modern/api_keys.html:113
 msgid "External applications using this key will lose access."
@@ -13189,11 +13185,11 @@ msgstr "Спољне апликације које користе овај кљ�
 
 #: templates/default/api_keys.html:137 templates/modern/api_keys.html:137
 msgid "Enable API Key"
-msgstr "Омогући АПИ кључ"
+msgstr "Омогући API кључ"
 
 #: templates/default/api_keys.html:142 templates/modern/api_keys.html:142
 msgid "Are you sure you want to enable the API key"
-msgstr "Да ли сте сигурни да желите да омогућите АПИ кључ"
+msgstr "Да ли сте сигурни да желите да омогућите API кључ"
 
 #: templates/default/api_keys.html:143 templates/modern/api_keys.html:143
 msgid "External applications will be able to authenticate using this key."
@@ -13213,21 +13209,21 @@ msgstr "API кључеви омогућавају спољним апликац�
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
-msgstr "Уклонићете АПИ кључ"
+msgstr "Уклонићете API кључ"
 
 #: templates/modern/api_key_delete.html:15
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
-msgstr "Ако обришете АПИ кључ, апликације га неће моћи користити."
+msgstr "Ако обришете API кључ, апликације га неће моћи користити."
 
 #: templates/modern/api_key_delete.html:66
 msgid "Yes, delete this API key"
-msgstr "Да, обриши овај АПИ кључ"
+msgstr "Да, обриши овај API кључ"
 
 #: templates/modern/api_key_delete.html:66
 msgid "No, keep this API key"
-msgstr "Не, задржи овај АПИ кључ"
+msgstr "Не, задржи овај API кључ"
 
 #: templates/modern/edit_perm_templ.html:66
 msgid "Template Usage Information"
