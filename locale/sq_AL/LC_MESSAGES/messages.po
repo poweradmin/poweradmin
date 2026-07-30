@@ -878,7 +878,7 @@ msgstr "Nevoitet siguruesi i CA"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
-msgstr "E personalizuar CA"
+msgstr "Domeni i personalizuar i CA-së është i detyrueshëm kur zgjidhet \"Custom\"."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:215
 msgid "Invalid CA domain format"
@@ -3698,7 +3698,7 @@ msgstr "Jo, mbaje këtë supermen."
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "Shfaq gjendja për në tabelë."
+msgstr "Po shfaqet gjendja e lidhjes për serverët autoprimary të konfiguruar në tabelën më poshtë."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
@@ -4050,7 +4050,7 @@ msgstr "Për portën e llojit 2, porta duhet të jetë një adresë e vlefshme I
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:218
 msgid "For gateway type 3, gateway must be a valid domain name."
-msgstr "për lloji a emri."
+msgstr "Për gateway të llojit 3, gateway duhet të jetë një emër domeni i vlefshëm."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
@@ -4280,7 +4280,7 @@ msgstr ""
 msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
-msgstr "Zgjidh Këshillohet zgjedhësi 1 (SPKI)."
+msgstr "Zgjedhësi 0 (Certifikata e plotë) mund të prishet kur ndryshojnë atributet e certifikatës. Këshillohet zgjedhësi 1 (SPKI)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
@@ -5910,7 +5910,7 @@ msgstr "Adresë IPv6 e pavlefshme në ipv6hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "Pozicioni me a."
+msgstr "Shtegu DoH duhet të fillojë me një vijë të pjerrët përpara (/)."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
@@ -6517,7 +6517,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "A-Z, a-z, 0-9, +, /, =)."
+msgstr "Rekordi DHCID duhet të përmbajë vetëm karaktere base64 të vlefshme (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6613,7 +6613,7 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "ZSK çdo 1-3 muaj, KSK çdo 1-2 vjet."
+msgstr "Ndërrimi i rregullt i çelësave është praktikë sigurie e këshillueshme: ZSK çdo 1-3 muaj, KSK çdo 1-2 vjet."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6891,7 +6891,7 @@ msgstr "Rekordi RP përmban shkronja të pavlefshme."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "TP domain dhe txt domain."
+msgstr "Rekordi RP duhet të përmbajë mailbox-domain (mbox-dname) dhe txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6929,7 +6929,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP mailbox me a emri."
+msgstr "Domeni i kutisë postare RP duhet të jetë një emër domeni plotësisht i kualifikuar (të përfundojë me pikë)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -6962,7 +6962,7 @@ msgstr "Domain RP mailbox përmban etiketë bosh."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "Etiketa e domentit RP"
+msgstr "Etiketa e domenit të kutisë postare RP e tejkalon gjatësinë maksimale prej 63 karakteresh."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -7451,7 +7451,7 @@ msgstr ""
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "Rekordi i BEI48 mungon për ndarje. Formati me."
+msgstr "Rekordit EUI48 i mungojnë ndarësit. Formati duhet të jetë xx-xx-xx-xx-xx-xx me viza ndarëse midis okteteve."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
@@ -8515,7 +8515,7 @@ msgstr "Përmbajtja MR ( mailbox i ri) nuk mund të jetë bosh."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "përmbajtja a emri."
+msgstr "Përmbajtja e rekordit MR duhet të jetë një emër domeni i vlefshëm."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
@@ -9616,7 +9616,7 @@ msgstr "Format i pavlefshëm. Pritej të paktën: emri, lloji, zemërimi"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Format i pavlefshëm SRV. Emri"
+msgstr "Format SRV i pavlefshëm. Përdorni: name,SRV,\"weight port target\",priority,ttl ose name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -9644,7 +9644,7 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR j lloji nuk A."
+msgstr "Përditësimi i PTR u anashkalua: lloji i rekordit nuk është A ose AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
@@ -10566,7 +10566,7 @@ msgstr "Konfirmo Removalin Anëtar"
 
 #: templates/default/edit_group.html:179 templates/modern/edit_group.html:179
 msgid "Are you sure you want to remove user"
-msgstr "nga hiq përdorues"
+msgstr "A jeni i sigurt që dëshironi ta hiqni përdoruesin"
 
 #: templates/modern/edit_group.html:179 templates/modern/edit_group.html:205
 msgid "from this group?"
@@ -11015,7 +11015,7 @@ msgstr "Input"
 
 #: templates/modern/bulk_record_add.html:62
 msgid "Enter one record per line using CSV format"
-msgstr "Shto për rreshta"
+msgstr "Shkruani një rekord për çdo rresht duke përdorur formatin CSV"
 
 #: templates/modern/bulk_record_add.html:63
 msgid "Required fields: name, type, content"
@@ -11764,7 +11764,7 @@ msgstr "Konfirmo Removal"
 
 #: templates/default/edit_user.html:321 templates/modern/edit_user.html:321
 msgid "Are you sure you want to remove this user from the group"
-msgstr "nga hiq vijues j"
+msgstr "A jeni i sigurt që dëshironi ta hiqni këtë përdorues nga grupi"
 
 #: templates/modern/confirm_unlink_zones_templ.html:5
 msgid "Unlink zones"
@@ -11919,7 +11919,7 @@ msgstr "Kjo mund të jetë sepse:"
 
 #: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
-msgstr "URL është gabim"
+msgstr "URL-ja është e pasaktë ose është shkruar gabim"
 
 #: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
@@ -12158,7 +12158,7 @@ msgstr "Krijo PTR-të vetëm për të dhënat ekzistuese A/AAAA"
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
-msgstr "Përdor fushën e Prefiksit të Host"
+msgstr "Përdorni fushën Host Prefix për t'u shtuar një prefiks të gjithë emrave të hosteve kur krijohen të gjitha IP-të"
 
 #: templates/modern/batch_ptr_record.html:166
 msgid ""
@@ -12227,7 +12227,7 @@ msgstr "Shto regjistrim në modelin e zonës"
 
 #: templates/modern/add_zone_templ_record.html:26
 msgid "Create a new record for this zone template"
-msgstr "Krijo a i ri për"
+msgstr "Krijoni një rekord të ri për këtë shabllon zone"
 
 #: templates/modern/_partials/log_list.html:20
 msgid "Total logs"
@@ -13095,7 +13095,7 @@ msgstr "Përdor një fjalëkalim unik të papërdorur në site të tjerë"
 
 #: templates/modern/change_password.html:97
 msgid "Choose a password that is difficult to guess"
-msgstr "Zgjidh një fjalëkalim"
+msgstr "Zgjidhni një fjalëkalim që është i vështirë për t'u marrë me mend"
 
 #: templates/modern/change_password.html:98
 msgid "Include a mix of letters, numbers, and symbols"
@@ -14964,7 +14964,7 @@ msgstr "Kërko"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr "Shto a emri shembull"
+msgstr "Shkruani një emër domeni (p.sh., example.com) për të kërkuar informacionin e tij WHOIS"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -14972,7 +14972,7 @@ msgstr "Rezultatet e OBSHIS"
 
 #: lib/Module/Whois/templates/whois.html:44
 msgid "Please enter a domain name to perform a WHOIS lookup."
-msgstr "shkruaj a emri për a."
+msgstr "Ju lutemi shkruani një emër domeni për të kryer një kërkim WHOIS."
 
 #: lib/Module/Rdap/templates/rdap.html:4 lib/Module/Rdap/templates/rdap.html:9
 msgid "RDAP Lookup"
@@ -14980,7 +14980,7 @@ msgstr "RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Shto a emri shembull"
+msgstr "Shkruani një emër domeni (p.sh., example.com) për të kërkuar informacionin e tij RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"
@@ -15371,7 +15371,7 @@ msgstr ""
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "URL është për j"
+msgstr "Sigurohuni që rishkrimi i URL-ve është konfiguruar për serverin tuaj web"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -15648,7 +15648,7 @@ msgstr ""
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Kontrolli shtegu është"
+msgstr "Verifikoni që shtegu i plotë drejt skedarit të bazës së të dhënave është i saktë dhe i aksesueshëm"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"

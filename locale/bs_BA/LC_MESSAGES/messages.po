@@ -88,8 +88,7 @@ msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr ""
-"TLSA zapisi zahtijevaju DNSSEC za ovu zonu. Bez DNSSEC nema sigurnosti."
+msgstr "TLSA zapisi zahtijevaju da DNSSEC bude omogućen za ovu zonu. TLSA zapisi bez DNSSEC-a ne pružaju nikakvu sigurnosnu korist i klijenti ih mogu zanemariti."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
@@ -257,8 +256,7 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr ""
-"Heksadecimalni hash ili cijeli sertifikat. Za SHA-256: openssl naredbe."
+msgstr "Heksadecimalni hash ili potpuni podaci certifikata (zavisno od tipa podudaranja). Za SHA-256 koristite \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -864,7 +862,7 @@ msgstr "Zastavice moraju biti 0 ili 128"
 msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
-msgstr "Kritična zastavica (128) - nepodržani sistemi odbijaju operacije."
+msgstr "Postavljena je kritična zastavica (128). Sistemi koji ne razumiju CAA zapise odbit će operacije. Koristite 0 osim ako imate poseban zahtjev."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
@@ -885,9 +883,7 @@ msgid ""
 "Generate the DKIM key pair on your MAIL SERVER (Postfix, Exim, etc.). Only "
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
-msgstr ""
-"DKIM dokazuje da e-pošta dolazi s vaše domene. Generirajte par na mail "
-"serveru - samo PUBLIC u DNS."
+msgstr "DKIM pomoću kriptografskih potpisa dokazuje da e-pošta dolazi s vaše domene. Par DKIM ključeva generišite na svom MAIL SERVERU (Postfix, Exim i slično). U ovaj DNS zapis se upisuje samo JAVNI KLJUČ. PRIVATNI KLJUČ držite sigurno na svom mail serveru i nikada ga ne dijelite."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
@@ -898,9 +894,7 @@ msgid ""
 "Selector to identify the DKIM key (commonly \"default\", timestamp like "
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
-msgstr ""
-"Selektor za DKIM ključ (obično \"default\" ili timestamp). Samo "
-"alfanumerički i crtice."
+msgstr "Selektor koji identificira DKIM ključ (najčešće \"default\", vremenska oznaka poput \"202501\" ili naziv usluge poput \"google\"). Dozvoljeni su samo alfanumerički znakovi, crtice i donje crte."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
 msgid "Public Key"
@@ -3066,8 +3060,7 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr ""
-"SSO korisnici ne mogu mijenjati lozinku ovdje. Obratite se administratoru."
+msgstr "Korisnici prijavljeni putem jedinstvene prijave (Single Sign-On) ne mogu ovdje mijenjati lozinku. Obratite se svom administratoru ili lozinku promijenite kod svog provajdera identiteta."
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
@@ -3900,7 +3893,7 @@ msgstr "IPSECKEY prioritet mora biti broj između 0 i 255."
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
-msgstr "IPSECKEY tip pristupnika: 0, 1, 2 ili 3"
+msgstr "Tip IPSECKEY pristupnika mora biti 0 (bez pristupnika), 1 (IPv4), 2 (IPv6) ili 3 (naziv domene)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
@@ -3979,7 +3972,7 @@ msgstr "1. Cijeli lanac SRV pretraga mora biti DNSSEC-potpisan"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. TLSA zapisi trebaju biti na _$port._$protocol.$hostname."
+msgstr "2. TLSA zapisi trebaju se nalaziti na _$port._$protocol.$hostname, pri čemu $port, $protocol i $hostname dolaze iz odredišta SRV upita"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4064,7 +4057,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
-msgstr "TLSA zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. TLSA zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
@@ -4178,7 +4171,7 @@ msgstr "NSEC3PARAM zapis sadrži nevažeće znakove."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr "Prema RFC 5155/9077, NSEC3PARAM TTL = SOA minimum."
+msgstr "Prema RFC 5155 i RFC 9077, NSEC3PARAM zapisi trebaju imati isti TTL kao i polje minimalnog TTL-a u SOA zapisu."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -4232,13 +4225,13 @@ msgstr ""
 msgid ""
 "RFC 9276 recommends using Opt-Out only for very large and sparsely signed "
 "zones where the majority of records are insecure delegations."
-msgstr "RFC 9276 preporučuje Opt-Out samo za velike rijetko potpisane zone."
+msgstr "RFC 9276 preporučuje korištenje opcije Opt-Out samo za vrlo velike i rijetko potpisane zone u kojima većinu zapisa čine nesigurna delegiranja."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr "Flag vrijednosti > 1 su rezervirane za buduću uporabu."
+msgstr "Vrijednosti zastavica veće od 1 rezervirane su za buduću upotrebu. Trenutne implementacije možda neće ispravno obraditi te vrijednosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
@@ -4346,7 +4339,7 @@ msgstr "Nevažeće AFSDB ime servera."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB ime servera mora biti FQDN."
+msgstr "Naziv hosta AFSDB servera mora biti potpuno kvalificirano ime domene (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -4358,7 +4351,7 @@ msgstr "AFSDB ime servera mora biti FQDN s najmanje dva dijela."
 msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
-msgstr "Nevažeći AFSDB podtip. Mora biti 1 ili 2."
+msgstr "Nevažeći AFSDB podtip. Mora biti 1 (server baze podataka AFS ćelije) ili 2 (DCE autentificirani name server)."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
@@ -4389,7 +4382,7 @@ msgstr ""
 msgid ""
 "Zero latitude detected (the Equator). If this is intentional, it is fine; "
 "otherwise, please verify your coordinates."
-msgstr "Nulta geografska širina (Ekvator). Provjerite koordinate."
+msgstr "Otkrivena je nulta geografska širina (Ekvator). Ako je to namjerno, sve je u redu; u suprotnom provjerite svoje koordinate."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
@@ -4616,7 +4609,7 @@ msgstr "RFC 3123 napominje sigurnosne aspekte za APL zapise u ACL-ima."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr "APL zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. APL zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
@@ -4687,7 +4680,7 @@ msgstr "NID zapisi trebaju koristiti format xxxx:xxxx:xxxx:xxxx (RFC 6742)."
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr "Nevažeći NID: Group bit MORA biti 0 u ILNP prema RFC 6742."
+msgstr "Nevažeći NID zapis: Group bit (g bit, najmanje značajan bit prvog bajta) MORA biti 0 u ILNP-u, kako je propisano u RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
@@ -4732,7 +4725,7 @@ msgstr "ALIAS cilj ne može pokazivati na sebe, stvorila bi se petlja."
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
-msgstr "ALIAS zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. ALIAS zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
@@ -4782,7 +4775,7 @@ msgstr "Ručno uređivanje NSEC nije preporučeno - generiraju se automatski."
 msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
-msgstr "Wildcard nazivi u NSEC zapisima trebaju posebno rukovanje (RFC 4035)."
+msgstr "Wildcard nazivi u NSEC zapisima zahtijevaju posebno rukovanje. Prema RFC 4035, wildcard vlasnička imena pojavljuju se u NSEC zapisima bez proširivanja."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 msgid "NSEC record must contain a valid next domain name."
@@ -4793,8 +4786,7 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr ""
-"Sljedeće ime domene mora biti sljedeći vlasnik u kanonskom redoslijedu zone."
+msgstr "Polje sljedećeg imena domene mora sadržavati sljedeće vlasničko ime u kanonskom redoslijedu zone. Kanonski redoslijed ne razlikuje velika i mala slova i sortira po labelama zdesna nalijevo."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4846,8 +4838,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Ime ne prati standardni OPENPGPKEY format (<hash>._openpgpkey.<domain>)."
+msgstr "Naziv zapisa ne slijedi standardni OPENPGPKEY format (<hash>._openpgpkey.<domain>). Standardni format se preporučuje radi interoperabilnosti."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -4858,7 +4849,7 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "OPENPGPKEY zapisi se trebaju generirati s GnuPG --print-dane-records."
+msgstr "OPENPGPKEY zapise obično treba generisati specijaliziranim alatima poput GnuPG-a s opcijom --print-dane-records, umjesto da se kreiraju ručno."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4881,7 +4872,7 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "OPENPGPKEY zapis prelazi 4KB. RFC 7929 preporučuje manje zapise."
+msgstr "OPENPGPKEY zapis prelazi 4KB. RFC 7929 preporučuje da DNS zapisi budu što manji kako bi njihov prijenos bio pouzdan. Razmislite o korištenju minimalnog formata izvoza ključa."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4894,7 +4885,7 @@ msgstr ""
 msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
-msgstr "Dekodirani sadržaj nije valjan OpenPGP packet."
+msgstr "Dekodirani sadržaj ne izgleda kao valjan OpenPGP paket. OpenPGP paketi moraju počinjati bajtom kojem je postavljen najviši bit (RFC 9580)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
@@ -4907,7 +4898,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr "OPENPGPKEY zahtijeva DNSSEC. Bez DNSSEC nema sigurnosti."
+msgstr "OPENPGPKEY zapisi ZAHTIJEVAJU DNSSEC da bi imali ikakvu sigurnosnu korist. Bez DNSSEC validacije ovi zapisi ne donose nikakvu sigurnosnu prednost."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -4928,21 +4919,19 @@ msgstr ""
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr "Za stvaranje OPENPGPKEY koristite GnuPG s --print-dane-records."
+msgstr "Za kreiranje OPENPGPKEY zapisa koristite specijalizirane alate poput GnuPG-a s opcijom --print-dane-records kako biste osigurali ispravan format i sadržaj."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr "NS zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. NS zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr ""
-"Upozorenje: HINFO zapisi otkrivaju osjetljive informacije o hardveru i "
-"softveru."
+msgstr "Upozorenje: HINFO zapisi otkrivaju potencijalno osjetljive informacije o hardveru i softveru hosta koje mogu biti korisne napadačima. Razmotrite sigurnosne posljedice prije upotrebe u javno dostupnom DNS-u."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -5065,13 +5054,13 @@ msgstr "TSIG greška 16 (BADSIG) - nevažeći potpis. Provjerite ključeve."
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr "TSIG greška 17 (BADKEY) - nevažeći ključ."
+msgstr "TSIG kod greške 17 (BADKEY) označava da je ključ korišten u TSIG zapisu nevažeći. Provjerite je li ključ konfiguriran na oba DNS servera."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr "TSIG greška 18 (BADTIME) - timestamp izvan dopuštenog prozora."
+msgstr "TSIG kod greške 18 (BADTIME) označava da je vremenska oznaka u TSIG zapisu izvan dozvoljenog vremenskog prozora. Provjerite sinhronizaciju sata."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
@@ -5263,7 +5252,7 @@ msgstr ""
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr "URL CERT tipovi uvode dodatnu indirekciju i sigurnosne brige."
+msgstr "Tipovi certifikata zasnovani na URL-u (IPKIX, ISPKI, IPGP, IACPKIX) uvode dodatnu indirekciju i moguće sigurnosne rizike."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -5324,8 +5313,7 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr ""
-"VAŽNO: DLV zapisi su zastarjeli (RFC 8749, 2020). Koristite DS umjesto njih."
+msgstr "VAŽNO: DLV zapisi su prevaziđeni prema RFC 8749 (mart 2020). Glavni DNS resolveri uklonili su podršku za DLV ili su je označili zastarjelom. Umjesto toga razmotrite standardnu DNSSEC validaciju pomoću DS zapisa."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5508,7 +5496,7 @@ msgstr "Parametar \"%s\" je obavezan ali nije uključen u zapis."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 zahtijeva TKEY TTL=0 za sprječavanje cachinga."
+msgstr "RFC 2930 zahtijeva da TKEY zapisi imaju TTL=0 kako bi se spriječilo keširanje. Trenutni TTL različit od nule može uzrokovati probleme sa starijim DNS implementacijama."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5554,9 +5542,7 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr ""
-"TKEY mode mora biti 1-5 (1: server, 2: DH, 3: GSS-API, 4: resolver, 5: "
-"delete)."
+msgstr "TKEY mode mora biti broj između 1 i 5 (1: dodjela sa servera, 2: Diffie-Hellman razmjena, 3: GSS-API pregovaranje, 4: dodjela s resolvera, 5: brisanje ključa)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5851,7 +5837,7 @@ msgstr "Odgovorni i sandučić grešaka su isti. Razmotrite različite sanduči�
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "MINFO prioritet mora biti 0 ili prazan (RFC 1035)."
+msgstr "Polje prioriteta za MINFO zapise mora biti 0 ili prazno. MINFO ne koristi vrijednosti prioriteta prema RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -5948,7 +5934,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "CNAME zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. CNAME zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
@@ -6000,9 +5986,7 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr ""
-"Prema RFC 4703, DHCID zapisi se koriste za detekciju kolizija među DHCP "
-"klijentima."
+msgstr "Prema RFC 4703, DHCID zapisi se koriste za otkrivanje kolizija kada više DHCP klijenata polaže pravo na isti naziv. Postojanje DHCID zapisa znači da taj naziv već koristi neki DHCP klijent."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
@@ -6051,8 +6035,7 @@ msgstr "DHCID tip digesta %d nije standardan prema RFC 4701."
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr ""
-"DHCID zapis sa SHA-256 digest mora imati najmanje 35 bajtova dekodiran."
+msgstr "DHCID zapis sa SHA-256 sažetkom (tip 1) mora imati najmanje 35 bajtova kada se dekodira (2 za tip identifikatora, 1 za tip sažetka, 32 za SHA-256 sažetak)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -6198,8 +6181,7 @@ msgstr "RRSIG originalno TTL mora biti valjan pozitivan broj."
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr ""
-"Original TTL je veći od 1 dana. Za DNSSEC kraći TTL je bolji za oporavak."
+msgstr "Original TTL je veći od jednog dana (86400). Za DNSSEC zapise općenito su poželjniji kraći TTL-ovi radi bržeg oporavka u slučaju kompromitiranja ključa."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -6246,8 +6228,7 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr ""
-"Razdoblje valjanosti potpisa je veće od 90 dana, duže od preporučene prakse."
+msgstr "Period valjanosti potpisa duži je od 90 dana, što je duže od preporučene prakse. Dugi periodi valjanosti povećavaju ranjivost u slučaju kompromitiranja ključa."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6285,7 +6266,7 @@ msgstr ""
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
-msgstr "RRSIG zapisi su dio DNSSEC i trebaju ih upravljati DNS serveri."
+msgstr "RRSIG zapisi su dio DNSSEC-a i pružaju kriptografske potpise za DNS zapise. Njima bi trebao automatski upravljati DNS server."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
@@ -6477,7 +6458,7 @@ msgstr "RFC 7043 ne preporučuje objavljivanje EUI-64 adresa u javnom DNS."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 koristi dvotačke umjesto crtica."
+msgstr "EUI64 zapis koristi dvotačke kao razdjelnike (xx:xx:xx:xx:xx:xx:xx:xx), a zahtijeva crtice (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -6510,7 +6491,7 @@ msgstr ""
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr "Ovo izgleda kao lokalno administrirana adresa."
+msgstr "Ovo izgleda kao lokalno administrirana adresa (drugi najmanje značajan bit prvog okteta postavljen je na 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -6524,8 +6505,7 @@ msgstr "Ovo izgleda kao IANA OUI (00-00-5E) adresa."
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr ""
-"Ovaj DNAME je na apexu zone. RFC 6672 zahtijeva posebno rukovanje za NS."
+msgstr "Izgleda da se ovaj DNAME zapis nalazi na vrhu zone (apex). Prema RFC 6672, upotreba DNAME zapisa na vrhu zone zahtijeva posebno rukovanje NS i srodnim zapisima."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
@@ -6572,7 +6552,7 @@ msgstr ""
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr "DNAME stvara sintetičke aliase za sve poddomene vlasnika."
+msgstr "DNAME stvara sintetičke aliase za sve poddomene svog vlasničkog imena. Pažljivo to razmotrite pri planiranju strukture zone."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
@@ -6657,7 +6637,7 @@ msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr "SHA-384 (tip 4) za veću sigurnost, SHA-256 (tip 2) dovoljan za većinu."
+msgstr "SHA-384 (tip sažetka 4) dobar je izbor za veće sigurnosne zahtjeve, ali je SHA-256 (tip sažetka 2) dovoljan za većinu implementacija i ima širu podršku."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -6676,20 +6656,19 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr ""
-"DS zapisi uspostavljaju lanac povjerenja od roditeljske do dječje zone."
+msgstr "DS zapisi uspostavljaju lanac povjerenja od roditeljske prema dječjoj zoni. Roditeljska zona mora imati ovaj DS zapis, a dječja zona mora imati odgovarajući DNSKEY zapis."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr "CSYNC zapisi trebaju biti samo na vrhu zone (RFC 7477)."
+msgstr "CSYNC zapisi se trebaju postavljati samo na vrhu zone (RFC 7477). Roditeljski agenti možda neće obraditi ovaj zapis."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC zapisi zahtijevaju DNSSEC potpisivanje (RFC 7477)."
+msgstr "CSYNC zapisi zahtijevaju DNSSEC potpisivanje da bi ih roditeljski agenti obradili (RFC 7477). Provjerite je li vaša zona ispravno potpisana DNSSEC-om."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -6725,7 +6704,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "CSYNC zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. CSYNC zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
@@ -7157,7 +7136,7 @@ msgstr "SOA %s vrijednost (%d) ispod RFC 2308 minimuma (%d)."
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr "SOA retry treba biti manji od refresh (RFC 2308)."
+msgstr "Prema RFC 2308 vrijednost SOA retry trebala bi biti manja od vrijednosti refresh. Ovo je dozvoljeno, ali se ne preporučuje."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:310
 msgid ""
@@ -7245,7 +7224,7 @@ msgstr "CNAME zapis ne može koegzistirati s drugim vrstama. Pronađen %s zapis.
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr "Ovaj zapis je u sukobu s postojećim CNAME istim imenom."
+msgstr "Ovaj zapis je u sukobu s postojećim CNAME zapisom istog naziva. CNAME zapis ne može postojati zajedno s drugim tipovima zapisa."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -7275,7 +7254,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "SMIMEA zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. SMIMEA zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
@@ -7307,7 +7286,7 @@ msgstr "SMIMEA polje upotrebe mora biti broj između 0 i 3."
 msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
-msgstr "PKIX-TA usage (0) zahtijeva CA certifikat u putu validacije."
+msgstr "PKIX-TA upotreba (0) zahtijeva da se CA certifikat nalazi u putanji validacije certifikata. Provjerite je li taj CA javno poznat i od povjerenja."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
@@ -7345,9 +7324,7 @@ msgid ""
 "Selector 0 (Full certificate) means the entire certificate is matched. Using "
 "selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
-msgstr ""
-"Selektor 0 znači cijeli certifikat. Selektor 1 (SPKI) pruža fleksibilnost "
-"pri obnovi."
+msgstr "Selektor 0 (cijeli certifikat) znači da se uspoređuje cijeli certifikat. Preporučuje se selektor 1 (SubjectPublicKeyInfo) jer nudi više fleksibilnosti pri obnovi certifikata."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:233
 msgid ""
@@ -7450,8 +7427,7 @@ msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr ""
-"L64 zapisi za podmreže (wildcard DNS) koriste se za mobilne mreže (RFC 6742)."
+msgstr "L64 zapisi za podmreže (uz upotrebu wildcard DNS unosa) obično se koriste kada je imenovana podmreža mobilna, kada je to bila ili kada bi to mogla postati (RFC 6742, odjeljak 3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
@@ -7465,14 +7441,14 @@ msgstr "L64 preferencija mora biti broj između 0 i 65535."
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
-msgstr "L64 lokator mora biti 64-bitni hex IPv6 segment - 4 grupe hex znakova."
+msgstr "L64 lokator mora biti važeći 64-bitni heksadecimalni segment IPv6 adrese koji se sastoji od tačno 4 grupe heksadecimalnih cifara (npr. 2001:0db8:1140:1000)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
 "L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
-msgstr "L64 lokator ne bi trebao koristiti nule ili sve jedinice."
+msgstr "L64 lokator ne bi trebao koristiti neodređenu adresu (0000:0000:0000:0000) ni adresu od samih jedinica (ffff:ffff:ffff:ffff) jer možda nisu prikladne za ILNP lokatore."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
@@ -7616,7 +7592,7 @@ msgstr ""
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr "Ovaj LUA zapis ne koristi uobičajene PowerDNS Lua funkcije."
+msgstr "Izgleda da ovaj LUA zapis ne koristi uobičajene PowerDNS Lua funkcije. Provjerite vraća li odgovarajuću vrijednost za taj tip zapisa."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
@@ -7739,8 +7715,7 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr ""
-"KRITIČNO: SSHFP zapisi ZAHTIJEVAJU DNSSEC. Bez DNSSEC nema zaštite od MITM."
+msgstr "KRITIČNO: SSHFP zapisi ZAHTIJEVAJU DNSSEC validaciju da bi pružili ikakvu sigurnosnu korist. Bez DNSSEC-a ne nude nikakvu zaštitu od napada čovjekom u sredini (man-in-the-middle)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -7891,7 +7866,7 @@ msgstr "DMARC zapisi moraju biti postavljeni na _dmarc.<domain>."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "DMARC zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. DMARC zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -7917,7 +7892,7 @@ msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr "\"p=none\" pruža vidljivost autentifikacije bez utjecaja na isporuku."
+msgstr "Korištenje \"p=none\" pruža uvid u autentifikaciju e-pošte bez utjecaja na isporuku. Razmislite o strožoj politici nakon što pregledate izvještaje."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
@@ -7990,7 +7965,7 @@ msgstr ""
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "Ovo je DMARC zapis kroz TXT tip. Sadržaj treba početi s \"v=DMARC1\"."
+msgstr "Ovo je DMARC zapis koji se obrađuje kroz TXT tip zapisa. DMARC zapisi trebaju koristiti TXT tip zapisa sa sadržajem koji počinje s \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -8024,7 +7999,7 @@ msgstr "Ukupan TXT sadržaj prelazi maksimum od %d bajtova. Smanjite veličinu."
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "TXT zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. TXT zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -8062,7 +8037,7 @@ msgstr "Nevažeći znakovi u sadržaju CDS zapisa."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "Ovo je CDS deletion zapis (RFC 8078) - signalizira uklanjanje DS."
+msgstr "Ovo je CDS zapis za brisanje, kako je definirano u RFC 8078. On signalizira da odgovarajuće DS zapise treba ukloniti iz roditeljske zone."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -8257,14 +8232,14 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "AAAA zapisi moraju imati prioritet 0."
+msgstr "Neispravna vrijednost polja prioriteta. AAAA zapisi moraju imati vrijednost prioriteta 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "NSEC3 vlasnička imena trebaju biti Base32hex hash + naziv zone."
+msgstr "Vlasnička imena NSEC3 zapisa obično trebaju biti Base32hex kodirani hash iza kojeg slijedi naziv zone (npr. \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8278,7 +8253,7 @@ msgstr "NSEC3 zapis sadrži nevažeće znakove."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "Prema RFC 5155 i 9077, NSEC3 TTL = SOA minimum."
+msgstr "Prema RFC 5155 i RFC 9077, NSEC3 zapisi trebaju imati isti TTL kao i polje minimalnog TTL-a u SOA zapisu."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -8400,7 +8375,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr "NAPTR zapisi imaju prioritet u sadržaju, polje mora biti 0."
+msgstr "Neispravna vrijednost polja prioriteta. NAPTR zapisi imaju prioritet unutar polja sadržaja, pa vrijednost polja prioriteta mora biti 0."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
@@ -8449,7 +8424,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR service format: [protocol][+rs]... max 32 znakova po dijelu."
+msgstr "NAPTR service mora slijediti format: [protocol][+rs][+rs]... gdje protocol i rs počinju slovom i sadrže alfanumeričke znakove, crtice, dvotačke ili znakove plus (najviše 32 znaka svaki)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -9146,16 +9121,14 @@ msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr ""
-"Upozorenje: CNAME na apexu zone nije preporučen. SOA/NS ne mogu "
-"koegzistirati."
+msgstr "Upozorenje: CNAME zapisi u korijenu domene (vrh zone) se ne preporučuju i mogu uzrokovati probleme. SOA i NS zapisi su obavezni u korijenu domene i ne mogu postojati zajedno s CNAME zapisom."
 
 #: templates/modern/add_zone_templ_record.html:75
 msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "Savjet: za SOA koristite <code>[ZONE]</code> kao ime."
+msgstr "Savjet: za SOA zapise koristite <code>[ZONE]</code> kao naziv, a <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> kao sadržaj. SOA zapisi su neophodni za ispravan rad DNS zone."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -10299,7 +10272,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Trudimo se održavati dostupnost, ali ne jamčimo 100% uptime."
+msgstr "Iako nastojimo održavati dostupnost sistema, ne možemo garantirati 100% dostupnosti. Korisnici se ne bi trebali oslanjati isključivo na ovaj sistem za kritične DNS operacije bez odgovarajućih sigurnosnih kopija i nadzora."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10928,7 +10901,7 @@ msgstr "Kako koristiti predloške"
 msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
-msgstr "Nakon stvaranja predloška, dodijelite ga korisnicima ili grupama."
+msgstr "Nakon što kreirate predložak, možete ga dodijeliti korisnicima ili grupama. Time se osiguravaju dosljedne dozvole za korisnike i grupe sa sličnim ulogama."
 
 #: templates/modern/edit_perm_templ.html:93
 msgid "Available Permissions"
@@ -11395,7 +11368,7 @@ msgstr "Stvori API ključ"
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr "Novi API ključ se prikazuje samo JEDNOM. Spremite ga na sigurno."
+msgstr "Kada kreirate novi API ključ, bit će vam prikazan samo JEDNOM. Obavezno ga spremite na sigurno mjesto jer ga kasnije nećete moći dohvatiti."
 
 #: templates/default/api_key_add.html:80 templates/modern/api_key_add.html:81
 msgid "If you lose the key, you'll need to regenerate it."
@@ -11894,8 +11867,7 @@ msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
 "user."
-msgstr ""
-"Pri stvaranju novog korisnika dobiva dozvole prema odabranom predlošku."
+msgstr "Prilikom kreiranja novog korisnika, on dobiva dozvole na osnovu odabranog predloška. Te dozvole možete kasnije promijeniti uređivanjem korisnika."
 
 #: templates/default/add_user.html:169 templates/modern/add_user.html:169
 msgid "Select groups to add the new user to upon creation."
@@ -12070,9 +12042,7 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr ""
-"Promjena predloška zone zamjenjuje zapise predloška ali zadržava ručne "
-"dodatke."
+msgstr "Promjena predloška zone prepisuje zapise nastale iz predloška, ali zadržava ručno dodane zapise. Izmjene predloška ne ažuriraju zone automatski - prilikom uređivanja predloška upotrijebite dugme \"Update Zones\" da biste primijenili promjene."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -12200,8 +12170,7 @@ msgstr "Zapisi predloška"
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr ""
-"Ovaj predložak nema SOA zapis. Zone obično trebaju SOA za ispravan rad."
+msgstr "Ovaj predložak nema SOA zapis. DNS zone obično zahtijevaju SOA zapis da bi ispravno funkcionirale, a bez njega DNSSEC potpisivanje može biti neuspješno."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."
@@ -12479,7 +12448,7 @@ msgstr "Višefaktorska autentifikacija je omogućena"
 
 #: templates/modern/mfa_recovery_codes.html:17
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Vaš račun je sada zaštićen MFA."
+msgstr "Vaš račun je sada zaštićen višefaktorskom autentifikacijom."
 
 #: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:30
 msgid "Authentication method:"
@@ -12700,9 +12669,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"Obrisat ćete slave zonu čiji je master supermaster. Brisanje će biti "
-"privremeno."
+msgstr "Namjeravate obrisati slave zonu čiji je master nameserver supermaster. Brisanje zone sada rezultirat će samo privremenim uklanjanjem. Čim supermaster pošalje obavijest za ovu zonu, ona će ponovo biti dodana!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13028,7 +12995,7 @@ msgid ""
 "Preview how email templates will appear to users in both light and dark "
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
-msgstr "Pregledajte kako će predlošci izgledati u svijetloj i tamnoj temi."
+msgstr "Pogledajte kako će predlošci e-pošte izgledati korisnicima u svijetloj i u tamnoj temi. Ovi pregledi koriste primjere podataka kako bi prikazali oblikovanje i stil poruka e-pošte."
 
 #: templates/modern/email_previews.html:18
 msgid "Active Email Templates"
@@ -13524,9 +13491,7 @@ msgid ""
 "This template can be assigned to users and groups to quickly apply its set "
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
-msgstr ""
-"Ovaj predložak se može dodijeliti korisnicima i grupama. Promjene utječu na "
-"sve."
+msgstr "Ovaj predložak se može dodijeliti korisnicima i grupama radi brze primjene njegovog skupa dozvola. Izmjene napravljene ovdje utjecat će na sve korisnike i grupe kojima je taj predložak dodijeljen."
 
 #: templates/modern/edit_perm_templ.html:75
 msgid "Users vs Groups"

@@ -185,7 +185,7 @@ msgstr "Certificatul trebuie exact, fără PKI (DANE-EE)"
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "Cum validați certificatul."
+msgstr "Modul în care trebuie validat certificatul. Tipul 3 este cel mai des folosit pentru certificate auto-semnate sau pentru autorități de certificare proprii."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -279,7 +279,7 @@ msgstr "TTL (secunde)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr "TTL - timp de cache"
+msgstr "Time to live - cât timp ar trebui să păstreze resolverele DNS această înregistrare în cache"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
@@ -454,7 +454,7 @@ msgstr "Email raport criminalistic"
 msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
-msgstr "Email rapoarte failure."
+msgstr "Adresa de e-mail la care se primesc rapoartele detaliate de eșec (opțional, poate genera un volum mare de mesaje)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
@@ -479,7 +479,7 @@ msgstr "Generează rapoarte dacă verificarea SPF eșuează"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr "Când generate forensice"
+msgstr "Când să fie generate rapoartele forensic (se aplică doar dacă este completată adresa de e-mail pentru rapoarte forensic)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
@@ -542,7 +542,7 @@ msgstr "Procentul trebuie să fie între 0 și 100"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr "%d%% mesaje. 100%% post-test."
+msgstr "Politica se va aplica doar pentru %d%% dintre mesaje. Folosiți 100%% după ce testarea este finalizată."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -605,7 +605,7 @@ msgstr "Adrese IP"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:82
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
-msgstr "Adrese IP autorizate (CIDR)"
+msgstr "Adresele IP și rețelele autorizate (este acceptată notația CIDR)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:86
 msgid "IPv4 Addresses"
@@ -613,7 +613,7 @@ msgstr "Adrese IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "Un IP sau rețea per linie"
+msgstr "O singură adresă IP sau rețea pe fiecare linie (de exemplu, 192.0.2.1 sau 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -824,7 +824,7 @@ msgstr "URL raportare"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr "URL sau email raportare"
+msgstr "URL-ul sau adresa de e-mail pentru raportarea incidentelor (mailto: sau https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
@@ -991,7 +991,7 @@ msgstr "Mod strict subdomeniu"
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:119
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
-msgstr "Strict subdomain t=s."
+msgstr "Activează modul strict pentru subdomenii (t=s). Respinge mesajele nesemnate provenite de la subdomenii."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:198
 msgid "Selector is required"
@@ -1000,7 +1000,7 @@ msgstr "Selectorul este obligatoriu"
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:200
 msgid ""
 "Selector can only contain alphanumeric characters, hyphens, and underscores"
-msgstr "Selector: alfanumeric"
+msgstr "Selectorul poate conține doar caractere alfanumerice, cratime și liniuțe de subliniere"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:205
 msgid "Public key is required"
@@ -1056,7 +1056,7 @@ msgstr "Serviciu"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
-msgstr "Selectați sau \"Custom\""
+msgstr "Selectați un serviciu uzual sau alegeți \"Personalizat\" pentru a introduce datele manual"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:104
 msgid "Custom Service Name"
@@ -1184,7 +1184,7 @@ msgstr "Prioritatea trebuie să fie între 0 și 65535"
 #: lib/Module/DnsWizard/Service/SRVWizard.php:299
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
-msgstr "Prioritate 0 neobișnuită."
+msgstr "Prioritatea 0 este validă, dar neobișnuită. Majoritatea serviciilor folosesc prioritatea 10 sau una mai mare."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:305
 msgid "Weight must be between 0 and 65535"
@@ -1556,7 +1556,7 @@ msgstr ""
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr "Șters, comentariu păstrat."
+msgstr "Înregistrarea a fost ștearsă, dar comentariul a fost păstrat deoarece există înregistrări similare."
 
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
@@ -1583,13 +1583,13 @@ msgstr ""
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr "Șters, PTR neexistent."
+msgstr "Înregistrarea a fost ștearsă cu succes. Nu a fost găsită nicio înregistrare PTR corespunzătoare."
 
 #: lib/Application/Controller/DeleteRecordController.php:237
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "Șters, A/AAAA neexistent."
+msgstr "Înregistrarea a fost ștearsă cu succes. Nu a fost găsită nicio înregistrare A/AAAA corespunzătoare."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
@@ -1780,7 +1780,7 @@ msgstr "MFA necesar pentru regenerare."
 
 #: lib/Application/Controller/MfaSetupController.php:357
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr "Coduri regenerate."
+msgstr "Codurile de recuperare au fost regenerate. Salvați-le într-un loc sigur."
 
 #: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:2 templates/modern/header.html:340
@@ -1863,7 +1863,7 @@ msgstr "Unic"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
-msgstr "Funcția API dezactivată."
+msgstr "Funcționalitatea API este dezactivată în configurația sistemului."
 
 #: lib/Application/Controller/ApiKeysController.php:95
 msgid "You do not have permission to manage API keys."
@@ -2058,7 +2058,7 @@ msgstr "NOTĂ: Trimiterea datelor prin email a eșuat."
 
 #: lib/Application/Controller/AddUserController.php:190
 msgid "A password was generated but is not displayed for security reasons."
-msgstr "Parolă generată, nu afișată."
+msgstr "A fost generată o parolă, dar aceasta nu este afișată din motive de securitate."
 
 #: lib/Application/Controller/EditGroupController.php:269
 msgid "Please fill in all required fields correctly."
@@ -2239,7 +2239,7 @@ msgstr "Zona a fost semnată cu succes."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Verification DNSSEC failed."
+msgstr "Semnarea zonei a fost solicitată cu succes, dar verificarea a eșuat. Verificați cheile DNSSEC."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2321,7 +2321,7 @@ msgstr "Furnizați toate câmpurile obligatorii."
 
 #: lib/Application/Controller/AddRecordController.php:264
 msgid "Record successfully added. A matching PTR record was also created."
-msgstr "Adăugat. PTR creat."
+msgstr "Înregistrarea a fost adăugată cu succes. A fost creată și o înregistrare PTR corespunzătoare."
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
@@ -2329,11 +2329,11 @@ msgstr "Înregistrare adăugată, PTR eșuat: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
-msgstr "Adăugat, PTR eșuat."
+msgstr "Înregistrarea a fost adăugată cu succes, dar crearea înregistrării PTR a eșuat."
 
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Adăugat. A creat."
+msgstr "Înregistrarea a fost adăugată cu succes. A fost creată și o înregistrare A corespunzătoare."
 
 #: lib/Application/Controller/MfaVerifyController.php:145
 msgid "Invalid security token. Please try again."
@@ -2361,7 +2361,7 @@ msgstr ""
 
 #: lib/Application/Controller/MfaVerifyController.php:354
 msgid "A new verification code has been sent to your email."
-msgstr "Cod nou trimis pe email."
+msgstr "Un nou cod de verificare a fost trimis pe adresa dumneavoastră de e-mail."
 
 #: lib/Application/Controller/MfaVerifyController.php:360
 msgid "Please use a recovery code instead."
@@ -2371,7 +2371,7 @@ msgstr "Folosiți un cod de recuperare."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Cod nefolosibil, use recovery."
+msgstr "Codul de verificare nu a putut fi trimis pe adresa dumneavoastră de e-mail. Folosiți în schimb un cod de recuperare."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -2404,11 +2404,11 @@ msgstr "Adăugarea a %d înregistrări a eșuat."
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
-msgstr "Unele înregistrări nu au fost adăugate."
+msgstr "Unele înregistrări nu au putut fi adăugate. Este posibil să existe deja sau să conțină date invalide."
 
 #: lib/Application/Controller/AddRecordController.php:554
 msgid "Failed to add any records. They may contain invalid data."
-msgstr "Nicio înregistrare adăugată."
+msgstr "Nu a putut fi adăugată nicio înregistrare. Este posibil ca acestea să conțină date invalide."
 
 #: lib/Application/Controller/DeleteDomainsController.php:80
 msgid "No zone selected for deletion."
@@ -2517,7 +2517,7 @@ msgstr ""
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr "Creat, DNSSEC skipped."
+msgstr "Zona a fost creată cu succes, dar semnarea DNSSEC a fost omisă din cauza următoarelor erori de validare:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:264
 msgid ""
@@ -2536,7 +2536,7 @@ msgstr "Zonă creată și semnată DNSSEC cu succes."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Creat, verificare eșuată."
+msgstr "Zona a fost creată și semnarea a fost solicitată, dar verificarea a eșuat. Verificați cheile DNSSEC."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -2705,7 +2705,7 @@ msgstr "Autentificare SAML eșuată: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
-msgstr "Permisiuni insuficiente."
+msgstr "Nu aveți permisiuni suficiente pentru a vizualiza această pagină."
 
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
@@ -2909,7 +2909,7 @@ msgstr "Nu aveți permisiunea de a edita supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Supermaster nu există."
+msgstr "Supermasterul pe care încercați să îl editați nu există."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
@@ -3196,7 +3196,7 @@ msgstr "ED448 trebuie 456 biți (nesuportat)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:153
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA 1024 sau 2048 biți"
+msgstr "Algoritmii RSA ar trebui să folosească 1024 sau 2048 de biți pentru un nivel de securitate adecvat"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Zone key has been added successfully."
@@ -3390,7 +3390,7 @@ msgstr "Această acțiune necesită o cerere POST."
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
-msgstr "DNSSEC indisponibil."
+msgstr "Funcționalitatea DNSSEC nu este disponibilă. Verificați configurația API-ului PowerDNS."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:118
 msgid "Zone key has been successfully deactivated."
@@ -3466,7 +3466,7 @@ msgstr "Autentificare eșuată: Sesiune invalidă"
 
 #: lib/Application/Service/SamlService.php:385
 msgid "Authentication failed: Unable to create or update user account"
-msgstr "Autentificare eșuată"
+msgstr "Autentificare eșuată: contul de utilizator nu a putut fi creat sau actualizat"
 
 #: lib/Application/Service/LdapAuthenticator.php:284
 msgid "LDAP Authentication failed!"
@@ -3643,7 +3643,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Puteți modifica supermaster."
+msgstr "Puteți modifica adresa IP, numele de gazdă sau contul pentru acest supermaster."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3799,7 +3799,7 @@ msgstr "Eroare la ștergerea șabloanelor: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
-msgstr "Nu aveți permisiunea."
+msgstr "Nu aveți permisiunea de a adăuga o înregistrare în acest șablon de zonă."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
 msgid ""
@@ -3814,7 +3814,7 @@ msgstr "Câmpul conținut nu are valoare validă."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "Prioritate MX/SRV 0-65535."
+msgstr "Prioritatea pentru înregistrările MX/SRV trebuie să fie un număr între 0 și 65535."
 
 #: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have the permission to edit this record."
@@ -4113,7 +4113,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr "3. SRV și TLSA \"secure\""
+msgstr "3. Atât înregistrarea SRV, cât și înregistrarea TLSA trebuie să aibă starea de validare DNSSEC \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
@@ -4173,7 +4173,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr "SMIMEA (RFC 8162)."
+msgstr "Aceasta pare să fie o înregistrare SMIMEA (RFC 8162) pentru certificate S/MIME."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -4187,7 +4187,7 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "SHA-256 _smimecert.<domain>."
+msgstr "Partea locală a adresei de e-mail este trecută prin funcția hash SHA-256 și plasată înaintea _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -4259,7 +4259,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr "TLSA selector 0/1."
+msgstr "Câmpul selector al înregistrării TLSA trebuie să fie 0 (Full certificate) sau 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4273,7 +4273,7 @@ msgstr ""
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "TLSA matching 0/1/2."
+msgstr "Câmpul matching type al înregistrării TLSA trebuie să fie 0 (Exact match), 1 (SHA-256) sau 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -4297,7 +4297,7 @@ msgstr "Date TLSA SHA-512 128 caractere."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "Date TLSA prea scurte."
+msgstr "Datele certificatului TLSA pentru potrivire exactă par prea scurte pentru a fi valide."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
@@ -4427,7 +4427,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "Sare NSEC3PARAM - sau hex."
+msgstr "Valoarea salt a înregistrării NSEC3PARAM trebuie să fie - (pentru valoare goală) sau o valoare hexazecimală."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
@@ -4496,7 +4496,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr "LP: preferință și FQDN."
+msgstr "Înregistrarea LP trebuie să conțină preferința și FQDN-ul, separate printr-un spațiu."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
@@ -4504,7 +4504,7 @@ msgstr "Preferință LP trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:169
 msgid "LP FQDN must be a valid fully qualified domain name."
-msgstr "LP FQDN trebuie valid."
+msgstr "FQDN-ul din înregistrarea LP trebuie să fie un nume de domeniu complet calificat valid."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:82
 msgid ""
@@ -4654,7 +4654,7 @@ msgstr "Conținutul înregistrării RKEY nu poate fi gol."
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
-msgstr "RKEY = flags, proto, alg, key."
+msgstr "Înregistrarea RKEY trebuie să conțină indicatorii (flags), protocolul, algoritmul și datele cheii publice."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
@@ -4692,7 +4692,7 @@ msgstr "Câmpul protocol RKEY trebuie numeric."
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
-msgstr "Protocol 3 pentru DNSKEY."
+msgstr "Câmpul protocol ar trebui să aibă valoarea 3, pentru conformitatea cu standardele bazate pe formatul DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
@@ -4736,7 +4736,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
-msgstr "RSA/SHA-256 recomandat."
+msgstr "Algoritmul 8 (RSA/SHA-256) este recomandat în prezent pentru implementările DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
@@ -4778,7 +4778,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr "Critic: algoritm nesigur."
+msgstr "CRITIC: acest algoritm este considerat nesigur. Folosiți algoritmul 8 (RSA/SHA-256) sau unul mai recent."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -4798,7 +4798,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
-msgstr "RKEY rar folosit."
+msgstr "Înregistrările RKEY sunt rar folosite în implementările DNS moderne."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
@@ -4806,7 +4806,7 @@ msgstr "Folosiți tipuri standard pentru criptografie."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
-msgstr "APL gol = listă goală."
+msgstr "O înregistrare APL goală reprezintă o listă goală de prefixe de adrese."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
@@ -4888,7 +4888,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
-msgstr "NID 4 grupuri hex."
+msgstr "Conținutul înregistrării NID trebuie să conțină exact 4 grupuri de cifre hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:174
 msgid ""
@@ -4932,12 +4932,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "NodeID 0 neobișnuit."
+msgstr "O valoare NodeID egală cu zero este neobișnuită și poate indica o eroare de configurare."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
-msgstr "NodeID all-1 neobișnuit."
+msgstr "O valoare NodeID formată numai din biți de 1 este neobișnuită și poate indica o eroare de configurare."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
@@ -4949,7 +4949,7 @@ msgstr "Preferință NID trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:101
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr "ALIAS trebuie FQDN."
+msgstr "Ținta înregistrării ALIAS trebuie să fie un nume de domeniu complet calificat (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:106
 msgid ""
@@ -5155,7 +5155,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr "OPENPGPKEY prea scurt."
+msgstr "Înregistrarea OPENPGPKEY este neobișnuit de mică. Verificați dacă aceasta este o cheie publică OpenPGP validă."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -5284,7 +5284,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr "Rotire TSIG periodică."
+msgstr "Cheile TSIG ar trebui rotite periodic, ca bună practică de securitate."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -5328,13 +5328,13 @@ msgstr "TSIG fudge trebuie să fie întreg nenegativ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC: base64/hex."
+msgstr "Valoarea MAC a înregistrării TSIG trebuie să fie un șir valid codificat base64 sau un șir hexazecimal."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
-msgstr "TSIG MAC prea scurt."
+msgstr "Valoarea MAC a înregistrării TSIG este prea scurtă. RFC 8945 recomandă minimum 16 octeți din motive de securitate."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
@@ -5342,7 +5342,7 @@ msgstr "ID original TSIG trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr "Eroare TSIG RCODE 0-23."
+msgstr "Câmpul error al înregistrării TSIG trebuie să fie un număr RCODE DNS valid, între 0 și 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:250
 msgid ""
@@ -5386,7 +5386,7 @@ msgstr "TSIG other-len trebuie întreg nenegativ."
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG other-data base64/hex."
+msgstr "Câmpul other-data al înregistrării TSIG trebuie să fie un șir valid codificat base64 sau un șir hexazecimal."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -5421,7 +5421,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945: HMAC-SHA256."
+msgstr "RFC 8945 recomandă folosirea HMAC-SHA256 ca algoritm TSIG standard."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -5457,12 +5457,12 @@ msgstr ""
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD 240-255 privat."
+msgstr "Valorile 240-255 ale câmpului scheme din ZONEMD sunt rezervate pentru uz privat și este posibil să nu fie interoperabile."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr "SHA-384 recomandat ZONEMD."
+msgstr "SHA-384 (algoritmul 1) este algoritmul de hash recomandat pentru înregistrările ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
@@ -5510,15 +5510,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "Schema ZONEMD 0 rezervată."
+msgstr "Valoarea 0 a câmpului scheme din ZONEMD este rezervată și nu este destinată utilizării standard."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "Algoritm hash ZONEMD 0-255."
+msgstr "Algoritmul de hash al înregistrării ZONEMD trebuie să fie un număr între 0 și 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD 0 rezervat."
+msgstr "Algoritmul de hash 0 al înregistrării ZONEMD este rezervat și nu este destinat utilizării standard."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5526,7 +5526,7 @@ msgstr "Digestul ZONEMD trebuie hexazecimal."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZONEMD min 24 hex."
+msgstr "Digestul înregistrării ZONEMD trebuie să aibă cel puțin 24 de caractere hexazecimale (12 octeți)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
@@ -5567,7 +5567,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr "CERT: 0-65535 sau mnemonic."
+msgstr "Tipul înregistrării CERT trebuie să fie un număr între 0 și 65535 sau un mnemonic valid."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
@@ -5595,13 +5595,13 @@ msgstr "Eticheta cheie CERT trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr "CERT: 0-255 sau mnemonic."
+msgstr "Algoritmul înregistrării CERT trebuie să fie un număr între 0 și 255 sau un mnemonic valid."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr "CERT: 0-255 sau mnemonic."
+msgstr "Algoritmul înregistrării CERT trebuie să fie un număr între 0 și 255 sau un mnemonic valid (RSASHA1, DSA etc.)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5609,7 +5609,7 @@ msgstr "Algoritm "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
-msgstr "CERT URL: date = URL valid."
+msgstr "Pentru tipurile CERT bazate pe URL, datele certificatului trebuie să fie un URL valid."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
@@ -5682,7 +5682,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "DLV: key-tag alg digest-type digest."
+msgstr "Formatul înregistrării DLV este invalid. Format așteptat: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5702,11 +5702,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr "Algoritm DNSSEC 1-16."
+msgstr "Algoritm invalid. Trebuie să fie unul dintre algoritmii DNSSEC valizi (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Digest: 1, 2 sau 4."
+msgstr "Tip de digest invalid. Trebuie să fie 1 (SHA-1), 2 (SHA-256) sau 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5718,19 +5718,19 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "SHA-1 40 hex."
+msgstr "Lungime invalidă a digestului pentru SHA-1. Ar trebui să aibă 40 de caractere hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr "SHA-256 64 hex."
+msgstr "Lungime invalidă a digestului pentru SHA-256. Ar trebui să aibă 64 de caractere hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr "SHA-384 96 hex."
+msgstr "Lungime invalidă a digestului pentru SHA-384. Ar trebui să aibă 96 de caractere hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "Digest doar hex (0-9, a-f)."
+msgstr "Digestul trebuie să conțină doar caractere hexazecimale (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
@@ -5758,17 +5758,17 @@ msgstr "MX nu trebuie să indice CNAME (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr "Prioritate > 100 neobișnuită."
+msgstr "Valorile de prioritate mai mari de 100 sunt neobișnuite și pot fi inutile."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr "MX prioritate 0-65535."
+msgstr "Valoare invalidă pentru câmpul de prioritate MX. Trebuie să fie între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "HTTPS priority în conținut."
+msgstr "Câmpul de prioritate nu ar trebui folosit pentru înregistrările HTTPS, deoarece prioritatea face parte din conținut."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
@@ -5776,13 +5776,13 @@ msgstr "HTTPS trebuie cel puțin prioritate și țintă."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "Prioritate HTTPS 0-65535."
+msgstr "Prioritatea înregistrării HTTPS trebuie să fie un număr între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS target \".\" sau FQDN."
+msgstr "Ținta înregistrării HTTPS trebuie să fie fie \".\", fie un nume de domeniu complet calificat valid."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5802,12 +5802,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "HTTPS necunoscut: \"%s\"."
+msgstr "Cheie de parametru HTTPS necunoscută: \"%s\". Consultați RFC 9460 pentru cheile valide."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "HTTPS duplicat: \"%s\"."
+msgstr "Cheie de parametru HTTPS duplicată: \"%s\". Fiecare cheie poate apărea o singură dată."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -5819,7 +5819,7 @@ msgstr "no-default-alpn trebuie gol."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "Port value must be a number between 1 and 65535."
-msgstr "Portul trebuie 1-65535."
+msgstr "Valoarea portului trebuie să fie un număr între 1 și 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
@@ -5887,7 +5887,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY start Unix/YYYYMMDDHHmmSS."
+msgstr "Momentul de început al înregistrării TKEY trebuie să fie o marcă temporală Unix validă sau în formatul YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
@@ -5908,7 +5908,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API ignoră timpii."
+msgstr "Modul GSS-API (3) ignoră momentele de început și de expirare, conform RFC 3645."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
@@ -5932,7 +5932,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
-msgstr "Eroare TKEY RCODE 0-23."
+msgstr "Câmpul error al înregistrării TKEY trebuie să fie un număr RCODE DNS valid, între 0 și 23."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
@@ -5968,7 +5968,7 @@ msgstr ""
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "Legacy, use HMAC-SHA256."
+msgstr "A fost detectat un algoritm învechit. Pentru o securitate mai bună se recomandă HMAC-SHA256 sau un algoritm mai puternic."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -5981,7 +5981,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr "TTL implicit 0-2147483647."
+msgstr "Valoare invalidă pentru TTL-ul implicit. Trebuie să fie un număr între 0 și 2147483647."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
@@ -6040,7 +6040,7 @@ msgstr "Folosiți HTTPS în loc de HTTP."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr "FTP mai puțin sigur."
+msgstr "FTP este considerat mai puțin sigur decât alternative precum SFTP sau HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
@@ -6050,7 +6050,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Telefon URI: date sensibile."
+msgstr "Schemele URI legate de telefonie pot conține informații personale sensibile."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
@@ -6062,7 +6062,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "URI: <prior> <weight> \"<URI>\""
+msgstr "Înregistrarea URI trebuie să respecte formatul: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -6072,7 +6072,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "URI weight 0-65535."
+msgstr "Greutatea (weight) înregistrării URI trebuie să fie între 0 și 65535 (număr întreg fără semn pe 16 biți)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
@@ -6096,7 +6096,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr "URI trebuie \"://\""
+msgstr "Un URI cu acest protocol trebuie să includă \"://\" după numele protocolului."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
@@ -6277,7 +6277,7 @@ msgstr "Au fost găsite mai multe mecanisme \"all\". Doar primul va avea efect."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Modificator %s duplicat."
+msgstr "A fost găsit un modificator %s duplicat. Fiecare modificator poate apărea cel mult o dată."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -6477,7 +6477,7 @@ msgstr ""
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID %d nonstandard."
+msgstr "Tipul de digest DHCID %d nu este tipul standard (1 pentru SHA-256) definit în RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6524,7 +6524,7 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "ZSK 1-3m, KSK 1-2a."
+msgstr "Înlocuirea periodică a cheilor este o practică de securitate recomandată: ZSK la fiecare 1-3 luni, KSK la fiecare 1-2 ani."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6626,7 +6626,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
-msgstr "Algoritm necunoscut."
+msgstr "Valoare de algoritm necunoscută. Ar trebui folosiți doar algoritmii definiți în RFC-uri."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
@@ -6687,7 +6687,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "Semnătura expiră în 30 zile."
+msgstr "Această semnătură va expira în următoarele 30 de zile. Planificați reînnoirea ei."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
@@ -6717,7 +6717,7 @@ msgstr "Câmpul key tag RRSIG trebuie numeric."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
-msgstr "Tag cheie RRSIG 0-65535."
+msgstr "Eticheta de cheie a înregistrării RRSIG trebuie să fie o valoare validă între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
@@ -6869,7 +6869,7 @@ msgstr "Domeniul RP mailbox conține etichetă goală."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP mailbox eticheta > 63."
+msgstr "O etichetă din domeniul cutiei poștale a înregistrării RP depășește lungimea maximă de 63 de caractere."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -6877,7 +6877,7 @@ msgstr "Domeniu RP mailbox conține caractere invalide."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
-msgstr "RP mailbox > 253 caractere."
+msgstr "Domeniul cutiei poștale a înregistrării RP depășește lungimea maximă de 253 de caractere."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
@@ -6915,7 +6915,7 @@ msgstr "Domeniul RP TXT conține etichetă goală."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "Eticheta RP TXT > 63."
+msgstr "O etichetă din domeniul TXT al înregistrării RP depășește lungimea maximă de 63 de caractere."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
@@ -7017,7 +7017,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "Adresă toate-zero."
+msgstr "Aceasta este adresa formată numai din zerouri, care poate să nu fie validă în toate contextele."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
@@ -7127,7 +7127,7 @@ msgstr "Algoritm: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "%s (%d) RECOMANDAT."
+msgstr "%s (algoritmul %d) este un algoritm RECOMANDAT pentru utilizare conform RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
@@ -7155,7 +7155,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digest: 1, 2 sau 4"
+msgstr "Tipul de digest trebuie să fie unul dintre: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -7273,11 +7273,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Flags CSYNC invalid."
+msgstr "Câmpul Flags din înregistrarea CSYNC este invalid. Flags trebuie să fie o valoare numerică."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Flags CSYNC 0-65535."
+msgstr "Câmpul Flags din înregistrarea CSYNC este invalid. Flags trebuie să fie între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -7365,7 +7365,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr "EUI48: xx-xx-xx-xx-xx-xx."
+msgstr "Înregistrarea EUI48 pare să fie în format Cisco. Formatul trebuie să fie xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
@@ -7443,7 +7443,7 @@ msgstr "IPv6 invalidă: 8 hextete la extindere."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr "IPv6: 4 hex per hextet."
+msgstr "Adresă IPv6 invalidă: fiecare hextet trebuie să conțină 4 cifre hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
@@ -7462,7 +7462,7 @@ msgstr "Număr port invalid: %d (trebuie 1-65535)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Format server invalid: %s"
+msgstr "Format de server invalid: %s (se aștepta IP:port sau [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
@@ -7488,7 +7488,7 @@ msgstr "Indicatoarele CAA trebuie 0-255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
-msgstr "Tag-ul CAA doar ASCII."
+msgstr "Eticheta CAA trebuie să conțină doar litere și cifre ASCII."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
@@ -7536,7 +7536,7 @@ msgstr "contactemail trebuie adresă email validă."
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr "contactphone: cifre, spații."
+msgstr "Valoarea contactphone trebuie să conțină doar cifre, spații și semnele de punctuație uzuale pentru numerele de telefon."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
@@ -7548,7 +7548,7 @@ msgstr "Backslash înainte de ghilimele în valoare."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:320
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "Valoare CAA > 512."
+msgstr "Valoarea proprietății CAA depășește lungimea maximă de 512 caractere."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:326
 msgid "CAA property value cannot contain NUL (0) characters."
@@ -7576,7 +7576,7 @@ msgstr "Hostname sau etichetă prea scurt/lung."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:129
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
-msgstr "ARPA: nu mai multe slashuri."
+msgstr "În zonele ARPA nu sunt permise mai multe caractere slash în etichete diferite."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:139
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
@@ -7596,7 +7596,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr "Subnet RFC 2317 numeric sau hex."
+msgstr "Subrețea invalidă în notația RFC 2317. Trebuie să fie numerică sau hexazecimală."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:173
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
@@ -7751,7 +7751,7 @@ msgstr "Prioritatea trebuie să fie 0 pentru înregistrările RESINFO."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "SVCB: priority target params."
+msgstr "Înregistrarea SVCB trebuie să înceapă cu o prioritate și o țintă: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -7790,13 +7790,13 @@ msgstr "Cheie parametru SVCB necunoscută: \"%s\"."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Cheie SVCB duplicat: \"%s\"."
+msgstr "Cheie de parametru SVCB duplicată: \"%s\". Fiecare cheie poate apărea o singură dată."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Multiple CNAME interzis."
+msgstr "Nu sunt permise mai multe înregistrări CNAME cu același nume. Aceasta ar constitui o încălcare a standardului DNS."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
@@ -7846,7 +7846,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "SMIMEA prioritate 0."
+msgstr "Valoare invalidă pentru câmpul de prioritate. Înregistrările SMIMEA trebuie să aibă valoarea de prioritate 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
@@ -7975,15 +7975,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "Date SMIMEA trebuie hex."
+msgstr "Datele certificatului SMIMEA trebuie să fie un șir hexazecimal."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "SMIMEA SHA-256 64 caractere."
+msgstr "Datele certificatului SMIMEA SHA-256 trebuie să aibă o lungime de 64 de caractere."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
-msgstr "SMIMEA SHA-512 128 caractere."
+msgstr "Datele certificatului SMIMEA SHA-512 trebuie să aibă o lungime de 128 de caractere."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:269
 msgid ""
@@ -8054,7 +8054,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
-msgstr "L64 = preferință și locator64."
+msgstr "Înregistrarea L64 trebuie să conțină preferința și locator64, separate printr-un spațiu."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
@@ -8081,7 +8081,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
-msgstr "Grupurile hex L64 max 4."
+msgstr "Fiecare grup hexazecimal din locatorul L64 trebuie să aibă cel mult 4 caractere."
 
 #: lib/Domain/Service/DnsValidation/WALLETRecordValidator.php:93
 msgid "WALLET record content must not be empty."
@@ -8194,7 +8194,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "CDNSKEY doar base64."
+msgstr "Cheia publică CDNSKEY trebuie să conțină doar caractere base64 valide."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
@@ -8342,7 +8342,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr "Tip SSHFP trebuie 1 sau 2."
+msgstr "Tipul de amprentă SSHFP trebuie să fie 1 (SHA-1) sau 2 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -8437,7 +8437,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
 "Consider using standard mail forwarding mechanisms instead of MR records."
-msgstr "Folosiți mail forwarding standard."
+msgstr "Luați în considerare folosirea mecanismelor standard de redirecționare a e-mailului în locul înregistrărilor MR."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
@@ -8461,7 +8461,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
-msgstr "KEY poate să nu fie suportat."
+msgstr "Este posibil ca înregistrările KEY să nu fie acceptate de toate serverele și resolverele DNS."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
@@ -8506,7 +8506,7 @@ msgstr "Protocol KEY trebuie 0-255."
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
-msgstr "Protocol neobișnuit."
+msgstr "Valoare de protocol neobișnuită. Protocolul 3 (DNSSEC) este cel mai frecvent pentru înregistrările KEY."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -8584,19 +8584,19 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "DMARC sp: none, quarantine, reject"
+msgstr "Eticheta DMARC pentru politica subdomeniilor (sp) trebuie să fie una dintre: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC adkim: r sau s"
+msgstr "Eticheta DMARC de aliniere DKIM (adkim) trebuie să fie r (relaxed) sau s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC aspf: r sau s"
+msgstr "Eticheta DMARC de aliniere SPF (aspf) trebuie să fie r (relaxed) sau s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "DMARC pct trebuie 0-100"
+msgstr "Eticheta DMARC de procentaj (pct) trebuie să fie între 0 și 100"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -8609,7 +8609,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "DMARC ri trebuie > 0"
+msgstr "Eticheta DMARC pentru intervalul de raportare (ri) trebuie să fie un număr întreg pozitiv"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
@@ -8622,7 +8622,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s trebuie URI valid"
+msgstr "Eticheta DMARC %s trebuie să conțină URI-uri mailto: sau https: valide"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
@@ -8764,7 +8764,7 @@ msgstr "Algoritm CDS trebuie 1-16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS digest 1, 2 sau 4."
+msgstr "Tipul de digest CDS trebuie să fie 1 (SHA-1), 2 (SHA-256) sau 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -8832,7 +8832,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 = preferință și locator."
+msgstr "Înregistrarea L32 trebuie să conțină preferința și locatorul, separate printr-un spațiu."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
@@ -8844,7 +8844,7 @@ msgstr "Localizatorul L32 trebuie să fie IPv4 valid."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
-msgstr "L32 trebuie IPv4 complet."
+msgstr "Locatorul L32 trebuie să fie o adresă IPv4 specificată complet."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
@@ -8915,7 +8915,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "SRV weight 0-65535."
+msgstr "Valoare invalidă pentru câmpul weight al înregistrării SRV. Trebuie să fie între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -8938,7 +8938,7 @@ msgstr "Ținta SRV nu poate fi goală."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "Țintă \".\" - port și weight 0."
+msgstr "Când ținta este \".\" (niciun serviciu), atât portul, cât și greutatea (weight) ar trebui să fie 0."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -8959,7 +8959,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "Site-local IPv6 deprecate."
+msgstr "Adresele IPv6 site-local (fec0::/10) sunt învechite și nu ar trebui folosite."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
@@ -9151,7 +9151,7 @@ msgstr "Ordinea NAPTR trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "Preferință NAPTR 0-65535."
+msgstr "Preferința înregistrării NAPTR trebuie să fie un număr între 0 și 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -9215,7 +9215,7 @@ msgstr ""
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR flags \"i\" sau gol."
+msgstr "Indicatorii expresiei regulate NAPTR (după al treilea delimitator) ar trebui să conțină doar \"i\" sau să fie goi."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -9227,7 +9227,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "ENUM \"U\" pentru URI."
+msgstr "Înregistrările ENUM ar trebui să aibă indicatorul \"U\", pentru a semnala că rezultatul este un URI."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
@@ -9306,13 +9306,13 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (%d) MUST RFC 8624."
+msgstr "%s (algoritmul %d) este un algoritm a cărui implementare este obligatorie conform RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "%s (%d) opțional (RFC 8624)."
+msgstr "%s (algoritmul %d) este specificat ca opțional pentru implementare în RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
@@ -9363,11 +9363,11 @@ msgstr "Nu există zonă administrată pentru: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:97
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "IPv6 din zone inverse nesuportat."
+msgstr "Adăugarea înregistrărilor de domeniu IPv6 din zone inverse nu este încă suportată."
 
 #: lib/Domain/Service/DomainRecordCreator.php:140
 msgid "This domain record was not valid and could not be added."
-msgstr "Înregistrarea nu e validă."
+msgstr "Această înregistrare de domeniu nu a fost validă și nu a putut fi adăugată."
 
 #: lib/Domain/Service/DomainRecordCreator.php:136
 msgid "The domain record was successfully added."
@@ -9404,7 +9404,7 @@ msgstr "Nu aveți permisiunea de a regenera chei."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "SOA necesar pt DNSSEC."
+msgstr "În zonă nu există nicio înregistrare SOA prezentă sau activă. Aceasta este obligatorie pentru DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -9448,11 +9448,11 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
-msgstr "Adăugați NS la apex."
+msgstr "Adăugați înregistrări NS la apexul zonei pentru serverele dumneavoastră de nume autoritative."
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
-msgstr "DNSSEC nu poate continua:"
+msgstr "Semnarea DNSSEC nu poate continua din cauza următoarelor erori:"
 
 #: lib/Domain/Service/ZoneValidationService.php:253
 msgid "Additionally, the following warnings were found:"
@@ -9529,7 +9529,7 @@ msgstr "Argument(e) invalid(e) funcției %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Există deja supermaster."
+msgstr "Există deja un supermaster cu această adresă IP și acest nume de gazdă."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -9881,7 +9881,7 @@ msgstr "Furnizați un nume pentru înregistrare"
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "Ex: [ZONE] sau subdomain.[ZONE]"
+msgstr "Exemplu: [ZONE] pentru zona în sine sau subdomain.[ZONE] pentru un subdomeniu"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
@@ -10092,7 +10092,7 @@ msgstr "Validare"
 
 #: templates/modern/edit_supermaster.html:82
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "Toate câmpurile validate."
+msgstr "Toate câmpurile vor fi validate pentru a se asigura că acestea conțin valori corecte."
 
 #: templates/default/dnssec.html:9 templates/modern/dnssec.html:9
 msgid "Confirm Unsign Zone"
@@ -10101,7 +10101,7 @@ msgstr "Confirmă eliminarea semnăturii"
 #: templates/default/dnssec.html:15 templates/modern/dnssec.html:15
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr "Șterge toate DNSSEC."
+msgstr "Această acțiune va șterge toate cheile DNSSEC și va dezactiva DNSSEC pentru această zonă."
 
 #: templates/default/dnssec.html:17 templates/modern/dnssec.html:17
 msgid "Are you sure you want to unsign the zone"
@@ -10259,7 +10259,7 @@ msgstr "Înapoi la autentificare"
 #: templates/modern/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr "Introduceți email pentru reset."
+msgstr "Introduceți adresa dumneavoastră de e-mail și vă vom trimite un link pentru resetarea parolei."
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
@@ -10854,7 +10854,7 @@ msgstr "Comentariul este opțional"
 
 #: templates/modern/bulk_record_add.html:34
 msgid "Enter hostnames only - the zone name will be added automatically"
-msgstr "Doar hostname-uri"
+msgstr "Introduceți doar numele de gazdă - numele zonei va fi adăugat automat"
 
 #: templates/modern/bulk_record_add.html:41
 msgid "Add Records"
@@ -10956,7 +10956,7 @@ msgstr "Transfer proprietate zonă"
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr "Utilizator deține zone."
+msgstr "Acest utilizator este proprietarul următoarelor zone. Decideți ce doriți să faceți cu fiecare zonă:"
 
 #: templates/modern/list_record_changes.html:76
 msgid "Zone"
@@ -11040,7 +11040,7 @@ msgstr ""
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr "Fără acces neautorizat"
+msgstr "Nu veți încerca să obțineți acces neautorizat la datele altor utilizatori"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
@@ -11065,7 +11065,7 @@ msgstr ""
 #: templates/modern/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
-msgstr "Sunteți responsabil."
+msgstr "Sunteți responsabil pentru corectitudinea înregistrărilor DNS pe care le creați sau le modificați"
 
 #: templates/modern/user_agreement_content.html:16
 msgid ""
@@ -11546,7 +11546,7 @@ msgstr "Utilizatorului i-a fost atribuit șablonul de permisiuni"
 
 #: templates/default/edit_user.html:192 templates/modern/edit_user.html:192
 msgid "Based on this template, this user has the following permissions"
-msgstr "Utilizatorul are permisiuni"
+msgstr "Pe baza acestui șablon, acest utilizator are următoarele permisiuni"
 
 #: templates/default/edit_user.html:195 templates/modern/edit_user.html:195
 msgid "No permissions are assigned to this template"
@@ -11688,7 +11688,7 @@ msgstr "Șablon grup"
 msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
-msgstr "User global, Group = grup."
+msgstr "Șabloanele de utilizator se aplică global; șabloanele de grup se aplică doar zonelor deținute de grup"
 
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
@@ -11812,7 +11812,7 @@ msgstr ""
 #: templates/modern/add_supermaster.html:80
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
-msgstr "Firewall DNS notifications."
+msgstr "Asigurați-vă că firewallul permite notificările DNS între serverele master și cele slave."
 
 #: templates/modern/login.html:12 templates/modern/login.html:43
 msgid "Log in"
@@ -11921,7 +11921,7 @@ msgstr "Informații importante"
 
 #: templates/modern/batch_ptr_record.html:124
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "PTR în masă. Două moduri:"
+msgstr "Acest instrument creează înregistrări PTR în masă. Sunt disponibile două moduri:"
 
 #: templates/modern/batch_ptr_record.html:126
 msgid "All IPs"
@@ -11939,7 +11939,7 @@ msgstr "Numai potrivire"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr "PTR doar pt IP cu A/AAAA."
+msgstr "Creează înregistrări PTR doar pentru adresele IP care au deja înregistrări A/AAAA în zona directă"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11983,13 +11983,13 @@ msgstr "Sfaturi rapide"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr "Dropdown Network Prefix."
+msgstr "Folosiți butonul derulant de lângă Prefix rețea pentru a alege dintre zonele inverse existente"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr "PTR din A/AAAA existente."
+msgstr "Folosiți \"Creează PTR doar pentru A/AAAA existente\" pentru a completa înregistrările PTR pe baza zonei directe"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -12106,7 +12106,7 @@ msgstr "Exportă jurnale"
 
 #: templates/modern/list_record_changes.html:172
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Exportă jurnale filtrate."
+msgstr "Exportați intrările de jurnal filtrate. Vor fi aplicate filtrele curente."
 
 #: templates/modern/list_record_changes.html:173
 msgid "records to export"
@@ -12223,7 +12223,7 @@ msgstr "Adaugă înregistrare nouă"
 
 #: templates/modern/edit.html:189 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Asistenți ghidați"
+msgstr "Asistenți ghidați pentru înregistrările DMARC, SPF, DKIM, CAA, TLSA și SRV"
 
 #: templates/modern/edit.html:21 templates/modern/edit.html:620
 msgid "Multi-record mode"
@@ -12484,7 +12484,7 @@ msgstr "Detalii înregistrare"
 
 #: templates/modern/delete_record.html:58
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "Înregistrarea necesară zonei."
+msgstr "Încercați să ștergeți o înregistrare care este necesară pentru funcționarea acestei zone."
 
 #: templates/modern/delete_record.html:69
 msgid "Also delete corresponding PTR record (if exists)"
@@ -12665,7 +12665,7 @@ msgstr "Nume utilizator uitat"
 msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
-msgstr "Email pentru username."
+msgstr "Introduceți adresa dumneavoastră de e-mail și vă vom trimite numele de utilizator asociat acestui cont."
 
 #: templates/modern/forgot_username.html:41
 msgid "Send Username"
@@ -12682,7 +12682,7 @@ msgstr "Generează parolă automat"
 
 #: templates/default/add_user.html:49 templates/modern/add_user.html:49
 msgid "Generate a secure password that meets all requirements"
-msgstr "Generează parolă sigură"
+msgstr "Generați o parolă sigură care îndeplinește toate cerințele"
 
 #: templates/default/add_user.html:57 templates/modern/add_user.html:57
 msgid "Send password by email"
@@ -13055,7 +13055,7 @@ msgstr "Avertisment: înregistrare SOA lipsă"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Șablonul fără SOA."
+msgstr "Acest șablon de zonă nu conține o înregistrare SOA (Start of Authority)."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""
@@ -13067,7 +13067,7 @@ msgstr ""
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Continuați fără SOA?"
+msgstr "Doriți să continuați fără a adăuga o înregistrare SOA?"
 
 #: templates/modern/edit_zone_templ.html:326
 msgid "Continue Without SOA"
@@ -13304,7 +13304,7 @@ msgstr "Autentificarea multifactor este activă"
 
 #: templates/modern/mfa_recovery_codes.html:17
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Cont protejat MFA."
+msgstr "Contul dumneavoastră este acum protejat prin autentificare cu mai mulți factori."
 
 #: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:30
 msgid "Authentication method:"
@@ -13387,7 +13387,7 @@ msgstr ""
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
 "Multi-factor authentication adds an extra layer of security to your account."
-msgstr "MFA = strat suplimentar."
+msgstr "Autentificarea cu mai mulți factori adaugă un nivel suplimentar de securitate contului dumneavoastră."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid "MFA is currently enabled"
@@ -13407,7 +13407,7 @@ msgstr "MFA este dezactivat momentan"
 
 #: templates/default/mfa_setup.html:57 templates/modern/mfa_setup.html:57
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Contul nu e MFA."
+msgstr "Contul dumneavoastră nu este protejat prin autentificare cu mai mulți factori."
 
 #: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
 msgid "Authenticator App"
@@ -13461,7 +13461,7 @@ msgstr "Depinde de livrarea emailului"
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr "Email verificare dezactivat."
+msgstr "Verificarea prin e-mail nu este disponibilă deoarece a fost dezactivată de administrator."
 
 #: templates/default/mfa_setup.html:104 templates/modern/mfa_setup.html:104
 msgid ""
@@ -13489,7 +13489,7 @@ msgstr "Verifică codul email"
 
 #: templates/modern/mfa_verify_email.html:15
 msgid "A verification code has been sent to your email address."
-msgstr "Cod trimis pe email."
+msgstr "Un cod de verificare a fost trimis pe adresa dumneavoastră de e-mail."
 
 #: templates/modern/mfa_verify_email.html:16
 msgid ""
@@ -13687,7 +13687,7 @@ msgstr "Căutare DNS"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr "Introduceți domeniu, host sau IP"
+msgstr "Introduceți numele de domeniu, numele de gazdă sau adresa IP (de exemplu, example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -13748,7 +13748,7 @@ msgstr "Șterge zone multiple"
 
 #: templates/modern/delete_domains.html:12
 msgid "You are about to delete multiple zones. This action cannot be undone."
-msgstr "Ștergeți mai multe zone."
+msgstr "Sunteți pe cale să ștergeți mai multe zone. Această acțiune nu poate fi anulată."
 
 #: templates/modern/delete_domains.html:17
 msgid "Zones to Delete"
@@ -13896,7 +13896,7 @@ msgstr ""
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
-msgstr "Șabloane standard active."
+msgstr "Șabloanele standard sunt active. Acestea sunt șabloanele implicite folosite la trimiterea e-mailurilor."
 
 #: templates/modern/email_previews.html:51
 msgid "Subject:"
@@ -13918,7 +13918,7 @@ msgstr "Informații suprascriere șablon"
 msgid ""
 "The following standard templates are currently overridden by custom "
 "templates:"
-msgstr "Șabloane personalizate:"
+msgstr "Următoarele șabloane standard sunt în prezent înlocuite de șabloane personalizate:"
 
 #: templates/modern/email_previews.html:77
 msgid "using custom template"
@@ -13956,7 +13956,7 @@ msgstr "Previzualizările folosesc date mostră"
 
 #: templates/modern/email_previews.html:93
 msgid "Light mode is the default appearance for most email clients"
-msgstr "Modul luminos e implicit"
+msgstr "Modul luminos este aspectul implicit pentru majoritatea clienților de e-mail"
 
 #: templates/modern/email_previews.html:94
 msgid ""
@@ -14259,7 +14259,7 @@ msgstr "Zone disponibile"
 
 #: templates/modern/manage_group_zones.html:77
 msgid "This group already owns all zones or no zones are available"
-msgstr "Grupul deține toate zonele"
+msgstr "Acest grup deține deja toate zonele sau nu există zone disponibile"
 
 #: templates/modern/manage_group_zones.html:86
 msgid "Search zones..."
@@ -14793,7 +14793,7 @@ msgstr "Căutare"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr "Introduceți domeniu pentru WHOIS"
+msgstr "Introduceți un nume de domeniu (de exemplu, example.com) pentru a căuta informațiile WHOIS ale acestuia"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -14809,7 +14809,7 @@ msgstr "Căutare RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Introduceți domeniu pentru RDAP"
+msgstr "Introduceți un nume de domeniu (de exemplu, example.com) pentru a căuta informațiile RDAP ale acestuia"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"

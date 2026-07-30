@@ -1517,7 +1517,7 @@ msgstr "התיעוד ורשומות ה-PTR וה-A/AAAA נמחקו בהצלחה."
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
-msgstr "השיא והשיא התואם שלו נמחקו בהצלחה."
+msgstr "הרשומה ורשומת ה-PTR התואמת לה נמחקו בהצלחה."
 
 #: lib/Application/Controller/DeleteRecordController.php:233
 msgid ""
@@ -1528,7 +1528,7 @@ msgstr "השיא ורשומות A/AA המקבילות שלו נמחקו בהצל
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr "השיא נמחק בהצלחה. לא נמצאו תקליט PTR."
+msgstr "הרשומה נמחקה בהצלחה. לא נמצאה רשומת PTR תואמת."
 
 #: lib/Application/Controller/DeleteRecordController.php:237
 msgid ""
@@ -1596,7 +1596,7 @@ msgstr "תחתית"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:63
 msgid "You do not have permission to manage group members."
-msgstr "אין לך רשות לנהל חברים."
+msgstr "אין לך רשות לנהל חברי קבוצה."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:89
 msgid "Manage Group Members"
@@ -2813,7 +2813,7 @@ msgstr "תבנית האזור נמחקה בהצלחה."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "אין לך רשות לערוך סופרמן."
+msgstr "אין לך רשות לערוך supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
@@ -3122,7 +3122,7 @@ msgstr "הקבוצה מעודכנת בהצלחה."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "אין לך רשות למחוק סופרמן."
+msgstr "אין לך רשות למחוק supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -8922,7 +8922,7 @@ msgstr "הוספת רשומות שטח של IPv6 מאזורי הפוך עדיי�
 
 #: lib/Domain/Service/DomainRecordCreator.php:140
 msgid "This domain record was not valid and could not be added."
-msgstr "זה לא חוקי ולא ניתן להוסיף."
+msgstr "רשומת הדומיין הזו אינה חוקית ולא ניתן היה להוסיף אותה."
 
 #: lib/Domain/Service/DomainRecordCreator.php:136
 msgid "The domain record was successfully added."
@@ -11179,11 +11179,11 @@ msgstr "הוסף"
 
 #: templates/modern/edit_perm_templ.html:25
 msgid "A short, descriptive name for this permission set"
-msgstr "שם קצר, תיאורי לרשומה זו"
+msgstr "שם קצר ותיאורי עבור מערך ההרשאות הזה"
 
 #: templates/modern/edit_perm_templ.html:30
 msgid "Optional: more detailed description of this permission set"
-msgstr "תיאור מפורט יותר של רשות זו"
+msgstr "אופציונלי: תיאור מפורט יותר של מערך ההרשאות הזה"
 
 #: templates/modern/edit_perm_templ.html:35
 msgid "Template Type"

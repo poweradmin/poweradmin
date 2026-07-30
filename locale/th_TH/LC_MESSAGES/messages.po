@@ -636,7 +636,7 @@ msgstr "เพิ่มโฮสต์ A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "ตรวจสอบชื่อโฮสต์ที่ระบุ"
+msgstr "อนุญาตเรกคอร์ด A/AAAA ของชื่อโฮสต์ที่ระบุ (หนึ่งรายการต่อบรรทัด)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -1421,7 +1421,7 @@ msgstr "คุณไม่มีสิทธิ์ในการลบผู้
 
 #: lib/Application/Controller/DeleteUserController.php:86
 msgid "You do not have permission to delete a superuser account."
-msgstr "คุณไม่มีสิทธิ์ลบบัญชีผู้ใช้"
+msgstr "คุณไม่มีสิทธิ์ลบบัญชีผู้ใช้ระดับสูงสุด (superuser)"
 
 #: lib/Application/Controller/EditUserController.php:597
 msgid "User does not exist."
@@ -2504,7 +2504,7 @@ msgstr "เพิ่มกลุ่ม"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
-msgstr "ต้นแบบใบรับรองไม่ถูกต้อง:"
+msgstr "เทมเพลตสิทธิ์ไม่ถูกต้อง: ต้องเป็นเทมเพลตสำหรับกลุ่ม"
 
 #: lib/Application/Controller/AddGroupController.php:138
 msgid "Group has been created successfully."
@@ -2594,7 +2594,7 @@ msgstr "การตรวจสอบสิทธิ์ Sample ล้มเห�
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
-msgstr "คุณไม่มีสิทธิ์ในการดูหน้านี้"
+msgstr "คุณมีสิทธิ์ไม่เพียงพอสำหรับการดูหน้านี้"
 
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
@@ -5139,7 +5139,7 @@ msgstr "RFC 8945 แนะนำให้ใช้ HMAC-SHA256 เป็นอ�
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "Zonemund ถูกนิยามใน RFC 8976 (พ.ศ."
+msgstr "ZONEMD ถูกกำหนดไว้ใน RFC 8976 (กุมภาพันธ์ 2021) และอาจไม่รองรับในเซิร์ฟเวอร์ DNS ทุกตัว"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -7062,7 +7062,7 @@ msgstr "ค่า CAA iodef ต้องเป็น URL ที่ขึ้น�
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:263
 msgid "contactemail value must be a valid email address."
-msgstr "สมุดที่อยู่สำหรับติดต่อ"
+msgstr "ค่า contactemail ต้องเป็นที่อยู่อีเมลที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:274
 msgid ""
@@ -7100,11 +7100,11 @@ msgstr "คุณมีอักขระไม่ถูกต้องในช
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:101
 msgid "A hostname can not start or end with a dash."
-msgstr "ชื่อ สมมุติ."
+msgstr "ชื่อโฮสต์ต้องไม่ขึ้นต้นหรือลงท้ายด้วยเครื่องหมายขีดกลาง"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:105
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "ชื่อ สมมุติ."
+msgstr "ชื่อโฮสต์ที่ระบุหรือเลเบลใดเลเบลหนึ่งสั้นเกินไปหรือยาวเกินไป"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:129
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
@@ -8072,7 +8072,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "แท็ก DMARC"
+msgstr "แท็กช่วงเวลาการรายงานของ DMARC (ri) ต้องเป็นจำนวนเต็มบวก"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
@@ -10256,7 +10256,7 @@ msgstr "สำหรับ CNAME, MX, SRV บันทึก ให้แน่�
 
 #: templates/modern/bulk_record_add.html:72
 msgid "Use @ for records at the zone apex (root domain)"
-msgstr "ใช้"
+msgstr "ใช้ @ สำหรับเรกคอร์ดที่ zone apex (โดเมนราก)"
 
 #: templates/modern/bulk_record_add.html:73
 msgid "Quote TXT record values that contain spaces"
@@ -10346,7 +10346,7 @@ msgstr "ซ้าย: เขต นี้ จะ คง อยู่ ใน ร�
 
 #: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
 msgid "Add new owner: Transfer ownership to another user"
-msgstr "เพิ่มเจ้าของใหม่:"
+msgstr "เพิ่มเจ้าของใหม่: โอนความเป็นเจ้าของไปยังผู้ใช้รายอื่น"
 
 #: templates/default/delete_user.html:101 templates/modern/delete_user.html:101
 msgid "Yes, delete this user"
@@ -11142,7 +11142,7 @@ msgstr "บันทึกย่อที่สำคัญ"
 #: templates/modern/add_supermaster.html:79
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
-msgstr "ชื่อ สมมุติ."
+msgstr "ชื่อโฮสต์ต้องตรงกับที่ปรากฏในเรกคอร์ด NS ของโซนทุกประการ"
 
 #: templates/modern/add_supermaster.html:80
 msgid ""
@@ -12943,7 +12943,7 @@ msgstr "แสดงแบบฟอร์มบันทึก"
 
 #: templates/modern/user_preferences.html:174
 msgid "Display inline add record form in edit view"
-msgstr "แสดงในบรรทัดหน้า"
+msgstr "แสดงแบบฟอร์มเพิ่มเรกคอร์ดแบบอินไลน์ในมุมมองแก้ไข"
 
 #: templates/modern/user_preferences.html:181
 msgid "Show edit buttons"
