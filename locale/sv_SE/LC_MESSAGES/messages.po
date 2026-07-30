@@ -2495,10 +2495,7 @@ msgstr ""
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr ""
-"Ange ett nätverk i CIDR-notation (till exempel 192.168.1.0/24 eller "
-"2001:db8::/48) eller ett reverse-zonnamn som slutar på in-addr.arpa eller "
-"ip6.arpa."
+msgstr "Ange ett nätverk i CIDR-notation (till exempel 192.168.1.0/24 eller 2001:db8::/48) eller ett namn på en omvänd zon som slutar på in-addr.arpa eller ip6.arpa."
 
 #: lib/Application/Controller/AddZoneMasterController.php:252
 msgid ""
@@ -2698,7 +2695,7 @@ msgstr "Du har inte tillräcklig behörighet att visa denna sida."
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Reverse Zones"
-msgstr "Reverse-zoner"
+msgstr "Omvända zoner"
 
 #: lib/Application/Controller/ListForwardZonesController.php:284
 msgid "You do not have the permission to see any zones."
@@ -11091,7 +11088,7 @@ msgstr "Lägg till slavzon"
 
 #: templates/modern/list_reverse_zones.html:32
 msgid "Reverse Zone Types"
-msgstr "Reverse-zontyper"
+msgstr "Typer av omvända zoner"
 
 #: templates/modern/list_perm_templ.html:16
 msgid "All"
@@ -11107,15 +11104,15 @@ msgstr "IPv6"
 
 #: templates/modern/list_reverse_zones.html:65
 msgid "Reverse zones:"
-msgstr "Reverse-zoner:"
+msgstr "Omvända zoner:"
 
 #: templates/modern/list_reverse_zones.html:67
 msgid "IPv4 reverse zones:"
-msgstr "IPv4 reverse-zoner:"
+msgstr "Omvända IPv4-zoner:"
 
 #: templates/modern/list_reverse_zones.html:69
 msgid "IPv6 reverse zones:"
-msgstr "IPv6 reverse-zoner:"
+msgstr "Omvända IPv6-zoner:"
 
 #: templates/modern/search.html:119 templates/modern/search.html:324
 msgid "Rows per page:"
@@ -11123,7 +11120,7 @@ msgstr "Rader per sida:"
 
 #: templates/modern/list_reverse_zones.html:91
 msgid "There are no reverse zones to show in this listing."
-msgstr "Det finns inga reverse-zoner att visa i denna lista."
+msgstr "Det finns inga omvända zoner att visa i denna lista."
 
 #: templates/modern/search.html:179 templates/modern/delete_domains.html:28
 msgid "Owner"
@@ -11700,7 +11697,7 @@ msgstr "Nätverksprefix"
 
 #: templates/modern/batch_ptr_record.html:39
 msgid "Select from existing reverse zones"
-msgstr "Välj från befintliga reverse-zoner"
+msgstr "Välj från befintliga omvända zoner"
 
 #: templates/modern/batch_ptr_record.html:51
 msgid "Please provide a network prefix"
@@ -11803,9 +11800,7 @@ msgstr "Krav"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr ""
-"Du måste redan ha skapat lämplig reverse-zon i PowerDNS innan du använder "
-"denna funktion."
+msgstr "Du måste redan ha skapat lämplig omvänd zon i PowerDNS innan du använder denna funktion."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -11815,17 +11810,13 @@ msgstr "Till exempel:"
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
-msgstr ""
-"För nätverk 192.168.1.0/24 behöver du en reverse-zon för 1.168.192.in-"
-"addr.arpa"
+msgstr "För nätverk 192.168.1.0/24 behöver du en omvänd zon för 1.168.192.in-addr.arpa"
 
 #: templates/modern/batch_ptr_record.html:150
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr ""
-"För större nätverk behöver du motsvarande reverse-zoner (t.ex. 168.192.in-"
-"addr.arpa för ett /16-nätverk)"
+msgstr "För större nätverk behöver du motsvarande omvända zoner (t.ex. 168.192.in-addr.arpa för ett /16-nätverk)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"
@@ -11835,9 +11826,7 @@ msgstr "Snabbtips"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr ""
-"Använd rullgardinsknappen bredvid Nätverksprefix för att välja från "
-"befintliga reverse-zoner"
+msgstr "Använd rullgardinsknappen bredvid Nätverksprefix för att välja från befintliga omvända zoner"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
@@ -12027,9 +12016,7 @@ msgstr ""
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr ""
-"DNS-guider är utformade för forward-zoner och kanske inte är lämpliga för "
-"reverse-zoner."
+msgstr "DNS-guider är utformade för forward-zoner och kanske inte är lämpliga för omvända zoner."
 
 #: templates/modern/dns_wizard_select.html:57
 msgid "Recommended"
@@ -12582,9 +12569,7 @@ msgstr "Ange zonnamn"
 msgid ""
 "Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
 "name (e.g. 1.168.192.in-addr.arpa)."
-msgstr ""
-"Ange ett nätverk (t.ex. 192.168.1.0/24 eller 2001:db8::/48) eller ett "
-"reverse-zonnamn (t.ex. 1.168.192.in-addr.arpa)."
+msgstr "Ange ett nätverk (t.ex. 192.168.1.0/24 eller 2001:db8::/48) eller ett namn på en omvänd zon (t.ex. 1.168.192.in-addr.arpa)."
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
@@ -13963,7 +13948,7 @@ msgstr "Forward-zoner"
 
 #: templates/default/header.html:110 templates/modern/header.html:154
 msgid "Reverse zones"
-msgstr "Reverse-zoner"
+msgstr "Omvända zoner"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"

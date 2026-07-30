@@ -1244,7 +1244,7 @@ msgstr "존이 주 존으로 변환되었습니다."
 
 #: lib/Application/Controller/BulkRegistrationController.php:184
 msgid "You do not have permission to create zones for other users."
-msgstr "다른 사용자를 위한 영역을 생성할 권한이 없습니다."
+msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
 
 #: lib/Application/Controller/BulkRegistrationController.php:154
 #, php-format
@@ -1293,17 +1293,13 @@ msgstr "이 존을 수정할 권한이 없습니다."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr ""
-"새 영역을 가져올 수 없습니다: zone_ownership_mode가 groups_only이지만 그룹이 "
-"없습니다. 먼저 그룹을 만드세요."
+msgstr "새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이지만 그룹이 없습니다. 먼저 그룹을 만드세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr ""
-"새 영역을 가져올 수 없습니다: zone_ownership_mode가 groups_only이고 어떤 그룹"
-"의 구성원도 아닙니다. 관리자에게 먼저 그룹에 추가해 달라고 요청하세요."
+msgstr "새 존을 가져올 수 없습니다: zone_ownership_mode가 groups_only이고 어떤 그룹의 구성원도 아닙니다. 관리자에게 먼저 그룹에 추가해 달라고 요청하세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -1337,9 +1333,7 @@ msgstr "이 이름의 존이 이미 존재합니다."
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr ""
-"가져오기를 통해 새 영역을 만들 수 없습니다: 최소 한 개의 그룹을 선택하거나 "
-"\"사용자 소유자 없음\"을 선택 해제 상태로 두세요."
+msgstr "가져오기를 통해 새 존을 만들 수 없습니다: 최소 한 개의 그룹을 선택하거나 \"사용자 소유자 없음\"을 선택 해제 상태로 두세요."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:376
 msgid "Failed to create zone."
@@ -2451,17 +2445,13 @@ msgstr "기본 존 추가"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr ""
-"영역 소유권 모드가 groups_only이지만 그룹이 없습니다. 영역을 추가하기 전에 그"
-"룹을 만드세요."
+msgstr "존 소유권 모드가 groups_only이지만 그룹이 없습니다. 존을 추가하기 전에 그룹을 만드세요."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr ""
-"영역 소유권 모드가 groups_only이지만 어떤 그룹의 구성원도 아닙니다. 영역을 만"
-"들기 전에 관리자에게 그룹에 추가해 달라고 요청하세요."
+msgstr "존 소유권 모드가 groups_only이지만 어떤 그룹의 구성원도 아닙니다. 존을 만들기 전에 관리자에게 그룹에 추가해 달라고 요청하세요."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2597,23 +2587,23 @@ msgstr "뷰는 PowerDNS API 백엔드에서만 사용할 수 있습니다."
 
 #: lib/Application/Controller/ListViewsController.php:69
 msgid "Provide a valid view name and zone identifier."
-msgstr "유효한 뷰 이름과 영역 식별자를 제공하세요."
+msgstr "유효한 뷰 이름과 존 식별자를 제공하세요."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Zone assigned to view."
-msgstr "영역이 뷰에 할당되었습니다."
+msgstr "존이 뷰에 할당되었습니다."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Failed to assign zone to view."
-msgstr "영역을 뷰에 할당하지 못했습니다."
+msgstr "존을 뷰에 할당하지 못했습니다."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Zone removed from view."
-msgstr "영역이 뷰에서 제거되었습니다."
+msgstr "존이 뷰에서 제거되었습니다."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Failed to remove zone from view."
-msgstr "뷰에서 영역을 제거하지 못했습니다."
+msgstr "뷰에서 존을 제거하지 못했습니다."
 
 #: lib/Application/Controller/ListNetworksController.php:89
 msgid "Unknown action."
@@ -3212,7 +3202,7 @@ msgstr "일부 존을 추가할 수 없습니다."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:36
 msgid "You do not have the permission to change the default zone template."
-msgstr "기본 영역 템플릿을 변경할 권한이 없습니다."
+msgstr "기본 존 템플릿을 변경할 권한이 없습니다."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:50
 msgid ""
@@ -3224,16 +3214,15 @@ msgstr ""
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
-msgstr "기본 영역 템플릿이 해제되었습니다."
+msgstr "기본 존 템플릿이 해제되었습니다."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:75
 msgid "Default zone template updated."
-msgstr "기본 영역 템플릿이 업데이트되었습니다."
+msgstr "기본 존 템플릿이 업데이트되었습니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:183
 msgid "User-owner assignment is disabled by the current zone ownership mode."
-msgstr ""
-"현재 영역 소유권 모드에서는 사용자 소유자 할당이 비활성화되어 있습니다."
+msgstr "현재 존 소유권 모드에서는 사용자 소유자 할당이 비활성화되어 있습니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:190
 msgid "Owner has been added successfully."
@@ -3242,24 +3231,19 @@ msgstr "소유자가 성공적으로 추가되었습니다."
 #: lib/Application/Controller/ZoneOwnershipController.php:296
 msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "마지막 소유자를 제거할 수 없습니다: 영역의 소유자가 없어집니다."
+msgstr "마지막 소유자를 제거할 수 없습니다: 존의 소유자가 없어집니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:226
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr ""
-"마지막 사용자 소유자를 제거할 수 없습니다: 영역 소유권 모드가 users_only이며 "
-"최소 한 명의 사용자 소유자가 필요합니다. 먼저 다른 사용자 소유자를 추가하세"
-"요."
+msgstr "마지막 사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 users_only이며 최소 한 명의 사용자 소유자가 필요합니다. 먼저 다른 사용자 소유자를 추가하세요."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr ""
-"사용자 소유자를 제거할 수 없습니다: 영역 소유권 모드가 groups_only이고 영역"
-"에 그룹 소유자가 없습니다. 먼저 그룹을 추가하세요."
+msgstr "사용자 소유자를 제거할 수 없습니다: 존 소유권 모드가 groups_only이고 존에 그룹 소유자가 없습니다. 먼저 그룹을 추가하세요."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3268,7 +3252,7 @@ msgstr "소유자가 성공적으로 제거되었습니다."
 #: lib/Application/Controller/ZoneOwnershipController.php:253
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
-msgstr "현재 영역 소유권 모드에서는 그룹 소유권 할당이 비활성화되어 있습니다."
+msgstr "현재 존 소유권 모드에서는 그룹 소유권 할당이 비활성화되어 있습니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:265
 msgid "You do not have permission to assign this group."
@@ -3282,17 +3266,13 @@ msgstr "그룹이 성공적으로 추가되었습니다."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr ""
-"마지막 그룹을 제거할 수 없습니다: 영역 소유권 모드가 groups_only이며 최소 한 "
-"개의 그룹이 필요합니다. 먼저 다른 그룹을 추가하세요."
+msgstr "마지막 그룹을 제거할 수 없습니다: 존 소유권 모드가 groups_only이며 최소 한 개의 그룹이 필요합니다. 먼저 다른 그룹을 추가하세요."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr ""
-"그룹을 제거할 수 없습니다: 영역 소유권 모드가 users_only이고 영역에 사용자 소"
-"유자가 없습니다. 먼저 사용자 소유자를 추가하세요."
+msgstr "그룹을 제거할 수 없습니다: 존 소유권 모드가 users_only이고 존에 사용자 소유자가 없습니다. 먼저 사용자 소유자를 추가하세요."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3304,12 +3284,11 @@ msgstr "먼저 다른 소유자 또는 그룹을 추가하세요."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"먼저 다른 사용자 소유자를 추가하세요 (영역 소유권 모드가 users_only입니다)."
+msgstr "먼저 다른 사용자 소유자를 추가하세요 (존 소유권 모드가 users_only입니다)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
-msgstr "먼저 그룹을 추가하세요 (영역 소유권 모드가 groups_only입니다)."
+msgstr "먼저 그룹을 추가하세요 (존 소유권 모드가 groups_only입니다)."
 
 #: lib/Application/Controller/NotFoundController.php:72
 #: templates/default/404.html:11 templates/modern/404.html:11
@@ -3690,19 +3669,19 @@ msgstr "유효한 사용자 이름을 입력하세요."
 
 #: lib/Domain/Model/ZoneTemplate.php:307
 msgid "Zone template not found."
-msgstr "영역 템플릿을 찾을 수 없습니다."
+msgstr "존 템플릿을 찾을 수 없습니다."
 
 #: lib/Domain/Model/ZoneTemplate.php:311
 msgid "Only global zone templates can be set as the default."
-msgstr "전역 영역 템플릿만 기본값으로 설정할 수 있습니다."
+msgstr "전역 존 템플릿만 기본값으로 설정할 수 있습니다."
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "기본 영역 템플릿 설정 오류: "
+msgstr "기본 존 템플릿 설정 오류: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "기본 영역 템플릿 해제 오류: "
+msgstr "기본 존 템플릿 해제 오류: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
@@ -10272,7 +10251,7 @@ msgstr "존 로그"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
-msgstr "소유한 영역의 로그를 표시합니다."
+msgstr "소유한 존의 로그를 표시합니다."
 
 #: templates/modern/list_log_zones.html:26
 msgid "Zone Change Logs"
@@ -10780,11 +10759,11 @@ msgstr "템플릿"
 
 #: templates/modern/list_forward_zones.html:157
 msgid "SOA record is disabled, the zone will not be served"
-msgstr "SOA 레코드가 비활성화되어 있어 영역이 제공되지 않습니다"
+msgstr "SOA 레코드가 비활성화되어 있어 존이 제공되지 않습니다"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "Zone has no SOA record"
-msgstr "영역에 SOA 레코드가 없습니다"
+msgstr "존에 SOA 레코드가 없습니다"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
@@ -12291,7 +12270,7 @@ msgstr "결과를 찾을 수 없습니다"
 
 #: templates/modern/list_zone_templ.html:50
 msgid "Pre-selected on the add-zone form"
-msgstr "영역 추가 양식에서 미리 선택됨"
+msgstr "존 추가 양식에서 미리 선택됨"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
@@ -13287,7 +13266,7 @@ msgstr ""
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
-msgstr "아직 구성된 뷰가 없습니다. 아래에 영역 변형을 추가하세요."
+msgstr "아직 구성된 뷰가 없습니다. 아래에 존 변형을 추가하세요."
 
 #: templates/default/list_views.html:34 templates/modern/list_views.html:34
 msgid "Remove from view"
@@ -13295,7 +13274,7 @@ msgstr "뷰에서 제거"
 
 #: templates/default/list_views.html:48 templates/modern/list_views.html:48
 msgid "Assign zone to view"
-msgstr "영역을 뷰에 할당"
+msgstr "존을 뷰에 할당"
 
 #: templates/default/list_views.html:55 templates/modern/list_views.html:55
 msgid "View name"
@@ -13303,7 +13282,7 @@ msgstr "뷰 이름"
 
 #: templates/default/list_views.html:59 templates/modern/list_views.html:59
 msgid "Zone (zone..variant)"
-msgstr "영역 (zone..variant)"
+msgstr "존 (zone..variant)"
 
 #: templates/modern/email_previews.html:8
 msgid "Email Template Previews"
@@ -14162,7 +14141,7 @@ msgstr "선택 사항: 하나 이상의 그룹을 선택하세요."
 
 #: lib/Module/ZoneImportExport/templates/import.html:160
 msgid "No user owner - zone is owned only by the selected groups"
-msgstr "사용자 소유자 없음 - 영역은 선택된 그룹만 소유합니다"
+msgstr "사용자 소유자 없음 - 존은 선택된 그룹만 소유합니다"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Confirm import"
