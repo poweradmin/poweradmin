@@ -596,7 +596,7 @@ msgstr "نوشتن تمام سرورهای ذکر شده در پرونده ها�
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AA Records"
+msgstr "رکوردهای A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -652,11 +652,11 @@ msgstr "مکانیسم های اضافی"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "میزبان A/AA"
+msgstr "میزبان‌های A/AAAA اضافی"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "ثبت نام های خاص میزبان A/AA (یک خط)"
+msgstr "مجاز کردن رکوردهای A/AAAA نام‌های میزبان مشخص (یکی در هر خط)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -1108,9 +1108,7 @@ msgstr "نام بازی Target Hostname"
 msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
-msgstr ""
-"نام میزبان سرور ارائه این سرویس (باید یک نام میزبان با رکورد A /AA باشد، نه "
-"آدرس IP)."
+msgstr "نام میزبان سروری که این سرویس را ارائه می‌دهد (باید نام میزبانی با رکورد A/AAAA باشد، نه آدرس IP)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:154
 msgid ""
@@ -1525,9 +1523,7 @@ msgstr "رکورد یافت نشد."
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr ""
-"رکورد و سوابق مربوط به PTR و A /AA حذف شدند اما این نظر به دلیل سوابق مشابه "
-"حفظ شد."
+msgstr "این رکورد و رکوردهای PTR و A/AAAA مربوط به آن حذف شدند، اما نظر حفظ شد زیرا رکوردهای مشابه وجود دارند."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
@@ -1540,9 +1536,7 @@ msgstr ""
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr ""
-"این رکورد و رکورد A /AA مربوطه آن حذف شد اما این نظر حفظ شد زیرا سوابق مشابه "
-"وجود دارد."
+msgstr "این رکورد و رکورد A/AAAA مربوط به آن حذف شدند، اما نظر حفظ شد زیرا رکوردهای مشابه وجود دارند."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
@@ -1554,7 +1548,7 @@ msgstr "این رکورد حذف شد اما این نظر حفظ شد زیرا 
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr "رکورد و سوابق مربوط به PTR و A /AA با موفقیت حذف شده است."
+msgstr "این رکورد و رکوردهای PTR و A/AAAA مربوط به آن با موفقیت حذف شدند."
 
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
@@ -1565,7 +1559,7 @@ msgstr "رکورد و رکورد PTR مربوطه با موفقیت حذف شد�
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
-msgstr "رکورد و رکورد A/AA مربوطه آن با موفقیت حذف شده است."
+msgstr "این رکورد و رکورد A/AAAA مربوط به آن با موفقیت حذف شدند."
 
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
@@ -1576,7 +1570,7 @@ msgstr "رکورد با موفقیت حذف شده است. رکورد PTR پید
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "رکورد با موفقیت حذف شده است. رکورد A/AA پیدا نشد."
+msgstr "رکورد با موفقیت حذف شد. هیچ رکورد A/AAAA منطبقی یافت نشد."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
@@ -4101,9 +4095,7 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"اگر از CNAME استفاده کنید، اطمینان حاصل کنید که کل زنجیره CNAME برای TLSA "
-"برای کار صحیح (RFC 7671) امضا شده است."
+msgstr "اگر از CNAME استفاده می‌کنید، مطمئن شوید کل زنجیره CNAME با DNSSEC امضا شده است تا TLSA به درستی کار کند (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -4150,7 +4142,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
-msgstr "زمینه استفاده از TLS باید بین 0 تا 3 باشد."
+msgstr "فیلد usage در TLSA باید عددی بین 0 و 3 باشد."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:266
 msgid ""
@@ -4195,9 +4187,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr ""
-"زمینه انتخاب کننده TLS باید 0 ( گواهی کامل) یا 1 "
-"(SubjectPublicPublicKeyinfo) باشد."
+msgstr "فیلد selector در TLSA باید 0 (گواهی کامل) یا 1 (SubjectPublicKeyInfo) باشد."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4211,7 +4201,7 @@ msgstr ""
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "نوع تطبیق TLS باید 0 (Exact Match)، 1 (SHA-256) یا 2 (SHA-512) باشد."
+msgstr "فیلد نوع تطبیق TLSA باید 0 (تطبیق دقیق)، 1 (SHA-256) یا 2 (SHA-512) باشد."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -4258,9 +4248,7 @@ msgstr "رکورد NSEC3PARAM شامل شخصیت های نامعتبر است."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr ""
-"با توجه به RFC 5155 و RFC 9077، سوابق NSEC3PARAM باید همان TTL را به عنوان "
-"حداقل میدان TTL داشته باشد."
+msgstr "طبق RFC 5155 و RFC 9077، رکوردهای NSEC3PARAM باید همان TTL فیلد حداقل TTL در SOA را داشته باشند."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -5029,49 +5017,43 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "زمینه اولویت برای پرونده های OpenPGPKEY باید 0 یا خالی باشد."
+msgstr "فیلد اولویت برای رکوردهای OPENPGPKEY باید 0 یا خالی باشد"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"سوابق OpenPGPKEY به طور معمول باید با استفاده از ابزارهای تخصصی مانند GnuPG "
-"با گزینه چاپ-dane-records به جای ایجاد دستی تولید شود."
+msgstr "رکوردهای OPENPGPKEY معمولاً باید با ابزارهای تخصصی مانند GnuPG و گزینه --print-dane-records تولید شوند، نه اینکه دستی ساخته شوند."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "OpenPGPKEY ضبط محتوا نمی تواند خالی باشد."
+msgstr "محتوای رکورد OPENPGPKEY نمی‌تواند خالی باشد."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "شخصیت های invalid در محتوای ضبط OpenPGPKEY"
+msgstr "کاراکترهای نامعتبر در محتوای رکورد OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr "سوابق OpenPGPKEY باید حاوی داده های معتبر پایه ۶۴-encoded باشد."
+msgstr "رکوردهای OPENPGPKEY باید حاوی داده‌های معتبر کدگذاری‌شده با base64 باشند."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "رکورد OpenPGPKEY شامل داده های پایگاه اعتباری64 است."
+msgstr "رکورد OPENPGPKEY حاوی داده‌های base64 نامعتبر است."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
-"رکورد OpenPGPKEY بیش از 4KB است. RFC 7929 توصیه می کند که پرونده های DNS را "
-"تا حد امکان کوچک نگه دارید تا از حمل و نقل قابل اعتماد اطمینان اطمینان حاصل "
-"شود. با استفاده از یک فرمت کوچک صادرات کلیدی در نظر بگیرید."
+msgstr "اندازه رکورد OPENPGPKEY از 4KB بیشتر است. RFC 7929 توصیه می‌کند رکوردهای DNS تا حد امکان کوچک نگه داشته شوند تا انتقال قابل اعتماد تضمین شود. استفاده از یک قالب حداقلی برای صدور کلید را در نظر بگیرید."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"رکورد OpenPGPKEY بسیار کوچک است. بررسی کنید که این یک کلید عمومی OpenPGP است."
+msgstr "رکورد OPENPGPKEY به طور غیرعادی کوچک است. بررسی کنید که این یک کلید عمومی معتبر OpenPGP باشد."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -5093,33 +5075,25 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr ""
-"OpenPGPKEY ثبت نام REQUIRE DNSSEC برای هر گونه سود امنیتی. بدون اعتبار "
-"DNSSEC، این سوابق هیچ مزیت امنیتی ارائه نمی دهند."
+msgstr "رکوردهای OPENPGPKEY برای هرگونه مزیت امنیتی به DNSSEC نیاز دارند. بدون اعتبارسنجی DNSSEC، این رکوردها هیچ مزیت امنیتی ارائه نمی‌دهند."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr ""
-"سوابق OpenPGPKEY به عنوان RFC 7929 و ممکن است توسط تمام مشتریان ایمیل یا "
-"پیاده سازی OpenPGP پشتیبانی نمی شود."
+msgstr "رکوردهای OPENPGPKEY طبق RFC 7929 آزمایشی هستند و ممکن است توسط همه کلاینت‌های ایمیل یا پیاده‌سازی‌های OpenPGP پشتیبانی نشوند."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
-"سوابق OpenPGPKEY جایگزینی برای وب سایت OpenPGP نیست. روش های تایید اضافی "
-"هنوز توصیه می شود."
+msgstr "رکوردهای OPENPGPKEY جایگزینی برای OpenPGP Web of Trust نیستند. روش‌های تأیید اضافی همچنان توصیه می‌شوند."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr ""
-"برای ایجاد سوابق OpenPGPKEY، از ابزارهای تخصصی مانند GnuPG با گزینه چاپ-dane-"
-"records برای اطمینان از فرمت صحیح و محتوا استفاده کنید."
+msgstr "برای ایجاد رکوردهای OPENPGPKEY، از ابزارهای تخصصی مانند GnuPG با گزینه --print-dane-records استفاده کنید تا قالب و محتوای صحیح تضمین شود."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -5132,26 +5106,23 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr ""
-"هشدار: پرونده های SchFO اطلاعات بالقوه حساس در مورد سخت افزار میزبان و نرم "
-"افزار را نشان می دهد که می تواند برای مهاجمان مفید باشد. مفاهیم امنیتی را "
-"قبل از استفاده در DNS عمومی در نظر بگیرید."
+msgstr "هشدار: رکوردهای HINFO اطلاعات بالقوه حساسی درباره سخت‌افزار و نرم‌افزار میزبان فاش می‌کنند که می‌تواند برای مهاجمان مفید باشد. پیش از استفاده در DNS عمومی، پیامدهای امنیتی را در نظر بگیرید."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
-msgstr "زمینه اولویت برای پرونده های DRFO باید 0 یا خالی باشد"
+msgstr "فیلد اولویت برای رکوردهای HINFO باید 0 یا خالی باشد"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:173
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "رکورد SelFO باید دارای انواع CPU و زمینه های سیستم عامل باشد."
+msgstr "رکورد HINFO باید فیلدهای نوع CPU و سیستم عامل را داشته باشد."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:189
 msgid "HINFO record must have exactly two fields: CPU type and OS."
-msgstr "رکورد SelFO باید دقیقا دو زمینه داشته باشد: نوع CPU و سیستم عامل."
+msgstr "رکورد HINFO باید دقیقاً دو فیلد داشته باشد: نوع CPU و سیستم عامل."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Invalid به نقل قول در BeatFO "
+msgstr "نقل‌قول نامعتبر در HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
@@ -5159,7 +5130,7 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "نشانه های نقل قول Invalid در tFO "
+msgstr "علامت‌های نقل‌قول نامعتبر در HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5340,39 +5311,34 @@ msgstr ""
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr ""
-"ZoneMD در RFC 8976 (فورم 2021) تعریف شده و ممکن است توسط تمام سرورهای DNS "
-"پشتیبانی نشود."
+msgstr "ZONEMD در RFC 8976 (فوریه 2021) تعریف شده و ممکن است توسط همه سرورهای DNS پشتیبانی نشود."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "سوابق ZoneMD باید در منطقه apex قرار داده شود (مانند SOA Record)."
+msgstr "رکوردهای ZONEMD باید در راس منطقه قرار گیرند (همانند رکورد SOA)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
 "For proper security, zones with ZONEMD records should also be signed with "
 "DNSSEC."
-msgstr "برای امنیت مناسب، مناطقی با سوابق ZoneMD نیز باید با DNSSEC امضا شوند."
+msgstr "برای امنیت مناسب، مناطقی که رکورد ZONEMD دارند باید با DNSSEC نیز امضا شوند."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:113
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr ""
-"شماره سریال در رکورد ZoneMD باید با شماره سریال SOA منطقه مطابقت داشته باشد."
+msgstr "شماره سریال در رکورد ZONEMD باید با شماره سریال SOA منطقه مطابقت داشته باشد."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"طرح ZoneMD به ارزش 240- 255 برای استفاده خصوصی اختصاص داده شده و ممکن است "
-"قابل همکاری نباشد."
+msgstr "مقادیر طرح ZONEMD از 240 تا 255 برای استفاده خصوصی رزرو شده‌اند و ممکن است قابل تعامل نباشند."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr "SHA-384 (algorithm 1) الگوریتم هش توصیه شده برای سوابق ZoneMD است."
+msgstr "SHA-384 (الگوریتم 1) الگوریتم هش توصیه‌شده برای رکوردهای ZONEMD است."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
@@ -5386,63 +5352,55 @@ msgstr ""
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"ارزش الگوریتم هش ZoneMD 240- 255 برای استفاده خصوصی محفوظ است و ممکن است "
-"قابل همکاری نباشد."
+msgstr "مقادیر الگوریتم هش ZONEMD از 240 تا 255 برای استفاده خصوصی رزرو شده‌اند و ممکن است قابل تعامل نباشند."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"رکورد ZoneMD باید شامل سریال، طرح، هش-الگوrithm و هضم جدا شده توسط فضا باشد."
+msgstr "رکورد ZONEMD باید شامل سریال، طرح، الگوریتم هش و چکیده باشد که با فاصله از هم جدا شده‌اند."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr ""
-"سریال ZoneMD باید عددی بین 0 و 4294967295 باشد که به صورت صحیح امضا نشده است."
+msgstr "سریال ZONEMD باید عددی بین 0 و 4294967295 باشد (عدد صحیح بدون علامت 32 بیتی)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
-msgstr "طرح ZoneMD باید بین 0 تا 255 باشد."
+msgstr "طرح ZONEMD باید عددی بین 0 و 255 باشد."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:185
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
-"طرح ZoneMD باید 1 (Simple ZoneMD) برای استفاده استاندارد باشد. ارزش های دیگر "
-"رزرو شده یا امضا نشده اند."
+msgstr "طرح ZONEMD برای استفاده استاندارد باید 1 باشد (طرح ساده ZONEMD). سایر مقادیر رزرو شده یا تخصیص‌نیافته‌اند."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "طرح ZoneMD 0 رزرو شده و نه برای استفاده استاندارد است."
+msgstr "طرح ZONEMD شماره 0 رزرو شده است و برای استفاده استاندارد نیست."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "الگوریتم هش ZoneMD باید بین 0 تا 255 باشد."
+msgstr "الگوریتم هش ZONEMD باید عددی بین 0 و 255 باشد."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "الگوریتم هش ZoneMD 0 است و نه برای استفاده استاندارد."
+msgstr "الگوریتم هش ZONEMD شماره 0 رزرو شده است و برای استفاده استاندارد نیست."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "ZoneMD Digest باید یک رشته Hexadecimal باشد."
+msgstr "چکیده ZONEMD باید یک رشته شانزده‌شانزدهی باشد."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZoneMD Digest باید حداقل 24 کاراکتر Hexadecimal (12 octets) باشد."
+msgstr "چکیده ZONEMD باید حداقل 24 کاراکتر شانزده‌شانزدهی (12 اکتت) باشد."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"ZoneMD هضم برای SHA-384 (algorithm 1) باید دقیقا 96 کاراکتر Hexadecimal (48 "
-"octets) باشد."
+msgstr "چکیده ZONEMD برای SHA-384 (الگوریتم 1) باید دقیقاً 96 کاراکتر شانزده‌شانزدهی (48 اکتت) باشد."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5654,7 +5612,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
-msgstr "یک دامنه با رکورد نقره ای null نباید هیچ رکورد دیگری داشته باشد."
+msgstr "دامنه‌ای که رکورد MX تهی دارد نباید هیچ رکورد MX دیگری داشته باشد."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
@@ -6070,9 +6028,7 @@ msgstr ""
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr ""
-"میزبان مبدل کلیدی باید دارای سوابق A /AA مناسب برای پردازش بخش اضافی نوع A /"
-"AA باشد."
+msgstr "میزبان تبادل کلید باید رکوردهای A/AAAA مناسب برای پردازش بخش اضافی نوع A/AAAA داشته باشد."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
@@ -6825,7 +6781,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
-msgstr "زمینه اولویت برای سوابق اتحادیه اروپا باید صفر یا خالی باشد."
+msgstr "فیلد اولویت برای رکوردهای EUI64 باید 0 یا خالی باشد."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:132
 msgid ""
@@ -7116,9 +7072,7 @@ msgstr ""
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
-"پرچم \"soaminimum\" (0x0002) تنظیم نشده است. اعتبار شماره سریال ممکن است "
-"اجرا نشود."
+msgstr "پرچم \"soaminimum\" (0x0002) تنظیم نشده است. ممکن است اعتبارسنجی شماره سریال SOA اعمال نشود."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -7263,9 +7217,7 @@ msgstr ""
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr ""
-"سوابق PTR باید دارای سوابق پیش رو (A/AA) برای جلوگیری از مشکلات مربوط به "
-"سرویس هایی باشد که DNS معکوس را چک می کنند."
+msgstr "رکوردهای PTR باید رکوردهای رو به جلوی متناظر (A/AAAA) داشته باشند تا از مشکلات سرویس‌هایی که DNS معکوس را بررسی می‌کنند جلوگیری شود."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
@@ -8806,9 +8758,7 @@ msgstr "رکورد NSEC3 شامل شخصیت های نامعتبر است."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr ""
-"با توجه به RFC 5155 و RFC 9077، سوابق NSEC3 باید همان TTL را به عنوان حداقل "
-"میدان TTL داشته باشد."
+msgstr "طبق RFC 5155 و RFC 9077، رکوردهای NSEC3 باید همان TTL فیلد حداقل TTL در SOA را داشته باشند."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -9214,9 +9164,7 @@ msgstr "شما اجازه بازسازی کلیدهای API را ندارید."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr ""
-"هیچ رکوردی در حال حاضر یا فعال در منطقه وجود ندارد. این مورد برای DNSSEC "
-"لازم است."
+msgstr "هیچ رکورد SOA موجود یا فعالی در منطقه وجود ندارد. این برای DNSSEC لازم است."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -11116,7 +11064,7 @@ msgstr "منطقه رکورد SOA ندارد"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
-msgstr "هیچ"
+msgstr "بدون SOA"
 
 #: templates/modern/list_forward_zones.html:162
 msgid ""
@@ -11693,11 +11641,11 @@ msgstr "استفاده از مقدار پیش فرض TTL از پیکربندی"
 
 #: templates/modern/batch_ptr_record.html:86
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "ایجاد سوابق A /AA در منطقه اولیه"
+msgstr "ایجاد رکوردهای A/AAAA رو به جلو در منطقه اصلی"
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr "ایجاد PTR تنها برای ثبت های موجود در منطقه پیش رو"
+msgstr "ایجاد PTR فقط برای رکوردهای A/AAAA موجود در منطقه رو به جلو"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
@@ -11810,9 +11758,7 @@ msgstr ""
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
-"“Create Forward A/AA Records” را بررسی کنید تا به طور خودکار رکوردهای رو به "
-"جلو (در هنگام استفاده از حالت تطبیق) ایجاد کنید."
+msgstr "گزینه \"Create forward A/AAAA records\" را علامت بزنید تا رکوردهای رو به جلوی متناظر به طور خودکار ایجاد شوند (در حالت تطبیق غیرفعال است)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -12069,7 +12015,7 @@ msgstr "اضافه کردن PTR"
 
 #: templates/modern/edit.html:668 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
-msgstr "اضافه کردن A/AA"
+msgstr "افزودن A/AAAA"
 
 #: templates/modern/edit.html:107 templates/modern/edit.html:707
 msgid "This record already exists"
@@ -12299,7 +12245,7 @@ msgstr "همچنین رکورد PTR مربوطه را حذف کنید (در صو
 
 #: templates/modern/delete_record.html:78
 msgid "Also delete corresponding A/AAAA record (if exists)"
-msgstr "همچنین رکورد A/AA (در صورت وجود) را حذف کنید."
+msgstr "همچنین رکورد A/AAAA متناظر را حذف کن (در صورت وجود)"
 
 #: templates/modern/delete_zone_templ_record.html:49
 msgid "Yes, delete this record"
@@ -15056,7 +15002,7 @@ msgstr "ارائه دهنده DNS Hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "دانلود زیرنویس فارسی فیلم SoA Records"
+msgstr "مدیر میزبان پیش‌فرض برای رکوردهای SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
