@@ -2202,7 +2202,7 @@ msgstr "Zóna bola úspešne podpísaná."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Požiadavka o podpis zóny úspešná, overenie zlyhalo."
+msgstr "Požiadavka o podpis zóny úspešná, ale overenie zlyhalo. Skontrolujte DNSSEC kľúče."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2501,7 +2501,7 @@ msgstr "Zóna bola úspešne vytvorená a podpísaná DNSSEC."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Zóna vytvorená, podpis požiadaný, overenie zlyhalo."
+msgstr "Zóna vytvorená, podpis požiadaný, ale overenie zlyhalo. Skontrolujte DNSSEC kľúče."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -8291,7 +8291,7 @@ msgstr "Pole priority pre KEY musí byť 0 alebo prázdne"
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "KEY sú zastarané (RFC 4034). Používajte DNSKEY."
+msgstr "KEY záznamy sú zastarané podľa RFC 4034. Pre DNSSEC používajte namiesto nich DNSKEY záznamy."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."

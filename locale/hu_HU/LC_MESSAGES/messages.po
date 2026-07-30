@@ -710,7 +710,7 @@ msgstr "Érvénytelen bevont tartomány: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr "Nincs mechanizmus. Csak alapértelmezett."
+msgstr "Nincs kiválasztott mechanizmus. Ez az SPF rekord csak az alapértelmezett műveletet fogja tartalmazni."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
@@ -2159,7 +2159,7 @@ msgstr "A zóna sikeresen alá lett írva."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Zóna aláírása kérve, de ellenőrzés sikertelen."
+msgstr "Zóna aláírása kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC kulcsokat."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2450,7 +2450,7 @@ msgstr "A zóna sikeresen létrehozva és DNSSEC-kel aláírva."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Zóna létrehozva, aláírás kérve, ellenőrzés sikertelen."
+msgstr "Zóna létrehozva, aláírás kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC kulcsokat."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -8012,7 +8012,7 @@ msgstr "A KEY rekord prioritás mezője 0 vagy üres legyen"
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "KEY elavult (RFC 4034). Használjon DNSKEY-t."
+msgstr "A KEY rekordokat az RFC 4034 elavulttá tette. DNSSEC esetén használjon helyettük DNSKEY rekordokat."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."

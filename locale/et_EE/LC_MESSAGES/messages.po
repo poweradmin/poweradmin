@@ -2138,7 +2138,7 @@ msgstr "Tsoon on edukalt allkirjastatud."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Tsooni allkirjastamise taotlus õnnestus, aga kontroll ebaõnnestus."
+msgstr "Tsooni allkirjastamise taotlus õnnestus, aga kontroll ebaõnnestus. Kontrollige DNSSEC võtmeid."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2430,7 +2430,7 @@ msgstr "Tsoon on edukalt loodud ja DNSSEC-iga allkirjastatud."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Tsoon loodi ja allkirjastamine tellitud, aga kontroll ebaõnnestus."
+msgstr "Tsoon loodi ja allkirjastamine tellitud, aga kontroll ebaõnnestus. Kontrollige DNSSEC võtmeid."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -4000,7 +4000,7 @@ msgstr "KRIITILINE: TLSA NÕUAB DNSSEC-i. Tagage DNSSEC allkirjastamine."
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr "CNAME puhul peab kogu ahel olema DNSSEC-allkirjastatud (RFC 7671)."
+msgstr "CNAME kasutamisel peab kogu CNAME ahel olema DNSSEC-allkirjastatud, et TLSA töötaks korrektselt (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -4717,8 +4717,7 @@ msgstr "Kui tsooni loetlemine on mureks, kaaluge NSEC3 kasutamist (RFC 5155)."
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC kirjed on DNSSEC osa ja neid tuleb hallata koos teiste DNSSEC kirjetega."
+msgstr "NSEC kirjed on DNSSEC osa ja neid tuleb hallata ainult koos teiste DNSSEC kirjetega (DNSKEY, RRSIG jne)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
@@ -6325,7 +6324,7 @@ msgstr "RP postkasti domeeni osa pole kehtiv domeeninimi."
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr "Postkasti domeen peab kasutama RNAME vormingut, @ asendatud punktiga."
+msgstr "Postkasti domeen peab kasutama sama vormingut nagu RNAME väli SOA kirjetes, kus @ on asendatud punktiga."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
