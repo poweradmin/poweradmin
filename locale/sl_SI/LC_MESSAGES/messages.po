@@ -14382,8 +14382,7 @@ msgstr "Uporabniki proti skupinam"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"Ko je dodeljena uporabnikom <strong>1ZZ: Dovoljenja veljajo po vsem sistemu."
+msgstr "Ko so dodeljena <strong>uporabnikom</strong>: Dovoljenja veljajo globalno po celotnem sistemu."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""

@@ -2409,7 +2409,7 @@ msgstr "%d са създадени и еднакви записи(s)."
 #: lib/Application/Controller/AddRecordController.php:523
 #, php-format
 msgid "%d record(s) failed to be added."
-msgstr "%d запис [6] не е добавен."
+msgstr "%d запис(а) не са добавени."
 
 #: lib/Application/Controller/AddRecordController.php:528
 msgid ""
@@ -2603,14 +2603,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr ""
-"Спестени %d по подразбиране [6]; изчистени %d. Отхвърлени невалидни "
-"стойности за: %s."
+msgstr "Запазени %d стойности по подразбиране; изчистени %d. Отхвърлени невалидни стойности за: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Спестени %d по подразбиране [6]; изчистени %d."
+msgstr "Запазени %d стойности по подразбиране; изчистени %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -6001,9 +5999,7 @@ msgstr "Режим GSS-API изисква ключови данни, за да �
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
-"Режимът Diffie-Hellman следва да бъде валидиран чрез TSIG или SIG [10], за "
-"да се предотвратят атаки на човек в средата."
+msgstr "Режимът Diffie-Hellman следва да бъде удостоверен чрез TSIG или SIG(0), за да се предотвратят атаки тип „човек по средата“."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -11495,7 +11491,7 @@ msgstr "NOTIFY е изпратен при сериен номер %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
-msgstr "Зона за изтриване [6]"
+msgstr "Изтриване на зона(и)"
 
 #: templates/modern/dnssec_add_key.html:77
 msgid "Add key"
@@ -12522,7 +12518,7 @@ msgstr "Редактиране на избрания"
 
 #: templates/modern/edit.html:525 templates/modern/search.html:487
 msgid "Delete record(s)"
-msgstr "Изтриване на запис [6]"
+msgstr "Изтриване на запис(и)"
 
 #: templates/modern/edit.html:533 templates/modern/search.html:89
 msgid "Comments"

@@ -7608,7 +7608,7 @@ msgstr "اولویت باید برای رکوردهای RESINFO برابر 0 ب�
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "رکورد SVCB باید با یک اولویت و هدف شروع شود: Zi0AZ1AZ [ODM2]"
+msgstr "رکورد SVCB باید با یک اولویت و هدف شروع شود: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -9691,7 +9691,7 @@ msgstr "یک نام برای رکورد خود ارائه دهید"
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "نمونه: برای خود منطقه یا زیر دامنه (Zone)"
+msgstr "نمونه: [ZONE] برای خود منطقه، یا subdomain.[ZONE] برای یک زیردامنه"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
@@ -9732,10 +9732,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr ""
-"نکته: برای سوابق SOA، از Zi0AZ [Zone]AZ1AZ به عنوان نام و زی2AZ [NS1] "
-"[HOSTMASTER] 28800 7200 604800 864006.13 به عنوان محتوا استفاده کنید. سوابق "
-"SOA برای عملکرد مناسب منطقه DNS مورد نیاز است."
+msgstr "نکته: برای رکوردهای SOA، از <code>[ZONE]</code> به عنوان نام و از <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> به عنوان محتوا استفاده کنید. رکوردهای SOA برای عملکرد صحیح منطقه DNS لازم هستند."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -9811,15 +9808,15 @@ msgstr "مثال های نام"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "برای یک زیر دامنه: Zi0AZsubdomain"
+msgstr "برای یک زیردامنه: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "برای ثبت یک کارت وحشی: AB0AZ*"
+msgstr "برای یک رکورد wildcard: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "برای خود دامنه: Zi0AZ [Zone]"
+msgstr "برای خود دامنه: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
@@ -9827,7 +9824,7 @@ msgstr "مثال های Content"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "[[ویرایش] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400BP1"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
@@ -9838,7 +9835,7 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "یک رکورد: Zi0251 192.0.2.102.1"
+msgstr "رکورد A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
@@ -9846,7 +9843,7 @@ msgstr "CNAME: <code>target.[ZONE]</code> یا <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TXT برای SPF: Zi0pidv=sPF1 mx ip4:192.0."
+msgstr "TXT برای SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -13723,9 +13720,7 @@ msgstr "استفاده از قالب سفارشی"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr ""
-"برای بازگشت به قالب های استاندارد، حذف یا تغییر نام فایل های قالب سفارشی در "
-"Zip0AZtemplates / Emails / سفارشی / ODM1AZ."
+msgstr "برای بازگشت به قالب‌های استاندارد، فایل‌های قالب سفارشی موجود در <code>templates/emails/custom/</code> را حذف یا تغییر نام دهید."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -13736,10 +13731,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr ""
-"شما می توانید قالب های ایمیل سفارشی را با قرار دادن آنها در "
-"Zip02.8tformatms / ایمیل / سفارشی / ODM1AZ ایجاد کنید تا این قالب های "
-"استاندارد را با طرح های خود حذف کنید."
+msgstr "می‌توانید با قرار دادن قالب‌های ایمیل سفارشی در <code>templates/emails/custom/</code> این قالب‌های استاندارد را با طرح‌های خود جایگزین کنید."
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -14187,17 +14179,13 @@ msgstr "کاربران در مقابل گروه ها"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"هنگامی که به Zi0AZusersAZ1BP اختصاص داده شده است: مجوز در سراسر جهان در "
-"سراسر سیستم اعمال می شود."
+msgstr "هنگامی که به <strong>کاربران</strong> اختصاص داده شود: مجوزها در سراسر سیستم اعمال می‌شوند."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr ""
-"هنگامی که به Zi0251sAZ1BP اختصاص داده شده است: مجوز فقط به مناطق متعلق به "
-"این گروه اعمال می شود."
+msgstr "هنگامی که به <strong>گروه‌ها</strong> اختصاص داده شود: مجوزها فقط برای مناطق متعلق به آن گروه اعمال می‌شوند."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

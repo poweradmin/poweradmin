@@ -12900,7 +12900,7 @@ msgstr "izmantojot pielāgotu veidni"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Lai atgrieztos pie standarta veidnēm, noņemiet pielāgotos failus."
+msgstr "Lai atgrieztos pie standarta veidnēm, noņemiet vai pārdēvējiet pielāgotos veidņu failus mapē <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"

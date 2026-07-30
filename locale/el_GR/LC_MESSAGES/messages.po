@@ -14817,7 +14817,7 @@ msgstr ""
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "Οι άδειες ισχύουν μόνο για ζώνες που ανήκουν στον εν λόγω όμιλο."
+msgstr "Όταν ανατίθενται σε <strong>ομάδες</strong>: Τα δικαιώματα ισχύουν μόνο για ζώνες που ανήκουν σε αυτήν την ομάδα."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

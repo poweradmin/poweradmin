@@ -223,7 +223,7 @@ msgstr "נתונים מלאים (שיא ארוך מאוד)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr "תגית: SHA-256 hashtag"
+msgstr "1 - גיבוב SHA-256"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
@@ -231,7 +231,7 @@ msgstr "SHA-256 יש אישור /key"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "תגית: SHA-512"
+msgstr "2 - גיבוב SHA-512"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -9430,7 +9430,7 @@ msgstr "תן שם לתיעוד שלך"
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "דוגמה: [ZONE] עבור האזור עצמו, או תת-דומיין."
+msgstr "דוגמה: [ZONE] עבור האזור עצמו, או subdomain.[ZONE] עבור תת-דומיין"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
@@ -9470,10 +9470,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr ""
-"טיפ: עבור רשומות SOA, השתמש <code> [ZONE]</code> כשם ו- <code> [NS1] [STER] "
-"[SERIAL] 28800 7200 60480086400</code> כתוכן. רשומות SOA נדרשות עבור "
-"פונקציונליות אזור DNS נאותה."
+msgstr "טיפ: עבור רשומות SOA, השתמש ב-<code>[ZONE]</code> כשם וב-<code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> כתוכן. רשומות SOA נדרשות עבור פונקציונליות אזור DNS תקינה."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -9549,15 +9546,15 @@ msgstr "דוגמאות"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "עבור תת-דומיין: <code>subdomain"
+msgstr "עבור תת-דומיין: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "עבור תקליט בר: <code>*"
+msgstr "עבור רשומת wildcard: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "עבור התחום עצמו: <code>[עריכת קוד מקור | עריכה]"
+msgstr "עבור התחום עצמו: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
@@ -9565,14 +9562,12 @@ msgstr "דוגמאות"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "SOA: <code>[עריכת קוד מקור | עריכה] 28800 7200 604800"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
-msgstr ""
-"MX עבור Microsoft 365: <code> [DOMAIN]- [TLD.mail.protection.outlook.com</"
-"code>"
+msgstr "MX עבור Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
@@ -9580,7 +9575,7 @@ msgstr "שיא: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "<code>target[עריכת קוד מקור | עריכה]"
+msgstr "CNAME: <code>target.[ZONE]</code> או <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"

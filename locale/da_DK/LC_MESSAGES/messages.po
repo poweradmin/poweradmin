@@ -9922,10 +9922,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr ""
-"Tip: Brug <code> [ZONE] </code> som navn og <code> [NS1] [HOSTMASTER] "
-"[SERIE] 28800 7200 604800 86400 </code> som indhold. SOA optegnelser er "
-"nødvendige for korrekt DNS zone funktionalitet."
+msgstr "Tip: For SOA-records skal du bruge <code>[ZONE]</code> som navn og <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> som indhold. SOA-records er nødvendige for korrekt DNS-zonefunktionalitet."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -10005,7 +10002,7 @@ msgstr "For et underdomæne: <code> underdomæne. [ZONE] </code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "For en wildcard record: <code> *."
+msgstr "For en wildcard-record: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
@@ -10017,7 +10014,7 @@ msgstr "Indholdseksempler"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "SOA: <code> [NS1] [HOSTMASTER] [SERIE] 28800 7200 604800 86400 </code>"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
@@ -10031,7 +10028,7 @@ msgstr "En rekord: <code> 192.0.2.10 </code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code> target."
+msgstr "CNAME: <code>target.[ZONE]</code> eller <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"

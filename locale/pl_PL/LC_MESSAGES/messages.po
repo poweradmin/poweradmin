@@ -10135,9 +10135,7 @@ msgstr "Przykłady zawartości"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr ""
-"SOA: <code>[NS1] [ADMINISTRATOR_DNS] [NUMER_SERYJNY] 28800 7200 604800 "
-"86400</code>"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""

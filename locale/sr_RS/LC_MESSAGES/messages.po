@@ -12859,7 +12859,7 @@ msgstr "помоћу прилагођеног шаблона"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Враћање на стандардне шаблоне: уклоните/преименујте custom фајлове."
+msgstr "Да бисте се вратили на стандардне шаблоне, уклоните или преименујте прилагођене датотеке шаблона у <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"

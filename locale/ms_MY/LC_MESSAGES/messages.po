@@ -9542,7 +9542,7 @@ msgstr "Contoh-contoh Konten"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "<code>[NS1] [HOSTER] 28800 7200 604800 86400</code>"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
@@ -12641,7 +12641,7 @@ msgstr "Nilai Multi"
 
 #: templates/modern/edit_zone_metadata.html:29
 msgid "Single value"
-msgstr "Nilai tunggal [3]"
+msgstr "Nilai tunggal"
 
 #: templates/modern/edit_zone_metadata.html:39
 msgid "Kind"
@@ -13939,13 +13939,13 @@ msgstr "Pengguna vs Kumpulan"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr "Keizinan berlaku secara global di seluruh sistem."
+msgstr "Apabila diberikan kepada <strong>pengguna</strong>: Keizinan berlaku secara global di seluruh sistem."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "Keizinan hanya berlaku untuk zona yang dimiliki oleh kumpulan itu."
+msgstr "Apabila diberikan kepada <strong>kumpulan</strong>: Keizinan hanya berlaku untuk zon yang dimiliki oleh kumpulan itu."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

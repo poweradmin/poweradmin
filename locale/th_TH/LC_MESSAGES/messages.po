@@ -9262,7 +9262,7 @@ msgstr "บอกชื่อสำหรับบันทึกของคุ
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "ตัวอย่าง: [อังกฤษ] สำหรับโซนเอง, หรือส่วนย่อยของเนปาล [ZONE] สำหรับกลุ่มย่อย"
+msgstr "ตัวอย่าง: [ZONE] สำหรับตัวโซนเอง หรือ subdomain.[ZONE] สำหรับโดเมนย่อย"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
@@ -9409,7 +9409,7 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "บันทึก: SOZZX19.2.2.0.0.0.2</code>"
+msgstr "บันทึก A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
@@ -9417,7 +9417,7 @@ msgstr "CNAME: <code>target.[ZONE]</code> หรือ <code>example.com.</code>
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TXT สำหรับ SPF: SOZZOW=spf1 mx Ip4:192.0.0/24 - allx1zxx"
+msgstr "TXT สำหรับ SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -13217,9 +13217,7 @@ msgstr "ใช้ต้นแบบกำหนดเอง"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr ""
-"เพื่อกลับไปใช้ต้นแบบจดหมายมาตรฐาน ให้ลบหรือเปลี่ยนชื่อแฟ้มต้นแบบที่กำหนดเองในรูปแบบ "
-"EXCxxxxxtemps/ email/ EXP/ EXP1x"
+msgstr "หากต้องการกลับไปใช้เทมเพลตมาตรฐาน ให้ลบหรือเปลี่ยนชื่อไฟล์เทมเพลตที่กำหนดเองใน <code>templates/emails/custom/</code>"
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -13230,9 +13228,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr ""
-"คุณสามารถสร้างต้นแบบจดหมายที่กำหนดเองได้ โดยการวางจดหมายเหล่านี้ลงใน EXCTimes/ email/ "
-"EXP/ EXP1z1z เพื่อแทนที่แม่แบบเหล่านี้ด้วยรูปแบบของคุณเอง"
+msgstr "คุณสามารถสร้างเทมเพลตอีเมลที่กำหนดเองได้ โดยวางไว้ใน <code>templates/emails/custom/</code> เพื่อแทนที่เทมเพลตมาตรฐานเหล่านี้ด้วยรูปแบบของคุณเอง"
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -13677,9 +13673,7 @@ msgstr "เมื่อกำหนดให้กับ<strong>ผู้ใช�
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr ""
-"เมื่อได้รับมอบหมายให้ใช้กลุ่มผู้ใช้ SOZ( 0. 0) เช่น: "
-"สิทธิ์ในการใช้งานเฉพาะโซนที่กลุ่มนั้นเป็นเจ้าของเท่านั้น"
+msgstr "เมื่อกำหนดให้กับ<strong>กลุ่ม</strong>: สิทธิ์จะมีผลเฉพาะกับโซนที่กลุ่มนั้นเป็นเจ้าของเท่านั้น"
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"
