@@ -2286,7 +2286,7 @@ msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा 
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया, लेकिन पीटीआर रिकॉर्ड निर्माण विफल रहा:"
+msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया, लेकिन पीटीआर रिकॉर्ड निर्माण विफल रहा: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2396,7 +2396,7 @@ msgstr "OIDC प्रमाणीकरण सक्षम नहीं है"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "प्रमाणीकरण विफल रहा:"
+msgstr "प्रमाणीकरण विफल रहा: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2416,7 +2416,7 @@ msgstr "कोई OIDC प्रदाताओं को कॉन्फ़ि�
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "OIDC प्रमाणीकरण शुरू करने में विफल:"
+msgstr "OIDC प्रमाणीकरण शुरू करने में विफल: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2429,7 +2429,7 @@ msgstr "PEM कुंजी निर्यात PowerDNS 4.7 या नए क
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "PEM कुंजी निर्यात करते समय एक त्रुटि हुई:"
+msgstr "PEM कुंजी निर्यात करते समय एक त्रुटि हुई: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2640,7 +2640,7 @@ msgstr "क्षेत्र कुंजी को हटाने में �
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "DNSSEC कुंजी को हटाने के दौरान एक त्रुटि हुई:"
+msgstr "DNSSEC कुंजी को हटाने के दौरान एक त्रुटि हुई: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2661,7 +2661,7 @@ msgstr "Invalid SAML प्रदाता"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "SAML प्रमाणीकरण विफल:"
+msgstr "SAML प्रमाणीकरण विफल: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2933,7 +2933,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "PEM कुंजी आयात करते समय एक त्रुटि हुई:"
+msgstr "PEM कुंजी आयात करते समय एक त्रुटि हुई: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3078,7 +3078,7 @@ msgstr "आपने लॉग आउट किया है"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Logout पूरा (शामक के साथ):"
+msgstr "Logout पूरा (शामक के साथ): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3152,7 +3152,7 @@ msgstr "नई DNSSEC कुंजी जोड़ने में विफल 
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "DNSSEC कुंजी जोड़ते समय त्रुटि हुई:"
+msgstr "DNSSEC कुंजी जोड़ते समय त्रुटि हुई: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3703,27 +3703,27 @@ msgstr "केवल वैश्विक क्षेत्र के टे�
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "त्रुटि सेटिंग डिफ़ॉल्ट क्षेत्र टेम्पलेट:"
+msgstr "त्रुटि सेटिंग डिफ़ॉल्ट क्षेत्र टेम्पलेट: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि:"
+msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "क्षेत्र टेम्पलेट बनाने में त्रुटि:"
+msgstr "क्षेत्र टेम्पलेट बनाने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "टेम्पलेट में डिफ़ॉल्ट SOA रिकॉर्ड जोड़ने में त्रुटि:"
+msgstr "टेम्पलेट में डिफ़ॉल्ट SOA रिकॉर्ड जोड़ने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "क्षेत्र टेम्पलेट को हटाने में त्रुटि:"
+msgstr "क्षेत्र टेम्पलेट को हटाने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "उपयोगकर्ता ज़ोन टेम्प्लेट को हटाने में त्रुटि:"
+msgstr "उपयोगकर्ता ज़ोन टेम्प्लेट को हटाने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3752,7 +3752,7 @@ msgstr "यह रिकॉर्ड इस ज़ोन टेम्पले�
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "क्षेत्र टेम्पलेट रिकॉर्ड अद्यतन करने में त्रुटि:"
+msgstr "क्षेत्र टेम्पलेट रिकॉर्ड अद्यतन करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3762,11 +3762,11 @@ msgstr "आपको इस रिकॉर्ड प्रकार को क�
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "क्षेत्र टेम्पलेट रिकॉर्ड को हटाने में त्रुटि:"
+msgstr "क्षेत्र टेम्पलेट रिकॉर्ड को हटाने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "टेम्पलेट स्वामित्व की जांच करने में त्रुटि:"
+msgstr "टेम्पलेट स्वामित्व की जांच करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3777,11 +3777,11 @@ msgstr "ये रिकॉर्ड प्रकार टेम्पलेट
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "टेम्पलेट का उपयोग करके क्षेत्र को पुनः प्राप्त करने में त्रुटि:"
+msgstr "टेम्पलेट का उपयोग करके क्षेत्र को पुनः प्राप्त करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "टेम्पलेट का उपयोग करके जोनों की सूची प्राप्त करने में विफल:"
+msgstr "टेम्पलेट का उपयोग करके जोनों की सूची प्राप्त करने में विफल: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3789,23 +3789,23 @@ msgstr "आपको किसी ज़ोन टेम्पलेट को �
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "टेम्पलेट से लिंकिंग क्षेत्र में त्रुटि:"
+msgstr "टेम्पलेट से लिंकिंग क्षेत्र में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "क्षेत्र को पुनः प्राप्त करने में त्रुटि:"
+msgstr "क्षेत्र को पुनः प्राप्त करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "टेम्पलेट नाम अस्तित्व की जांच करने में त्रुटि:"
+msgstr "टेम्पलेट नाम अस्तित्व की जांच करने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "नाम से टेम्पलेट देखने में त्रुटि:"
+msgstr "नाम से टेम्पलेट देखने में त्रुटि: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "टेम्पलेट अस्तित्व की जाँच करने में त्रुटि:"
+msgstr "टेम्पलेट अस्तित्व की जाँच करने में त्रुटि: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5138,15 +5138,15 @@ msgstr "HINFO रिकॉर्ड वास्तव में दो क्�
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "HINFO में अवैध उद्धरण"
+msgstr "HINFO में अवैध उद्धरण "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "HINFO के भीतर अवैध उद्धरण चिह्न"
+msgstr "HINFO के भीतर अवैध उद्धरण चिह्न "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5467,7 +5467,7 @@ msgstr "CERT प्रकार 0 और 65535 के बीच एक नंब
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERT प्रकार मान"
+msgstr "CERT प्रकार मान "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5503,7 +5503,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "एल्गोरिथ्म"
+msgstr "एल्गोरिथ्म "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5511,7 +5511,7 @@ msgstr "यूआरएल आधारित CERT प्रकार के ल
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "प्रमाणपत्र डेटा है"
+msgstr "प्रमाणपत्र डेटा है "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9030,7 +9030,7 @@ msgstr "ENUM रिकॉर्ड्स में URI आउटपुट को
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp में संभावित खतरनाक पैटर्न शामिल हैं:"
+msgstr "NAPTR regexp में संभावित खतरनाक पैटर्न शामिल हैं: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

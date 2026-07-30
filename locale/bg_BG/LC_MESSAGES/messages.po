@@ -2334,7 +2334,7 @@ msgstr "Записът е добавен успешно. Също така е с
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Записът успешно добавен, но създаването на PTR запис не успя:"
+msgstr "Записът успешно добавен, но създаването на PTR запис не успя: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2449,7 +2449,7 @@ msgstr "Автентичността на OIDC не е включена"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Грешка при удостоверяване:"
+msgstr "Грешка при удостоверяване: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2469,7 +2469,7 @@ msgstr "Не са конфигурирани доставчици на OIDC"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Грешка при стартиране на OIDC удостоверяване:"
+msgstr "Грешка при стартиране на OIDC удостоверяване: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2482,7 +2482,7 @@ msgstr "PEM ключ износ изисква PowerDNS 4.7 или по-нова
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Грешка при експортиране на PEM ключ:"
+msgstr "Грешка при експортиране на PEM ключ: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2696,7 +2696,7 @@ msgstr "Грешка при изтриване на клавиша за зона
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "Грешка при изтриване на клавиша DNSSEC:"
+msgstr "Грешка при изтриване на клавиша DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2717,7 +2717,7 @@ msgstr "Невалиден доставчик на SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "Неуспешно удостоверяване на SAML:"
+msgstr "Неуспешно удостоверяване на SAML: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2993,7 +2993,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "Възникна грешка при вноса на PEM ключ:"
+msgstr "Възникна грешка при вноса на PEM ключ: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3143,7 +3143,7 @@ msgstr "Вие сте били логнати"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Изходът е завършен (с предупреждения):"
+msgstr "Изходът е завършен (с предупреждения): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3219,7 +3219,7 @@ msgstr "Грешка при добавяне на нов DNSSEC ключ."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "Грешка при добавяне на DNSSEC ключ:"
+msgstr "Грешка при добавяне на DNSSEC ключ: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3795,27 +3795,27 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Грешка при задаване на шаблон за зона по подразбиране:"
+msgstr "Грешка при задаване на шаблон за зона по подразбиране: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Грешка при клиринг на шаблон за зона по подразбиране:"
+msgstr "Грешка при клиринг на шаблон за зона по подразбиране: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Грешка при създаване на шаблон за зона:"
+msgstr "Грешка при създаване на шаблон за зона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Грешка при добавяне на запис по подразбиране в шаблона SOA:"
+msgstr "Грешка при добавяне на запис по подразбиране в шаблона SOA: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Грешка при изтриване на шаблона за зона:"
+msgstr "Грешка при изтриване на шаблона за зона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Грешка при изтриване на шаблони от потребителски зони:"
+msgstr "Грешка при изтриване на шаблони от потребителски зони: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3844,7 +3844,7 @@ msgstr "Записът не принадлежи към този шаблон н
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Грешка при актуализиране на шаблона на зоната:"
+msgstr "Грешка при актуализиране на шаблона на зоната: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3854,11 +3854,11 @@ msgstr "Нямате права да изтривате този тип запи
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Грешка при изтриване на шаблона за зона:"
+msgstr "Грешка при изтриване на шаблона за зона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Грешка при проверка на собствеността върху шаблона:"
+msgstr "Грешка при проверка на собствеността върху шаблона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3871,11 +3871,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Грешка при извличане на зони чрез шаблон:"
+msgstr "Грешка при извличане на зони чрез шаблон: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Грешка при получаване на списък със зони чрез шаблон:"
+msgstr "Грешка при получаване на списък със зони чрез шаблон: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3883,23 +3883,23 @@ msgstr "Нямате разрешение да редактирате шабло
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Грешка при развързване на зона от шаблона:"
+msgstr "Грешка при развързване на зона от шаблона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Грешка при извличане на зони:"
+msgstr "Грешка при извличане на зони: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Грешка при проверка на съществуването на името на шаблона:"
+msgstr "Грешка при проверка на съществуването на името на шаблона: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Грешка при търсене на шаблон по име:"
+msgstr "Грешка при търсене на шаблон по име: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Грешка при проверка на съществуването на шаблона:"
+msgstr "Грешка при проверка на съществуването на шаблона: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5281,15 +5281,15 @@ msgstr "HINFO запис трябва да има точно две полета
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Невалиден цитат в HINFO"
+msgstr "Невалиден цитат в HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Невалидни кавички в рамките на HINFO"
+msgstr "Невалидни кавички в рамките на HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5629,7 +5629,7 @@ msgstr "Типът CERT трябва да бъде номер между 0 и 65
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "Стойност на типа CERT"
+msgstr "Стойност на типа CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5667,7 +5667,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Алгоритъм"
+msgstr "Алгоритъм "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5676,7 +5676,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Данни за сертификата"
+msgstr "Данни за сертификата "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9368,7 +9368,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp съдържа потенциално опасен модел:"
+msgstr "NAPTR regexp съдържа потенциално опасен модел: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

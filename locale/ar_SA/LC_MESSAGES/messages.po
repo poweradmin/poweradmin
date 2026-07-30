@@ -2305,7 +2305,7 @@ msgstr "تمت إضافة السجل بنجاح. وأُنشئ أيضًا سجل 
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "وأضيفت السجلات بنجاح، ولكن إنتاج سجلات سجل المعاملات المشبوهة فشل:"
+msgstr "وأضيفت السجلات بنجاح، ولكن إنتاج سجلات سجل المعاملات المشبوهة فشل: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2420,7 +2420,7 @@ msgstr "لم يُسمح بتوثيق الشركة"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "فشل التوثيق:"
+msgstr "فشل التوثيق: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2440,7 +2440,7 @@ msgstr "لا توجد مزودات OIDC مكونة"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "عدم الشروع في التصديق على الاتفاقية الدولية لحماية المخدرات:"
+msgstr "عدم الشروع في التصديق على الاتفاقية الدولية لحماية المخدرات: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2453,7 +2453,7 @@ msgstr "وتقتضي الصادرات الرئيسية من نظام بي إم 4
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "وحدث خطأ أثناء تصدير مفتاح نظام تقييم الأداء:"
+msgstr "وحدث خطأ أثناء تصدير مفتاح نظام تقييم الأداء: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2659,7 +2659,7 @@ msgstr "فشل في حذف مفتاح المنطقة"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "وحدث خطأ أثناء حذف مفتاح إدارة الأمن الوطني:"
+msgstr "وحدث خطأ أثناء حذف مفتاح إدارة الأمن الوطني: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2680,7 +2680,7 @@ msgstr "مزود SAML غير صالح"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "فشل توثيق حركة تحرير السودان:"
+msgstr "فشل توثيق حركة تحرير السودان: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2966,7 +2966,7 @@ msgstr "فشل استيراد مفتاح PEM. قد يكون خادم PowerDNS ق
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "وحدث خطأ أثناء استيراد مفتاح PEM:"
+msgstr "وحدث خطأ أثناء استيراد مفتاح PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3125,7 +3125,7 @@ msgstr "تم تسجيل خروجك"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "تم الانتهاء من عملية النقل (مع تحذيرات):"
+msgstr "تم الانتهاء من عملية النقل (مع تحذيرات): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3791,7 +3791,7 @@ msgstr "لا ينتمي السجل إلى قالب المنطقة هذا."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "سجل نموذج المنطقة المستكمل للخطأ:"
+msgstr "سجل نموذج المنطقة المستكمل للخطأ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3801,11 +3801,11 @@ msgstr "ليست لديك صلاحية حذف هذا النوع من السجل�
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "سجل نموذج المنطقة الملغية للخطأ:"
+msgstr "سجل نموذج المنطقة الملغية للخطأ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "التدقيق في النموذج:"
+msgstr "التدقيق في النموذج: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3817,11 +3817,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "مناطق استرجاع الأخطاء باستخدام النموذج:"
+msgstr "مناطق استرجاع الأخطاء باستخدام النموذج: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "عدم الحصول على قائمة المناطق باستخدام النماذج:"
+msgstr "عدم الحصول على قائمة المناطق باستخدام النماذج: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3829,23 +3829,23 @@ msgstr "ليس لديك الإذن لتحرير نموذج المنطقة"
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "المنطقة غير المترابطة من النموذج:"
+msgstr "المنطقة غير المترابطة من النموذج: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "مناطق استرجاع الأخطاء:"
+msgstr "مناطق استرجاع الأخطاء: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "\"الخطأ في التدقيق في وجود الاسم النموذجي\""
+msgstr "\"الخطأ في التدقيق في وجود الاسم النموذجي\" "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "يَنْظرُ فوق النموذجِ بالاسمِ:"
+msgstr "يَنْظرُ فوق النموذجِ بالاسمِ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "\"الخطأ في التدقيق في وجود النموذج\""
+msgstr "\"الخطأ في التدقيق في وجود النموذج\" "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5167,7 +5167,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Invalidقتباس في HINFO"
+msgstr "Invalidقتباس في HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
@@ -5175,7 +5175,7 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "علامات الاقتباس الفاشلة داخل HINFO"
+msgstr "علامات الاقتباس الفاشلة داخل HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5491,7 +5491,7 @@ msgstr "يجب أن يكون نوع CERT رقماً بين 0 و65535 أو اخت
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "القيمة من طراز CERT"
+msgstr "القيمة من طراز CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5536,7 +5536,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "بيانات الشهادة"
+msgstr "بيانات الشهادة "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9041,8 +9041,7 @@ msgstr "يجب أن تحمل سجلات ENUM العلم \"U\" للإشارة إ�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr ""
-"(ج) تتضمن عملية إعادة تصنيف برنامج العمل الوطني نمطاً يمكن أن يكون خطيراً:"
+msgstr "(ج) تتضمن عملية إعادة تصنيف برنامج العمل الوطني نمطاً يمكن أن يكون خطيراً: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

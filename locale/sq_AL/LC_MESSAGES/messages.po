@@ -2333,7 +2333,7 @@ msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Regjistrimi shtoi me sukses, por krijimi i regjistrimeve PTR dështoi:"
+msgstr "Regjistrimi shtoi me sukses, por krijimi i regjistrimeve PTR dështoi: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2483,7 +2483,7 @@ msgstr "Eksporti kryesor i PEM-së kërkon energji 4.7 ose më të ri."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "U ndesh një gabim gjatë eksportimit të kyçit PEM:"
+msgstr "U ndesh një gabim gjatë eksportimit të kyçit PEM: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2697,7 +2697,7 @@ msgstr "Fshirja e kyçit të zonës dështoi."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "U ndesh një gabim gjatë fshirjes së kyçit DNSSEC:"
+msgstr "U ndesh një gabim gjatë fshirjes së kyçit DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2995,7 +2995,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "U ndesh një gabim gjatë importimit të kyçit PEM:"
+msgstr "U ndesh një gabim gjatë importimit të kyçit PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3145,7 +3145,7 @@ msgstr "Jeni nisur"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "(U thuhet atyre): \"Ky është shpëtim për ju!"
+msgstr "(U thuhet atyre): \"Ky është shpëtim për ju! "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3222,7 +3222,7 @@ msgstr "I pamundur shtimi i kyçit të ri DNSSEC."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "U ndesh një gabim gjatë shtimit të kyçit DNSSEC:"
+msgstr "U ndesh një gabim gjatë shtimit të kyçit DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3789,7 +3789,7 @@ msgstr "Vetëm modelët e zonës globale mund të vendosen si të prezgjedhur."
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Gabim prezgjedhur"
+msgstr "Gabim prezgjedhur "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
@@ -3797,15 +3797,15 @@ msgstr "Gabim gjatë heqjes së modelit të parazgjedhur të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Gabim gjatë krijimit të shabllon të zonës:"
+msgstr "Gabim gjatë krijimit të shabllon të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Gabim prezgjedhur"
+msgstr "Gabim prezgjedhur "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Gabim gjatë fshirjes së shabllonit të zonës:"
+msgstr "Gabim gjatë fshirjes së shabllonit të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
@@ -3849,11 +3849,11 @@ msgstr "Nuk keni leje të fshini këtë lloj regjistrimi nga një model zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Gabim gjatë fshirjes së rekordit të shabllonit të zonës:"
+msgstr "Gabim gjatë fshirjes së rekordit të shabllonit të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Gabim j"
+msgstr "Gabim j "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3865,7 +3865,7 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Gabim nga:"
+msgstr "Gabim nga: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
@@ -3877,23 +3877,23 @@ msgstr "Ti nuk ke të drejta për të ndryshuar një model zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Gabim gjatë lidhjes së zonës nga shablloni:"
+msgstr "Gabim gjatë lidhjes së zonës nga shablloni: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Gabim gjatë marrjes së file:"
+msgstr "Gabim gjatë marrjes së file: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Gabim emri:"
+msgstr "Gabim emri: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Gabim sipër emri:"
+msgstr "Gabim sipër emri: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Gabim j"
+msgstr "Gabim j "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5268,15 +5268,15 @@ msgstr "Rekordi HINFO duhet të ketë saktësisht dy fusha: lloji CPU dhe OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Citim i pavlefshëm në HINFO"
+msgstr "Citim i pavlefshëm në HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Fjalë të pavlefshme brenda HINFO"
+msgstr "Fjalë të pavlefshme brenda HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5652,7 +5652,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algoritmi"
+msgstr "Algoritmi "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5662,7 +5662,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Çertifikata është"
+msgstr "Çertifikata është "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9367,7 +9367,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "Rexp NAPTR përmban një model potencialisht të rrezikshëm:"
+msgstr "Rexp NAPTR përmban një model potencialisht të rrezikshëm: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

@@ -2365,8 +2365,7 @@ msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr ""
-"Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία δίσκων PTR απέτυχε:"
+msgstr "Η εγγραφή προστέθηκε με επιτυχία, αλλά η δημιουργία δίσκων PTR απέτυχε: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2484,7 +2483,7 @@ msgstr "Η ταυτοποίηση OIDC δεν είναι ενεργοποιημ�
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Αποτυχία ταυτοποίησης:"
+msgstr "Αποτυχία ταυτοποίησης: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2504,7 +2503,7 @@ msgstr "Δεν έχουν ρυθμιστεί πάροχοι OIDC"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Αποτυχία εκκίνησης της ταυτοποίησης OIDC:"
+msgstr "Αποτυχία εκκίνησης της ταυτοποίησης OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2517,7 +2516,7 @@ msgstr "PEM βασική εξαγωγή απαιτεί PowerDNS 4.7 ή νεότ�
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού PEM:"
+msgstr "Συνέβη ένα σφάλμα κατά την εξαγωγή του κλειδιού PEM: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2734,7 +2733,7 @@ msgstr "Αποτυχία διαγραφής του κλειδιού ζώνης."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "Συνέβη ένα σφάλμα κατά τη διαγραφή του κλειδιού DNSSEC:"
+msgstr "Συνέβη ένα σφάλμα κατά τη διαγραφή του κλειδιού DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2755,7 +2754,7 @@ msgstr "Μη έγκυρος πάροχος SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "Αποτυχία ταυτοποίησης SAML:"
+msgstr "Αποτυχία ταυτοποίησης SAML: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -3033,7 +3032,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού PEM:"
+msgstr "Συνέβη ένα σφάλμα κατά την εισαγωγή του κλειδιού PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3185,7 +3184,7 @@ msgstr "Έχετε αποσυνδεθεί."
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Η αποσύνδεση ολοκληρώθηκε (με προειδοποιήσεις):"
+msgstr "Η αποσύνδεση ολοκληρώθηκε (με προειδοποιήσεις): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3264,7 +3263,7 @@ msgstr "Αποτυχία προσθήκης νέου κλειδιού DNSSEC."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "Συνέβη ένα σφάλμα κατά την προσθήκη του κλειδιού DNSSEC:"
+msgstr "Συνέβη ένα σφάλμα κατά την προσθήκη του κλειδιού DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3842,27 +3841,27 @@ msgstr "Μόνο τα παγκόσμια πρότυπα ζώνης μπορού�
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Σφάλμα ορισμού προκαθορισμένου προτύπου ζώνης:"
+msgstr "Σφάλμα ορισμού προκαθορισμένου προτύπου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προτύπου ζώνης:"
+msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προτύπου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Σφάλμα δημιουργίας προτύπου ζώνης:"
+msgstr "Σφάλμα δημιουργίας προτύπου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Σφάλμα προσθήκης προκαθορισμένης εγγραφής SOA στο πρότυπο:"
+msgstr "Σφάλμα προσθήκης προκαθορισμένης εγγραφής SOA στο πρότυπο: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Σφάλμα διαγραφής προτύπου ζώνης:"
+msgstr "Σφάλμα διαγραφής προτύπου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Σφάλμα διαγραφής προτύπων ζώνης χρήστη:"
+msgstr "Σφάλμα διαγραφής προτύπων ζώνης χρήστη: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3896,7 +3895,7 @@ msgstr "Η εγγραφή δεν ανήκει σε αυτό το πρότυπο 
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Σφάλμα ενημέρωσης αρχείου προτύπου ζώνης:"
+msgstr "Σφάλμα ενημέρωσης αρχείου προτύπου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3908,11 +3907,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Σφάλμα διαγραφής αρχείου ζώνης:"
+msgstr "Σφάλμα διαγραφής αρχείου ζώνης: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Σφάλμα ελέγχου ιδιοκτησίας προτύπου:"
+msgstr "Σφάλμα ελέγχου ιδιοκτησίας προτύπου: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3925,11 +3924,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Σφάλμα ανάκτησης ζωνών χρησιμοποιώντας το πρότυπο:"
+msgstr "Σφάλμα ανάκτησης ζωνών χρησιμοποιώντας το πρότυπο: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Αποτυχία λήψης λίστας ζωνών χρησιμοποιώντας το πρότυπο:"
+msgstr "Αποτυχία λήψης λίστας ζωνών χρησιμοποιώντας το πρότυπο: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3937,23 +3936,23 @@ msgstr "Δεν έχετε την άδεια να επεξεργαστείτε έ
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Σφάλμα αποσύνδεσης ζώνης από το πρότυπο:"
+msgstr "Σφάλμα αποσύνδεσης ζώνης από το πρότυπο: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Σφάλμα ανάκτησης ζωνών:"
+msgstr "Σφάλμα ανάκτησης ζωνών: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Σφάλμα ελέγχου ύπαρξης ονόματος προτύπου:"
+msgstr "Σφάλμα ελέγχου ύπαρξης ονόματος προτύπου: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Σφάλμα αναζήτησης προτύπου με όνομα:"
+msgstr "Σφάλμα αναζήτησης προτύπου με όνομα: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Σφάλμα ελέγχου ύπαρξης προτύπου:"
+msgstr "Σφάλμα ελέγχου ύπαρξης προτύπου: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5358,15 +5357,15 @@ msgstr "HINFO εγγραφή πρέπει να έχει ακριβώς δύο π
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Μη έγκυρη παράθεση στο HINFO"
+msgstr "Μη έγκυρη παράθεση στο HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Μη έγκυρα σήματα εισαγωγικού μέσα στο HINFO"
+msgstr "Μη έγκυρα σήματα εισαγωγικού μέσα στο HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5709,7 +5708,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "Τιμή τύπου CERT"
+msgstr "Τιμή τύπου CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5747,7 +5746,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Αλγόριθμος"
+msgstr "Αλγόριθμος "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5757,7 +5756,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Τα δεδομένα πιστοποιητικού είναι"
+msgstr "Τα δεδομένα πιστοποιητικού είναι "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9535,7 +9534,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp περιέχει δυνητικά επικίνδυνο μοτίβο:"
+msgstr "NAPTR regexp περιέχει δυνητικά επικίνδυνο μοτίβο: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

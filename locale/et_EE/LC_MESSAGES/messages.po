@@ -4907,7 +4907,7 @@ msgstr "HINFO-kirjel peab olema täpselt kaks välja: CPU tüüp ja OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Vigane tsiteerimine HINFO"
+msgstr "Vigane tsiteerimine HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
@@ -4915,7 +4915,7 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Vigased jutumärgid HINFO"
+msgstr "Vigased jutumärgid HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""

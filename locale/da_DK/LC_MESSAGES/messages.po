@@ -2336,7 +2336,7 @@ msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Optag med succes tilføjet, men PTR record oprettelsen mislykkedes:"
+msgstr "Optag med succes tilføjet, men PTR record oprettelsen mislykkedes: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2452,7 +2452,7 @@ msgstr "OIDC godkendelse er ikke aktiveret"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Godkendelse mislykkedes:"
+msgstr "Godkendelse mislykkedes: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2472,7 +2472,7 @@ msgstr "Ingen OIDC-udbydere er konfigureret"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Kunne ikke indlede OIDC-godkendelse:"
+msgstr "Kunne ikke indlede OIDC-godkendelse: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2485,7 +2485,7 @@ msgstr "PEM nøgle eksport kræver PowerDNS 4.7 eller nyere."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Der opstod en fejl under eksport af PEM-nøglen:"
+msgstr "Der opstod en fejl under eksport af PEM-nøglen: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2698,7 +2698,7 @@ msgstr "Kunne ikke slette zone-tasten."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "En fejl opstod under sletning af DNSSEC-nøglen:"
+msgstr "En fejl opstod under sletning af DNSSEC-nøglen: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2719,7 +2719,7 @@ msgstr "Ugyldig samplingudbyder"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "SAML- godkendelse mislykkedes:"
+msgstr "SAML- godkendelse mislykkedes: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2992,7 +2992,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "En fejl opstod under import af PEM-tasten:"
+msgstr "En fejl opstod under import af PEM-tasten: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3141,7 +3141,7 @@ msgstr "Du er logget ud"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Logout afsluttet (med advarsler):"
+msgstr "Logout afsluttet (med advarsler): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3217,7 +3217,7 @@ msgstr "Kunne ikke tilføje ny DNSSEC-nøgle."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "En fejl opstod under tilføjelse af DNSSEC-nøglen:"
+msgstr "En fejl opstod under tilføjelse af DNSSEC-nøglen: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3773,27 +3773,27 @@ msgstr "Kun globale zoneskabeloner kan indstilles som standard."
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Fejl ved indstilling af standardområdeskabelon:"
+msgstr "Fejl ved indstilling af standardområdeskabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Fejl ved clearing af standardområdeskabelon:"
+msgstr "Fejl ved clearing af standardområdeskabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Fejl ved oprettelse af områdeskabelon:"
+msgstr "Fejl ved oprettelse af områdeskabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Fejl ved tilføjelse af standard SOA rekord til skabelon:"
+msgstr "Fejl ved tilføjelse af standard SOA rekord til skabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Fejl ved sletning af områdeskabelon:"
+msgstr "Fejl ved sletning af områdeskabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Fejl ved sletning af skabeloner for brugerzone:"
+msgstr "Fejl ved sletning af skabeloner for brugerzone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3824,7 +3824,7 @@ msgstr "Recorden tilhører ikke denne zoneskabelon."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Fejl ved opdatering af skabelon for zone:"
+msgstr "Fejl ved opdatering af skabelon for zone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3835,11 +3835,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Fejl ved sletning af skabelon for zone:"
+msgstr "Fejl ved sletning af skabelon for zone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Fejl ved kontrol af skabelonejerskab:"
+msgstr "Fejl ved kontrol af skabelonejerskab: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3852,11 +3852,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Fejl ved hentning af zoner ved hjælp af skabelon:"
+msgstr "Fejl ved hentning af zoner ved hjælp af skabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Kunne ikke få en liste over zoner ved hjælp af skabelon:"
+msgstr "Kunne ikke få en liste over zoner ved hjælp af skabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3864,23 +3864,23 @@ msgstr "Du har ikke tilladelse til at redigere en områdeskabelon."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Fejl ved afkobling af zone fra skabelon:"
+msgstr "Fejl ved afkobling af zone fra skabelon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Fejlsøgningszoner:"
+msgstr "Fejlsøgningszoner: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Fejl ved kontrol af skabelonnavnets eksistens:"
+msgstr "Fejl ved kontrol af skabelonnavnets eksistens: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Fejl ved søgning efter skabelon ved navn:"
+msgstr "Fejl ved søgning efter skabelon ved navn: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Fejlkontrol skabelon eksistens:"
+msgstr "Fejlkontrol skabelon eksistens: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5235,15 +5235,15 @@ msgstr "HINFO record skal have præcis to felter: CPU type og OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Ugyldigt citeret i HINFO"
+msgstr "Ugyldigt citeret i HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Ugyldige citationstegn i HINFO"
+msgstr "Ugyldige citationstegn i HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5566,7 +5566,7 @@ msgstr "CERT-typen skal være mellem 0 og 65535 eller være en gyldig mnemonic."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERT-typeværdi"
+msgstr "CERT-typeværdi "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5603,7 +5603,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algithem"
+msgstr "Algithem "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5612,7 +5612,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Certifikatets data er"
+msgstr "Certifikatets data er "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9222,7 +9222,7 @@ msgstr "ENUM records skal have \"U\" -flaget til at angive URI output."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp indeholder potentielt farligt mønster:"
+msgstr "NAPTR regexp indeholder potentielt farligt mønster: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

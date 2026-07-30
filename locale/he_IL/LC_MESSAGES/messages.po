@@ -2244,7 +2244,7 @@ msgstr "תקליט הוסיף בהצלחה. גם תקליט PTR נוצר."
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "שיא נוסף בהצלחה, אך יצירת תקליט PTR נכשלה:"
+msgstr "שיא נוסף בהצלחה, אך יצירת תקליט PTR נכשלה: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2356,7 +2356,7 @@ msgstr "אימות OIDC אינו ניתן"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "האותנטיות נכשלה:"
+msgstr "האותנטיות נכשלה: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2376,7 +2376,7 @@ msgstr "אין ספקי OIDC מוגדרים"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "נכשל ליזום אימות OIDC:"
+msgstr "נכשל ליזום אימות OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2389,7 +2389,7 @@ msgstr "יצוא מפתח PEM דורש PowerDNS 4.7 או חדש יותר."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "טעות אירעה בעת יצוא מפתח PEM:"
+msgstr "טעות אירעה בעת יצוא מפתח PEM: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2594,7 +2594,7 @@ msgstr "נכשל למחוק את מפתח האזור."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "טעות התרחשה תוך מחיקת מפתח ה-DNSSEC:"
+msgstr "טעות התרחשה תוך מחיקת מפתח ה-DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2615,7 +2615,7 @@ msgstr "ספק SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "אימות SAML נכשל:"
+msgstr "אימות SAML נכשל: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2885,7 +2885,7 @@ msgstr "לא הצליח לייבא מפתח PEM. שרת PowerDNS עשויה לד
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "טעות התרחשה בעת ייבוא מפתח PEM:"
+msgstr "טעות התרחשה בעת ייבוא מפתח PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3029,7 +3029,7 @@ msgstr "אתה כבר מחובר"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Logout הושלם (עם אזהרות):"
+msgstr "Logout הושלם (עם אזהרות): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3101,7 +3101,7 @@ msgstr "נכשל להוסיף מפתח DNSSEC חדש."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "טעות התרחשה בעת הוספת מפתח ה-DNSSEC:"
+msgstr "טעות התרחשה בעת הוספת מפתח ה-DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3643,27 +3643,27 @@ msgstr "רק תבניות אזוריות גלובליות יכולות להיו�
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "תבנית אזור ברירת מחדל:"
+msgstr "תבנית אזור ברירת מחדל: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "תיקון תבנית אזור ברירת מחדל:"
+msgstr "תיקון תבנית אזור ברירת מחדל: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "שגיאה יצירת תבנית אזור:"
+msgstr "שגיאה יצירת תבנית אזור: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "שגיאה הוספת רישום SOA לתבנית:"
+msgstr "שגיאה הוספת רישום SOA לתבנית: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "תבנית אזור מחיקה:"
+msgstr "תבנית אזור מחיקה: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "שגיאות קביעת תבניות אזור המשתמש:"
+msgstr "שגיאות קביעת תבניות אזור המשתמש: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3692,7 +3692,7 @@ msgstr "הרשומה אינה שייכת לתבנית אזור זו."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "תמונת מצב:"
+msgstr "תמונת מצב: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3702,11 +3702,11 @@ msgstr "אין לך הרשאה למחוק סוג רשומה זה מתבנית א
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "תמונת מצב:"
+msgstr "תמונת מצב: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "חתימה לבדיקת שגיאות:"
+msgstr "חתימה לבדיקת שגיאות: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3717,11 +3717,11 @@ msgstr "סוגי הרשומות הבאים הושמטו מהתבנית מכיו�
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "אזורי תיקון שגיאות באמצעות תבנית:"
+msgstr "אזורי תיקון שגיאות באמצעות תבנית: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "נכשל לקבל רשימה של אזורים באמצעות תבנית:"
+msgstr "נכשל לקבל רשימה של אזורים באמצעות תבנית: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3729,19 +3729,19 @@ msgstr "אין לך רשות לערוך תבנית אזור."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "שגיאה ללא קישור מתבנית:"
+msgstr "שגיאה ללא קישור מתבנית: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "תיקון שגיאות:"
+msgstr "תיקון שגיאות: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "שם תבנית בדיקת שגיאות:"
+msgstr "שם תבנית בדיקת שגיאות: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "שגיאה מביטה בתבנית בשם:"
+msgstr "שגיאה מביטה בתבנית בשם: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
@@ -5030,15 +5030,15 @@ msgstr "שיא HINFO חייב להיות שני תחומים: סוג CPU ו-OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "ציטוטים לא חוקיים ב HINFO"
+msgstr "ציטוטים לא חוקיים ב HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "סימני הערות בלתי חוקיים בתוך HINFO"
+msgstr "סימני הערות בלתי חוקיים בתוך HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5343,7 +5343,7 @@ msgstr "סוג CERT חייב להיות מספר בין 0 ל 65535 או mnemonic
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "ערך מסוג CERT"
+msgstr "ערך מסוג CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5379,7 +5379,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "אלגוריהם"
+msgstr "אלגוריהם "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5387,7 +5387,7 @@ msgstr "עבור סוגים מבוססי URL CERT, נתוני האישור חי�
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "נתוני האישור הוא"
+msgstr "נתוני האישור הוא "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -8789,7 +8789,7 @@ msgstr "רשומות ENUM צריך להיות דגל \"U\" כדי לציין א�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp מכיל דפוס מסוכן פוטנציאלי:"
+msgstr "NAPTR regexp מכיל דפוס מסוכן פוטנציאלי: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

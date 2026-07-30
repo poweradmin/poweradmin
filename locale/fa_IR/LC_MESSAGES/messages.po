@@ -2294,7 +2294,7 @@ msgstr "رکورد با موفقیت اضافه شده است. یک رکورد P
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "رکورد موفقیت آمیز اضافه شد، اما ایجاد رکورد PTR شکست خورد:"
+msgstr "رکورد موفقیت آمیز اضافه شد، اما ایجاد رکورد PTR شکست خورد: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2411,7 +2411,7 @@ msgstr "احراز هویت OIDC امکان پذیر نیست"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "اعتبار شکست خورده:"
+msgstr "اعتبار شکست خورده: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2431,7 +2431,7 @@ msgstr "ارائه دهندگان OIDC پیکربندی نشده اند"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "شکست در شروع تاییدیه OIDC:"
+msgstr "شکست در شروع تاییدیه OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2444,7 +2444,7 @@ msgstr "صادرات کلید PEM نیاز به PowerDNS 4.7 یا جدیدتر �
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "یک خطا در هنگام صادرات کلید PEM رخ داد:"
+msgstr "یک خطا در هنگام صادرات کلید PEM رخ داد: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2653,7 +2653,7 @@ msgstr "شکست در حذف کلید منطقه"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "خطا در هنگام حذف کلید DNSSEC رخ داد:"
+msgstr "خطا در هنگام حذف کلید DNSSEC رخ داد: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2674,7 +2674,7 @@ msgstr "ارائه دهنده Invalid SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "تاییدیه SAML شکست خورد:"
+msgstr "تاییدیه SAML شکست خورد: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2944,7 +2944,7 @@ msgstr "شکست در واردات کلید PEM سرور PowerDNS ممکن اس�
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "خطایی در هنگام واردات کلید PEM رخ داد:"
+msgstr "خطایی در هنگام واردات کلید PEM رخ داد: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3091,7 +3091,7 @@ msgstr "شما ثبت شده اید"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "ثبت نام (با هشدار):"
+msgstr "ثبت نام (با هشدار): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3166,7 +3166,7 @@ msgstr "شکست برای اضافه کردن کلید DNSSEC جدید"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "یک خطا در هنگام اضافه کردن کلید DNSSEC رخ داد:"
+msgstr "یک خطا در هنگام اضافه کردن کلید DNSSEC رخ داد: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3716,27 +3716,27 @@ msgstr "فقط قالب های منطقه جهانی را می توان به ع�
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "تنظیمات خطای پیش فرض منطقه:"
+msgstr "تنظیمات خطای پیش فرض منطقه: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "خطای پاکسازی پیش فرض منطقه:"
+msgstr "خطای پاکسازی پیش فرض منطقه: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "خطای ایجاد قالب منطقه:"
+msgstr "خطای ایجاد قالب منطقه: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "خطای اضافه کردن رکورد پیش فرض SOA به قالب:"
+msgstr "خطای اضافه کردن رکورد پیش فرض SOA به قالب: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "الگوریتم حذف منطقه:"
+msgstr "الگوریتم حذف منطقه: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "خطای حذف قالب های منطقه کاربر:"
+msgstr "خطای حذف قالب های منطقه کاربر: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3765,7 +3765,7 @@ msgstr "این رکورد به این قالب منطقه تعلق ندارد."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "خطای Update Zone Template Record :"
+msgstr "خطای Update Zone Template Record : "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3775,11 +3775,11 @@ msgstr "شما اجازه حذف این نوع رکورد از قالب منطق
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "خطای حذف رکورد قالب منطقه:"
+msgstr "خطای حذف رکورد قالب منطقه: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "خطای چک کردن مالکیت قالب:"
+msgstr "خطای چک کردن مالکیت قالب: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3792,11 +3792,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "مناطق خطای retrieving با استفاده از قالب:"
+msgstr "مناطق خطای retrieving با استفاده از قالب: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "شکست در لیست مناطق با استفاده از قالب:"
+msgstr "شکست در لیست مناطق با استفاده از قالب: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3804,23 +3804,23 @@ msgstr "شما اجازه ویرایش یک قالب منطقه را نداری�
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "خطای اتصال منطقه از قالب:"
+msgstr "خطای اتصال منطقه از قالب: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "مناطق خطا:"
+msgstr "مناطق خطا: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "خطای چک کردن نام الگو:"
+msgstr "خطای چک کردن نام الگو: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "خطا در نگاه کردن به قالب با نام:"
+msgstr "خطا در نگاه کردن به قالب با نام: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "خطای چک کردن وجود الگو:"
+msgstr "خطای چک کردن وجود الگو: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5151,7 +5151,7 @@ msgstr "رکورد SelFO باید دقیقا دو زمینه داشته باشد
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Invalid به نقل قول در BeatFO"
+msgstr "Invalid به نقل قول در BeatFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
@@ -5159,7 +5159,7 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "نشانه های نقل قول Invalid در tFO"
+msgstr "نشانه های نقل قول Invalid در tFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5478,7 +5478,7 @@ msgstr "نوع CERT باید بین 0 تا 65۳۵ یا یک mnemonic معتبر 
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "ارزش نوع CERT"
+msgstr "ارزش نوع CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5522,7 +5522,7 @@ msgstr "برای انواع CERT مبتنی بر URL، داده های گواه�
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "داده های گواهی"
+msgstr "داده های گواهی "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9043,7 +9043,7 @@ msgstr "رکورد ENUM باید پرچم \"U\" را برای نشان دادن 
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp شامل الگوی بالقوه خطرناک است:"
+msgstr "NAPTR regexp شامل الگوی بالقوه خطرناک است: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

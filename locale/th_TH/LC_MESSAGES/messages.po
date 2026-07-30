@@ -2226,7 +2226,7 @@ msgstr "เพิ่มบันทึกเรียบร้อยแล้ว
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "การเพิ่มบันทึกเรียบร้อยแล้ว แต่การสร้างแผ่นเสียง PTR ล้มเหลว:"
+msgstr "การเพิ่มบันทึกเรียบร้อยแล้ว แต่การสร้างแผ่นเสียง PTR ล้มเหลว: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2335,7 +2335,7 @@ msgstr "ยังไม่มีการเปิดใช้การตรว
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "การตรวจสอบสิทธิ์ล้มเหลว:"
+msgstr "การตรวจสอบสิทธิ์ล้มเหลว: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2355,7 +2355,7 @@ msgstr "ไม่มีการตั้งค่าผู้ให้บริ
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "ล้มเหลวในการเริ่มการตรวจสอบสิทธิ์ OIDC:"
+msgstr "ล้มเหลวในการเริ่มการตรวจสอบสิทธิ์ OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2368,7 +2368,7 @@ msgstr "การส่งออกคีย์ PEM ต้องการ PowerD
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ PEM:"
+msgstr "เกิดข้อผิดพลาดระหว่างทำการส่งออกกุญแจ PEM: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2569,7 +2569,7 @@ msgstr "ล้มเหลวในการลบกุญแจพื้นท
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "เกิดข้อผิดพลาดขึ้นระหว่างทำการลบกุญแจ DNSSEC:"
+msgstr "เกิดข้อผิดพลาดขึ้นระหว่างทำการลบกุญแจ DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2590,7 +2590,7 @@ msgstr "ผู้ให้บริการ SAML ไม่ถูกต้อง
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "การตรวจสอบสิทธิ์ Sample ล้มเหลว:"
+msgstr "การตรวจสอบสิทธิ์ Sample ล้มเหลว: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2856,7 +2856,7 @@ msgstr "ล้มเหลวในการนำเข้ากุญแจ PE
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ PEM:"
+msgstr "เกิดข้อผิดพลาดระหว่างทำการนำเข้ากุญแจ PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -2998,7 +2998,7 @@ msgstr "คุณออกจากระบบแล้ว"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "การออกจากระบบเสร็จสมบูรณ์แล้ว (ด้วยคำเตือน):"
+msgstr "การออกจากระบบเสร็จสมบูรณ์แล้ว (ด้วยคำเตือน): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3068,7 +3068,7 @@ msgstr "ล้มเหลวในการเพิ่มคีย์ DNSSEC �
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "เกิดข้อผิดพลาดขึ้นขณะเพิ่มกุญแจ DNSSEC:"
+msgstr "เกิดข้อผิดพลาดขึ้นขณะเพิ่มกุญแจ DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3609,27 +3609,27 @@ msgstr "ต้นแบบพื้นที่ทั่วไปเท่าน
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "เกิดข้อผิดพลาดระหว่างตั้งค่าเขตเวลาปริยาย:"
+msgstr "เกิดข้อผิดพลาดระหว่างตั้งค่าเขตเวลาปริยาย: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "เกิดข้อผิดพลาดในการล้างพื้นที่ต้นแบบปริยาย:"
+msgstr "เกิดข้อผิดพลาดในการล้างพื้นที่ต้นแบบปริยาย: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "เกิดความผิดพลาดในการสร้างพื้นที่ต้นแบบ:"
+msgstr "เกิดความผิดพลาดในการสร้างพื้นที่ต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "เกิดข้อผิดพลาดในการเพิ่มบันทึก SOA ปริยายไปยังแม่แบบ:"
+msgstr "เกิดข้อผิดพลาดในการเพิ่มบันทึก SOA ปริยายไปยังแม่แบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "เกิดข้อผิดพลาดระหว่างลบพื้นที่ต้นแบบ:"
+msgstr "เกิดข้อผิดพลาดระหว่างลบพื้นที่ต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "เกิดข้อผิดพลาดระหว่างลบแม่แบบเขตเวลาของผู้ใช้:"
+msgstr "เกิดข้อผิดพลาดระหว่างลบแม่แบบเขตเวลาของผู้ใช้: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3658,7 +3658,7 @@ msgstr "เรกคอร์ดนี้ไม่ได้อยู่ในแ
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "เกิดข้อผิดพลาดระหว่างการปรับปรุงพื้นที่ดิสก์ของต้นแบบ:"
+msgstr "เกิดข้อผิดพลาดระหว่างการปรับปรุงพื้นที่ดิสก์ของต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3668,11 +3668,11 @@ msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ด
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "เกิดข้อผิดพลาดระหว่างลบพื้นที่บันทึกของต้นแบบ:"
+msgstr "เกิดข้อผิดพลาดระหว่างลบพื้นที่บันทึกของต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "เกิดข้อผิดพลาดในการตรวจสอบเจ้าของแม่แบบ:"
+msgstr "เกิดข้อผิดพลาดในการตรวจสอบเจ้าของแม่แบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3683,11 +3683,11 @@ msgstr "เรกคอร์ดชนิดต่อไปนี้ไม่ไ
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "เกิดข้อผิดพลาดระหว่างรับค่าเขตเวลาต่าง ๆ โดยใช้ต้นแบบจดหมาย:"
+msgstr "เกิดข้อผิดพลาดระหว่างรับค่าเขตเวลาต่าง ๆ โดยใช้ต้นแบบจดหมาย: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "ล้มเหลวในการรับรายการเขตเวลาต่าง ๆ โดยใช้ต้นแบบ:"
+msgstr "ล้มเหลวในการรับรายการเขตเวลาต่าง ๆ โดยใช้ต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3695,23 +3695,23 @@ msgstr "คุณไม่มีสิทธิ์ทำการแก้ไข
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "เกิดข้อผิดพลาดระหว่างทำการปิดส่วนเชื่อมโยงจากแม่แบบ:"
+msgstr "เกิดข้อผิดพลาดระหว่างทำการปิดส่วนเชื่อมโยงจากแม่แบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "เกิดข้อผิดพลาดในการรับค่าพื้นที่:"
+msgstr "เกิดข้อผิดพลาดในการรับค่าพื้นที่: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "การตรวจสอบชื่อแม่แบบผิดพลาด:"
+msgstr "การตรวจสอบชื่อแม่แบบผิดพลาด: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "เกิดข้อผิดพลาดในการค้นชื่อต้นแบบ:"
+msgstr "เกิดข้อผิดพลาดในการค้นชื่อต้นแบบ: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "เกิดข้อผิดพลาดในการตรวจสอบการมีอยู่ของต้นแบบ:"
+msgstr "เกิดข้อผิดพลาดในการตรวจสอบการมีอยู่ของต้นแบบ: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -4967,15 +4967,15 @@ msgstr "สถิติ HINFO ต้องมีสองสาขา คือ 
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "การอ้างถึงไม่ถูกต้องใน HINFO"
+msgstr "การอ้างถึงไม่ถูกต้องใน HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "ไฮน์โฟ"
+msgstr "ไฮน์โฟ "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "เครื่องหมายอ้างถึงไม่ถูกต้องภายใน HINFO"
+msgstr "เครื่องหมายอ้างถึงไม่ถูกต้องภายใน HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5301,7 +5301,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "อัลกอริทึม"
+msgstr "อัลกอริทึม "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5309,7 +5309,7 @@ msgstr "สำหรับชนิดของ CERT ที่อ้างอิ
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "ข้อมูลใบรับรองคือ"
+msgstr "ข้อมูลใบรับรองคือ "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -8630,7 +8630,7 @@ msgstr "บันทึก ENUM ควรมีแฟล็ก \"U\" เพื�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "การปรับแต่ง NAPTR มีรูปแบบที่อาจเป็นอันตราย:"
+msgstr "การปรับแต่ง NAPTR มีรูปแบบที่อาจเป็นอันตราย: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

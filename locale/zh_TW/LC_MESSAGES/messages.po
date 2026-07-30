@@ -2201,7 +2201,7 @@ msgstr "記錄添加成功。還建立了匹配的 PTR 記錄。"
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "記錄添加成功，但 PTR 記錄建立失敗："
+msgstr "記錄添加成功，但 PTR 記錄建立失敗： "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2310,7 +2310,7 @@ msgstr "OIDC 身份驗證未啟用"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "身份驗證失敗："
+msgstr "身份驗證失敗： "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2330,7 +2330,7 @@ msgstr "未設定 OIDC 提供程式"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "啟動 OIDC 身份驗證失敗："
+msgstr "啟動 OIDC 身份驗證失敗： "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2544,7 +2544,7 @@ msgstr "刪除區域密鑰失敗。"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "刪除 DNSSEC 密鑰時發生錯誤："
+msgstr "刪除 DNSSEC 密鑰時發生錯誤： "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2565,7 +2565,7 @@ msgstr "無效的SAML提供商"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "SAML身份驗證失敗："
+msgstr "SAML身份驗證失敗： "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2976,7 +2976,7 @@ msgstr "您已退出登錄"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "退出登錄完成（有警告）："
+msgstr "退出登錄完成（有警告）： "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3046,7 +3046,7 @@ msgstr "添加新 DNSSEC 密鑰失敗。"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "添加 DNSSEC 密鑰時發生錯誤："
+msgstr "添加 DNSSEC 密鑰時發生錯誤： "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3593,19 +3593,19 @@ msgstr "清除預設區域模板時出錯: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "建立區域模板錯誤："
+msgstr "建立區域模板錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "向模板添加預設 SOA 記錄錯誤："
+msgstr "向模板添加預設 SOA 記錄錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "刪除區域模板錯誤："
+msgstr "刪除區域模板錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "刪除使用者區域模板錯誤："
+msgstr "刪除使用者區域模板錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3634,7 +3634,7 @@ msgstr "該記錄不屬於此區域模板。"
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "更新區域模板記錄錯誤："
+msgstr "更新區域模板記錄錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3644,11 +3644,11 @@ msgstr "您沒有從區域模板刪除此記錄類型的權限。"
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "刪除區域模板記錄錯誤："
+msgstr "刪除區域模板記錄錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "檢查模板所有權錯誤："
+msgstr "檢查模板所有權錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3659,11 +3659,11 @@ msgstr "以下記錄類型未加入模板，因為您沒有新增它們的權限
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "檢索使用模板的區域錯誤："
+msgstr "檢索使用模板的區域錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "獲取使用模板的區域列表失敗："
+msgstr "獲取使用模板的區域列表失敗： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3671,23 +3671,23 @@ msgstr "您沒有編輯區域模板的權限。"
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "從模板取消連結區域錯誤："
+msgstr "從模板取消連結區域錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "檢索區域錯誤："
+msgstr "檢索區域錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "檢查模板名稱存在性錯誤："
+msgstr "檢查模板名稱存在性錯誤： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "按名稱查找模板時出錯："
+msgstr "按名稱查找模板時出錯： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "檢查模板存在性錯誤："
+msgstr "檢查模板存在性錯誤： "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -8407,7 +8407,7 @@ msgstr "ENUM 記錄應具有 \\\"U\\\" 標誌以指示 URI 輸出。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR 正則表達式包含潛在危險模式："
+msgstr "NAPTR 正則表達式包含潛在危險模式： "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

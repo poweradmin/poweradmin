@@ -2327,7 +2327,7 @@ msgstr "Zapis uspešno dodan. Ustvarjen je bil tudi ustrezen zapis PTR."
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Uspešno dodan zapis, vendar ustvarjanje zapisa PTR ni uspelo:"
+msgstr "Uspešno dodan zapis, vendar ustvarjanje zapisa PTR ni uspelo: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2442,7 +2442,7 @@ msgstr "Overjanje OIDC ni omogočeno"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Overovitev ni uspela:"
+msgstr "Overovitev ni uspela: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2462,7 +2462,7 @@ msgstr "Ponudniki OIDC niso nastavljeni"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Ni moč sprožiti overovitve OIDC:"
+msgstr "Ni moč sprožiti overovitve OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2475,7 +2475,7 @@ msgstr "Ključni izvoz PEM zahteva PowerDNS 4.7 ali novejši."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Med izvozom ključa PEM je prišlo do napake:"
+msgstr "Med izvozom ključa PEM je prišlo do napake: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
@@ -2688,7 +2688,7 @@ msgstr "Ni moč zbrisati tipke cone."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "Prišlo je do napake pri brisanju ključa DNSSEC:"
+msgstr "Prišlo je do napake pri brisanju ključa DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2709,7 +2709,7 @@ msgstr "Neveljaven ponudnik SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "Overovitev SAML ni uspela:"
+msgstr "Overovitev SAML ni uspela: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2990,7 +2990,7 @@ msgstr "Uvoz ključa PEM ni uspel. Strežnik PowerDNS je morda zavrnil format."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "Prišlo je do napake pri uvozu ključa PEM:"
+msgstr "Prišlo je do napake pri uvozu ključa PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
@@ -3147,7 +3147,7 @@ msgstr "Odjavili so te."
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Odjava zaključena (z opozorili):"
+msgstr "Odjava zaključena (z opozorili): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3225,7 +3225,7 @@ msgstr "Dodajanje novega ključa DNSSEC ni uspelo."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "Prišlo je do napake pri dodajanju ključa DNSSEC:"
+msgstr "Prišlo je do napake pri dodajanju ključa DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3792,27 +3792,27 @@ msgstr "Kot privzeto se lahko nastavijo samo globalne predloge cone."
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Napaka pri nastavljanju predloge za privzeto območje:"
+msgstr "Napaka pri nastavljanju predloge za privzeto območje: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Napaka pri odpravljanju predloge za privzeto območje:"
+msgstr "Napaka pri odpravljanju predloge za privzeto območje: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Napaka pri ustvarjanju predloge za območje:"
+msgstr "Napaka pri ustvarjanju predloge za območje: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Napaka pri dodajanju privzetega zapisa SOA v predlogo:"
+msgstr "Napaka pri dodajanju privzetega zapisa SOA v predlogo: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Napaka pri brisanju predloge cone:"
+msgstr "Napaka pri brisanju predloge cone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Napaka pri brisanju predlog uporabniškega območja:"
+msgstr "Napaka pri brisanju predlog uporabniškega območja: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3841,7 +3841,7 @@ msgstr "Zapis ne pripada tej predlogi cone."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Napaka pri posodabljanju zapisa predloge območja:"
+msgstr "Napaka pri posodabljanju zapisa predloge območja: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3851,11 +3851,11 @@ msgstr "Nimate dovoljenja za brisanje te vrste zapisa iz predloge cone."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Napaka pri brisanju zapisa predloge cone:"
+msgstr "Napaka pri brisanju zapisa predloge cone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Napaka pri preverjanju lastništva predloge:"
+msgstr "Napaka pri preverjanju lastništva predloge: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3868,11 +3868,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Napaka pri pridobivanju con z uporabo predloge:"
+msgstr "Napaka pri pridobivanju con z uporabo predloge: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Ni moč dobiti seznama območij z uporabo predloge:"
+msgstr "Ni moč dobiti seznama območij z uporabo predloge: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3880,23 +3880,23 @@ msgstr "Nimate dovoljenja za urejanje predloge cone."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Napaka pri razvezovanju območja iz predloge:"
+msgstr "Napaka pri razvezovanju območja iz predloge: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Napaka pri pridobivanju območij:"
+msgstr "Napaka pri pridobivanju območij: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Napaka pri preverjanju obstoja imena predloge:"
+msgstr "Napaka pri preverjanju obstoja imena predloge: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Napaka pri iskanju predloge po imenu:"
+msgstr "Napaka pri iskanju predloge po imenu: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Napaka pri preverjanju obstoja predloge:"
+msgstr "Napaka pri preverjanju obstoja predloge: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -5244,15 +5244,15 @@ msgstr "Zapis HINFO mora imeti točno dve polji: tip CPU in OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Neveljavno citiranje v HINFO"
+msgstr "Neveljavno citiranje v HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Neveljavne navednice znotraj HINFO"
+msgstr "Neveljavne navednice znotraj HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5578,7 +5578,7 @@ msgstr "Tip CERT mora biti številka med 0 in 65535 ali veljavna mnemonika."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "Vrednost tipa CERT"
+msgstr "Vrednost tipa CERT "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5614,7 +5614,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algoritem"
+msgstr "Algoritem "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5624,7 +5624,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Podatki o potrdilu so"
+msgstr "Podatki o potrdilu so "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -9229,7 +9229,7 @@ msgstr "ENUM zapisi morajo imeti oznako \"U\", ki označuje izhod URI."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp vsebuje potencialno nevaren vzorec:"
+msgstr "NAPTR regexp vsebuje potencialno nevaren vzorec: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

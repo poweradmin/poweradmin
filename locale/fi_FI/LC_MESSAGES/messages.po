@@ -2222,7 +2222,7 @@ msgstr "Tietue lisätty onnistuneesti. Myös vastaava PTR-tietue luotiin."
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Tietue lisätty onnistuneesti, mutta PTR-tietueen luonti epäonnistui:"
+msgstr "Tietue lisätty onnistuneesti, mutta PTR-tietueen luonti epäonnistui: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2333,7 +2333,7 @@ msgstr "OIDC-todennus ei ole käytössä"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Todennus epäonnistui:"
+msgstr "Todennus epäonnistui: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2353,7 +2353,7 @@ msgstr "OIDC-tarjoajia ei ole määritetty"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "OIDC-todennuksen käynnistys epäonnistui:"
+msgstr "OIDC-todennuksen käynnistys epäonnistui: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2574,7 +2574,7 @@ msgstr "Alueavaimen poisto epäonnistui."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "DNSSEC-avaimen poistamisessa tapahtui virhe:"
+msgstr "DNSSEC-avaimen poistamisessa tapahtui virhe: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2595,7 +2595,7 @@ msgstr "Virheellinen SAML-tarjoaja"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "SAML-todennus epäonnistui:"
+msgstr "SAML-todennus epäonnistui: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -3012,7 +3012,7 @@ msgstr "Sinut on kirjattu ulos"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Uloskirjautuminen valmis (varoituksin):"
+msgstr "Uloskirjautuminen valmis (varoituksin): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
@@ -3080,7 +3080,7 @@ msgstr "Uuden DNSSEC-avaimen lisäys epäonnistui."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "DNSSEC-avaimen lisäämisessä tapahtui virhe:"
+msgstr "DNSSEC-avaimen lisäämisessä tapahtui virhe: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
@@ -3644,19 +3644,19 @@ msgstr "Virhe poistettaessa oletusvyöhykemallia: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Virhe aluemallin luonnissa:"
+msgstr "Virhe aluemallin luonnissa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Virhe oletus-SOA-tietueen lisäämisessä malliin:"
+msgstr "Virhe oletus-SOA-tietueen lisäämisessä malliin: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Virhe aluemallin poistossa:"
+msgstr "Virhe aluemallin poistossa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Virhe käyttäjän aluemallien poistossa:"
+msgstr "Virhe käyttäjän aluemallien poistossa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3685,7 +3685,7 @@ msgstr "Tietue ei kuulu tähän aluemalliin."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Virhe aluemallin tietueen päivityksessä:"
+msgstr "Virhe aluemallin tietueen päivityksessä: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3695,11 +3695,11 @@ msgstr "Sinulla ei ole oikeutta poistaa tätä tietuetyyppiä aluemallista."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Virhe aluemallin tietueen poistossa:"
+msgstr "Virhe aluemallin tietueen poistossa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Virhe mallin omistuksen tarkistamisessa:"
+msgstr "Virhe mallin omistuksen tarkistamisessa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3711,11 +3711,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Virhe haettaessa mallia käyttäviä alueita:"
+msgstr "Virhe haettaessa mallia käyttäviä alueita: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Mallia käyttävien alueiden listan haku epäonnistui:"
+msgstr "Mallia käyttävien alueiden listan haku epäonnistui: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
@@ -3723,23 +3723,23 @@ msgstr "Sinulla ei ole oikeutta muokata aluemallia."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Virhe alueen linkityksen poistossa mallista:"
+msgstr "Virhe alueen linkityksen poistossa mallista: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
-msgstr "Virhe alueiden haussa:"
+msgstr "Virhe alueiden haussa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Virhe mallin nimen olemassaolon tarkistamisessa:"
+msgstr "Virhe mallin nimen olemassaolon tarkistamisessa: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Virhe mallin haussa nimen mukaan:"
+msgstr "Virhe mallin haussa nimen mukaan: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Virhe mallin olemassaolon tarkistamisessa:"
+msgstr "Virhe mallin olemassaolon tarkistamisessa: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -4895,15 +4895,15 @@ msgstr "HINFO-tietueessa on oltava tasan kaksi kenttää: CPU ja OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:214
 msgid "Invalid quoting in HINFO "
-msgstr "Virheellinen lainaus HINFO:ssa"
+msgstr "Virheellinen lainaus HINFO:ssa "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:243
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:238
 msgid "Invalid quote marks within HINFO "
-msgstr "Virheelliset lainausmerkit HINFO:ssa"
+msgstr "Virheelliset lainausmerkit HINFO:ssa "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:256
 msgid ""
@@ -5177,7 +5177,7 @@ msgstr "CERT-tyypin on oltava numero 0-65535 tai kelvollinen mnemoninen."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERT-tyypin arvo"
+msgstr "CERT-tyypin arvo "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -5209,7 +5209,7 @@ msgstr "CERT-algoritmin on oltava 0-255 tai kelvollinen mnemoninen."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algoritmi"
+msgstr "Algoritmi "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -5217,7 +5217,7 @@ msgstr "URL-pohjaisille CERT-tyypeille tietojen on oltava kelvollinen URL."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Varmenteen tiedot ovat"
+msgstr "Varmenteen tiedot ovat "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -8331,7 +8331,7 @@ msgstr "ENUM-tietueissa on oltava \"U\"-lippu URI-tulosteelle."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp sisältää vaarallisen kuvion:"
+msgstr "NAPTR regexp sisältää vaarallisen kuvion: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
