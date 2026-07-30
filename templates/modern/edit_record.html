@@ -20,7 +20,7 @@
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
+        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate data-busy-submit>
             {{ macros.csrf_field() }}
 
             <div class="table-responsive">
@@ -116,7 +116,7 @@
             </div>
 
             <div class="mt-4">
-                <button class="btn btn-primary btn-sm" type="submit" name="commit">
+                <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                     <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
                 </button>
                 <button class="btn btn-secondary btn-sm" type="reset" name="reset">

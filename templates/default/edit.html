@@ -44,7 +44,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate data-busy-submit>
             {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -144,8 +144,8 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="btn btn-primary btn-sm" type="submit" name="commit" data-testid="add-record-button"
-                            value="{% trans %}Add record{% endtrans %}">
+                        <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
                     </td>
                 </tr>
             </table>
@@ -172,7 +172,7 @@
         </strong>
         <div>
             {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only %}
-            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit">
+            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
             </button>
             <button class="btn btn-secondary btn-sm" type="reset" form="edit-zone-form" name="reset">
@@ -317,7 +317,7 @@
         </div>
         {% endif %}
 
-        <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
+        <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate data-busy-submit>
             {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
 
@@ -549,7 +549,7 @@
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
         {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only %}
-        <button class="btn btn-primary btn-sm" type="submit" name="commit">
+        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
         </button>
         <button class="btn btn-secondary btn-sm" type="reset" name="reset">
@@ -643,7 +643,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate data-busy-submit>
             {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -744,8 +744,8 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="btn btn-primary btn-sm" type="submit" name="commit" data-testid="add-record-button"
-                            value="{% trans %}Add record{% endtrans %}">
+                        <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
                     </td>
                 </tr>
             </table>

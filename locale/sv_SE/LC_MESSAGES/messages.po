@@ -14915,3 +14915,7 @@ msgstr "Full browser width"
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
 msgstr "Use the entire browser width instead of a fixed-width page"
+
+#: templates/modern/edit_record.html:119
+msgid "Saving..."
+msgstr "Sparar..."

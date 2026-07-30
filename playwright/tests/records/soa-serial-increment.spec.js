@@ -51,7 +51,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     await addForm.locator('input[name="name"]').fill(uniqueName);
     await addForm.locator('select[name="type"]').selectOption('A');
     await addForm.locator('input[name="content"]').fill('192.0.2.10');
-    await addForm.locator('input[name="commit"]').click();
+    await addForm.locator('[name="commit"]').click();
 
     await page.waitForLoadState('domcontentloaded');
 
