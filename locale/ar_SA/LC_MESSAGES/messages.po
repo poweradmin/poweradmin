@@ -472,7 +472,7 @@ msgstr "إعداد التقارير إذا فشلت أي آلية للتوثيق
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
-msgstr "إعداد التقارير إذا فشلت عملية التحقق"
+msgstr "إنشاء تقارير إذا فشل فحص DKIM"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:128
 msgid "Generate reports if SPF check fails"
@@ -491,7 +491,7 @@ msgstr "ترتيبات الإلغاء"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:136
 msgid "Advanced settings for SPF and DKIM alignment modes"
-msgstr "الأطر المتقدمة لطرق المواءمة بين أرقام التخطيط الارشادية والآلية"
+msgstr "إعدادات متقدمة لأوضاع المواءمة في SPF وDKIM"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
@@ -519,7 +519,7 @@ msgstr "وضع مواءمة SPF"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "SPF domain can be subdomain of From: domain"
-msgstr "يمكن أن يكون نطاق الصندوق دون المستوى من:"
+msgstr "يمكن أن يكون نطاق SPF نطاقاً فرعياً من نطاق From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "SPF domain must exactly match From: domain"
@@ -601,7 +601,7 @@ msgstr "سجلات A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
-msgstr "الإذن بسجلات (أ) و(أ)"
+msgstr "تخويل سجلات A وAAAA الخاصة بالنطاق"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:81
 msgid "IP Addresses"
@@ -653,15 +653,15 @@ msgstr "الآليات الإضافية"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "عدد إضافي من الرهائن"
+msgstr "مضيفات A/AAAA إضافية"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "يُأذن بسجلات مُضيفة محددة (لكل خط)"
+msgstr "تخويل سجلات A/AAAA لأسماء مضيفات محددة (واحد في كل سطر)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
-msgstr "عدد الرهائن الإضافيين"
+msgstr "مضيفات MX إضافية"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:133
 msgid "Authorize MX records from other domains (one per line)"
@@ -854,7 +854,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
-msgstr "بطاقة غير صالحة لا بدّ أنّها مسألة، أو مُصدّقة، أو مُعرّفة"
+msgstr "وسم CAA غير صالح. يجب أن يكون issue أو issuewild أو iodef"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:210
 msgid "CA provider is required"
@@ -2197,7 +2197,7 @@ msgstr "ليس لديك الأذن لرؤية هذه المنطقة"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "ليس لديك إذن لإدارة لجنة الأمن القومي لهذه المنطقة"
+msgstr "ليس لديك إذن لإدارة DNSSEC لهذه المنطقة."
 
 #: lib/Application/Controller/EditController.php:335
 msgid "DNSSEC is not enabled on the server."
@@ -2232,7 +2232,7 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
-msgstr "المنطقة غير موقّعة حالياً مع إدارة الأمن الوطني."
+msgstr "المنطقة غير موقّعة حالياً باستخدام DNSSEC."
 
 #: lib/Application/Controller/DnssecController.php:119
 msgid "Zone has been unsigned successfully."
@@ -2305,7 +2305,7 @@ msgstr "تمت إضافة السجل بنجاح. وأُنشئ أيضًا سجل 
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "وأضيفت السجلات بنجاح، ولكن إنتاج سجلات سجل المعاملات المشبوهة فشل: "
+msgstr "تمت إضافة السجل بنجاح، لكن فشل إنشاء سجل PTR: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2511,7 +2511,7 @@ msgstr ""
 
 #: lib/Application/Controller/AddZoneMasterController.php:270
 msgid "Zone has been created and signed with DNSSEC successfully."
-msgstr "وقد أنشئت المنطقة ووقعت بنجاح مع إدارة الأمن الوطني."
+msgstr "تم إنشاء المنطقة وتوقيعها باستخدام DNSSEC بنجاح."
 
 #: lib/Application/Controller/AddZoneMasterController.php:274
 msgid ""
@@ -2525,7 +2525,7 @@ msgstr "وقد أضيفت المنطقة بنجاح."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:81
 msgid "Batch PTR record creation is not enabled."
-msgstr "إنشاء سجل المقبض غير مُمكن."
+msgstr "إنشاء سجلات PTR بالدفعات غير مُفعّل."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:88
 msgid "You do not have permission to edit DNS records."
@@ -2534,7 +2534,7 @@ msgstr "ليس لديك إذن لتحرير سجلات الحمض النووي"
 #: lib/Application/Controller/BatchPtrRecordController.php:93
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
-msgstr "سجلات بطاقات المعايدة"
+msgstr "سجلات PTR بالدفعات"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -2659,7 +2659,7 @@ msgstr "فشل في حذف مفتاح المنطقة"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "وحدث خطأ أثناء حذف مفتاح إدارة الأمن الوطني: "
+msgstr "حدث خطأ أثناء حذف مفتاح DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
@@ -2826,7 +2826,7 @@ msgstr "فشل حذف السجل اليتيم"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:159
 msgid "Duplicate SOA records fixed successfully"
-msgstr "ازدواجية سجلات الوكالة تم إصلاحها بنجاح"
+msgstr "تم إصلاح سجلات SOA المكررة بنجاح"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:159
 msgid "Failed to fix duplicate SOA records"
@@ -2834,7 +2834,7 @@ msgstr "فشل إصلاح سجلات SOA المكررة"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Default SOA record created successfully"
-msgstr "سجل البرمجيات الجاهزة تم بنجاح"
+msgstr "تم إنشاء سجل SOA الافتراضي بنجاح"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Failed to create default SOA record"
@@ -3857,7 +3857,7 @@ msgstr "ليست لديك صلاحية إضافة سجل LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
-msgstr "ليس لديك الأذن لإضافة رقم قياسي"
+msgstr "ليس لديك إذن لإضافة سجل SOA."
 
 #: lib/Domain/Model/Permission.php:169
 msgid "You do not have the permission to edit this NS record."
@@ -3869,7 +3869,7 @@ msgstr "ليست لديك صلاحية تحرير سجل LUA هذا."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
-msgstr "ليس لديك الإذن لتحرير هذا الرقم القياسي"
+msgstr "ليس لديك إذن لتحرير سجل SOA هذا."
 
 #: lib/Domain/Model/Permission.php:174
 msgid "You do not have the permission to delete NS records."
@@ -3881,7 +3881,7 @@ msgstr "ليست لديك صلاحية حذف سجلات LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
-msgstr "ليس لديك الأذن لحذف سجلات الوكالة"
+msgstr "ليس لديك إذن لحذف سجلات SOA."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
@@ -3921,12 +3921,12 @@ msgstr "%d منطقة تحتوي على سجلات SOA مكرَّرة"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
-msgstr "جميع المناطق لديها سجلات"
+msgstr "جميع المناطق لديها سجلات SOA"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
-msgstr "%d المناطق التي عثر عليها بدون سجلات"
+msgstr "%d منطقة تم العثور عليها بدون سجلات SOA"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -4005,7 +4005,7 @@ msgstr "بالنسبة لنوع البوابة 3، يجب أن تكون البو
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
-msgstr "المفتاح العام للشركة مطلوب عندما لا تكون الخوارزمية صفر"
+msgstr "المفتاح العام لـ IPSECKEY مطلوب عندما لا تكون الخوارزمية 0."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:232
 msgid "IPSECKEY public key must be properly Base64 encoded."
@@ -4247,7 +4247,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
-msgstr "ويجب أن تكون بيانات شهادة ت."
+msgstr "يجب أن تكون بيانات شهادة TLSA سلسلة سداسية عشرية."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
@@ -4912,7 +4912,7 @@ msgstr "ميدان المحتوى لا يمكن أن يكون فارغاً"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
-msgstr "لا يمكن أن يكون المحتوى الرقمي للجنة الأمن القومي فارغاً"
+msgstr "لا يمكن أن يكون محتوى سجل NSEC فارغاً."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:102
 msgid "NSEC record contains invalid characters."
@@ -5056,7 +5056,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "لا يمكن أن يكون محتوى التسجيلات فارغاً"
+msgstr "لا يمكن أن يكون محتوى سجل OPENPGPKEY فارغاً."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
@@ -5064,9 +5064,7 @@ msgstr "أحرف غير صالحة في محتوى سجل OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr ""
-"ويجب أن تتضمن سجلات مكتب تخطيط البرامج والميزانية والحسابات بيانات صحيحة "
-"مشفوعة بقاعدة 64."
+msgstr "يجب أن تحتوي سجلات OPENPGPKEY على بيانات صالحة مشفرة بترميز base64."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
@@ -5430,7 +5428,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "الخطة صفر محجوزة وليس للاستخدام الموحد."
+msgstr "مخطط ZONEMD رقم 0 محجوز وليس للاستخدام القياسي."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -5442,7 +5440,7 @@ msgstr "خوارزمية ZONEMD hash 0 محجوزة وليس للاستخدام 
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "لا بدّ أنّ هضم (زونيم دي) خيط سداسي."
+msgstr "يجب أن يكون ملخص ZONEMD سلسلة سداسية عشرية."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
@@ -5681,9 +5679,7 @@ msgstr "اسم مضيف بريد غير رسمي"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:112
 msgid "MX records should not point to CNAME records (RFC 2181)."
-msgstr ""
-"وينبغي ألا تشير سجلات بروميد الميثيل إلى سجلات النظم الإيكولوجية البحرية "
-"الصغيرة والمتوسطة الحجم (RFC 2181)."
+msgstr "يجب ألا تشير سجلات MX إلى سجلات CNAME (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
@@ -6272,7 +6268,7 @@ msgstr "هذا ليس سجل CNAME صالحًا. هل أسندت سجل MX أو 
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
-msgstr "ولا يسمح بسجلات النمط الخام."
+msgstr "سجلات CNAME الفارغة غير مسموح بها."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
@@ -6296,7 +6292,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
-msgstr "شخصيات غير مستقرة في المحتوى الرقمي لـ دي."
+msgstr "أحرف غير صالحة في محتوى سجل DHCID."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
@@ -6344,7 +6340,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
-msgstr "ويجب أن يتضمن سجل إدارة التنمية البشرية بيانات صحيحة مشفوعة بقاعدة 64."
+msgstr "يجب أن يحتوي سجل DHCID على بيانات صالحة مشفرة بترميز base64."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:181
 msgid ""
@@ -6420,7 +6416,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "لا يمكن أن يكون المحتوى الرقمي للشبكة فارغاً"
+msgstr "لا يمكن أن يكون محتوى سجل RRSIG فارغاً."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
@@ -7403,12 +7399,11 @@ msgstr "ويجب أن تسبق التصدعات جميع الاقتباسات ()
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:320
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "وتتجاوز القيمة العقارية للشركة الحد الأقصى لـ 512 شخصية."
+msgstr "تتجاوز قيمة خاصية CAA الحد الأقصى للطول وهو 512 حرفاً."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:326
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr ""
-"ولا يمكن أن تتضمن القيمة العقارية لوكالة الاستخبارات المركزية (0) شخصيات."
+msgstr "لا يمكن أن تحتوي قيمة خاصية CAA على أحرف NUL (0)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
@@ -7715,11 +7710,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
-msgstr "لا يمكن أن يكون المحتوى الرقمي لـ (سيميما) فارغاً"
+msgstr "لا يمكن أن يكون محتوى سجل SMIMEA فارغاً."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:189
 msgid "SMIMEA record contains invalid characters."
-msgstr "سجل (سميما) يحتوي على شخصيات غير صحيحة"
+msgstr "يحتوي سجل SMIMEA على أحرف غير صالحة."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -8747,7 +8742,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "لا يمكن أن يكون الهدف الفارغ"
+msgstr "لا يمكن أن يكون هدف SRV فارغاً."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -8756,7 +8751,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "هدف \"إنفلايد إس آر\""
+msgstr "هدف SRV غير صالح."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
@@ -8954,7 +8949,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
-msgstr "ويجب أن يكون نظام سجل برنامج العمل الوطني رقماً يتراوح بين 0 و65535."
+msgstr "يجب أن يكون ترتيب سجل NAPTR رقماً بين 0 و65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
@@ -8962,8 +8957,7 @@ msgstr "يجب أن تكون قيمة التفضيل في سجل NAPTR رقمً�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
-msgstr ""
-"ويجب أن تكون أعلام سجل برنامج العمل الوطني للإبلاغ المالي سلسلة مقتبسة."
+msgstr "يجب أن تكون أعلام سجل NAPTR سلسلة بين علامتي اقتباس."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
@@ -8971,13 +8965,11 @@ msgstr "يجب ألا تحتوي أعلام سجل NAPTR إلا على A أو P 
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr ""
-"ويجب أن تكون خدمة السجلات الخاصة ببرنامج العمل الوطني للإبلاغ عن المعاملات "
-"المالية سلسلة مقتبسة."
+msgstr "يجب أن تكون خدمة سجل NAPTR سلسلة بين علامتي اقتباس."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "ويجب أن يكون نظام تسجيل سجلات برنامج العمل الوطني هو الخيط المستعار."
+msgstr "يجب أن يكون التعبير النمطي لسجل NAPTR سلسلة بين علامتي اقتباس."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -9009,7 +9001,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "ويجب أن تبدأ عملية إعادة النظر في برنامج العمل الوطني بطابع محدد."
+msgstr "يجب أن يبدأ التعبير النمطي لـ NAPTR بحرف فاصل."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
@@ -9041,11 +9033,11 @@ msgstr "يجب أن تحمل سجلات ENUM العلم \"U\" للإشارة إ�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "(ج) تتضمن عملية إعادة تصنيف برنامج العمل الوطني نمطاً يمكن أن يكون خطيراً: "
+msgstr "يحتوي التعبير النمطي لـ NAPTR على نمط قد يكون خطيراً: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "إعادة تنظيم برنامج العمل الوطني طويل جداً. طوله الأقصى هو 1000 شخص"
+msgstr "التعبير النمطي لـ NAPTR طويل جداً. الحد الأقصى للطول هو 1000 حرف."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -9141,7 +9133,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "ويجب أن يكون المفتاح العام للدينسكي بيانات صحيحة مشفوعة بقاعدة 64."
+msgstr "يجب أن يكون المفتاح العام لـ DNSKEY بيانات صالحة مشفرة بترميز base64."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -9215,7 +9207,7 @@ msgstr "لا يوجد سجل SOA موجود أو نشط في المنطقة. و�
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr "أضف سجلاً خاصاً للمنطقة قبل محاولة توقيعه"
+msgstr "أضف سجل SOA إلى المنطقة قبل محاولة توقيعها."
 
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
@@ -9225,7 +9217,7 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
-msgstr "أزيلي سجلاّت (سو أي) المكررة، أبقي واحدة فقط."
+msgstr "أزل سجلات SOA المكررة، مع الإبقاء على واحد فقط."
 
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
@@ -9234,7 +9226,7 @@ msgstr "سجل SOA ليس في القمة. تم العثور عليه في \"%s\
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
-msgstr "حرّك سجل (سو أي) إلى المنطقة."
+msgstr "انقل سجل SOA إلى قمة المنطقة."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
@@ -9262,9 +9254,7 @@ msgstr "أضف سجلات NS في قمة المنطقة لخوادم الأسم�
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
-msgstr ""
-"ولا يمكن للتوقيع على لجنة الأمن والتعاون في أوروبا أن يستمر بسبب الأخطاء "
-"التالية:"
+msgstr "لا يمكن متابعة توقيع DNSSEC بسبب الأخطاء التالية:"
 
 #: lib/Domain/Service/ZoneValidationService.php:253
 msgid "Additionally, the following warnings were found:"
@@ -9319,7 +9309,7 @@ msgstr "تم تخطي تحديث PTR: نوع السجل ليس A أو AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "تم إزالة سجل المقطع"
+msgstr "تمت إزالة سجل PTR القديم."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9353,7 +9343,7 @@ msgstr "عدم إنشاء منطقة: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:314
 msgid "Failed to create SOA record for zone."
-msgstr "لم يخلق سجلاً للمنطقة"
+msgstr "فشل إنشاء سجل SOA للمنطقة."
 
 #: lib/Domain/Service/Dns/DomainManager.php:369
 #, php-format
@@ -9928,7 +9918,7 @@ msgstr "الرقم التسلسلي الموقَّع"
 
 #: templates/modern/dnssec.html:53 templates/modern/dnssec.html:55
 msgid "DNSSEC keys for zone"
-msgstr "مفاتيح المنطقة"
+msgstr "مفاتيح DNSSEC للمنطقة"
 
 #: templates/default/dnssec.html:61 templates/modern/dnssec.html:61
 msgid "Add new key"
@@ -11098,7 +11088,7 @@ msgstr "سجل SOA معطّل، لن يتم تقديم المنطقة"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "Zone has no SOA record"
-msgstr "المنطقة ليس لديها سجل"
+msgstr "المنطقة ليس لديها سجل SOA"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
@@ -11181,7 +11171,7 @@ msgstr "لا يوصى بقطع صغيرة"
 
 #: templates/modern/dnssec_add_key.html:172
 msgid "About DNSSEC Key Types"
-msgstr "عن الأنواع الرئيسية للدائرة"
+msgstr "حول أنواع مفاتيح DNSSEC"
 
 #: templates/modern/dnssec_add_key.html:175
 msgid "Key Types Explained"
@@ -11676,7 +11666,7 @@ msgstr "إنشاء سجلات A/AAAA أمامية في المنطقة الرئي
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr ":: إنشاء سجلات ثابتة فقط للسجلات الموجودة في المنطقة الأمامية"
+msgstr "إنشاء سجلات PTR فقط للسجلات A/AAAA الموجودة في المنطقة الأمامية"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
@@ -11708,9 +11698,7 @@ msgstr "جميع شركاء التنفيذ"
 
 #: templates/modern/batch_ptr_record.html:126
 msgid "Creates PTR records for every IP in the network range"
-msgstr ""
-"إنشاء سجلات لسجلات الملوثات العضوية الثابتة لكل مجموعة من شركاء التنفيذ في "
-"نطاق الشبكة"
+msgstr "ينشئ سجلات PTR لكل عنوان IP في نطاق الشبكة"
 
 #: templates/modern/batch_ptr_record.html:127
 msgid "Matching only"
@@ -12041,7 +12029,7 @@ msgstr "يرجى تقديم جميع المعلومات المطلوبة."
 
 #: templates/modern/edit.html:665 templates/modern/add_record.html:58
 msgid "Add PTR"
-msgstr "مطروحة"
+msgstr "إضافة PTR"
 
 #: templates/modern/edit.html:668 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
@@ -12410,7 +12398,7 @@ msgstr "سجل يتامى"
 
 #: templates/modern/database_consistency.html:205
 msgid "Zones with Duplicate SOA Records"
-msgstr "المناطق ذات السجلات المزدوجة"
+msgstr "المناطق ذات سجلات SOA المكررة"
 
 #: templates/modern/database_consistency.html:218
 msgid "SOA Count"
@@ -12418,11 +12406,11 @@ msgstr "عدد SOA"
 
 #: templates/modern/database_consistency.html:234
 msgid "Keep first SOA, delete duplicates"
-msgstr "إحتفظي بـ (سو أي) أولاً، إحذفي"
+msgstr "احتفظ بأول سجل SOA واحذف المكرر"
 
 #: templates/modern/database_consistency.html:254
 msgid "Zones Without SOA Records"
-msgstr "المناطق التي لا توجد فيها سجلات"
+msgstr "المناطق بدون سجلات SOA"
 
 #: templates/modern/database_consistency.html:283
 msgid "Create default SOA record"
@@ -12843,11 +12831,11 @@ msgstr ""
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "هل تريد أن تستمر دون إضافة رقم قياسي؟"
+msgstr "هل تريد المتابعة دون إضافة سجل SOA؟"
 
 #: templates/modern/edit_zone_templ.html:326
 msgid "Continue Without SOA"
-msgstr "استمر بدون سودا"
+msgstr "المتابعة بدون SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
@@ -12990,7 +12978,7 @@ msgstr ""
 
 #: templates/modern/delete_records.html:60
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "تحذف أيضا السجلات المناظرة لسجلات المعاملات المشبوهة (إذا وجدت)"
+msgstr "احذف أيضاً سجلات PTR المقابلة (إن وجدت)"
 
 #: templates/modern/delete_records.html:65
 msgid "Yes, delete these records"
@@ -15023,7 +15011,7 @@ msgstr "قدم DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "مضيف فاشل لسجلات (سو أي)"
+msgstr "مدير المضيف الافتراضي لسجلات SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
