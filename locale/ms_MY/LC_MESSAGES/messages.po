@@ -28,27 +28,27 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
 msgid "DNS wizards are not enabled."
-msgstr "wizard-wizard DNS tidak diaktifkan."
+msgstr "Wizard DNS tidak diaktifkan."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:46
 msgid "Invalid zone ID."
-msgstr "ID zona tidak sah."
+msgstr "ID zon tidak sah."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:94
 msgid "Zone not found."
-msgstr "Zona tidak dijumpai."
+msgstr "Zon tidak dijumpai."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
 msgid "You do not have permission to add records to this zone."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod ke zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod ke zon ini."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:119
 msgid "Invalid wizard type."
-msgstr "Jenis penyihir tidak sah."
+msgstr "Jenis wizard tidak sah."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:205
 msgid "Validation failed:"
-msgstr "Validasi pengesahan gagal:"
+msgstr "Pengesahan gagal:"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:229
 msgid "Failed to generate record:"
@@ -58,17 +58,15 @@ msgstr "Gagal menjana rekod:"
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
-msgstr ""
-"Rekod ini tidak sah dan tidak dapat ditambahkan. Tidak ada atau memuat data "
-"yang tidak sah."
+msgstr "Rekod ini tidak sah dan tidak dapat ditambah. Ia mungkin sudah wujud atau mengandungi data yang tidak sah."
 
 #: lib/Application/Controller/AddRecordController.php:280
 msgid "The record was successfully added."
-msgstr "Rekod itu berhasil ditambahkan."
+msgstr "Rekod berjaya ditambah."
 
 #: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:408
 msgid "Record created successfully"
-msgstr "Rekod yang tercipta dengan sukses"
+msgstr "Rekod berjaya dicipta"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
@@ -76,36 +74,31 @@ msgstr "TLSA Record"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
-msgstr "Otentikasi sijil/kekunci TLS (DANE)"
+msgstr "Pengesahan sijil/kunci TLS (DANE)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:57
 msgid "DNSSEC Requirement"
-msgstr "Persyaratan DNSSEC"
+msgstr "Keperluan DNSSEC"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:59
 msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr ""
-"Rekod TLSA mengharuskan DNSSEC difungsikan untuk zona ini. Rekod TLSA tanpa "
-"DNSSEC tidak akan memberikan keuntungan keselamatan dan mungkin diabaikan "
-"oleh klien."
+msgstr "Rekod TLSA memerlukan DNSSEC diaktifkan untuk zon ini. Rekod TLSA tanpa DNSSEC tidak akan memberikan manfaat keselamatan dan mungkin diabaikan oleh klien."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
-msgstr "Konfigurasi Layanan"
+msgstr "Konfigurasi Perkhidmatan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:148
 msgid "Port Number"
-msgstr "Nombor Port AirName"
+msgstr "Nombor Port"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:72
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
-msgstr ""
-"Nombor port TCP/UDP (empat43 untuk HTTPS, 25 untuk SMTP, 853 untuk DNS-over-"
-"TLS, dll.)"
+msgstr "Nombor port TCP/UDP (443 untuk HTTPS, 25 untuk SMTP, 853 untuk DNS-over-TLS, dll.)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:113
 msgid "Protocol"
@@ -113,25 +106,24 @@ msgstr "Protokol"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:81
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
-msgstr ""
-"Protokol Pengendalian Transmission Follower - paling umum untuk HTTPS/TLS"
+msgstr "Protokol Kawalan Penghantaran - paling biasa untuk HTTPS/TLS"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:82
 msgid "User Datagram Protocol - for DTLS connections"
-msgstr "Protokol Datagram Pengguna- untuk sambungan DTLS"
+msgstr "Protokol Datagram Pengguna - untuk sambungan DTLS"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
-msgstr "Protokol Transmission Kendali Stream"
+msgstr "Protokol Penghantaran Kawalan Strim"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:85
 msgid "Transport protocol for the TLS connection"
-msgstr "Protokol transportasi untuk sambungan TLS"
+msgstr "Protokol pengangkutan untuk sambungan TLS"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
 #: install/templates/step4.html.twig:140
 msgid "Hostname"
-msgstr "Name"
+msgstr "Nama hos"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:93
 msgid ""
@@ -143,15 +135,15 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
-msgstr "Penggunaan Sijil Gagal"
+msgstr "Penggunaan Sijil"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:102
 msgid "Usage"
-msgstr "Penggunaan Teropong"
+msgstr "Penggunaan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "Kekangan CA"
+msgstr "0 - Kekangan CA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -159,35 +151,33 @@ msgstr "Sijil harus dirantai ke CA (PKIX-TA) yang dinyatakan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "1 - Service Certificate"
-msgstr "1 - Sijil Layanan"
+msgstr "1 - Sijil Perkhidmatan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "Certificate must match exactly (PKIX-EE)"
-msgstr "Sijil property harus sepadan persis (PKIX-EE)"
+msgstr "Sijil mesti sepadan dengan tepat (PKIX-EE)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:109
 msgid "2 - Trust Anchor Assertion"
-msgstr "Asersi Penambat Kepercayaan 2"
+msgstr "2 - Penegasan Sauh Kepercayaan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:109
 msgid "Certificate must chain to specified anchor (DANE-TA)"
-msgstr "Sijil takrif harus dirantai ke sauh yang dinyatakan (DANE-TA)"
+msgstr "Sijil mesti dirantai ke sauh yang dinyatakan (DANE-TA)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:110
 msgid "3 - Domain-Issued Certificate"
-msgstr "3 - Sijil Terbendung Domain"
+msgstr "3 - Sijil Terbitan Domain"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:110
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
-msgstr "Sijil harus sepadan persis, memotong PKI (DANE-EE)"
+msgstr "Sijil mesti sepadan dengan tepat, memintas PKI (DANE-EE)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:112
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr ""
-"Bagaimana sijil harus disahkan. Type 3 paling umum untuk self-signed atau "
-"custom CA."
+msgstr "Bagaimana sijil perlu disahkan. Jenis 3 paling biasa untuk CA tandatangan sendiri atau CA tersuai."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -195,7 +185,7 @@ msgstr "Pemilih"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "0 - Full Certificate"
-msgstr "- Sijil Penuh"
+msgstr "0 - Sijil Penuh"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "Use the entire certificate"
@@ -203,23 +193,21 @@ msgstr "Guna seluruh sijil"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "1 - Public Key"
-msgstr "1 - Kunci Publik"
+msgstr "1 - Kunci Awam"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "Use only the Subject Public Key Info (SPKI)"
-msgstr "Hanya menggunakan Info Kunci Publik Subjek (SPKI)"
+msgstr "Gunakan hanya Info Kunci Awam Subjek (SPKI)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:129
 msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
-msgstr ""
-"Apa bagian dari sijil yang sepadan. Type 1 (kunci publik) bertahan dari "
-"pembaruan sijil."
+msgstr "Bahagian sijil yang perlu dipadankan. Jenis 1 (kunci awam) kekal selepas pembaharuan sijil."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:138
 msgid "Matching Type"
-msgstr "Jenis Pemadanan Padan"
+msgstr "Jenis Pemadanan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "0 - Exact Match"
@@ -235,7 +223,7 @@ msgstr "1 - SHA-256 Hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
-msgstr "SHA-256 hash dari sijil/kunci"
+msgstr "Hash SHA-256 bagi sijil/kunci"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
@@ -243,45 +231,40 @@ msgstr "2 - SHA-512 Hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
-msgstr "SHA-512 hash dari kunci/sijil (lebih aman tapi lebih lama)"
+msgstr "Hash SHA-512 bagi sijil/kunci (lebih selamat tetapi lebih panjang)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:147
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
-msgstr ""
-"Cara menyandikan data sijil. SHA-256 (jenis 1) memberikan keseimbangan "
-"keselamatan dan panjang yang baik."
+msgstr "Cara mengekod data sijil. SHA-256 (jenis 1) memberikan keseimbangan yang baik antara keselamatan dan panjang."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:152
 msgid "Certificate Data"
-msgstr "Data Sijil Gagal"
+msgstr "Data Sijil"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:156
 msgid "Certificate Association Data"
-msgstr "Data Asosiasi Sijil Gagal"
+msgstr "Data Perkaitan Sijil"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:161
 msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr ""
-"Hash heksadesimal atau data sijil penuh (bergantung pada jenis yang "
-"sepadan). Untuk SHA-256: gunakan \"openssl x509 -in cert.pem -pubkey -noout "
-"voossl pkey -pubin -outform DER KUHPerd opensl dgst -sha256\""
+msgstr "Hash heksadesimal atau data sijil penuh (bergantung pada jenis pemadanan). Untuk SHA-256: gunakan \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
-msgstr "Setting Rekaan Perjodohan"
+msgstr "Tetapan Rekod"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:188
 msgid "TTL (seconds)"
-msgstr "TTLL (detik)"
+msgstr "TTL (saat)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr "Waktu untuk hidup - berapa lama penyelesaian DNS harus cache rekod ini"
+msgstr "Masa untuk hidup - berapa lama penyelesai DNS perlu menyimpan rekod ini dalam cache"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
@@ -297,54 +280,46 @@ msgstr "Pemilih harus 0 atau 1"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:243
 msgid "Matching type must be 0, 1, or 2"
-msgstr "Jenis yang sepadan harus 0, 1, atau 2"
+msgstr "Jenis pemadanan mesti 0, 1, atau 2"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:248
 msgid "Certificate association data is required"
-msgstr "Data asosiasi sijil property diperlukan"
+msgstr "Data perkaitan sijil diperlukan"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:253
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
-msgstr "Data sijil deksadesimal (0-9, a-f)"
+msgstr "Data sijil mesti heksadesimal (0-9, a-f)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:259
 #, php-format
 msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
-msgstr ""
-"SHA-256 hash seharusnya 64 karakter heksadesimal, mendapat %d. Verifikasi "
-"yang hash benar."
+msgstr "Hash SHA-256 sepatutnya 64 aksara heksadesimal, tetapi mendapat %d. Sahkan bahawa hash itu betul."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
 #, php-format
 msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
-msgstr ""
-"SHA-512 hash seharusnya 128 karakter heksadesimal, mendapat %d. Verifikasi "
-"yang hash benar."
+msgstr "Hash SHA-512 sepatutnya 128 aksara heksadesimal, tetapi mendapat %d. Sahkan bahawa hash itu betul."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
-msgstr ""
-"Data sijil penuh tampaknya terlalu pendek. Pastikan Anda menyediakan sijil "
-"lengkap."
+msgstr "Data sijil penuh nampaknya terlalu pendek. Pastikan anda memberikan sijil yang lengkap."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
 #: templates/modern/edit.html:79 templates/modern/edit.html:679
 msgid "Invalid hostname format"
-msgstr "Format namahos tidak sah"
+msgstr "Format nama hos tidak sah"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:278
 msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
-msgstr ""
-"KRITIKAL: rekod TLSA mengharuskan DNSSEC diaktifkan pada zona ini. Tanpa "
-"DNSSEC, rekod TLSA memberikan manfaat keselamatan NO."
+msgstr "KRITIKAL: Rekod TLSA memerlukan DNSSEC diaktifkan pada zon ini. Tanpa DNSSEC, rekod TLSA TIDAK memberikan sebarang manfaat keselamatan."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
@@ -352,7 +327,7 @@ msgstr "Rekod DMARC"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
-msgstr "Dasar autentikasi dan konfigurasi pelaporan e- mel Email"
+msgstr "Dasar pengesahan e-mel dan konfigurasi pelaporan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:59
 msgid "Policy Settings"
@@ -360,16 +335,15 @@ msgstr "Tetapan Dasar"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:138
 msgid "Policy"
-msgstr "Polisi"
+msgstr "Dasar"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:68
 msgid "None (monitor only)"
-msgstr "Pembohong (monitor saja)"
+msgstr "Tiada (pantau sahaja)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:68
 msgid "No action taken, just collect reports for analysis"
-msgstr ""
-"Tidak ada tindakan yang diambil, hanya mengumpulkan laporan untuk analisis"
+msgstr "Tiada tindakan diambil, hanya mengumpul laporan untuk analisis"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Quarantine"
@@ -377,7 +351,7 @@ msgstr "Kuarantin"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:69
 msgid "Treat suspicious emails as spam/junk"
-msgstr "Anggaplah email mencurigakan sebagai spam/junk"
+msgstr "Anggap e-mel yang mencurigakan sebagai spam/sampah"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:84
 msgid "Reject"
@@ -385,13 +359,11 @@ msgstr "Tolak"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:70
 msgid "Block delivery of suspicious emails entirely"
-msgstr "Pengiriman email mencurigakan sepenuhnya"
+msgstr "Sekat sepenuhnya penghantaran e-mel yang mencurigakan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
-msgstr ""
-"Diawali dengan \"none\" untuk mengumpulkan data sebelum memberlakukan dasar "
-"yang lebih ketat."
+msgstr "Mulakan dengan \"none\" untuk mengumpul data sebelum menguatkuasakan dasar yang lebih ketat."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:76
 msgid "Subdomain Policy"
@@ -403,7 +375,7 @@ msgstr "Sama seperti dasar domain"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Use the same policy as the main domain"
-msgstr "Use the policy sama seperti domain utama"
+msgstr "Gunakan dasar yang sama seperti domain utama"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "None"
@@ -415,27 +387,25 @@ msgstr "Memantau hanya untuk subdomain"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Quarantine suspicious subdomain emails"
-msgstr "E-mail subdomain yang mencurigakan Karantina"
+msgstr "Kuarantin e-mel subdomain yang mencurigakan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:84
 msgid "Reject suspicious subdomain emails"
-msgstr "Menola email subdomain yang mencurigakan"
+msgstr "Tolak e-mel subdomain yang mencurigakan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:86
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
-msgstr "Dasar untuk email dari subdomain (misalnya, mail.example.com)"
+msgstr "Dasar untuk e-mel daripada subdomain (contohnya, mail.example.com)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:90
 msgid "Policy Application Percentage"
-msgstr "Peratusan Dasar Polisi"
+msgstr "Peratusan Penggunaan Dasar"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:96
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr ""
-"Peratusan pesan yang kebijakannya harus diterapkan (100 = semua pesan). Kami "
-"menggunakan nilai yang lebih rendah selama gulungan dasar."
+msgstr "Peratusan mesej yang dasar ini perlu digunakan (100 = semua mesej). Gunakan nilai yang lebih rendah semasa pelaksanaan dasar."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -443,11 +413,11 @@ msgstr "Tetapan Pelaporan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:105
 msgid "Aggregate Report Email"
-msgstr "E-mail Laporan Agregat E-mel"
+msgstr "E-mel Laporan Agregat"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:109
 msgid "Email address to receive daily aggregate reports"
-msgstr "Alamat e-mail untuk menerima laporan agregat harian"
+msgstr "Alamat e-mel untuk menerima laporan agregat harian"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:113
 msgid "Forensic Report Email"
@@ -457,9 +427,7 @@ msgstr "E-mel Laporan Forensik"
 msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
-msgstr ""
-"Alamat e-mail untuk menerima laporan kegagalan terperinci (optional, can be "
-"high volume)"
+msgstr "Alamat e-mel untuk menerima laporan kegagalan terperinci (pilihan, jumlahnya boleh menjadi tinggi)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
@@ -471,7 +439,7 @@ msgstr "Hasilkan laporan jika semua mekanisme autentikasi gagal"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:126
 msgid "Generate reports if any authentication mechanism fails"
-msgstr "Hasilkan laporan jika ada mekanisme otentikasi yang gagal"
+msgstr "Hasilkan laporan jika ada mekanisme autentikasi yang gagal"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
@@ -484,29 +452,27 @@ msgstr "Hasilkan laporan jika pemeriksaan SPF gagal"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr ""
-"Bila untuk menghasilkan laporan forensik (hanya berlaku jika email forensik "
-"ditetapkan)"
+msgstr "Bila laporan forensik perlu dihasilkan (hanya berlaku jika e-mel forensik ditetapkan)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
-msgstr "Jajaran"
+msgstr "Tetapan Penjajaran"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:136
 msgid "Advanced settings for SPF and DKIM alignment modes"
-msgstr "Tetapan lanjutan untuk mode jajaran SPF dan DKIM"
+msgstr "Tetapan lanjutan untuk mod penjajaran SPF dan DKIM"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
-msgstr "Moda Jajaran DKIM"
+msgstr "Mod Penjajaran DKIM"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "Relaxed"
-msgstr "Tenang"
+msgstr "Longgar"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:145
 msgid "DKIM domain can be subdomain of From: domain"
-msgstr "Domain DKIM dapat berupa subdomain Dari: domain"
+msgstr "Domain DKIM boleh menjadi subdomain bagi domain From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "Strict"
@@ -514,23 +480,23 @@ msgstr "Strict"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:146
 msgid "DKIM domain must exactly match From: domain"
-msgstr "Domain DKIM harus persis sama dengan Dari: domain"
+msgstr "Domain DKIM mesti sepadan dengan tepat dengan domain From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:151
 msgid "SPF Alignment Mode"
-msgstr "Mod Jajaran SPF Monofiron"
+msgstr "Mod Penjajaran SPF"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "SPF domain can be subdomain of From: domain"
-msgstr "Domain SPF could be subdomain of From: domain"
+msgstr "Domain SPF boleh menjadi subdomain bagi domain From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "SPF domain must exactly match From: domain"
-msgstr "Domain SPF UDF harus persis sama dengan Dari: domain"
+msgstr "Domain SPF mesti sepadan dengan tepat dengan domain From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:261
 msgid "Policy is required"
-msgstr "Dasar dasar diperlukan"
+msgstr "Dasar diperlukan"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:263
 msgid "Invalid policy value"
@@ -549,32 +515,26 @@ msgstr "Peratusan harus antara 0 dan 100"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr ""
-"Dasar polisi hanya akan berlaku untuk pesan %d%%. Use 100%% setelah "
-"pengujian selesai."
+msgstr "Dasar hanya akan berlaku untuk %d%% mesej. Gunakan 100%% setelah ujian selesai."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
-msgstr "Alamat e- mel laporan agregat tidak sah ."
+msgstr "Alamat e-mel laporan agregat tidak sah"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:287
 msgid "Invalid forensic report email address"
-msgstr "Alamat email laporan forensik yang tidak sah"
+msgstr "Alamat e-mel laporan forensik tidak sah"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:292
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
-msgstr ""
-"Tidak ada alamat email yang dikonfigurasi. Anda tidak akan menerima laporan "
-"DMARC."
+msgstr "Tiada alamat e-mel pelaporan dikonfigurasikan. Anda tidak akan menerima laporan DMARC."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:305
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
-msgstr ""
-"Parameter p=none  hanya menyediakan pemantauan. Pertimbangkan dasar yang "
-"lebih ketat (kuarantine/reject) setelah Anda meninjau laporan."
+msgstr "Menggunakan \"p=none\" hanya menyediakan pemantauan. Pertimbangkan dasar yang lebih ketat (quarantine/reject) setelah anda menyemak laporan."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:48
 msgid "SPF Record"
@@ -582,15 +542,15 @@ msgstr "Rekod SPF"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:49
 msgid "Authorized mail server configuration"
-msgstr "Konfigurasi server surat berotorisasi"
+msgstr "Konfigurasi pelayan mel yang dibenarkan"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:61
 msgid "Basic Mechanisms"
-msgstr "Mekanisme Dasar"
+msgstr "Mekanisme Asas"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:62
 msgid "Select common mechanisms to authorize email sending"
-msgstr "Pilih mekanisme umum untuk mengizinkan pengiriman email"
+msgstr "Pilih mekanisme biasa untuk membenarkan penghantaran e-mel"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:66
 msgid "MX Records"
@@ -598,7 +558,7 @@ msgstr "MX Records"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:69
 msgid "Authorize all servers listed in MX records for this domain"
-msgstr "Penuliskan semua server yang tercantum dalam rekod MX untuk domain ini"
+msgstr "Benarkan semua pelayan yang disenaraikan dalam rekod MX untuk domain ini"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
@@ -606,7 +566,7 @@ msgstr "Rekod A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
-msgstr "Otorisasi domain rekod A dan AAAA"
+msgstr "Benarkan rekod A dan AAAA domain ini"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:81
 msgid "IP Addresses"
@@ -614,15 +574,15 @@ msgstr "Alamat IP"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:82
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
-msgstr "Alamat IP dan jaringan otorisasi (tak didukung oleh CIDR)"
+msgstr "Alamat IP dan rangkaian yang dibenarkan (notasi CIDR disokong)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:86
 msgid "IPv4 Addresses"
-msgstr "Alamat IPB4"
+msgstr "Alamat IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "Alamat IP atau jaringan per baris (mis., 192.0.2.1 atau 192.0.2.0/24)"
+msgstr "Satu alamat IP atau rangkaian setiap baris (cth., 192.0.2.1 atau 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -630,15 +590,15 @@ msgstr "Alamat IPv6"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:98
 msgid "One IPv6 address or network per line"
-msgstr "Satu alamat IPv6 atau jaringan per baris"
+msgstr "Satu alamat atau rangkaian IPv6 setiap baris"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:103
 msgid "Include Mechanisms"
-msgstr "Termasuk Mekanisme"
+msgstr "Mekanisme Include"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:104
 msgid "Include SPF records from other domains"
-msgstr "Tidak termasuk rekod SPF dari domain lain"
+msgstr "Sertakan rekod SPF daripada domain lain"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:108
 msgid "Include Domains"
@@ -658,47 +618,45 @@ msgstr "Mekanisme Tambahan"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "Sandera A/AAAA Tambahan"
+msgstr "Hos A/AAAA Tambahan"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "A/AAAA records (satu per baris)"
+msgstr "Benarkan rekod A/AAAA bagi nama hos tertentu (satu setiap baris)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
-msgstr "Host MX Tambahan XCF"
+msgstr "Hos MX Tambahan"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:133
 msgid "Authorize MX records from other domains (one per line)"
-msgstr "Otorisasi rekod MX dari domain lain (satu per baris)"
+msgstr "Benarkan rekod MX daripada domain lain (satu setiap baris)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:142
 msgid "Default Action"
-msgstr "Aksi Default"
+msgstr "Tindakan Lalai"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:147
 msgid "Pass all - allows anyone to send (insecure)"
-msgstr "Lulus semua - memungkinkan siapa pun untuk menghantar (tidak aman)"
+msgstr "Lulus semua - membenarkan sesiapa sahaja menghantar (tidak selamat)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:148
 msgid "Neutral (no policy)"
-msgstr "Netral (tanpa dasar)"
+msgstr "Neutral (tiada dasar)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:149
 msgid "Soft fail (mark as spam but accept)"
-msgstr "Soft gagal (tanda sebagai spam tapi terima)"
+msgstr "Soft fail (tandakan sebagai spam tetapi terima)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:150
 msgid "Fail (reject unauthorized emails)"
-msgstr "Muqal Gagal (reject email tidak sah)"
+msgstr "Gagal (tolak e-mel yang tidak dibenarkan)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:152
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr ""
-"Dasar untuk email tidak sepadan dengan mekanisme apapun. Mulailah dengan "
-"~all (softfail) untuk pengujian."
+msgstr "Dasar untuk e-mel yang tidak sepadan dengan mana-mana mekanisme. Mulakan dengan ~all (softfail) untuk ujian."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -706,30 +664,24 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr ""
-"Rekod SPF UDF melebihi batas lookup DNS (%d/10). Ini akan menyebabkan "
-"validasi SPF gagal. Keluarkan beberapa mekanisme include/a/mx atau gunakan "
-"ip4/ip6 sebagai gantinya."
+msgstr "Rekod SPF melebihi had carian DNS (%d/10). Ini akan menyebabkan pengesahan SPF gagal. Buang beberapa mekanisme include/a/mx atau gunakan ip4/ip6 sebaliknya."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr ""
-"Rekod SPF woazon memiliki pencarian DNS %d (batas adalah 10). "
-"mempertimbangkan penggunaan ip4/ip6 daripada mekanisme termasuk, atau "
-"konsolidasi termasuk untuk tetap berada di bawah batas."
+msgstr "Rekod SPF mempunyai %d carian DNS (had ialah 10). Pertimbangkan untuk menggunakan ip4/ip6 dan bukannya mekanisme include, atau gabungkan include supaya kekal di bawah had."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
-msgstr "Alamat IPv4 atau jaringan IPv4 tak valid: %s"
+msgstr "Alamat atau rangkaian IPv4 tidak sah: %s"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:313
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
-msgstr "Alamat atau jaringan IPv6 tak valid IPv6 tak valid: %s"
+msgstr "Alamat atau rangkaian IPv6 tidak sah: %s"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:323
 #, php-format
@@ -739,16 +691,13 @@ msgstr "Domain include tidak sah: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr ""
-"Tidak ada mekanisme yang dipilih. Rekod SPF ini hanya akan berisi aksi baku."
+msgstr "Tiada mekanisme dipilih. Rekod SPF ini hanya akan mengandungi tindakan lalai."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr ""
-"Menggunakan  \"+all\" memungkinkan siapa pun untuk menghantar email sebagai "
-"domain Anda. Ini sangat kecil hati."
+msgstr "Menggunakan \"+all\" membenarkan sesiapa sahaja menghantar e-mel sebagai domain anda. Ini amat tidak digalakkan."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -756,15 +705,15 @@ msgstr "Rekod CAA"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:44
 msgid "Certificate authority authorization"
-msgstr "Otorisasi otorisasi sijil Otorisasi Sijil Gagal"
+msgstr "Kebenaran pihak berkuasa sijil"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:68
 msgid "Custom (enter manually)"
-msgstr "Kebiasaan (masuk secara manual)"
+msgstr "Suai (masukkan secara manual)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:74
 msgid "Certificate Authority"
-msgstr "Otoritas Sijil Gagal"
+msgstr "Pihak Berkuasa Sijil"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:78
 msgid "CA Provider"
@@ -774,7 +723,7 @@ msgstr "Pembekal CA"
 msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
-msgstr "Sahkan untuk mengeluarkan sijil untuk domain ini"
+msgstr "Pilih pihak berkuasa sijil yang dibenarkan mengeluarkan sijil untuk domain ini"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:87
 msgid "CA Domain (Custom)"
@@ -783,12 +732,11 @@ msgstr "Domain CA (Suai)"
 #: lib/Module/DnsWizard/Service/CAAWizard.php:92
 msgid ""
 "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
-msgstr ""
-"Nama domain CA secara manual (hanya ditampilkan ketika \"Custom\" dipilih)"
+msgstr "Masukkan nama domain CA secara manual (hanya dipaparkan apabila \"Custom\" dipilih)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:97
 msgid "Certificate Type"
-msgstr "Jenis Sijil Gagal"
+msgstr "Jenis Sijil"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:101
 #: templates/modern/dnssec_delete_key.html:62
@@ -797,19 +745,19 @@ msgstr "Tag"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:106
 msgid "Issue"
-msgstr "Dikeluarkan Pada"
+msgstr "Keluarkan"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:106
 msgid "Authorize issuance of standard certificates"
-msgstr "Otorisasi adalahsuance dari sijil standar"
+msgstr "Benarkan pengeluaran sijil standard"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Issue Wildcard"
-msgstr "Isabel Wildcard"
+msgstr "Keluarkan Wildcard"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
-msgstr "Otorisasi adalah permintaan sijil wildcard (*.example.com)"
+msgstr "Benarkan pengeluaran sijil wildcard (*.example.com)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "Incident Reporting"
@@ -817,19 +765,19 @@ msgstr "Laporan Insiden"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
-msgstr "URL untuk melaporkan pelanggaran permintaan sijil"
+msgstr "URL untuk melaporkan pelanggaran pengeluaran sijil"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:110
 msgid "Type of authorization or reporting"
-msgstr "Jenis otorisasi atau pelaporan"
+msgstr "Jenis kebenaran atau pelaporan"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:114
 msgid "Reporting URL"
-msgstr "URL Melaporkan"
+msgstr "URL Pelaporan"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr "URL dan email untuk laporan insiden (mailto: atau https:)"
+msgstr "URL atau e-mel untuk laporan insiden (mailto: atau https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
@@ -845,35 +793,33 @@ msgstr "Non-kritikal"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Allow fallback if not understood"
-msgstr "Kekejamkan jatuh kembali jika tidak dipahami"
+msgstr "Benarkan sandaran jika tidak difahami"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Critical"
-msgstr "Kritis"
+msgstr "Kritikal"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Reject if not understood - strict enforcement"
-msgstr "Penolakan jika tidak dipahami - penegakan ketat"
+msgstr "Tolak jika tidak difahami - penguatkuasaan ketat"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:138
 msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
-msgstr ""
-"Kecocokan yang lebih baik. Critical (128) memberlakukan pengolahan CAA yang "
-"ketat."
+msgstr "Non-kritikal (0) memberikan keserasian yang lebih baik. Kritikal (128) menguatkuasakan pemprosesan CAA yang ketat."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
-msgstr "Tag CAA tidak sah. Pasti terbitan, terbitan, atau iodef"
+msgstr "Tag CAA tidak sah. Mesti issue, issuewild, atau iodef"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:210
 msgid "CA provider is required"
-msgstr "Penyedia CA provider diperlukan"
+msgstr "Pembekal CA diperlukan"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
-msgstr "Domain CA langganan diperlukan ketika \"Custom\" dipilih"
+msgstr "Domain CA suai diperlukan apabila \"Custom\" dipilih"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:215
 msgid "Invalid CA domain format"
@@ -883,18 +829,16 @@ msgstr "Format domain CA tidak sah"
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr ""
-"Menggunakan \";\" membenarkan SEMUA pihak yang berwenang untuk mengeluarkan "
-"sijil. Ini mengalahkan tujuan rekod CAA."
+msgstr "Menggunakan \";\" membenarkan SEMUA pihak berkuasa sijil mengeluarkan sijil. Ini menggagalkan tujuan rekod CAA."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
-msgstr "URL Reporting Proporting diperlukan untuk tag iodef"
+msgstr "URL Pelaporan diperlukan untuk tag iodef"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:229
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
-msgstr "URL Pelaporan Kekhalifahan harus dimulai dengan %s, %s, atau %s"
+msgstr "URL Pelaporan mesti bermula dengan %s, %s, atau %s"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -904,10 +848,7 @@ msgstr "Flags harus 0 atau 128"
 msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
-msgstr ""
-"Bendera Kritis Kriologis (128) ditetapkan. Sistem-sistem yang tidak mengerti "
-"rekod CAA akan menolak operasi. Gunakan 0 kecuali Anda memiliki persyaratan "
-"tertentu."
+msgstr "Bendera Kritikal (128) telah ditetapkan. Sistem yang tidak memahami rekod CAA akan menolak operasi. Gunakan 0 melainkan anda mempunyai keperluan tertentu."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
@@ -915,12 +856,12 @@ msgstr "Rekod DKIM"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:47
 msgid "Email signature verification public key"
-msgstr "Kunci publik verifikasi tandatangan Email"
+msgstr "Kunci awam pengesahan tandatangan e-mel"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:58
 #: templates/modern/dnssec_edit_key.html:29
 msgid "Information"
-msgstr "Informasi Aerovirus"
+msgstr "Maklumat"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:61
 msgid ""
@@ -928,11 +869,7 @@ msgid ""
 "Generate the DKIM key pair on your MAIL SERVER (Postfix, Exim, etc.). Only "
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
-msgstr ""
-"Bukti DKIM adalah email dari domain Anda menggunakan tanda tangan "
-"kriptografi. Anda dapat menghasilkan pasangan kunci DKIM pada MAIL SERVER "
-"Anda (Postfix, Exim, dll.). Hanya PUBLIK KUNCI yang masuk dalam rekod DNS "
-"ini. (Tidak pernah berbagi)."
+msgstr "DKIM membuktikan e-mel datang daripada domain anda menggunakan tandatangan kriptografi. Jana pasangan kunci DKIM pada PELAYAN MEL anda (Postfix, Exim, dll.). Hanya KUNCI AWAM yang dimasukkan ke dalam rekod DNS ini. Simpan KUNCI PERSENDIRIAN dengan selamat pada pelayan mel anda (jangan sekali-kali kongsikannya)."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
@@ -943,22 +880,17 @@ msgid ""
 "Selector to identify the DKIM key (commonly \"default\", timestamp like "
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
-msgstr ""
-"Pemilih untuk mengidentifikasi kunci DKIM (commonly \"default\", timestamp "
-"seperti  \"202501\", atau nama layanan seperti google\"). Hanya aksara "
-"alfanumerik, tanda hubung, dan garis bawah yang diizinkan."
+msgstr "Pemilih untuk mengenal pasti kunci DKIM (biasanya \"default\", cap masa seperti \"202501\", atau nama perkhidmatan seperti \"google\"). Hanya aksara alfanumerik, tanda sempang, dan garis bawah dibenarkan."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
 msgid "Public Key"
-msgstr "Kunci Publik"
+msgstr "Kunci Awam"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:86
 msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
-msgstr ""
-"Tempelkan kunci publik base64 dari server suratmu. Ruang angkasa dan baris "
-"baru akan dipadam secara otomatis."
+msgstr "Tampal kunci awam berkod base64 daripada pelayan mel anda. Ruang dan baris baharu akan dibuang secara automatik."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
 msgid "Key Type"
@@ -966,38 +898,34 @@ msgstr "Jenis Kunci"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
-msgstr "Widely didukung oleh semua server surat"
+msgstr "Disokong secara meluas oleh semua pelayan mel"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:96
 msgid "Newer algorithm - not universally supported yet"
-msgstr "Algoritma lebih baru - belum didukung secara universal"
+msgstr "Algoritma lebih baharu - belum disokong secara universal"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:98
 msgid "Encryption algorithm for the DKIM public key"
-msgstr "Enkripsikan algoritma untuk kunci publik DKIM"
+msgstr "Algoritma penyulitan untuk kunci awam DKIM"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:109
 msgid "Testing Mode"
-msgstr "Mode Pengujian Andika"
+msgstr "Mod Ujian"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:112
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr ""
-"Memungkinkan mode pengujian (t=y). Tanda tangan DKIM akan hadir tapi tidak "
-"ditegakkan. Gunakan selama penyebaran awal."
+msgstr "Dayakan mod ujian (t=y). Tandatangan DKIM akan hadir tetapi tidak dikuatkuasakan. Gunakan semasa pelaksanaan awal."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
-msgstr "Mode Subdomain Strict"
+msgstr "Mod Subdomain Ketat"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:119
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
-msgstr ""
-"Aktifkan mode subdomain ketat (t=s). Feather menolak surat yang tidak "
-"ditandatangani dari subdomains."
+msgstr "Dayakan mod subdomain ketat (t=s). Menolak mel yang tidak ditandatangani daripada subdomain."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:198
 msgid "Selector is required"
@@ -1006,69 +934,59 @@ msgstr "Pemilih diperlukan"
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:200
 msgid ""
 "Selector can only contain alphanumeric characters, hyphens, and underscores"
-msgstr ""
-"Pemilih tidak dapat hanya memuat karakter alfanumerik, tanda hubung, dan "
-"garis bawah"
+msgstr "Pemilih hanya boleh mengandungi aksara alfanumerik, tanda sempang, dan garis bawah"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:205
 msgid "Public key is required"
-msgstr "Diperlukan kunci publik"
+msgstr "Kunci awam diperlukan"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:211
 msgid "Public key must be valid base64-encoded data"
-msgstr "Kunci publik haruslah data terenkode basis64 yang sah"
+msgstr "Kunci awam mestilah data berkod base64 yang sah"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:216
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr ""
-"Kunci publik tampaknya luar biasa pendek. Pastikan Anda menyalin kunci "
-"lengkap dari server surat Anda."
+msgstr "Kunci awam kelihatan luar biasa pendek. Pastikan anda menyalin kunci lengkap daripada pelayan mel anda."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr ""
-"Kau menempelkan KUNCI PRIVATE. Hanya PUBLIK KUNCI yang seharusnya ada di "
-"DNS. Jangan pernah berbagi kunci pribadi Anda!"
+msgstr "Anda telah menampal KUNCI PERSENDIRIAN. Hanya KUNCI AWAM yang patut berada dalam DNS. Jangan sekali-kali kongsikan kunci persendirian anda!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr ""
-"Kunci publik tampaknya mengandung header PEM (BEGIN/END). Hanya kandungan "
-"base64 antara header dibutuhkan."
+msgstr "Kunci awam kelihatan mengandungi pengepala PEM (BEGIN/END). Hanya kandungan base64 antara pengepala diperlukan."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
-msgstr ""
-"Mode pengujian freak diaktifkan (t=y). Tanda tangan DKIM tidak akan "
-"ditegakkan. Matikan ini sekali pengujian selesai."
+msgstr "Mod ujian didayakan (t=y). Tandatangan DKIM tidak akan dikuatkuasakan. Matikan ini setelah ujian selesai."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
-msgstr "Rekam KVV"
+msgstr "Rekod SRV"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:69
 msgid "Service location (hostname and port)"
-msgstr "Lokasi layanan (nama host dan port)"
+msgstr "Lokasi perkhidmatan (nama hos dan port)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:95
 msgid "Service"
-msgstr "Layanan"
+msgstr "Perkhidmatan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
-msgstr "XOCustom\" untuk masuk secara manual"
+msgstr "Pilih perkhidmatan biasa atau pilih \"Custom\" untuk memasukkannya secara manual"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:104
 msgid "Custom Service Name"
-msgstr "Nama Layanan Kebiasaan"
+msgstr "Nama Perkhidmatan Suai"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
@@ -1080,15 +998,15 @@ msgstr "Protokol Pengendalian Transmisi - paling umum"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:119
 msgid "User Datagram Protocol - connectionless"
-msgstr "Protokol Datagram Pengguna Tak Berhubungan"
+msgstr "Protokol Datagram Pengguna - tanpa sambungan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:120
 msgid "Transport Layer Security"
-msgstr "Pengamanan Lapisan Angkut Fuus"
+msgstr "Keselamatan Lapisan Pengangkutan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:123
 msgid "Transport protocol for the service"
-msgstr "Protokol transportasi untuk layanan"
+msgstr "Protokol pengangkutan untuk perkhidmatan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:127
 #: templates/modern/dnssec_delete_key.html:32
@@ -1109,40 +1027,34 @@ msgstr "Target Server"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:140
 msgid "Target Hostname"
-msgstr "Hostname Target Macan"
+msgstr "Nama Hos Sasaran"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:144
 msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
-msgstr ""
-"Nama host server yang menyediakan layanan ini (harusnya nama host dengan "
-"rekod A/AAAA, bukan alamat IP)"
+msgstr "Nama hos pelayan yang menyediakan perkhidmatan ini (mestilah nama hos dengan rekod A/AAAA, bukan alamat IP)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:154
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
-msgstr ""
-"Nombor port di mana layanan mendengarkan (secara otomatis diisi untuk "
-"layanan umum)"
+msgstr "Nombor port tempat perkhidmatan mendengar (diisi secara automatik untuk perkhidmatan biasa)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:159
 msgid "Priority & Load Balancing"
-msgstr "Priority & Muat Balancing"
+msgstr "Keutamaan & Pengimbangan Beban"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:163
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Priority"
-msgstr "(Keutamaan)"
+msgstr "Keutamaan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:169
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr ""
-"Nilai rendah memiliki keutamaan tinggi (10 adalah nilai baku yang baik). "
-"Para klien mencoba server dalam urutan keutamaan."
+msgstr "Nilai yang lebih rendah mempunyai keutamaan yang lebih tinggi (10 ialah nilai lalai yang baik). Klien mencuba pelayan mengikut susunan keutamaan."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1152,22 +1064,19 @@ msgstr "Berat"
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
-msgstr ""
-"Untuk keseimbangan beban di antara server dengan keutamaan yang sama. Berat "
-"badan lebih tinggi = lebih banyak lalu lintas. Tidak ada keseimbangan beban."
+msgstr "Untuk pengimbangan beban antara pelayan dengan keutamaan yang sama. Berat lebih tinggi = lebih banyak trafik. 0 = tiada pengimbangan beban."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:261
 msgid "Service is required"
-msgstr "Layanan fakta diperlukan"
+msgstr "Perkhidmatan diperlukan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:265
 msgid "Custom service name is required"
-msgstr "Nama dinas langganan diperlukan"
+msgstr "Nama perkhidmatan suai diperlukan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:267
 msgid "Service name must contain only alphanumeric characters and hyphens"
-msgstr ""
-"Nama layanan Wobiane harus berisi hanya karakter alfanumerik dan tanda hubung"
+msgstr "Nama perkhidmatan hanya boleh mengandungi aksara alfanumerik dan tanda sempang"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:273
 msgid "Target hostname is required"
@@ -1181,9 +1090,7 @@ msgstr "Format nama host target tidak sah"
 msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
-msgstr ""
-"Target Annabia pasti nama host, bukan alamat IP. A atau AAAA pertama kali "
-"membuat rekod A atau AAA."
+msgstr "Sasaran mestilah nama hos, bukan alamat IP. Cipta rekod A atau AAAA untuk nama hos itu terlebih dahulu."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:295
 msgid "Priority must be between 0 and 65535"
@@ -1192,9 +1099,7 @@ msgstr "Keutamaan harus antara 0 dan 65535"
 #: lib/Module/DnsWizard/Service/SRVWizard.php:299
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
-msgstr ""
-"Keutamaan 0 adalah valid tapi tidak biasa. Kebanyakan layanan menggunakan "
-"keutamaan 10 atau lebih tinggi."
+msgstr "Keutamaan 0 adalah sah tetapi tidak biasa. Kebanyakan perkhidmatan menggunakan keutamaan 10 atau lebih tinggi."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:305
 msgid "Weight must be between 0 and 65535"
@@ -1244,11 +1149,11 @@ msgstr "Nama host tidak sah."
 
 #: lib/Application/Controller/BulkRegistrationController.php:199
 msgid "There is already a zone with this name."
-msgstr "Ada zona dengan nama ini."
+msgstr "Sudah ada zon dengan nama ini."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:312
 msgid "This is not a valid IPv4 or IPv6 address."
-msgstr "Ini bukan alamat IPv4 atau IPv6."
+msgstr "Ini bukan alamat IPv4 atau IPv6 yang sah."
 
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:202
 msgid "Failed to create the secondary zone."
@@ -1272,22 +1177,21 @@ msgstr "Zon telah ditukar kepada zon utama."
 
 #: lib/Application/Controller/BulkRegistrationController.php:184
 msgid "You do not have permission to create zones for other users."
-msgstr "Anda tidak memiliki kebenaran untuk membuat zona bagi pengguna lain."
+msgstr "Anda tidak mempunyai kebenaran untuk mencipta zon bagi pengguna lain."
 
 #: lib/Application/Controller/BulkRegistrationController.php:154
 #, php-format
 msgid "Unknown group ID(s): %s"
-msgstr "ID grup Tak Diketahui: %s"
+msgstr "ID kumpulan yang tidak diketahui: %s"
 
 #: lib/Application/Controller/BulkRegistrationController.php:166
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
-msgstr ""
-"Anda hanya dapat menetapkan kumpulan Anda adalah anggota dari (dilarang: %s)"
+msgstr "Anda hanya boleh menetapkan kumpulan yang anda menjadi ahlinya (tidak dibenarkan: %s)"
 
 #: lib/Application/Controller/BulkRegistrationController.php:174
 msgid "At least one user or group must be selected as owner."
-msgstr "Setidaknya satu pengguna atau kumpulan harus dipilih sebagai pemilik."
+msgstr "Sekurang-kurangnya satu pengguna atau kumpulan mesti dipilih sebagai pemilik."
 
 #: lib/Module/EmailPreviews/Controller/EmailPreviewsController.php:58
 msgid "Email Previews"
@@ -1295,28 +1199,28 @@ msgstr "Pratonton Email"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
 msgid "You do not have permission to import zones."
-msgstr "Anda tidak memiliki kebenaran untuk mengimpor zona."
+msgstr "Anda tidak mempunyai kebenaran untuk mengimport zon."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
 msgid "Please select a valid zone file to upload."
-msgstr "Sila pilih fail zona yang sah untuk dimuat naik."
+msgstr "Sila pilih fail zon yang sah untuk dimuat naik."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "Ukuran fail melebihi ukuran maksimum %s."
+msgstr "Saiz fail melebihi saiz maksimum yang dibenarkan iaitu %s."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
 msgid "The uploaded file is empty or could not be read."
-msgstr "Fail yang diunggah kosong atau tidak dapat dibaca."
+msgstr "Fail yang dimuat naik kosong atau tidak dapat dibaca."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
 msgid "No valid records found in the uploaded file."
-msgstr "Tidak ada rekod yang valid dijumpai dalam file upload."
+msgstr "Tiada rekod sah dijumpai dalam fail yang dimuat naik."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
 msgid "You do not have permission to modify this zone."
-msgstr "Anda tidak memiliki kebenaran untuk mengubah zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengubah suai zon ini."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
 msgid ""
@@ -1337,15 +1241,15 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
-msgstr "Impor sesi kedaluwarsa. Tolong muat lagi berkasnya."
+msgstr "Sesi import telah tamat tempoh. Sila muat naik fail itu semula."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
 msgid "Invalid import data. Please upload the file again."
-msgstr "Data impor tidak sah. Tolong muat lagi berkasnya."
+msgstr "Data import tidak sah. Sila muat naik fail itu semula."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
 msgid "The selected zone does not exist."
-msgstr "Zona yang dipilih tidak ada."
+msgstr "Zon yang dipilih tidak wujud."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
 msgid "You cannot import records into a read-only zone."
@@ -1353,51 +1257,49 @@ msgstr "Anda tidak boleh mengimport rekod ke dalam zon baca sahaja."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
 msgid "You do not have permission to add zones."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah zon."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
 msgid "Zone name is required."
-msgstr "Nama zona diperlukan."
+msgstr "Nama zon diperlukan."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:332
 msgid "A zone with this name already exists."
-msgstr "Zona dengan nama ini sudah ada."
+msgstr "Zon dengan nama ini sudah wujud."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:367
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr ""
-"Tidak dapat membuat zona baru melalui impor: pilih setidaknya satu grup, "
-"atau tinggalkan \"Tidak ada pemilik pengguna\" belum diperiksa."
+msgstr "Tidak dapat mencipta zon baharu melalui import: pilih sekurang-kurangnya satu kumpulan, atau biarkan \"Tiada pemilik pengguna\" tidak ditanda."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:376
 msgid "Failed to create zone."
-msgstr "Gagal untuk menciptakan zona."
+msgstr "Gagal mencipta zon."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:382
 msgid "Failed to retrieve created zone."
-msgstr "Gagal untuk mengambil kembali zona diciptakan."
+msgstr "Gagal mendapatkan zon yang dicipta."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:35
 msgid "You need to be logged in to export zone data."
-msgstr "Anda perlu log masuk untuk mengekspor data zona."
+msgstr "Anda perlu log masuk untuk mengeksport data zon."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:51
 msgid "You do not have permission to export this zone."
-msgstr "Anda tidak memiliki kebenaran untuk mengekspor zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengeksport zon ini."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:83
 msgid "There is no zone with this ID."
-msgstr "Tidak ada zona dengan ID ini."
+msgstr "Tiada zon dengan ID ini."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:66
 msgid "This zone does not have any records to export."
-msgstr "Zona ini tidak memiliki rekod apapun untuk dieksport."
+msgstr "Zon ini tidak mempunyai sebarang rekod untuk dieksport."
 
 #: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
-msgstr "Anda tidak memiliki kebenaran untuk melakukan pencarian WHOIS."
+msgstr "Anda tidak mempunyai kebenaran untuk melakukan carian WHOIS."
 
 #: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
@@ -1406,11 +1308,11 @@ msgstr "WHOIS"
 #: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
-msgstr "Gagal mengambil informasi WHOIS menggunakan server %s"
+msgstr "Gagal mendapatkan maklumat WHOIS menggunakan pelayan %s"
 
 #: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
-msgstr "Anda tidak memiliki kebenaran untuk melakukan pencarian RDAP."
+msgstr "Anda tidak mempunyai kebenaran untuk melakukan carian RDAP."
 
 #: lib/Module/Rdap/Controller/RdapController.php:59
 msgid "RDAP"
@@ -1419,7 +1321,7 @@ msgstr "RDAP"
 #: lib/Module/Rdap/Controller/RdapController.php:117
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
-msgstr "Gagal mengambil kembali informasi RDAP menggunakan server %s"
+msgstr "Gagal mendapatkan maklumat RDAP menggunakan pelayan %s"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:147
 msgid "Invalid CSRF token."
@@ -1439,60 +1341,57 @@ msgstr "Sebelumnya"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 msgid "Next"
-msgstr "Perancis"
+msgstr "Seterusnya"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
-msgstr "Peluncuran zona mulai dari"
+msgstr "Tunjukkan zon bermula dengan"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:59
 msgid "Show all"
-msgstr "Semua"
+msgstr "Tunjukkan semua"
 
 #: lib/Application/Controller/DeleteRecordsController.php:92
 msgid "No records selected for deletion."
-msgstr "Tidak ada rekod yang dipilih untuk dipadam."
+msgstr "Tiada rekod dipilih untuk dipadam."
 
 #: lib/Application/Controller/DeleteRecordsController.php:217
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
-msgstr "Rekod telah berhasil dipadam. Setiap rekod PTR terkait juga dipadam."
+msgstr "Rekod telah berjaya dipadam. Sebarang rekod PTR yang berkaitan juga telah dibuang."
 
 #: lib/Application/Controller/DeleteRecordsController.php:219
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
-msgstr ""
-"Rekod %d telah berhasil dipadam. Setiap rekod PTR terkait juga dipadam."
+msgstr "%d rekod telah berjaya dipadam. Sebarang rekod PTR yang berkaitan juga telah dibuang."
 
 #: lib/Application/Controller/DeleteRecordsController.php:222
 msgid "No records could be deleted. Please check permissions."
-msgstr "Tidak ada rekod yang boleh dipadam. Sila semak keizinan."
+msgstr "Tiada rekod dapat dipadam. Sila semak kebenaran."
 
 #: lib/Application/Controller/DeleteRecordsController.php:289
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
-msgstr ""
-"Tidak ada rekod sah yang dipilih untuk dipadam atau Anda tidak memiliki "
-"kebenaran untuk menghapusnya."
+msgstr "Tiada rekod sah dipilih untuk dipadam atau anda tidak mempunyai kebenaran untuk memadamnya."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:72
 msgid "Invalid or unexpected input given."
-msgstr "input tidak sah atau tidak terduga diberikan."
+msgstr "Input yang tidak sah atau tidak dijangka telah diberikan."
 
 #: lib/Domain/Model/UserManager.php:175
 msgid "You do not have the permission to delete this user."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus pengguna ini."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam pengguna ini."
 
 #: lib/Application/Controller/DeleteUserController.php:86
 msgid "You do not have permission to delete a superuser account."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus akun superuser."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam akaun superuser."
 
 #: lib/Application/Controller/EditUserController.php:597
 msgid "User does not exist."
-msgstr "Pengguna woin tidak ada."
+msgstr "Pengguna tidak wujud."
 
 #: lib/Application/Controller/DeleteUserController.php:121
 msgid ""
@@ -1505,11 +1404,11 @@ msgstr ""
 
 #: lib/Application/Controller/DeleteUserController.php:143
 msgid "The user has been deleted successfully."
-msgstr "Pengguna telah berhasil dipadamkan."
+msgstr "Pengguna telah berjaya dipadamkan."
 
 #: lib/Application/Controller/EditCommentController.php:60
 msgid "Zone comments feature is disabled in configuration."
-msgstr "Fitur komen Zone dilumpuhkan dalam konfigurasi."
+msgstr "Ciri komen zon dilumpuhkan dalam konfigurasi."
 
 #: lib/Application/Controller/EditCommentController.php:74
 msgid "You do not have the permission to view this comment."
@@ -1521,85 +1420,75 @@ msgstr "Anda tidak memiliki kebenaran untuk menyunting komen ini."
 
 #: lib/Application/Controller/EditCommentController.php:113
 msgid "The comment has been updated successfully."
-msgstr "Komen telah berhasil dikemas kini."
+msgstr "Komen telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditRecordController.php:102
 msgid "Invalid record ID."
-msgstr "ID rekod tak valid."
+msgstr "ID rekod tidak sah."
 
 #: lib/Application/Controller/DeleteRecordController.php:120
 msgid "You do not have permission to delete records in this zone."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus rekod di zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod dalam zon ini."
 
 #: lib/Domain/Service/Dns/RecordManager.php:500
 msgid "Record not found."
-msgstr "Rekam tidak dijumpai."
+msgstr "Rekod tidak dijumpai."
 
 #: lib/Application/Controller/DeleteRecordController.php:219
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr ""
-"Rekod dan rekod PTR dan A/AAAA yang berhubungan dipadam namun komen tersebut "
-"dipertahankan kerana rekod serupa ada."
+msgstr "Rekod serta rekod PTR dan A/AAAA yang berkaitan telah dipadam tetapi komen dikekalkan kerana rekod serupa masih wujud."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
-msgstr ""
-"Rekod dan rekod PTRnya yang terkait dipadam tetapi komentarnya dipertahankan "
-"kerana rekod serupa ada."
+msgstr "Rekod serta rekod PTR yang berkaitan telah dipadam tetapi komen dikekalkan kerana rekod serupa masih wujud."
 
 #: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr ""
-"Rekod dan rekod A/AAAA yang berhubungan dipadam tetapi komen tersebut "
-"dipertahankan kerana rekod serupa ada."
+msgstr "Rekod serta rekod A/AAAA yang berkaitan telah dipadam tetapi komen dikekalkan kerana rekod serupa masih wujud."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr ""
-"Rekod tersebut dipadam namun komentarnya dipertahankan kerana rekod serupa "
-"ada."
+msgstr "Rekod telah dipadam tetapi komen dikekalkan kerana rekod serupa masih wujud."
 
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr ""
-"Rekod dan rekod PTR dan A/AAAA yang berhubungan telah dipadam dengan sukses."
+msgstr "Rekod serta rekod PTR dan A/AAAA yang berkaitan telah berjaya dipadam."
 
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
-msgstr "Rekod dan rekod PTR terkaitnya telah berhasil dipadam."
+msgstr "Rekod serta rekod PTR yang berkaitan telah berjaya dipadam."
 
 #: lib/Application/Controller/DeleteRecordController.php:233
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
-msgstr "Rekod dan rekod A/AAAA yang berhubungan telah dipadam dengan sukses."
+msgstr "Rekod serta rekod A/AAAA yang berkaitan telah berjaya dipadam."
 
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr "Rekod telah berhasil dipadam. Data PTR yang sepadan tidak dijumpai."
+msgstr "Rekod telah berjaya dipadam. Tiada rekod PTR yang sepadan dijumpai."
 
 #: lib/Application/Controller/DeleteRecordController.php:237
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr ""
-"Rekod telah berhasil dipadam. Rekod A/AAAA yang sepadan tidak dijumpai."
+msgstr "Rekod telah berjaya dipadam. Tiada rekod A/AAAA yang sepadan dijumpai."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
-msgstr "Rekod telah berhasil dipadam."
+msgstr "Rekod telah berjaya dipadam."
 
 #: lib/Domain/Service/Dns/RecordManager.php:507
 msgid "You cannot delete records from a read-only zone."
@@ -1607,11 +1496,11 @@ msgstr "Anda tidak boleh memadam rekod daripada zon baca sahaja."
 
 #: lib/Application/Controller/EditGroupController.php:75
 msgid "Group management is not enabled."
-msgstr "Manajemen Grup Kebidanan tidak diaktifkan."
+msgstr "Pengurusan kumpulan tidak diaktifkan."
 
 #: lib/Application/Controller/DeleteGroupController.php:75
 msgid "You do not have permission to delete groups."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus kumpulan."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam kumpulan."
 
 #: lib/Application/Controller/EditGroupController.php:90
 msgid "Invalid group ID."
@@ -1620,36 +1509,36 @@ msgstr "ID kumpulan tidak sah."
 #: lib/Application/Controller/DeleteGroupController.php:89
 #: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
 msgid "Delete Group"
-msgstr "Grup Dipadam"
+msgstr "Padam Kumpulan"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
-msgstr "Penghapusan grup dibatalkan."
+msgstr "Pemadaman kumpulan telah dibatalkan."
 
 #: lib/Application/Controller/DeleteGroupController.php:137
 msgid "Group has been deleted successfully."
-msgstr "Grup Ogos telah berhasil dipadam."
+msgstr "Kumpulan telah berjaya dipadam."
 
 #: lib/Application/Controller/EditGroupController.php:198
 msgid "Group not found."
-msgstr "Kumpulan kumpulan tidak dijumpai."
+msgstr "Kumpulan tidak dijumpai."
 
 #: lib/Application/Controller/UserPreferencesController.php:52
 #: templates/modern/user_preferences.html:2
 msgid "User Preferences"
-msgstr "Keutamaan Pengguna GTorgus"
+msgstr "Keutamaan Pengguna"
 
 #: lib/Application/Controller/UserPreferencesController.php:132
 msgid "Preferences saved successfully."
-msgstr "Keutamaan gifus berhasil diselamatkan."
+msgstr "Keutamaan telah berjaya disimpan."
 
 #: lib/Application/Controller/UserPreferencesController.php:140
 msgid "Failed to update preferences. Please try again."
-msgstr "Gagal memperbarui preferensi. Tolong coba lagi."
+msgstr "Gagal mengemas kini keutamaan. Sila cuba lagi."
 
 #: lib/Application/Controller/UserPreferencesController.php:155
 msgid "Top"
-msgstr "Perancis"
+msgstr "Atas"
 
 #: lib/Application/Controller/UserPreferencesController.php:156
 msgid "Bottom"
@@ -1657,11 +1546,11 @@ msgstr "Bawah"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:63
 msgid "You do not have permission to manage group members."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola anggota kumpulan."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus ahli kumpulan."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:89
 msgid "Manage Group Members"
-msgstr "Para anggota Kumpulan Manajemen"
+msgstr "Urus Ahli Kumpulan"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:112
 msgid "Invalid action."
@@ -1697,15 +1586,15 @@ msgstr[0] "Pengguna %d tidak dapat dibuang."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
-msgstr "XMFA tidak diaktifkan pada sistem ini."
+msgstr "MFA tidak diaktifkan pada sistem ini."
 
 #: lib/Application/Controller/MfaSetupController.php:72
 msgid "MFA Setup"
-msgstr "Perlengkapan MFA"
+msgstr "Persediaan MFA"
 
 #: lib/Application/Controller/MfaSetupController.php:215
 msgid "Failed to create MFA record."
-msgstr "Gagal menciptakan rekod MFA."
+msgstr "Gagal mencipta rekod MFA."
 
 #: lib/Application/Controller/MfaSetupController.php:222
 msgid "MFA is already enabled."
@@ -1713,59 +1602,52 @@ msgstr "MFA telah diaktifkan."
 
 #: lib/Application/Controller/MfaSetupController.php:267
 msgid "Verification code is required."
-msgstr "Kode verifikasi undihan diperlukan."
+msgstr "Kod pengesahan diperlukan."
 
 #: lib/Application/Controller/MfaSetupController.php:176
 msgid "MFA has been enabled successfully."
-msgstr "XMFA telah berhasil diaktifkan."
+msgstr "MFA telah berjaya diaktifkan."
 
 #: lib/Application/Controller/MfaVerifyController.php:321
 msgid "Invalid verification code. Please try again."
-msgstr "Kode verifikasi tidak sah. Tolong coba lagi."
+msgstr "Kod pengesahan tidak sah. Sila cuba lagi."
 
 #: lib/Application/Controller/MfaSetupController.php:192
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
-msgstr ""
-"Alamat Email tidak tersedia. Tolong update alamat email anda di profil anda."
+msgstr "Alamat e-mel tidak tersedia. Sila kemas kini alamat e-mel anda dalam profil anda."
 
 #: lib/Application/Controller/MfaSetupController.php:199
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr ""
-"Metode verifikasi e- mel tidak tersedia kerana layanan surat tidak "
-"diaktifkan pada sistem ini."
+msgstr "Kaedah pengesahan e-mel tidak tersedia kerana perkhidmatan mel tidak diaktifkan pada sistem ini."
 
 #: lib/Application/Controller/MfaSetupController.php:206
 msgid "Email verification method is not enabled on this system."
-msgstr "Metode verifikasi e- mel tidak diaktifkan pada sistem ini."
+msgstr "Kaedah pengesahan e-mel tidak diaktifkan pada sistem ini."
 
 #: lib/Application/Controller/MfaSetupController.php:248
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
-msgstr ""
-"Gagal menghantar kode verifikasi. Sila coba lagi nanti atau gunakan "
-"autentikasi berbasis aplikasi."
+msgstr "Gagal menghantar kod pengesahan. Sila cuba lagi kemudian atau gunakan pengesahan berasaskan aplikasi."
 
 #: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been enabled with email verification."
-msgstr "XMFA telah diaktifkan dengan verifikasi email."
+msgstr "MFA telah diaktifkan dengan pengesahan e-mel."
 
 #: lib/Application/Controller/MfaSetupController.php:305
 #: templates/default/mfa_setup.html:34 templates/modern/mfa_setup.html:34
 msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
-msgstr ""
-"XMFA diperlukan oleh dasar keselamatan organisasi Anda dan tidak dapat "
-"dilumpuhkan."
+msgstr "MFA diperlukan oleh dasar keselamatan organisasi anda dan tidak boleh dilumpuhkan."
 
 #: lib/Application/Controller/MfaSetupController.php:314
 msgid "MFA is not enabled."
-msgstr "XMFA tidak diaktifkan."
+msgstr "MFA tidak diaktifkan."
 
 #: lib/Application/Controller/MfaSetupController.php:328
 msgid "MFA has been disabled."
@@ -1773,13 +1655,11 @@ msgstr "MFA telah dilumpuhkan."
 
 #: lib/Application/Controller/MfaSetupController.php:343
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "- MFA harus diaktifkan untuk meregenerasi kode pemulihan."
+msgstr "MFA mesti diaktifkan untuk menjana semula kod pemulihan."
 
 #: lib/Application/Controller/MfaSetupController.php:357
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr ""
-"Kode Pemulihan telah diregenerasi. Tolong selamatkan mereka di tempat yang "
-"aman."
+msgstr "Kod pemulihan telah dijana semula. Sila simpan kod tersebut di tempat yang selamat."
 
 #: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:2 templates/modern/header.html:340
@@ -1792,37 +1672,35 @@ msgstr "Anda tidak memiliki kebenaran untuk melihat supermaster."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
-msgstr "Anda tidak memiliki kebenaran untuk melihat data meta zona."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat metadata zon."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Anda tidak memiliki kebenaran untuk menyunting data meta zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting metadata zon."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Data meta Zona Ukraina telah berhasil dikemas kini."
+msgstr "Metadata zon telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Gagal memperbarui data meta zona."
+msgstr "Gagal mengemas kini metadata zon."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Metadata Zone Mediadata"
+msgstr "Sunting Metadata Zon"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Zone Metadata"
-msgstr "Metadata Zona"
+msgstr "Metadata Zon"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:420
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Metadata jenis %s hanya menerima satu nilai. Hanya satu baris untuk jenis "
-"ini."
+msgstr "Jenis metadata %s hanya menerima satu nilai. Tambah satu baris sahaja untuk jenis ini."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1838,9 +1716,7 @@ msgstr "Jenis metadata %s hanya boleh diubah oleh pentadbir."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Kind data meta data meta Kustom yang disimpan langsung dalam tabel "
-"domainmetadata PowerDNS."
+msgstr "Jenis metadata tersuai yang disimpan terus dalam jadual domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -1850,11 +1726,11 @@ msgstr "Nilai"
 #: lib/Application/Controller/EditZoneMetadataController.php:656
 #: templates/modern/email_previews.html:43
 msgid "Custom"
-msgstr "Kebiasaan"
+msgstr "Tersuai"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:661
 msgid "Multi"
-msgstr "MultiMUDA"
+msgstr "Berbilang"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:662
 msgid "Single"
@@ -1862,16 +1738,16 @@ msgstr "Single"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
-msgstr "Fitur API dilumpuhkan dalam konfigurasi sistem."
+msgstr "Ciri API dilumpuhkan dalam konfigurasi sistem."
 
 #: lib/Application/Controller/ApiKeysController.php:95
 msgid "You do not have permission to manage API keys."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola kunci API."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus kunci API."
 
 #: lib/Application/Controller/ApiKeysController.php:101
 #: templates/modern/api_key_delete.html:4
 msgid "API Keys"
-msgstr "Kekunci  API"
+msgstr "Kunci API"
 
 #: lib/Application/Controller/ApiKeysController.php:255
 msgid "API key name is required."
@@ -1879,7 +1755,7 @@ msgstr "Nama kunci API diperlukan."
 
 #: lib/Application/Controller/ApiKeysController.php:265
 msgid "Invalid expiration date format."
-msgstr "Format tanggal kadaluarsa tidak sah."
+msgstr "Format tarikh tamat tempoh tidak sah."
 
 #: lib/Domain/Service/ApiKeyService.php:356
 msgid "API key not found or you do not have permission to edit it."
@@ -1889,17 +1765,15 @@ msgstr ""
 
 #: lib/Application/Controller/ApiKeysController.php:290
 msgid "API key updated successfully."
-msgstr "Kunci API berhasil dikemas kini."
+msgstr "Kunci API berjaya dikemas kini."
 
 #: lib/Application/Controller/ApiKeysController.php:335
 msgid "API key deleted successfully."
-msgstr "Kunci API berhasil dipadamkan."
+msgstr "Kunci API berjaya dipadamkan."
 
 #: lib/Domain/Service/ApiKeyService.php:298
 msgid "API key not found or you do not have permission to delete it."
-msgstr ""
-"Kunci API tidak dijumpai atau Anda tidak memiliki kebenaran untuk "
-"menghapusnya."
+msgstr "Kunci API tidak dijumpai atau anda tidak mempunyai kebenaran untuk memadamnya."
 
 #: lib/Application/Controller/ApiKeysController.php:428
 msgid "disabled"
@@ -1907,20 +1781,20 @@ msgstr "dilumpuhkan"
 
 #: lib/Application/Controller/ApiKeysController.php:428
 msgid "enabled"
-msgstr "Diaktifkan"
+msgstr "diaktifkan"
 
 #: lib/Application/Controller/ApiKeysController.php:429
 #, php-format
 msgid "API key %s successfully."
-msgstr "Kunci API %s berhasil."
+msgstr "Kunci API berjaya %s."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have the permission to add records to this zone."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod ke zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod ke zon ini."
 
 #: lib/Application/Controller/BulkRecordAddController.php:121
 msgid "Please provide at least one record."
-msgstr "Tolong berikan setidaknya satu rekod."
+msgstr "Sila berikan sekurang-kurangnya satu rekod."
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1928,33 +1802,33 @@ msgstr "Jenis rekod tidak sah."
 
 #: lib/Application/Controller/BulkRecordAddController.php:231
 msgid "Record could not be added."
-msgstr "Record tidak dapat ditambahkan."
+msgstr "Rekod tidak dapat ditambah."
 
 #: lib/Application/Controller/BulkRecordAddController.php:239
 #, php-format
 msgid "%d record(s) have been added successfully."
-msgstr "Rekod %d telah berhasil ditambahkan."
+msgstr "%d rekod telah berjaya ditambah."
 
 #: lib/Application/Controller/BulkRecordAddController.php:242
 msgid "Some record(s) could not be added."
-msgstr "Beberapa rekod tidak dapat ditambahkan."
+msgstr "Sesetengah rekod tidak dapat ditambah."
 
 #: lib/Application/Controller/BulkRecordAddController.php:278
 msgid "Zone ID is required."
-msgstr "Perlu ID Zona Varona."
+msgstr "ID zon diperlukan."
 
 #: lib/Application/Controller/ListPermTemplController.php:41
 msgid "You do not have the permission to edit permission templates."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit templat kebenaran."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting templat kebenaran."
 
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
-msgstr "Templat Perizinan"
+msgstr "Sunting Templat Kebenaran"
 
 #: lib/Application/Controller/EditPermTemplController.php:126
 msgid "The permission template has been updated successfully."
-msgstr "Templat kebenaran telah berhasil dikemas kini."
+msgstr "Templat kebenaran telah berjaya dikemas kini."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
 msgid ""
@@ -1982,7 +1856,7 @@ msgstr "Kumpulan"
 
 #: lib/Application/Controller/SearchController.php:61
 msgid "You do not have the permission to perform searches."
-msgstr "Anda tidak memiliki kebenaran untuk melakukan pencarian."
+msgstr "Anda tidak mempunyai kebenaran untuk melakukan carian."
 
 #: lib/Application/Controller/SearchController.php:65
 #: templates/modern/search.html:31 templates/modern/header.html:132
@@ -2000,7 +1874,7 @@ msgstr "Nombor halaman tidak sah."
 
 #: lib/Application/Controller/ListRecordChangesController.php:139
 msgid "Page number must be at least 1."
-msgstr "Nombor halaman harus minimal 1."
+msgstr "Nombor halaman mestilah sekurang-kurangnya 1."
 
 #: lib/Application/Controller/ListRecordChangesController.php:158
 msgid "Page number exceeds available pages."
@@ -2008,23 +1882,23 @@ msgstr "Nombor halaman melebihi halaman yang tersedia."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:69
 msgid "Invalid request method."
-msgstr "Metode permintaan tidak sah."
+msgstr "Kaedah permintaan tidak sah."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
 msgid "Invalid group or user ID."
-msgstr "Kumpulan tak valid atau ID pengguna."
+msgstr "ID kumpulan atau pengguna tidak sah."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:91
 msgid "Member removed from group successfully."
-msgstr "Anggota member yang dikeluarkan dari grup berhasil."
+msgstr "Ahli telah berjaya dikeluarkan daripada kumpulan."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:120
 msgid "User was not a member of this group."
-msgstr "Pengguna UIN bukan anggota kumpulan ini."
+msgstr "Pengguna bukan ahli kumpulan ini."
 
 #: lib/Domain/Model/UserManager.php:518
 msgid "You do not have the permission to add a new user."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan pengguna baru."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah pengguna baharu."
 
 #: lib/Application/Controller/AddUserController.php:93
 #: templates/modern/add_user.html:10 templates/modern/add_user.html:109
@@ -2037,37 +1911,36 @@ msgstr "Tiada templat kebenaran tanpa hak superuser yang boleh diberikan."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
-msgstr "Templat ojin tak sah: mesti templat pengguna"
+msgstr "Templat kebenaran tidak sah: mestilah templat pengguna"
 
 #: lib/Application/Controller/AddUserController.php:151
 msgid "The user has been created successfully."
-msgstr "Pengguna telah berhasil dibuat."
+msgstr "Pengguna telah berjaya dicipta."
 
 #: lib/Application/Controller/AddUserController.php:166
 #, php-format
 msgid "Generated password: %s"
-msgstr "Kata sandi terjana: %s"
+msgstr "Kata laluan yang dijana: %s"
 
 #: lib/Application/Controller/AddUserController.php:182
 msgid "Login details have been sent to the user via email."
-msgstr "Rincian log masuk telah dikirim ke pengguna melalui email."
+msgstr "Butiran log masuk telah dihantar kepada pengguna melalui e-mel."
 
 #: lib/Application/Controller/AddUserController.php:184
 msgid "NOTE: Failed to send login details via email."
-msgstr "CATATAN: Gagal menghantar rincian login melalui email."
+msgstr "NOTA: Gagal menghantar butiran log masuk melalui e-mel."
 
 #: lib/Application/Controller/AddUserController.php:190
 msgid "A password was generated but is not displayed for security reasons."
-msgstr ""
-"Kata sandi dihasilkan tetapi tidak ditampilkan kerana alasan keselamatan."
+msgstr "Kata laluan telah dijana tetapi tidak dipaparkan atas sebab keselamatan."
 
 #: lib/Application/Controller/EditGroupController.php:269
 msgid "Please fill in all required fields correctly."
-msgstr "Sila isi semua medan yang diperlukan dengan benar."
+msgstr "Sila isi semua medan yang diperlukan dengan betul."
 
 #: lib/Domain/Service/Dns/RecordManager.php:533
 msgid "You do not have the permission to delete this record."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus rekod ini."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod ini."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:88
 msgid "The record could not be deleted."
@@ -2080,7 +1953,7 @@ msgstr "Log Zon"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
-msgstr "Anda tidak memiliki kebenaran untuk melihat daftar pengguna."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat senarai pengguna."
 
 #: lib/Application/Controller/UsersController.php:68
 #: templates/modern/list_perm_templ.html:2
@@ -2089,71 +1962,71 @@ msgstr "Pengguna"
 
 #: lib/Application/Controller/UsersController.php:102
 msgid "User details updated"
-msgstr "Rincian pengguna update"
+msgstr "Butiran pengguna dikemas kini"
 
 #: lib/Application/Controller/EditUserController.php:263
 msgid "You do not have permission to edit a superuser account."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit akun superuser."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting akaun superuser."
 
 #: lib/Application/Controller/EditZoneTemplController.php:64
 msgid "No template ID provided."
-msgstr "Tidak ada ID templat yang disediakan."
+msgstr "Tiada ID templat diberikan."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "You do not have the permission to edit zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit templat zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting templat zon."
 
 #: lib/Application/Controller/EditZoneTemplController.php:78
 msgid "Edit Zone Template"
-msgstr "Templat:Zona Vosen"
+msgstr "Sunting Templat Zon"
 
 #: lib/Application/Controller/EditZoneTemplController.php:94
 msgid "There is no zone template with this ID."
-msgstr "Tak ada zon dengan ID ini."
+msgstr "Tiada templat zon dengan ID ini."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:156
 msgid "Zone template has been updated successfully."
-msgstr "Templat zonode telah berhasil dikemas kini."
+msgstr "Templat zon telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditZoneTemplController.php:237
 msgid "Zones have been updated successfully."
-msgstr "Zona-zona telah berhasil dikemas kini."
+msgstr "Zon telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditZoneTemplController.php:248
 msgid "You do not have permission to create new zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk membuat zon templat baru."
+msgstr "Anda tidak mempunyai kebenaran untuk mencipta templat zon baharu."
 
 #: lib/Domain/Model/ZoneTemplate.php:367 lib/Domain/Model/ZoneTemplate.php:1224
 msgid "Zone template with this name already exists, please choose another one."
-msgstr "Templat zonode dengan nama ini sudah ada, sila pilih yang lain."
+msgstr "Templat zon dengan nama ini sudah wujud, sila pilih yang lain."
 
 #: lib/Application/Controller/EditZoneTemplController.php:279
 msgid "Please enter a different name when using Save As."
-msgstr "User masukkan nama lain ketika menggunakan Save As."
+msgstr "Sila masukkan nama yang berbeza apabila menggunakan Save As."
 
 #: lib/Application/Controller/EditZoneTemplController.php:303
 msgid "Zone template has been copied successfully."
-msgstr "Tak ada yang berhasil disalin."
+msgstr "Templat zon telah berjaya disalin."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk melihat zonset."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat templat zon."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:43
 msgid "Template Zones"
-msgstr "Zona Templat"
+msgstr "Zon Templat"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:60
 msgid "Invalid template ID."
-msgstr "ID template tidak sah."
+msgstr "ID templat tidak sah."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:54
 msgid "Template does not exist."
-msgstr "Template tidak ada."
+msgstr "Templat tidak wujud."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:71
 msgid "You do not have permission to view this zone."
-msgstr "Anda tidak memiliki kebenaran untuk melihat zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat zon ini."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
 #: templates/default/index.html:256 templates/modern/index.html:256
@@ -2162,11 +2035,11 @@ msgstr "Log Pengguna"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
-msgstr "Anda tidak memiliki kebenaran untuk unlink zona dari template."
+msgstr "Anda tidak mempunyai kebenaran untuk menyahpaut zon daripada templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:55
 msgid "No zones selected."
-msgstr "Zona zona terlarang dipilih."
+msgstr "Tiada zon dipilih."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
@@ -2182,39 +2055,39 @@ msgstr[0] "Zona %d tidak boleh dibuka."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
-msgstr "Gagal unlink zona dari template."
+msgstr "Gagal menyahpaut zon daripada templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "No valid zones selected."
-msgstr "Zona yang dipilih tidak sah."
+msgstr "Tiada zon sah yang dipilih."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:146
 msgid "Template not found."
-msgstr "Template tidak dijumpai."
+msgstr "Templat tidak dijumpai."
 
 #: lib/Application/Controller/UserAgreementController.php:101
 msgid "User agreement accepted successfully."
-msgstr "Perjanjian pengguna Zedin diterima dengan sukses."
+msgstr "Perjanjian pengguna telah berjaya diterima."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
 msgid "Edit Zone"
-msgstr "Zona Edit"
+msgstr "Sunting Zon"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
-msgstr "Anda tidak memiliki kebenaran untuk mengakses zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengakses zon ini."
 
 #: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have the permission to view this zone."
-msgstr "Anda tidak memiliki kebenaran untuk melihat zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat zon ini."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola DNSSEC untuk zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus DNSSEC bagi zon ini."
 
 #: lib/Application/Controller/EditController.php:335
 msgid "DNSSEC is not enabled on the server."
-msgstr "DNSSEC tidak diaktifkan pada server."
+msgstr "DNSSEC tidak didayakan pada pelayan."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:97
 #: templates/default/dnssec.html:40 templates/modern/dnssec.html:40
@@ -2223,51 +2096,47 @@ msgstr "Zon ini pratandatangan; kunci DNSSEC diuruskan di pelayan utama."
 
 #: lib/Application/Controller/EditController.php:340
 msgid "Zone is already signed with DNSSEC."
-msgstr "Zona sudah ditandatangani dengan DNSSEC."
+msgstr "Zon sudah ditandatangani dengan DNSSEC."
 
 #: lib/Application/Controller/EditController.php:362
 msgid "Zone has been signed successfully."
-msgstr "Zone berhasil ditandatangani."
+msgstr "Zon telah berjaya ditandatangani."
 
 #: lib/Application/Controller/EditController.php:367
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr ""
-"Penandatanganan zondia diminta berhasil, tetapi verifikasi gagal. Periksa "
-"kekunci DNSSEC."
+msgstr "Penandatanganan zon berjaya diminta, tetapi pengesahan gagal. Semak kunci DNSSEC."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr ""
-"Gagal menandatangani zona. Pemvalidasi Zona berlalu, tetapi PowerDNS API "
-"mengembalikan kesalahan. Log PowerDNS untuk rinciannya."
+msgstr "Gagal menandatangani zon. Pengesahan zon berjaya, tetapi API PowerDNS mengembalikan ralat. Semak log PowerDNS untuk butiran."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
-msgstr "Zone saat ini tidak ditandatangani dengan DNSSEC."
+msgstr "Zon kini tidak ditandatangani dengan DNSSEC."
 
 #: lib/Application/Controller/DnssecController.php:119
 msgid "Zone has been unsigned successfully."
-msgstr "Zone telah berhasil dipindahkan."
+msgstr "Zon telah berjaya dinyahtandatangan."
 
 #: lib/Application/Controller/DnssecController.php:124
 msgid "Zone unsigning requested successfully, but verification failed."
-msgstr "Unsigning zonade yang diminta berhasil, tetapi verifikasi gagal."
+msgstr "Penyahtandatanganan zon berjaya diminta, tetapi pengesahan gagal."
 
 #: lib/Application/Controller/DnssecController.php:128
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Gagal untuk unsign zone. Log PowerDNS untuk rinciannya."
+msgstr "Gagal menyahtandatangan zon. Semak log PowerDNS untuk butiran."
 
 #: lib/Application/Controller/EditController.php:585
 msgid "Zone type has been changed successfully."
-msgstr "Jenis zonade telah berhasil diubah."
+msgstr "Jenis zon telah berjaya ditukar."
 
 #: lib/Application/Controller/EditController.php:592
 msgid "Slave master has been changed successfully."
-msgstr "Master budak telah berhasil diubah."
+msgstr "Master slave telah berjaya ditukar."
 
 #: lib/Application/Controller/EditController.php:601
 msgid "You cannot apply a template to a read-only zone."
@@ -2275,7 +2144,7 @@ msgstr "Anda tidak boleh menggunakan templat pada zon baca sahaja."
 
 #: lib/Application/Controller/EditController.php:616
 msgid "Zone template has been changed successfully."
-msgstr "Templat zonade telah berhasil diubah."
+msgstr "Templat zon telah berjaya ditukar."
 
 #: lib/Application/Controller/EditRecordController.php:124
 msgid "You cannot edit records in a read-only zone."
@@ -2293,47 +2162,45 @@ msgstr ""
 
 #: lib/Application/Controller/EditController.php:888
 msgid "Request has expired, please try again."
-msgstr "Permintaan telah berakhir, sila coba lagi."
+msgstr "Permintaan telah tamat tempoh, sila cuba lagi."
 
 #: lib/Application/Controller/EditController.php:893
 msgid "Zone has been updated successfully."
-msgstr "Zone telah berhasil dikemas kini."
+msgstr "Zon telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditController.php:895
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
-msgstr ""
-"Zone berhasil diselamatkan. Tidak ada perubahan rekod yang dilakukan, tetapi "
-"serial SOA diperbanyak."
+msgstr "Zon berjaya disimpan. Tiada perubahan rekod dibuat, tetapi serial SOA telah ditambah."
 
 #: lib/Application/Controller/EditController.php:904
 msgid "Zone has not been updated successfully."
-msgstr "Zone belum dikemas kini dengan sukses."
+msgstr "Zon tidak berjaya dikemas kini."
 
 #: lib/Application/Controller/EditController.php:932
 msgid "Please provide all required fields."
-msgstr "Tolong sediakan semua bidang yang diperlukan."
+msgstr "Sila berikan semua medan yang diperlukan."
 
 #: lib/Application/Controller/AddRecordController.php:264
 msgid "Record successfully added. A matching PTR record was also created."
-msgstr "Rekod berhasil ditambahkan. Rekod PTR yang sepadan juga dibuat."
+msgstr "Rekod berjaya ditambah. Rekod PTR yang sepadan juga telah dicipta."
 
 #: lib/Application/Controller/AddRecordController.php:269
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Rekam gagal ditambahkan, tetapi pembuatan rekod PTR gagal:"
+msgstr "Rekod berjaya ditambah, tetapi penciptaan rekod PTR gagal: "
 
 #: lib/Application/Controller/AddRecordController.php:273
 msgid "The record was successfully added, but PTR record creation failed."
-msgstr "Rekod tersebut berhasil ditambahkan, tetapi pembuatan rekod PTR gagal."
+msgstr "Rekod tersebut berjaya ditambah, tetapi penciptaan rekod PTR gagal."
 
 #: lib/Application/Controller/AddRecordController.php:277
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Rekod berhasil ditambahkan. Rekod A yang sepadan juga diciptakan."
+msgstr "Rekod berjaya ditambah. Rekod A yang sepadan juga telah dicipta."
 
 #: lib/Application/Controller/MfaVerifyController.php:145
 msgid "Invalid security token. Please try again."
-msgstr "token keselamatan tidak sah. Tolong coba lagi."
+msgstr "Token keselamatan tidak sah. Sila cuba lagi."
 
 #: lib/Application/Controller/MfaVerifyController.php:157
 msgid "Too many failed attempts. Please try again later."
@@ -2341,52 +2208,48 @@ msgstr "Terlalu banyak percubaan yang gagal. Sila cuba lagi kemudian."
 
 #: lib/Application/Controller/MfaVerifyController.php:167
 msgid "No MFA record found. Please contact administrator."
-msgstr "Tidak dijumpai rekod MFA. Sila hubungi administrator."
+msgstr "Tiada rekod MFA dijumpai. Sila hubungi pentadbir."
 
 #: lib/Application/Controller/MfaVerifyController.php:172
 msgid "An error occurred. Please try again."
-msgstr "Terjadi kesalahan. Tolong coba lagi."
+msgstr "Ralat telah berlaku. Sila cuba lagi."
 
 #: lib/Application/Controller/MfaVerifyController.php:344
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
-msgstr ""
-"Pengesahan e- mel tidak tersedia kerana layanan surat dilumpuhkan. Tolong "
-"gunakan kode pemulihan."
+msgstr "Pengesahan e-mel tidak tersedia kerana perkhidmatan mel dilumpuhkan. Sila gunakan kod pemulihan."
 
 #: lib/Application/Controller/MfaVerifyController.php:354
 msgid "A new verification code has been sent to your email."
-msgstr "Kode verifikasi baru telah dikirim ke email Anda."
+msgstr "Kod pengesahan baharu telah dihantar ke e-mel anda."
 
 #: lib/Application/Controller/MfaVerifyController.php:360
 msgid "Please use a recovery code instead."
-msgstr "Tolong gunakan kode pemulihan."
+msgstr "Sila gunakan kod pemulihan sebagai gantinya."
 
 #: lib/Application/Controller/MfaVerifyController.php:365
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr ""
-"Tidak boleh menghantar kode verifikasi ke email Anda. Tolong gunakan kode "
-"pemulihan."
+msgstr "Tidak dapat menghantar kod pengesahan ke e-mel anda. Sila gunakan kod pemulihan sebagai gantinya."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod untuk zona ini."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod pada zon ini."
 
 #: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added."
-msgstr "Rekod berhasil ditambahkan."
+msgstr "Rekod berjaya ditambah."
 
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
-msgstr "Tidak ada rekod yang diberikan."
+msgstr "Tiada rekod diberikan."
 
 #: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) were successfully added."
-msgstr "Rekod %d berhasil ditambahkan."
+msgstr "%d rekod telah berjaya ditambah."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2396,97 +2259,92 @@ msgstr "%d rekod yang sepadan juga telah dicipta."
 #: lib/Application/Controller/AddRecordController.php:523
 #, php-format
 msgid "%d record(s) failed to be added."
-msgstr "Rekod %d gagal ditambahkan."
+msgstr "%d rekod gagal ditambah."
 
 #: lib/Application/Controller/AddRecordController.php:528
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
-msgstr ""
-"Beberapa rekod tidak dapat ditambahkan. Mereka mungkin sudah ada atau berisi "
-"data yang tidak sah."
+msgstr "Sesetengah rekod tidak dapat ditambah. Ia mungkin sudah wujud atau mengandungi data yang tidak sah."
 
 #: lib/Application/Controller/AddRecordController.php:554
 msgid "Failed to add any records. They may contain invalid data."
-msgstr ""
-"Gagal menambah rekod apapun. Mereka mungkin berisi data yang tidak sah."
+msgstr "Gagal menambah sebarang rekod. Ia mungkin mengandungi data yang tidak sah."
 
 #: lib/Application/Controller/DeleteDomainsController.php:80
 msgid "No zone selected for deletion."
-msgstr "Tidak ada zona yang dipilih untuk penghapusan."
+msgstr "Tiada zon dipilih untuk dipadam."
 
 #: lib/Domain/Service/Dns/DomainManager.php:964
 msgid "You do not have the permission to delete a zone."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus zona."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam zon."
 
 #: lib/Application/Controller/DeleteDomainController.php:140
 msgid "Zone has been deleted successfully."
-msgstr "Zone berhasil dipadamkan."
+msgstr "Zon telah berjaya dipadam."
 
 #: lib/Application/Controller/DeleteDomainsController.php:171
 msgid "Zones have been deleted successfully."
-msgstr "Zone berhasil dipadamkan."
+msgstr "Zon-zon telah berjaya dipadam."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:85
 msgid "You do not have the permission to edit zone template records."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit rekod templat zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting rekod templat zon."
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
-msgstr "Autentikasi OIDC tidak diaktifkan"
+msgstr "Pengesahan OIDC tidak didayakan"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Pengesahan gagal:"
+msgstr "Pengesahan gagal: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk membuat zon."
+msgstr "Anda tidak mempunyai kebenaran untuk mencipta templat zon."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:127
 msgid "Template name can't be an empty string."
-msgstr "Nama template tidak dapat berupa string kosong."
+msgstr "Nama templat tidak boleh menjadi rentetan kosong."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:151
 msgid "Zone template has been created successfully."
-msgstr "Templat zonode telah berhasil dibuat."
+msgstr "Templat zon telah berjaya dicipta."
 
 #: lib/Application/Controller/OidcLoginController.php:89
 msgid "No OIDC providers are configured"
-msgstr "Tak ada penyedia OIDC yang dikonfigurasi"
+msgstr "Tiada penyedia OIDC dikonfigurasikan"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Gagal memulai otentikasi OIDC:"
+msgstr "Gagal memulakan pengesahan OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
 msgid "Group Logs"
-msgstr "Log Grup"
+msgstr "Log Kumpulan"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
-msgstr "Ekspor kunci PEM ZA diperlukan PowerDNS 4.7 atau lebih baru."
+msgstr "Eksport kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
 
 #: lib/Application/Controller/DnssecKeyExportController.php:90
 msgid "An error occurred while exporting the PEM key: "
-msgstr "Terjadi ralat ketika mengekspor kunci PEM:"
+msgstr "Ralat telah berlaku semasa mengeksport kunci PEM: "
 
 #: lib/Application/Controller/DnssecKeyExportController.php:96
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
-msgstr ""
-"Tak boleh mengambil kunci PEM. Server ini mungkin tidak membuka kunci "
-"pribadi untuk kunci ini."
+msgstr "Tidak dapat mengambil kunci PEM. Pelayan mungkin tidak mendedahkan bahan kunci persendirian untuk kunci ini."
 
 #: lib/Domain/Service/Dns/DomainManager.php:435
 msgid "You do not have the permission to add a master zone."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan zona master."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah zon master."
 
 #: lib/Application/Controller/AddZoneMasterController.php:80
 msgid "Add Primary Zone"
-msgstr "Tak Ada Zona Primer"
+msgstr "Tambah Zon Utama"
 
 #: lib/Application/Controller/BulkRegistrationController.php:95
 msgid ""
@@ -2518,34 +2376,27 @@ msgstr ""
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr ""
-"Zone berhasil dibuat, tetapi penandatanganan DNSSEC dilewatkan kerana ada "
-"ralat validasi:"
+msgstr "Zon berjaya dicipta, tetapi penandatanganan DNSSEC dilangkau kerana ralat pengesahan:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:264
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
-msgstr ""
-"Zone dibuat, tetapi mengamankannya dengan DNSSEC gagal. Pemvalidasi Zona "
-"berlalu, tetapi PowerDNS API mengembalikan kesalahan. Log PowerDNS untuk "
-"rinciannya."
+msgstr "Zon telah dicipta, tetapi usaha melindunginya dengan DNSSEC gagal. Pengesahan zon berjaya, tetapi API PowerDNS mengembalikan ralat. Semak log PowerDNS untuk butiran."
 
 #: lib/Application/Controller/AddZoneMasterController.php:270
 msgid "Zone has been created and signed with DNSSEC successfully."
-msgstr "Zonade telah dibuat dan ditandatangani dengan DNSSEC dengan sukses."
+msgstr "Zon telah berjaya dicipta dan ditandatangani dengan DNSSEC."
 
 #: lib/Application/Controller/AddZoneMasterController.php:274
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr ""
-"Zone dibuat dan penandatanganan telah diminta, tetapi verifikasi gagal. "
-"Periksa kekunci DNSSEC."
+msgstr "Zon telah dicipta dan penandatanganan telah diminta, tetapi pengesahan gagal. Semak kunci DNSSEC."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
-msgstr "Zona telah berhasil ditambahkan."
+msgstr "Zon telah berjaya ditambah."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:81
 msgid "Batch PTR record creation is not enabled."
@@ -2562,7 +2413,7 @@ msgstr "Rekod PTR Batch"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
-msgstr "Pembuatan rekod PTR Watch tidak tersedia untuk zona terbalik."
+msgstr "Pembuatan rekod PTR batch tidak tersedia untuk zon songsang."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:43
 msgid "Not available for anonymous users."
@@ -2575,37 +2426,35 @@ msgstr "Anda tidak memiliki kebenaran untuk melihat halaman ini."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLS berdasarkan jenis rekod"
+msgstr "TTL lalai mengikut jenis rekod"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Pengiriman formulir tidak sah."
+msgstr "Penyerahan borang tidak sah."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr ""
-"Tabel record_type_defaults table hilang. Terapkan skema 4.5.0 update sebelum "
-"menyimpan default."
+msgstr "Jadual record_type_defaults tiada. Gunakan kemas kini skema 4.5.0 sebelum menyimpan nilai lalai."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "%d disimpan baku; dibersihkan %d. Ditolak nilai tidak sah untuk: %s."
+msgstr "%d nilai lalai disimpan; %d dikosongkan. Nilai tidak sah ditolak untuk: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "%d disimpan baku; dibersihkan %d."
+msgstr "%d nilai lalai disimpan; %d dikosongkan."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk melihat zonset."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat templat zon."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Zone Templat"
+msgstr "Templat Zon"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
@@ -2614,47 +2463,47 @@ msgstr "Anda tidak memiliki kebenaran untuk membuat kumpulan."
 #: lib/Application/Controller/AddGroupController.php:81
 #: templates/modern/add_group.html:10
 msgid "Add Group"
-msgstr "Kumpulan"
+msgstr "Tambah Kumpulan"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
-msgstr "Templat otoris tidak sah: harus berupa templat kumpulan"
+msgstr "Templat kebenaran tidak sah: mestilah templat kumpulan"
 
 #: lib/Application/Controller/AddGroupController.php:138
 msgid "Group has been created successfully."
-msgstr "Grup - grup telah berhasil dibuat."
+msgstr "Kumpulan telah berjaya dicipta."
 
 #: lib/Application/Controller/ListViewsController.php:47
 msgid "You do not have permission to manage PowerDNS views."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola pandangan PowerDNS."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus pandangan PowerDNS."
 
 #: lib/Application/Controller/ListViewsController.php:52
 msgid "Views require PowerDNS 5.0 or newer."
-msgstr "Pandangan membutuhkan PowerDNS 5.0 atau lebih baru."
+msgstr "Pandangan memerlukan PowerDNS 5.0 atau lebih baharu."
 
 #: lib/Application/Controller/ListViewsController.php:58
 msgid "Views are only available with the PowerDNS API backend."
-msgstr "Tampilan hanya tersedia dengan backend API PowerDNS."
+msgstr "Pandangan hanya tersedia dengan backend API PowerDNS."
 
 #: lib/Application/Controller/ListViewsController.php:69
 msgid "Provide a valid view name and zone identifier."
-msgstr "Siarkan nama tampilan dan tanda pengenal zona yang sah."
+msgstr "Berikan nama pandangan dan pengecam zon yang sah."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Zone assigned to view."
-msgstr "Zona Zone ditugaskan untuk melihat."
+msgstr "Zon telah ditugaskan kepada pandangan."
 
 #: lib/Application/Controller/ListViewsController.php:75
 msgid "Failed to assign zone to view."
-msgstr "Gagal menetapkan zona untuk dilihat."
+msgstr "Gagal menugaskan zon kepada pandangan."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Zone removed from view."
-msgstr "Zona dipadam dari pandangan."
+msgstr "Zon telah dibuang daripada pandangan."
 
 #: lib/Application/Controller/ListViewsController.php:82
 msgid "Failed to remove zone from view."
-msgstr "Gagal menghapus zona dari pandangan."
+msgstr "Gagal membuang zon daripada pandangan."
 
 #: lib/Application/Controller/ListNetworksController.php:89
 msgid "Unknown action."
@@ -2675,36 +2524,36 @@ msgstr "Kunci DNSSEC tidak dijumpai atau tidak lagi ada."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:111
 msgid "Zone key has been deleted successfully."
-msgstr "Kunci zon berhasil dipadam."
+msgstr "Kunci zon telah berjaya dipadam."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:119
 msgid "Failed to delete the zone key."
-msgstr "Gagal menghapus kunci zona."
+msgstr "Gagal memadam kunci zon."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:126
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "Sebuah kesalahan terjadi ketika menghapus kunci DNSSEC:"
+msgstr "Ralat berlaku semasa memadam kunci DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
 msgid "Permission Templates"
-msgstr "Ijin Templat"
+msgstr "Templat Kebenaran"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
-msgstr "Otentikasi SASL tidak diaktifkan"
+msgstr "Pengesahan SAML tidak diaktifkan"
 
 #: lib/Application/Controller/SamlLoginController.php:89
 msgid "No SAML providers are configured"
-msgstr "penyedia SARL tidak dikonfigur"
+msgstr "Tiada penyedia SAML dikonfigurasikan"
 
 #: lib/Application/Controller/SamlLoginController.php:100
 msgid "Invalid SAML provider"
-msgstr "provider SARL tidak sah SAML SARL"
+msgstr "Penyedia SAML tidak sah"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "Otentikasi SASL gagal:"
+msgstr "Pengesahan SAML gagal: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -2714,23 +2563,23 @@ msgstr ""
 #: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Reverse Zones"
-msgstr "Zona Garis Balik"
+msgstr "Zon Songsang"
 
 #: lib/Application/Controller/ListForwardZonesController.php:284
 msgid "You do not have the permission to see any zones."
-msgstr "Anda tidak memiliki kebenaran untuk melihat zona apapun."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat sebarang zon."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:79
 msgid "You do not have permission to manage zone ownership."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola kepemilikan zona."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus pemilikan zon."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:93
 msgid "Manage Group Zones"
-msgstr "Zona Grup Manage"
+msgstr "Urus Zon Kumpulan"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 msgid "Please select at least one zone."
-msgstr "Sila pilih paling tidak satu zona."
+msgstr "Sila pilih sekurang-kurangnya satu zon."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:166
 #, php-format
@@ -2763,11 +2612,11 @@ msgstr "Anda tidak memiliki kebenaran untuk menambahkan templat kebenaran."
 #: lib/Application/Controller/AddPermTemplController.php:67
 #: templates/modern/add_perm_templ.html:16
 msgid "Add Permission Template"
-msgstr "Tambahkan Keizinan Templat"
+msgstr "Tambah Templat Kebenaran"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
-msgstr "Templat kebenaran telah berhasil ditambahkan."
+msgstr "Templat kebenaran telah berjaya ditambah."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
 msgid "The permission template could not be added."
@@ -2776,11 +2625,11 @@ msgstr "Templat kebenaran tidak dapat ditambah."
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
 msgid "Database Consistency"
-msgstr "Konsistensi Pangkalan Data Database"
+msgstr "Konsistensi Pangkalan Data"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:55
 msgid "Database consistency checks are disabled."
-msgstr "Pemeriksaan konsistensi basis data ketekalan dilumpuhkan."
+msgstr "Pemeriksaan konsistensi pangkalan data dilumpuhkan."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:76
 msgid "Could not reach the PowerDNS API; consistency checks are unavailable."
@@ -2790,15 +2639,15 @@ msgstr ""
 #: lib/Application/Controller/DatabaseConsistencyController.php:100
 #: templates/modern/database_consistency.html:27
 msgid "Database Consistency Check"
-msgstr "Cek Konsistensi Database"
+msgstr "Pemeriksaan Konsistensi Pangkalan Data"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:119
 msgid "Zone owner assigned successfully"
-msgstr "Pemilik Zone yang ditugaskan berhasil"
+msgstr "Pemilik zon berjaya ditugaskan"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:119
 msgid "Failed to assign zone owner"
-msgstr "Gagal menetapkan pemilik zona"
+msgstr "Gagal menetapkan pemilik zon"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:124
 msgid "No zones without owners to fix"
@@ -2816,153 +2665,150 @@ msgstr "%d zon ditugaskan; %d gagal"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Slave zone deleted successfully"
-msgstr "Zona budak berhasil dipadam"
+msgstr "Zon slave berjaya dipadam"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to delete slave zone"
-msgstr "Gagal memadam zona budak"
+msgstr "Gagal memadam zon slave"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 msgid "Orphaned record deleted successfully"
-msgstr "Rekod yatim piatu dipadam berhasil"
+msgstr "Rekod yatim berjaya dipadam"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 msgid "Failed to delete orphaned record"
-msgstr "Gagal menghapus rekod yatim piatu"
+msgstr "Gagal memadam rekod yatim"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:159
 msgid "Duplicate SOA records fixed successfully"
-msgstr "Duplikasi rekod SOA berhasil diperbaiki"
+msgstr "Rekod SOA pendua berjaya dibetulkan"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:159
 msgid "Failed to fix duplicate SOA records"
-msgstr "Gagal memperbaiki rekod SOA pendua"
+msgstr "Gagal membetulkan rekod SOA pendua"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Default SOA record created successfully"
-msgstr "Rekod SOA default yang tercipta dengan sukses"
+msgstr "Rekod SOA lalai berjaya dicipta"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Failed to create default SOA record"
-msgstr "Gagal mencipta rekod SOA default"
+msgstr "Gagal mencipta rekod SOA lalai"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:171
 msgid "Invalid check type"
-msgstr "Jenis cek tidak sah"
+msgstr "Jenis pemeriksaan tidak sah"
 
 #: lib/Application/Controller/LogoutController.php:121
 msgid "You have logged out."
-msgstr "Kau sudah keluar."
+msgstr "Anda telah log keluar."
 
 #: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:898
 msgid "You do not have the permission to add a zone template."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan templat zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah templat zon."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
 msgid "Add Zone Template"
-msgstr "Templat Zone Add"
+msgstr "Tambah Templat Zon"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
-msgstr "Templat zonade telah berhasil ditambahkan."
+msgstr "Templat zon telah berjaya ditambah."
 
 #: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
-msgstr "Papan Dash"
+msgstr "Papan Pemuka"
 
 #: lib/Application/Controller/EditUserController.php:505
 msgid "You do not have permission to manage group memberships."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola keanggotaan kumpulan."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus keahlian kumpulan."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid user or group ID."
-msgstr "ID pengguna atau grup tidak sah."
+msgstr "ID pengguna atau kumpulan tidak sah."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
-msgstr "Pengguna Federasi berhasil dikeluarkan dari grup."
+msgstr "Pengguna telah berjaya dikeluarkan daripada kumpulan."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:68
 msgid "You do not have the permission to add a slave zone."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan zona budak."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah zon slave."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:72
 msgid "Add Secondary Zone"
-msgstr "Sekunder"
+msgstr "Tambah Zon Sekunder"
 
 #: lib/Domain/Model/ZoneTemplate.php:465 lib/Domain/Model/ZoneTemplate.php:506
 msgid "You do not have the permission to delete zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus zonset."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam templat zon."
 
 #: lib/Application/Controller/DeleteZoneTemplController.php:98
 msgid "Zone template has been deleted successfully."
-msgstr "Templat zonode telah berhasil dipadamkan."
+msgstr "Templat zon telah berjaya dipadam."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit supermaster."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Supermaster yang kau coba sunting tidak ada."
+msgstr "Supermaster yang anda cuba sunting tidak wujud."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "Supermaster telah berhasil dikemas kini."
+msgstr "Supermaster telah berjaya dikemas kini."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola zona kumpulan."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus zon kumpulan."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:80
 msgid "Invalid group or zone ID."
-msgstr "Kumpulan tak valid atau zona ID."
+msgstr "ID kumpulan atau zon tidak sah."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
 msgid "Zone removed from group successfully."
-msgstr "Zone dikeluarkan dari grup dengan sukses."
+msgstr "Zon telah berjaya dikeluarkan daripada kumpulan."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:93
 msgid "Zone was not owned by this group."
-msgstr "Zone tidak dimiliki oleh grup ini."
+msgstr "Zon ini bukan milik kumpulan ini."
 
 #: lib/Application/Controller/ListForwardZonesController.php:73
 #: templates/modern/dnssec_delete_key.html:3
 msgid "Forward Zones"
-msgstr "Zona Maju"
+msgstr "Zon Hadapan"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "Anda tidak memiliki kebenaran untuk sinkronisasi zona dari PowerDNS."
+msgstr "Anda tidak mempunyai kebenaran untuk menyegerakkan zon daripada PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr ""
-"Zona sinkron dari PowerDNS: %d ditambahkan, %d dikemas kini, %d dipadam."
+msgstr "Zon disegerakkan daripada PowerDNS: %d ditambah, %d dikemas kini, %d dibuang."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Sync Zona zon gagal: %s"
+msgstr "Penyegerakan zon gagal: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr ""
-"Anda tidak memiliki kebenaran untuk menambahkan seorang supermaster baru."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah supermaster baharu."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "Supermaster telah berhasil ditambahkan."
+msgstr "Supermaster telah berjaya ditambah."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
-msgstr "Impor kunci PEM membutuhkan PowerDNS 4.7 atau lebih baru."
+msgstr "Import kunci PEM memerlukan PowerDNS 4.7 atau lebih baharu."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:113
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"Sediakan kunci privat terenkode-PEM (harus mengandung penanda BEGIN/END)."
+msgstr "Berikan kunci peribadi berkod PEM (mesti mengandungi penanda BEGIN/END)."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:121
 msgid "PEM key imported successfully."
@@ -2971,29 +2817,28 @@ msgstr "Kunci PEM telah diimport dengan sukses."
 #: lib/Application/Controller/DnssecKeyImportController.php:124
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
-msgstr ""
-"Gagal mengimpor kunci PEM. server PowerDNS mungkin menolak format tersebut."
+msgstr "Gagal mengimport kunci PEM. Pelayan PowerDNS mungkin menolak format tersebut."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:128
 msgid "An error occurred while importing the PEM key: "
-msgstr "Sebuah kesalahan terjadi ketika mengimpor kunci PEM:"
+msgstr "Ralat berlaku semasa mengimport kunci PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod ke templat zona."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod ke templat zon."
 
 #: lib/Application/Controller/EditUserController.php:83
 #: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
 msgid "Edit User"
-msgstr "Pengguna Edit"
+msgstr "Sunting Pengguna"
 
 #: lib/Application/Controller/EditUserController.php:165
 msgid "Your profile has been updated successfully."
-msgstr "Profil Anda telah dikemas kini berhasil."
+msgstr "Profil anda telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditUserController.php:169
 msgid "The user has been updated successfully."
-msgstr "Pengguna telah berhasil dikemas kini."
+msgstr "Pengguna telah berjaya dikemas kini."
 
 #: lib/Application/Controller/EditUserController.php:173
 msgid "The user could not be updated."
@@ -3005,7 +2850,7 @@ msgstr "Anda tidak memiliki kebenaran untuk menyunting pengguna ini."
 
 #: lib/Application/Controller/EditUserController.php:513
 msgid "Please select at least one group."
-msgstr "Sila pilih paling tidak satu kumpulan."
+msgstr "Sila pilih sekurang-kurangnya satu kumpulan."
 
 #: lib/Application/Controller/EditUserController.php:554
 #, php-format
@@ -3024,39 +2869,39 @@ msgstr[0] ""
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
-msgstr "Anda tidak memiliki kebenaran untuk mengelola tampilan jaringan."
+msgstr "Anda tidak mempunyai kebenaran untuk mengurus pandangan rangkaian."
 
 #: lib/Application/Controller/ListNetworksController.php:52
 msgid "Network views require PowerDNS 5.0 or newer."
-msgstr "Pandangan jaringan ologoid membutuhkan PowerDNS 5.0 atau lebih baru."
+msgstr "Pandangan rangkaian memerlukan PowerDNS 5.0 atau lebih baharu."
 
 #: lib/Application/Controller/ListNetworksController.php:58
 msgid "Network views are only available with the PowerDNS API backend."
-msgstr "Pandangan jaringan hanya tersedia dengan backend PowerDNS API."
+msgstr "Pandangan rangkaian hanya tersedia dengan backend API PowerDNS."
 
 #: lib/Application/Controller/ListNetworksController.php:69
 msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
-msgstr "Siarkan CIDR yang valid (misalnya 192.168.0.0/16)."
+msgstr "Berikan CIDR yang sah (cth. 192.168.0.0/16)."
 
 #: lib/Application/Controller/ListNetworksController.php:72
 msgid "Provide a valid view name."
-msgstr "Dia menyediakan nama pandangan yang sah."
+msgstr "Berikan nama pandangan yang sah."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Network mapping saved."
-msgstr "Pemetaan jaringan yang disimpan."
+msgstr "Pemetaan rangkaian telah disimpan."
 
 #: lib/Application/Controller/ListNetworksController.php:78
 msgid "Failed to save network mapping."
-msgstr "Gagal menyimpan pemetaan jaringan."
+msgstr "Gagal menyimpan pemetaan rangkaian."
 
 #: lib/Application/Controller/ListNetworksController.php:86
 msgid "Network mapping removed."
-msgstr "Pemetaan jaringan network telah dipadam."
+msgstr "Pemetaan rangkaian telah dibuang."
 
 #: lib/Application/Controller/ListNetworksController.php:86
 msgid "Failed to remove network mapping."
-msgstr "Gagal membuang pemetaan jaringan."
+msgstr "Gagal membuang pemetaan rangkaian."
 
 #: lib/Application/Controller/ListNetworksController.php:101
 #: templates/modern/list_networks.html:5
@@ -3065,11 +2910,11 @@ msgstr "Network views"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus templat kebenaran."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam templat kebenaran."
 
 #: lib/Application/Controller/DeletePermTemplController.php:91
 msgid "The permission template has been deleted successfully."
-msgstr "Templat kebenaran telah berhasil dipadam."
+msgstr "Templat kebenaran telah berjaya dipadam."
 
 #: lib/Application/Controller/DeletePermTemplController.php:93
 msgid "The permission template could not be deleted."
@@ -3077,23 +2922,19 @@ msgstr "Templat kebenaran tidak dapat dipadam."
 
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
-msgstr "Fitur status PowerDNS dilumpuhkan dalam konfigurasi sistem."
+msgstr "Ciri status PowerDNS dilumpuhkan dalam konfigurasi sistem."
 
 #: lib/Application/Controller/PdnsStatusController.php:64
 msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
-msgstr ""
-"Anda tidak memiliki kebenaran untuk melihat status server PowerDNS. Hanya "
-"administrator yang dapat mengakses fitur ini."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat status pelayan PowerDNS. Hanya pentadbir boleh mengakses ciri ini."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr ""
-"Fitur API PowerDNS tidak dikonfigurasi. Sila tetapkan URL API dan kunci "
-"dalam konfigurasi sistem."
+msgstr "Ciri API PowerDNS tidak dikonfigurasikan. Sila tetapkan URL dan kunci API dalam konfigurasi sistem."
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
