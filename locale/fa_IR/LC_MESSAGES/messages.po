@@ -1919,7 +1919,7 @@ msgstr "شما اجازه ویرایش قالب های مجوز را نداری�
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
-msgstr "دانلود بازی Edit License"
+msgstr "ویرایش قالب مجوز"
 
 #: lib/Application/Controller/EditPermTemplController.php:126
 msgid "The permission template has been updated successfully."
@@ -11104,7 +11104,7 @@ msgstr "اضافه کردن کلید برای منطقه"
 
 #: templates/modern/dnssec_add_key.html:28
 msgid "Legacy PowerDNS detected"
-msgstr "دانلود بازی PowerDNS"
+msgstr "PowerDNS قدیمی شناسایی شد"
 
 #: templates/modern/dnssec_add_key.html:29
 msgid ""
@@ -13091,7 +13091,7 @@ msgstr "کپی همه"
 
 #: templates/modern/mfa_recovery_codes.html:53
 msgid "Download"
-msgstr "دانلود بازی Download"
+msgstr "دانلود"
 
 #: templates/modern/mfa_recovery_codes.html:60
 msgid "Back to MFA Settings"
@@ -13369,7 +13369,7 @@ msgstr "دکمه های Save"
 
 #: templates/modern/user_preferences.html:158
 msgid "Edit Zone View"
-msgstr "دانلود بازی Edit Zone View"
+msgstr "ویرایش نمای منطقه"
 
 #: templates/modern/user_preferences.html:164
 msgid "Show record ID"
@@ -13810,11 +13810,11 @@ msgstr "پرس‌وجوهای TCP"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
-msgstr "دانلود بازی اندروید"
+msgstr "اصابت‌های کش"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "دانلود بازی Misses"
+msgstr "عدم اصابت‌های کش"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
