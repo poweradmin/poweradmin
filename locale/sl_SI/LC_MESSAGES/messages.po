@@ -618,7 +618,7 @@ msgstr "Naslovi IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "En IP naslov ali omrežje na linijo (npr. 192.0.2.1 ali 192.0.0.0/24)"
+msgstr "En IP naslov ali omrežje na vrstico (npr. 192.0.2.1 ali 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -8837,9 +8837,7 @@ msgstr "Lokator L32 mora biti popolnoma določen naslov IPv4."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"L32 lokator ne more uporabljati oddajnih ali nedoločenih naslovov (0,0.0.0 "
-"ali 255.255.255.255)."
+msgstr "Lokator L32 ne more uporabljati oddajnih ali nedoločenih naslovov (0.0.0.0 ali 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""

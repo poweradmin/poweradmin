@@ -5263,7 +5263,7 @@ msgstr "Поље приоритета за DLV записе мора бити 0 
 msgid ""
 "DLV records were typically placed in special DLV registry domains, not in "
 "the same domain as the DNSKEY records they reference."
-msgstr "DLV су обично у посебним DLV regистрима, не у истом домену као DNSKEY."
+msgstr "DLV записи су обично смештани у посебне DLV регистарске домене, не у исти домен као DNSKEY записи на које упућују."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:149
 msgid ""
@@ -5284,8 +5284,7 @@ msgstr "Неважећа ознака кључа. Мора бити број 1-6
 msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
-msgstr ""
-"Key tag не идентификује јединствено DNSKEY. Више кључева може имати исти тag."
+msgstr "Поље key tag не идентификује јединствено DNSKEY. Више кључева може имати исти key tag."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -8199,7 +8198,7 @@ msgstr "Ово изгледа као ENUM домен. NAPTR треба E2U (RFC 
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "Сложени regексп обрасци у NAPTR могу бити тешки за одржавање."
+msgstr "Сложени regexp обрасци у NAPTR записима могу бити тешки за отклањање грешака и одржавање."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
@@ -8243,7 +8242,7 @@ msgstr "NAPTR услуга мора бити стринг у наводници�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "NAPTR regексп мора бити стринг у наводницима."
+msgstr "NAPTR regexp мора бити стринг у наводницима."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -8253,7 +8252,7 @@ msgstr "Поље replacement у NAPTR запису мора бити \".\" ил�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "NAPTR запис са regексп мора имати \".\" као замену."
+msgstr "NAPTR запис са regexp мора имати \".\" као замену."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -8272,21 +8271,19 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "NAPTR regексп мора почети разделником."
+msgstr "NAPTR regexp мора почети знаком разделника."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr ""
-"NAPTR regексп формат: разделник+обр.+разделник+замена+разделник+заставице."
+msgstr "NAPTR regexp мора имати формат разделник+образац+разделник+замена+разделник+заставице."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr ""
-"NAPTR regексп заставице (након трећег разделника) само \"i\" или празне."
+msgstr "NAPTR regexp заставице (након трећег разделника) треба да садрже само \"i\" или да буду празне."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8300,11 +8297,11 @@ msgstr "ENUM записи треба да имају \"U\" заставицу з
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regексп садржи потенцијално опасан образац: "
+msgstr "NAPTR regexp садржи потенцијално опасан образац: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "NAPTR regексп је предугачак. Максимум 1000 знакова."
+msgstr "NAPTR regexp је предугачак. Максимална дужина је 1000 знакова."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""

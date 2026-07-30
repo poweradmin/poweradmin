@@ -11629,7 +11629,7 @@ msgstr "يرجى إدخال بادئة الشبكة"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "على سبيل المثال، \"192.168.1.0/24\" أو \"10.0.0/20\""
+msgstr "على سبيل المثال، \"192.168.1.0/24\" أو \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""

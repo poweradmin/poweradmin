@@ -2614,7 +2614,7 @@ msgstr "У вас немає дозволу на перегляд шаблоні
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Шаблони зонwhile localizing."
+msgstr "Шаблони зон"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."

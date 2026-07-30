@@ -616,7 +616,7 @@ msgstr "آدرس های IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "یک آدرس IP یا شبکه در هر خط (به عنوان مثال، 192.0.2.1 یا 192.0.24)"
+msgstr "یک آدرس IP یا شبکه در هر خط (به عنوان مثال، 192.0.2.1 یا 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -8623,9 +8623,7 @@ msgstr "locator L32 باید یک آدرس IPv4 کاملا مشخص باشد."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"L32 locator نمی تواند از پخش یا آدرس های نامشخص استفاده کند (0.0.0.0 یا "
-"255.25.25.25."
+msgstr "لوکیتور L32 نمی‌تواند از آدرس‌های پخش همگانی یا نامشخص استفاده کند (0.0.0.0 یا 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -9969,12 +9967,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"هر شبکه (blockCIDR) دقیقاً به یک نظر می رسد. حل کنندگان در این شبکه تنها "
-"انواع منطقه ای را که به نظر نقشه زده شده اند، دریافت می کنند. PowerDNS "
-"طولانی ترین پیشوند شبکه ها را ارزیابی می کند، بنابراین یک Subnet خاص تر (به "
-"عنوان مثال شماره 1.0/24) یک محدوده گسترده تر (10.0.0.0/8/8/8/8/8) را که هر "
-"دو با یک مشتری مطابقت دارند، نادیده می گیرد."
+msgstr "هر شبکه (بلوک CIDR) دقیقاً به یک نما نگاشت می‌شود. حل‌کننده‌ها در آن شبکه فقط گونه‌های زون اختصاص‌یافته به آن نما را دریافت می‌کنند. PowerDNS شبکه‌ها را ابتدا بر اساس طولانی‌ترین پیشوند ارزیابی می‌کند، بنابراین یک زیرشبکه خاص‌تر (برای مثال 10.0.1.0/24) بر محدوده وسیع‌تر (10.0.0.0/8) اولویت دارد وقتی هر دو با یک کلاینت مطابقت داشته باشند."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -11608,7 +11601,7 @@ msgstr "لطفا یک پیشوند شبکه ارائه دهید"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "به عنوان مثال، \"92.168.1.0/24\" یا \"10.0.0.0/20\""
+msgstr "به عنوان مثال، \"192.168.1.0/24\" یا \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -13442,10 +13435,7 @@ msgstr "معکوس"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"برچسب ها: Type:txt content:sPF Wildcard درصد را برای جستجو اضافه می کند. "
-"معکوس تبدیل IPs به فرمت PTR (به عنوان مثال، 192.168.1.1 به 1.1.168.91.in-"
-"addr.arpa)"
+msgstr "نحو فیلتر: type:txt content:spf. Wildcard علامت % را برای جستجو اضافه می‌کند. Reverse آدرس‌های IP را به قالب PTR تبدیل می‌کند (به عنوان مثال، 192.168.1.1 به 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

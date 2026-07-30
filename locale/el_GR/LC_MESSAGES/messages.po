@@ -414,15 +414,15 @@ msgstr "Καμία"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "Monitor only for subdomains"
-msgstr "Παρακολούθηση μόνο για υποdomains"
+msgstr "Παρακολούθηση μόνο για υποτομείς"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Quarantine suspicious subdomain emails"
-msgstr "Καραντίνα ύποπτα υποdomain emails"
+msgstr "Καραντίνα ύποπτων μηνυμάτων από υποτομείς"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:84
 msgid "Reject suspicious subdomain emails"
-msgstr "Απόρριψη ύποπτων υποdomain emails"
+msgstr "Απόρριψη ύποπτων μηνυμάτων από υποτομείς"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:86
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
@@ -549,7 +549,7 @@ msgstr "Μη έγκυρη τιμή πολιτικής"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:268
 msgid "Invalid subdomain policy value"
-msgstr "Μη έγκυρη τιμή πολιτικής υποdomain"
+msgstr "Μη έγκυρη τιμή πολιτικής υποτομέα"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:275
 msgid "Percentage must be between 0 and 100"
@@ -635,7 +635,7 @@ msgstr "Διευθύνσεις IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "Μία διεύθυνση IP ή δίκτυο ανά γραμμή (π.χ. 192.0.2.1 ή 192.0.2.24)"
+msgstr "Μία διεύθυνση IP ή δίκτυο ανά γραμμή (π.χ. 192.0.2.1 ή 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -1016,9 +1016,7 @@ msgstr "Αυστηρή λειτουργία υποκαταστήματος"
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:119
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
-msgstr ""
-"Ενεργοποίηση αυστηρής λειτουργίας υποdomain (t=s). Απορρίπτει ανυπόγραφη "
-"αλληλογραφία από υποκατηγορίες."
+msgstr "Ενεργοποίηση αυστηρής λειτουργίας υποτομέα (t=s). Απορρίπτει ανυπόγραφη αλληλογραφία από υποτομείς."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:198
 msgid "Selector is required"
@@ -5380,17 +5378,13 @@ msgstr ""
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
-"Η χρονοσφραγίδα TSIG είναι άνω των 24 ωρών. Αυτό θα μπορούσε να υποδηλώνει "
-"μια επανάληψη επίθεσης ή θέμα συγχρονισμού clockολογιού."
+msgstr "Η χρονοσφραγίδα TSIG είναι άνω των 24 ωρών. Αυτό θα μπορούσε να υποδηλώνει επίθεση επανάληψης ή πρόβλημα συγχρονισμού ρολογιού."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr ""
-"Η χρονοσφραγίδα TSIG ορίζεται στο μέλλον. Αυτό θα μπορούσε να υποδεικνύει "
-"ένα θέμα συγχρονισμού clockολογιού."
+msgstr "Η χρονοσφραγίδα TSIG ορίζεται στο μέλλον. Αυτό θα μπορούσε να υποδηλώνει πρόβλημα συγχρονισμού ρολογιού."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
@@ -5482,10 +5476,7 @@ msgstr ""
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr ""
-"Ο κωδικός σφάλματος TSIG 18 (BADTIME) δείχνει ότι η χρονοσφραγίδα στο αρχείο "
-"TSIG είναι εκτός του επιτρεπόμενου χρονικού παραθύρου. Ελέγξτε συγχρονισμό "
-"clockολογιού."
+msgstr "Ο κωδικός σφάλματος TSIG 18 (BADTIME) δείχνει ότι η χρονοσφραγίδα στην εγγραφή TSIG είναι εκτός του επιτρεπόμενου χρονικού παραθύρου. Ελέγξτε τον συγχρονισμό ρολογιού."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
@@ -6888,9 +6879,7 @@ msgstr ""
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr ""
-"ΠΡΟΕΙ WARNINGΟΠΟΙΗΣΗ: Αυτή η υπογραφή δεν είναι ακόμα έγκυρη. Δεν θα "
-"επικυρωθεί από τους απολυτές DNSSEC μέχρι να επιτευχθεί ο χρόνος έναρξης."
+msgstr "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Αυτή η υπογραφή δεν είναι ακόμα έγκυρη. Δεν θα επικυρωθεί από τους αναλυτές DNSSEC μέχρι να επιτευχθεί ο χρόνος έναρξης."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
@@ -7291,9 +7280,7 @@ msgstr ""
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr ""
-"Το DNAME δημιουργεί συνθετικά ψευδώνυμα για όλα τα υποdomains του ονόματος "
-"ιδιοκτήτη του. Εξετάστε το προσεκτικά όταν σχεδιάζετε τη δομή της ζώνης σας."
+msgstr "Το DNAME δημιουργεί συνθετικά ψευδώνυμα για όλους τους υποτομείς του ονόματος ιδιοκτήτη του. Εξετάστε το προσεκτικά όταν σχεδιάζετε τη δομή της ζώνης σας."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
@@ -7466,9 +7453,7 @@ msgstr ""
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
-"Η \"σοαμινίμum σημαία (0x0002) δεν έχει οριστεί. Η επικύρωση του αύξοντος "
-"αριθμού SOA δεν μπορεί να εφαρμοστεί."
+msgstr "Η σημαία \"soaminimum\" (0x0002) δεν έχει οριστεί. Η επικύρωση του αύξοντος αριθμού SOA ενδέχεται να μην εφαρμοστεί."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -7877,9 +7862,7 @@ msgstr "Χρησιμοποιείτε έναν μη έγκυρο τομέα αν�
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr ""
-"Οι παράμετροι επικύρωσης SOA δεν καθορίζονται. Σετ κλήσεωνSOAParams () πρώτα "
-"ή να τους παρέχουν ως επιχειρήματα."
+msgstr "Οι παράμετροι επικύρωσης SOA δεν έχουν οριστεί. Καλέστε πρώτα τη setSOAParams() ή δώστε τις ως ορίσματα."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -8169,9 +8152,7 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr ""
-"Το πεδίο επιλογής SMIMEA πρέπει να είναι 0 (πλήρες πιστοποιητικό) ή 1 "
-"(υποκείμενοPublicKeyInfo)."
+msgstr "Το πεδίο επιλογής SMIMEA πρέπει να είναι 0 (πλήρες πιστοποιητικό) ή 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -12206,7 +12187,7 @@ msgstr "Παρακαλώ παράσχετε ένα πρόθεμα δικτύου
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "π.χ. \"192.168.1.0/24\" ή \"10.0.0/20\""
+msgstr "π.χ. \"192.168.1.0/24\" ή \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -15339,7 +15320,7 @@ msgstr "Con σύνδεσης βάσης δεδομένων"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "ΙσχύςDNS Σύστημα υποστήριξης"
+msgstr "Σύστημα υποστήριξης PowerDNS"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"

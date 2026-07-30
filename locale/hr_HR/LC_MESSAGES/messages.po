@@ -11140,7 +11140,7 @@ msgstr ""
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr "Za veće mreže trebat će vam odgovarajuće obrnute zone (npr. /16)."
+msgstr "Za veće mreže trebat će vam odgovarajuće obrnute zone (npr. 168.192.in-addr.arpa za /16 mrežu)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"

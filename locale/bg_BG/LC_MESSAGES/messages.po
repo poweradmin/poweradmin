@@ -622,7 +622,7 @@ msgstr "IPv4 Адреси"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "Един IP адрес или мрежа на линия (напр. 193.0.2.1 или 193.0.2.0/24)"
+msgstr "Един IP адрес или мрежа на линия (напр. 192.0.2.1 или 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -3053,7 +3053,7 @@ msgstr "Мрежови изгледи са достъпни само с Backend 
 
 #: lib/Application/Controller/ListNetworksController.php:69
 msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
-msgstr "Посочете валиден CIDR (напр. 191.168.0.01/16)."
+msgstr "Посочете валиден CIDR (напр. 192.168.0.0/16)."
 
 #: lib/Application/Controller/ListNetworksController.php:72
 msgid "Provide a valid view name."
@@ -4114,10 +4114,7 @@ msgstr "1. Цялата верига от проверки на SRV трябва
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr ""
-"2. Записите на TLSA трябва да бъдат намерени на  $port. "
-"$protocol$hostnameкъде $port,$protocol и $hostname са от целта на "
-"изследването на SRV"
+msgstr "2. Записите TLSA трябва да бъдат намерени на _$port._$protocol.$hostname, където $port, $protocol и $hostname са от целта на SRV търсенето"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -7083,9 +7080,7 @@ msgstr "Това изглежда е адрес на IANA OUI (00-00-5E)."
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr ""
-"Този ДНКME запис изглежда е в зона апекс. Според RFC 6672 използването на "
-"DNAME в зоната изисква специално третиране на NS и свързаните с тях записи."
+msgstr "Този DNAME запис изглежда е в зона апекс. Според RFC 6672 използването на DNAME в апекса на зоната изисква специално третиране на NS и свързаните с тях записи."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
@@ -7105,7 +7100,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
-msgstr "Приоритетното поле за ДНКME записите трябва да бъде 0 или празно."
+msgstr "Приоритетното поле за DNAME записите трябва да бъде 0 или празно."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:126
 msgid ""
@@ -10940,7 +10935,7 @@ msgstr ""
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
-msgstr "Пример: www,A,192.168.1.1,0,360,web сървър"
+msgstr "Пример: www,A,192.168.1.1,0,3600,web сървър"
 
 #: templates/modern/bulk_record_add.html:31
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
@@ -11973,7 +11968,7 @@ msgstr "Моля, представете представка на мрежат�
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "напр. \"192.168.1.0/24\" или \"10.0.0/20\""
+msgstr "напр. \"192.168.1.0/24\" или \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -13826,10 +13821,7 @@ msgstr "Назад"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"Синтаксис на филтъра: тип:txt съдържание: spf. Wildcard добавя % за търсене. "
-"Обратно конвертира IPs във формат PTR (напр. 192.168.1.1 към 1.1.168.192.в-"
-"addr.arpa)"
+msgstr "Синтаксис на филтъра: type:txt content:spf. Wildcard добавя % за търсене. Reverse конвертира IP адреси във формат PTR (напр. 192.168.1.1 към 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

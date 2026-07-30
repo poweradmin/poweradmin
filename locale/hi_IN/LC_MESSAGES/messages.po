@@ -7182,9 +7182,7 @@ msgstr "यह प्रसारण पता (सभी एक) है, जो
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr ""
-"रिकॉर्ड नाम एक मानक रिवर्स DNS ज़ोन नाम (IPv4 या IPv6 के लिए .ip6.arpa के साथ "
-"समाप्त हो जाएगा) दिखाई नहीं देता है।"
+msgstr "रिकॉर्ड नाम एक मानक रिवर्स DNS ज़ोन नाम नहीं दिखता (IPv4 के लिए .in-addr.arpa या IPv6 के लिए .ip6.arpa के साथ समाप्त होना चाहिए)।"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""

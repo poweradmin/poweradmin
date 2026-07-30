@@ -8770,9 +8770,7 @@ msgstr ""
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr ""
-"זהו שיא ENUM NAPTR (RFC 6116). להבטיח את התחום תחת עץ E164.arpa או עץ פרטי "
-"ENUM."
+msgstr "זו נראית רשומת ENUM NAPTR (RFC 6116). ודא שהדומיין נמצא תחת e164.arpa או תחת עץ ENUM פרטי."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -11355,7 +11353,7 @@ msgstr "נא לספק תיקון רשת"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "לדוגמה, \"8.9.168.168.1.0/24\" או \"10.0.0.0.0/20\""
+msgstr "לדוגמה, \"192.168.1.0/24\" או \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""

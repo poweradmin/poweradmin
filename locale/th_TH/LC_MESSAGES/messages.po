@@ -8602,9 +8602,7 @@ msgstr "NAPTR แบบรีเซ็ต (หลังการดีรีม�
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr ""
-"นี้ดูเหมือนจะเป็นสถิติ ENUM NAPTR (RFC 6116). เพื่อให้แน่ใจว่าโดเมนจะอยู่ภายใต้ e164. arpa "
-"หรือต้นเอ็นทูมเอกชน"
+msgstr "นี่ดูเหมือนจะเป็นบันทึก ENUM NAPTR (RFC 6116) ตรวจสอบให้แน่ใจว่าโดเมนอยู่ภายใต้ e164.arpa หรือทรี ENUM ส่วนตัว"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -11177,7 +11175,7 @@ msgstr "โปรดให้คำนำหน้าของเครือข
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "e.g., \"192.168.1.0/24\" หรือ \"10.0.0/20\"."
+msgstr "เช่น \"192.168.1.0/24\" หรือ \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -12978,9 +12976,7 @@ msgstr "กลับด้าน"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"ไวยากรณ์ตัวกรอง: ประเภท: txtเนื้อหา: spf ไวลด์การ์ดเพิ่ม % เพื่อค้นหา กลับค่า IPs แบบ PTR "
-"(เช่น 192. 168. 1 ถึง 1. 168. 192. addr.arpa)"
+msgstr "ไวยากรณ์ตัวกรอง: type:txt content:spf ไวลด์การ์ดเพิ่ม % เพื่อค้นหา Reverse แปลงที่อยู่ IP เป็นรูปแบบ PTR (เช่น 192.168.1.1 เป็น 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

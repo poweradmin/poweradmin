@@ -620,8 +620,7 @@ msgstr "IPv4-adresser"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr ""
-"En IP-adresse eller netværk pr. linje (f.eks. 192.0.2.1 eller 192.0.2.0 / 24)"
+msgstr "En IP-adresse eller netværk pr. linje (f.eks. 192.0.2.1 eller 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -3052,7 +3051,7 @@ msgstr "Netværksvisninger er kun tilgængelige med PowerDNS API motor."
 
 #: lib/Application/Controller/ListNetworksController.php:69
 msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
-msgstr "Angiv en gyldig CIDR (f.eks. 192.168.0.0 / 16)."
+msgstr "Angiv en gyldig CIDR (f.eks. 192.168.0.0/16)."
 
 #: lib/Application/Controller/ListNetworksController.php:72
 msgid "Provide a valid view name."
@@ -10002,7 +10001,7 @@ msgstr "CNAME: <code>target.[ZONE]</code> eller <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TXT for SPF: <code> v = spf1 mx ip4: 192.0.2.0 / 24 - all </code>"
+msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -10181,12 +10180,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Hvert netværk (CIDR blok) kort til præcis én visning. Resolvers i dette "
-"netværk modtager kun zonevarianter tildelt den kortlagte visning. PowerDNS "
-"evaluerer netværk longest- prefix først, så en mere specifik subnet (for "
-"eksempel 10.0.1.0 / 24) tilsidesætter et bredere område (10.0.0.0 / 8), når "
-"begge matcher en klient."
+msgstr "Hvert netværk (CIDR-blok) knyttes til præcis én visning. Resolvers i dette netværk modtager kun de zonevarianter, der er tildelt den tilknyttede visning. PowerDNS evaluerer netværk efter længste præfiks først, så et mere specifikt subnet (for eksempel 10.0.1.0/24) tilsidesætter et bredere område (10.0.0.0/8), når begge matcher en klient."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -11838,7 +11832,7 @@ msgstr "Giv venligst et netværkspræfiks"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "f.eks. \"192.168.1.0 / 24\" eller \"10.0.0.0 / 20\""
+msgstr "f.eks. \"192.168.1.0/24\" eller \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -11945,17 +11939,13 @@ msgstr "For eksempel:"
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
-msgstr ""
-"For netværk 192.168.1.0 / 24, du har brug for en omvendt zone for "
-"1.168.192.in- addr.arpa"
+msgstr "For netværk 192.168.1.0/24 har du brug for en omvendt zone for 1.168.192.in-addr.arpa"
 
 #: templates/modern/batch_ptr_record.html:150
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr ""
-"For større netværk, vil du have brug for de tilsvarende omvendte zoner (fx, "
-"168.192.in- addr.arpa for a / 16 netværk)"
+msgstr "For større netværk har du brug for de tilsvarende omvendte zoner (f.eks. 168.192.in-addr.arpa for et /16-netværk)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"
@@ -13686,10 +13676,7 @@ msgstr "Omvendt"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"Filtersyntaks: type: txt content: spf. Wildcard tilføjer% til søgning. "
-"Omvendt konverterer IPs til PTR format (fx 192.168.1.1 til 1.1.168.192.in- "
-"addr.arpa)"
+msgstr "Filtersyntaks: type:txt content:spf. Wildcard tilføjer % til søgningen. Reverse konverterer IP-adresser til PTR-format (f.eks. 192.168.1.1 til 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

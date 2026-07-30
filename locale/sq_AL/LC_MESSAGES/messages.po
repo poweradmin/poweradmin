@@ -7382,9 +7382,7 @@ msgstr ""
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr ""
-"Emri i regjistrimit nuk duket të jetë një emër standart i kundërt i zonës "
-"DNS (duhet të përfundojë me .in-adr.arpa për IPv4 ose .ip6.arpa për IPv6)."
+msgstr "Emri i rekordit nuk duket të jetë një emër standard i zonës së kundërt DNS (duhet të përfundojë me .in-addr.arpa për IPv4 ose .ip6.arpa për IPv6)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -8881,9 +8879,7 @@ msgstr "L32 locator duhet të jetë një adresë IPv4 e specifikuar plotësisht.
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"Locatori L32 nuk mund të përdorë adresa të transmetuara ose të papërcaktuara "
-"(0.0.0 ose 255.255.255.255)."
+msgstr "Lokatori L32 nuk mund të përdorë adresa transmetimi ose të papërcaktuara (0.0.0.0 ose 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -10252,12 +10248,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Çdo rrjet (lockR) harta për një pamje tamam. Në këtë rrjet kanë vetëm "
-"variantet e zonës që janë caktuar për pamjen e hartës. PowerDNS vlerëson "
-"parametrat më të gjatë në fillim, kështu që një nënnet më specifik (për "
-"shembull 10.0.0.0/24) heq një gamë më të gjerë (10.0.0.0/8) kur të dyja "
-"përputhen me një klient."
+msgstr "Çdo rrjet (bllok CIDR) hartëzohet në saktësisht një pamje. Zgjidhësit në atë rrjet marrin vetëm variantet e zonës të caktuara për atë pamje. PowerDNS i vlerëson rrjetet fillimisht sipas prefiksit më të gjatë, prandaj një nënrrjet më specifik (për shembull 10.0.1.0/24) mbizotëron mbi një interval më të gjerë (10.0.0.0/8) kur të dy përputhen me një klient."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -11916,7 +11907,7 @@ msgstr "Ju lutem jepni një prefiks rrjeti"
 
 #: templates/modern/batch_ptr_record.html:52
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr "e.g., \"192.168.1.0/24\" ose \"10.0.0/20\""
+msgstr "p.sh., \"192.168.1.0/24\" ose \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
@@ -12023,16 +12014,13 @@ msgstr "Për shembull:"
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
-msgstr ""
-"Për rrjetin 192.168.1.0/24, ju duhet një zonë e kundërt për 1.168.192.in.arpa"
+msgstr "Për rrjetin 192.168.1.0/24, ju duhet një zonë e kundërt për 1.168.192.in-addr.arpa"
 
 #: templates/modern/batch_ptr_record.html:150
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr ""
-"Për rrjetet më të mëdha, do t'ju duhen zonat përkatëse të kundërta (p.sh. "
-"168.192.in.adr.arpa për një rrjet /16)"
+msgstr "Për rrjetet më të mëdha, do t'ju duhen zonat përkatëse të kundërta (p.sh. 168.192.in-addr.arpa për një rrjet /16)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"
@@ -13762,9 +13750,7 @@ msgstr "Loop"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"Filtro në sintaksë: lloji përmbajtja:txt:spf. Wildcard shton % për të "
-"kërkuar. ISP në formatin PTR (p.sh. 192.168.1.1 në 1.1.168.192.in-adr.arpa)"
+msgstr "Sintaksa e filtrit: type:txt content:spf. Wildcard shton % për të kërkuar. Reverse konverton adresat IP në formatin PTR (p.sh. 192.168.1.1 në 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

@@ -8329,9 +8329,7 @@ msgstr "Lokator L32 harus merupakan alamat IPv4 yang sepenuhnya dinyatakan."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"Lokator L32 tidak dapat menggunakan alamat siaran atau tidak dinyatakan "
-"(0.0.0.0 atau 255.255.255)."
+msgstr "Lokator L32 tidak dapat menggunakan alamat siaran atau tidak dinyatakan (0.0.0.0 atau 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
