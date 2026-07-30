@@ -346,7 +346,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
-msgstr "DMARSKI zapis"
+msgstr "Zapis DMARC"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
@@ -3987,8 +3987,7 @@ msgstr "Prednostno polje za evidence IPSECKEY mora biti 0 ali prazno"
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr ""
-"Za zagotovitev varnega prenosa gradiva za tipkanje (RFC 4025, oddelek 4)."
+msgstr "Zapisi IPSECKEY naj se uporabljajo z DNSSEC za zagotovitev varnega prenosa ključnega gradiva (RFC 4025, oddelek 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -5438,8 +5437,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr ""
-"Zapise ZONENMD je treba postaviti na območje apex (enako kot zapis SOA)."
+msgstr "Zapise ZONEMD je treba postaviti na vrh cone (enako kot zapis SOA)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -5461,9 +5459,7 @@ msgstr ""
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"Vrednosti sheme CONENMD 240-255 so rezervirane za zasebno uporabo in morda "
-"niso interoperabilne."
+msgstr "Vrednosti sheme ZONEMD 240-255 so rezervirane za zasebno uporabo in morda niso interoperabilne."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5482,17 +5478,13 @@ msgstr ""
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"Vrednosti algoritma ZONENMD hash 240-255 so rezervirane za zasebno uporabo "
-"in morda niso interoperabilne."
+msgstr "Vrednosti algoritma zgoščevanja ZONEMD 240-255 so rezervirane za zasebno uporabo in morda niso interoperabilne."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Zapis ZONENMD mora vsebovati serijski, shematski, hash-algoritem in prebavni "
-"prostor."
+msgstr "Zapis ZONEMD mora vsebovati serijsko številko, shemo, algoritem zgoščevanja in izvleček, ločene s presledki."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5520,29 +5512,25 @@ msgstr "Shema ZONEMD 0 je rezervirana in ne za standardno uporabo."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "Algoritem hašiša ZONENMD mora biti številka med 0 in 255."
+msgstr "Algoritem zgoščevanja ZONEMD mora biti število med 0 in 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONENMD hash algoritem 0 je rezerviran in ne za standardno uporabo."
+msgstr "Algoritem zgoščevanja ZONEMD 0 je rezerviran in ni za standardno uporabo."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "Prebava zdravila CONENMD mora biti šestnajstiški niz."
+msgstr "Izvleček ZONEMD mora biti šestnajstiški niz."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr ""
-"Prebava zdravila ZONENMD mora biti najmanj 24 šestnajstiških znakov (12 "
-"oktetov)."
+msgstr "Izvleček ZONEMD mora imeti vsaj 24 šestnajstiških znakov (12 oktetov)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"Prebava ZONENMD za SHA-384 (algoritem 1) mora biti natančno 96 "
-"šestnajstiških znakov (48 oktetov)."
+msgstr "Izvleček ZONEMD za SHA-384 (algoritem 1) mora imeti natančno 96 šestnajstiških znakov (48 oktetov)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -6988,9 +6976,7 @@ msgstr ""
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"EuI64 zapis uporablja ločevalnike debelega črevesa (xx:xx:xx:xx:xx:xx) "
-"vendar zahteva ločevalnike vezja (xx-xx-xx-xx-xx-xx-xx-xx-xx-xx-xx)."
+msgstr "Zapis EUI64 uporablja dvopičja kot ločila (xx:xx:xx:xx:xx:xx:xx:xx), vendar zahteva vezaje kot ločila (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -8950,8 +8936,7 @@ msgstr "Neveljavna vrednost za prednostno polje zapisa SRV."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr ""
-"V zapisih AAA se ne smejo uporabljati neopredeljeni (::) ali naslovi IPv6."
+msgstr "V zapisih AAAA se ne smejo uporabljati nedoločeni (::) ali povratnozančni (::1) naslovi IPv6."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -8962,9 +8947,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
-"Neveljavna vrednost za prednostno polje. Zapisi AAA morajo imeti prednostno "
-"vrednost 0."
+msgstr "Neveljavna vrednost za polje prednosti. Zapisi AAAA morajo imeti vrednost prednosti 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -9418,11 +9401,11 @@ msgstr "Odstranite podvojene evidence SOA, pri čemer je samo ena."
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "Soa zapis ne na apex. Najden na \"%s\" vendar cona je \"%s\"."
+msgstr "Zapis SOA ni na vrhu cone. Najden na \"%s\", cona pa je \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
-msgstr "Premakni zapis v območje."
+msgstr "Premaknite zapis SOA na vrh cone."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
@@ -9499,7 +9482,7 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR posodobitev preskočil: tip zapisa ni A ali AAA."
+msgstr "Posodobitev PTR preskočena: vrsta zapisa ni A ali AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."

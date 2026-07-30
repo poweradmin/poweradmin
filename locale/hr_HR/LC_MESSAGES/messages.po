@@ -2155,7 +2155,7 @@ msgstr "Zona je uspješno potpisana."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Zahtjev za potpisivanje zone uspješan, ali provjera nije uspjela."
+msgstr "Zahtjev za potpisivanje zone uspješan, ali provjera nije uspjela. Provjerite DNSSEC ključeve."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2451,7 +2451,7 @@ msgstr "Zona je uspješno stvorena i potpisana DNSSEC-om."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Zona je stvorena i potpisivanje zatraženo, ali provjera nije uspjela."
+msgstr "Zona je stvorena i potpisivanje zatraženo, ali provjera nije uspjela. Provjerite DNSSEC ključeve."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -4032,8 +4032,7 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"Kod korištenja CNAME-a, cijeli lanac mora biti DNSSEC potpisan (RFC 7671)."
+msgstr "Kod korištenja CNAME-a, cijeli CNAME lanac mora biti DNSSEC potpisan da bi TLSA ispravno radio (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -4184,14 +4183,13 @@ msgstr "Prema RFC 5155 i RFC 9077, NSEC3PARAM zapisi trebali bi imati isti TTL k
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3PARAM zapisi su dio DNSSEC i trebaju se upravljati s ostalima."
+msgstr "NSEC3PARAM zapisi su dio DNSSEC-a i trebaju se upravljati samo zajedno s ostalim DNSSEC zapisima (DNSKEY, RRSIG, itd.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Ručno uređivanje NSEC3PARAM nije preporučeno - generiraju se automatski."
+msgstr "Ručno uređivanje NSEC3PARAM zapisa nije preporučeno jer ih obično automatski generiraju DNSSEC-svjesni poslužitelji imena."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
@@ -4769,14 +4767,13 @@ msgstr "Ako je enumeracija zone zabrinjavajuća, razmotrite NSEC3 (RFC 5155)."
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC zapisi su dio DNSSEC i trebaju se upravljati s ostalim DNSSEC zapisima."
+msgstr "NSEC zapisi su dio DNSSEC-a i trebaju se upravljati samo zajedno s ostalim DNSSEC zapisima (DNSKEY, RRSIG, itd.)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "Ručno uređivanje NSEC nije preporučeno - generiraju se automatski."
+msgstr "Ručno uređivanje NSEC zapisa nije preporučeno jer ih obično automatski generiraju DNSSEC-svjesni poslužitelji imena."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
@@ -4799,15 +4796,13 @@ msgstr "Polje sljedećeg imena domene mora sadržavati sljedeće vlasničko ime 
 msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
-msgstr "Ako je ovo posljednji NSEC u zoni, sljedeće ime treba biti apex."
+msgstr "Ako je ovo posljednji NSEC zapis u zoni, sljedeće ime domene treba biti apex zone (ime vlasnika SOA RR zapisa zone)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the NSEC "
 "owner name. An empty type bitmap is unusual."
-msgstr ""
-"Type bit maps trebaju označavati postojeće RR tipove. Prazan bitmap je "
-"neobičan."
+msgstr "Type bit maps trebaju označavati koji RR tipovi postoje na NSEC owner imenu. Prazan bitmap je neobičan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
@@ -6126,9 +6121,7 @@ msgstr "Algoritam 5 (RSA/SHA-1) smatra se nesigurnim i treba zamijeniti."
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr ""
-"Algoritam 7 koristi SHA-1 koji nije siguran. Koristite RSA/SHA-256 ili "
-"novije."
+msgstr "Algoritam 7 (RSASHA1-NSEC3-SHA1) koristi SHA-1 koji se više ne smatra sigurnim. Razmotrite RSA/SHA-256 ili novije algoritme."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
@@ -6155,15 +6148,13 @@ msgstr ""
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr "Algoritam 15 (ED25519) moderna sigurnost, slabija kompatibilnost."
+msgstr "Algoritam 15 (ED25519) nudi modernu sigurnost, ali može imati problema s kompatibilnošću sa starijim DNSSEC validatorima."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
-msgstr ""
-"Algoritam 16 (ED448) moderna sigurnost, slabija kompatibilnost sa starijim "
-"validatorima."
+msgstr "Algoritam 16 (ED448) nudi snažnu modernu sigurnost, ali može imati problema s kompatibilnošću sa starijim DNSSEC validatorima."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
@@ -6229,8 +6220,7 @@ msgstr "Ovaj potpis ističe za 30 dana. Planirajte obnovu."
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr ""
-"UPOZORENJE: Potpis još nije valjan. Bit će validiran nakon inception vremena."
+msgstr "UPOZORENJE: Ovaj potpis još nije valjan. DNSSEC resolveri ga neće validirati dok se ne dosegne inception vrijeme."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
@@ -6281,7 +6271,7 @@ msgstr "RRSIG zapisi dio su DNSSEC-a i pružaju kriptografske potpise za DNS zap
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "Zapamtite da RRSIG zapisi moraju biti ponovno generirani prije isteka."
+msgstr "Zapamtite da RRSIG zapisi moraju biti ponovno generirani prije datuma isteka kako bi se održala DNSSEC validacija."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -6705,9 +6695,7 @@ msgstr ""
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
-"\"soaminimum\" zastavica (0x0002) nije postavljena. Provjera serijskog broja "
-"možda neće biti."
+msgstr "\"soaminimum\" zastavica (0x0002) nije postavljena. Provjera SOA serijskog broja možda neće biti nametnuta."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -7531,8 +7519,7 @@ msgstr "CDNSKEY zastavice moraju biti 0, 256 ili 257."
 msgid ""
 "Flag 257 indicates a Key Signing Key (KSK). Ensure this key is properly "
 "managed according to your DNSSEC key rollover policy."
-msgstr ""
-"Zastavica 257 označava Key Signing Key (KSK). Pravilno upravljajte ključem."
+msgstr "Zastavica 257 označava Key Signing Key (KSK). Pobrinite se da se ovim ključem pravilno upravlja u skladu s vašom DNSSEC politikom rotacije ključeva."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
@@ -8269,14 +8256,13 @@ msgstr "Prema RFC 5155 i RFC 9077, NSEC3 zapisi trebali bi imati isti TTL kao po
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC3 zapisi su dio DNSSEC i trebaju se upravljati s ostalim DNSSEC zapisima."
+msgstr "NSEC3 zapisi su dio DNSSEC-a i trebaju se upravljati samo zajedno s ostalim DNSSEC zapisima (DNSKEY, RRSIG, itd.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "Ručno uređivanje NSEC3 nije preporučeno - automatski se generiraju."
+msgstr "Ručno uređivanje NSEC3 zapisa nije preporučeno jer ih obično automatski generiraju DNSSEC-svjesni poslužitelji imena."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -8484,8 +8470,7 @@ msgstr "NAPTR regexp je predug. Maksimum 1000 znakova."
 msgid ""
 "DNSKEY records are typically placed at the zone apex. This record does not "
 "appear to be at a zone apex, which is unusual for DNSSEC deployments."
-msgstr ""
-"DNSKEY zapisi se obično stavljaju na apex. Ovaj nije na apexu - neobično."
+msgstr "DNSKEY zapisi se obično stavljaju na apex zone. Ovaj zapis izgleda da nije na apexu zone, što je neobično za DNSSEC implementacije."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
@@ -12845,9 +12830,7 @@ msgstr "Obrnuto"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"Sintaksa filtra: type:txt content:spf. Wildcard dodaje %. Reverse konvertira "
-"IP."
+msgstr "Sintaksa filtra: type:txt content:spf. Wildcard dodaje % u pretragu. Reverse konvertira IP adrese u PTR format (npr. 192.168.1.1 u 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"
