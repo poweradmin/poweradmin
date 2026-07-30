@@ -6095,19 +6095,17 @@ msgstr "Posten måste vara en icke-tom sträng."
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr ""
-"Postnivån %s är ogiltig. Postnivån får endast innehålla alfanumeriska "
-"tecken, bindestreck och understreck."
+msgstr "MINFO-posten måste innehålla både ansvarig brevlåda och felbrevlåda, åtskilda med ett mellanslag (RFC 1035 avsnitt 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr "Posten %s är ogiltig."
+msgstr "Ogiltigt värdnamn för ansvarig brevlåda (RMAILBX)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "MX-prioriteten måste vara ett heltal mellan 0 och 65535."
+msgstr "RFC 1035 noterar att många e-postlistor använder en brevlåda \"list-name-request\" för fältet ansvarig brevlåda."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -6117,7 +6115,7 @@ msgstr "Att använda \".\" (roten) för RMAILBX anger att ägaren av MINFO-poste
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "SRV-vikten måste vara ett heltal mellan 0 och 65535."
+msgstr "Ogiltigt värdnamn för felbrevlåda (EMAILBX)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
