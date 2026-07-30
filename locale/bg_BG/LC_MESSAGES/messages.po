@@ -602,7 +602,7 @@ msgstr "Разрешаване на всички сървъри, изброен�
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "Записи A/AAA"
+msgstr "Записи A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -658,7 +658,7 @@ msgstr "Допълнителни механизми"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "Допълнителни домакини на A/AAA"
+msgstr "Допълнителни хостове A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
@@ -887,9 +887,7 @@ msgstr "Невалиден формат на CA домейн"
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr ""
-"Използването на \";\" позволява на всички сертифициращи органи да издават "
-"сертификати. Това нарушава целта на записите на САА."
+msgstr "Използването на \";\" позволява на ВСИЧКИ сертифициращи органи да издават сертификати. Това обезсмисля предназначението на записите CAA."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
@@ -1589,18 +1587,18 @@ msgstr "Записът и съответният му PTR запис са изт
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
-msgstr "Записът и съответният му запис A/AAA бяха изтрити успешно."
+msgstr "Записът и съответният му запис A/AAAA бяха изтрити успешно."
 
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr "Записът е изтрит успешно. Не е намерено съвпадение."
+msgstr "Записът е изтрит успешно. Не е намерен съответстващ запис PTR."
 
 #: lib/Application/Controller/DeleteRecordController.php:237
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "Записът е изтрит успешно. Не е открит подобен рекорд A/AAA."
+msgstr "Записът е изтрит успешно. Не е намерен съответстващ запис A/AAAA."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
@@ -2560,7 +2558,7 @@ msgstr "Зоната беше добавена успешно."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:81
 msgid "Batch PTR record creation is not enabled."
-msgstr "Грешка при създаване на албума."
+msgstr "Пакетното създаване на PTR записи не е разрешено."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:88
 msgid "You do not have permission to edit DNS records."
@@ -2859,7 +2857,7 @@ msgstr "Записът по подразбиране SOA е създаден у�
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Failed to create default SOA record"
-msgstr "Грешка при създаване на запис по подразбиране"
+msgstr "Неуспешно създаване на SOA запис по подразбиране"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:171
 msgid "Invalid check type"
@@ -5150,8 +5148,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr ""
-"Приоритетното поле за записите на OpenPGPKEY трябва да бъде 0 или празно"
+msgstr "Приоритетното поле за записите OPENPGPKEY трябва да бъде 0 или празно"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
@@ -5169,7 +5166,7 @@ msgstr "Съдържанието на рекорда OPENPGPKEY не може д
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Невалидни знаци в съдържанието на записа OpenPGPKEY."
+msgstr "Невалидни знаци в съдържанието на записа OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
@@ -5178,25 +5175,20 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "Записът на OpENPGPKEY съдържа невалидни данни от база 64."
+msgstr "Записът OPENPGPKEY съдържа невалидни base64 данни."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
-"Записът на OpenPGPKEY превишава 4KB по размер. RFC 7929 препоръчва воденето "
-"на DNS записи възможно най-малък, за да се гарантира надежден транспорт. "
-"Обмисли използването на минимален формат за експортиране."
+msgstr "Записът OPENPGPKEY превишава 4KB по размер. RFC 7929 препоръчва DNS записите да се поддържат възможно най-малки, за да се гарантира надежден транспорт. Обмислете използването на минимален формат за експортиране на ключа."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"Рекордът OpenPGPKEY е необичайно малък. Проверете, че това е валиден "
-"публичен ключ OpenPGP."
+msgstr "Записът OPENPGPKEY е необичайно малък. Проверете дали това е валиден публичен ключ OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -5317,15 +5309,11 @@ msgstr ""
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr ""
-"В бъдеще е определен времевият печат на ТСОС. Това може да показва проблем с "
-"синхронизирането на часовника."
+msgstr "Времевият печат на TSIG е зададен в бъдещето. Това може да показва проблем със синхронизирането на часовника."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr ""
-"Ключовете на ТСОС \"Телематични приложения\" следва периодично да се сменят "
-"като най-добра практика в областта на сигурността."
+msgstr "Ключовете TSIG следва периодично да се сменят като добра практика за сигурност."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -5339,18 +5327,13 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Точните системни часовници са необходими както за клиента, така и за "
-"сървъра, за да работят правилно."
+msgstr "Точни системни часовници са необходими както на клиента, така и на сървъра, за да работи TSIG правилно."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"Записът от ТСОС \"Телематични приложения\" трябва да съдържа най-малко името "
-"на алгоритъма, времевия печат, фъдж, мак, оригинален идентификатор, грешка и "
-"други елементи, отделени от пространствата."
+msgstr "Записът TSIG трябва да съдържа поне algorithm-name, timestamp, fudge, mac, original-id, error и other-len, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5382,9 +5365,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr ""
-"Оригиналният идентификационен номер на ТСОС трябва да бъде номер между 0 и "
-"65535."
+msgstr "Оригиналният идентификатор на TSIG трябва да бъде число между 0 и 65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
@@ -5394,35 +5375,25 @@ msgstr "Грешката от TSIG трябва да бъде валиден DNS
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
-msgstr ""
-"Код за грешка 16 на ТСОС (BADSIG) показва, че подписът в регистъра на ТСОС е "
-"невалиден. Проверка на ключове и крипто конфигурация."
+msgstr "Код за грешка 16 на TSIG (BADSIG) показва, че подписът в записа TSIG е невалиден. Проверете ключовете и крипто конфигурацията."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr ""
-"Код за грешка 17 на ТСОС (BADKEY) показва, че ключът, използван в регистъра "
-"на ТСОС \"Телематични приложения\" е невалиден. Проверката на ключа е "
-"конфигурирана на двата DNS сървъра."
+msgstr "Код за грешка 17 на TSIG (BADKEY) показва, че ключът, използван в записа TSIG, е невалиден. Проверете дали ключът е конфигуриран и на двата DNS сървъра."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr ""
-"Код на грешката 18 на ТСОС (BADTIME) показва, че времето в записът на ТСОС "
-"\"Телематични приложения\" е извън разрешеното времево време. Проверка на "
-"синхронизирането на часовника."
+msgstr "Код за грешка 18 на TSIG (BADTIME) показва, че времевият печат в записа TSIG е извън разрешения времеви прозорец. Проверете синхронизирането на часовника."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
-"Код на грешката 22 на ТСОС (BADTRUNC) показва, че невалидни са невалидните "
-"MAC в досието на ТСОС. Проверете конфигурацията MAC размер."
+msgstr "Код за грешка 22 на TSIG (BADTRUNC) показва, че съкратеният MAC в записа TSIG е невалиден. Проверете конфигурацията за размер на MAC."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
@@ -5431,9 +5402,7 @@ msgstr "TSIG other-len трябва да бъде неотрицателно ц�
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"Другите данни от ТСОС \"Телематични приложения\" трябва да бъдат валидна "
-"базова 64-кодирана низ или шестединичен низ."
+msgstr "Другите данни на TSIG трябва да бъдат валиден base64-кодиран низ или шестнадесетичен низ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -5500,9 +5469,7 @@ msgstr ""
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr ""
-"Серийният номер в досието на ZONEMD трябва да съвпада със серийния номер на "
-"зоната."
+msgstr "Серийният номер в записа ZONEMD трябва да съвпада със серийния номер SOA на зоната."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
@@ -6455,7 +6422,7 @@ msgstr "Това не е валиден CNAME. Вече има запис с т�
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "Това не е валиден CNAME. Записахте ли запис на MS или NS?"
+msgstr "Това не е валиден CNAME. Присвоихте ли запис MX или NS на записа?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
@@ -7324,9 +7291,7 @@ msgstr ""
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr ""
-"В този запис няма флагове. Записът не може да се обработва незабавно от "
-"родителски агенти."
+msgstr "В този запис CSYNC няма зададени флагове. Записът може да не бъде обработен незабавно от родителските агенти."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
@@ -7356,9 +7321,7 @@ msgstr ""
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr ""
-"Невалиден SOA сериен в CSINC рекорд. Тя трябва да бъде 32-битово неподписано "
-"число (0-4294967295)."
+msgstr "Невалиден SOA сериен номер в записа CSYNC. Той трябва да бъде 32-битово цяло число без знак (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -9063,7 +9026,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "Целта не може да е празна."
+msgstr "Целта SRV не може да бъде празна."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -9071,7 +9034,7 @@ msgstr "Когато целта е \"\" (без услуга), порт и те�
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "Невалидна мишена."
+msgstr "Невалидна цел SRV."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
@@ -9081,9 +9044,7 @@ msgstr "Невалидна стойност за приоритетното по
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr ""
-"Неопределени (::) или обратна връзка (:1) IPv6 адреси не трябва да се "
-"използват в АААА записи."
+msgstr "Неопределени (::) или loopback (::1) IPv6 адреси не трябва да се използват в записи AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -9095,9 +9056,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
-"Невалидна стойност за приоритетно поле. Записите на АААА трябва да имат "
-"приоритетна стойност от 0."
+msgstr "Невалидна стойност за приоритетното поле. Записите AAAA трябва да имат приоритетна стойност 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -9642,7 +9601,7 @@ msgstr "Пропусната актуализация на PTR: типът за�
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Записът е премахнат."
+msgstr "Остарелият запис PTR е премахнат."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -12047,19 +12006,17 @@ msgstr "Използване на стойността по подразбира
 
 #: templates/modern/batch_ptr_record.html:86
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Създаване на архиви на A/AAA в първична зона"
+msgstr "Създаване на A/AAAA записи в първичната зона"
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr "Създаване на PTR само за съществуващи А записи в предна зона"
+msgstr "Създаване на PTR само за съществуващи A/AAAA записи в предната зона"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr ""
-"При включена отметка, PTR записите ще бъдат създадени само за IPs, които "
-"имат съответстващи А записи в посочения домейн"
+msgstr "При включена отметка PTR записите ще бъдат създадени само за IP адреси, които имат съответстващи A/AAAA записи в посочения домейн"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
@@ -12150,9 +12107,7 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr ""
-"Използвайте \"Create PTRs само за съществуващи А записи\" за населяване на "
-"PTR въз основа на вашата предна зона"
+msgstr "Използвайте \"Create PTRs only for existing A/AAAA records\", за да попълните PTR записи въз основа на вашата предна зона"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -12426,7 +12381,7 @@ msgstr "Добавяне на PTR"
 
 #: templates/modern/edit.html:668 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
-msgstr "Добавяне на A/AAA"
+msgstr "Добавяне на A/AAAA"
 
 #: templates/modern/edit.html:107 templates/modern/edit.html:707
 msgid "This record already exists"
@@ -12656,7 +12611,7 @@ msgstr "Изтриване на съответния PTR запис (ако съ
 
 #: templates/modern/delete_record.html:78
 msgid "Also delete corresponding A/AAAA record (if exists)"
-msgstr "Изтриване на съответния запис A/AAA (ако съществува)"
+msgstr "Изтриване и на съответния запис A/AAAA (ако съществува)"
 
 #: templates/modern/delete_zone_templ_record.html:49
 msgid "Yes, delete this record"
