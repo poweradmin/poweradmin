@@ -5867,22 +5867,22 @@ msgstr "Ogiltigt tecken i LOC-breddgrad."
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr "Du måste ange en LOC-breddgrad för en LOC-post."
+msgstr "Diffie-Hellman-läget bör autentiseras med TSIG eller SIG(0) för att förhindra man-in-the-middle-attacker."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr "Ogiltigt tecken i LOC-längdgrad."
+msgstr "Nyckelborttagning MÅSTE autentiseras med TSIG med den nyckel som tas bort."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
-msgstr "Du måste ange en LOC-längdgrad för en LOC-post."
+msgstr "TKEY-fel måste vara ett giltigt DNS RCODE-nummer mellan 0 och 23."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr "Ogiltigt tecken i LOC-höjd."
+msgstr "TKEY-nyckeldata måste vara giltig base64-kodad data eller en hexadecimal sträng."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
@@ -5893,7 +5893,7 @@ msgstr "Du måste ange en LOC-höjd för en LOC-post."
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "Ogiltigt tecken i LOC-horisontell precision."
+msgstr "Utbyten av TKEY-poster bör säkras - autentiseringen beror på vilket läge som används."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
@@ -5957,7 +5957,7 @@ msgstr "TTL för SOA-posten (%d) är under det rekommenderade minimivärdet %d s
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "Ogiltigt tecken i CERT-nyckeltagg."
+msgstr "URI-poster bör skyddas med DNSSEC för att förhindra manipulation av angripare."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5983,19 +5983,19 @@ msgstr "Du måste ange en HTTPS-prioritet för en HTTPS-post."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "Ogiltigt tecken i SVCB-prioritet."
+msgstr "URI-posten måste ha formatet: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "Du måste ange en SVCB-prioritet för en SVCB-post."
+msgstr "URI-prioriteten måste vara mellan 0 och 65535 (16-bitars osignerat heltal)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "Du måste ange ett målnamn för en HTTPS-post."
+msgstr "URI-vikten måste vara mellan 0 och 65535 (16-bitars osignerat heltal)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "Du måste ange ett målnamn för en SVCB-post."
+msgstr "URI får inte vara tom."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:262
 msgid ""
@@ -6021,7 +6021,7 @@ msgstr "Kontakt-e-postadressen måste vara en giltig e-postadress."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
-msgstr "Du måste ange en kontakt-e-postadress för en SOA-post."
+msgstr "URI får inte innehålla kontrolltecken."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:301
 msgid ""
@@ -6089,7 +6089,7 @@ msgstr "Postnivån måste vara en icke-tom sträng."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr "Posten måste vara en icke-tom sträng."
+msgstr "MINFO-postens innehåll får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
@@ -6349,7 +6349,7 @@ msgstr "Kunde inte uppdatera post"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
-msgstr "Kunde inte ta bort post"
+msgstr "Prioritetsfältet för RRSIG-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
@@ -6365,11 +6365,11 @@ msgstr "Regelbundna nyckelbyten är rekommenderad praxis: ZSK var 1-3 månad, KS
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "Ogiltigt postinnehåll"
+msgstr "RRSIG-postens innehåll får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
-msgstr "Ogiltigt postnivå"
+msgstr "RRSIG-posten innehåller ogiltiga tecken."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -6379,11 +6379,11 @@ msgstr "RRSIG-posten måste innehålla covered-type, algoritm, labels, original 
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr "Ogiltig prioritet"
+msgstr "RRSIG covered-type måste vara en giltig DNS-posttyp."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "Lägg till post"
+msgstr "RRSIG-algoritmfältet måste vara ett numeriskt värde."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
@@ -6446,15 +6446,15 @@ msgstr "Kunde inte uppdatera zon"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
-msgstr "Kunde inte ta bort zon"
+msgstr "RRSIG labels-fältet måste vara ett numeriskt värde."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "Ogiltig zontyp"
+msgstr "RRSIG labels-fältet måste vara ett rimligt värde (0-128)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
-msgstr "Lägg till zon"
+msgstr "RRSIG original TTL-fältet måste vara ett numeriskt värde."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
@@ -6515,7 +6515,7 @@ msgstr "Huvudservern finns redan"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
-msgstr "Huvudservern finns inte"
+msgstr "RRSIG-nyckeltaggfältet måste vara ett numeriskt värde."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
@@ -6524,11 +6524,11 @@ msgstr "RRSIG-nyckeltaggen måste vara ett giltigt värde mellan 0 och 65535."
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "Ta bort huvudserver"
+msgstr "RRSIG-signerarnamnet måste vara ett fullständigt kvalificerat domännamn (avslutas med en punkt)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "Är du säker på att du vill ta bort denna huvudserver?"
+msgstr "RRSIG-signerarnamnet måste vara ett giltigt domännamn."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
@@ -6554,7 +6554,7 @@ msgstr "Kom ihåg att RRSIG-poster måste genereras om innan de går ut för att
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
-msgstr "Ta bort zonmall"
+msgstr "Prioritetsfältet för RP-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
@@ -6574,17 +6574,17 @@ msgstr "Zonmall uppdaterad"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
 msgid "RP record content cannot be empty."
-msgstr "Zonmall borttagen"
+msgstr "RP-postens innehåll får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:159
 msgid "RP record contains invalid characters."
-msgstr "Kunde inte lägga till zonmall"
+msgstr "RP-posten innehåller ogiltiga tecken."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:165
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "Kunde inte uppdatera zonmall"
+msgstr "RP-posten måste innehålla brevlådedomän (mbox-dname) och txt-postdomän (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6646,7 +6646,7 @@ msgstr "Kunde inte lägga till zonmallpost"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
-msgstr "Zonmallpost borttagen"
+msgstr "RP-brevlådans domän innehåller ogiltiga tecken eller ogiltigt format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
@@ -6654,7 +6654,7 @@ msgstr "Kunde inte ta bort zonmallpost"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
-msgstr "Zonmallposten finns inte"
+msgstr "RP-brevlådans domändel är inte ett giltigt domännamn."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:281
 msgid ""
@@ -6670,11 +6670,11 @@ msgstr "Att använda \".\" som TXT-domän betyder att det inte finns någon TXT-
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "Är du säker på att du vill ta bort denna zonmallpost?"
+msgstr "RP TXT-domänen måste vara ett fullständigt kvalificerat domännamn (avslutas med en punkt)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
-msgstr "Zonmallpost uppdaterad"
+msgstr "RP TXT-domänen är inte ett giltigt domännamn."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:320
 msgid "RP TXT domain contains empty label."
@@ -6686,7 +6686,7 @@ msgstr "En label i RP:s TXT-domän överskrider maxlängden 63 tecken."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
-msgstr "Mall tillämpad"
+msgstr "RP TXT-domänen innehåller ogiltiga tecken eller ogiltigt format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
 msgid "RP TXT domain exceeds maximum length of 253 characters."
@@ -6717,7 +6717,7 @@ msgstr "Detta ser ut att vara en IPv6-gränssnittsidentifierare (universal/local
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
-msgstr "Totalt antal zoner"
+msgstr "Prioritetsfältet för EUI64-poster måste vara 0 eller tomt."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:132
 msgid ""
@@ -6777,11 +6777,11 @@ msgstr "Den här DNAME-posten verkar ligga vid zonens apex. Enligt RFC 6672 krä
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "DNSSEC-nyckel tillagd"
+msgstr "DNAME-målet måste vara ett giltigt fullständigt kvalificerat domännamn."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
-msgstr "Kunde inte lägga till DNSSEC-nyckel"
+msgstr "DNAME-posten kan inte peka på sig själv."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:109
 msgid ""
@@ -6791,7 +6791,7 @@ msgstr "DNAME-målet verkar vara en underdomän till ägarnamnet. Det kan skapa 
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
-msgstr "Kunde inte ta bort DNSSEC-nyckel"
+msgstr "Prioritetsfältet för DNAME-poster måste vara 0 eller tomt."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:126
 msgid ""
@@ -6803,7 +6803,7 @@ msgstr "Enligt RFC 6672 måste DNAME-poster vara unika vid ett givet ägarnamn (
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "DNSSEC-nyckeln finns redan"
+msgstr "DNAME- och CNAME-poster FÅR INTE finnas vid samma ägarnamn (RFC 6672 avsnitt 2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -6836,11 +6836,11 @@ msgstr "Prioritetsfältet för DS-poster måste vara 0 eller tomt."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "Redigera DNSSEC-nyckel"
+msgstr "DS-posten måste ha formatet: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
-msgstr "Ta bort DNSSEC-nyckel"
+msgstr "DS-posten måste innehålla exakt 4 fält"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:182
 msgid "Key tag must be a number between 1 and 65535"
@@ -6963,21 +6963,21 @@ msgstr "Ogiltigt värde i prioritetsfältet. CSYNC-poster måste ha prioritetsv�
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Lägg till kryptografisk nyckel"
+msgstr "Ogiltigt SOA Serial i CSYNC-posten. Det måste vara ett 32-bitars osignerat heltal (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Kryptografisk nyckel tillagd"
+msgstr "Ogiltiga Flags i CSYNC-posten. Flags måste vara ett numeriskt värde."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Kunde inte lägga till kryptografisk nyckel"
+msgstr "Ogiltiga Flags i CSYNC-posten. Flags måste vara mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr "Kryptografisk nyckel borttagen"
+msgstr "Ogiltiga Flags i CSYNC-posten. Endast bitarna 0-1 är definierade (värdena 0-3). Giltiga värden är 0, 1, 2 eller 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
@@ -7013,11 +7013,11 @@ msgstr "Obs: Det verkliga wire-formatet för CSYNC Type Bit Map följer formatet
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "Är du säker på att du vill ta bort denna kryptografiska nyckel?"
+msgstr "RFC 7477 kräver ett \"allt eller inget\"-förhållningssätt vid CSYNC-bearbetning. Om någon typ inte kan synkroniseras görs inga ändringar alls av föräldrazonen."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Kryptografisk nyckel uppdaterad"
+msgstr "Prioriteten måste vara 0 för EUI48-poster."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:115
 msgid ""
@@ -7316,7 +7316,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:195
 msgid "Invalid primary nameserver in SOA record."
-msgstr "Kopiera API-nyckel"
+msgstr "Ogiltig primär namnserver i SOA-posten."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
 msgid ""
@@ -7399,7 +7399,7 @@ msgstr "API-behörigheten finns inte"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
-msgstr "Redigera API-behörighet"
+msgstr "SVCB-prioriteten måste vara mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
@@ -7488,11 +7488,11 @@ msgstr "SMIMEA gör e-postadresser synliga i DNS. Tänk på konsekvenserna för 
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
-msgstr "Exempelsvar"
+msgstr "SMIMEA-postens innehåll får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:189
 msgid "SMIMEA record contains invalid characters."
-msgstr "Autentisering"
+msgstr "SMIMEA-posten innehåller ogiltiga tecken."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -7502,7 +7502,7 @@ msgstr "SMIMEA-posten måste innehålla usage, selector, matching-type och certi
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
-msgstr "API-autentiseringsmetod"
+msgstr "SMIMEA:s usage-fält måste vara ett tal mellan 0 och 3."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:212
 msgid ""
@@ -7578,7 +7578,7 @@ msgstr "SMIMEA:s certifikatdata måste vara en hexadecimal sträng."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "API-felmeddelande"
+msgstr "SMIMEA:s SHA-256-certifikatdata måste vara 64 tecken lång."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
@@ -7639,7 +7639,7 @@ msgstr "L64-posten måste innehålla preferens och locator64 separerade med mell
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
-msgstr "API-begäranden per sekund"
+msgstr "L64-preferens måste vara ett tal mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:164
 msgid ""
@@ -7689,7 +7689,7 @@ msgstr "API-användningsstatistik"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
-msgstr "Totalt antal API-begäranden"
+msgstr "Prioritetsfältet för CDNSKEY-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:125
 msgid ""
@@ -7699,7 +7699,7 @@ msgstr "RFC 7344 rekommenderar att du även publicerar en motsvarande CDS-post o
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "API-begäranden denna månad"
+msgstr "Ogiltiga tecken i innehållet i CDNSKEY-posten."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:165
 msgid ""
@@ -7711,11 +7711,11 @@ msgstr "Formatet \"0 3 0 0\" från erratat till RFC 8078 används; överväg att
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "Mest använda API-endpoints"
+msgstr "En CDNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik nyckel separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
-msgstr "API-endpoint-användning"
+msgstr "CDNSKEY-flaggor måste vara 0, 256 eller 257."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:184
 msgid ""
@@ -7725,11 +7725,11 @@ msgstr "Flagga 257 anger en Key Signing Key (KSK). Se till att nyckeln hanteras 
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
-msgstr "API-begäranden per metod"
+msgstr "CDNSKEY-protokoll måste vara 3."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:195
 msgid "CDNSKEY algorithm must be a number between 1 and 16."
-msgstr "API-begäranden per användarnamn"
+msgstr "CDNSKEY-algoritm måste vara ett tal mellan 1 och 16."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:205
 msgid ""
@@ -7751,7 +7751,7 @@ msgstr "API-felfrekvens per endpoint"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "API-svarstid per endpoint"
+msgstr "CDNSKEY publik nyckel får endast innehålla giltiga base64-tecken."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
@@ -7821,7 +7821,7 @@ msgstr "Kunde inte lägga till API-hastighetsgräns"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
-msgstr "API-hastighetsgräns borttagen"
+msgstr "Prioritetsfältet för SSHFP-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:130
 msgid ""
@@ -7839,13 +7839,13 @@ msgstr "För bästa säkerhet bör du publicera både SHA-1- och SHA-256-fingera
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr "API-hastighetsgränsen finns redan"
+msgstr "En SSHFP-post måste innehålla algoritm, fingeravtryckstyp och fingeravtryck separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "API-hastighetsgränsen finns inte"
+msgstr "SSHFP-algoritm måste vara 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) eller 6 (Ed448)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
@@ -7867,7 +7867,7 @@ msgstr "Är du säker på att du vill ta bort denna API-hastighetsgräns?"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr "API-hastighetsgräns uppdaterad"
+msgstr "SSHFP-fingeravtryckstyp måste vara 1 (SHA-1) eller 2 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -7883,15 +7883,15 @@ msgstr "Uppdatera API-hastighetsgräns"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
-msgstr "Begäranden per minut"
+msgstr "SSHFP-fingeravtryck måste vara en hexadecimal sträng."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
-msgstr "Begäranden per timme"
+msgstr "SSHFP:s SHA-1-fingeravtryck måste vara 40 tecken långt."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "Begäranden per dag"
+msgstr "SSHFP:s SHA-256-fingeravtryck måste vara 64 tecken långt."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -7979,7 +7979,7 @@ msgstr "Algoritm 1 (RSA/MD5) anses kryptografiskt svag och bör inte användas."
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "Kunde inte uppdatera API-kvot"
+msgstr "För DNSSEC-zonnycklar (flags=257, protocol=3) bör DNSKEY-poster användas i stället för KEY-poster."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -8042,7 +8042,7 @@ msgstr "DMARC-poster måste placeras på _dmarc.<domain>."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "Kunde inte återställa kvot"
+msgstr "Ogiltigt värde i prioritetsfältet. DMARC-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -8056,11 +8056,11 @@ msgstr "DMARC-posten överskrider gränsen på 255 tecken. För komplexa policye
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "Lägg till API-webhook"
+msgstr "DMARC-versionstaggen (v) måste vara DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "API-webhook tillagd"
+msgstr "DMARC-policytaggen (p) måste vara någon av: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -8072,19 +8072,19 @@ msgstr "Med \"p=none\" får du insyn i e-postautentiseringen utan att leveransen
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "API-webhook borttagen"
+msgstr "DMARC-taggen för underdomänpolicy (sp) måste vara någon av: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "Kunde inte ta bort API-webhook"
+msgstr "DMARC-taggen för DKIM-justering (adkim) måste vara r (relaxed) eller s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "Ogiltig API-webhook"
+msgstr "DMARC-taggen för SPF-justering (aspf) måste vara r (relaxed) eller s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "API-webhooken finns redan"
+msgstr "DMARC-procenttaggen (pct) måste vara mellan 0 och 100"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -8095,7 +8095,7 @@ msgstr "DMARC-policyn tillämpas på endast %d%% av meddelandena. Detta bör end
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "Redigera API-webhook"
+msgstr "DMARC-taggen för rapportintervall (ri) måste vara ett positivt heltal"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
@@ -8115,7 +8115,7 @@ msgstr "Ogiltig e-postadress i DMARC-taggen %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "Kunde inte uppdatera API-webhook"
+msgstr "DMARC-taggen för rapportformat (rf) måste vara afrf eller iodef"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
@@ -8141,7 +8141,7 @@ msgstr "Detta är en DMARC-post som behandlas som en TXT-post. DMARC-poster ska 
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
-msgstr "Webhook-headers"
+msgstr "Innehållet i en TXT-post måste omges av citattecken."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
@@ -8170,7 +8170,7 @@ msgstr "Det totala innehållet i TXT-posten överskrider maxlängden %d byte. Mi
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "Kunde inte testa webhook"
+msgstr "Ogiltigt värde i prioritetsfältet. TXT-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -8189,7 +8189,7 @@ msgstr "CDS-poster ska endast placeras vid zonens apex, inte på underdomäner, 
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
-msgstr "Webhook-leveransstatus"
+msgstr "Prioritetsfältet för CDS-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
@@ -8199,7 +8199,7 @@ msgstr "Enligt RFC 8078 bör CDS-poster vara oförändrade under en tid innan f�
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
-msgstr "Webhook-leveransresultat"
+msgstr "Ogiltiga tecken i innehållet i CDS-posten."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:154
 msgid ""
@@ -8211,19 +8211,19 @@ msgstr "Detta är en CDS-post för borttagning enligt RFC 8078. Den signalerar a
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "Webhook-leveransförfrågan"
+msgstr "En CDS-post måste innehålla key-tag, algoritm, digest-typ och digest separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
-msgstr "Webhook-leveranssvar"
+msgstr "CDS-nyckeltaggen måste vara ett tal mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:175
 msgid "CDS algorithm must be a number between 1 and 16."
-msgstr "Webhook-leveranstid"
+msgstr "CDS-algoritm måste vara ett tal mellan 1 och 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Webhook-leveransvaraktighet"
+msgstr "CDS-digesttyp måste vara 1 (SHA-1), 2 (SHA-256) eller 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -8274,15 +8274,15 @@ msgstr "RFC 6742 rekommenderar mycket låga TTL-värden för L32-poster som hör
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "Granskningsloggar"
+msgstr "L32-posten måste innehålla preferens och locator separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "Granskningslogghändelse"
+msgstr "L32-preferens måste vara ett tal mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
-msgstr "Granskningslogghändelser"
+msgstr "L32-locator måste vara en giltig IPv4-adress."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
@@ -8332,7 +8332,7 @@ msgstr "Protokollet \"%s\" finns inte i listan över välkända protokoll. Vanli
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
-msgstr "Ändringar"
+msgstr "Ogiltigt domännamn i SRV-posten."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
@@ -8346,7 +8346,7 @@ msgstr "Ogiltigt värde i viktfältet för SRV-posten. Måste vara 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Exportera granskningslogg"
+msgstr "Ogiltigt värde i portfältet för SRV-posten. Måste vara 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -8357,7 +8357,7 @@ msgstr "Port %d skiljer sig från standardporten %d för tjänsten %s. Detta är
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "Kunde inte exportera granskningslogg"
+msgstr "SRV-målet får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -8365,11 +8365,11 @@ msgstr "Rensa granskningslogg"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "Granskningslogg rensad"
+msgstr "Ogiltigt SRV-mål."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Kunde inte rensa granskningslogg"
+msgstr "Ogiltigt värde i prioritetsfältet för SRV-posten."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
@@ -8385,7 +8385,7 @@ msgstr "Granskningslogg-retention"
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Behåll granskningsloggar i"
+msgstr "Ogiltigt värde i prioritetsfältet. AAAA-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -8396,11 +8396,11 @@ msgstr "Ägarnamn för NSEC3-poster ska normalt vara en Base32hex-kodad hash fö
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "Granskningslogg-retention uppdaterad"
+msgstr "Innehållet i en NSEC3-post får inte vara tomt."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "Kunde inte uppdatera granskningslogg-retention"
+msgstr "NSEC3-posten innehåller ogiltiga tecken."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
@@ -8434,19 +8434,19 @@ msgstr "En NSEC3-post måste minst innehålla hashalgoritm, flaggor, iterationer
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
-msgstr "Kräv gemener"
+msgstr "NSEC3-hashalgoritm måste vara 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "Kräv siffror"
+msgstr "NSEC3-flaggor måste vara 0 eller 1."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
-msgstr "Kräv specialtecken"
+msgstr "NSEC3-iterationer måste vara mellan 0 och 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
-msgstr "Lösenordshistorik"
+msgstr "NSEC3-salt måste vara - (för tomt) eller ett hexadecimalt värde."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
@@ -8531,11 +8531,11 @@ msgstr "En NAPTR-post måste innehålla värdena order, preferens, flaggor, tjä
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
-msgstr "Kunde inte inaktivera 2FA"
+msgstr "NAPTR-postens order måste vara ett tal mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "2FA-inställningar"
+msgstr "NAPTR-postens preferens måste vara ett tal mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -8618,17 +8618,17 @@ msgstr "DNSKEY-poster placeras normalt vid zonens apex. Denna post verkar inte l
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "2FA verifierad"
+msgstr "Prioritetsfältet för DNSKEY-poster måste vara 0 eller tomt."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "Kunde inte verifiera 2FA"
+msgstr "En DNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik nyckel separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "Ogiltig 2FA-kod"
+msgstr "DNSKEY-flaggor måste vara 0, 256 eller 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -8650,7 +8650,7 @@ msgstr "Flaggvärdet 257 anger att detta är en Key Signing Key (KSK) med både 
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "Konfigurera 2FA"
+msgstr "DNSKEY-protokoll måste vara 3."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
@@ -8690,7 +8690,7 @@ msgstr "Algoritm %d FÅR INTE implementeras enligt RFC 8624. Detta värde bör i
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "Kunde inte ta bort IP-vitlista"
+msgstr "DNSKEY publik nyckel måste vara giltig base64-kodad data."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -8758,7 +8758,7 @@ msgstr "Kunde inte lägga till IP-svartlista"
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "IP-svartlista borttagen"
+msgstr "Ingen SOA-post finns, eller är aktiv, i zonen. Detta krävs för DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -8784,13 +8784,13 @@ msgstr "Redigera IP-svartlista"
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
-msgstr "Ta bort IP-svartlista"
+msgstr "SOA-posten har ett ogiltigt innehållsformat."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "Är du säker på att du vill ta bort denna IP-svartlista?"
+msgstr "SOA-formatet ska vara: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -8826,9 +8826,7 @@ msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Ogiltigt SRV-format. Anvand: name,SRV,\"weight port target\",priority,ttl "
-"eller name,SRV,target,weight,port,ttl"
+msgstr "Ogiltigt SRV-format. Använd: name,SRV,\"weight port target\",priority,ttl eller name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -13518,8 +13516,7 @@ msgstr "Kopiera alla DS-poster till urklipp"
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
-msgstr ""
-"DS-poster ska läggas till i föräldzonen för att etablera förtroendekedjan."
+msgstr "DS-poster ska läggas till i föräldrazonen för att etablera förtroendekedjan."
 
 #: templates/modern/add_record.html:13 templates/modern/add_record.html:15
 msgid "Add record to zone"
