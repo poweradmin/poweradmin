@@ -49,7 +49,7 @@ msgstr "Lloj i pavlefshëm ndihmësi."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:205
 msgid "Validation failed:"
-msgstr "Vlefshmëria dështoi: %s"
+msgstr "Vlefshmëria dështoi:"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:229
 msgid "Failed to generate record:"
@@ -2438,7 +2438,7 @@ msgstr "Identifikimi me OIDC nuk është aktivuar"
 
 #: lib/Application/Service/SamlService.php:425
 msgid "Authentication failed: "
-msgstr "Identifikimi dështoi: %s"
+msgstr "Identifikimi dështoi: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
@@ -2458,7 +2458,7 @@ msgstr "Nuk janë konfiguruar ofruesit e OIDC"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Nisja e autentifikimit OIDC dështoi: %s"
+msgstr "Nisja e autentifikimit OIDC dështoi: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
 #: templates/default/index.html:266 templates/modern/index.html:266
@@ -2699,7 +2699,7 @@ msgstr "Ofrues i pavlefshëm i SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:138
 msgid "SAML authentication failed: "
-msgstr "Autentikimi dështoi: %s"
+msgstr "Autentikimi dështoi: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:69
 msgid "You do not have sufficient permissions to view this page."
@@ -3776,7 +3776,7 @@ msgstr "Gabim gjatë fshirjes së shabllonit të zonës:"
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Gabim gjatë fshirjes së shabllonve të zonës së përdoruesit: %s"
+msgstr "Gabim gjatë fshirjes së shabllonve të zonës së përdoruesit: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
@@ -3838,7 +3838,7 @@ msgstr "Gabim nga:"
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "E pamundur marrja e listës së zonave duke përdorur modelin: %s"
+msgstr "E pamundur marrja e listës së zonave duke përdorur modelin: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."

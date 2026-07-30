@@ -404,7 +404,7 @@ msgstr "Procent aplicare politică"
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "%%."
+msgstr "Procentul mesajelor cărora li se aplică politica (100 = toate mesajele). Utilizați valori mai mici în timpul implementării politicii."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"

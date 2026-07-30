@@ -1279,7 +1279,7 @@ msgstr "Níl cead agat criosanna a chruthú d'úsáideoirí eile."
 #: lib/Application/Controller/BulkRegistrationController.php:154
 #, php-format
 msgid "Unknown group ID(s): %s"
-msgstr "ID grúpa aitheanta(í): %sZ"
+msgstr "ID grúpa aitheanta(í): %s"
 
 #: lib/Application/Controller/BulkRegistrationController.php:166
 #, php-format
@@ -1697,7 +1697,7 @@ msgstr[4] "Ní fhéadfaí úsáideoirí %d a chur leis."
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%dZ úsáideoir a bhaint as grúpa."
+msgstr[0] "%d úsáideoir a bhaint as grúpa."
 msgstr[1] "úsáideoirí %d bhaint as grúpa."
 msgstr[2] "úsáideoirí %d bhaint as grúpa."
 msgstr[3] "úsáideoirí %d bhaint as grúpa."
@@ -1950,7 +1950,7 @@ msgstr "Níorbh fhéidir taifead a chur leis."
 #: lib/Application/Controller/BulkRecordAddController.php:239
 #, php-format
 msgid "%d record(s) have been added successfully."
-msgstr "%dZ taifeadta(s) curtha leis go rathúil."
+msgstr "%d taifeadta(s) curtha leis go rathúil."
 
 #: lib/Application/Controller/BulkRecordAddController.php:242
 msgid "Some record(s) could not be added."
@@ -2417,17 +2417,17 @@ msgstr "Níor soláthraíodh aon taifid."
 #: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) were successfully added."
-msgstr "Cuireadh taifead %dZZ leis go rathúil."
+msgstr "Cuireadh taifead %d leis go rathúil."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "Cruthaíodh taifead meaitseála %dZ freisin."
+msgstr "Cruthaíodh taifead meaitseála %d freisin."
 
 #: lib/Application/Controller/AddRecordController.php:523
 #, php-format
 msgid "%d record(s) failed to be added."
-msgstr "Theip ar thaifead %dZ a chur leis."
+msgstr "Theip ar thaifead %d a chur leis."
 
 #: lib/Application/Controller/AddRecordController.php:528
 msgid ""
@@ -2615,14 +2615,12 @@ msgstr "Tá an tábla record_type_defaults ar iarraidh. Cuir nuashonrú scéime 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr ""
-"Sábháil %dZ réamhshocraithe / s); glanadh %d. Luachanna neamhbhailí "
-"Diúltaithe le haghaidh: %s."
+msgstr "Sábháil %d réamhshocraithe / s); glanadh %d. Luachanna neamhbhailí Diúltaithe le haghaidh: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Sábháil %dZ réamhshocraithe / s); glanadh %d."
+msgstr "Sábháil %d réamhshocraithe / s); glanadh %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2760,11 +2758,11 @@ msgstr "Roghnaigh crios amháin ar a laghad."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "Chuir %dZ crios leis an ngrúpa."
-msgstr[1] "%dZ Criosanna leanas leis an ngrúpa."
-msgstr[2] "%dZ Criosanna leanas leis an ngrúpa."
-msgstr[3] "%dZ Criosanna leanas leis an ngrúpa."
-msgstr[4] "%dZ Criosanna leanas leis an ngrúpa."
+msgstr[0] "Chuir %d crios leis an ngrúpa."
+msgstr[1] "%d Criosanna leanas leis an ngrúpa."
+msgstr[2] "%d Criosanna leanas leis an ngrúpa."
+msgstr[3] "%d Criosanna leanas leis an ngrúpa."
+msgstr[4] "%d Criosanna leanas leis an ngrúpa."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
@@ -2780,7 +2778,7 @@ msgstr[4] "Ní fhéadfaí criosanna %d a chur leis."
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%dZ crios a bhaint as grúpa."
+msgstr[0] "%d crios a bhaint as grúpa."
 msgstr[1] "Criosanna %d bhaint as grúpa."
 msgstr[2] "Criosanna %d bhaint as grúpa."
 msgstr[3] "Criosanna %d bhaint as grúpa."
@@ -3970,7 +3968,7 @@ msgstr "Tá gach crios úinéirí"
 #: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
-msgstr "Criosanna %dZ le fáil gan úinéirí"
+msgstr "Criosanna %d le fáil gan úinéirí"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
@@ -4006,7 +4004,7 @@ msgstr "Tá taifid SOA ag gach crios"
 #: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
-msgstr "Criosanna %dZ le fáil gan taifid SOA"
+msgstr "Criosanna %d le fáil gan taifid SOA"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -5939,9 +5937,7 @@ msgstr "Ní mór DoH cosán tús a chur le Slais ar aghaidh (/)."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Paraiméadar \"%sZ\" marcáilte mar éigeantach ach nach bhfuil san áireamh sa "
-"taifead."
+msgstr "Paraiméadar \"%s\" marcáilte mar éigeantach ach nach bhfuil san áireamh sa taifead."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -6443,7 +6439,7 @@ msgstr "Fearainn luachmhar i modifier exp."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "modifier aitheanta: %sZ"
+msgstr "modifier aitheanta: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
@@ -7586,7 +7582,7 @@ msgstr "Ní féidir liosta seoltaí IP a bheith folamh."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Seoladh IPv6 luachmhar i %sZ: %s"
+msgstr "Seoladh IPv6 luachmhar i %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
@@ -7601,7 +7597,7 @@ msgstr "Formáid freastalaí luachmhar: %s (idir IP: port nó [IPv6]:port)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Seoladh IPv4 luachmhar i %sZ: %s"
+msgstr "Seoladh IPv4 luachmhar i %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
@@ -7757,7 +7753,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Níl Subnet %dZ ailínithe le réimír / %d. Ba chóir a bheith il %d."
+msgstr "Níl Subnet %d ailínithe le réimír / %d. Ba chóir a bheith il %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:204
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -7846,21 +7842,19 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "Ní mór SOA %sZ a bheith uimhriúil."
+msgstr "Ní mór SOA %s a bheith uimhriúil."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:285
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "Ní mór SOA %sZ a bheith slánuimhir dearfach."
+msgstr "Ní mór SOA %s a bheith slánuimhir dearfach."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:293
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %sZ luach (%d) faoi bhun an RFC 2308 molta íosta (%d). Ceadaítear é seo "
-"ach ní mholtar é."
+msgstr "SOA %s luach (%d) faoi bhun an RFC 2308 molta íosta (%d). Ceadaítear é seo ach ní mholtar é."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -8758,9 +8752,7 @@ msgstr "Ní mór DMARC chlib céatadánach (pct) a bheith idir 0 agus 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"Tá beartas DMARC i bhfeidhm ach %d%%%% de theachtaireachtaí. Níor cheart é "
-"sin a úsáid ach amháin le linn rolladh amach beartais."
+msgstr "Tá beartas DMARC i bhfeidhm ach %d%% de theachtaireachtaí. Níor cheart é sin a úsáid ach amháin le linn rolladh amach beartais."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8783,7 +8775,7 @@ msgstr "DMARC %s tag Ní mór go mbeadh phost bailí go: nó https: URIs"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Seoladh ríomhphoist luachmhar i gclib DMARC %sZ: %s"
+msgstr "Seoladh ríomhphoist luachmhar i gclib DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -9077,9 +9069,7 @@ msgstr ""
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Tá difríocht idir Port %dZ ón gcalafort caighdeánach %d do sheirbhís %s. Tá "
-"sé seo ceadaithe ach neamhghnách."
+msgstr "Tá difríocht idir Port %d ón gcalafort caighdeánach %d do sheirbhís %s. Tá sé seo ceadaithe ach neamhghnách."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -9661,9 +9651,7 @@ msgstr "Tá taifead PTR do %s dírithe ar %s ann cheana féin."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr ""
-"Chuir Reverse record leis. Rabhadh: Tá taifead PTR do %sZ ann cheana féin "
-"dírithe ar: %s. Ní mholtar taifid PTR il don IP céanna."
+msgstr "Chuir Reverse record leis. Rabhadh: Tá taifead PTR do %s ann cheana féin dírithe ar: %s. Ní mholtar taifid PTR il don IP céanna."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."

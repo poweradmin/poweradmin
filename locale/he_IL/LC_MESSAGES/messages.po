@@ -527,7 +527,7 @@ msgstr "אחוז חייב להיות בין 0 ל-100"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr "מדיניות זו תחול רק על %d1ZZ. השתמש ב- 100%% לאחר השלמת הבדיקה."
+msgstr "מדיניות זו תחול רק על %d%%. השתמש ב- 100%% לאחר השלמת הבדיקה."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -8177,8 +8177,7 @@ msgstr "תג אחוז DMARC חייב להיות בין 0 ל 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"מדיניות DMARC מוחלת רק על %d1 של הודעות. זה צריך לשמש רק במהלך מדיניות."
+msgstr "מדיניות DMARC מוחלת רק על %d%% של הודעות. זה צריך לשמש רק במהלך מדיניות."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"

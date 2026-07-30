@@ -10065,7 +10065,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Ми настојимо одржавати доступност али не гарантујемо 100%% uptime."
+msgstr "Ми настојимо одржавати доступност али не гарантујемо 100% uptime."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -12608,9 +12608,7 @@ msgstr "Обрнуто"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr ""
-"Филтер синтакса: type:txt content:spf. Wildcard додаје %%. Reverse "
-"конвертује IP."
+msgstr "Филтер синтакса: type:txt content:spf. Wildcard додаје %. Reverse конвертује IP."
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"

@@ -684,7 +684,7 @@ msgstr "Rekod SPF woazon memiliki pencarian DNS %d (batas adalah 10). mempertimb
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
-msgstr "Alamat IPv4 atau jaringan IPv4 tak valid: %sZ"
+msgstr "Alamat IPv4 atau jaringan IPv4 tak valid: %s"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:313
 #, php-format
@@ -694,7 +694,7 @@ msgstr "Alamat atau jaringan IPv6 tak valid IPv6 tak valid: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:323
 #, php-format
 msgid "Invalid include domain: %s"
-msgstr "Domain include tidak sah: %sZZ"
+msgstr "Domain include tidak sah: %s"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
@@ -849,7 +849,7 @@ msgstr "URL Reporting Proporting diperlukan untuk tag iodef"
 #: lib/Module/DnsWizard/Service/CAAWizard.php:229
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
-msgstr "URL Pelaporan Kekhalifahan harus dimulai dengan %sZ, %s, atau %s"
+msgstr "URL Pelaporan Kekhalifahan harus dimulai dengan %s, %s, atau %s"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -1209,7 +1209,7 @@ msgstr "Anda tidak memiliki kebenaran untuk membuat zona bagi pengguna lain."
 #: lib/Application/Controller/BulkRegistrationController.php:154
 #, php-format
 msgid "Unknown group ID(s): %s"
-msgstr "ID grup Tak Diketahui: %sZ"
+msgstr "ID grup Tak Diketahui: %s"
 
 #: lib/Application/Controller/BulkRegistrationController.php:166
 #, php-format
@@ -1235,7 +1235,7 @@ msgstr "Sila pilih fail zona yang sah untuk dimuat naik."
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "Ukuran fail melebihi ukuran maksimum %sZ."
+msgstr "Ukuran fail melebihi ukuran maksimum %s."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
 msgid "The uploaded file is empty or could not be read."
@@ -1332,7 +1332,7 @@ msgstr "WHOIS"
 #: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
-msgstr "Gagal mengambil informasi WHOIS menggunakan server %sZ"
+msgstr "Gagal mengambil informasi WHOIS menggunakan server %s"
 
 #: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
@@ -1345,7 +1345,7 @@ msgstr "RDAP"
 #: lib/Module/Rdap/Controller/RdapController.php:117
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
-msgstr "Gagal mengambil kembali informasi RDAP menggunakan server %sZ"
+msgstr "Gagal mengambil kembali informasi RDAP menggunakan server %s"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:147
 msgid "Invalid CSRF token."
@@ -1816,7 +1816,7 @@ msgstr "Diaktifkan"
 #: lib/Application/Controller/ApiKeysController.php:429
 #, php-format
 msgid "API key %s successfully."
-msgstr "Kunci API %sZ berhasil."
+msgstr "Kunci API %s berhasil."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have the permission to add records to this zone."
@@ -2076,13 +2076,13 @@ msgstr "Zona zona terlarang dipilih."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "Zona %dZ telah tidak terhubung dari template dengan sukses."
+msgstr[0] "Zona %d telah tidak terhubung dari template dengan sukses."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "Zona %dZ tidak boleh dibuka."
+msgstr[0] "Zona %d tidak boleh dibuka."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2476,12 +2476,12 @@ msgstr "Tabel record_type_defaults table hilang. Terapkan skema 4.5.0 update seb
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "%dZ disimpan baku; dibersihkan %d. Ditolak nilai tidak sah untuk: %s."
+msgstr "%d disimpan baku; dibersihkan %d. Ditolak nilai tidak sah untuk: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "%dZ disimpan baku; dibersihkan %d."
+msgstr "%d disimpan baku; dibersihkan %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2620,25 +2620,25 @@ msgstr "Sila pilih paling tidak satu zona."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "Zona %dZ ditambahkan ke grup."
+msgstr[0] "Zona %d ditambahkan ke grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "Zona %dZ tidak dapat ditambahkan."
+msgstr[0] "Zona %d tidak dapat ditambahkan."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "Zona %dZ dipadam dari grup."
+msgstr[0] "Zona %d dipadam dari grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "Zona %dZ tidak dapat dipadam."
+msgstr[0] "Zona %d tidak dapat dipadam."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2901,7 +2901,7 @@ msgstr[0] "Pengguna berhasil ditambahkan ke %d kumpulan."
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] "Gagal untuk menambahkan pengguna ke grup %dZ (already a member atau group tidak dijumpai)."
+msgstr[0] "Gagal untuk menambahkan pengguna ke grup %d (already a member atau group tidak dijumpai)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
@@ -3270,7 +3270,7 @@ msgstr ""
 #: lib/Application/Service/RequestValidator.php:69
 #, php-format
 msgid "The %s field is required."
-msgstr "Lapangan %sZ diperlukan."
+msgstr "Lapangan %s diperlukan."
 
 #: lib/Application/Service/RequestValidator.php:77
 #, php-format
@@ -3779,7 +3779,7 @@ msgstr "Semua zona memiliki pemilik"
 #: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
-msgstr "Zona %dZ dijumpai tanpa pemilik"
+msgstr "Zona %d dijumpai tanpa pemilik"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
@@ -3788,7 +3788,7 @@ msgstr "Semua zona budak memiliki alamat IP master"
 #: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
-msgstr "Zona budak %dZ dijumpai tanpa alamat IP master"
+msgstr "Zona budak %d dijumpai tanpa alamat IP master"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
@@ -3806,7 +3806,7 @@ msgstr "Tidak ada rekod SOA duplikasi dijumpai"
 #: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
-msgstr "Zona %dZ memiliki rekod SOA duplikat"
+msgstr "Zona %d memiliki rekod SOA duplikat"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
@@ -3815,7 +3815,7 @@ msgstr "Semua zona memiliki rekod SOA"
 #: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
-msgstr "Zona %dZ dijumpai tanpa rekod SOA"
+msgstr "Zona %d dijumpai tanpa rekod SOA"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -4780,12 +4780,12 @@ msgstr "Peta bit Type harus hadir untuk menunjukkan jenis RR mana yang ada pada 
 msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
-msgstr "Jenis angka  \"%sZ\" seharusnya diwakili menggunakan format RFC 3597 (TYPE####)."
+msgstr "Jenis angka  \"%s\" seharusnya diwakili menggunakan format RFC 3597 (TYPE####)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
 msgid "NSEC record contains an invalid record type: %s"
-msgstr "Rekod NSEC berisi jenis rekod tidak sah: %sZ"
+msgstr "Rekod NSEC berisi jenis rekod tidak sah: %s"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:272
 msgid ""
@@ -5441,14 +5441,12 @@ msgstr "Parameter rekod HTTPS harus dalam format key=value yang dipisahkan oleh 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr ""
-"Parameter trans title= yang tidak diketahui akan diabaikan (bantuan) HTTPS: "
-"%sZZ\". Lihat RFC 9660 untuk kunci sah."
+msgstr "Parameter trans title= yang tidak diketahui akan diabaikan (bantuan) HTTPS: %s\". Lihat RFC 9660 untuk kunci sah."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "Kunci parameter duplikasi HTTPS: \"%sZ\". Setiap kunci hanya boleh muncul sekali."
+msgstr "Kunci parameter duplikasi HTTPS: \"%s\". Setiap kunci hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -5481,7 +5479,7 @@ msgstr "Jalur DoH vinah harus dimulai dengan garis miring ke depan (/)."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr "Parameter %sZ\" ditandai sebagai wajib tetapi tidak termasuk dalam rekod."
+msgstr "Parameter %s\" ditandai sebagai wajib tetapi tidak termasuk dalam rekod."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -5637,24 +5635,20 @@ msgstr ""
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
-"Nilai TTL (%dZ) di bawah minimum %d detik yang disarankan (5 menit). Nilai "
-"TTL rendah untuk meningkatkan lalu lintas DNS."
+msgstr "Nilai TTL (%d) di bawah minimum %d detik yang disarankan (5 menit). Nilai TTL rendah untuk meningkatkan lalu lintas DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"Nilai MATL (%dZ) berada di atas maksimum %d saat (1 minggu). Nilai TTL yang "
-"tinggi menunda pembaruan DNS."
+msgstr "Nilai MATL (%d) berada di atas maksimum %d saat (1 minggu). Nilai TTL yang tinggi menunda pembaruan DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr "Rekod SOA TTL (%dZ) di bawah minimum yang disarankan dari %d detik (1 jam)."
+msgstr "Rekod SOA TTL (%d) di bawah minimum yang disarankan dari %d detik (1 jam)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -5929,7 +5923,7 @@ msgstr "pengubah pengubahsuai tidak diketahui: %s"
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Mekanisme tidak diketahui: %sZ"
+msgstr "Mekanisme tidak diketahui: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -6051,7 +6045,7 @@ msgstr ""
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "Jenis digest %dZ bukan jenis standar (1 untuk SHA-256) didefinisikan dalam RFC 4701."
+msgstr "Jenis digest %d bukan jenis standar (1 untuk SHA-256) didefinisikan dalam RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6641,33 +6635,26 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%sZZ (algoritma %d) adalah algoritme RECOMMENDED untuk digunakan menurut RFC "
-"8624."
+msgstr "%s (algoritma %d) adalah algoritme RECOMMENDED untuk digunakan menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%sZ (algoritma %d) adalah penggunaan umum, tetapi algoritme yang lebih baru "
-"seperti ECDSAP256SHA256 (13) atau ED25519 (15) lebih disukai."
+msgstr "%s (algoritma %d) adalah penggunaan umum, tetapi algoritme yang lebih baru seperti ECDSAP256SHA256 (13) atau ED25519 (15) lebih disukai."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%sZ (algoritma %d) adalah opsional untuk implementasi menurut RFC 8624."
+msgstr "%s (algoritma %d) adalah opsional untuk implementasi menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr ""
-"%sZZ (algoritm %d) TIDAK DIPERLUKAN untuk digunakan menurut RFC 8624. Ada "
-"juga yang menggunakan ECDSAP256SHA256 (13) atau ED25519 (15)."
+msgstr "%s (algoritm %d) TIDAK DIPERLUKAN untuk digunakan menurut RFC 8624. Ada juga yang menggunakan ECDSAP256SHA256 (13) atau ED25519 (15)."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6917,7 +6904,7 @@ msgstr "Senarai alamat IP XAV tidak boleh kosong."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Alamat IPv6 tidak sah dalam %sZ: %s"
+msgstr "Alamat IPv6 tidak sah dalam %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
@@ -6932,12 +6919,12 @@ msgstr "Format server tidak sah: %s (diharapkan IP:port atau [IPv6]:port)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Alamat IPv4 tidak sah dalam %sZ: %s"
+msgstr "Alamat IPv4 tidak sah dalam %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "Alamat IP tak sah: %sZ"
+msgstr "Alamat IP tak sah: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6960,7 +6947,7 @@ msgstr "Tag oudon CAA hanya boleh memuat huruf dan angka ASCII."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "Bendera kritis untuk tag tidak dikenal \"%sZ\". Ini mungkin menyebabkan kegagalan permintaan sijil."
+msgstr "Bendera kritis untuk tag tidak dikenal \"%s\". Ini mungkin menyebabkan kegagalan permintaan sijil."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6990,8 +6977,7 @@ msgstr "Domain CA tidak sah dalam tag ingwild."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:252
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr ""
-"Nilai iodef CAA harus merupakan URL yang diawali dengan %sZ, %s, atau %s."
+msgstr "Nilai iodef CAA harus merupakan URL yang diawali dengan %s, %s, atau %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:263
 msgid "contactemail value must be a valid email address."
@@ -7170,16 +7156,14 @@ msgstr "ruas %s SOA harus numerik."
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:285
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "Bidang %sZ SOA harus berupa integer positif."
+msgstr "Bidang %s SOA harus berupa integer positif."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:293
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"Nilai %s SOA (%dZ) berada di bawah RFC 2308 minimum yang disarankan (%d). "
-"Ini diperbolehkan tetapi tidak disarankan."
+msgstr "Nilai %s SOA (%d) berada di bawah RFC 2308 minimum yang disarankan (%d). Ini diperbolehkan tetapi tidak disarankan."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7260,14 +7244,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr ""
-"Parameter url-status= yang tidak diketahui akan diabaikan (bantuan) SVCB: "
-"%sZ\"."
+msgstr "Parameter url-status= yang tidak diketahui akan diabaikan (bantuan) SVCB: %s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplikasi kunci parameter SVCB: %sZ\". Setiap kunci hanya boleh muncul sekali."
+msgstr "Duplikasi kunci parameter SVCB: %s\". Setiap kunci hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -7280,7 +7262,7 @@ msgstr "Rekod Multiple CNAME dengan nama yang sama tidak diperbolehkan. Ini akan
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "Rekod CNAME tidak dapat hidup berdampingan dengan jenis rekod lain untuk nama yang sama. Rekod %sZ dijumpai."
+msgstr "Rekod CNAME tidak dapat hidup berdampingan dengan jenis rekod lain untuk nama yang sama. Rekod %s dijumpai."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -8099,9 +8081,7 @@ msgstr "SHA-1 (jenis digest 1) sudah lapuk kerana alasan keselamatan. mempertimb
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr ""
-"Digest CDS harus merupakan string heksa valid dari panjang %dZ untuk jenis "
-"digest yang dipilih."
+msgstr "Digest CDS harus merupakan string heksa valid dari panjang %d untuk jenis digest yang dipilih."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -8226,9 +8206,7 @@ msgstr "Nilai tidak sah untuk medan pelabuhan rekod SRV. Harus 1-65535."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Pelabuhan %d berbeda dengan port standar %dZ untuk layanan %s. Ini "
-"diperbolehkan tapi tidak biasa."
+msgstr "Pelabuhan %d berbeda dengan port standar %d untuk layanan %s. Ini diperbolehkan tapi tidak biasa."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8577,27 +8555,21 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
-"%sZ (algoritma %d) dinyatakan sebagai opsional untuk implementasi dalam RFC "
-"8624."
+msgstr "%s (algoritma %d) dinyatakan sebagai opsional untuk implementasi dalam RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%sZZ (algoritm %d) adalah LAMPIRAN menurut RFC 8624. Jangan gunakan "
-"algoritma ini untuk penyebaran baru."
+msgstr "%s (algoritm %d) adalah LAMPIRAN menurut RFC 8624. Jangan gunakan algoritma ini untuk penyebaran baru."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algoritma %dZ HARUS TIDAK DIimplementasikan menurut RFC 8624. Nilai ini "
-"tidak boleh digunakan."
+msgstr "Algoritma %d HARUS TIDAK DIimplementasikan menurut RFC 8624. Nilai ini tidak boleh digunakan."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8757,7 +8729,7 @@ msgstr "Tiada zon songsang yang sepadan untuk: %s."
 #: lib/Domain/Service/ReverseRecordCreator.php:110
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "Rekod PTR untuk %sZ menunjuk %s sudah ada."
+msgstr "Rekod PTR untuk %s menunjuk %s sudah ada."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:123
 #, php-format
@@ -8789,7 +8761,7 @@ msgstr "Gagal memperbarui rekod dalam backend DNS."
 #: lib/Domain/Service/Dns/DomainManager.php:856
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Argumen tidak sah  langsung diberikan untuk fungsi %sZ %s"
+msgstr "Argumen tidak sah  langsung diberikan untuk fungsi %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
@@ -8816,7 +8788,7 @@ msgstr "Gagal untuk menciptakan rekod %s untuk zona."
 #: lib/Domain/Service/Dns/DomainManager.php:431
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Argumen tidak sah diberikan ke fungsi %sZ"
+msgstr "Argumen tidak sah diberikan ke fungsi %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:552
 msgid "Failed to delete zone from DNS backend."
@@ -8825,12 +8797,12 @@ msgstr "Gagal menghapus zona dari backend DNS."
 #: lib/Domain/Service/Dns/DomainManager.php:509
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
-msgstr "Gagal membersihkan data meta zona: %sZ"
+msgstr "Gagal membersihkan data meta zona: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:598
 #, php-format
 msgid "Failed to delete zone metadata: %s"
-msgstr "Gagal memadam data meta zona: %sZ"
+msgstr "Gagal memadam data meta zona: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to change zone metadata."
@@ -11612,7 +11584,7 @@ msgstr "zon tanda tangan"
 
 #: templates/default/edit.html:884 templates/modern/edit.html:884
 msgid "Not signed"
-msgstr "Tak ditandatangani oleh '%s'"
+msgstr "Tidak ditandatangani"
 
 #: templates/default/users.html:6 templates/modern/users.html:6
 msgid "User Management"
@@ -11906,7 +11878,7 @@ msgstr "Hantar kata laluan melalui e-mel"
 
 #: templates/default/add_user.html:59 templates/modern/add_user.html:59
 msgid "Send login credentials to user's email address"
-msgstr "E-mel pengguna %s"
+msgstr "Hantar butiran log masuk ke alamat e-mel pengguna"
 
 #: templates/modern/add_user.html:68 templates/modern/add_group.html:31
 msgid "Select a template..."
@@ -12850,7 +12822,7 @@ msgstr "Eksekusi Medis"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Tayangan hanya-nama host '%s'"
+msgstr "Paparan nama hos sahaja"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
@@ -12922,7 +12894,7 @@ msgstr "Mengesahkan Penghapusan Rekod"
 
 #: templates/default/search.html:696 templates/modern/search.html:696
 msgid "selected record(s)?"
-msgstr "rekod yang dipilih oleh '%s'?"
+msgstr "rekod yang dipilih?"
 
 #: templates/modern/delete_domains.html:4
 msgid "Delete zones"
