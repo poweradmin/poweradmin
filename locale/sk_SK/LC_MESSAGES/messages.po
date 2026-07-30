@@ -1013,7 +1013,7 @@ msgstr "Doména"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Názov domény (prázdne = @)."
+msgstr "Názov domény (prázdne pre apex zóny @). Úplný názov záznamu bude: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3930,7 +3930,7 @@ msgstr "3. SRV aj TLSA musia mať DNSSEC status \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA: _port._protocol.hostname."
+msgstr "Názov záznamu TLSA by mal zvyčajne mať formát _port._protocol.hostname (napr. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -3988,7 +3988,7 @@ msgstr "Lokálna časť e-mailu SHA-256, _smimecert.<domain>."
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA: _port._protocol.hostname."
+msgstr "Záznamy TLSA by mali byť zvyčajne umiestnené na \"_port._protocol.hostname\" (napr. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""

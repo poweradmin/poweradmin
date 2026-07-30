@@ -608,7 +608,7 @@ msgstr "Sisällytä toimialueet"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Toimialueet, joiden SPF sisällytetään (yksi per rivi)."
+msgstr "Toimialueet, joiden SPF-tietueet sisällytetään (yksi per rivi). Yleisiä: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1021,7 +1021,7 @@ msgstr "Toimialue"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Toimialuenimi (tyhjä juurelle @)."
+msgstr "Toimialuenimi (jätä tyhjäksi juurelle @). Tietueen koko nimi on: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3938,7 +3938,7 @@ msgstr "3. Sekä SRV- että TLSA-tietueilla DNSSEC-tilan on oltava \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA-nimi yleensä muodossa _port._protocol.hostname."
+msgstr "TLSA-tietueen nimen tulisi yleensä olla muodossa _port._protocol.hostname (esim. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -3996,7 +3996,7 @@ msgstr "Sähköpostin paikallinen osa SHA-256 ja ennen _smimecert.<domain>"
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA tavallisesti \"_port._protocol.hostname\"."
+msgstr "TLSA-tietueet tulisi yleensä sijoittaa kohtaan \"_port._protocol.hostname\" (esim. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7047,7 +7047,7 @@ msgstr "Tämä tietue ristiriidassa olemassa olevan CNAME:n kanssa."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part 64-merkkinen SHA-256."
+msgstr "SMIMEA-tietueiden local-part-tiivisteen tulisi olla 64-merkkinen SHA-256-heksatiiviste. Muodon tulisi olla: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

@@ -135,9 +135,7 @@ msgstr "Име на хост"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Име на хост за услугата (оставете празно за зона apex @). Записът ще бъде "
-"създаден на  port. protocol.hostname"
+msgstr "Име на хост за услугата (оставете празно за зона apex @). Записът ще бъде създаден на _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -648,9 +646,7 @@ msgstr "Включване на домейни"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Домейни, чиито записи на SPF следва да бъдат включени (по един на линия). "
-"Чести:  spf. Google. com, spf. protection. outlook. com"
+msgstr "Домейни, чиито записи на SPF следва да бъдат включени (по един на линия). Чести: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1074,9 +1070,7 @@ msgstr "Име на услугата"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr ""
-"Наименованието на услугата трябва да започне с подчертаване (напр.  моята "
-"услуга)"
+msgstr "Наименованието на услугата трябва да започне с подчертаване (напр. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1103,9 +1097,7 @@ msgstr "Област"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Име на домейн (оставете празно за зона apex @). Пълното име на записа ще "
-"бъде:  service. protocol.domain"
+msgstr "Име на домейн (оставете празно за зона apex @). Пълното име на записа ще бъде: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4135,9 +4127,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Име на запис TLSA обикновено следва формата  port. protocol.hostname (напр.  "
-"443. tcp.www.пример.com)."
+msgstr "Име на запис TLSA обикновено следва формата _port._protocol.hostname (напр. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4203,17 +4193,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Местната част на имейл адреса е hashed с SHA-256 и се поставя преди  "
-"smimecert. <domain>"
+msgstr "Местната част на имейл адреса се хешира с SHA-256 и се поставя преди _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Записите TLSA обикновено трябва да се поставят на \" port. "
-"protocol.hostname\" (напр. \" 443. tcp. www.пример.com\")."
+msgstr "Записите TLSA обикновено трябва да се поставят на \"_port._protocol.hostname\" (напр. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5150,9 +5136,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Името на записа не следва стандартния формат OpENPGPKEY (<hash>. openpgpkey."
-"<domain>). Стандартният формат се препоръчва за оперативна съвместимост."
+msgstr "Името на записа не следва стандартния формат OPENPGPKEY (<hash>._openpgpkey.<domain>). Стандартният формат се препоръчва за оперативна съвместимост."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7947,26 +7931,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Местната част на хеш в SMIMEA записите трябва да бъде 64-характерна SHA-256 "
-"hex hash. Форматът следва да бъде: SHA256(местни части). smimecert.domain.tld"
+msgstr "Хешът на местната част в SMIMEA записите трябва да бъде 64-символен SHA-256 hex хеш. Форматът следва да бъде: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Име на запис SMIMEA е във формат: SHA256(местни части). smimecert.domain.tld "
-"за имейл адреси като %s"
+msgstr "Име на запис SMIMEA е във формат: SHA256(local-part)._smimecert.domain.tld за имейл адреси като %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Това не използва стандартния формат на името SMIMEA. Записите SMIMEA "
-"обикновено следва да се използват: SHA256(местни части). smimecert.domain.tld"
+msgstr "Това не използва стандартния формат на името SMIMEA. Записите SMIMEA обикновено следва да използват: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8671,7 +8649,7 @@ msgstr "Приоритетът трябва да бъде 0 за записи BR
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC записите трябва да бъдат поставени на  dmarc.<domain>."
+msgstr "DMARC записите трябва да бъдат поставени на _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -9002,8 +8980,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr ""
-"Името на записа на SRV трябва да е във формат  service. protocol.domain"
+msgstr "Името на записа SRV трябва да е във формат _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -9035,9 +9012,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Протокол \"%s\" не е в списъка с добре познати протоколи. Общите протоколи "
-"са  tcp и  udp."
+msgstr "Протокол \"%s\" не е в списъка с добре познати протоколи. Общите протоколи са _tcp и _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

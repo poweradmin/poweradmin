@@ -7413,7 +7413,7 @@ msgstr "권한을 찾을 수 없습니다."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "사용자가 이미 존재합니다."
+msgstr "SMIMEA 레코드의 로컬 부분 해시는 64자 SHA-256 16진수 해시여야 합니다. 형식은 다음과 같아야 합니다: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7426,7 +7426,7 @@ msgstr "SMIMEA 레코드 이름 형식은 다음과 같습니다: %s 같은 이�
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "역할이 이미 존재합니다."
+msgstr "표준 SMIMEA 이름 형식을 사용하지 않습니다. SMIMEA 레코드는 일반적으로 다음 형식을 사용해야 합니다: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7990,7 +7990,7 @@ msgstr "BRID 레코드의 우선순위는 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "키 교환에 실패했습니다."
+msgstr "DMARC 레코드는 _dmarc.<domain>에 배치해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8256,7 +8256,7 @@ msgstr "최대 반복 횟수를 초과했습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "최대 실행 시간을 초과했습니다."
+msgstr "SRV 레코드 이름은 _service._protocol.domain 형식이어야 합니다"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

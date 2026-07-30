@@ -4064,9 +4064,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Tên bản ghi TLSA thường nên theo định dạng _cổng._giao_thức.tên_máy_chủ (ví "
-"dụ: _443._tcp.www.example.com)."
+msgstr "Tên bản ghi TLSA thường nên theo định dạng _port._protocol.hostname (ví dụ: _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4140,9 +4138,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Bản ghi TLSA thường nên được đặt tại \"_cổng._giao_thức.tên_máy_chủ\" (ví "
-"dụ: \"_443._tcp.www.example.com\")."
+msgstr "Bản ghi TLSA thường nên được đặt tại \"_port._protocol.hostname\" (ví dụ: \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""

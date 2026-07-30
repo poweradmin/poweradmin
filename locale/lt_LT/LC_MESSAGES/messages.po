@@ -1073,7 +1073,7 @@ msgstr "Pasirinktinis paslaugos pavadinimas"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Paslaugos pavadinimas turi prasidėti pabraukimu (pvz., _manopaslanga)"
+msgstr "Paslaugos pavadinimas turi prasidėti apatiniu brūkšniu (pvz., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1100,9 +1100,7 @@ msgstr "Domenas"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo "
-"pavadinimas bus: _paslauga._protokolas.domenas"
+msgstr "Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo pavadinimas bus: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1804,7 +1802,7 @@ msgstr "Neturite teisės peržiūrėti zonos metaduomenų."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Neturite teises redaguoti zonos metaduomenu."
+msgstr "Neturite teisės redaguoti zonos metaduomenų."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
@@ -1828,9 +1826,7 @@ msgstr "Zonos metaduomenys"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Metaduomenu tipas %s priima tik viena reiksme. Pridekite tik viena eilute "
-"siam tipui."
+msgstr "Metaduomenų tipas %s priima tik vieną reikšmę. Pridėkite tik vieną eilutę šiam tipui."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1847,9 +1843,7 @@ msgstr "Metaduomenų tipą %s gali pakeisti tik administratorius."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Pasirinktinis metaduomenu tipas, saugomas tiesiogiai PowerDNS domainmetadata "
-"lenteleje."
+msgstr "Pasirinktinis metaduomenų tipas, saugomas tiesiogiai PowerDNS domainmetadata lentelėje."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -4122,9 +4116,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"TLSA įrašo pavadinimas paprastai turėtų atitikti formatą "
-"_prievadas._protokolas.serverio_vardas (pvz., _443._tcp.www.example.com)."
+msgstr "TLSA įrašo pavadinimas paprastai turėtų atitikti formatą _port._protocol.hostname (pvz., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4198,10 +4190,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA įrašai paprastai turėtų būti dedami "
-"\"_prievadas._protokolas.serverio_vardas\" (pvz., "
-"\"_443._tcp.www.example.com\")."
+msgstr "TLSA įrašai paprastai turėtų būti dedami \"_port._protocol.hostname\" (pvz., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7881,9 +7870,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA įrašo pavadinimas yra formatu: SHA256(vietinė-"
-"dalis)._smimecert.domenas.tld el. pašto adresams kaip %s"
+msgstr "SMIMEA įrašo pavadinimas yra formatu: SHA256(local-part)._smimecert.domain.tld el. pašto adresams kaip %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -13133,9 +13120,7 @@ msgstr "Kelios reiksmes"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Tokiems metaduomenims kaip ALLOW-AXFR-FROM pridekite kelias eilutes su tuo "
-"paciu tipu. Kiekviena reiksme saugoma atskirai, viena eilute vienai reiksmei."
+msgstr "Tokiems metaduomenims kaip ALLOW-AXFR-FROM pridėkite kelias eilutes su tuo pačiu tipu. Kiekviena reikšmė saugoma atskirai, viena eilutė vienai reikšmei."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"

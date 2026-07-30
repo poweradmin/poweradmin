@@ -612,7 +612,7 @@ msgstr "Kaasa domeenid"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Domeenid, mille SPF kirjeid kaasata (üks rea kohta)."
+msgstr "Domeenid, mille SPF-kirjed tuleks kaasata (üks rea kohta). Levinumad: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1027,7 +1027,7 @@ msgstr "Domeen"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domeeninimi (tühi tsooni tipule @)."
+msgstr "Domeeninimi (jäta tsooni tipu @ jaoks tühjaks). Kirje täisnimi on: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3947,7 +3947,7 @@ msgstr "3. Nii SRV kui TLSA kirjetel peab olema DNSSEC olek \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA nimi järgib tavaliselt _port._protocol.hostname vormingut."
+msgstr "TLSA kirje nimi peaks tavaliselt järgima vormingut _port._protocol.hostname (nt _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4007,7 +4007,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA kirjed tavaliselt \"_port._protocol.hostname\"."
+msgstr "TLSA kirjed tuleks tavaliselt paigutada asukohta \"_port._protocol.hostname\" (nt \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""

@@ -135,9 +135,7 @@ msgstr "Emri i host"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Emri i host për shërbimin (lejo bosh për zonën apex @). Regjistri do të "
-"krijohet tek  port. protocol.stame"
+msgstr "Emri i hostit për shërbimin (lëreni bosh për apeksin e zonës @). Regjistrimi do të krijohet tek _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -650,9 +648,7 @@ msgstr "Përfshi Domains"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Domain regjistrat e SPF të të cilëve duhet të përfshihen (një për vijë). I "
-"përbashkët:  spf.google.com, spf.broad.outview.com"
+msgstr "Domenet të cilave duhet t'u përfshihen regjistrimet SPF (një për rresht). Të zakonshme: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1076,8 +1072,7 @@ msgstr "Emri i personalizuar i shërbimit"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr ""
-"Emri i shërbimit duhet të fillojë me vënien në dukje (p.sh.,  shërbimi)"
+msgstr "Emri i shërbimit duhet të fillojë me nënvijë (p.sh., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1104,9 +1099,7 @@ msgstr "Domain"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domain emri (leave bosh për zonën apex @). Emri i plotë i regjistrimit do të "
-"jetë:  o shërbim. protocol.domain"
+msgstr "Emri i domenit (lëreni bosh për apeksin e zonës @). Emri i plotë i regjistrimit do të jetë: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4125,9 +4118,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Emri i regjistrimeve TLSA duhet të ndjekë zakonisht formatin  port. "
-"protocol.name (p.sh.,  443. tcp. www.example.com)."
+msgstr "Emri i regjistrimit TLSA normalisht duhet të ndjekë formatin _port._protocol.hostname (p.sh., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4200,9 +4191,7 @@ msgstr "Pjesa lokale e një adrese email hashohet me SHA-256 dhe vendoset përpa
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Të dhënat TLSA duhet të vendosen zakonisht tek \" port. protocol.name\" "
-"(p.sh., \"443. tcp. www.example.com)."
+msgstr "Regjistrimet TLSA normalisht duhet të vendosen tek \"_port._protocol.hostname\" (p.sh., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7904,9 +7893,7 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"The lokale-pjesë hash në të dhënat SMIMEA duhet të jetë një hashs CA-256 "
-"hex. Formati duhet të jetë: SHA25668local-part. simecert.domain.tld"
+msgstr "Hash-i i pjesës lokale në regjistrimet SMIMEA duhet të jetë një hash hex SHA-256 me 64 karaktere. Formati duhet të jetë: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7921,9 +7908,7 @@ msgstr ""
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Kjo nuk përdor formatin standart SMIMEA. Të dhënat SMIMEA duhet të përdoren "
-"zakonisht: SHA256-parti lokal. smimecert.Domain.tld"
+msgstr "Kjo nuk përdor formatin standard të emrit SMIMEA. Regjistrimet SMIMEA normalisht duhet të përdorin: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8954,7 +8939,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Emri i regjistrimit të SRV duhet të jetë në formatin  protocol.domain"
+msgstr "Emri i regjistrimit SRV duhet të jetë në formatin _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

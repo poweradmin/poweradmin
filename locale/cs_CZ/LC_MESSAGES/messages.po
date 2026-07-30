@@ -134,9 +134,7 @@ msgstr "Název hostitele"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Název hostitele pro službu (ponechte prázdné pro apex zóny @). Záznam bude "
-"vytvořen na _port._protokol.hostname"
+msgstr "Název hostitele pro službu (ponechte prázdné pro apex zóny @). Záznam bude vytvořen na _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1091,9 +1089,7 @@ msgstr "Doména"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Název domény (ponechte prázdné pro apex zóny @). Celý název záznamu bude: "
-"_služba._protokol.doména"
+msgstr "Název domény (ponechte prázdné pro apex zóny @). Celý název záznamu bude: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1794,7 +1790,7 @@ msgstr "Nemáte oprávnění zobrazit metadata zóny."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Nemate opravneni upravovat metadata zony."
+msgstr "Nemáte oprávnění upravovat metadata zóny."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
@@ -1818,9 +1814,7 @@ msgstr "Metadata zóny"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Typ metadat %s prijima pouze jednu hodnotu. Pridejte pouze jeden radek pro "
-"tento typ."
+msgstr "Typ metadat %s přijímá pouze jednu hodnotu. Přidejte pouze jeden řádek pro tento typ."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1837,7 +1831,7 @@ msgstr "Druh metadat %s může měnit pouze administrátor."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "Vlastni typ metadat ulozeny primo v tabulce domainmetadata PowerDNS."
+msgstr "Vlastní typ metadat uložený přímo v tabulce domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -7811,26 +7805,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Hash lokální části v SMIMEA záznamech by měl být 64-znakový SHA-256 hex "
-"hash. Formát by měl být: SHA256(lokální-část)._smimecert.doména.tld"
+msgstr "Hash lokální části v SMIMEA záznamech by měl být 64-znakový SHA-256 hex hash. Formát by měl být: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Název záznamu SMIMEA je ve formátu: SHA256(lokální-"
-"část)._smimecert.doména.tld pro e-mailové adresy jako %s"
+msgstr "Název záznamu SMIMEA je ve formátu: SHA256(local-part)._smimecert.domain.tld pro e-mailové adresy jako %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Toto nepoužívá standardní formát názvu SMIMEA. SMIMEA záznamy by typicky "
-"měly používat: SHA256(lokální-část)._smimecert.doména.tld"
+msgstr "Toto nepoužívá standardní formát názvu SMIMEA. SMIMEA záznamy by typicky měly používat: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8834,7 +8822,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Název SRV záznamu musí být ve formátu _služba._protokol.doména"
+msgstr "Název SRV záznamu musí být ve formátu _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -9447,9 +9435,7 @@ msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Neplatny format SRV. Pouzijte: name,SRV,\"weight port target\",priority,ttl "
-"nebo name,SRV,target,weight,port,ttl"
+msgstr "Neplatný formát SRV. Použijte: name,SRV,\"weight port target\",priority,ttl nebo name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -13054,9 +13040,7 @@ msgstr "Vice hodnot"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Pro metadata jako ALLOW-AXFR-FROM pridejte vice radku se stejnym typem. "
-"Kazda hodnota je ulozena samostatne, jeden radek na hodnotu."
+msgstr "Pro metadata jako ALLOW-AXFR-FROM přidejte více řádků se stejným typem. Každá hodnota je uložena samostatně, jeden řádek na hodnotu."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"

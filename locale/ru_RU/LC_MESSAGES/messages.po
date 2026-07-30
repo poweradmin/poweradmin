@@ -135,9 +135,7 @@ msgstr "Имя хоста"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Имя хоста для службы (оставьте пустым для вершины зоны @). Запись будет "
-"создана в _порт._протокол.имя_хоста"
+msgstr "Имя хоста для службы (оставьте пустым для вершины зоны @). Запись будет создана в _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1106,9 +1104,7 @@ msgstr "Домен"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Имя домена (оставьте пустым для вершины зоны @). Полное имя записи будет: "
-"_служба._протокол.домен"
+msgstr "Имя домена (оставьте пустым для вершины зоны @). Полное имя записи будет: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4208,9 +4204,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA записи обычно должны размещаться в \"_порт._протокол.имя_хоста\" "
-"(например, \"_443._tcp.www.example.com\")."
+msgstr "Записи TLSA обычно должны размещаться в \"_port._protocol.hostname\" (например, \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7951,26 +7945,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Хеш локальной части в записях SMIMEA должен быть 64-символьным SHA-256 hex-"
-"хешем. Формат должен быть: SHA256(локальная-часть)._smimecert.домен.tld"
+msgstr "Хеш локальной части в записях SMIMEA должен быть 64-символьным SHA-256 hex-хешем. Формат должен быть: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Имя записи SMIMEA имеет формат: SHA256(локальная-часть)._smimecert.домен.tld "
-"для адресов электронной почты вроде %s"
+msgstr "Имя записи SMIMEA имеет формат: SHA256(local-part)._smimecert.domain.tld для адресов электронной почты вроде %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Это не использует стандартный формат имени SMIMEA. Записи SMIMEA обычно "
-"должны использовать: SHA256(локальная-часть)._smimecert.домен.tld"
+msgstr "Это не использует стандартный формат имени SMIMEA. Записи SMIMEA обычно должны использовать: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""

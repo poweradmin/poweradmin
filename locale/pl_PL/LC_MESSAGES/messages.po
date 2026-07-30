@@ -1068,7 +1068,7 @@ msgstr "Własna nazwa usługi"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Nazwa usługi musi zaczynać się od podkreślenia (np. _mojasluzba)"
+msgstr "Nazwa usługi musi zaczynać się od podkreślenia (np. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1095,9 +1095,7 @@ msgstr "Domena"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Nazwa domeny (pozostaw puste dla wierzchołka strefy @). Pełna nazwa rekordu "
-"będzie: _usługa._protokół.domena"
+msgstr "Nazwa domeny (pozostaw puste dla wierzchołka strefy @). Pełna nazwa rekordu będzie: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1803,7 +1801,7 @@ msgstr "Nie masz uprawnień do przeglądania metadanych strefy."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Nie masz uprawnien do edycji metadanych strefy."
+msgstr "Nie masz uprawnień do edycji metadanych strefy."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
@@ -1827,9 +1825,7 @@ msgstr "Metadane strefy"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Rodzaj metadanych %s akceptuje tylko jedna wartosc. Dodaj tylko jeden wiersz "
-"dla tego rodzaju."
+msgstr "Rodzaj metadanych %s akceptuje tylko jedną wartość. Dodaj tylko jeden wiersz dla tego rodzaju."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1846,9 +1842,7 @@ msgstr "Rodzaj metadanych %s może zostać zmieniony wyłącznie przez administr
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Niestandardowy rodzaj metadanych przechowywany bezposrednio w tabeli "
-"domainmetadata PowerDNS."
+msgstr "Niestandardowy rodzaj metadanych przechowywany bezpośrednio w tabeli domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -7923,27 +7917,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Hash części lokalnej w rekordach SMIMEA powinien być 64-znakowym hashem "
-"SHA-256 w systemie szesnastkowym. Format powinien być: SHA256(część-"
-"lokalna)._smimecert.domena.tld"
+msgstr "Hash części lokalnej w rekordach SMIMEA powinien być 64-znakowym hashem SHA-256 w systemie szesnastkowym. Format powinien być: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Nazwa rekordu SMIMEA ma format: SHA256(część-lokalna)._smimecert.domena.tld "
-"dla adresów e-mail takich jak %s"
+msgstr "Nazwa rekordu SMIMEA ma format: SHA256(local-part)._smimecert.domain.tld dla adresów e-mail takich jak %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"To nie używa standardowego formatu nazwy SMIMEA. Rekordy SMIMEA powinny "
-"zazwyczaj używać: SHA256(część-lokalna)._smimecert.domena.tld"
+msgstr "To nie używa standardowego formatu nazwy SMIMEA. Rekordy SMIMEA powinny zazwyczaj używać: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8967,7 +8954,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Nazwa rekordu SRV musi być w formacie _usługa._protokół.domena"
+msgstr "Nazwa rekordu SRV musi być w formacie _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -9590,9 +9577,7 @@ msgstr "Nieprawidłowy format. Oczekiwano przynajmniej: nazwa,typ,zawartość"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Nieprawidlowy format SRV. Uzyj: name,SRV,\"weight port target\",priority,ttl "
-"lub name,SRV,target,weight,port,ttl"
+msgstr "Nieprawidłowy format SRV. Użyj: name,SRV,\"weight port target\",priority,ttl lub name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -10153,7 +10138,7 @@ msgstr "Rekord A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>cel.[ZONE]</code> lub <code>example.com.</code>"
+msgstr "CNAME: <code>target.[ZONE]</code> lub <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -13240,10 +13225,7 @@ msgstr "Wiele wartosci"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Dla metadanych takich jak ALLOW-AXFR-FROM dodaj wiele wierszy z tym samym "
-"rodzajem. Kazda wartosc jest przechowywana oddzielnie, jeden wiersz na "
-"wartosc."
+msgstr "Dla metadanych takich jak ALLOW-AXFR-FROM dodaj wiele wierszy z tym samym rodzajem. Każda wartość jest przechowywana oddzielnie, jeden wiersz na wartość."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"

@@ -136,9 +136,7 @@ msgstr "Nombre del host"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Nombre de host para el servicio (dejar vacío para el ápice de zona @). El "
-"registro se creará en _puerto._protocolo.nombredehost"
+msgstr "Nombre de host para el servicio (dejar vacío para el ápice de zona @). El registro se creará en _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1110,9 +1108,7 @@ msgstr "Dominio"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Nombre de dominio (dejar vacío para el ápice de zona @). El nombre completo "
-"del registro será: _servicio._protocolo.dominio"
+msgstr "Nombre de dominio (dejar vacío para el ápice de zona @). El nombre completo del registro será: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4175,9 +4171,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"El nombre del registro TLSA debe seguir típicamente el formato "
-"_puerto._protocolo.hostname (ej., _443._tcp.www.example.com)."
+msgstr "El nombre del registro TLSA debe seguir típicamente el formato _port._protocol.hostname (ej., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4252,9 +4246,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Los registros TLSA deben colocarse típicamente en "
-"\"_puerto._protocolo.hostname\" (ej., \"_443._tcp.www.example.com\")."
+msgstr "Los registros TLSA deben colocarse típicamente en \"_port._protocol.hostname\" (ej., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""

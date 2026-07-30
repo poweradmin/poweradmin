@@ -612,7 +612,7 @@ msgstr "Укључи домене"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Домени чије SPF записе треба укључити (један по реду)."
+msgstr "Домени чије SPF записе треба укључити (један по реду). Уобичајено: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -3968,7 +3968,7 @@ msgstr "3. И SRV и TLSA записи морају имати DNSSEC стату
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA име обично прати формат _port._protocol.hostname."
+msgstr "Име TLSA записа обично треба да прати формат _port._protocol.hostname (нпр. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -7110,7 +7110,7 @@ msgstr "Овај запис је у сукобу са постојећим CNAME
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part треба да буде 64-знак SHA-256 хекс хеш."
+msgstr "Хеш локалног дела у SMIMEA записима треба да буде SHA-256 хекс хеш од 64 знака. Формат треба да буде: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

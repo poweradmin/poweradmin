@@ -135,9 +135,7 @@ msgstr "الاسم المضيف"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"(أ) الاسم المضيف للخدمة (أطلق فارغاً للمنطقة apex @). سيتم إنشاء سجل في  "
-"بورتكول."
+msgstr "اسم المضيف للخدمة (اتركه فارغاً لقمة المنطقة @). سيتم إنشاء السجل في _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1048,7 +1046,7 @@ msgstr "اسم الخدمة العرفية"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "يجب أن يبدأ اسم الخدمة بالتشديد (مثلاً، خدمة)"
+msgstr "يجب أن يبدأ اسم الخدمة بشرطة سفلية (مثلاً، _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1075,7 +1073,7 @@ msgstr "النطاق"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domain name (leave empty for zone apex @). اسم السجل الكامل سيكون:"
+msgstr "اسم النطاق (اتركه فارغاً لقمة المنطقة @). سيكون اسم السجل الكامل: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -5009,9 +5007,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"The record name does not follow the standard OPENPGPKEY format (<hash>. "
-"openpgpkey.<domain>). ويوصى بالنموذج الموحد للقابلية للتشغيل المتبادل."
+msgstr "اسم السجل لا يتبع تنسيق OPENPGPKEY القياسي (<hash>._openpgpkey.<domain>). يوصى بالتنسيق القياسي لضمان قابلية التشغيل المتبادل."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -8612,7 +8608,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "يجب أن يكون اسم السجل في الشكل   الخدمة  ."
+msgstr "يجب أن يكون اسم سجل SRV بالتنسيق _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

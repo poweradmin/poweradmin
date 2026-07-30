@@ -1067,7 +1067,7 @@ msgstr "Özel Servis Adı"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Servis adı alt çizgi ile başlamalıdır (örn. _servisim)"
+msgstr "Servis adı alt çizgi ile başlamalıdır (örn. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1788,7 +1788,7 @@ msgstr "Bölge meta verilerini görüntüleme izniniz yok."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Alan meta verilerini duzenleme izniniz yok."
+msgstr "Alan meta verilerini düzenleme izniniz yok."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
@@ -1812,9 +1812,7 @@ msgstr "Bölge Meta Verileri"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Meta veri turu %s yalnizca tek bir deger kabul eder. Bu tur icin yalnizca "
-"bir satir ekleyin."
+msgstr "Meta veri türü %s yalnızca tek bir değer kabul eder. Bu tür için yalnızca bir satır ekleyin."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1831,8 +1829,7 @@ msgstr "%s meta veri türü yalnızca bir yönetici tarafından değiştirilebil
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"PowerDNS domainmetadata tablosunda dogrudan depolanan ozel meta veri turu."
+msgstr "PowerDNS domainmetadata tablosunda doğrudan depolanan özel meta veri türü."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -9484,9 +9481,7 @@ msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Gecersiz SRV formati. Kullanin: name,SRV,\"weight port target\",priority,ttl "
-"veya name,SRV,target,weight,port,ttl"
+msgstr "Geçersiz SRV formatı. Kullanın: name,SRV,\"weight port target\",priority,ttl veya name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -13105,9 +13100,7 @@ msgstr "Birden fazla deger"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"ALLOW-AXFR-FROM gibi meta veriler icin ayni turde birden fazla satir "
-"ekleyin. Her deger ayri ayri depolanir, deger basina bir satir."
+msgstr "ALLOW-AXFR-FROM gibi meta veriler için aynı türde birden fazla satır ekleyin. Her değer ayrı ayrı depolanır, değer başına bir satır."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"

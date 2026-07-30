@@ -136,9 +136,7 @@ msgstr "Hostnaam"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Hostnaam voor de service (laat leeg voor zone-apex @). Record wordt "
-"aangemaakt bij _poort._protocol.hostnaam"
+msgstr "Hostnaam voor de service (laat leeg voor zone-apex @). Record wordt aangemaakt bij _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1074,7 +1072,7 @@ msgstr "Aangepaste servicenaam"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Servicenaam moet beginnen met underscore (bijv. _mijnservice)"
+msgstr "Servicenaam moet beginnen met een underscore (bijv. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1101,9 +1099,7 @@ msgstr "Domein"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domeinnaam (laat leeg voor zone-apex @). Volledige recordnaam wordt: "
-"_service._protocol.domein"
+msgstr "Domeinnaam (laat leeg voor zone-apex @). Volledige recordnaam wordt: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -8970,7 +8966,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record naam moet in formaat _service._protocol.domein zijn"
+msgstr "SRV recordnaam moet in formaat _service._protocol.domain zijn"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

@@ -136,9 +136,7 @@ msgstr "Ime gostitelja"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Ime gostitelja za storitev (pusti prazno za cono apex @). Snemanje bo "
-"ustvarjeno na  port. protocol.hostname"
+msgstr "Ime gostitelja za storitev (pustite prazno za vrh cone @). Zapis bo ustvarjen na _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -644,9 +642,7 @@ msgstr "Vključi domene"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Domene, katerih zapise SPF je treba vključiti (ena na vrstico). Pogosti:  "
-"spf.google.com, spf.protection.outlook.com"
+msgstr "Domene, katerih zapise SPF je treba vključiti (ena na vrstico). Pogosti: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1065,7 +1061,7 @@ msgstr "Lastno ime storitve"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Ime storitve se mora začeti s podčrtajem (npr.  myservice)"
+msgstr "Ime storitve se mora začeti s podčrtajem (npr. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1092,9 +1088,7 @@ msgstr "Domena"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Ime domene (pusti prazno za cono apex @). Polno ime zapisa bo:  service. "
-"protocol.domain"
+msgstr "Ime domene (pustite prazno za vrh cone @). Polno ime zapisa bo: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4128,9 +4122,7 @@ msgstr "3. Zapisi SRV in TLSA morajo imeti status potrditve DNSSEC \"varno\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Ime zapisa TLSA mora praviloma slediti formatu  port. protocol.hostname "
-"(npr.,  443. tcp.www.example.com)."
+msgstr "Ime zapisa TLSA mora praviloma slediti formatu _port._protocol.hostname (npr. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4195,17 +4187,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Lokalni del e-mail naslova je hashed s SHA-256 in postavljen pred  "
-"smimecert. <domain>"
+msgstr "Lokalni del e-poštnega naslova je zgoščen s SHA-256 in postavljen pred _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA zapise je običajno treba postaviti na \" port. protocol.hostname\" "
-"(npr. \" 443. tcp.www.example.com\")."
+msgstr "Zapise TLSA je običajno treba postaviti na \"_port._protocol.hostname\" (npr. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5114,9 +5102,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Ime zapisa ne sledi standardnemu formatu OPENPGPKEY (<hash>. openpgpekey."
-"<domain>). Za interoperabilnost se priporoča standardna oblika."
+msgstr "Ime zapisa ne sledi standardnemu formatu OPENPGPKEY (<hash>._openpgpkey.<domain>). Za interoperabilnost se priporoča standardna oblika."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7841,26 +7827,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Krajevni del hašiša v zapisih SMIMEA bi moral biti 64-znakovni SHA-256 heks "
-"hašiš. Oblika mora biti: SHA256(local-part). smimecert.domain.tld"
+msgstr "Zgoščena vrednost lokalnega dela v zapisih SMIMEA mora biti 64-znakovna šestnajstiška zgoščena vrednost SHA-256. Oblika mora biti: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Ime zapisa SMIMEA je v formatu: SHA256(local-part). smimecert.domain.tld za "
-"e-mail naslove, kot je %s"
+msgstr "Ime zapisa SMIMEA je v formatu: SHA256(local-part)._smimecert.domain.tld za e-poštne naslove, kot je %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"To ne uporablja standardne oblike imena SMIMEA. Zapisi SMIMEA se običajno "
-"uporabljajo: SHA256(lokalni del). smimecert.domain.tld"
+msgstr "To ne uporablja standardne oblike imena SMIMEA. Zapisi SMIMEA naj običajno uporabljajo: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8550,7 +8530,7 @@ msgstr "Prednost mora biti 0 za zapise BRID."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC zapise je treba postaviti na  dmarc.<domain>."
+msgstr "Zapise DMARC je treba postaviti na _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8869,7 +8849,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Ime zapisa SRV mora biti v formatu  service. protocol.domain"
+msgstr "Ime zapisa SRV mora biti v formatu _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8901,9 +8881,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protokol \"%s\" ni na seznamu znanih protokolov. Skupni protokoli so  tcp "
-"in  udp."
+msgstr "Protokol \"%s\" ni na seznamu znanih protokolov. Pogosta protokola sta _tcp in _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

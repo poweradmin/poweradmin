@@ -135,9 +135,7 @@ msgstr "Nome host"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Nome host per il servizio (lascia vuoto per l'apice della zona @). Il record "
-"verrà creato a _porta._protocollo.hostname"
+msgstr "Nome host per il servizio (lascia vuoto per l'apice della zona @). Il record verrà creato a _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1078,7 +1076,7 @@ msgstr "Nome servizio personalizzato"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Il nome servizio deve iniziare con underscore (es. _mioservizio)"
+msgstr "Il nome servizio deve iniziare con underscore (es. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1105,9 +1103,7 @@ msgstr "Dominio"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Nome dominio (lascia vuoto per l'apice zona @). Il nome record completo "
-"sarà: _servizio._protocollo.dominio"
+msgstr "Nome dominio (lascia vuoto per l'apice zona @). Il nome record completo sarà: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4170,9 +4166,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Il nome del record TLSA dovrebbe tipicamente seguire il formato "
-"_porta._protocollo.hostname (es. _443._tcp.www.example.com)."
+msgstr "Il nome del record TLSA dovrebbe tipicamente seguire il formato _port._protocol.hostname (es. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4247,9 +4241,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"I record TLSA dovrebbero tipicamente essere posizionati in "
-"\"_porta._protocollo.hostname\" (es. \"_443._tcp.www.example.com\")."
+msgstr "I record TLSA dovrebbero tipicamente essere posizionati in \"_port._protocol.hostname\" (es. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -8009,27 +8001,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"L'hash della parte locale nei record SMIMEA deve essere un hash SHA-256 "
-"esadecimale di 64 caratteri. Il formato deve essere: SHA256(parte-"
-"locale)._smimecert.dominio.tld"
+msgstr "L'hash della parte locale nei record SMIMEA deve essere un hash SHA-256 esadecimale di 64 caratteri. Il formato deve essere: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Il nome record SMIMEA è nel formato: SHA256(parte-"
-"locale)._smimecert.dominio.tld per indirizzi email come %s"
+msgstr "Il nome record SMIMEA è nel formato: SHA256(local-part)._smimecert.domain.tld per indirizzi email come %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Questo non usa il formato standard del nome SMIMEA. I record SMIMEA "
-"dovrebbero tipicamente usare: SHA256(parte-locale)._smimecert.dominio.tld"
+msgstr "Questo non usa il formato standard del nome SMIMEA. I record SMIMEA dovrebbero tipicamente usare: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -9073,8 +9058,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr ""
-"Il nome del record SRV deve essere nel formato _servizio._protocollo.dominio"
+msgstr "Il nome del record SRV deve essere nel formato _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

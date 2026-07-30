@@ -3988,7 +3988,7 @@ msgstr "3. I SRV i TLSA zapisi moraju imati DNSSEC status \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA naziv obično prati format _port._protocol.hostname."
+msgstr "Naziv TLSA zapisa obično treba da prati format _port._protocol.hostname (npr. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4053,7 +4053,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA zapisi se obično stavljaju na \"_port._protocol.hostname\"."
+msgstr "TLSA zapisi se obično stavljaju na \"_port._protocol.hostname\" (npr. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7245,7 +7245,7 @@ msgstr "Ovaj zapis je u sukobu s postojećim CNAME istim imenom."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part treba biti 64-znamenčani SHA-256 hex hash."
+msgstr "Hash local-part dijela u SMIMEA zapisima treba biti 64-znakovni SHA-256 hex hash. Format treba biti: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

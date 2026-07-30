@@ -133,9 +133,7 @@ msgstr "שם מארח"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"שם מארח עבור השירות (אך ריק עבור אזור apex @). רשומות ייווצרו ב- "
-"protocol.hostname."
+msgstr "שם מארח עבור השירות (השאר ריק עבור אפקס האזור @). הרשומה תיווצר ב-_port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -624,9 +622,7 @@ msgstr "כולל Domains"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"דומיינים שעליהם יש לכלול רשומות SPF (אחד לכל קו). Common: spf.google.com, "
-"spf.protection.outlook.com"
+msgstr "דומיינים שרשומות ה-SPF שלהם צריכות להיכלל (אחד בכל שורה). נפוצים: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1030,7 +1026,7 @@ msgstr "שם שירות מותאם אישית"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "שם השירות חייב להתחיל עם דגש (למשל, שירות)"
+msgstr "שם השירות חייב להתחיל בקו תחתון (למשל, _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1057,9 +1053,7 @@ msgstr "דומיין"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"שם דומיין (יש להשאיר ריק לאזור Apex @). שם שיא מלא יהיה: שירות. "
-"protocol.domain"
+msgstr "שם דומיין (השאר ריק עבור אפקס האזור @). שם הרשומה המלא יהיה: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3985,9 +3979,7 @@ msgstr "רשומות SRV ו TLSA חייבות להיות מעמד אימות DNS
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"שם הרשומה TLSA צריך בדרך כלל לעקוב אחר פורמט -port. protocol.hostname (למשל, "
-"443. tcp.www.example.com)."
+msgstr "שם רשומת TLSA צריך בדרך כלל לעקוב אחר הפורמט _port._protocol.hostname (למשל, _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4050,16 +4042,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"החלק המקומי של כתובת דוא\"ל הוא עם SHA-256 ו ממוקם לפני smimecert. <domain>"
+msgstr "החלק המקומי של כתובת דוא\"ל עובר גיבוב עם SHA-256 וממוקם לפני _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"רשומות TLSA צריך להיות ממוקם בדרך כלל ב \" port. protocol.hostname\" (למשל, "
-"\" 443 tcp.www.example.com\")."
+msgstr "רשומות TLSA צריכות בדרך כלל להיות ממוקמות ב-\"_port._protocol.hostname\" (למשל, \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4920,9 +4909,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"שם הרשומה אינו עוקב אחר פורמט OPENPGPKEY סטנדרטי (<hash>. openpgpkey."
-"<domain>). פורמט סטנדרטי מומלץ לשילוב."
+msgstr "שם הרשומה אינו עוקב אחר הפורמט התקני של OPENPGPKEY (<hash>._openpgpkey.<domain>). מומלץ להשתמש בפורמט התקני לצורך תאימות הדדית."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7473,26 +7460,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"החלק המקומי ברשומות SMIMEA צריך להיות 64-character SHA-256 Hex hash. פורמט "
-"צריך להיות: SHA256(local-part) smimecert.domain.tld."
+msgstr "גיבוב החלק המקומי ברשומות SMIMEA צריך להיות גיבוב SHA-256 הקסדצימלי באורך 64 תווים. הפורמט צריך להיות: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"שם הרשומה SMIMEA הוא בפורמט: SHA256(local-part) smimecert.domain.tld עבור "
-"כתובות דוא\"ל כמו %s"
+msgstr "שם רשומת SMIMEA הוא בפורמט: SHA256(local-part)._smimecert.domain.tld עבור כתובות דוא\"ל כמו %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"זה לא משתמש בפורמט בשם SMIMEA סטנדרטי. רשומות SMIMEA צריכות להשתמש בדרך כלל: "
-"SHA256(local-part) smimecert.domain."
+msgstr "זה אינו משתמש בפורמט השם התקני של SMIMEA. רשומות SMIMEA צריכות בדרך כלל להשתמש ב: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8153,7 +8134,7 @@ msgstr "העדיפות חייבת להיות 0 עבור רשומות BRID."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "רשומות DMARC חייבות להיות ממוקמות ב-dmarc.<domain>."
+msgstr "רשומות DMARC חייבות להיות ממוקמות ב-_dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8457,7 +8438,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "שם הרשומה SRV חייב להיות בפורמט -שירות. protocol.domain."
+msgstr "שם רשומת SRV חייב להיות בפורמט _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8487,9 +8468,7 @@ msgstr "שם השירות \"%s\" אינו ברשימת השירותים הידו
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"פרוטוקול \"%s\" אינו ברשימת הפרוטוקולים הידועים. פרוטוקולים נפוצים הם tcp ו- "
-"udp."
+msgstr "הפרוטוקול \"%s\" אינו ברשימת הפרוטוקולים המוכרים. פרוטוקולים נפוצים הם _tcp ו-_udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

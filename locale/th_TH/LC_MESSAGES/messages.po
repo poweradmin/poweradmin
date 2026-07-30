@@ -133,9 +133,7 @@ msgstr "ชื่อเครื่อง"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"ชื่อโฮสต์สําหรับบริการ (ว่างสําหรับพื้นที่ปลายทาง@) บันทึกจะถูกสร้างที่  พอร์ต.   protocol. "
-"ชื่อเครื่อง"
+msgstr "ชื่อโฮสต์สำหรับบริการ (เว้นว่างไว้สำหรับ zone apex @) เรกคอร์ดจะถูกสร้างที่ _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -622,9 +620,7 @@ msgstr "รวมโดเมนด้วย"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"โดเมนที่ควรจะรวมบันทึกของ PPF (หนึ่งอันต่อบรรทัด) ทั่วไป:  spf.google.com, "
-"Spf.cursion.took.com"
+msgstr "โดเมนที่ควรรวมเรกคอร์ด SPF ไว้ด้วย (หนึ่งรายการต่อบรรทัด) ที่พบบ่อย: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1024,7 +1020,7 @@ msgstr "ชื่อบริการกําหนดเอง"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "ชื่อบริการต้องเริ่มด้วยเครื่องหมายเน้น (เช่น,  บริการของฉัน)"
+msgstr "ชื่อบริการต้องเริ่มต้นด้วยขีดล่าง (เช่น _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1051,7 +1047,7 @@ msgstr "โดเมน"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "ชื่อโดเมน (ว่างสําหรับพื้นที่เยื้อง@) ชื่อเต็มจะเป็น:  บริการ.   protocol. instep"
+msgstr "ชื่อโดเมน (เว้นว่างไว้สำหรับ zone apex @) ชื่อเรกคอร์ดแบบเต็มจะเป็น: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3941,9 +3937,7 @@ msgstr "3. ทั้ง SRV และ TLSA สถิติจะต้องม�
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"ชื่ออัลบั้มแบบ TLSA ควรจะตามรูปแบบที่  port.  protocol. ชื่อเครื่อง (e.g.,  443 "
-"tcp.www.example.com)"
+msgstr "ชื่อเรกคอร์ด TLSA โดยทั่วไปควรอยู่ในรูปแบบ _port._protocol.hostname (เช่น _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4002,15 +3996,13 @@ msgstr "บันทึกของ SMMEA ใช้รูปแบบเดี�
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "ส่วนท้องถิ่นของที่อยู่อีเมลถูกเติมด้วย SHA-256 และวางหน้า  simecert เล็ก ๆ น้อย ๆ"
+msgstr "ส่วนโลคัลของที่อยู่อีเมลจะถูกแฮชด้วย SHA-256 และวางไว้ก่อน _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA ควรวางบันทึกไว้ที่ \"  port.  protocol. ชื่อเครื่อง\" (e.g., \" "
-"443.www.example.com)"
+msgstr "โดยทั่วไปควรวางเรกคอร์ด TLSA ไว้ที่ \"_port._protocol.hostname\" (เช่น \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4837,9 +4829,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"ชื่ออัลบั้มไม่เป็นไปตามรูปแบบ openPPKEY มาตรฐาน (zhinz.  openpppkey. EXP1z). "
-"ขอแนะนําให้ฟอร์แมตมาตรฐานสําหรับความเข้ากันได้"
+msgstr "ชื่อเรกคอร์ดไม่เป็นไปตามรูปแบบ OPENPGPKEY มาตรฐาน (<hash>._openpgpkey.<domain>) แนะนำให้ใช้รูปแบบมาตรฐานเพื่อความสามารถในการทำงานร่วมกัน."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7322,9 +7312,7 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"กัญชาท้องถิ่นในบันทึกของ SMIMEA น่าจะเป็นเครื่องราชอิสริยาภรณ์ 64 โหล-256 เฮ็กซ์ เฮ็กซ์ "
-"รูปแบบควรจะเป็น: SHA256( parts- parts).  smimecert. confird.stall"
+msgstr "แฮชของ local-part ในเรกคอร์ด SMIMEA ควรเป็นแฮชแบบ SHA-256 hex ขนาด 64 อักขระ รูปแบบควรเป็น: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7339,9 +7327,7 @@ msgstr ""
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"ไม่ใช้รูปแบบชื่อมาตรฐานของ SMMEA บันทึกของ SMMEA ควรจะใช้: SHA256(ส่วนภายใน).  "
-"smimecert. confird.tel"
+msgstr "รายการนี้ไม่ได้ใช้รูปแบบชื่อ SMIMEA มาตรฐาน โดยทั่วไปเรกคอร์ด SMIMEA ควรใช้: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7983,7 +7969,7 @@ msgstr "ลำดับความสำคัญต้องเป็น 0 ส
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "บันทึกของ DMARC ต้องวางที่  dmarc.x0z."
+msgstr "ต้องวางเรกคอร์ด DMARC ไว้ที่ _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8274,7 +8260,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "ชื่อบันทึกของ SRV ต้องอยู่ในรูปแบบ   service.   protocol. สืบค้นเมื่อ '% 1'"
+msgstr "ชื่อเรกคอร์ด SRV ต้องอยู่ในรูปแบบ _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

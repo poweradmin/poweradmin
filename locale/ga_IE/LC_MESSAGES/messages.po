@@ -136,9 +136,7 @@ msgstr "Ainm an Bhrú"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Hostname don tseirbhís (fág folamh do crios apex @). Beidh taifead a chruthú "
-"ag  port. protocol.hostname"
+msgstr "Hostname don tseirbhís (fág folamh don apex crios @). Cruthófar an taifead ag _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -654,9 +652,7 @@ msgstr "San áireamh Fearainn"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Ba chóir fearainn a bhfuil taifid SPF a chur san áireamh (ceann amháin in "
-"aghaidh na líne). Coiteann:  spf.google.com, spf.protection.outlook.com"
+msgstr "Fearainn ar cheart a dtaifid SPF a chur san áireamh (ceann amháin in aghaidh na líne). Coitianta: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1081,7 +1077,7 @@ msgstr "Ainm an tSeirbhís Chustaim"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Ní mór ainm seirbhíse tús a chur le underscore (m.sh.,  myservice)"
+msgstr "Ní mór don ainm seirbhíse tosú le underscore (m.sh., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1108,9 +1104,7 @@ msgstr "Fearainn"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Fearann ainm (fág folamh le haghaidh crios apex @). Beidh ainm taifead "
-"iomlán a bheith:  service. protocol.domain"
+msgstr "Ainm fearainn (fág folamh don apex crios @). Beidh ainm iomlán an taifid: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4191,9 +4185,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Ba chóir ainm taifead TLSA a leanúint de ghnáth ar an fhormáid  port. "
-"protocol.hostname (m.sh.,  443. tcp.www.example.com)."
+msgstr "Ba chóir go leanfadh ainm taifead TLSA an fhormáid _port._protocol.hostname de ghnáth (m.sh., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4260,17 +4252,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Tá an chuid áitiúil de sheoladh ríomhphoist hashed le SHA-256 agus a chur "
-"roimh  smimecert. <domain>ZZ"
+msgstr "Déantar hais SHA-256 ar an gcuid áitiúil de sheoladh ríomhphoist agus cuirtear í roimh _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Ba cheart taifid TLSA a chur de ghnáth ag \" port. protocol.hostname\" "
-"(m.sh., \" 443. tcp.www.example.com)."
+msgstr "Ba cheart taifid TLSA a chur ag \"_port._protocol.hostname\" de ghnáth (m.sh., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5203,9 +5191,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Ní leanann an t-ainm taifead an fhormáid chaighdeánach OPENPGPKEY (<hash>. "
-"openpgpkey.<domain>). Moltar formáid chaighdeánach don idir-inoibritheacht."
+msgstr "Ní leanann ainm an taifid an fhormáid chaighdeánach OPENPGPKEY (<hash>._openpgpkey.<domain>). Moltar an fhormáid chaighdeánach le haghaidh idir-inoibritheachta."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -8012,27 +7998,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Ba chóir go mbeadh an hash áitiúil-páirt i dtaifid SMIMEA 64-charachtar "
-"SHA-256 heicsidheachúlach. Ba chóir go mbeadh an fhormáid: SHA256 (cuid "
-"áitiúil). smimecert.domain.tld"
+msgstr "Ba chóir gur hais heicsidheachúlach SHA-256 de 64 carachtar a bheadh sa hais local-part i dtaifid SMIMEA. Ba chóir gurb í an fhormáid: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA ainm taifead i bhformáid: SHA256 (áitiúil-páirt). "
-"smimecert.domain.tld le haghaidh seoltaí ríomhphoist cosúil le %sZ"
+msgstr "Tá ainm taifead SMIMEA san fhormáid: SHA256(local-part)._smimecert.domain.tld le haghaidh seoltaí ríomhphoist mar %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Ní úsáideann sé seo an fhormáid ainm SMIMEA caighdeánach. Ba cheart taifid "
-"SMIMEA a úsáid de ghnáth: SHA256 (cuid áitiúil). smimecert.domain.tld"
+msgstr "Ní úsáideann sé seo an fhormáid ainm chaighdeánach SMIMEA. Ba chóir do thaifid SMIMEA an fhormáid seo a úsáid de ghnáth: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8735,7 +8714,7 @@ msgstr "Caithfidh an tosaíocht a bheith 0 do thaifid BRID."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "Ní mór taifid DMARC a chur ag  dmarc.<domain>."
+msgstr "Ní mór taifid DMARC a chur ag _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -9061,7 +9040,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Ní mór ainm taifead SRV a bheith i bhformáid  service. protocol.domain"
+msgstr "Ní mór ainm taifead SRV a bheith san fhormáid _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -9093,9 +9072,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Níl Prótacal \"%s\" sa liosta de phrótacail aitheanta. Tá prótacail Common  "
-"tcp agus  udp."
+msgstr "Níl an prótacal \"%s\" ar liosta na bprótacal aitheanta. Is prótacail choitianta _tcp agus _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

@@ -136,9 +136,7 @@ msgstr "Hostname"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Hostname für den Dienst (leer lassen für Zonen-Apex @). Eintrag wird unter "
-"_port._protokoll.hostname erstellt"
+msgstr "Hostname für den Dienst (leer lassen für Zonen-Apex @). Eintrag wird unter _port._protocol.hostname erstellt"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1113,9 +1111,7 @@ msgstr "Domäne"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domainname (leer lassen für Zonen-Apex @). Vollständiger Eintragsname: "
-"_dienst._protokoll.domain"
+msgstr "Domainname (leer lassen für Zonen-Apex @). Vollständiger Eintragsname: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"

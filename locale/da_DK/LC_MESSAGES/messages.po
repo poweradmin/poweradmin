@@ -136,9 +136,7 @@ msgstr "Værtsnavn"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Værtsnavn for tjenesten (lad tom for zone apex @). Record vil blive oprettet "
-"på _ port. _ protocol.hostname"
+msgstr "Værtsnavn for tjenesten (lad feltet være tomt for zone apex @). Posten oprettes på _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -647,9 +645,7 @@ msgstr "Inkludér domæner"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Domæner, hvis SPF-registreringer skal medtages (én pr. linje). Almindelig: _ "
-"spf.google.com, spf.protec.outlook.com"
+msgstr "Domæner, hvis SPF-poster skal medtages (én pr. linje). Almindelige: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1075,7 +1071,7 @@ msgstr "Brugerdefineret tjenestenavn"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Service name skal starte med understregning (fx, _ myservice)"
+msgstr "Tjenestenavnet skal starte med understregning (fx _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1102,9 +1098,7 @@ msgstr "Domæne"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domænenavn (lad tom for zone apex @). Fuldt pladenavn vil være: _ service. _ "
-"protocol.domæne"
+msgstr "Domænenavn (lad feltet være tomt for zone apex @). Det fulde postnavn bliver: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4112,9 +4106,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"TLSA record navn bør typisk følge formatet _ port. _ protocol.hostname (fx, "
-"_ 443. _ tcp.www.example.com)."
+msgstr "TLSA-postnavnet bør typisk følge formatet _port._protocol.hostname (fx _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4181,17 +4173,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Den lokale del af en e-mailadresse hashes med SHA- 256 og placeres før _ "
-"smimecert. 0"
+msgstr "Den lokale del af en e-mailadresse hashes med SHA-256 og placeres før _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA optegnelser bør typisk placeres på \"_ port. _ protocol.hostname\" (fx "
-"\", _ 443. _ tcp.www.example.com\")."
+msgstr "TLSA-poster bør typisk placeres på \"_port._protocol.hostname\" (fx \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5105,9 +5093,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Registreringsnavnet følger ikke standard OPENPGPKEY format (<hash>. _ "
-"openpgpkey. <domain>). Standard format anbefales for interoperabilitet."
+msgstr "Postnavnet følger ikke standardformatet for OPENPGPKEY (<hash>._openpgpkey.<domain>). Standardformatet anbefales af hensyn til interoperabilitet."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7827,26 +7813,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Local-part hash i SMIMEA optegnelser bør være en 64- karakter SHA- 256 hex "
-"hash. Formatet skal være: SHA256 (local-part). _ smimecert.domain.tld"
+msgstr "Hashen af den lokale del i SMIMEA-poster skal være en 64-tegns SHA-256 hex-hash. Formatet skal være: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record navn er i formatet: SHA256 (local- part). _ "
-"smimecert.domain.tld for e-mail adresser som %s"
+msgstr "SMIMEA-postnavnet har formatet: SHA256(local-part)._smimecert.domain.tld for e-mailadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Dette anvender ikke standardformatet SMIMEA. SMIMEA optegnelser bør typisk "
-"bruge: SHA256 (local-part). _ smimecert.domain.tld"
+msgstr "Dette bruger ikke standardformatet for SMIMEA-navne. SMIMEA-poster bør typisk bruge: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8541,7 +8521,7 @@ msgstr "Prioritet skal være 0 for BRID-records."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC records skal placeres på _ dmarc. <domain>."
+msgstr "DMARC-poster skal placeres på _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8859,7 +8839,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record navn skal være i format _ service. _ protocol.domæne"
+msgstr "SRV-postnavnet skal være i formatet _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8891,9 +8871,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protokol %s står ikke på listen over velkendte protokoller. Fælles "
-"protokoller er _ tcp og _ udp."
+msgstr "Protokollen \"%s\" står ikke på listen over velkendte protokoller. Almindelige protokoller er _tcp og _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

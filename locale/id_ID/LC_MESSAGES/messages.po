@@ -136,9 +136,7 @@ msgstr "Nama Host"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Nama host untuk layanan (biarkan kosong untuk apex zona @). Rekaman akan "
-"dibuat di _port._protokol.namahost"
+msgstr "Nama host untuk layanan (biarkan kosong untuk apex zona @). Rekaman akan dibuat di _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1077,7 +1075,7 @@ msgstr "Nama Layanan Kustom"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Nama layanan harus dimulai dengan garis bawah (mis., _layananku)"
+msgstr "Nama layanan harus dimulai dengan garis bawah (mis., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1104,9 +1102,7 @@ msgstr "Domain"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Nama domain (biarkan kosong untuk apex zona @). Nama rekaman lengkap akan "
-"menjadi: _layanan._protokol.domain"
+msgstr "Nama domain (biarkan kosong untuk apex zona @). Nama rekaman lengkap akan menjadi: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4122,9 +4118,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"Nama rekaman TLSA biasanya harus mengikuti format _port._protokol.namahost "
-"(mis., _443._tcp.www.example.com)."
+msgstr "Nama rekaman TLSA biasanya harus mengikuti format _port._protocol.hostname (mis., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4199,9 +4193,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"Rekaman TLSA biasanya harus ditempatkan di \"_port._protokol.namahost\" "
-"(mis., \"_443._tcp.www.example.com\")."
+msgstr "Rekaman TLSA biasanya harus ditempatkan di \"_port._protocol.hostname\" (mis., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""

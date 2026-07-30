@@ -614,7 +614,7 @@ msgstr "Iekļaut domēnus"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Domēni, kuru SPF ierakstus iekļaut (viens rindā)."
+msgstr "Domēni, kuru SPF ierakstus iekļaut (viens rindā). Bieži izmantoti: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1025,7 +1025,7 @@ msgstr "Domēns"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domēna vārds (tukšs zonas virsotnei @)."
+msgstr "Domēna vārds (atstājiet tukšu zonas virsotnei @). Pilnais ieraksta nosaukums būs: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3964,7 +3964,7 @@ msgstr "3. Gan SRV, gan TLSA ierakstiem jābūt DNSSEC statusam \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA nosaukums parasti seko _port._protocol.hostname."
+msgstr "TLSA ieraksta nosaukumam parasti jāatbilst formātam _port._protocol.hostname (piemēram, _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4026,7 +4026,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA parasti atrodas \"_port._protocol.hostname\"."
+msgstr "TLSA ieraksti parasti jānovieto \"_port._protocol.hostname\" (piemēram, \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -7070,7 +7070,7 @@ msgstr "Šis ieraksts konfliktē ar esošu CNAME."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA local-part 64 rakstzīmju SHA-256."
+msgstr "SMIMEA ierakstos local-part jaucējvērtībai jābūt 64 rakstzīmju SHA-256 heksadecimālai jaucējvērtībai. Formātam jābūt: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format

@@ -134,9 +134,7 @@ msgstr "Värdnamn"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Värdnamn för tjänsten (lämna tomt för zonens apex @). Posten skapas som "
-"_port._protokoll.värdnamn"
+msgstr "Värdnamn för tjänsten (lämna tomt för zonens apex @). Posten skapas som _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1067,7 +1065,7 @@ msgstr "Anpassat tjänstnamn"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Tjänstnamnet måste börja med understreck (t.ex. _mintjanst)"
+msgstr "Tjänstnamnet måste börja med understreck (t.ex. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1094,9 +1092,7 @@ msgstr "Domän"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domännamn (lämna tomt för zonens apex @). Fullständigt postnamn blir: "
-"_tjänst._protokoll.domän"
+msgstr "Domännamn (lämna tomt för zonens apex @). Fullständigt postnamn blir: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4084,9 +4080,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"TLSA-postnamnet bör vanligtvis följa formatet _port._protokoll.värdnamn "
-"(t.ex. _443._tcp.www.example.com)."
+msgstr "TLSA-postnamnet bör vanligtvis följa formatet _port._protocol.hostname (t.ex. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4160,9 +4154,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA-poster bör vanligtvis placeras på \"_port._protokoll.värdnamn\" (t.ex. "
-"\"_443._tcp.www.example.com\")."
+msgstr "TLSA-poster bör vanligtvis placeras på \"_port._protocol.hostname\" (t.ex. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -8048,7 +8040,7 @@ msgstr "Prioritet måste vara 0 för BRID-poster."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "Kvot återställd"
+msgstr "DMARC-poster måste placeras på _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""

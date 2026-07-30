@@ -135,9 +135,7 @@ msgstr "نام میزبان"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"نام میزبان برای خدمات (برای منطقه apex @ خالی کنید). رکورد در -port. "
-"protocol ایجاد خواهد شد."
+msgstr "نام میزبان برای سرویس (برای apex منطقه @ خالی بگذارید). رکورد در _port._protocol.hostname ایجاد می‌شود"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -642,9 +640,7 @@ msgstr "شامل Domains"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"دامنه هایی که سوابق SPF آنها باید شامل (یک خط) باشد. رایج: sPF.google.com، "
-"Spf. Protectionion.outlook.com"
+msgstr "دامنه‌هایی که رکوردهای SPF آنها باید گنجانده شود (یکی در هر خط). رایج: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1065,7 +1061,7 @@ msgstr "نام خدمات سفارشی"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "نام خدمات باید با تاکید شروع شود (به عنوان مثال، خدمات)"
+msgstr "نام سرویس باید با زیرخط شروع شود (به عنوان مثال، _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1092,9 +1088,7 @@ msgstr "دامنه"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"نام دامنه (برای منطقه apex @ خالی کنید) نام کامل رکورد خواهد بود: خدمات. "
-"protocol.domain"
+msgstr "نام دامنه (برای apex منطقه @ خالی بگذارید). نام کامل رکورد این خواهد بود: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -4064,9 +4058,7 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"نام رکورد TLSA به طور معمول باید از فرمت -port. protocol.hostname (به عنوان "
-"مثال -443. tcp.www.example.com) پیروی کند."
+msgstr "نام رکورد TLSA معمولاً باید از قالب _port._protocol.hostname پیروی کند (به عنوان مثال، _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4133,17 +4125,13 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"بخش محلی یک آدرس ایمیل با SHA-256 تنظیم شده و قبل از آن قرار داده شده است. "
-"AB0"
+msgstr "بخش محلی یک آدرس ایمیل با SHA-256 هش می‌شود و پیش از _smimecert.<domain> قرار می‌گیرد"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"سوابق TLSA به طور معمول باید در \" port. protocol.hostname\" قرار گیرد (به "
-"عنوان مثال، \" 443. tcp.www.example.com\")."
+msgstr "رکوردهای TLSA معمولاً باید در \"_port._protocol.hostname\" قرار گیرند (به عنوان مثال، \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -5042,9 +5030,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"نام ثبت شده از فرمت استاندارد OpenPGPKEY (ODM0. openpgpgpkey.AZ12.8) پیروی "
-"نمی کند. فرمت استاندارد برای همکاری توصیه می شود."
+msgstr "نام رکورد از قالب استاندارد OPENPGPKEY (<hash>._openpgpkey.<domain>) پیروی نمی‌کند. قالب استاندارد برای قابلیت همکاری توصیه می‌شود."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7692,9 +7678,7 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"هش محلی در پرونده SMIMEA باید یک هش 64 کاراکتر SHA-256 باشد. فرمت باید: "
-"SHA256 (محل محلی) smimecert.domain.tld باشد."
+msgstr "هش بخش محلی در رکوردهای SMIMEA باید یک هش هگزادسیمال SHA-256 با 64 کاراکتر باشد. قالب باید این باشد: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7709,9 +7693,7 @@ msgstr ""
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"این از فرمت استاندارد SMIMEA استفاده نمی کند. رکورد SMIMEA به طور معمول باید "
-"استفاده شود: SHA256 (محل محلی)"
+msgstr "این از قالب استاندارد نام SMIMEA استفاده نمی‌کند. رکوردهای SMIMEA معمولاً باید از این قالب استفاده کنند: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8394,7 +8376,7 @@ msgstr "اولویت باید برای رکوردهای BRID برابر 0 باش
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "پرونده های DMARC باید در -dmarc.AZ0 قرار گیرد."
+msgstr "رکوردهای DMARC باید در _dmarc.<domain> قرار گیرند."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8704,7 +8686,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "نام رکورد SRV باید در قالب –service. protocol.domain باشد."
+msgstr "نام رکورد SRV باید در قالب _service._protocol.domain باشد"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

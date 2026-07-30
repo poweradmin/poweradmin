@@ -130,7 +130,7 @@ msgstr "Name"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Nama host untuk layanan (meninggalkan kosong untuk zon apex @). Buku rekod akan dibuat di  port. protocol.hostname"
+msgstr "Nama hos untuk perkhidmatan (biarkan kosong untuk apeks zon @). Rekod akan dicipta di _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -618,7 +618,7 @@ msgstr "Domain yang Termasuk"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Domain yang rekod SPFnya harus dimasukkan (satu per baris). common:  spf.google.com, spf.protection.outlook.com"
+msgstr "Domain yang rekod SPF-nya perlu disertakan (satu per baris). Lazim: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1018,7 +1018,7 @@ msgstr "Nama Layanan Kebiasaan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Nama dinas vice harus dimulai dengan underscore (mis.,  layanan saya)"
+msgstr "Nama perkhidmatan mesti bermula dengan garis bawah (cth., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1045,7 +1045,7 @@ msgstr "Domain"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Nama Domain (meninggalkan kosong untuk zon apex @). Nama rekod lengkap akan menjadi:  service. protocol.domain"
+msgstr "Nama domain (biarkan kosong untuk apeks zon @). Nama rekod penuh ialah: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -3966,7 +3966,7 @@ msgstr "2. Rekod SRV maupun TLSA harus memiliki status validasi DNSSEC \"secure\
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "Nama rekod TLSA biasanya harus mengikuti format  port. protocol.hostname (misalnya,  443. tcp.www.example.com)."
+msgstr "Nama rekod TLSA biasanya perlu mengikut format _port._protocol.hostname (cth., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4822,7 +4822,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Nama rekod tidak mengikuti format standar OPENPGPKEY (<hash>. openpgpkey.<domain>). Format standard analog disarankan untuk interoperabilitas."
+msgstr "Nama rekod tidak mengikut format OPENPGPKEY standard (<hash>._openpgpkey.<domain>). Format standard disyorkan untuk saling kendali."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7304,20 +7304,20 @@ msgstr "Rekod ini bertentangan dengan rekod CNAME yang sudah ada dengan nama yan
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Kash lokal-bagian dalam rekod SMIMEA harus 64-karakter SHA-256 hex hash. Formatnya seharusnya: SHA256(local-part). smimecert.domain.tld"
+msgstr "Cincangan bahagian setempat dalam rekod SMIMEA perlu berupa cincangan hex SHA-256 sepanjang 64 aksara. Formatnya perlu: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Nama rekod SMIMEA pada format: SHA256(local-part). smimecert.domain.tld untuk alamat email seperti %s"
+msgstr "Nama rekod SMIMEA adalah dalam format: SHA256(local-part)._smimecert.domain.tld untuk alamat e-mel seperti %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Ini tidak menggunakan format nama SMIMEA standar. Rekod SMIMEA yunifik seharusnya digunakan: SHA256(local-part). smimecert.domain.tld"
+msgstr "Ini tidak menggunakan format nama SMIMEA standard. Rekod SMIMEA biasanya perlu menggunakan: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7907,7 +7907,7 @@ msgstr "Keutamaan mestilah 0 untuk rekod BRID."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "Rekod DMARC harus ditempatkan di  dmarc.<domain>."
+msgstr "Rekod DMARC mesti diletakkan di _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -8185,7 +8185,7 @@ msgstr "Keutamaan 0 adalah valid tapi tidak biasa. Biasanya rekod SRV dimulai pa
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Nama rekod KVVV SRV harus dalam format  service. protocol.domain"
+msgstr "Nama rekod SRV mesti dalam format _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8213,9 +8213,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protokol Protocol \"%s\" tidak ada dalam daftar protokol terkenal. Protokol "
-"yang umum adalah  tcp dan  udp."
+msgstr "Protokol \"%s\" tiada dalam senarai protokol terkenal. Protokol lazim ialah _tcp dan _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."

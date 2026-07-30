@@ -134,9 +134,7 @@ msgstr "Vertsnavn"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Vertsnavn for tjenesten (la stå tom for sonetoppunkt @). Posten opprettes "
-"ved _port._protocol.vertsnavn"
+msgstr "Vertsnavn for tjenesten (la stå tom for sonetoppunkt @). Posten opprettes ved _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1070,7 +1068,7 @@ msgstr "Tilpasset tjenestenavn"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Tjenestenavn må starte med understreking (f.eks. _mintjeneste)"
+msgstr "Tjenestenavn må starte med understrek (f.eks. _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1097,9 +1095,7 @@ msgstr "Domene"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domenename (la stå tom for sonetoppunkt @). Fullt postnavn blir: "
-"_tjeneste._protokoll.domene"
+msgstr "Domenenavn (la stå tom for sonetoppunkt @). Fullt postnavn blir: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -7786,26 +7782,20 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Lokal-del-hashen i SMIMEA-poster bør være en 64-tegns SHA-256 hex hash. "
-"Formatet bør være: SHA256(lokal-del)._smimecert.domene.tld"
+msgstr "Lokal-del-hashen i SMIMEA-poster bør være en 64-tegns SHA-256 hex hash. Formatet bør være: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA-postnavn er i formatet: SHA256(lokal-del)._smimecert.domene.tld for e-"
-"postadresser som %s"
+msgstr "SMIMEA-postnavn er i formatet: SHA256(local-part)._smimecert.domain.tld for e-postadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"Dette bruker ikke standard SMIMEA-navneformat. SMIMEA-poster bør typisk "
-"bruke: SHA256(lokal-del)._smimecert.domene.tld"
+msgstr "Dette bruker ikke standard SMIMEA-navneformat. SMIMEA-poster bør typisk bruke: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8801,7 +8791,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV-postnavn må være i formatet _tjeneste._protokoll.domene"
+msgstr "SRV-postnavn må være i formatet _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""

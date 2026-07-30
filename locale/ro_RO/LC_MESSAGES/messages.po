@@ -987,7 +987,7 @@ msgstr "Nume serviciu personalizat"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Nume serviciu începe cu underscore"
+msgstr "Numele serviciului trebuie să înceapă cu underscore (de ex., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
