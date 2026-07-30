@@ -14343,11 +14343,11 @@ msgstr "Lietotājs netika dzēsts, jo forma pārsniedza servera lauku skaita ier
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Pilns pārlūka platums"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Izmantot visu pārlūka platumu, nevis fiksēta platuma lapu"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

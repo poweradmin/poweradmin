@@ -14958,11 +14958,11 @@ msgstr "Pengguna tidak dihapus karena formulir melebihi batas server untuk jumla
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Lebar penuh peramban"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Gunakan seluruh lebar peramban alih-alih halaman dengan lebar tetap"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

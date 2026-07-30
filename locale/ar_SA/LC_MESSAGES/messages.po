@@ -14056,11 +14056,11 @@ msgstr "لم يُحذف المستخدم لأن النموذج تجاوز حد �
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "عرض المتصفح الكامل"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "استخدام عرض المتصفح بالكامل بدلاً من صفحة بعرض ثابت"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

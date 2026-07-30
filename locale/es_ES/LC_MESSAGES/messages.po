@@ -15817,11 +15817,11 @@ msgstr "El usuario no se eliminó porque el formulario superó el límite del se
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Ancho completo del navegador"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Usar todo el ancho del navegador en lugar de una página de ancho fijo"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

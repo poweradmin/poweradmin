@@ -14008,11 +14008,11 @@ msgstr "کاربر حذف نشد زیرا فرم از محدودیت سرور د
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "عرض کامل مرورگر"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "استفاده از تمام عرض مرورگر به جای صفحه با عرض ثابت"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

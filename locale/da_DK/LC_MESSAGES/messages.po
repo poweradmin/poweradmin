@@ -14008,11 +14008,11 @@ msgstr "Brugeren blev ikke slettet, fordi formularen overskred serverens grænse
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Fuld browserbredde"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Brug hele browserens bredde i stedet for en side med fast bredde"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

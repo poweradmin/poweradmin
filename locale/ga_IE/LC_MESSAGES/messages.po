@@ -332,7 +332,7 @@ msgstr "Socruithe beartais"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:138
 msgid "Policy"
-msgstr "Polasaí Polasaí"
+msgstr "Polasaí"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:68
 msgid "None (monitor only)"
@@ -736,7 +736,7 @@ msgstr "Cineál Deimhnithe"
 #: lib/Module/DnsWizard/Service/CAAWizard.php:101
 #: templates/modern/dnssec_delete_key.html:82
 msgid "Tag"
-msgstr "Clib Clib"
+msgstr "Clib"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:106
 msgid "Issue"
@@ -1051,7 +1051,7 @@ msgstr "Tá tosaíocht níos airde ag luachanna níos ísle (10 is mainneachtain
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
-msgstr "Meáchan Meáchan"
+msgstr "Meáchan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:179
 msgid ""
@@ -1663,15 +1663,15 @@ msgstr "Luach"
 #: lib/Application/Controller/EditZoneMetadataController.php:552
 #: templates/modern/email_previews.html:47
 msgid "Custom"
-msgstr "Saincheaptha Saincheaptha"
+msgstr "Saincheaptha"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:557
 msgid "Multi"
-msgstr "Il-imreora Il-imreora"
+msgstr "Il-imreora"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 msgid "Single"
-msgstr "Aonair Aonair Aonair"
+msgstr "Aonair"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -1776,7 +1776,7 @@ msgstr "Níl cead agat cuardaigh a dhéanamh."
 #: lib/Application/Controller/SearchController.php:53
 #: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
-msgstr "Cuardaigh Cuardaigh Cuardaigh"
+msgstr "Cuardaigh"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:11
@@ -3191,7 +3191,7 @@ msgstr "Meánscoileanna"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:103
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Native"
-msgstr "Dúchasach Dúchasach"
+msgstr "Dúchasach"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:104
 msgid "Producer"
@@ -3204,7 +3204,7 @@ msgstr "Consumer"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:101
 #: lib/Module/ZoneImportExport/templates/import.html:130
 msgid "Master"
-msgstr "Máistir Máistir Máistir"
+msgstr "Máistir"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:102
 msgid "Slave"
@@ -8285,7 +8285,7 @@ msgstr "Príomh-ID"
 
 #: lib/Module/ZoneImportExport/templates/import.html:79
 msgid "Type"
-msgstr "Cineál Cineál Cineál Cineál"
+msgstr "Cineál"
 
 #: templates/modern/dnssec_delete_key.html:90
 msgid "Algorithm"
@@ -8297,7 +8297,7 @@ msgstr "Bláthanna faoi dhíon"
 
 #: templates/modern/dnssec_delete_key.html:106
 msgid "Status"
-msgstr "Stádas Stádas"
+msgstr "Stádas"
 
 #: templates/modern/dnssec_delete_key.html:113
 msgid "Inactive"
@@ -8749,7 +8749,7 @@ msgstr "CIDR"
 
 #: templates/modern/list_networks.html:82
 msgid "Save"
-msgstr "Sábháil Sábháil"
+msgstr "Sábháil"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9497,7 +9497,7 @@ msgstr "Is é an t-úsáideoir an t-úinéir do na criosanna seo a leanas. Cinnt
 
 #: templates/modern/list_record_changes.html:78
 msgid "Zone"
-msgstr "Crios Crios Crios"
+msgstr "Crios"
 
 #: templates/default/delete_user.html:39 templates/modern/delete_user.html:39
 msgid "Leave"
@@ -9828,7 +9828,7 @@ msgstr "Uimh SOA"
 
 #: templates/modern/list_reverse_zones.html:252
 msgid "-"
-msgstr "- - - - -"
+msgstr "-"
 
 #: templates/modern/search.html:305
 msgid "Delete zone(s)"
@@ -11154,7 +11154,7 @@ msgstr "príobháideach porn"
 
 #: templates/modern/list_zone_templ.html:88
 msgid "global"
-msgstr "domhanda domhanda domhanda"
+msgstr "domhanda"
 
 #: templates/modern/list_zone_templ.html:96
 msgid "Zones need updating"
@@ -12789,7 +12789,7 @@ msgstr "Naisc ábhartha eile"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "Success:"
-msgstr "Rath: Rath:"
+msgstr "Rath:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "Import completed successfully."
@@ -13296,7 +13296,7 @@ msgstr "Freastalaí Gréasáin"
 
 #: install/templates/step2.html.twig:102
 msgid "Server"
-msgstr "Freastalaí Freastalaí"
+msgstr "Freastalaí"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
@@ -14044,11 +14044,11 @@ msgstr "Níor scriosadh an t-úsáideoir toisc gur sháraigh an fhoirm teorainn 
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Leithead iomlán an bhrabhsálaí"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Úsáid leithead iomlán an bhrabhsálaí in ionad leathanach ar leithead seasta"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

@@ -15503,11 +15503,11 @@ msgstr "Uživatel nebyl smazán, protože formulář překročil serverový limi
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Celá šířka prohlížeče"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Použít celou šířku prohlížeče místo stránky s pevnou šířkou"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

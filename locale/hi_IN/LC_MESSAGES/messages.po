@@ -14008,11 +14008,11 @@ msgstr "उपयोगकर्ता हटाया नहीं गया �
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "पूर्ण ब्राउज़र चौड़ाई"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "निश्चित चौड़ाई वाले पृष्ठ के बजाय पूरी ब्राउज़र चौड़ाई का उपयोग करें"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

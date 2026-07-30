@@ -14314,11 +14314,11 @@ msgstr "양식이 필드 수에 대한 서버 제한을 초과하여 사용자�
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "브라우저 전체 너비"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "고정 너비 페이지 대신 브라우저 전체 너비 사용"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

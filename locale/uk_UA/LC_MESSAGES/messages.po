@@ -15735,11 +15735,11 @@ msgstr "Користувача не було видалено, оскільки 
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Повна ширина браузера"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Використовувати всю ширину браузера замість сторінки фіксованої ширини"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

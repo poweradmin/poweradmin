@@ -14193,11 +14193,11 @@ msgstr "Používateľ nebol odstránený, pretože formulár prekročil limit se
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Celá šírka prehliadača"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Použiť celú šírku prehliadača namiesto stránky s pevnou šírkou"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

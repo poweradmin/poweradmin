@@ -14107,11 +14107,11 @@ msgstr "使用者未被刪除，因為表單超出了伺服器對欄位數量的
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "整個瀏覽器寬度"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "使用整個瀏覽器寬度，而非固定寬度的頁面"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."

@@ -14008,11 +14008,11 @@ msgstr "Ο χρήστης δεν διαγράφηκε επειδή η φόρμα
 
 #: templates/modern/user_preferences.html:29
 msgid "Full browser width"
-msgstr "Full browser width"
+msgstr "Πλήρες πλάτος περιηγητή"
 
 #: templates/modern/user_preferences.html:30
 msgid "Use the entire browser width instead of a fixed-width page"
-msgstr "Use the entire browser width instead of a fixed-width page"
+msgstr "Χρήση όλου του πλάτους του περιηγητή αντί σελίδας σταθερού πλάτους"
 
 #: templates/modern/edit_record.html:119
 msgid "Saving..."
