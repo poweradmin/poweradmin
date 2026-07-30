@@ -108,7 +108,7 @@
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
-    "locale:stats": "./scripts/check_translation_stats.sh",
+    "locale:stats": "python3 scripts/check_translation_stats.py",
     "locale:all": [
         "@locale:check",
         "@locale:stats"

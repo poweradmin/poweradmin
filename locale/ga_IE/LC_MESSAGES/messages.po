@@ -150,7 +150,7 @@ msgstr "Uisce agus Séarachas"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "0 - CA Constraint"
+msgstr "0 - Srian CA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -1838,7 +1838,7 @@ msgstr "Failed a thabhairt cothrom le dáta meiteashonraí crios."
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Cuir Meiteashonraí an Chreasa in Eagar"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -1862,7 +1862,7 @@ msgstr "Luach neamhbhailí do %s. Luachanna ceadaithe: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Ní féidir ach le riarthóir an cineál meiteashonraí %s a athrú."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1989,23 +1989,19 @@ msgstr "Tá an teimpléad cead tugtha cothrom le dáta go rathúil."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Teastaíonn cearta riarthóra chun cearta riarthóra a bhronnadh i dteimpléad ceadanna."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta riarthóra aige a chur in eagar."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Níorbh fhéidir an teimpléad ceadanna a nuashonrú."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2066,7 +2062,7 @@ msgstr "Cuir iarratas isteach"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Níl teimpléad ceadanna ar fáil le sannadh nach bhfuil cearta superuser aige."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2833,7 +2829,7 @@ msgstr "Tá an teimpléad cead curtha leis go rathúil."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Níorbh fhéidir an teimpléad ceadanna a chur leis."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3807,25 +3803,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Níl cead agat an teimpléad ceadanna a athrú."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Teastaíonn cead úsáideoirí eile a chur in eagar chun do theimpléad ceadanna féin a athrú."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta riarthóra aige a shannadh."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3885,8 +3877,7 @@ msgstr "Níl cead agat taifead a chur leis an teimpléad crios seo."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Níl cead agat an cineál taifid seo a chur le teimpléad creasa."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3913,9 +3904,7 @@ msgstr "Earráid cothrom le dáta taifead teimpléad crios:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Níl cead agat an cineál taifid seo a scriosadh ó theimpléad creasa."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3931,9 +3920,7 @@ msgstr "Earráid seiceáil úinéireacht teimpléad:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Fágadh na cineálacha taifid seo as an teimpléad mar níl cead agat iad a chur leis: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3974,7 +3961,7 @@ msgstr "Ní gá duit an cead a chur taifead NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Níl cead agat taifead LUA a chur leis."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3987,7 +3974,7 @@ msgstr "Ní gá duit an cead a chur in eagar an taifead NS."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Níl cead agat an taifead LUA seo a chur in eagar."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -4000,7 +3987,7 @@ msgstr "Níl cead agat taifid NS a scriosadh."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Níl cead agat taifid LUA a scriosadh."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -4040,7 +4027,7 @@ msgstr "Níl aon taifid SOA dúblach le fáil"
 #: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
-msgstr "%dZZZZZZ Tá taifid SOA dhúbailt"
+msgstr "Tá taifid SOA dhúblacha i %d crios"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
@@ -9812,7 +9799,7 @@ msgstr "Is leis an úsáideoir roghnaithe cheana féin an crios."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Theip ar nuashonrú taifid an chreasa: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10034,7 +10021,7 @@ msgstr "* Réimsí riachtanacha"
 
 #: templates/default/api_key_edit.html:86 templates/modern/api_key_edit.html:87
 msgid "API Key Information"
-msgstr "API Key Information"
+msgstr "Eolas faoin Eochair API"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
@@ -11086,7 +11073,7 @@ msgstr "Sampla: www,A,192.168.1.1,0,3600, freastalaí gréasáin"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Tá tosaíocht agus TTL roghnach (réamhshocruithe: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11590,12 +11577,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY ar feitheamh: níl sraithuimhir %serial% admhaithe go fóill"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY seolta ag sraithuimhir %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12434,7 +12421,7 @@ msgstr "Uimh, a choinneáil ar an teimpléad"
 
 #: templates/modern/dns_wizard_select.html:12
 msgid "DNS Record Wizard"
-msgstr "DNS Record Wizard"
+msgstr "Draoi Taifead DNS"
 
 #: templates/modern/dns_wizard_select.html:19
 msgid ""
@@ -12624,7 +12611,7 @@ msgstr "Clár na dToghthóirí"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Curtha in eagar go deireanach ag %account% ar %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12860,7 +12847,7 @@ msgstr "Criosanna Gan Úinéirí"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Sann tú féin mar úinéir ar na criosanna liostaithe go léir?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -13915,7 +13902,7 @@ msgstr "Cnaipí Sábháil"
 
 #: templates/modern/user_preferences.html:158
 msgid "Edit Zone View"
-msgstr "Edit Zone View"
+msgstr "Cuir Amharc an Chreasa in Eagar"
 
 #: templates/modern/user_preferences.html:164
 msgid "Show record ID"
@@ -14580,7 +14567,7 @@ msgstr "Fanfaidh na criosanna sa chóras."
 
 #: templates/default/api_keys.html:6 templates/modern/api_keys.html:6
 msgid "API Keys Management"
-msgstr "API Keys Management"
+msgstr "Bainistiú Eochracha API"
 
 #: templates/default/api_keys.html:9 templates/modern/api_keys.html:9
 msgid "Add new API key"
@@ -15122,7 +15109,7 @@ msgstr "Torthaí RDAP le haghaidh"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Iontráil ainm fearainn chun cuardach RDAP a dhéanamh."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15733,9 +15720,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Nóta: Ní mór do PostgreSQL agus SQLite an bunachar sonraí céanna a úsáid do PowerDNS agus Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15888,9 +15873,7 @@ msgstr "Ní féidir ceangal le bunachar sonraí PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don locale roghnaithe. Déan teagmháil le do riarthóir."
 
 #, php-format
 # OBSOLETE: msgid ""

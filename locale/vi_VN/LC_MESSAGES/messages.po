@@ -1820,7 +1820,7 @@ msgstr "Giá trị không hợp lệ cho %s. Các giá trị được phép: %s.
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Chỉ quản trị viên mới có thể thay đổi loại siêu dữ liệu %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1945,23 +1945,19 @@ msgstr "Mẫu quyền hạn đã được cập nhật thành công."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Việc cấp quyền quản trị viên trong mẫu quyền hạn yêu cầu quyền quản trị viên."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Việc chỉnh sửa mẫu quyền hạn có quyền quản trị viên yêu cầu quyền quản trị viên."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Không thể cập nhật mẫu quyền hạn."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1980,7 +1976,7 @@ msgstr "Metric không khả dụng."
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Nhật ký thay đổi bản ghi"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2022,7 +2018,7 @@ msgstr "Thêm người dùng"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Không có mẫu quyền hạn nào không phải superuser để gán."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2559,11 +2555,11 @@ msgstr "Bạn không có quyền xem trang này."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "TTL mặc định theo loại bản ghi"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Dữ liệu biểu mẫu gửi lên không hợp lệ."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2576,12 +2572,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Đã lưu %d giá trị mặc định; đã xóa %d. Đã từ chối các giá trị không hợp lệ cho: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Đã lưu %d giá trị mặc định; đã xóa %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2755,7 +2751,7 @@ msgstr "Mẫu quyền hạn đã được thêm thành công."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Không thể thêm mẫu quyền hạn."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2918,17 +2914,17 @@ msgstr "JWT audience không hợp lệ."
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Bạn không có quyền đồng bộ các vùng từ PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Đã đồng bộ các vùng từ PowerDNS: thêm %d, cập nhật %d, xóa %d."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Đồng bộ vùng thất bại: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3647,17 +3643,13 @@ msgstr "Không, giữ supermaster này"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Đang hiển thị trạng thái kết nối của các máy chủ autoprimary được cấu hình trong bảng dưới đây."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Đang hiển thị trạng thái kết nối của các supermaster được cấu hình trong bảng dưới đây."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3696,25 +3688,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Bạn không có quyền thay đổi mẫu quyền hạn."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Việc thay đổi mẫu quyền hạn của chính bạn yêu cầu quyền chỉnh sửa người dùng khác."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Việc gán mẫu quyền hạn có quyền quản trị viên yêu cầu quyền quản trị viên."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3772,8 +3760,7 @@ msgstr "Bạn không có quyền thêm bản ghi vào mẫu vùng này."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Bạn không có quyền thêm loại bản ghi này vào mẫu vùng."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3800,9 +3787,7 @@ msgstr "Lỗi khi cập nhật bản ghi mẫu vùng: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Bạn không có quyền xóa loại bản ghi này khỏi mẫu vùng."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3818,9 +3803,7 @@ msgstr "Lỗi khi kiểm tra quyền sở hữu mẫu: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Các loại bản ghi sau đã bị bỏ khỏi mẫu vì bạn không được phép thêm chúng: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3861,7 +3844,7 @@ msgstr "OAuth state tham số không hợp lệ."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Bạn không có quyền thêm bản ghi LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3874,7 +3857,7 @@ msgstr "OAuth refresh token không hợp lệ."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Bạn không có quyền chỉnh sửa bản ghi LUA này."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3887,7 +3870,7 @@ msgstr "OAuth token bị thu hồi."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Bạn không có quyền xóa bản ghi LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -6425,18 +6408,14 @@ msgstr "Độ dài digest không chính xác cho loại digest đã chỉ địn
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "Loại định danh DHCID 0x%04X không phải là một trong các loại tiêu chuẩn được định nghĩa trong RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+msgstr "Loại digest DHCID %d không phải là loại tiêu chuẩn (1 cho SHA-256) được định nghĩa trong RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -7052,32 +7031,26 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr "%s (thuật toán %d) là thuật toán ĐƯỢC KHUYẾN NGHỊ sử dụng theo RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%s (algorithm %d) is in common use, but newer algorithms like "
-"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr "%s (thuật toán %d) đang được sử dụng phổ biến, nhưng các thuật toán mới hơn như ECDSAP256SHA256 (13) hoặc ED25519 (15) được ưu tiên hơn."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (thuật toán %d) là tùy chọn khi triển khai theo RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+msgstr "%s (thuật toán %d) KHÔNG ĐƯỢC KHUYẾN NGHỊ sử dụng theo RFC 8624. Hãy xem xét dùng ECDSAP256SHA256 (13) hoặc ED25519 (15) thay thế."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -7391,9 +7364,7 @@ msgstr "Giá trị ưu tiên MX giống nhau chỉ ra cân bằng tải vòng ro
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+msgstr "Cờ critical được đặt cho thẻ không xác định \"%s\". Điều này có thể gây lỗi khi cấp chứng chỉ."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -7615,9 +7586,7 @@ msgstr "Trường SOA %s phải là số nguyên dương."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "Giá trị %s của SOA (%d) thấp hơn mức tối thiểu được RFC 2308 khuyến nghị (%d). Điều này được phép nhưng không được khuyến nghị."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7702,9 +7671,7 @@ msgstr "Quá nhiều kết quả. Vui lòng tinh chỉnh tìm kiếm của bạn
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr ""
-"A CNAME record cannot coexist with other record types for the same name. "
-"Found existing %s record."
+msgstr "Bản ghi CNAME không thể cùng tồn tại với các loại bản ghi khác cho cùng một tên. Đã tìm thấy bản ghi %s hiện có."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7723,9 +7690,7 @@ msgstr "Định dạng datetime không hợp lệ. Sử dụng YYYY-MM-DD HH:MM:
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "Tên bản ghi SMIMEA có định dạng: SHA256(local-part)._smimecert.domain.tld cho các địa chỉ email như %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -8353,9 +8318,7 @@ msgstr "Mã màu hex không hợp lệ."
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"DMARC policy is applied to only %d%% of messages. This should only be used "
-"during policy rollout."
+msgstr "Chính sách DMARC chỉ được áp dụng cho %d%% thư. Chỉ nên dùng điều này trong giai đoạn triển khai chính sách."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8429,9 +8392,7 @@ msgstr "Codec video không được hỗ trợ."
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Tổng nội dung bản ghi TXT vượt quá độ dài tối đa %d byte. Vui lòng giảm kích thước nội dung."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -8587,18 +8548,14 @@ msgstr "Cú pháp biểu thức chính quy không hợp lệ."
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Tên dịch vụ \"%s\" không nằm trong danh sách các dịch vụ phổ biến. Điều này được phép nhưng không thường gặp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Giao thức \"%s\" không nằm trong danh sách các giao thức phổ biến. Các giao thức thường dùng là _tcp và _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8623,9 +8580,7 @@ msgstr "Độ ưu tiên tác vụ không hợp lệ."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "Cổng %d khác với cổng tiêu chuẩn %d của dịch vụ %s. Điều này được phép nhưng không thường gặp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8944,26 +8899,21 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
-"%s (algorithm %d) is specified as optional for implementation in RFC 8624."
+msgstr "%s (thuật toán %d) được quy định là tùy chọn khi triển khai trong RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (thuật toán %d) ĐÃ LỖI THỜI theo RFC 8624. Không sử dụng thuật toán này cho các triển khai mới."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Thuật toán %d KHÔNG ĐƯỢC triển khai theo RFC 8624. Không nên sử dụng giá trị này."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -9126,17 +9076,15 @@ msgstr "Bản ghi PTR cho %s trỏ tới %s đã tồn tại."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr ""
-"Reverse record added. Warning: A PTR record for %s already exists pointing "
-"to: %s. Having multiple PTR records for the same IP is not recommended."
+msgstr "Đã thêm bản ghi ngược. Cảnh báo: Đã tồn tại một bản ghi PTR cho %s trỏ tới: %s. Không khuyến nghị có nhiều bản ghi PTR cho cùng một IP."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "Đã bỏ qua việc cập nhật PTR: loại bản ghi không phải A hoặc AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Đã xóa bản ghi PTR cũ."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9216,7 +9164,7 @@ msgstr "Máy chủ OAuth authorization không khả dụng."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Không thể cập nhật các bản ghi của vùng: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9821,12 +9769,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Mỗi mạng (khối CIDR) được gán cho đúng một view. Các resolver trong mạng đó chỉ nhận các biến thể vùng được gán cho view tương ứng. PowerDNS xét các mạng theo tiền tố dài nhất trước, nên một subnet cụ thể hơn (ví dụ 10.0.1.0/24) sẽ được ưu tiên hơn một dải rộng hơn (10.0.0.0/8) khi cả hai đều khớp với một client."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -10129,7 +10072,7 @@ msgstr "nhóm"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Phiên bản PowerDNS đã kết nối"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10229,7 +10172,7 @@ msgstr "Phiên bản package không tương thích."
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Các giá trị mặc định toàn cục hiện tại"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -10237,11 +10180,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "TTL mặc định (giây)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "để trống = dùng giá trị mặc định toàn cục"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -10257,7 +10200,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(cho các bản ghi PTR trong vùng ngược) hoặc"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -10350,7 +10293,7 @@ msgstr "Nhật ký hoạt động API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Hành vi nhật ký API:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10358,11 +10301,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Ghi lại các sự kiện trong vòng đời khóa API (tạo, tạo lại, thu hồi, thay đổi quyền) và các yêu cầu API đã xác thực. Lọc theo người dùng hoặc thao tác để kiểm tra hoạt động tích hợp bên ngoài. Các giá trị nhạy cảm (khóa, token) không bao giờ được ghi vào nhật ký này."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10390,7 +10329,7 @@ msgstr "Chứng chỉ VPN không hợp lệ."
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Hành vi nhật ký vùng:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10398,11 +10337,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Dòng hoạt động này ghi lại mọi thao tác thực hiện trên các vùng và bản ghi (tạo, chỉnh sửa, xóa, thao tác DNSSEC, nhập) dưới dạng một chuỗi sự kiện key:value đơn giản. Để xem ảnh chụp trước/sau có cấu trúc và so sánh khác biệt của các thay đổi bản ghi, hãy xem Nhật ký thay đổi bản ghi."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10440,7 +10375,7 @@ msgstr "Ví dụ: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Độ ưu tiên và TTL là tùy chọn (mặc định: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10938,12 +10873,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY đang chờ: số sê-ri %serial% chưa được xác nhận"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY đã gửi ở số sê-ri %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11959,7 +11894,7 @@ msgstr "Sửa đổi lần cuối"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Được chỉnh sửa lần cuối bởi %account% vào %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12060,11 +11995,11 @@ msgstr "MFA chưa cấu hình"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Lấy các vùng từ PowerDNS và đối chiếu với bảng cục bộ"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Đồng bộ từ PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -12192,7 +12127,7 @@ msgstr "Các vùng không có chủ sở hữu"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Gán bạn làm chủ sở hữu của tất cả các vùng được liệt kê?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12836,7 +12771,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Hành vi nhật ký thay đổi:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12845,12 +12780,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Mọi thao tác thêm/chỉnh sửa/xóa bản ghi và tạo/xóa/chỉnh sửa siêu dữ liệu vùng đều lưu lại ảnh chụp trước/sau tại đây, kèm theo người dùng và thời điểm. Nhật ký không bao giờ tự hết hạn - hãy tự xóa các dòng cũ nếu bảng trở nên quá lớn. Dùng các phím tắt khoảng thời gian để tập trung vào hoạt động gần đây, hoặc xuất ra CSV/JSON để đưa vào hệ thống kiểm tra bên ngoài."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12890,11 +12820,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Không tìm thấy thay đổi bản ghi nào"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Hãy thử bộ lọc hoặc khoảng thời gian khác"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -13180,7 +13110,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Kế thừa thiết lập toàn cục"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -13268,11 +13198,11 @@ msgstr "Hiển thị nút xóa riêng cho mỗi bản ghi"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Chỉ hiển thị tên máy"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Bỏ hậu tố vùng khỏi tên bản ghi trong màn hình chỉnh sửa"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -13375,7 +13305,7 @@ msgstr "Nhật ký hoạt động người dùng"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Hành vi nhật ký người dùng:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13383,11 +13313,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Ghi lại các sự kiện tài khoản người dùng như đăng nhập, đổi mật khẩu, cập nhật thành viên nhóm và các thao tác quản trị trên bản ghi người dùng. Mỗi mục hiển thị thao tác, người thực hiện, người dùng bị ảnh hưởng và thời điểm. Lọc theo thao tác hoặc người dùng để kiểm tra các thay đổi về quyền truy cập."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13433,13 +13359,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "View trả về các biến thể vùng khác nhau cho các client khác nhau dựa trên mạng đã truy vấn resolver. Mỗi biến thể được đặt tên theo dạng zone..variant (ví dụ example.com..trusted) và phải tồn tại như một vùng riêng trong PowerDNS trước khi có thể được gán ở đây. Các biến thể dùng chung một tên nhưng phân giải khác nhau theo từng view, nên cùng một tên máy có thể trả về các IP khác nhau tùy theo mạng của client."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -13713,7 +13633,7 @@ msgstr "Vùng đảo ngược"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Nhật ký thay đổi bản ghi"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13747,27 +13667,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Hãy kiểm tra pdns_api.key trong config/settings.php có khớp với khóa API được cấu hình trong PowerDNS hay không."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Hãy kiểm tra pdns_api.server_name có khớp với giá trị mà PowerDNS báo về hay không (mặc định 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS đã từ chối yêu cầu. Hãy kiểm tra nhật ký máy chủ PowerDNS để tìm nguyên nhân - một nguyên nhân thường gặp sau khi nhập các vùng trực tiếp vào cơ sở dữ liệu PowerDNS là một bản ghi sai định dạng làm việc tuần tự hóa vùng thất bại."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13929,7 +13842,7 @@ msgstr "Các ứng dụng bên ngoài sẽ có thể xác thực bằng khóa n�
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Hành vi khóa API:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13937,11 +13850,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "Khóa API cho phép các ứng dụng bên ngoài truy cập API của Poweradmin. Mỗi khóa được liên kết với tài khoản người dùng của bạn và thừa hưởng các quyền của bạn, vì vậy khi tài khoản bị thu hồi thì toàn bộ khóa của nó cũng bị thu hồi. Hãy coi khóa như thông tin bí mật - chúng cấp quyền truy cập tương đương với việc đăng nhập bằng tài khoản của bạn."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -14116,7 +14025,7 @@ msgstr "Nhật ký hoạt động nhóm"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Hành vi nhật ký nhóm:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -14124,11 +14033,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Ghi lại các sự kiện trong vòng đời của nhóm (tạo, chỉnh sửa, xóa) và các thay đổi thành viên (thêm hoặc xóa người dùng). Mỗi mục hiển thị thao tác, người thực hiện, nhóm bị ảnh hưởng và thời điểm. Hữu ích khi kiểm tra các thay đổi về quyền truy cập vùng thông qua quyền sở hữu của nhóm."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14411,11 +14316,11 @@ msgstr "Kết quả RDAP cho"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Vui lòng nhập tên miền để thực hiện tra cứu RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Tạo người dùng có quyền hạn chế"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -14423,29 +14328,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Tạo người dùng có quyền hạn chế"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Quyền hạn chế trên cơ sở dữ liệu:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Tạo một người dùng cơ sở dữ liệu có quyền hạn chế (select, insert, update, delete) chỉ trên các bảng của Poweradmin. Không cần quyền truy cập các bảng PowerDNS khi sử dụng backend API."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Tạo một người dùng cơ sở dữ liệu có quyền hạn chế (select, insert, update, delete) để Poweradmin truy cập các bảng PowerDNS."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14453,13 +14353,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Hãy thực thi các câu lệnh sau:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Sau khi đã thêm người dùng mới, hãy tiếp tục quy trình cài đặt này."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -14469,13 +14368,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Vì bạn đang dùng SQLite, không cần tạo người dùng mới có quyền hạn chế."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Tiếp tục sang bước"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -14483,7 +14380,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Tạo tệp cấu hình"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -14491,25 +14388,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Hãy tạo tệp"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "với nội dung sau:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Chọn ngôn ngữ"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Chọn ngôn ngữ cho quá trình cài đặt"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Vui lòng chọn ngôn ngữ bạn muốn dùng để tiếp tục cài đặt:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14521,7 +14417,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Cấu hình kết nối cơ sở dữ liệu"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -14529,11 +14425,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Chọn cách Poweradmin giao tiếp với PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Truy cập trực tiếp vào các bảng cơ sở dữ liệu PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -14549,7 +14445,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Thiết lập API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -14557,7 +14453,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL điểm cuối API của PowerDNS."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -14565,7 +14461,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "Khóa API PowerDNS (từ thiết lập api-key trong pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14573,11 +14469,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "Tên máy chủ PowerDNS dùng cho các lệnh gọi API (thường là \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Thiết lập kết nối cơ sở dữ liệu"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -14587,17 +14483,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Cấu hình kết nối cơ sở dữ liệu với quyền tạo bảng. Có thể chỉ định vị trí của PowerDNS riêng nếu cần."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Cấu hình kết nối cơ sở dữ liệu cho các bảng của Poweradmin (người dùng, quyền, vùng). Không cần các bảng PowerDNS."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -14617,31 +14509,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Loại máy chủ cơ sở dữ liệu."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Nhập tên người dùng"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Tên người dùng cơ sở dữ liệu có quyền tạo bảng."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Mật khẩu của người dùng cơ sở dữ liệu này."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Tránh dùng dấu ngoặc kép, dấu gạch chéo ngược và ký tự xuống dòng."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Nhập tên máy chủ"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Tên máy chủ cơ sở dữ liệu (thường là \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -14649,27 +14541,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Nhập cổng cơ sở dữ liệu"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Cổng của máy chủ cơ sở dữ liệu."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Nhập tên cơ sở dữ liệu"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Tên cơ sở dữ liệu (sẽ được dùng cho các bảng của Poweradmin)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Đường dẫn đầy đủ tới tệp cơ sở dữ liệu SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Tệp phải tồn tại và cho phép máy chủ web đọc/ghi. Hãy dùng đường dẫn tuyệt đối."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14681,7 +14573,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Bộ ký tự cho các bảng mới. Để trống để dùng giá trị mặc định của cơ sở dữ liệu."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14690,8 +14582,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Quy tắc collation dùng để so sánh ký tự. Để trống để dùng giá trị mặc định của cơ sở dữ liệu."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -14703,11 +14594,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Để trống nếu dùng cùng một cơ sở dữ liệu"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "Cơ sở dữ liệu MySQL chứa các bảng PowerDNS (nếu khác)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -14733,7 +14624,7 @@ msgstr "Cố định cho tài khoản quản trị viên ban đầu."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Nhập mật khẩu"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14745,7 +14636,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Kiểm tra yêu cầu hệ thống"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14753,7 +14644,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Yêu cầu PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14761,11 +14652,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "cần ít nhất một"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Các phần mở rộng PHP bắt buộc"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14781,43 +14672,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Không phát hiện được - cần cho việc định tuyến URL"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Không thể phát hiện (PHP-FPM) - hãy đảm bảo nó đã được bật"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Hãy đảm bảo đã cấu hình rewrite URL (xem nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Hãy đảm bảo đã cấu hình rewrite URL cho máy chủ web của bạn"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Tất cả thành phần bắt buộc đều có sẵn."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Bạn có thể tiếp tục cài đặt."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Thiếu một số thành phần bắt buộc."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Vui lòng cài đặt các thành phần còn thiếu trước khi tiếp tục."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Thiết lập tài khoản và máy chủ tên"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Thiết lập tài khoản và máy chủ tên"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14825,7 +14716,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Bây giờ chúng ta sẽ thu thập toàn bộ thông tin cho chính tệp cấu hình."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14836,24 +14727,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin lưu các bảng riêng của nó (người dùng, quyền, siêu dữ liệu vùng) trong cơ sở dữ liệu đã cấu hình, kể cả khi chọn backend API của PowerDNS. Thông tin đăng nhập này dành cho cơ sở dữ liệu đó, không phải cho PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Tên người dùng cơ sở dữ liệu Poweradmin có quyền truy cập hạn chế. Không dùng để đăng nhập giao diện web."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Nhập mật khẩu người dùng"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Mật khẩu của tên người dùng này."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14865,11 +14752,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Nhập hostmaster DNS"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Hostmaster mặc định cho các bản ghi SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14877,11 +14764,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Nhập máy chủ tên chính"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Máy chủ tên chính cho các vùng mới."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14889,11 +14776,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Nhập máy chủ tên phụ"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Máy chủ tên phụ cho các vùng mới."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14905,7 +14792,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Máy chủ tên thứ ba (tùy chọn) cho các vùng mới."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14913,7 +14800,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Máy chủ tên thứ tư (tùy chọn) cho các vùng mới."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14925,27 +14812,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Chúc mừng! Bản cài đặt Poweradmin của bạn đã được cấu hình xong."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Lưu ý bảo mật quan trọng:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Bạn phải xóa thư mục \"install/\" khỏi thư mục gốc của Poweradmin."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Vì lý do bảo mật, Poweradmin sẽ không hoạt động nếu thư mục install vẫn còn tồn tại."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14953,7 +14836,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Xóa thư mục \"install/\" khỏi máy chủ của bạn"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14965,7 +14848,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Bắt đầu cấu hình các vùng và bản ghi DNS của bạn"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14977,21 +14860,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Trước khi tiếp tục, hãy đảm bảo bạn có:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "PowerDNS đã được cài đặt cùng các bảng cơ sở dữ liệu (hoặc đã cấu hình truy cập API)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Thông tin đăng nhập cơ sở dữ liệu (tên máy chủ, tên người dùng, mật khẩu)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Quyền tạo bảng cho Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -15001,56 +14883,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Cấu hình kết nối cơ sở dữ liệu, tạo tài khoản quản trị và sinh tệp cấu hình."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Lưu ý: PostgreSQL và SQLite phải dùng cùng một cơ sở dữ liệu cho cả PowerDNS và Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Thiếu các bảng PowerDNS:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin cần các bảng PowerDNS này để hoạt động đúng."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Đang cập nhật cơ sở dữ liệu... xong!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Vấn đề về ràng buộc khóa ngoại:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Trình cài đặt không thể xóa các bảng hiện có do các ràng buộc khóa ngoại"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Điều này có thể xảy ra khi cài đặt lại nếu bạn có các ràng buộc tùy chỉnh hoặc nếu các bảng được bảng khác tham chiếu"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Bạn có thể thử tự tắt kiểm tra khóa ngoại trước khi chạy trình cài đặt:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -15058,31 +14931,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Hãy đảm bảo tệp cơ sở dữ liệu SQLite tồn tại"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Hãy kiểm tra máy chủ web có quyền đọc và ghi tệp cơ sở dữ liệu hay không"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Hãy xác nhận đường dẫn đầy đủ tới tệp cơ sở dữ liệu là đúng và có thể truy cập"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Hãy xác nhận thông tin đăng nhập cơ sở dữ liệu là đúng"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Hãy kiểm tra người dùng cơ sở dữ liệu có đủ đặc quyền hay không"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Hãy đảm bảo máy chủ cơ sở dữ liệu đang chạy và có thể truy cập"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -15093,75 +14964,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "Tệp cơ sở dữ liệu SQLite %s không tồn tại. Vui lòng tạo tệp cơ sở dữ liệu trước khi tiếp tục."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "Không thể đọc tệp cơ sở dữ liệu SQLite %s. Vui lòng kiểm tra quyền của tệp."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "Không thể ghi vào tệp cơ sở dữ liệu SQLite %s. Vui lòng kiểm tra quyền của tệp."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Không thể truy cập tệp cơ sở dữ liệu SQLite %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "Cần có URL API của PowerDNS khi sử dụng backend API."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Cần có khóa API của PowerDNS khi sử dụng backend API."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Không tìm thấy tệp cấu hình. Vui lòng tạo tệp config/settings.php trước khi tiếp tục."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Chỉ MySQL hỗ trợ dùng cơ sở dữ liệu PowerDNS riêng biệt. Với PostgreSQL và SQLite, vui lòng dùng cùng một cơ sở dữ liệu."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "Thiếu các bảng PowerDNS trong cơ sở dữ liệu \"%s\": %s. Vui lòng đảm bảo PowerDNS đã được cài đặt đúng trong cơ sở dữ liệu này."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Không thể kết nối tới cơ sở dữ liệu PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ thống này. Vui lòng liên hệ quản trị viên của bạn."
 
 #, php-format
 # OBSOLETE: msgid ""

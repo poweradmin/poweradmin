@@ -521,9 +521,7 @@ msgstr "百分比必须在0到100之间"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr ""
-"Policy will only apply to %d%% of messages. Use 100%% once testing is "
-"complete."
+msgstr "策略将仅应用于 %d%% 的邮件。测试完成后请改用 100%%。"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -1729,7 +1727,7 @@ msgstr "%s 的值无效。允许的值：%s。"
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "元数据类型 %s 只能由管理员更改。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1852,23 +1850,19 @@ msgstr "权限模板已成功更新。"
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "在权限模板中授予管理员权限需要管理员权限。"
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "编辑具有管理员权限的权限模板需要管理员权限。"
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "无法更新权限模板。"
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1887,7 +1881,7 @@ msgstr "搜索"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "记录变更日志"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -1929,7 +1923,7 @@ msgstr "添加用户"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "没有可供分配的非超级用户权限模板。"
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2450,11 +2444,11 @@ msgstr "您没有查看此页面的权限。"
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "按记录类型设置的默认 TTL"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "表单提交无效。"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2465,12 +2459,12 @@ msgstr "record_type_defaults 表缺失。请在保存默认值之前应用 4.5.0
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "已保存 %d 项默认值，已清除 %d 项。以下项的值无效并被拒绝：%s。"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "已保存 %d 项默认值，已清除 %d 项。"
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2648,7 +2642,7 @@ msgstr "权限模板已成功添加。"
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "无法添加权限模板。"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2809,17 +2803,17 @@ msgstr "正向区域"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "您没有从 PowerDNS 同步区域的权限。"
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "已从 PowerDNS 同步区域：新增 %d 个，更新 %d 个，移除 %d 个。"
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "区域同步失败：%s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3559,25 +3553,21 @@ msgstr "数据库错误：无法验证用户身份。请检查数据库配置。
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "您没有更改权限模板的权限。"
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "更改自己的权限模板需要具有编辑其他用户的权限。"
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "分配具有管理员权限的权限模板需要管理员权限。"
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3635,8 +3625,7 @@ msgstr "您没有向此区域模板添加记录的权限。"
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "您没有将此记录类型添加到区域模板的权限。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3663,9 +3652,7 @@ msgstr "更新区域模板记录错误："
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "您没有从区域模板中删除此记录类型的权限。"
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3681,9 +3668,7 @@ msgstr "检查模板所有权错误："
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "以下记录类型未包含在模板中，因为您无权添加它们：%s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3724,7 +3709,7 @@ msgstr "您没有添加 NS 记录的权限。"
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "您没有添加 LUA 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3737,7 +3722,7 @@ msgstr "您没有编辑此 NS 记录的权限。"
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "您没有编辑此 LUA 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3750,7 +3735,7 @@ msgstr "您没有删除 NS 记录的权限。"
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "您没有删除 LUA 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -8170,9 +8155,7 @@ msgstr "SRV 记录端口字段的值无效。必须为 1-65535。"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "端口 %d 与标准端口 %d（适用于 %s 服务）不同。这是允许的，但并不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8694,11 +8677,11 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "已跳过 PTR 更新：记录类型不是 A 或 AAAA。"
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "已删除过期的 PTR 记录。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -8778,7 +8761,7 @@ msgstr "选定的用户已拥有该区域。"
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "无法更新区域记录：%s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9698,7 +9681,7 @@ msgstr "组"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "已连接的 PowerDNS 版本"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -9795,7 +9778,7 @@ msgstr "注销"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "当前全局默认值"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -9803,11 +9786,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "默认 TTL（秒）"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "留空 = 使用全局默认值"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -9823,7 +9806,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "（用于反向区域中的 PTR）或"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -9917,7 +9900,7 @@ msgstr "API 活动日志"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "API 日志行为："
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -9956,7 +9939,7 @@ msgstr "区域变更日志"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "区域日志行为："
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10004,7 +9987,7 @@ msgstr "示例：www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "优先级和 TTL 为可选项（默认值：priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10479,12 +10462,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY 待确认：序列号 %serial% 尚未被确认"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "已在序列号 %serial% 时发送 NOTIFY"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11468,7 +11451,7 @@ msgstr "最后修改"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "最后由 %account% 于 %date% 编辑"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11569,11 +11552,11 @@ msgstr "未配置MFA"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "从 PowerDNS 获取区域并校正本地表"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "从 PowerDNS 同步"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -11699,7 +11682,7 @@ msgstr "没有所有者的区域"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "将您自己指定为所有列出区域的所有者？"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12333,7 +12316,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "变更日志行为："
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12385,11 +12368,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "未找到记录变更"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "请尝试其他筛选条件或时间范围"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -12666,7 +12649,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "继承全局设置"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -12754,11 +12737,11 @@ msgstr "为每条记录显示单独的删除按钮"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "仅显示主机名"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "在编辑视图中去除记录名称的区域后缀"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -12859,7 +12842,7 @@ msgstr "用户活动日志"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "用户日志行为："
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13181,7 +13164,7 @@ msgstr "反向区域"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "记录变更日志"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13215,27 +13198,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "请检查 config/settings.php 中的 pdns_api.key 是否与 PowerDNS 中配置的 API 密钥一致。"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "请检查 pdns_api.server_name 是否与 PowerDNS 报告的名称一致（默认为 'localhost'）。"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS 拒绝了该请求。请查看 PowerDNS 服务器日志以确定原因 - 在将区域直接导入 PowerDNS 数据库之后，常见原因是某条格式错误的记录导致区域序列化失败。"
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13396,7 +13372,7 @@ msgstr "外部应用程序将能够使用此密钥进行身份验证。"
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "API 密钥行为："
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13567,7 +13543,7 @@ msgstr "组活动日志"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "组日志行为："
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -13857,11 +13833,11 @@ msgstr "RDAP 查询结果"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "请输入域名以执行 RDAP 查询。"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "创建受限权限用户"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -13869,11 +13845,11 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "创建受限权限用户"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "受限数据库权限："
 
 #: install/templates/step6.html.twig:15
 msgid ""
@@ -13898,7 +13874,7 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "请执行以下命令："
 
 #: install/templates/step6.html.twig:40
 msgid ""
@@ -13917,7 +13893,7 @@ msgstr "由于您使用的是 SQLite,无需创建具有有限权限的新用户�
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "继续到步骤"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -13925,7 +13901,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "创建配置文件"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -13933,19 +13909,19 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "创建文件"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "内容如下："
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "选择语言"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "选择安装使用的语言"
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -13962,7 +13938,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "配置数据库连接"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -13970,11 +13946,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "选择 Poweradmin 与 PowerDNS 的通信方式："
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "直接访问 PowerDNS 数据库表"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13990,7 +13966,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "PowerDNS API 设置"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13998,7 +13974,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "PowerDNS API 端点 URL。"
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -14006,7 +13982,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API 密钥（取自 pdns.conf 中的 api-key 设置）。"
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14018,7 +13994,7 @@ msgstr "用于 API 调用的 PowerDNS 服务器名称 (通常为 \"localhost\")�
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "数据库连接设置"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -14052,27 +14028,27 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "数据库服务器类型。"
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "请提供用户名"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "具有创建表权限的数据库用户名。"
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "该数据库用户的密码。"
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "请避免使用引号、反斜杠和换行符。"
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "请提供主机名"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
@@ -14084,27 +14060,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "请提供数据库端口"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "数据库服务器端口。"
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "请提供数据库名称"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "数据库名称（将用于 Poweradmin 的表）。"
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "SQLite 数据库文件的完整路径"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "文件必须已存在，且 Web 服务器对其具有读写权限。请使用绝对路径。"
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14116,7 +14092,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "新建表使用的字符集。留空则使用数据库默认值。"
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14137,11 +14113,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "留空则使用同一个数据库"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "包含 PowerDNS 表的 MySQL 数据库（如果不同）。"
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -14166,7 +14142,7 @@ msgstr "为初始管理员账户硬编码。"
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "请提供密码"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14178,7 +14154,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "系统要求检查"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14186,7 +14162,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "需要 PHP 8.2.0 或更高版本"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14194,11 +14170,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "至少需要其中一项"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "必需的 PHP 扩展"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14214,43 +14190,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "未检测到 - URL 路由需要此项"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "无法检测（PHP-FPM）- 请确保已启用"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "请确保已配置 URL 重写（参见 nginx.conf.example）"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "请确保已为您的 Web 服务器配置 URL 重写"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "所有必需组件均可用。"
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "您可以继续安装。"
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "缺少部分必需组件。"
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "请先安装缺少的组件，然后再继续。"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "设置账户和名称服务器"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "设置账户和名称服务器"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14258,7 +14234,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "现在将收集配置本身所需的全部信息。"
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14280,11 +14256,11 @@ msgstr "具有受限访问权限的 Poweradmin 数据库用户名。不用于 We
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "请提供用户密码"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "该用户名对应的密码。"
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14296,11 +14272,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "请提供 DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "SOA 记录的默认 hostmaster。"
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14308,11 +14284,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "请提供主名称服务器"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "新区域的主名称服务器。"
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14320,11 +14296,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "请提供辅助名称服务器"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "新区域的辅助名称服务器。"
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14336,7 +14312,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "新区域的第三名称服务器（可选）。"
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14344,7 +14320,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "新区域的第四名称服务器（可选）。"
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14356,11 +14332,11 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "恭喜！您的 Poweradmin 现已配置完成。"
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "重要安全提示："
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -14392,7 +14368,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "开始配置您的 DNS 区域和记录"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14404,7 +14380,7 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "在继续之前，请确保您已具备："
 
 #: install/templates/step3.html.twig:18
 msgid ""
@@ -14413,11 +14389,11 @@ msgstr "已安装 PowerDNS 并创建数据库表 (或已配置 API 访问)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "数据库凭据（主机名、用户名、密码）"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "为 Poweradmin 创建表的权限"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14434,25 +14410,23 @@ msgstr "配置数据库连接,创建管理员账户,并生成配置文件。"
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "注意：使用 PostgreSQL 和 SQLite 时，PowerDNS 和 Poweradmin 必须使用同一个数据库。"
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "缺少的 PowerDNS 表："
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin 需要这些 PowerDNS 表才能正常工作。"
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "正在更新数据库……完成！"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "外键约束问题："
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
@@ -14477,7 +14451,7 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "请确保 SQLite 数据库文件已存在"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
@@ -14487,19 +14461,19 @@ msgstr "检查 Web 服务器是否对数据库文件具有读写权限"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "请确认数据库文件的完整路径正确且可访问"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "请确认数据库凭据正确"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "请检查数据库用户是否具有足够的权限"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "请确保数据库服务器正在运行且可访问"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14527,15 +14501,15 @@ msgstr "SQLite 数据库文件 %s 不可写。请检查文件权限。"
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "无法访问 SQLite 数据库文件 %s：%s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "使用 API 后端时必须提供 PowerDNS API URL。"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "使用 API 后端时必须提供 PowerDNS API 密钥。"
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
@@ -14570,9 +14544,7 @@ msgstr "无法连接到 PowerDNS 数据库 \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
 
 #, php-format
 # OBSOLETE: msgid ""

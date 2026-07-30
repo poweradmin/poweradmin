@@ -104,8 +104,7 @@ msgstr "الميناء"
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:72
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
-msgstr ""
-"TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
+msgstr "رقم منفذ TCP/UDP (443 لـ HTTPS، و25 لـ SMTP، و853 لـ DNS-over-TLS، وغيرها)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:113
 msgid "Protocol"
@@ -337,9 +336,7 @@ msgstr "تنسيق اسم المضيف غير صالح"
 msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
-msgstr ""
-"CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
-"DNSSEC, TLSA records provide NO security benefit."
+msgstr "حرج: تتطلب سجلات TLSA تمكين DNSSEC على هذه المنطقة. بدون DNSSEC لا تقدم سجلات TLSA أي فائدة أمنية."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
@@ -1816,7 +1813,7 @@ msgstr "قيمة غير صالحة لـ %s. القيم المسموح بها: %s
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "لا يمكن تغيير نوع البيانات الوصفية %s إلا بواسطة مسؤول."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1939,23 +1936,19 @@ msgstr "وتم تحديث نموذج الإذن بنجاح."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "منح صلاحيات المسؤول في قالب صلاحيات يتطلب صلاحيات مسؤول."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "تحرير قالب صلاحيات يحتوي على صلاحيات مسؤول يتطلب صلاحيات مسؤول."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "تعذر تحديث قالب الصلاحيات."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2016,7 +2009,7 @@ msgstr "مستعمل"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "لا يوجد قالب صلاحيات بدون صلاحيات المستخدم المتميز متاح للتعيين."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2771,7 +2764,7 @@ msgstr "وقد أضيف نموذج الإذن بنجاح."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "تعذر إضافة قالب الصلاحيات."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3711,25 +3704,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "ليست لديك صلاحية تغيير قالب الصلاحيات."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "تغيير قالب الصلاحيات الخاص بك يتطلب صلاحية تحرير المستخدمين الآخرين."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "تعيين قالب صلاحيات يحتوي على صلاحيات مسؤول يتطلب صلاحيات مسؤول."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3787,8 +3776,7 @@ msgstr "ليس لديك الإذن بإضافة سجل لنموذج المنطق
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "ليست لديك صلاحية إضافة هذا النوع من السجلات إلى قالب منطقة."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3815,9 +3803,7 @@ msgstr "سجل نموذج المنطقة المستكمل للخطأ:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "ليست لديك صلاحية حذف هذا النوع من السجلات من قالب منطقة."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3833,9 +3819,7 @@ msgstr "التدقيق في النموذج:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "تم استثناء أنواع السجلات التالية من القالب لأنه لا يُسمح لك بإضافتها: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3876,7 +3860,7 @@ msgstr "ليس لديك الإذن لإضافة سجل NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "ليست لديك صلاحية إضافة سجل LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3889,7 +3873,7 @@ msgstr "ليس لديك الاذن لتحرير هذا السجل"
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "ليست لديك صلاحية تحرير سجل LUA هذا."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3902,7 +3886,7 @@ msgstr "ليس لديك الإذن بحذف سجلات الأمن القومي"
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "ليست لديك صلاحية حذف سجلات LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -3969,9 +3953,7 @@ msgstr ""
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr ""
-"The public key in IPSECKEY records should be regularly rotated for improved "
-"security."
+msgstr "ينبغي تدوير المفتاح العام في سجلات IPSECKEY بصورة منتظمة لتحسين الأمان."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
@@ -4001,17 +3983,13 @@ msgstr "يجب أن يكون رقم الأسبقية بين صفر و 255."
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
-msgstr ""
-"IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
-"(Domain name)"
+msgstr "يجب أن يكون نوع بوابة IPSECKEY هو 0 (بلا بوابة) أو 1 (IPv4) أو 2 (IPv6) أو 3 (اسم نطاق)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
-msgstr ""
-"IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
-"(Ed25519)."
+msgstr "يجب أن تكون خوارزمية IPSECKEY هي 0 (بلا مفتاح) أو 1 (RSA) أو 2 (DSA) أو 3 (ECDSA) أو 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -4097,8 +4075,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgstr "3. يجب أن تكون حالة التحقق من DNSSEC لكل من سجلي SRV وTLSA هي \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
@@ -4152,14 +4129,11 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
-"work correctly (RFC 7671)."
+msgstr "إذا كنت تستخدم سجلات CNAME، فتأكد من أن سلسلة CNAME بالكامل موقّعة بـ DNSSEC كي يعمل TLSA بصورة صحيحة (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
-"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgstr "يبدو أن هذا سجل SMIMEA (RFC 8162) خاص بشهادات S/MIME."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -4247,8 +4221,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+msgstr "يجب أن يكون حقل المُحدِّد في TLSA هو 0 (الشهادة الكاملة) أو 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4262,9 +4235,7 @@ msgstr ""
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr ""
-"TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
-"(SHA-512)."
+msgstr "يجب أن يكون حقل نوع المطابقة في TLSA هو 0 (مطابقة تامة) أو 1 (SHA-256) أو 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -4296,9 +4267,7 @@ msgstr ""
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr ""
-"NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
-"subdomain)."
+msgstr "يجب ألا توجد سجلات NSEC3PARAM إلا في قمة المنطقة (النطاق الجذر، وليس نطاقًا فرعيًا)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4312,9 +4281,7 @@ msgstr "سجل NSEC3PARAM يحتوي على أحرف غير صالحة."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr ""
-"According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
-"TTL as the SOA minimum TTL field."
+msgstr "وفقًا لـ RFC 5155 وRFC 9077، ينبغي أن يكون TTL لسجلات NSEC3PARAM مساويًا لحقل TTL الأدنى في سجل SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -4352,9 +4319,7 @@ msgstr ""
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
-msgstr ""
-"NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
-"and salt."
+msgstr "يجب أن يحتوي سجل NSEC3PARAM على خوارزمية التقطيع والأعلام وعدد التكرارات والقيمة العشوائية (salt) فقط."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -4778,9 +4743,7 @@ msgstr "يجب أن تكون بيانات المفتاح العام مشفرة �
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr ""
-"RKEY records were never formally standardized as an RFC, only proposed in "
-"draft-reid-dnsext-rkey-00."
+msgstr "لم تُعتمد سجلات RKEY رسميًا في أي RFC، بل اقتُرحت فقط في draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -4807,9 +4770,7 @@ msgstr ""
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr ""
-"RFC 3123 notes security considerations when using APL records for access "
-"control lists."
+msgstr "يشير RFC 3123 إلى اعتبارات أمنية عند استخدام سجلات APL لقوائم التحكم في الوصول."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -4897,9 +4858,7 @@ msgstr ""
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr ""
-"Invalid NID record: The Group bit (g bit, least significant bit of first "
-"byte) MUST be 0 in ILNP as specified in RFC 6742."
+msgstr "سجل NID غير صالح: يجب أن تكون بتة المجموعة (بتة g، وهي أدنى بتة في البايت الأول) صفرًا في ILNP كما ينص RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
@@ -4967,9 +4926,7 @@ msgstr "سجل NSEC يحتوي على أحرف غير صالحة."
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr ""
-"According to RFC 4034, NSEC records should have the same TTL as the SOA "
-"minimum TTL field."
+msgstr "وفقًا لـ RFC 4034، ينبغي أن يكون TTL لسجلات NSEC مساويًا لحقل TTL الأدنى في سجل SOA."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
@@ -5057,9 +5014,7 @@ msgstr "NSEC record contains an invalid record type: %sZ"
 msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
-msgstr ""
-"NSEC type should typically be present in its own type bit map, as each name "
-"in a signed zone should have an NSEC record."
+msgstr "ينبغي عادةً وجود النوع NSEC في خريطة بتات الأنواع الخاصة به، إذ ينبغي أن يكون لكل اسم في منطقة موقّعة سجل NSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
@@ -5179,9 +5134,7 @@ msgstr ""
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+msgstr "لإنشاء سجلات OPENPGPKEY، استخدم أدوات متخصصة مثل GnuPG مع الخيار --print-dane-records لضمان صحة التنسيق والمحتوى."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -5266,9 +5219,7 @@ msgstr "وينبغي تناوب مفاتيح TSIG دوريا باعتبارها 
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr ""
-"TSIG provides transaction authentication but not data integrity. Consider "
-"using DNSSEC in addition to TSIG."
+msgstr "يوفر TSIG مصادقة على المعاملات لكنه لا يوفر سلامة البيانات. ننصح باستخدام DNSSEC إلى جانب TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
@@ -5375,9 +5326,7 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
-"HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
-"most deployments."
+msgstr "يوصي RFC 8945 بـ HMAC-SHA256 كخوارزمية TSIG المفضلة لمعظم عمليات النشر."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -5432,16 +5381,13 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr ""
-"SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
+msgstr "SHA-384 (الخوارزمية 1) هي خوارزمية التقطيع الموصى بها لسجلات ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr ""
-"SHA-512 (algorithm 2) provides stronger security but requires more "
-"processing resources than SHA-384."
+msgstr "توفر SHA-512 (الخوارزمية 2) أمانًا أقوى لكنها تتطلب موارد معالجة أكثر من SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -5502,9 +5448,7 @@ msgstr ""
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
-"ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
-"characters (48 octets)."
+msgstr "يجب أن تكون بصمة ZONEMD الخاصة بـ SHA-384 (الخوارزمية 1) مكونة من 96 حرفًا ست عشريًا بالضبط (48 ثمانية بتات)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5723,9 +5667,7 @@ msgstr ""
 msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
-msgstr ""
-"This is a null MX record (RFC 7505) indicating this domain does not accept "
-"email."
+msgstr "هذا سجل MX فارغ (RFC 7505) يشير إلى أن هذا النطاق لا يستقبل البريد الإلكتروني."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
@@ -5838,9 +5780,7 @@ msgstr "المعامل \"%s\" محدد كإلزامي ولكنه غير مضمن
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+msgstr "يشترط RFC 2930 أن تكون قيمة TTL لسجلات TKEY صفرًا لمنع التخزين المؤقت. قد تسبب قيمة TTL الحالية غير الصفرية مشكلات مع تطبيقات DNS الأقدم."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5914,9 +5854,7 @@ msgstr ""
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
-"Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
-"man-in-the-middle attacks."
+msgstr "ينبغي مصادقة وضع Diffie-Hellman باستخدام TSIG أو SIG(0) لمنع هجمات الوسيط."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -5945,9 +5883,7 @@ msgstr ""
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr ""
-"TKEY record exchanges should be secured - authentication depends on mode "
-"used."
+msgstr "ينبغي تأمين عمليات تبادل سجلات TKEY - وتعتمد المصادقة على الوضع المستخدم."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
@@ -6041,8 +5977,7 @@ msgstr "يعتبر FTP أقل أماناً من البدائل مثل SFTP أو 
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgstr "ننصح باستخدام LDAPS (LDAP عبر SSL/TLS) لتأمين اتصالات LDAP."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -6060,7 +5995,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "يجب أن يكون سجل URI في الشكل: <priority> <weight>ZZZZZZZZZZZZZZZZZZZ"
+msgstr "يجب أن يكون سجل URI بالتنسيق التالي: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -6145,9 +6080,7 @@ msgstr "اسم مُضيف مُبدّل ويجب أن يكون ميدان الت�
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr ""
-"IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
-"KX records MUST be ignored for security reasons."
+msgstr "مهم: يشترط RFC 2230 توقيع سجلات KX باستخدام DNSSEC. ويجب تجاهل سجلات KX غير الموقّعة لأسباب أمنية."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
@@ -6161,9 +6094,7 @@ msgstr ""
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr ""
-"Ensure that the key exchanger host has appropriate forward and reverse DNS "
-"records configured."
+msgstr "تأكد من أن مضيف تبادل المفاتيح لديه سجلات DNS مباشرة وعكسية مهيأة بصورة صحيحة."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -6412,9 +6343,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+msgstr "يجب أن يحتوي سجل DHCID على أحرف base64 صالحة فقط (A-Z، a-z، 0-9، +، /، =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6458,17 +6387,13 @@ msgstr ""
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+msgstr "نوع بصمة DHCID رقم %d ليس النوع القياسي (1 لـ SHA-256) المحدد في RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr ""
-"DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
-"decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
+msgstr "يجب أن يكون سجل DHCID ذو بصمة SHA-256 (النوع 1) بحجم 35 بايت على الأقل بعد فك الترميز (2 لنوع المعرّف، و1 لنوع البصمة، و32 لبصمة SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -6630,9 +6555,7 @@ msgstr "RRSIG الأصلية TTL must be a valid positive integer."
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+msgstr "قيمة TTL الأصلية أكبر من يوم واحد (86400). ويُفضل عمومًا استخدام قيم TTL أقصر لسجلات DNSSEC لتسريع الاستعادة في حال اختراق أحد المفاتيح."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -6752,9 +6675,7 @@ msgstr ""
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr ""
-"Consider including other contact methods besides RP records for critical "
-"domains."
+msgstr "ننصح بإتاحة وسائل اتصال أخرى إلى جانب سجلات RP للنطاقات الحرجة."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -6863,9 +6784,7 @@ msgstr "والجزء المتعلق بصندوق بريد RP ليس اسماً �
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr ""
-"The mailbox domain should use the same format as the RNAME field in SOA "
-"records, with @ replaced by a dot."
+msgstr "ينبغي أن يستخدم نطاق صندوق البريد التنسيق نفسه المستخدم في حقل RNAME في سجلات SOA، مع استبدال @ بنقطة."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
@@ -6902,9 +6821,7 @@ msgstr "ويتجاوز نطاق RP TXT الحد الأقصى لطول 253 شخص
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr ""
-"Ensure a TXT record exists at this domain name containing contact "
-"information for the responsible person."
+msgstr "تأكد من وجود سجل TXT على اسم النطاق هذا يحتوي على معلومات الاتصال بالشخص المسؤول."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -6915,9 +6832,7 @@ msgstr "يجب إنشاء سجل TXT في النطاق: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr ""
-"This appears to be an EUI-64 address derived from an EUI-48 address "
-"(contains FF-FE in the middle)."
+msgstr "يبدو أن هذا عنوان EUI-64 مشتق من عنوان EUI-48 (يحتوي على FF-FE في الوسط)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -7029,9 +6944,7 @@ msgstr ""
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"According to RFC 6672, DNAME records must be unique at a given owner name "
-"(singleton rule)."
+msgstr "وفقًا لـ RFC 6672، يجب أن تكون سجلات DNAME فريدة لكل اسم مالك (قاعدة السجل الوحيد)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -7069,9 +6982,7 @@ msgstr ""
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr ""
-"This is a special CDS deletion record (RFC 8078) that signals the parent to "
-"remove the DS record."
+msgstr "هذا سجل CDS خاص للحذف (RFC 8078) يُبلغ المنطقة الأصل بإزالة سجل DS."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
@@ -7721,9 +7632,7 @@ msgstr "يجب أن تكون الأولوية 0 لسجلات RESINFO."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr ""
-"SVCB record must start with a priority and target: <priority><target> "
-"[<params>ZZZZ...]"
+msgstr "يجب أن يبدأ سجل SVCB بأولوية وهدف: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -7785,9 +7694,7 @@ msgstr ""
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr ""
-"This record conflicts with an existing CNAME record with the same name. A "
-"CNAME record cannot coexist with other record types."
+msgstr "يتعارض هذا السجل مع سجل CNAME موجود بالاسم نفسه. لا يمكن أن يتواجد سجل CNAME مع أنواع سجلات أخرى."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -7913,9 +7820,7 @@ msgstr ""
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr ""
-"SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
-"(SHA-512)."
+msgstr "يجب أن يكون حقل نوع المطابقة في SMIMEA هو 0 (مطابقة تامة) أو 1 (SHA-256) أو 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -7962,9 +7867,7 @@ msgstr ""
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+msgstr "تحذير: SMIMEA (RFC 8162) بروتوكول تجريبي في الوقت الحالي وقد لا يكون مدعومًا على نطاق واسع."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7986,9 +7889,7 @@ msgstr ""
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+msgstr "ينبغي استخدام سجلات L64 مع بروتوكول ILNP (Identifier-Locator Network Protocol) فقط."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
@@ -8028,9 +7929,7 @@ msgstr "يجب أن يكون تفضيل L64 رقم بين 0 و65535."
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
-msgstr ""
-"L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
-"consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
+msgstr "يجب أن يكون مُحدِّد موقع L64 مقطع عنوان IPv6 ست عشري صالحًا بطول 64 بتة يتكون من 4 مجموعات بالضبط من الأرقام الست عشرية (مثل 2001:0db8:1140:1000)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
@@ -8082,9 +7981,7 @@ msgstr "مجال الأولوية لسجلات الشبكة يجب أن يكون
 msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
-msgstr ""
-"RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
-"publish a corresponding CDS record."
+msgstr "يوصي RFC 7344 بأنه إذا نشرت سجل CDNSKEY فينبغي أن تنشر أيضًا سجل CDS مقابلًا له."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -8250,9 +8147,7 @@ msgstr ""
 msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
-msgstr ""
-"For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
-"compatibility, but prefer SHA-256 in clients."
+msgstr "لأقصى درجات الأمان، انشر بصمتي SHA-1 وSHA-256 معًا لأجل التوافق، لكن فضّل SHA-256 في العملاء."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
@@ -8310,9 +8205,7 @@ msgstr ""
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+msgstr "يوصي RFC 6594 ببصمات SHA-256 وهي توفر أمانًا أفضل من SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -8428,9 +8321,7 @@ msgstr "ويعتبر الغوريثم 1 (RSA/MD5) ضعيفاً بدائياً و
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr ""
-"For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
-"instead of KEY records."
+msgstr "لمفاتيح مناطق DNSSEC (flags=257، protocol=3)، ينبغي استخدام سجلات DNSKEY بدلًا من سجلات KEY."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -8535,8 +8426,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr ""
-"DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
+msgstr "يجب أن تكون قيمة وسم سياسة النطاق الفرعي في DMARC (sp) إحدى القيم: none أو quarantine أو reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
@@ -8567,9 +8457,7 @@ msgstr "يجب أن يكون وسم فاصل تقارير DMARC (ri) عدد صح
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr ""
-"DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
-"colon-separated combinations"
+msgstr "يجب أن يحتوي وسم خيارات الإبلاغ عن الفشل في DMARC (fo) على 0 أو 1 أو d أو s فقط، أو على تجميعات منها مفصولة بنقطتين"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8676,9 +8564,7 @@ msgstr ""
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr ""
-"According to RFC 8078, CDS records should be stable for some time before "
-"parent zones accept them."
+msgstr "وفقًا لـ RFC 8078، ينبغي أن تبقى سجلات CDS مستقرة لبعض الوقت قبل أن تقبلها المناطق الأصل."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -8754,9 +8640,7 @@ msgstr ""
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+msgstr "ينبغي استخدام سجلات L32 مع بروتوكول ILNP (Identifier-Locator Network Protocol) فقط."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
@@ -8931,9 +8815,7 @@ msgstr "NSEC3 سجل يحتوي على شخصيات غير صحيحة."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr ""
-"According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
-"as the SOA minimum TTL field."
+msgstr "وفقًا لـ RFC 5155 وRFC 9077، ينبغي أن يكون TTL لسجلات NSEC3 مساويًا لحقل TTL الأدنى في سجل SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -8955,17 +8837,13 @@ msgstr ""
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr ""
-"NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
-"indicate the NSEC3 parameters in use."
+msgstr "تتطلب سجلات NSEC3 وجود سجل NSEC3PARAM مقابل في قمة المنطقة لبيان معاملات NSEC3 المستخدمة."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr ""
-"NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
-"and next hashed owner name."
+msgstr "يجب أن يحتوي سجل NSEC3 على خوارزمية التقطيع والأعلام وعدد التكرارات والقيمة العشوائية (salt) واسم المالك المقطَّع التالي على الأقل."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -8987,9 +8865,7 @@ msgstr "يجب أن تكون salt الخاصة بـ NSEC3 - (للفارغ) أو 
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr ""
-"NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
-"characters 0-9 and A-V)."
+msgstr "يجب أن يكون اسم المالك المقطَّع التالي في NSEC3 قيمة صالحة مرمّزة بـ Base32hex (باستخدام الأحرف 0-9 وA-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
@@ -9008,9 +8884,7 @@ msgstr "NSEC3 record contains an invalid record type: %sZ"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
-"signed zones."
+msgstr "ينبغي عادةً وجود النوع RRSIG في خرائط بتات أنواع NSEC3 للمناطق الموقّعة بـ DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -9024,9 +8898,7 @@ msgstr ""
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+msgstr "في قمة منطقة تستخدم NSEC3، ينبغي عادةً وجود النوع NSEC3PARAM إلى جانب DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -9244,9 +9116,7 @@ msgstr "يجب أن يكون خوارزمية DNSKEY رقما بين 1 و 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
-"ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
-"signing according to RFC 8624."
+msgstr "ECDSAP256SHA256 (الخوارزمية 13) هي الخوارزمية الموصى بها للتوقيع بـ DNSSEC وفقًا لـ RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -9536,7 +9406,7 @@ msgstr "المستخدم المختار يمتلك المنطقة بالفعل"
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "تعذر تحديث سجلات المنطقة: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10779,7 +10649,7 @@ msgstr "مثال: www.A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "الأولوية وTTL اختياريان (القيم الافتراضية: priority=0، ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11262,12 +11132,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY معلّق: لم يتم بعد الإقرار بالرقم التسلسلي %serial%"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "أُرسل NOTIFY عند الرقم التسلسلي %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12273,7 +12143,7 @@ msgstr "آخر تعديل"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "آخر تحرير بواسطة %account% في %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12506,7 +12376,7 @@ msgstr "المناطق التي لا تملكها"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "هل تريد تعيين نفسك مالكًا لجميع المناطق المدرجة؟"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12982,9 +12852,7 @@ msgstr ""
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr ""
-"DNS zones typically require an SOA record to function properly, and DNSSEC "
-"signing may fail without one."
+msgstr "تحتاج مناطق DNS عادةً إلى سجل SOA لتعمل بصورة صحيحة، وقد يفشل التوقيع بـ DNSSEC في حال عدم وجوده."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
@@ -13595,8 +13463,7 @@ msgstr "DNS search"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr ""
-"Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
+msgstr "أدخل اسم النطاق أو اسم المضيف أو عنوان IP (مثل example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -13706,9 +13573,7 @@ msgstr "قدم عنوان IP"
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
-msgstr ""
-"IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
-"separated by commas)"
+msgstr "عنوان IP لخادم الأسماء الرئيسي (يدعم IPv4 وIPv6، وتُفصل العناوين المتعددة بفواصل)"
 
 #: templates/modern/delete_zone_templ.html:5
 msgid "Delete template"
@@ -13832,9 +13697,7 @@ msgstr "استخدام نموذج العرف"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr ""
-"To revert to standard templates, remove or rename the custom template files "
-"in <code>templates/emails/custom/</code>."
+msgstr "للعودة إلى القوالب القياسية، احذف ملفات القوالب المخصصة الموجودة في <code>templates/emails/custom/</code> أو أعد تسميتها."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -14294,9 +14157,7 @@ msgstr ""
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr ""
-"When assigned to <strong>groups</strong>: Permissions apply only to zones "
-"owned by that group."
+msgstr "عند التعيين إلى <strong>مجموعات</strong>: تنطبق الصلاحيات على المناطق التي تملكها تلك المجموعة فقط."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"
@@ -14705,7 +14566,7 @@ msgstr "نتائج برنامج العمل الإقليمي"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "أدخل اسم نطاق لإجراء استعلام RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14737,9 +14598,7 @@ msgstr ""
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "أنشئ مستخدم قاعدة بيانات بصلاحيات محدودة (select، insert، update، delete) ليتمكن Poweradmin من الوصول إلى جداول PowerDNS."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -15267,8 +15126,7 @@ msgstr "قبل المضي قدما، ضمان لديك:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "تثبيت PowerDNS مع إنشاء جداول قاعدة البيانات (أو تهيئة الوصول عبر API)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -15293,9 +15151,7 @@ msgstr "وصلة قاعدة بيانات الثقة، إنشاء حساب مخص
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "ملاحظة: يجب أن يستخدم PostgreSQL وSQLite قاعدة البيانات نفسها لكل من PowerDNS وPoweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15438,9 +15294,7 @@ msgstr "لا يمكن الاتصال بقاعدة بيانات PowerDNS \"%s\": 
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "تعذر تعيين الإعدادات المحلية. قد تكون الإعدادات المحلية المحددة غير مدعومة على هذا النظام. يُرجى الاتصال بالمسؤول."
 
 #, php-format
 # OBSOLETE: msgid ""

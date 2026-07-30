@@ -1831,7 +1831,7 @@ msgstr "Neplatná hodnota pro %s. Povolené hodnoty: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Druh metadat %s může měnit pouze administrátor."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1954,23 +1954,19 @@ msgstr "Šablona oprávnění byla úspěšně aktualizována."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Udělení administrátorských práv v šabloně oprávnění vyžaduje administrátorská práva."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Úprava šablony oprávnění s administrátorskými právy vyžaduje administrátorská práva."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Šablonu oprávnění nebylo možné aktualizovat."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1989,7 +1985,7 @@ msgstr "Hledat"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Protokol změn záznamů"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2031,7 +2027,7 @@ msgstr "Přidat uživatele"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Není dostupná žádná šablona oprávnění bez práv superuživatele, kterou by bylo možné přiřadit."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2575,11 +2571,11 @@ msgstr "Nemáte oprávnění zobrazit tuto stránku."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Výchozí hodnoty TTL podle typu záznamu"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Neplatné odeslání formuláře."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2592,12 +2588,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Uloženo %d výchozích hodnot, smazáno %d. Odmítnuty neplatné hodnoty pro: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Uloženo %d výchozích hodnot, smazáno %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2779,7 +2775,7 @@ msgstr "Šablona oprávnění byla úspěšně přidána."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Šablonu oprávnění nebylo možné přidat."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2941,17 +2937,17 @@ msgstr "Dopředné zóny"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Nemáte oprávnění synchronizovat zóny z PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zóny synchronizovány z PowerDNS: %d přidáno, %d aktualizováno, %d odebráno."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Synchronizace zón selhala: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3680,17 +3676,13 @@ msgstr "Ne, ponechat tento supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Zobrazuje stav připojení serverů autoprimary nastavených v tabulce níže."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Zobrazuje stav připojení serverů supermaster nastavených v tabulce níže."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3730,25 +3722,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Nemáte oprávnění změnit šablonu oprávnění."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Změna vlastní šablony oprávnění vyžaduje oprávnění upravovat ostatní uživatele."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Přiřazení šablony oprávnění s administrátorskými právy vyžaduje administrátorská práva."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3806,8 +3794,7 @@ msgstr "Nemáte oprávnění přidat záznam do této šablony zóny."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Nemáte oprávnění přidat tento typ záznamu do šablony zóny."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3834,9 +3821,7 @@ msgstr "Chyba při aktualizaci záznamu šablony zóny: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Nemáte oprávnění odstranit tento typ záznamu ze šablony zóny."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3852,9 +3837,7 @@ msgstr "Chyba při kontrole vlastnictví šablony: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Tyto typy záznamů nebyly do šablony zahrnuty, protože je nemůžete přidávat: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3895,7 +3878,7 @@ msgstr "Nemáte oprávnění přidat NS záznam."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nemáte oprávnění přidat záznam LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3908,7 +3891,7 @@ msgstr "Nemáte oprávnění upravit tento NS záznam."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nemáte oprávnění upravit tento záznam LUA."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3921,7 +3904,7 @@ msgstr "Nemáte oprávnění mazat NS záznamy."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nemáte oprávnění odstraňovat záznamy LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9493,11 +9476,11 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "Aktualizace PTR přeskočena: typ záznamu není A ani AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Neaktuální záznam PTR byl odstraněn."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9577,7 +9560,7 @@ msgstr "Vybraný uživatel již vlastní zónu."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Nepodařilo se aktualizovat záznamy zóny: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10201,12 +10184,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Každá síť (blok CIDR) je namapována právě na jeden pohled. Resolvery v této síti obdrží pouze varianty zón přiřazené namapovanému pohledu. PowerDNS vyhodnocuje sítě podle nejdelšího prefixu, takže konkrétnější podsíť (například 10.0.1.0/24) má přednost před širším rozsahem (10.0.0.0/8), pokud klientovi odpovídají oba."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -10516,7 +10494,7 @@ msgstr "skupiny"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Verze připojeného PowerDNS"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10616,7 +10594,7 @@ msgstr "Odhlásit"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Aktuální globální výchozí hodnoty"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -10624,11 +10602,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Výchozí TTL (sekundy)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "prázdné = použít globální výchozí hodnotu"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -10644,7 +10622,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(pro záznamy PTR v reverzních zónách) nebo"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -10741,7 +10719,7 @@ msgstr "Logy aktivity API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Chování protokolu API:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10749,11 +10727,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Zaznamenává události životního cyklu klíčů API (vytvoření, obnovení, zneplatnění, změny oprávnění) a ověřené požadavky API. Filtrováním podle uživatele nebo operace lze auditovat činnost externích integrací. Citlivé hodnoty (klíče, tokeny) se do tohoto protokolu nikdy nezapisují."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10781,7 +10755,7 @@ msgstr "Protokoly změn zón"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Chování protokolu zón:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10789,11 +10763,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Tento přehled aktivity zaznamenává každou operaci provedenou se zónami a záznamy (vytvoření, úpravy, mazání, akce DNSSEC, importy) jako jednoduchý řetězec události ve formátu klíč:hodnota. Strukturované snímky před a po změně a porovnání změn záznamů najdete v protokolu změn záznamů."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10830,7 +10800,7 @@ msgstr "Příklad: www,A,192.168.1.1,0,3600,webový server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priorita a TTL jsou nepovinné (výchozí hodnoty: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11323,12 +11293,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY čeká: sériové číslo %serial% dosud nebylo potvrzeno"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY odesláno u sériového čísla %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12348,7 +12318,7 @@ msgstr "Poslední změna"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Naposledy upravil %account% dne %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12449,11 +12419,11 @@ msgstr "MFA nenakonfigurováno"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Načíst zóny z PowerDNS a sladit je s místní tabulkou"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Synchronizovat z PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -12581,7 +12551,7 @@ msgstr "Zóny bez vlastníků"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Přiřadit vás jako vlastníka všech uvedených zón?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -13226,7 +13196,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Chování protokolu změn:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -13235,12 +13205,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Každé přidání, úprava či smazání záznamu a každé vytvoření, smazání nebo úprava metadat zóny zde zachytí snímek stavu před a po změně společně s uživatelem a časem. Protokoly nikdy nevyprší automaticky - starší řádky odstraňte ručně, pokud tabulka příliš naroste. Pomocí zkratek časového okna se zaměříte na nedávnou aktivitu, exportem do CSV/JSON můžete data předat externím auditním systémům."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -13280,11 +13245,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Nebyly nalezeny žádné změny záznamů"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Vyzkoušejte jiný filtr nebo časové okno"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -13569,7 +13534,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Zdědit globální nastavení"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -13657,11 +13622,11 @@ msgstr "Zobrazit samostatné tlačítko smazání u každého záznamu"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Zobrazovat pouze název hostitele"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Odstranit příponu zóny z názvů záznamů v zobrazení pro úpravy"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -13765,7 +13730,7 @@ msgstr "Protokoly aktivity uživatelů"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Chování protokolu uživatelů:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13773,11 +13738,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Zaznamenává události uživatelských účtů, jako jsou přihlášení, změny hesel, změny členství ve skupinách a administrátorské zásahy do uživatelských záznamů. Každá položka ukazuje akci, kdo ji provedl, dotčeného uživatele a čas. Filtrováním podle operace nebo uživatele lze auditovat změny přístupu."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13823,13 +13784,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "Pohledy poskytují různým klientům různé varianty zóny podle sítě, ze které dotaz na resolver přišel. Každá varianta se pojmenovává zone..variant (například example.com..trusted) a musí v PowerDNS existovat jako samostatná zóna, než ji zde bude možné přiřadit. Varianty mají stejný název, ale v každém pohledu se vyhodnocují jinak, takže stejný název hostitele může podle sítě klienta odpovídat různými IP adresami."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14105,7 +14060,7 @@ msgstr "Reverzní zóny"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Protokol změn záznamů"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -14139,27 +14094,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Zkontrolujte, že pdns_api.key v config/settings.php odpovídá klíči API nastavenému v PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Zkontrolujte, že pdns_api.server_name odpovídá tomu, co hlásí PowerDNS (výchozí 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS požadavek odmítl. Příčinu najdete v protokolu serveru PowerDNS - po importu zón přímo do databáze PowerDNS to často způsobí jediný poškozený záznam, na kterém selže serializace zóny."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -14324,7 +14272,7 @@ msgstr "Externí aplikace se budou moci ověřit pomocí tohoto klíče."
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Chování klíčů API:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -14332,11 +14280,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "Klíče API umožňují externím aplikacím přistupovat k API Poweradmin. Každý klíč je svázán s vaším uživatelským účtem a dědí vaše oprávnění, takže zneplatnění účtu zneplatní i všechny jeho klíče. Zacházejte s klíči jako s tajnými údaji - poskytují stejný přístup jako přihlášení pod vaším jménem."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -14510,7 +14454,7 @@ msgstr "Protokoly aktivity skupin"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Chování protokolu skupin:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -14518,11 +14462,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Zaznamenává události životního cyklu skupin (vytvoření, úprava, smazání) a změny členství (přidání nebo odebrání uživatelů). Každá položka ukazuje akci, kdo ji provedl, dotčenou skupinu a čas. Užitečné pro audit změn přístupu k zónám, které vyplývají z vlastnictví skupinou."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14808,11 +14748,11 @@ msgstr "RDAP výsledky pro"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Zadejte název domény, pro kterou se má provést vyhledání v RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Vytvoření uživatele s omezenými právy"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -14820,29 +14760,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Vytvoření uživatele s omezenými právy"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Omezená databázová práva:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Vytvořte databázového uživatele s omezenými právy (select, insert, update, delete) pouze pro tabulky Poweradmin. Při použití backendu API není přístup k tabulkám PowerDNS potřeba."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Vytvořte databázového uživatele s omezenými právy (select, insert, update, delete), aby Poweradmin mohl přistupovat k tabulkám PowerDNS."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14850,13 +14785,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Spusťte následující příkazy:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Po přidání nového uživatele pokračujte v této instalaci."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -14866,13 +14800,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Protože používáte SQLite, není nutné vytvářet nového uživatele s omezenými právy."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Pokračovat na krok"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -14880,7 +14812,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Vytvoření konfiguračního souboru"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -14888,25 +14820,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Vytvořte soubor"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "s následujícím obsahem:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Výběr jazyka"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Vyberte jazyk instalace"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Vyberte prosím preferovaný jazyk a pokračujte v instalaci:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14918,7 +14849,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Nastavení připojení k databázi"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -14926,11 +14857,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Vyberte, jak má Poweradmin komunikovat s PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Přímý přístup k databázovým tabulkám PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -14946,7 +14877,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Nastavení API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -14954,7 +14885,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL koncového bodu API PowerDNS."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -14962,7 +14893,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "Klíč API PowerDNS (z nastavení api-key v pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14970,11 +14901,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "Název serveru PowerDNS pro volání API (obvykle \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Nastavení připojení k databázi"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -14984,17 +14915,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Nastavte připojení k databázi s právy pro vytváření tabulek. Umístění PowerDNS lze v případě potřeby zadat zvlášť."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Nastavte připojení k databázi pro tabulky Poweradmin (uživatelé, oprávnění, zóny). Tabulky PowerDNS nejsou potřeba."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -15013,31 +14940,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Typ databázového serveru."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Zadejte uživatelské jméno"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Databázový uživatel s právy vytvářet tabulky."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Heslo tohoto databázového uživatele."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Nepoužívejte uvozovky, zpětná lomítka ani konce řádků."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Zadejte název hostitele"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Název hostitele databázového serveru (obvykle \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -15045,27 +14972,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Zadejte port databáze"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Port databázového serveru."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Zadejte název databáze"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Název databáze (bude použita pro tabulky Poweradmin)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Úplná cesta k souboru databáze SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Soubor musí existovat a webový server k němu musí mít práva pro čtení i zápis. Použijte absolutní cestu."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -15077,7 +15004,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Znaková sada pro nové tabulky. Ponechte prázdné pro výchozí hodnotu databáze."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -15086,8 +15013,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Pravidla řazení pro porovnávání znaků. Ponechte prázdné pro výchozí hodnotu databáze."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -15099,11 +15025,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Ponechte prázdné pro stejnou databázi"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "Databáze MySQL s tabulkami PowerDNS (pokud je jiná)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -15129,7 +15055,7 @@ msgstr "Pevně nastaveno pro výchozí administrátorský účet."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Zadejte heslo"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15141,7 +15067,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Kontrola systémových požadavků"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -15149,7 +15075,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Vyžaduje PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -15157,11 +15083,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "vyžadováno alespoň jedno"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Požadovaná rozšíření PHP"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -15177,43 +15103,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Nezjištěno - vyžadováno pro směrování URL"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Nelze zjistit (PHP-FPM) - ujistěte se, že je povoleno"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Ujistěte se, že je nastaveno přepisování URL (viz nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Ujistěte se, že je pro váš webový server nastaveno přepisování URL"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Všechny požadované komponenty jsou dostupné."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Můžete pokračovat v instalaci."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Některé požadované komponenty chybí."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Před pokračováním prosím nainstalujte chybějící komponenty."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Nastavení účtu a jmenných serverů"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Nastavení účtu a jmenných serverů"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -15221,7 +15147,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Nyní shromáždíme všechny údaje pro samotnou konfiguraci."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -15232,24 +15158,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin uchovává vlastní tabulky (uživatelé, oprávnění, metadata zón) v nastavené databázi i tehdy, když je vybrán backend API PowerDNS. Tyto přihlašovací údaje patří k této databázi, nikoli k PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Databázový uživatel Poweradmin s omezeným přístupem. Neslouží k přihlášení do webového rozhraní."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Zadejte heslo uživatele"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Heslo pro toto uživatelské jméno."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -15261,11 +15183,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Zadejte DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Výchozí hostmaster pro záznamy SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -15273,11 +15195,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Zadejte primární jmenný server"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Primární jmenný server pro nové zóny."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -15285,11 +15207,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Zadejte sekundární jmenný server"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Sekundární jmenný server pro nové zóny."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -15301,7 +15223,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Nepovinný třetí jmenný server pro nové zóny."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -15309,7 +15231,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Nepovinný čtvrtý jmenný server pro nové zóny."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -15321,27 +15243,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Gratulujeme! Instalace Poweradmin je nyní nastavena."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Důležité bezpečnostní upozornění:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Z kořenového adresáře Poweradmin musíte odstranit adresář \"install/\"."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Z bezpečnostních důvodů nebude Poweradmin fungovat, dokud instalační adresář existuje."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -15349,7 +15267,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Odstraňte ze serveru adresář \"install/\""
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -15361,7 +15279,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Začněte nastavovat své zóny a záznamy DNS"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -15373,21 +15291,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Před pokračováním se ujistěte, že máte:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "nainstalovaný PowerDNS s vytvořenými databázovými tabulkami (nebo nastavený přístup k API)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "přihlašovací údaje k databázi (název hostitele, uživatelské jméno, heslo)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "oprávnění vytvářet tabulky pro Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -15397,56 +15314,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Nastavte připojení k databázi, vytvořte účet administrátora a vygenerujte konfigurační soubor."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Poznámka: PostgreSQL a SQLite musí pro PowerDNS i Poweradmin používat stejnou databázi."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Chybějící tabulky PowerDNS:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin tyto tabulky PowerDNS potřebuje ke správné funkci."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Aktualizace databáze... hotovo!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Problémy s omezeními cizích klíčů:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Instalátor nemohl odstranit existující tabulky kvůli omezením cizích klíčů"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "K tomu může dojít při reinstalaci, pokud máte vlastní omezení nebo pokud na tabulky odkazují jiné tabulky"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Před spuštěním instalátoru můžete zkusit ručně vypnout kontrolu cizích klíčů:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -15454,31 +15362,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Ujistěte se, že soubor databáze SQLite existuje"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Zkontrolujte, že webový server má k souboru databáze práva pro čtení i zápis"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Ověřte, že úplná cesta k souboru databáze je správná a dostupná"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Ověřte, že přihlašovací údaje k databázi jsou správné"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Zkontrolujte, že databázový uživatel má dostatečná práva"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Ujistěte se, že databázový server běží a je dostupný"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -15489,75 +15395,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "Soubor databáze SQLite %s neexistuje. Před pokračováním prosím soubor databáze vytvořte."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "Soubor databáze SQLite %s nelze číst. Zkontrolujte prosím oprávnění souboru."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "Do souboru databáze SQLite %s nelze zapisovat. Zkontrolujte prosím oprávnění souboru."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nelze přistoupit k souboru databáze SQLite %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "Při použití backendu API je vyžadována URL API PowerDNS."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Při použití backendu API je vyžadován klíč API PowerDNS."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Nebyl nalezen žádný konfigurační soubor. Před pokračováním prosím vytvořte soubor config/settings.php."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Samostatné databáze PowerDNS jsou podporovány pouze u MySQL. U PostgreSQL a SQLite prosím použijte stejnou databázi."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "V databázi \"%s\" chybí tabulky PowerDNS: %s. Ujistěte se prosím, že je PowerDNS v této databázi správně nainstalován."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Nepodařilo se nastavit jazykové prostředí. Vybrané prostředí možná není v tomto systému podporováno. Kontaktujte prosím svého administrátora."
 
 #, php-format
 # OBSOLETE: msgid ""

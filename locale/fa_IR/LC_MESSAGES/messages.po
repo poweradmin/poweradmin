@@ -1812,7 +1812,7 @@ msgstr "مقدار نامعتبر برای %s. مقادیر مجاز: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "نوع فراداده %s را تنها یک مدیر می‌تواند تغییر دهد."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1937,23 +1937,19 @@ msgstr "قالب مجوز با موفقیت به روز شده است."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "اعطای دسترسی مدیریتی در یک قالب مجوز، نیازمند دسترسی مدیریتی است."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "ویرایش یک قالب مجوز دارای دسترسی مدیریتی، نیازمند دسترسی مدیریتی است."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "قالب مجوز به‌روزرسانی نشد."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2014,7 +2010,7 @@ msgstr "افزودن کاربر"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "هیچ قالب مجوزی بدون دسترسی مدیر کل برای تخصیص موجود نیست."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2754,7 +2750,7 @@ msgstr "قالب مجوز با موفقیت اضافه شده است."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "قالب مجوز اضافه نشد."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3685,25 +3681,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "شما اجازه تغییر قالب مجوز را ندارید."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "تغییر قالب مجوز خودتان نیازمند اجازه ویرایش سایر کاربران است."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "تخصیص یک قالب مجوز دارای دسترسی مدیریتی، نیازمند دسترسی مدیریتی است."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3761,8 +3753,7 @@ msgstr "شما اجازه ندارید که یک رکورد را به این ق�
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "شما اجازه افزودن این نوع رکورد به قالب منطقه را ندارید."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3789,9 +3780,7 @@ msgstr "خطای Update Zone Template Record :"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "شما اجازه حذف این نوع رکورد از قالب منطقه را ندارید."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3807,9 +3796,7 @@ msgstr "خطای چک کردن مالکیت قالب:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "این انواع رکورد در قالب گنجانده نشدند، زیرا شما اجازه افزودن آن‌ها را ندارید: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3850,7 +3837,7 @@ msgstr "شما اجازه اضافه کردن رکورد NS را ندارید."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "شما اجازه افزودن رکورد LUA را ندارید."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3863,7 +3850,7 @@ msgstr "شما اجازه ویرایش این رکورد NS را ندارید."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "شما اجازه ویرایش این رکورد LUA را ندارید."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3876,7 +3863,7 @@ msgstr "شما اجازه حذف سوابق NS را ندارید."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "شما اجازه حذف رکوردهای LUA را ندارید."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9431,7 +9418,7 @@ msgstr "کاربر منتخب در حال حاضر دارای منطقه است.
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "به‌روزرسانی رکوردهای منطقه انجام نشد: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10685,7 +10672,7 @@ msgstr "مثال: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "اولویت و TTL اختیاری هستند (مقادیر پیش‌فرض: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11174,12 +11161,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY در انتظار: سریال %serial% هنوز تأیید نشده است"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY در سریال %serial% ارسال شد"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12193,7 +12180,7 @@ msgstr "آخرین اصلاح"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "آخرین ویرایش توسط %account% در %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12427,7 +12414,7 @@ msgstr "مناطق بدون مالک"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "خودتان را به عنوان مالک همه مناطق فهرست‌شده تعیین می‌کنید؟"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14648,7 +14635,7 @@ msgstr "نتایج RDAP"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "برای انجام جست‌وجوی RDAP، لطفاً یک نام دامنه وارد کنید."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15245,9 +15232,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "توجه: در PostgreSQL و SQLite، هم PowerDNS و هم Poweradmin باید از یک پایگاه داده مشترک استفاده کنند."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15393,9 +15378,7 @@ msgstr "نمی‌توان به پایگاه داده PowerDNS \"%s\": %s متص�
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
 
 #, php-format
 # OBSOLETE: msgid ""

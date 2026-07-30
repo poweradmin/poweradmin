@@ -32,7 +32,7 @@ msgstr "DNS विज़ार्ड सक्षम नहीं हैं।"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:46
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "अमान्य क्षेत्र ID।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:94
 msgid "Zone not found."
@@ -148,7 +148,7 @@ msgstr "प्रयोग"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "0 - CA Constraint"
+msgstr "0 - CA प्रतिबंध"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -1806,7 +1806,7 @@ msgstr "%s के लिए अमान्य मान। अनुमत म�
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "मेटाडेटा प्रकार %s को केवल एक प्रशासक ही बदल सकता है।"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1930,23 +1930,19 @@ msgstr "अनुमति टेम्पलेट सफलतापूर्�
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "अनुमति टेम्पलेट में प्रशासक अधिकार देने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "प्रशासक अधिकारों वाले अनुमति टेम्पलेट को संपादित करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "अनुमति टेम्पलेट अद्यतन नहीं किया जा सका।"
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2007,7 +2003,7 @@ msgstr "उपयोगकर्ता जोड़ें"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "असाइन करने के लिए कोई गैर-सुपरयूज़र अनुमति टेम्पलेट उपलब्ध नहीं है।"
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2632,7 +2628,7 @@ msgstr "दृष्टिकोण"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
-msgstr "Invalid key ID."
+msgstr "अमान्य कुंजी ID।"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:107
 msgid "DNSSEC key not found or no longer exists."
@@ -2740,7 +2736,7 @@ msgstr "अनुमति टेम्पलेट सफलतापूर्�
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "अनुमति टेम्पलेट जोड़ा नहीं जा सका।"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3186,7 +3182,7 @@ msgstr "आपको सुपरमास्टर को हटाने क�
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
-msgstr "Invalid IP address."
+msgstr "अमान्य IP पता।"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:90
 msgid "Invalid NS name."
@@ -3671,25 +3667,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "आपको अनुमति टेम्पलेट बदलने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "अपना स्वयं का अनुमति टेम्पलेट बदलने के लिए अन्य उपयोगकर्ताओं को संपादित करने की अनुमति आवश्यक है।"
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "प्रशासक अधिकारों वाला अनुमति टेम्पलेट असाइन करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3747,8 +3739,7 @@ msgstr "आपको इस क्षेत्र के टेम्पले�
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "आपको इस रिकॉर्ड प्रकार को क्षेत्र टेम्पलेट में जोड़ने की अनुमति नहीं है।"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3775,9 +3766,7 @@ msgstr "क्षेत्र टेम्पलेट रिकॉर्ड अ
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "आपको इस रिकॉर्ड प्रकार को क्षेत्र टेम्पलेट से हटाने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3793,9 +3782,7 @@ msgstr "टेम्पलेट स्वामित्व की जांच
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "ये रिकॉर्ड प्रकार टेम्पलेट में शामिल नहीं किए गए क्योंकि आप इन्हें जोड़ नहीं सकते: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3836,7 +3823,7 @@ msgstr "आपको NS रिकॉर्ड जोड़ने की अन�
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "आपको LUA रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3849,7 +3836,7 @@ msgstr "आपको इस एन एस रिकॉर्ड को संप
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "आपको इस LUA रिकॉर्ड को संपादित करने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3862,7 +3849,7 @@ msgstr "आपको NS रिकॉर्ड को हटाने की अ�
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "आपको LUA रिकॉर्ड हटाने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -4460,7 +4447,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
-msgstr "Invalid AFSDB hostname."
+msgstr "अमान्य AFSDB होस्टनाम।"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
@@ -7299,7 +7286,7 @@ msgstr "यह एक वैध IPv6 पता नहीं है।"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
+msgstr "IPv4-मैप्ड IPv6 पते में अमान्य IPv4 भाग।"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
@@ -9181,7 +9168,7 @@ msgstr "Invalid base64 अक्षरों का पता लगाया �
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
-msgstr "Invalid base64 encoding."
+msgstr "अमान्य base64 एन्कोडिंग।"
 
 #: lib/Domain/Service/DomainRecordCreator.php:79
 #, php-format
@@ -9416,7 +9403,7 @@ msgstr "चयनित उपयोगकर्ता पहले से ह�
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "क्षेत्र के रिकॉर्ड अद्यतन करने में विफल: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10666,7 +10653,7 @@ msgstr "उदाहरण: www,A,192.168.1.1,0,3600,वेब सर्वर"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "प्राथमिकता और TTL वैकल्पिक हैं (डिफ़ॉल्ट: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11152,12 +11139,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY लंबित: सीरियल %serial% की अभी पुष्टि नहीं हुई"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "सीरियल %serial% पर NOTIFY भेजा गया"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12166,7 +12153,7 @@ msgstr "अंतिम संशोधित"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "अंतिम बार %account% द्वारा %date% को संपादित किया गया"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12399,7 +12386,7 @@ msgstr "मालिक के बिना क्षेत्र"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "सूचीबद्ध सभी क्षेत्रों का मालिक स्वयं को बनाएं?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14609,7 +14596,7 @@ msgstr "RDAP परिणाम"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "RDAP लुकअप करने के लिए कृपया एक डोमेन नाम दर्ज करें।"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14753,7 +14740,7 @@ msgstr "एपीआई यूआरएल"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "PowerDNS API एंडपॉइंट URL।"
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -15201,9 +15188,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "ध्यान दें: PostgreSQL और SQLite के लिए PowerDNS और Poweradmin दोनों को एक ही डेटाबेस का उपयोग करना चाहिए।"
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15341,9 +15326,7 @@ msgstr "PowerDNS डेटाबेस \"%s\" से कनेक्ट नह�
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने प्रशासक से संपर्क करें।"
 
 #, php-format
 # OBSOLETE: msgid ""

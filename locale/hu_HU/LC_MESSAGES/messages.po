@@ -1715,7 +1715,7 @@ msgstr "Érvénytelen érték a következőhöz: %s. Engedélyezett értékek: %
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "A %s metaadat-típust csak rendszergazda módosíthatja."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1838,23 +1838,19 @@ msgstr "Az engedély sablon sikeresen frissítve."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Rendszergazdai jogok megadása egy engedélysablonban rendszergazdai jogosultságot igényel."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Rendszergazdai jogokkal rendelkező engedélysablon szerkesztése rendszergazdai jogosultságot igényel."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Az engedélysablont nem sikerült frissíteni."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1873,7 +1869,7 @@ msgstr "Keresés"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Rekordváltozási napló"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -1915,7 +1911,7 @@ msgstr "Felhasználó hozzáadása"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Nincs hozzárendelhető, rendszergazdai jogok nélküli engedélysablon."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2440,11 +2436,11 @@ msgstr "Nincs jogosultsága az oldal megtekintésére."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Alapértelmezett TTL-értékek rekordtípus szerint"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Érvénytelen űrlapbeküldés."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2457,12 +2453,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "%d alapérték mentve, %d törölve. Érvénytelen értékek elutasítva a következőknél: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "%d alapérték mentve, %d törölve."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2640,7 +2636,7 @@ msgstr "Az engedély sablon sikeresen hozzáadva."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Az engedélysablont nem sikerült hozzáadni."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2802,17 +2798,17 @@ msgstr "Forward zónák"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Nincs jogosultsága a zónák PowerDNS-ből való szinkronizálására."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zónák szinkronizálva a PowerDNS-ből: %d hozzáadva, %d frissítve, %d eltávolítva."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "A zónaszinkronizálás nem sikerült: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3530,17 +3526,13 @@ msgstr "Nem, szuper elsődleges megtartása"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Az alábbi táblázatban beállított autoprimary kiszolgálók kapcsolati állapota."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Az alábbi táblázatban beállított supermaster kiszolgálók kapcsolati állapota."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3576,25 +3568,21 @@ msgstr "DB hiba: authentikáció nem verifikálható."
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Nincs jogosultsága az engedélysablon megváltoztatására."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "A saját engedélysablon megváltoztatásához más felhasználók szerkesztésére vonatkozó jogosultság szükséges."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Rendszergazdai jogokkal rendelkező engedélysablon hozzárendelése rendszergazdai jogosultságot igényel."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3652,8 +3640,7 @@ msgstr "Nincs jogosultsága rekord hozzáadására ehhez a sablonhoz."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Nincs jogosultsága ennek a rekordtípusnak a zónasablonhoz való hozzáadására."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3680,9 +3667,7 @@ msgstr "Hiba a zóna sablon rekord frissítésekor: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Nincs jogosultsága ennek a rekordtípusnak a zónasablonból való törlésére."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3698,9 +3683,7 @@ msgstr "Hiba a sablon tulajdonosának ellenőrzésekor: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "A következő rekordtípusok kimaradtak a sablonból, mert nem adhatja hozzá őket: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3741,7 +3724,7 @@ msgstr "Nincs jogosultsága NS rekord hozzáadására."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nincs jogosultsága LUA rekord hozzáadására."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3754,7 +3737,7 @@ msgstr "Nincs jogosultsága az NS rekord szerkesztésére."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nincs jogosultsága ennek a LUA rekordnak a szerkesztésére."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3767,7 +3750,7 @@ msgstr "Nincs jogosultsága NS rekordok törlésére."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nincs jogosultsága LUA rekordok törlésére."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -8401,11 +8384,11 @@ msgstr "PTR %s → %s már létezik."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "A PTR frissítése kimaradt: a rekordtípus nem A vagy AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Az elavult PTR rekord eltávolítva."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -8485,7 +8468,7 @@ msgstr "A kiválasztott felhasználó már birtokolja a zónát."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "A zóna rekordjainak frissítése nem sikerült: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9092,12 +9075,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Minden hálózat (CIDR blokk) pontosan egy nézethez tartozik. Az adott hálózatban lévő feloldók csak a hozzárendelt nézethez tartozó zónaváltozatokat kapják meg. A PowerDNS a hálózatokat a leghosszabb prefix szerint értékeli ki, így egy pontosabb alhálózat (például 10.0.1.0/24) felülírja a szélesebb tartományt (10.0.0.0/8), ha mindkettő illeszkedik a kliensre."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9402,7 +9380,7 @@ msgstr "csoportok"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Csatlakoztatott PowerDNS verzió"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -9502,7 +9480,7 @@ msgstr "Kijelentkezés"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Jelenlegi globális alapértékek"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -9510,11 +9488,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Alapértelmezett TTL (másodperc)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "üres = a globális alapérték használata"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -9530,7 +9508,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(a fordított zónákban lévő PTR rekordokhoz) vagy"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -9623,7 +9601,7 @@ msgstr "API tevékenység naplók"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Az API-napló működése:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -9631,11 +9609,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Naplózza az API-kulcsok életciklus-eseményeit (létrehozás, újragenerálás, visszavonás, jogosultságváltozások) és a hitelesített API-kéréseket. Szűrjön felhasználó vagy művelet szerint a külső integrációk tevékenységének ellenőrzéséhez. Az érzékeny értékek (kulcsok, tokenek) soha nem kerülnek bele ebbe a naplóba."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9663,7 +9637,7 @@ msgstr "Zóna módosítás naplók"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "A zónanapló működése:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -9671,11 +9645,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Ez a tevékenységi lista minden zónákon és rekordokon végzett műveletet (létrehozás, szerkesztés, törlés, DNSSEC műveletek, importálás) egyszerű kulcs:érték eseményszövegként rögzít. A strukturált előtte/utána pillanatképekhez és a rekordváltozások összehasonlító nézetéhez lásd a Rekordváltozási naplót."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -9712,7 +9682,7 @@ msgstr "Példa: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "A prioritás és a TTL megadása nem kötelező (alapértékek: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10183,12 +10153,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY folyamatban: a %serial% sorszám még nincs visszaigazolva"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY elküldve a %serial% sorszámnál"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11157,7 +11127,7 @@ msgstr "Utolsó módosítás"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Utoljára szerkesztette: %account%, ekkor: %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11258,11 +11228,11 @@ msgstr "Az MFA nincs konfigurálva"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Zónák letöltése a PowerDNS-ből és a helyi tábla összehangolása"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Szinkronizálás a PowerDNS-ből"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -11388,7 +11358,7 @@ msgstr "Zónák tulajdonos nélkül"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Beállítja magát az összes felsorolt zóna tulajdonosaként?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12016,7 +11986,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "A változási napló működése:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12025,12 +11995,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Minden rekord hozzáadása, szerkesztése és törlése, valamint zóna létrehozása, törlése és metaadat-szerkesztése előtte/utána pillanatképet készít itt, a felhasználóval és az időbélyeggel együtt. A naplók soha nem járnak le automatikusan - a régi sorokat kézzel kell törölni, ha a tábla túl nagyra nő. Használja az időszak-gyorsválasztókat a legutóbbi tevékenységek szűkítéséhez, vagy exportáljon CSV/JSON formátumba a külső auditrendszerek számára."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12070,11 +12035,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Nem található rekordváltozás"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Próbáljon másik szűrőt vagy időszakot"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -12344,7 +12309,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Globális beállítás átvétele"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -12432,11 +12397,11 @@ msgstr "Egyedi törlés gomb megjelenítése rekordonként"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Csak a hosztnév megjelenítése"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "A zóna utótagjának elhagyása a rekordnevekből a szerkesztő nézetben"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -12535,7 +12500,7 @@ msgstr "Felhasználói tevékenység naplók"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "A felhasználói napló működése:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -12543,11 +12508,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Naplózza a felhasználói fiókok eseményeit, például a bejelentkezéseket, jelszóváltoztatásokat, csoporttagsági módosításokat és a felhasználói rekordokon végzett rendszergazdai műveleteket. Minden bejegyzés megjeleníti a műveletet, a végrehajtót, az érintett felhasználót és az időbélyeget. Szűrjön művelet vagy felhasználó szerint a hozzáférési változások ellenőrzéséhez."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12591,13 +12552,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "A nézetek különböző zónaváltozatokat szolgáltatnak a különböző klienseknek attól függően, hogy melyik hálózatból érkezett a lekérdezés a feloldóhoz. Minden változat neve zone..variant formátumú (például example.com..trusted), és külön zónaként kell léteznie a PowerDNS-ben, mielőtt itt hozzárendelhető lenne. A változatok neve azonos, de nézetenként másképp oldódnak fel, így ugyanaz a hosztnév a kliens hálózatától függően más IP-címet adhat vissza."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -12856,7 +12811,7 @@ msgstr "fordított zónák"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Rekordváltozási napló"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -12890,27 +12845,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Ellenőrizze, hogy a config/settings.php fájlban lévő pdns_api.key megegyezik-e a PowerDNS-ben beállított API-kulccsal."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Ellenőrizze, hogy a pdns_api.server_name megegyezik-e a PowerDNS által jelentett névvel (alapértelmezés: 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "A PowerDNS elutasította a kérést. Az ok kiderítéséhez ellenőrizze a PowerDNS kiszolgáló naplóját - ha a zónákat közvetlenül a PowerDNS adatbázisába importálta, gyakori kiváltó ok egyetlen hibás rekord, amely miatt a zóna sorosítása meghiúsul."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13072,7 +13020,7 @@ msgstr "Külső alkalmazások hitelesítésre használhatják ezt a kulcsot."
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Az API-kulcsok működése:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13080,11 +13028,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "Az API-kulcsok lehetővé teszik, hogy külső alkalmazások hozzáférjenek a Poweradmin API-hoz. Minden kulcs a felhasználói fiókjához kapcsolódik és annak jogosultságait örökli, ezért a fiók visszavonása az összes kulcsát is visszavonja. A kulcsokat titkos adatként kezelje - ugyanolyan hozzáférést adnak, mint az Ön nevében történő bejelentkezés."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13239,7 +13183,7 @@ msgstr "Csoport tevékenység naplók"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "A csoportnapló működése:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -13247,11 +13191,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Naplózza a csoportok életciklus-eseményeit (létrehozás, szerkesztés, törlés) és a tagsági változásokat (felhasználók hozzáadása vagy eltávolítása). Minden bejegyzés megjeleníti a műveletet, a végrehajtót, az érintett csoportot és az időbélyeget. Hasznos a csoporttulajdonlás által közvetített zónahozzáférési változások ellenőrzéséhez."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13536,11 +13476,11 @@ msgstr "RDAP eredmények"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Adjon meg egy domainnevet az RDAP-lekérdezés végrehajtásához."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Korlátozott jogú felhasználó létrehozása"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -13548,29 +13488,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Korlátozott jogú felhasználó létrehozása"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Korlátozott adatbázis-jogosultságok:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Hozzon létre egy korlátozott jogú (select, insert, update, delete) adatbázis-felhasználót kizárólag a Poweradmin táblákhoz. Az API backend használatakor nincs szükség a PowerDNS táblák elérésére."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Hozzon létre egy korlátozott jogú (select, insert, update, delete) adatbázis-felhasználót, amellyel a Poweradmin eléri a PowerDNS táblákat."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13578,13 +13513,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Futtassa a következő parancsokat:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Az új felhasználó létrehozása után folytassa a telepítési folyamatot."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -13594,13 +13528,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Mivel SQLite-ot használ, nincs szükség korlátozott jogú felhasználó létrehozására."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Tovább a következő lépésre:"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -13608,7 +13540,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Konfigurációs fájl létrehozása"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -13616,25 +13548,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Hozza létre a fájlt"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "a következő tartalommal:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Válasszon nyelvet"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Válasszon nyelvet a telepítéshez"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "A telepítés folytatásához válassza ki a kívánt nyelvet:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -13646,7 +13577,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Adatbázis-kapcsolat beállítása"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -13654,11 +13585,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Válassza ki, hogyan kommunikáljon a Poweradmin a PowerDNS-szel:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Közvetlen hozzáférés a PowerDNS adatbázistábláihoz"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13674,7 +13605,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "PowerDNS API beállítások"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13682,7 +13613,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "A PowerDNS API végpontjának URL-je."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -13690,7 +13621,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API-kulcs (a pdns.conf api-key beállításából)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -13698,11 +13629,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "A PowerDNS kiszolgáló neve az API-hívásokhoz (általában \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Adatbázis-kapcsolat beállításai"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -13712,17 +13643,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Állítsa be az adatbázis-kapcsolatot táblakészítési jogosultsággal. A PowerDNS helye szükség esetén külön is megadható."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Állítsa be az adatbázis-kapcsolatot a Poweradmin tábláihoz (felhasználók, jogosultságok, zónák). A PowerDNS táblákra nincs szükség."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13742,31 +13669,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Az adatbázis-kiszolgáló típusa."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Adja meg a felhasználónevet"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Táblakészítési joggal rendelkező adatbázis-felhasználó neve."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Az adatbázis-felhasználó jelszava."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Kerülje az idézőjeleket, a visszaperjeleket és a sortöréseket."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Adja meg a hosztnevet"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Az adatbázis-kiszolgáló hosztneve (általában \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -13774,27 +13701,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Adja meg az adatbázis portját"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Az adatbázis-kiszolgáló portja."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Adja meg az adatbázis nevét"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Az adatbázis neve (a Poweradmin tábláihoz lesz használva)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Az SQLite adatbázisfájl teljes elérési útja"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "A fájlnak léteznie kell, és a webkiszolgálónak olvasási és írási joggal kell rendelkeznie hozzá. Teljes elérési utat adjon meg."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -13806,7 +13733,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Az új táblák karakterkészlete. Hagyja üresen az adatbázis alapértelmezéséhez."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -13815,8 +13742,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "A karakterek összehasonlítási (collation) szabályai. Hagyja üresen az adatbázis alapértelmezéséhez."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -13828,11 +13754,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Hagyja üresen, ha ugyanazt az adatbázist használja"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "A PowerDNS táblákat tartalmazó MySQL adatbázis (ha eltérő)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -13858,7 +13784,7 @@ msgstr "Rögzítve a kezdeti rendszergazdai fiókhoz."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Adjon meg egy jelszót"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -13870,7 +13796,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Rendszerkövetelmények ellenőrzése"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -13878,7 +13804,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "PHP 8.2.0+ szükséges"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -13886,11 +13812,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "legalább egy szükséges"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Szükséges PHP-kiterjesztések"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -13906,43 +13832,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Nem észlelhető - az URL-útvonalkezeléshez szükséges"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Nem észlelhető (PHP-FPM) - győződjön meg róla, hogy engedélyezve van"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Győződjön meg róla, hogy az URL-átírás be van állítva (lásd nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Győződjön meg róla, hogy az URL-átírás be van állítva a webkiszolgálóján"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Minden szükséges összetevő elérhető."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Folytathatja a telepítést."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Néhány szükséges összetevő hiányzik."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "A folytatás előtt telepítse a hiányzó összetevőket."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Fiók és névkiszolgálók beállítása"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Fiók és névkiszolgálók beállítása"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -13950,7 +13876,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Most összegyűjtjük a konfigurációhoz szükséges összes adatot."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -13961,24 +13887,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "A Poweradmin a saját tábláit (felhasználók, jogosultságok, zóna-metaadatok) a beállított adatbázisban tartja akkor is, ha a PowerDNS API backend van kiválasztva. Ezek a hitelesítő adatok ehhez az adatbázishoz tartoznak, nem a PowerDNS-hez."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Korlátozott hozzáférésű Poweradmin adatbázis-felhasználó neve. Nem a webes felületre való bejelentkezéshez."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Adja meg a felhasználó jelszavát"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "A felhasználónévhez tartozó jelszó."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -13990,11 +13912,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Adja meg a DNS hostmaster címét"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Alapértelmezett hostmaster a SOA rekordokhoz."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14002,11 +13924,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Adja meg az elsődleges névkiszolgálót"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Elsődleges névkiszolgáló az új zónákhoz."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14014,11 +13936,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Adja meg a másodlagos névkiszolgálót"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Másodlagos névkiszolgáló az új zónákhoz."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14030,7 +13952,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Opcionális harmadik névkiszolgáló az új zónákhoz."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14038,7 +13960,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Opcionális negyedik névkiszolgáló az új zónákhoz."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14050,27 +13972,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Gratulálunk! A Poweradmin telepítése be van állítva."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Fontos biztonsági figyelmeztetés:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "El kell távolítania az \"install/\" könyvtárat a Poweradmin gyökérkönyvtárából."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Biztonsági okokból a Poweradmin nem működik, amíg az install könyvtár létezik."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14078,7 +13996,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Távolítsa el az \"install/\" könyvtárat a kiszolgálóról"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14090,7 +14008,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Kezdje el a DNS-zónák és rekordok beállítását"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14102,21 +14020,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "A folytatás előtt győződjön meg róla, hogy rendelkezik a következőkkel:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "Telepített PowerDNS létrehozott adatbázistáblákkal (vagy beállított API-hozzáféréssel)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Adatbázis-hozzáférési adatok (hosztnév, felhasználónév, jelszó)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Jogosultság a Poweradmin tábláinak létrehozására"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14126,56 +14043,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Adatbázis-kapcsolat beállítása, rendszergazdai fiók létrehozása és a konfigurációs fájl előállítása."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Megjegyzés: PostgreSQL és SQLite esetén a PowerDNS-nek és a Poweradminnak ugyanazt az adatbázist kell használnia."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Hiányzó PowerDNS táblák:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "A Poweradminnak szüksége van ezekre a PowerDNS táblákra a helyes működéshez."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Adatbázis frissítése... kész!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Idegen kulcsokra vonatkozó megszorítási problémák:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "A telepítő az idegen kulcsokra vonatkozó megszorítások miatt nem tudta eltávolítani a meglévő táblákat"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Ez újratelepítéskor fordulhat elő, ha egyéni megszorításokat használ, vagy ha más táblák hivatkoznak a táblákra"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "A telepítő futtatása előtt megpróbálhatja kézzel kikapcsolni az idegen kulcsok ellenőrzését:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14183,31 +14091,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Győződjön meg róla, hogy az SQLite adatbázisfájl létezik"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Ellenőrizze, hogy a webkiszolgálónak van olvasási és írási joga az adatbázisfájlhoz"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Ellenőrizze, hogy az adatbázisfájl teljes elérési útja helyes és elérhető"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Ellenőrizze, hogy az adatbázis-hozzáférési adatok helyesek"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Ellenőrizze, hogy az adatbázis-felhasználó megfelelő jogosultságokkal rendelkezik"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Győződjön meg róla, hogy az adatbázis-kiszolgáló fut és elérhető"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14218,75 +14124,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "A(z) %s SQLite adatbázisfájl nem létezik. A folytatás előtt hozza létre az adatbázisfájlt."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "A(z) %s SQLite adatbázisfájl nem olvasható. Ellenőrizze a fájl jogosultságait."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "A(z) %s SQLite adatbázisfájl nem írható. Ellenőrizze a fájl jogosultságait."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nem sikerült elérni a(z) %s SQLite adatbázisfájlt: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "Az API backend használatakor meg kell adni a PowerDNS API URL-jét."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Az API backend használatakor meg kell adni a PowerDNS API-kulcsot."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Nem található konfigurációs fájl. A folytatás előtt hozza létre a config/settings.php fájlt."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Külön PowerDNS adatbázis csak MySQL esetén támogatott. PostgreSQL és SQLite esetén ugyanazt az adatbázist használja."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "Hiányzó PowerDNS táblák a(z) \"%s\" adatbázisban: %s. Győződjön meg róla, hogy a PowerDNS megfelelően telepítve van ebben az adatbázisban."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nem lehet kapcsolódni a(z) \"%s\" PowerDNS adatbázishoz: %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "A területi beállítás alkalmazása nem sikerült. A kiválasztott területi beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a kapcsolatot a rendszergazdával."
 
 #, php-format
 # OBSOLETE: msgid ""

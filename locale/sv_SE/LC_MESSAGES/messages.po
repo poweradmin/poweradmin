@@ -1824,7 +1824,7 @@ msgstr "Ogiltigt värde för %s. Tillåtna värden: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadatatypen %s kan endast ändras av en administratör."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1949,23 +1949,19 @@ msgstr "Behörighetsmallen har uppdaterats."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Att ge administratörsrättigheter i en behörighetsmall kräver administratörsrättigheter."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Att redigera en behörighetsmall med administratörsrättigheter kräver administratörsrättigheter."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Behörighetsmallen kunde inte uppdateras."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1984,7 +1980,7 @@ msgstr "Loggar rensade"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Ändringslogg för poster"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2026,7 +2022,7 @@ msgstr "Lägg till användare"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Det finns ingen behörighetsmall utan superanvändarrättigheter att tilldela."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2565,11 +2561,11 @@ msgstr "Du har inte behörighet att visa denna sida."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Standard-TTL per posttyp"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Ogiltig formulärinlämning."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2582,12 +2578,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Sparade %d standardvärde(n); rensade %d. Ogiltiga värden avvisades för: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Sparade %d standardvärde(n); rensade %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2765,7 +2761,7 @@ msgstr "Behörighetsmallen har lagts till."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Behörighetsmallen kunde inte läggas till."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2926,17 +2922,17 @@ msgstr "Rapportperiod"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Du har inte behörighet att synkronisera zoner från PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zoner synkroniserade från PowerDNS: %d tillagda, %d uppdaterade, %d borttagna."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Zonsynkroniseringen misslyckades: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3661,17 +3657,13 @@ msgstr "Nej, behåll denna supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Visar anslutningsstatus för de autoprimary-servrar som är konfigurerade i tabellen nedan."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Visar anslutningsstatus för de supermasters som är konfigurerade i tabellen nedan."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3710,25 +3702,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Du har inte behörighet att ändra behörighetsmallen."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Att ändra din egen behörighetsmall kräver behörighet att redigera andra användare."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Att tilldela en behörighetsmall med administratörsrättigheter kräver administratörsrättigheter."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3786,8 +3774,7 @@ msgstr "Du har inte behörighet att lägga till en post i denna zonmall."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Du har inte behörighet att lägga till denna posttyp i en zonmall."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3814,9 +3801,7 @@ msgstr "Fel vid uppdatering av zonmallspost: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Du har inte behörighet att ta bort denna posttyp från en zonmall."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3832,9 +3817,7 @@ msgstr "Fel vid kontroll av mallägarskap: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Dessa posttyper utelämnades från mallen eftersom du inte får lägga till dem: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3875,7 +3858,7 @@ msgstr "Visa säkerhetshändelse"
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Du har inte behörighet att lägga till LUA-post."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3888,7 +3871,7 @@ msgstr "Obehörig åtkomst"
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Du har inte behörighet att redigera denna LUA-post."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3901,7 +3884,7 @@ msgstr "Brutit mot policy"
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Du har inte behörighet att ta bort LUA-poster."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -5829,8 +5812,7 @@ msgstr "Du måste ange en TLSA-matchningstyp för en TLSA-post."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parameter \"%s\" is marked as mandatory but not included in the record."
+msgstr "Parametern \"%s\" är markerad som obligatorisk men saknas i posten."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -5957,34 +5939,27 @@ msgstr "Du måste ange en SMIMEA-väljare för en SMIMEA-post."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+msgstr "TTL-värdet överskrider det högsta tillåtna (%d). RFC 2181 begränsar det till ett 32-bitars heltal med tecken."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
-"TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
-"Low TTL values increase DNS traffic."
+msgstr "TTL-värdet (%d) är under det rekommenderade minimivärdet %d sekunder (5 minuter). Låga TTL-värden ökar DNS-trafiken."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+msgstr "TTL-värdet (%d) är över det rekommenderade maxvärdet %d sekunder (1 vecka). Höga TTL-värden fördröjer DNS-uppdateringar."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr ""
-"SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
+msgstr "TTL för SOA-posten (%d) är under det rekommenderade minimivärdet %d sekunder (1 timme)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -6353,18 +6328,14 @@ msgstr "Ta bort post"
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "DHCID-identifierartypen 0x%04X är inte någon av standardtyperna som definieras i RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+msgstr "DHCID-digesttypen %d är inte den standardtyp (1 för SHA-256) som definieras i RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6895,32 +6866,26 @@ msgstr "DNSSEC-nyckel uppdaterad"
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr "%s (algoritm %d) är en REKOMMENDERAD algoritm att använda enligt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%s (algorithm %d) is in common use, but newer algorithms like "
-"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr "%s (algoritm %d) används allmänt, men nyare algoritmer som ECDSAP256SHA256 (13) eller ED25519 (15) är att föredra."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (algoritm %d) är valfri att implementera enligt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+msgstr "%s (algoritm %d) REKOMMENDERAS INTE för användning enligt RFC 8624. Överväg att använda ECDSAP256SHA256 (13) eller ED25519 (15) i stället."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -7203,9 +7168,7 @@ msgstr "Uppdatera NSEC3-parametrar"
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+msgstr "Kritisk flagga satt för okänd tagg \"%s\". Detta kan göra att utfärdandet av certifikat misslyckas."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -7410,9 +7373,7 @@ msgstr "SOA-fältet %s måste vara ett positivt heltal."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "SOA-värdet %s (%d) är under det minimivärde som rekommenderas i RFC 2308 (%d). Detta är tillåtet men rekommenderas inte."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7498,9 +7459,7 @@ msgstr "API-dokumentation"
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr ""
-"A CNAME record cannot coexist with other record types for the same name. "
-"Found existing %s record."
+msgstr "En CNAME-post kan inte finnas tillsammans med andra posttyper för samma namn. Hittade en befintlig %s-post."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7519,9 +7478,7 @@ msgstr "Metod"
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "Namnet på en SMIMEA-post har formatet: SHA256(local-part)._smimecert.domain.tld för e-postadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -8146,9 +8103,7 @@ msgstr "API-webhooken finns redan"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"DMARC policy is applied to only %d%% of messages. This should only be used "
-"during policy rollout."
+msgstr "DMARC-policyn tillämpas på endast %d%% av meddelandena. Detta bör endast användas när policyn införs."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8209,9 +8164,7 @@ msgstr "Webhook-timeout"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr ""
-"TXT record content exceeds maximum length of %d bytes. Please reduce the "
-"content size."
+msgstr "Innehållet i TXT-posten överskrider maxlängden %d byte. Minska innehållets storlek."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
@@ -8224,9 +8177,7 @@ msgstr "Testa webhook"
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Det totala innehållet i TXT-posten överskrider maxlängden %d byte. Minska innehållets storlek."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -8297,9 +8248,7 @@ msgstr "Lyckades"
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr ""
-"CDS digest must be a valid hex string of length %d for the selected digest "
-"type."
+msgstr "CDS-digest måste vara en giltig hexsträng med längden %d för den valda digesttypen."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -8384,18 +8333,14 @@ msgstr "Händelsedata"
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Tjänstenamnet \"%s\" finns inte i listan över välkända tjänster. Detta är tillåtet men ovanligt."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Protokollet \"%s\" finns inte i listan över välkända protokoll. Vanliga protokoll är _tcp och _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8420,9 +8365,7 @@ msgstr "Exportera granskningslogg"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "Port %d skiljer sig från standardporten %d för tjänsten %s. Detta är tillåtet men ovanligt."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8741,26 +8684,21 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
-"%s (algorithm %d) is specified as optional for implementation in RFC 8624."
+msgstr "%s (algoritm %d) anges som valfri att implementera i RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (algoritm %d) är FÖRÅLDRAD enligt RFC 8624. Använd inte denna algoritm i nya installationer."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Algoritm %d FÅR INTE implementeras enligt RFC 8624. Detta värde bör inte användas."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8923,17 +8861,15 @@ msgstr "En PTR-post för %s som pekar på %s finns redan."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr ""
-"Reverse record added. Warning: A PTR record for %s already exists pointing "
-"to: %s. Having multiple PTR records for the same IP is not recommended."
+msgstr "Omvänd post tillagd. Varning: Det finns redan en PTR-post för %s som pekar på: %s. Flera PTR-poster för samma IP rekommenderas inte."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "PTR-uppdateringen hoppades över: posttypen är inte A eller AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Föråldrad PTR-post borttagen."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9013,7 +8949,7 @@ msgstr "Skapa säkerhetsvarning"
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Kunde inte uppdatera zonens poster: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9621,12 +9557,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Varje nätverk (CIDR-block) mappas till exakt en vy. Resolvers i det nätverket får endast de zonvarianter som är tilldelade den mappade vyn. PowerDNS utvärderar nätverk med längsta prefix först, så ett mer specifikt subnät (till exempel 10.0.1.0/24) har företräde framför ett bredare intervall (10.0.0.0/8) när båda matchar en klient."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9929,7 +9860,7 @@ msgstr "grupper"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Ansluten PowerDNS-version"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10029,7 +9960,7 @@ msgstr "Applikationsversion"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Nuvarande globala standardvärden"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -10037,11 +9968,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Standard-TTL (sekunder)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "tomt = använd globalt standardvärde"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -10057,7 +9988,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(för PTR:er i omvända zoner) eller"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -10150,7 +10081,7 @@ msgstr "API-aktivitetsloggar"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Beteende för API-loggen:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10158,11 +10089,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Loggar händelser i API-nycklarnas livscykel (skapande, förnyelse, återkallande, behörighetsändringar) och autentiserade API-anrop. Filtrera på användare eller åtgärd för att granska aktivitet från externa integrationer. Känsliga värden (nycklar, tokens) skrivs aldrig till denna logg."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10190,7 +10117,7 @@ msgstr "Aktuell version"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Beteende för zonloggen:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10198,11 +10125,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Detta aktivitetsflöde loggar varje åtgärd som utförs mot zoner och poster (skapande, redigering, borttagning, DNSSEC-åtgärder, importer) som en enkel nyckel:värde-sträng. För strukturerade före/efter-ögonblicksbilder och en diff-vy över poständringar, se ändringsloggen för poster."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10239,7 +10162,7 @@ msgstr "Exempel: www,A,192.168.1.1,0,3600,webbserver"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prioritet och TTL är valfria (standard: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10739,12 +10662,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY väntar: serienummer %serial% har ännu inte bekräftats"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY skickat vid serienummer %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11764,7 +11687,7 @@ msgstr "Senast ändrad"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Senast redigerad av %account% den %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11865,11 +11788,11 @@ msgstr "MFA inte konfigurerad"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Hämta zoner från PowerDNS och stäm av den lokala tabellen"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Synkronisera från PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -11997,7 +11920,7 @@ msgstr "Zoner utan ägare"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Ange dig själv som ägare till alla listade zoner?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12644,7 +12567,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Beteende för ändringsloggen:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12653,12 +12576,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Varje tillägg, redigering och borttagning av poster samt varje skapande, borttagning och metadataredigering av zoner sparar en före/efter-ögonblicksbild här, tillsammans med användaren och tidsstämpeln. Loggar upphör aldrig automatiskt - rensa gamla rader manuellt om tabellen blir stor. Använd genvägarna för tidsintervall för att fokusera på den senaste aktiviteten, eller exportera till CSV/JSON för att mata externa granskningssystem."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12698,11 +12616,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Inga poständringar hittades"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Prova ett annat filter eller tidsintervall"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -12993,7 +12911,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Ärv global inställning"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -13081,11 +12999,11 @@ msgstr "Visa individuell borttagningsknapp per post"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Visa endast värdnamn"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Ta bort zonsuffixet från postnamn i redigeringsvyn"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -13188,7 +13106,7 @@ msgstr "Användaraktivitetsloggar"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Beteende för användarloggen:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13196,11 +13114,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Loggar händelser för användarkonton, till exempel inloggningar, lösenordsändringar, ändringar av gruppmedlemskap och administratörsåtgärder på användarposter. Varje rad visar åtgärden, vem som utförde den, den berörda användaren och en tidsstämpel. Filtrera på åtgärd eller användare för att granska ändringar av åtkomst."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13246,13 +13160,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "Vyer levererar olika zonvarianter till olika klienter beroende på vilket nätverk som frågade resolvern. Varje variant heter zon..variant (till exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, så samma värdnamn kan svara med olika IP-adresser beroende på klientens nätverk."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -13529,7 +13437,7 @@ msgstr "Reverse-zoner"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Ändringslogg för poster"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13563,27 +13471,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Kontrollera att pdns_api.key i config/settings.php matchar den API-nyckel som är konfigurerad i PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Kontrollera att pdns_api.server_name matchar det som PowerDNS rapporterar (standard 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS avvisade begäran. Kontrollera PowerDNS-serverns logg för att hitta orsaken - en vanlig utlösare efter att zoner har importerats direkt i PowerDNS-databasen är en enda felaktig post som gör att zonserialiseringen misslyckas."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13747,7 +13648,7 @@ msgstr "Externa applikationer kan autentisera med denna nyckel."
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Beteende för API-nycklar:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13755,11 +13656,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "API-nycklar låter externa program komma åt Poweradmins API. Varje nyckel är kopplad till ditt användarkonto och ärver dina behörigheter, så om ditt konto återkallas återkallas även alla dess nycklar. Behandla nycklar som hemligheter - de ger samma åtkomst som att logga in som dig."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13934,7 +13831,7 @@ msgstr "Gruppaktivitetsloggar"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Beteende för grupploggen:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -13942,11 +13839,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Loggar händelser i gruppernas livscykel (skapa, redigera, ta bort) och ändringar av medlemskap (användare som läggs till eller tas bort). Varje rad visar åtgärden, vem som utförde den, den berörda gruppen och en tidsstämpel. Användbart för att granska ändringar av zonåtkomst som styrs av gruppägande."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14233,11 +14126,11 @@ msgstr "RDAP-resultat för"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Ange ett domännamn för att göra en RDAP-sökning."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Skapa användare med begränsade rättigheter"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -14245,29 +14138,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Skapa användare med begränsad behörighet"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Begränsade databasrättigheter:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Skapa en databasanvändare med begränsade rättigheter (select, insert, update, delete) endast för Poweradmins tabeller. Åtkomst till PowerDNS-tabellerna krävs inte när API-backend används."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Skapa en databasanvändare med begränsade rättigheter (select, insert, update, delete) så att Poweradmin kan komma åt PowerDNS-tabellerna."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14275,13 +14163,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Kör följande kommandon:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "När du har lagt till den nya användaren fortsätter du med installationen."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -14291,13 +14178,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Eftersom du använder SQLite behöver du inte skapa någon ny användare med begränsade rättigheter."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Fortsätt till steg"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -14305,7 +14190,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Skapa konfigurationsfil"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -14313,25 +14198,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Skapa filen"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "med följande innehåll:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Välj ett språk"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Välj ett språk för installationen"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Välj önskat språk för att fortsätta med installationen:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14343,7 +14227,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Konfigurera databasanslutningen"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -14351,11 +14235,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Välj hur Poweradmin kommunicerar med PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Direkt åtkomst till PowerDNS-databasens tabeller"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -14371,7 +14255,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Inställningar för PowerDNS-API"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -14379,7 +14263,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL till PowerDNS API-slutpunkt."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -14387,7 +14271,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API-nyckel (från inställningen api-key i pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14395,11 +14279,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "PowerDNS-servernamn för API-anrop (vanligtvis \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Inställningar för databasanslutning"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -14409,17 +14293,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Konfigurera databasanslutningen med rättigheter att skapa tabeller. PowerDNS-platsen kan anges separat om det behövs."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Konfigurera databasanslutningen för Poweradmins tabeller (användare, behörigheter, zoner). PowerDNS-tabeller krävs inte."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -14439,31 +14319,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Typ av databasserver."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Ange användarnamnet"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Databasanvändare med rättigheter att skapa tabeller."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Lösenord för denna databasanvändare."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Undvik citattecken, omvända snedstreck och radbrytningar."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Ange värdnamnet"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Databasserverns värdnamn (vanligtvis \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -14471,27 +14351,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Ange databasporten"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Databasserverns port."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Ange databasens namn"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Databasnamn (används för Poweradmins tabeller)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Fullständig sökväg till SQLite-databasfilen"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Filen måste finnas och webbservern måste ha läs- och skrivåtkomst. Använd en absolut sökväg."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14503,7 +14383,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Teckenuppsättning för nya tabeller. Lämna tomt för databasens standardvärde."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14512,8 +14392,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Sorteringsregler för teckenjämförelse. Lämna tomt för databasens standardvärde."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -14525,11 +14404,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Lämna tomt för samma databas"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL-databas med PowerDNS-tabeller (om det är en annan)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -14555,7 +14434,7 @@ msgstr "Fast värde för det första administratörskontot."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Ange ett lösenord"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14567,7 +14446,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Kontroll av systemkrav"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14575,7 +14454,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Kräver PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14583,11 +14462,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "minst en krävs"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Nödvändiga PHP-tillägg"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14603,43 +14482,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Inte identifierad - krävs för URL-routning"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Kan inte identifieras (PHP-FPM) - se till att den är aktiverad"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Se till att URL-omskrivning är konfigurerad (se nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Se till att URL-omskrivning är konfigurerad för din webbserver"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Alla nödvändiga komponenter är tillgängliga."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Du kan fortsätta med installationen."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Vissa nödvändiga komponenter saknas."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Installera de komponenter som saknas innan du fortsätter."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Ställ in konto och namnservrar"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Konfigurera konto och namnservrar"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14647,7 +14526,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Nu samlar vi in alla uppgifter för själva konfigurationen."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14658,24 +14537,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin har sina egna tabeller (användare, behörigheter, zonmetadata) i den konfigurerade databasen även när PowerDNS API-backend är valt. Dessa inloggningsuppgifter gäller den databasen, inte PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Poweradmins databasanvändare med begränsad åtkomst. Används inte för inloggning i webbgränssnittet."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Ange användarens lösenord"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Lösenordet för detta användarnamn."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14687,11 +14562,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Ange DNS-hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Standard-hostmaster för SOA-poster."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14699,11 +14574,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Ange primär namnserver"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Primär namnserver för nya zoner."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14711,11 +14586,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Ange sekundär namnserver"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Sekundär namnserver för nya zoner."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14727,7 +14602,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Valfri tertiär namnserver för nya zoner."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14735,7 +14610,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Valfri fjärde namnserver för nya zoner."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14747,27 +14622,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Gratulerar! Din Poweradmin-installation är nu konfigurerad."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Viktigt säkerhetsmeddelande:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Du måste ta bort katalogen \"install/\" från Poweradmins rotkatalog."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Poweradmin fungerar inte om installationskatalogen finns kvar, av säkerhetsskäl."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14775,7 +14646,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Ta bort katalogen \"install/\" från din server"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14787,7 +14658,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Börja konfigurera dina DNS-zoner och poster"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14799,21 +14670,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Innan du fortsätter, se till att du har:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "PowerDNS installerat med databastabellerna skapade (eller API-åtkomst konfigurerad)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Databasuppgifter (värdnamn, användarnamn, lösenord)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Behörighet att skapa tabeller för Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14823,56 +14693,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Konfigurera databasanslutningen, skapa administratörskontot och generera konfigurationsfilen."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Observera: PostgreSQL och SQLite måste använda samma databas för både PowerDNS och Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Saknade PowerDNS-tabeller:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin behöver dessa PowerDNS-tabeller för att fungera korrekt."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Uppdaterar databasen... klart!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Problem med främmande nycklar:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Installationsprogrammet kunde inte ta bort befintliga tabeller på grund av villkor för främmande nycklar"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Detta kan inträffa vid ominstallation om du har egna villkor eller om tabeller refereras av andra tabeller"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Du kan försöka inaktivera kontrollerna av främmande nycklar manuellt innan du kör installationsprogrammet:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14880,31 +14741,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Se till att SQLite-databasfilen finns"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Kontrollera att webbservern har läs- och skrivrättigheter till databasfilen"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Kontrollera att den fullständiga sökvägen till databasfilen är korrekt och åtkomlig"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Kontrollera att databasuppgifterna är korrekta"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Kontrollera att databasanvändaren har tillräckliga rättigheter"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Se till att databasservern körs och är åtkomlig"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14915,75 +14774,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite-databasfilen %s finns inte. Skapa databasfilen innan du fortsätter."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "SQLite-databasfilen %s går inte att läsa. Kontrollera filrättigheterna."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "SQLite-databasfilen %s går inte att skriva till. Kontrollera filrättigheterna."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Kunde inte komma åt SQLite-databasfilen %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API-URL krävs när API-backend används."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API-nyckel krävs när API-backend används."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Ingen konfigurationsfil hittades. Skapa filen config/settings.php innan du fortsätter."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Separata PowerDNS-databaser stöds endast med MySQL. För PostgreSQL och SQLite ska du använda samma databas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "PowerDNS-tabeller saknas i databasen \"%s\": %s. Se till att PowerDNS är korrekt installerat i denna databas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Kan inte ansluta till PowerDNS-databasen \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på detta system. Kontakta din administratör."
 
 #, php-format
 # OBSOLETE: msgid ""

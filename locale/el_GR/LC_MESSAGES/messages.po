@@ -1872,7 +1872,7 @@ msgstr "Μη έγκυρη τιμή για %s. Επιτρεπόμενες τιμ�
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Ο τύπος μεταδεδομένων %s μπορεί να αλλάξει μόνο από διαχειριστή."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1997,23 +1997,19 @@ msgstr "Το πρότυπο άδειας έχει ενημερωθεί με επ
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Η χορήγηση δικαιωμάτων διαχειριστή σε ένα πρότυπο άδειας απαιτεί δικαιώματα διαχειριστή."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Η επεξεργασία ενός προτύπου άδειας με δικαιώματα διαχειριστή απαιτεί δικαιώματα διαχειριστή."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Το πρότυπο άδειας δεν μπόρεσε να ενημερωθεί."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2074,7 +2070,7 @@ msgstr "Προσθήκη χρήστη"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Δεν υπάρχει διαθέσιμο πρότυπο άδειας χωρίς δικαιώματα υπερχρήστη για ανάθεση."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2831,7 +2827,7 @@ msgstr "Το πρότυπο άδειας προστέθηκε με επιτυχ�
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Το πρότυπο άδειας δεν μπόρεσε να προστεθεί."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3803,25 +3799,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Δεν έχετε την άδεια να αλλάξετε το πρότυπο άδειας."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Η αλλαγή του δικού σας προτύπου άδειας απαιτεί την άδεια επεξεργασίας άλλων χρηστών."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Η ανάθεση ενός προτύπου άδειας με δικαιώματα διαχειριστή απαιτεί δικαιώματα διαχειριστή."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3880,8 +3872,7 @@ msgstr ""
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Δεν έχετε την άδεια να προσθέσετε αυτόν τον τύπο εγγραφής σε ένα πρότυπο ζώνης."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3910,9 +3901,7 @@ msgstr "Σφάλμα ενημέρωσης αρχείου προτύπου ζών
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Δεν έχετε την άδεια να διαγράψετε αυτόν τον τύπο εγγραφής από ένα πρότυπο ζώνης."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3928,9 +3917,7 @@ msgstr "Σφάλμα ελέγχου ιδιοκτησίας προτύπου:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Αυτοί οι τύποι εγγραφών παραλείφθηκαν από το πρότυπο επειδή δεν επιτρέπεται να τους προσθέσετε: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3971,7 +3958,7 @@ msgstr "Δεν έχετε την άδεια να προσθέσετε αρχεί
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Δεν έχετε την άδεια να προσθέσετε εγγραφή LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3984,7 +3971,7 @@ msgstr "Δεν έχετε την άδεια να επεξεργαστείτε α
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Δεν έχετε την άδεια να επεξεργαστείτε αυτή την εγγραφή LUA."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3997,7 +3984,7 @@ msgstr "Δεν έχετε την άδεια να διαγράψετε τα αρ�
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Δεν έχετε την άδεια να διαγράψετε εγγραφές LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9922,7 +9909,7 @@ msgstr "Ο επιλεγμένος χρήστης κατέχει ήδη τη ζώ
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Η ενημέρωση των εγγραφών της ζώνης απέτυχε: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -11205,7 +11192,7 @@ msgstr "Παράδειγμα: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Η προτεραιότητα και το TTL είναι προαιρετικά (προεπιλογές: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11711,12 +11698,12 @@ msgstr "- Ναι."
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "Εκκρεμεί NOTIFY: το serial %serial% δεν έχει ακόμη επιβεβαιωθεί"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "Το NOTIFY στάλθηκε στο serial %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12741,7 +12728,7 @@ msgstr "Τελευταία τροποποίηση"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Τελευταία επεξεργασία από %account% στις %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12976,7 +12963,7 @@ msgstr "Ζώνες χωρίς ιδιοκτήτες"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Να οριστείτε ως ιδιοκτήτης όλων των ζωνών της λίστας;"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -15262,7 +15249,7 @@ msgstr "Αποτελέσματα RDAP για"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Εισαγάγετε ένα όνομα τομέα για να εκτελέσετε αναζήτηση RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15875,9 +15862,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Σημείωση: Η PostgreSQL και η SQLite πρέπει να χρησιμοποιούν την ίδια βάση δεδομένων τόσο για το PowerDNS όσο και για το Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -16035,9 +16020,7 @@ msgstr "Αδυναμία σύνδεσης με βάση δεδομένων Power
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
 
 #, php-format
 # OBSOLETE: msgid ""

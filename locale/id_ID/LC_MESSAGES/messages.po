@@ -1842,7 +1842,7 @@ msgstr "Nilai tidak valid untuk %s. Nilai yang diizinkan: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Jenis metadata %s hanya dapat diubah oleh administrator."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1969,23 +1969,19 @@ msgstr "Template izin telah berhasil diperbarui."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Memberikan hak administrator dalam templat izin memerlukan hak administrator."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Mengedit templat izin yang memiliki hak administrator memerlukan hak administrator."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Templat izin tidak dapat diperbarui."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2004,7 +2000,7 @@ msgstr "Sehat"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Log Perubahan Rekaman"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2046,7 +2042,7 @@ msgstr "Tambah Pengguna"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Tidak ada templat izin non-superuser yang tersedia untuk ditetapkan."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2591,11 +2587,11 @@ msgstr "Anda tidak memiliki izin untuk melihat halaman ini."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "TTL bawaan menurut jenis rekaman"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Pengiriman formulir tidak valid."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2608,12 +2604,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Menyimpan %d nilai bawaan; menghapus %d. Nilai tidak valid ditolak untuk: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Menyimpan %d nilai bawaan; menghapus %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2791,7 +2787,7 @@ msgstr "Template izin telah berhasil ditambahkan."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Templat izin tidak dapat ditambahkan."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2953,17 +2949,17 @@ msgstr "Deselect all zones"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Anda tidak memiliki izin untuk menyinkronkan zona dari PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zona disinkronkan dari PowerDNS: %d ditambahkan, %d diperbarui, %d dihapus."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Sinkronisasi zona gagal: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3693,17 +3689,13 @@ msgstr "Tidak, pertahankan supermaster ini"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Menampilkan status konektivitas untuk server autoprimary yang dikonfigurasi pada tabel di bawah."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Menampilkan status konektivitas untuk supermaster yang dikonfigurasi pada tabel di bawah."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3744,25 +3736,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Anda tidak memiliki izin untuk mengubah templat izin."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Mengubah templat izin Anda sendiri memerlukan izin untuk mengedit pengguna lain."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Menetapkan templat izin dengan hak administrator memerlukan hak administrator."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3821,8 +3809,7 @@ msgstr ""
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Anda tidak memiliki izin untuk menambahkan jenis rekaman ini ke templat zona."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3849,9 +3836,7 @@ msgstr "Kesalahan memperbarui rekaman template zona: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Anda tidak memiliki izin untuk menghapus jenis rekaman ini dari templat zona."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3867,9 +3852,7 @@ msgstr "Kesalahan memeriksa kepemilikan template: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Jenis rekaman berikut tidak disertakan dalam templat karena Anda tidak boleh menambahkannya: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3910,7 +3893,7 @@ msgstr "Impor zone dari file"
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Anda tidak memiliki izin untuk menambahkan rekaman LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3923,7 +3906,7 @@ msgstr "Zone file"
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Anda tidak memiliki izin untuk mengedit rekaman LUA ini."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3936,7 +3919,7 @@ msgstr "Select zone file to import"
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Anda tidak memiliki izin untuk menghapus rekaman LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -5897,8 +5880,7 @@ msgstr "Email hostmaster wajib diisi."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parameter \"%s\" is marked as mandatory but not included in the record."
+msgstr "Parameter \"%s\" ditandai sebagai wajib tetapi tidak disertakan dalam rekaman."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -6025,34 +6007,27 @@ msgstr "Waktu expiry wajib diisi."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+msgstr "Nilai TTL melebihi batas maksimum yang diizinkan (%d). RFC 2181 membatasinya pada integer 32-bit bertanda."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
-"TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
-"Low TTL values increase DNS traffic."
+msgstr "Nilai TTL (%d) berada di bawah minimum yang disarankan yaitu %d detik (5 menit). Nilai TTL rendah meningkatkan lalu lintas DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+msgstr "Nilai TTL (%d) berada di atas maksimum yang disarankan yaitu %d detik (1 minggu). Nilai TTL tinggi memperlambat pembaruan DNS."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr ""
-"SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
+msgstr "TTL rekaman SOA (%d) berada di bawah minimum yang disarankan yaitu %d detik (1 jam)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -6414,18 +6389,14 @@ msgstr "DS record digest type must be between 0 and 255."
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "Jenis pengenal DHCID 0x%04X bukan salah satu jenis standar yang ditetapkan dalam RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+msgstr "Jenis digest DHCID %d bukan jenis standar (1 untuk SHA-256) yang ditetapkan dalam RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6956,32 +6927,26 @@ msgstr "Selector SMIMEA record harus antara 0 dan 255."
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr "%s (algoritme %d) adalah algoritme yang DISARANKAN untuk digunakan menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%s (algorithm %d) is in common use, but newer algorithms like "
-"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr "%s (algoritme %d) umum digunakan, tetapi algoritme yang lebih baru seperti ECDSAP256SHA256 (13) atau ED25519 (15) lebih disarankan."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (algoritme %d) bersifat opsional untuk diimplementasikan menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+msgstr "%s (algoritme %d) TIDAK DISARANKAN untuk digunakan menurut RFC 8624. Pertimbangkan untuk menggunakan ECDSAP256SHA256 (13) atau ED25519 (15) sebagai gantinya."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -7264,9 +7229,7 @@ msgstr "TTL harus berupa bilangan bulat positif."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+msgstr "Flag critical disetel untuk tag tidak dikenal \"%s\". Hal ini dapat menyebabkan kegagalan penerbitan sertifikat."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -7470,9 +7433,7 @@ msgstr "Bidang SOA %s harus berupa bilangan bulat positif."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "Nilai SOA %s (%d) berada di bawah minimum yang disarankan RFC 2308 (%d). Ini diizinkan tetapi tidak disarankan."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7559,9 +7520,7 @@ msgstr "Zone template"
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr ""
-"A CNAME record cannot coexist with other record types for the same name. "
-"Found existing %s record."
+msgstr "Rekaman CNAME tidak dapat berdampingan dengan jenis rekaman lain untuk nama yang sama. Ditemukan rekaman %s yang sudah ada."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7580,9 +7539,7 @@ msgstr "Terapkan template zone"
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "Nama rekaman SMIMEA menggunakan format: SHA256(local-part)._smimecert.domain.tld untuk alamat email seperti %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -8209,9 +8166,7 @@ msgstr "DNSSEC berhasil diaktifkan."
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
-"DMARC policy is applied to only %d%% of messages. This should only be used "
-"during policy rollout."
+msgstr "Kebijakan DMARC hanya diterapkan pada %d%% pesan. Ini sebaiknya hanya digunakan selama penerapan kebijakan secara bertahap."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8272,9 +8227,7 @@ msgstr "Key DNSSEC berhasil dihapus."
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr ""
-"TXT record content exceeds maximum length of %d bytes. Please reduce the "
-"content size."
+msgstr "Konten rekaman TXT melebihi panjang maksimum %d byte. Silakan kurangi ukuran konten."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
@@ -8287,9 +8240,7 @@ msgstr "Gagal menghapus key DNSSEC."
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Total konten rekaman TXT melebihi panjang maksimum %d byte. Silakan kurangi ukuran konten."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -8360,9 +8311,7 @@ msgstr "Private key"
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr ""
-"CDS digest must be a valid hex string of length %d for the selected digest "
-"type."
+msgstr "Digest CDS harus berupa string heksadesimal yang valid dengan panjang %d untuk jenis digest yang dipilih."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -8447,18 +8396,14 @@ msgstr "IP yang diizinkan untuk zone transfer"
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Nama layanan \"%s\" tidak ada dalam daftar layanan yang umum dikenal. Ini diizinkan tetapi tidak biasa."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Protokol \"%s\" tidak ada dalam daftar protokol yang umum dikenal. Protokol yang umum adalah _tcp dan _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8483,9 +8428,7 @@ msgstr "Gagal memperbarui pengaturan zone transfer."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+msgstr "Port %d berbeda dari port standar %d untuk layanan %s. Ini diizinkan tetapi tidak biasa."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8804,26 +8747,21 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
-"%s (algorithm %d) is specified as optional for implementation in RFC 8624."
+msgstr "%s (algoritme %d) ditetapkan sebagai opsional untuk implementasi dalam RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (algoritme %d) sudah TIDAK DIGUNAKAN LAGI menurut RFC 8624. Jangan gunakan algoritme ini untuk penerapan baru."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Algoritme %d TIDAK BOLEH diimplementasikan menurut RFC 8624. Nilai ini sebaiknya tidak digunakan."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8990,17 +8928,15 @@ msgstr "Rekaman PTR untuk %s yang menunjuk ke %s sudah ada."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr ""
-"Reverse record added. Warning: A PTR record for %s already exists pointing "
-"to: %s. Having multiple PTR records for the same IP is not recommended."
+msgstr "Rekaman balik ditambahkan. Peringatan: Rekaman PTR untuk %s sudah ada dan mengarah ke: %s. Memiliki beberapa rekaman PTR untuk IP yang sama tidak disarankan."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "Pembaruan PTR dilewati: jenis rekaman bukan A atau AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Rekaman PTR usang telah dihapus."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9080,7 +9016,7 @@ msgstr "Failed to import zone."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Gagal memperbarui rekaman zona: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9690,12 +9626,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Setiap jaringan (blok CIDR) dipetakan ke tepat satu view. Resolver di jaringan tersebut hanya menerima varian zona yang ditetapkan ke view yang dipetakan. PowerDNS mengevaluasi jaringan berdasarkan prefiks terpanjang lebih dahulu, sehingga subnet yang lebih spesifik (misalnya 10.0.1.0/24) menimpa rentang yang lebih luas (10.0.0.0/8) jika keduanya cocok dengan klien."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9998,7 +9929,7 @@ msgstr "grup"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Versi PowerDNS yang terhubung"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10098,7 +10029,7 @@ msgstr "Template applied"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Nilai bawaan global saat ini"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -10106,11 +10037,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "TTL bawaan (detik)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "kosong = gunakan nilai bawaan global"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -10126,7 +10057,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(untuk PTR di zona balik) atau"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -10219,7 +10150,7 @@ msgstr "Log Aktivitas API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Perilaku Log API:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10227,11 +10158,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Mencatat peristiwa siklus hidup kunci API (pembuatan, pembuatan ulang, pencabutan, perubahan izin) dan permintaan API yang terautentikasi. Filter berdasarkan pengguna atau operasi untuk mengaudit aktivitas integrasi eksternal. Nilai sensitif (kunci, token) tidak pernah ditulis ke log ini."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10259,7 +10186,7 @@ msgstr "Log aktivitas berhasil dihapus."
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Perilaku Log Zona:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10267,11 +10194,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Umpan aktivitas ini mencatat setiap operasi yang dilakukan terhadap zona dan rekaman (pembuatan, pengeditan, penghapusan, tindakan DNSSEC, impor) sebagai string peristiwa kunci:nilai yang datar. Untuk cuplikan sebelum/sesudah yang terstruktur dan tampilan diff perubahan rekaman, lihat Log Perubahan Rekaman."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10308,7 +10231,7 @@ msgstr "Contoh: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prioritas dan TTL bersifat opsional (bawaan: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10806,12 +10729,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY tertunda: serial %serial% belum dikonfirmasi"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY dikirim pada serial %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11829,7 +11752,7 @@ msgstr "Terakhir diubah"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Terakhir diedit oleh %account% pada %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11930,11 +11853,11 @@ msgstr "MFA tidak dikonfigurasi"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Ambil zona dari PowerDNS dan sesuaikan tabel lokal"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Sinkronkan dari PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -12062,7 +11985,7 @@ msgstr "Zona Tanpa Pemilik"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Tetapkan diri Anda sebagai pemilik semua zona yang terdaftar?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12711,7 +12634,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Perilaku Log Perubahan:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12720,12 +12643,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Setiap penambahan/pengeditan/penghapusan rekaman serta pembuatan/penghapusan zona dan pengeditan metadata merekam cuplikan sebelum/sesudah di sini, beserta pengguna dan waktunya. Log tidak pernah kedaluwarsa secara otomatis - pangkas baris lama secara manual jika tabel menjadi besar. Gunakan pintasan rentang waktu untuk fokus pada aktivitas terbaru, atau ekspor ke CSV/JSON untuk memasok sistem audit eksternal."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12765,11 +12683,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Tidak ada perubahan rekaman yang ditemukan"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Coba filter atau rentang waktu yang berbeda"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -13060,7 +12978,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Warisi pengaturan global"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -13148,11 +13066,11 @@ msgstr "Tampilkan tombol hapus individual per rekod"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Tampilkan hanya nama host"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Hapus sufiks zona dari nama rekaman pada tampilan edit"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -13257,7 +13175,7 @@ msgstr "Log Aktivitas Pengguna"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Perilaku Log Pengguna:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -13265,11 +13183,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Mencatat peristiwa akun pengguna seperti login, perubahan kata sandi, pembaruan keanggotaan grup, dan tindakan admin pada data pengguna. Setiap entri menampilkan tindakan, pelakunya, pengguna yang terpengaruh, dan waktunya. Filter berdasarkan operasi atau pengguna untuk mengaudit perubahan akses."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13315,13 +13229,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "View menyajikan varian zona yang berbeda kepada klien yang berbeda berdasarkan jaringan yang mengirim kueri ke resolver. Setiap varian dinamai zona..varian (misalnya, example.com..trusted) dan harus sudah ada sebagai zona terpisah di PowerDNS sebelum dapat ditetapkan di sini. Varian berbagi nama yang sama tetapi diselesaikan secara berbeda pada setiap view, sehingga nama host yang sama dapat menjawab dengan IP yang berbeda tergantung jaringan klien."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -13597,7 +13505,7 @@ msgstr "Zona reverse"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Log perubahan rekaman"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13631,27 +13539,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Pastikan pdns_api.key di config/settings.php sama dengan kunci API yang dikonfigurasi di PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Pastikan pdns_api.server_name sesuai dengan yang dilaporkan PowerDNS (bawaan 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS menolak permintaan tersebut. Periksa log server PowerDNS untuk mengetahui penyebabnya - pemicu yang umum setelah mengimpor zona langsung ke database PowerDNS adalah satu rekaman dengan format salah yang menggagalkan serialisasi zona."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13815,7 +13716,7 @@ msgstr ""
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Perilaku Kunci API:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13823,11 +13724,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "Kunci API memungkinkan aplikasi eksternal mengakses API Poweradmin. Setiap kunci terkait dengan akun pengguna Anda dan mewarisi izin Anda, sehingga mencabut akun Anda juga mencabut semua kuncinya. Perlakukan kunci sebagai rahasia - kunci memberikan akses yang sama seperti login sebagai Anda."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -14003,7 +13900,7 @@ msgstr "Log Aktivitas Grup"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Perilaku Log Grup:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -14011,11 +13908,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Mencatat peristiwa siklus hidup grup (pembuatan, pengeditan, penghapusan) dan perubahan keanggotaan (pengguna ditambahkan atau dihapus). Setiap entri menampilkan tindakan, pelakunya, grup yang terpengaruh, dan waktunya. Berguna untuk mengaudit perubahan akses zona yang diperantarai oleh kepemilikan grup."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14303,11 +14196,11 @@ msgstr "Hasil RDAP untuk"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Silakan masukkan nama domain untuk melakukan pencarian RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Buat pengguna dengan hak terbatas"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -14315,29 +14208,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Buat pengguna hak terbatas"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Hak Database Terbatas:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Buat pengguna database dengan hak terbatas (select, insert, update, delete) hanya untuk tabel Poweradmin. Akses ke tabel PowerDNS tidak diperlukan saat menggunakan backend API."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Buat pengguna database dengan hak terbatas (select, insert, update, delete) agar Poweradmin dapat mengakses tabel PowerDNS."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14345,13 +14233,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Jalankan perintah berikut:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Setelah Anda menambahkan pengguna baru, lanjutkan prosedur instalasi ini."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -14361,13 +14248,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Karena Anda menggunakan SQLite, tidak perlu membuat pengguna baru dengan hak terbatas."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Lanjutkan ke langkah"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -14375,7 +14260,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Buat file konfigurasi"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -14383,25 +14268,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Buat file"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "dengan isi berikut:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Pilih bahasa"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Pilih bahasa untuk instalasi"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Silakan pilih bahasa yang Anda inginkan untuk melanjutkan instalasi:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14413,7 +14297,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Mengonfigurasi Koneksi Database"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -14421,11 +14305,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Pilih cara Poweradmin berkomunikasi dengan PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Akses langsung ke tabel database PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -14441,7 +14325,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Pengaturan API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -14449,7 +14333,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL endpoint API PowerDNS."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -14457,7 +14341,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "Kunci API PowerDNS (dari pengaturan api-key di pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -14465,11 +14349,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "Nama server PowerDNS untuk panggilan API (biasanya \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Pengaturan Koneksi Database"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -14479,17 +14363,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Konfigurasikan koneksi database dengan hak untuk membuat tabel. Lokasi PowerDNS dapat ditentukan secara terpisah jika diperlukan."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Konfigurasikan koneksi database untuk tabel Poweradmin (pengguna, izin, zona). Tabel PowerDNS tidak diperlukan."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -14509,31 +14389,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Jenis server database."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Masukkan nama pengguna"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Nama pengguna database dengan hak untuk membuat tabel."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Kata sandi untuk pengguna database ini."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Hindari tanda kutip, garis miring terbalik, dan baris baru."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Masukkan nama host"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Nama host server database (biasanya \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -14541,27 +14421,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Masukkan port database"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Port server database."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Masukkan nama database"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Nama database (akan digunakan untuk tabel Poweradmin)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Jalur lengkap ke file database SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "File harus sudah ada dan dapat dibaca/ditulis oleh server web. Gunakan jalur absolut."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14573,7 +14453,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Set karakter untuk tabel baru. Biarkan kosong untuk nilai bawaan database."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14582,8 +14462,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Aturan collation untuk perbandingan karakter. Biarkan kosong untuk nilai bawaan database."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -14595,11 +14474,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Biarkan kosong untuk database yang sama"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "Database MySQL yang berisi tabel PowerDNS (jika berbeda)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -14625,7 +14504,7 @@ msgstr "Permanen untuk akun administrator awal."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Masukkan kata sandi"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14637,7 +14516,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Pemeriksaan Persyaratan Sistem"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14645,7 +14524,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Membutuhkan PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14653,11 +14532,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "minimal satu diperlukan"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Ekstensi PHP yang Diperlukan"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14673,43 +14552,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Tidak terdeteksi - diperlukan untuk perutean URL"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Tidak dapat dideteksi (PHP-FPM) - pastikan sudah diaktifkan"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Pastikan penulisan ulang URL sudah dikonfigurasi (lihat nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Pastikan penulisan ulang URL sudah dikonfigurasi untuk server web Anda"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Semua komponen yang diperlukan tersedia."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Anda dapat melanjutkan instalasi."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Beberapa komponen yang diperlukan tidak tersedia."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Silakan pasang komponen yang belum tersedia sebelum melanjutkan."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Siapkan akun dan nameserver"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Siapkan akun dan name server"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14717,7 +14596,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Sekarang kami akan mengumpulkan semua detail untuk konfigurasi itu sendiri."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14728,24 +14607,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin menyimpan tabelnya sendiri (pengguna, izin, metadata zona) di database yang dikonfigurasi, bahkan ketika backend API PowerDNS dipilih. Kredensial ini untuk database tersebut, bukan untuk PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Nama pengguna database Poweradmin dengan akses terbatas. Bukan untuk login antarmuka web."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Masukkan kata sandi pengguna"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Kata sandi untuk nama pengguna ini."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14757,11 +14632,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Masukkan hostmaster DNS"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Hostmaster bawaan untuk rekaman SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14769,11 +14644,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Masukkan nameserver utama"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Nameserver utama untuk zona baru."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14781,11 +14656,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Masukkan nameserver sekunder"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Nameserver sekunder untuk zona baru."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14797,7 +14672,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Nameserver tersier opsional untuk zona baru."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14805,7 +14680,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Nameserver kuaterner opsional untuk zona baru."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14817,27 +14692,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Selamat! Instalasi Poweradmin Anda kini telah dikonfigurasi."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Pemberitahuan Keamanan Penting:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Anda harus menghapus direktori \"install/\" dari direktori root Poweradmin."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Sebagai langkah keamanan, Poweradmin tidak akan berfungsi jika direktori install masih ada."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14845,7 +14716,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Hapus direktori \"install/\" dari server Anda"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14857,7 +14728,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Mulai konfigurasikan zona dan rekaman DNS Anda"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14869,21 +14740,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Sebelum melanjutkan, pastikan Anda memiliki:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "PowerDNS terpasang dengan tabel database yang sudah dibuat (atau akses API yang sudah dikonfigurasi)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Kredensial database (nama host, nama pengguna, kata sandi)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Izin untuk membuat tabel bagi Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14893,56 +14763,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Konfigurasikan koneksi database, buat akun admin, dan hasilkan file konfigurasi."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Catatan: PostgreSQL dan SQLite harus menggunakan database yang sama untuk PowerDNS maupun Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Tabel PowerDNS yang tidak ditemukan:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin memerlukan tabel PowerDNS ini agar dapat berfungsi dengan benar."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Memperbarui database... selesai!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Masalah Batasan Foreign Key:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Penginstal tidak dapat menghapus tabel yang ada karena batasan foreign key"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Ini dapat terjadi saat pemasangan ulang jika Anda memiliki batasan khusus atau jika tabel dirujuk oleh tabel lain"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Anda dapat mencoba menonaktifkan pemeriksaan foreign key secara manual sebelum menjalankan penginstal:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14950,31 +14811,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Pastikan file database SQLite sudah ada"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Pastikan server web memiliki izin baca dan tulis untuk file database"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Pastikan jalur lengkap ke file database benar dan dapat diakses"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Pastikan kredensial database benar"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Pastikan pengguna database memiliki hak yang cukup"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Pastikan server database berjalan dan dapat diakses"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14985,75 +14844,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "File database SQLite %s tidak ada. Silakan buat file database tersebut sebelum melanjutkan."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "File database SQLite %s tidak dapat dibaca. Silakan periksa izin file."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "File database SQLite %s tidak dapat ditulis. Silakan periksa izin file."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Tidak dapat mengakses file database SQLite %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "URL API PowerDNS diperlukan saat menggunakan backend API."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Kunci API PowerDNS diperlukan saat menggunakan backend API."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "File konfigurasi tidak ditemukan. Silakan buat file config/settings.php sebelum melanjutkan."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Database PowerDNS terpisah hanya didukung dengan MySQL. Untuk PostgreSQL dan SQLite, silakan gunakan database yang sama."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "Tabel PowerDNS tidak ditemukan di database \"%s\": %s. Pastikan PowerDNS terpasang dengan benar di database ini."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada sistem ini. Silakan hubungi administrator Anda."
 
 #, php-format
 # OBSOLETE: msgid ""

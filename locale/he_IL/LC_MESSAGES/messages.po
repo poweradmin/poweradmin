@@ -1769,7 +1769,7 @@ msgstr "ערך לא תקין עבור %s. ערכים מותרים: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "סוג המטא-נתונים %s ניתן לשינוי על ידי מנהל מערכת בלבד."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1892,23 +1892,19 @@ msgstr "תבנית ההרשאה מעודכנת בהצלחה."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "הענקת הרשאות מנהל בתבנית הרשאות מחייבת הרשאות מנהל."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "עריכת תבנית הרשאות הכוללת הרשאות מנהל מחייבת הרשאות מנהל."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "לא ניתן היה לעדכן את תבנית ההרשאות."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1969,7 +1965,7 @@ msgstr "הוסף משתמשים"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "אין תבנית הרשאות ללא הרשאות משתמש-על שניתן להקצות."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2694,7 +2690,7 @@ msgstr "תבנית ההרשאה נוספה בהצלחה."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "לא ניתן היה להוסיף את תבנית ההרשאות."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3613,25 +3609,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "אין לך הרשאה לשנות את תבנית ההרשאות."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "שינוי תבנית ההרשאות שלך מחייב הרשאה לעריכת משתמשים אחרים."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "הקצאת תבנית הרשאות הכוללת הרשאות מנהל מחייבת הרשאות מנהל."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3689,8 +3681,7 @@ msgstr "אין לך רשות להוסיף תיעוד לתבנית אזור זה.
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "אין לך הרשאה להוסיף סוג רשומה זה לתבנית אזור."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3717,9 +3708,7 @@ msgstr "תמונת מצב:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "אין לך הרשאה למחוק סוג רשומה זה מתבנית אזור."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3735,9 +3724,7 @@ msgstr "חתימה לבדיקת שגיאות:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "סוגי הרשומות הבאים הושמטו מהתבנית מכיוון שאין לך הרשאה להוסיף אותם: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3778,7 +3765,7 @@ msgstr "אין לך רשות להוסיף תקליט NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "אין לך הרשאה להוסיף רשומת LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3791,7 +3778,7 @@ msgstr "אין לך רשות לערוך את השיא הזה."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "אין לך הרשאה לערוך רשומת LUA זו."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3804,7 +3791,7 @@ msgstr "אין לך רשות למחוק רשומות NS."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "אין לך הרשאה למחוק רשומות LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9169,7 +9156,7 @@ msgstr "המשתמש הנבחר כבר הבעלים של האזור."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "עדכון רשומות האזור נכשל: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10407,7 +10394,7 @@ msgstr "דוגמה: www,A,192.168.1.1,0,3600,web Server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "עדיפות ו-TTL הם אופציונליים (ברירת מחדל: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10886,12 +10873,12 @@ msgstr "- -"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY בהמתנה: המספר הסידורי %serial% עדיין לא אושר"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY נשלח במספר הסידורי %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11886,7 +11873,7 @@ msgstr "שינוי אחרון"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "נערך לאחרונה על ידי %account% בתאריך %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12117,7 +12104,7 @@ msgstr "אזורים ללא הבעלים"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "להגדיר אותך כבעלים של כל האזורים המופיעים ברשימה?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14308,7 +14295,7 @@ msgstr "תוצאות RDAP"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "יש להזין שם מתחם לביצוע חיפוש RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14893,9 +14880,7 @@ msgstr "חיבור מסד נתונים, ליצור חשבון admin, וליצו�
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "הערה: PostgreSQL ו-SQLite חייבים להשתמש באותו מסד נתונים גם עבור PowerDNS וגם עבור Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15033,9 +15018,7 @@ msgstr "לא ניתן להתחבר למסד הנתונים PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל המערכת."
 
 #, php-format
 # OBSOLETE: msgid ""

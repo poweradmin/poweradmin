@@ -1833,7 +1833,7 @@ msgstr "Neveljavna vrednost za %s. Dovoljene vrednosti: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Vrsto metapodatkov %s lahko spremeni samo skrbnik."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1958,23 +1958,19 @@ msgstr "Predloga za dovoljenje je bila uspešno posodobljena."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Dodeljevanje skrbniških pravic v predlogi dovoljenj zahteva skrbniške pravice."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Urejanje predloge dovoljenj s skrbniškimi pravicami zahteva skrbniške pravice."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Predloge dovoljenj ni bilo mogoče posodobiti."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2035,7 +2031,7 @@ msgstr "Dodaj uporabnika"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Na voljo ni nobene predloge dovoljenj brez pravic superuporabnika, ki bi jo bilo mogoče dodeliti."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2791,7 +2787,7 @@ msgstr "Predloga dovoljenja je bila uspešno dodana."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Predloge dovoljenj ni bilo mogoče dodati."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3753,25 +3749,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Nimate dovoljenja za spremembo predloge dovoljenj."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Za spremembo lastne predloge dovoljenj potrebujete dovoljenje za urejanje drugih uporabnikov."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Dodeljevanje predloge dovoljenj s skrbniškimi pravicami zahteva skrbniške pravice."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3829,8 +3821,7 @@ msgstr "Nimate dovoljenja za dodajanje zapisa v to predlogo cone."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Nimate dovoljenja za dodajanje te vrste zapisa v predlogo cone."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3857,9 +3848,7 @@ msgstr "Napaka pri posodabljanju zapisa predloge območja:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Nimate dovoljenja za brisanje te vrste zapisa iz predloge cone."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3875,9 +3864,7 @@ msgstr "Napaka pri preverjanju lastništva predloge:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Te vrste zapisov niso bile vključene v predlogo, ker jih ne smete dodajati: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3918,7 +3905,7 @@ msgstr "Nimate dovoljenja za dodajanje NS zapisa."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nimate dovoljenja za dodajanje zapisa LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3931,7 +3918,7 @@ msgstr "Nimate dovoljenja za urejanje tega zapisa NS."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nimate dovoljenja za urejanje tega zapisa LUA."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3944,7 +3931,7 @@ msgstr "Nimate dovoljenja za brisanje NS zapisov."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nimate dovoljenja za brisanje zapisov LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9600,7 +9587,7 @@ msgstr "Izbrani uporabnik je že lastnik cone."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Zapisov cone ni bilo mogoče posodobiti: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10857,7 +10844,7 @@ msgstr "Primer: www,A,192.168.1.1.3600, spletni strežnik"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prednost in TTL sta neobvezna (privzete vrednosti: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11349,12 +11336,12 @@ msgstr "-Kaj?"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY čaka: serijska številka %serial% še ni potrjena"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY poslan pri serijski številki %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12369,7 +12356,7 @@ msgstr "Zadnja sprememba"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Nazadnje uredil %account% dne %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12602,7 +12589,7 @@ msgstr "Območja brez lastnikov"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Ali se želite določiti kot lastnika vseh navedenih con?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14828,7 +14815,7 @@ msgstr "Rezultati RDAP za"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Vnesite ime domene za poizvedbo RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15429,9 +15416,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Opomba: PostgreSQL in SQLite morata za PowerDNS in Poweradmin uporabljati isto zbirko podatkov."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15581,9 +15566,7 @@ msgstr "Ni se moč povezati s podatkovno bazo PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Nastavitev jezikovnega okolja ni uspela. Izbrano jezikovno okolje v tem sistemu morda ni podprto. Obrnite se na skrbnika."
 
 #, php-format
 # OBSOLETE: msgid ""

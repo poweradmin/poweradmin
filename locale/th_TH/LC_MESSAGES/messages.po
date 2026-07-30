@@ -1747,7 +1747,7 @@ msgstr "ค่าไม่ถูกต้องสำหรับ %s ค่า�
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "เมทาดาทาชนิด %s สามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1870,23 +1870,19 @@ msgstr "การปรับปรุงแม่แบบการอนุญ
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "การให้สิทธิ์ผู้ดูแลระบบในเทมเพลตสิทธิ์ต้องใช้สิทธิ์ผู้ดูแลระบบ."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "การแก้ไขเทมเพลตสิทธิ์ที่มีสิทธิ์ผู้ดูแลระบบต้องใช้สิทธิ์ผู้ดูแลระบบ."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "ไม่สามารถอัปเดตเทมเพลตสิทธิ์ได้."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1947,7 +1943,7 @@ msgstr "เพิ่มผู้ใช้"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "ไม่มีเทมเพลตสิทธิ์ที่ไม่มีสิทธิ์ superuser ให้เลือกกำหนด."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2660,7 +2656,7 @@ msgstr "ต้นแบบจดหมายที่อนุญาตถูก
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "ไม่สามารถเพิ่มเทมเพลตสิทธิ์ได้."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3574,25 +3570,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "คุณไม่มีสิทธิ์เปลี่ยนเทมเพลตสิทธิ์."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "การเปลี่ยนเทมเพลตสิทธิ์ของตนเองต้องมีสิทธิ์แก้ไขผู้ใช้อื่น."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "การกำหนดเทมเพลตสิทธิ์ที่มีสิทธิ์ผู้ดูแลระบบต้องใช้สิทธิ์ผู้ดูแลระบบ."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3650,8 +3642,7 @@ msgstr "คุณไม่มีสิทธิ์ในการเพิ่ม
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดชนิดนี้ลงในเทมเพลตโซน."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3678,9 +3669,7 @@ msgstr "เกิดข้อผิดพลาดระหว่างการ
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ดชนิดนี้ออกจากเทมเพลตโซน."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3696,9 +3685,7 @@ msgstr "เกิดข้อผิดพลาดในการตรวจส
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "เรกคอร์ดชนิดต่อไปนี้ไม่ได้ถูกใส่ไว้ในเทมเพลต เนื่องจากคุณไม่มีสิทธิ์เพิ่ม: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3739,7 +3726,7 @@ msgstr "คุณไม่ได้รับอนุญาตให้เพิ
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ด LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3752,7 +3739,7 @@ msgstr "คุณไม่มีสิทธิ์แก้ไขบันทึ
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "คุณไม่มีสิทธิ์แก้ไขเรกคอร์ด LUA นี้."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3765,7 +3752,7 @@ msgstr "คุณไม่มีสิทธิ์ในการลบบัน
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "คุณไม่มีสิทธิ์ลบเรกคอร์ด LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -4420,9 +4407,7 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรจะเป็น: d1 [m1 [s1] SOZZD[s2] SOZZZ[\"m\"] "
-"[Ziz[\"m\"] [hp[\"m\"] [vp['m] [hp] ['m] [. ]]."
+msgstr "รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรเป็น: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -7273,7 +7258,7 @@ msgstr "ลำดับความสำคัญต้องเป็น 0 ส
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "สถิติของ SVCB ต้องเริ่มด้วยความสําคัญและเป้าหมาย: SOZZZZZZZZ[<params>Z]"
+msgstr "บันทึก SVCB ต้องเริ่มต้นด้วยลำดับความสำคัญและเป้าหมาย: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -8957,7 +8942,7 @@ msgstr "ผู้ใช้ที่เลือกใช้พื้นที่
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "ไม่สามารถอัปเดตเรกคอร์ดของโซนได้: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9286,10 +9271,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr ""
-"เคล็ดลับ: สําหรับบันทึกของ SOA ให้ใช้ SOZZZ[ZOZZZ] เป็นชื่อและ SOX2Z[ NS1] [HSTSTMER] "
-"28800 764848800 86,400x3 ซ.ค. เป็นเนื้อหา. SOA ต้องการบันทึกการทํางานของ DNS "
-"โซนที่เหมาะสม"
+msgstr "เคล็ดลับ: สำหรับบันทึก SOA ให้ใช้ <code>[ZONE]</code> เป็นชื่อ และ <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> เป็นเนื้อหา บันทึก SOA จำเป็นต่อการทำงานที่ถูกต้องของโซน DNS"
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -9365,15 +9347,15 @@ msgstr "ตัวอย่างชื่อ"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "สําหรับสวิตซ์ย่อย: SOZZOVONCE. [ZONE]ZZZZZZZE."
+msgstr "สำหรับซับโดเมน: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "สําหรับสถิติของไวลด์การ์ด: SOZZ*. [ZENG] SOZZZZZE."
+msgstr "สำหรับบันทึกไวลด์การ์ด: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "สําหรับโดเมนตัวเอง: SOZZ[ZONG] SOZZZ"
+msgstr "สำหรับโดเมนนั้นเอง: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
@@ -9394,7 +9376,7 @@ msgstr "บันทึก: SOZZX19.2.2.0.0.0.2</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: access0zarget. [ZONE] SOZZZZ หรือ SOZS Exception.com. x3x"
+msgstr "CNAME: <code>target.[ZONE]</code> หรือ <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -10189,7 +10171,7 @@ msgstr "ตัวอย่าง: www,A,192.168.1,0,3600, แม่ข่าย�
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "ลำดับความสำคัญและ TTL ไม่จำเป็นต้องระบุ (ค่าเริ่มต้น: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10667,12 +10649,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY รอดำเนินการ: ยังไม่มีการตอบรับหมายเลขซีเรียล %serial%"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "ส่ง NOTIFY แล้วที่หมายเลขซีเรียล %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11659,7 +11641,7 @@ msgstr "แก้ไขล่าสุด"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "แก้ไขล่าสุดโดย %account% เมื่อ %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11890,7 +11872,7 @@ msgstr "เขต ที่ ไม่ มี เจ้าของ"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "กำหนดให้คุณเป็นเจ้าของโซนทั้งหมดในรายการหรือไม่?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -13657,7 +13639,7 @@ msgstr "ผู้ใช้กับกลุ่มผู้ใช้"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr "เมื่อได้รับมอบหมายให้ใช้ SOZX1ZZZZ: สิทธิ์ในการใช้งานทั่วโลกในระบบ"
+msgstr "เมื่อกำหนดให้กับ<strong>ผู้ใช้</strong>: สิทธิ์จะมีผลทั่วทั้งระบบ"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
@@ -14069,7 +14051,7 @@ msgstr "ผล RDAP สําหรับ"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "กรุณาป้อนชื่อโดเมนเพื่อค้นหาข้อมูล RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14651,9 +14633,7 @@ msgstr "ปรับแต่งการเชื่อมต่อฐานข
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "หมายเหตุ: PostgreSQL และ SQLite ต้องใช้ฐานข้อมูลเดียวกันทั้งสำหรับ PowerDNS และ Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14788,9 +14768,7 @@ msgstr "ไม่สามารถเชื่อมต่อกับฐาน
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
 
 #, php-format
 # OBSOLETE: msgid ""

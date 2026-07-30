@@ -1740,7 +1740,7 @@ msgstr "Nilai tidak sah untuk %s. Nilai yang dibenarkan: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Jenis metadata %s hanya boleh diubah oleh pentadbir."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1865,23 +1865,19 @@ msgstr "Templat kebenaran telah berhasil dikemas kini."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Pemberian hak pentadbir dalam templat kebenaran memerlukan hak pentadbir."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Penyuntingan templat kebenaran yang mempunyai hak pentadbir memerlukan hak pentadbir."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Templat kebenaran tidak dapat dikemas kini."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1942,7 +1938,7 @@ msgstr "Tambah Pengguna"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Tiada templat kebenaran tanpa hak superuser yang boleh diberikan."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2662,7 +2658,7 @@ msgstr "Templat kebenaran telah berhasil ditambahkan."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Templat kebenaran tidak dapat ditambah."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2900,7 +2896,7 @@ msgstr "Sila pilih paling tidak satu kumpulan."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "Pengguna %dZ berhasil ditambahkan ke grup ZZZ."
+msgstr[0] "Pengguna berhasil ditambahkan ke %d kumpulan."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
@@ -3599,25 +3595,21 @@ msgstr "Ralat basis data tak valid: Tidak dapat memeriksa otentikasi pengguna. S
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Anda tidak mempunyai kebenaran untuk mengubah templat kebenaran."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Mengubah templat kebenaran anda sendiri memerlukan kebenaran untuk menyunting pengguna lain."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Pemberian templat kebenaran yang mempunyai hak pentadbir memerlukan hak pentadbir."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3675,8 +3667,7 @@ msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod ke zon templet ini
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah jenis rekod ini ke dalam templat zon."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3703,9 +3694,7 @@ msgstr "Ralat saat memperbarui rekod templat zona:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam jenis rekod ini daripada templat zon."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3721,9 +3710,7 @@ msgstr "Ralat ketika memeriksa kepemilikan templat:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Jenis rekod berikut tidak dimasukkan ke dalam templat kerana anda tidak dibenarkan menambahnya: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3764,7 +3751,7 @@ msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3777,7 +3764,7 @@ msgstr "Anda tidak memiliki kebenaran untuk menyunting rekod NS ini."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Anda tidak mempunyai kebenaran untuk menyunting rekod LUA ini."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3790,7 +3777,7 @@ msgstr "Anda tidak memiliki kebenaran untuk menghapus rekod NS."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -3968,7 +3955,7 @@ msgstr "1. Seluruh rangkaian pencarian SRV haruslah DNSSEC-signed"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. Rekod TLSA harus dijumpai di  $portZZ$protocolZZZZZZZZZZZZ di mana $port, $protocolZ, dan $hostnameZZ dari target pencarian SRV"
+msgstr "2. Rekod TLSA sepatutnya ditemui di _$port._$protocol.$hostname di mana $port, $protocol, dan $hostname diambil daripada sasaran carian SRV"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4033,9 +4020,7 @@ msgstr "Rekod SMIMEA menggunakan format yang sama dengan TLSA tetapi mengasosias
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Bagian lokal dari alamat email dicincang dengan SHA-256 dan diletakkan "
-"sebelum  simecert. XAZZZZ"
+msgstr "Bahagian tempatan alamat email dicincang dengan SHA-256 dan diletakkan sebelum _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -7977,7 +7962,7 @@ msgstr "Tag peratusan DMARC (pct) harus diantara 0 dan 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "Dasar DMARC yang diterapkan hanya %d%%Z dari pesan. Ini seharusnya hanya digunakan selama rollout dasar."
+msgstr "Dasar DMARC yang diterapkan hanya %d%% dari pesan. Ini seharusnya hanya digunakan selama rollout dasar."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7999,7 +7984,7 @@ msgstr "Tag DMARC %s harus berisi mailto yang sah: atau https: URI"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Alamat email tak sah dalam tag %s DMARC ZZZ: %s"
+msgstr "Alamat email tidak sah dalam tag DMARC %s: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -8881,7 +8866,7 @@ msgstr "!"
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Gagal mengemas kini rekod zon: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10105,7 +10090,7 @@ msgstr "Contoh: www.A.192.168.1.1.1.0.3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Keutamaan dan TTL adalah pilihan (lalai: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10594,12 +10579,12 @@ msgstr "- Tidak."
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY menunggu: serial %serial% belum diakui"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY dihantar pada serial %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11404,7 +11389,7 @@ msgstr "Tidak, jaga templat ini"
 
 #: templates/modern/dns_wizard_select.html:12
 msgid "DNS Record Wizard"
-msgstr "DNS Record Wizard"
+msgstr "Bestari Rekod DNS"
 
 #: templates/modern/dns_wizard_select.html:19
 msgid ""
@@ -11589,7 +11574,7 @@ msgstr "Terakhir dimodifikasi"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Disunting terakhir oleh %account% pada %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11822,7 +11807,7 @@ msgstr "Zona Tanpa Pemilik"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Jadikan diri anda pemilik semua zon yang disenaraikan?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -13990,7 +13975,7 @@ msgstr "Hasil RDAP untuk RDAP"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Sila masukkan nama domain untuk membuat carian RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14224,7 +14209,7 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Berikan port pangkalan data"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
@@ -14579,9 +14564,7 @@ msgstr "Konfigurasikan sambungan basis data, buat akun admin, dan hasilkan fail 
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Nota: PostgreSQL dan SQLite mesti menggunakan pangkalan data yang sama untuk PowerDNS dan Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14717,9 +14700,7 @@ msgstr "Tidak dapat menyambung ke pangkalan data PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Gagal menetapkan lokal. Lokal yang dipilih mungkin tidak disokong pada sistem ini. Sila hubungi pentadbir anda."
 
 #, php-format
 # OBSOLETE: msgid ""

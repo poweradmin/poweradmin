@@ -149,7 +149,7 @@ msgstr "Përdorimi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "0 - CA Constraint"
+msgstr "0 - Kufizim CA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -1840,7 +1840,7 @@ msgstr "Vlerë e pavlefshme për %s. Vlerat e lejuara: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Lloji i metadatës %s mund të ndryshohet vetëm nga një administrator."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1964,23 +1964,19 @@ msgstr "Modeli i të drejtës është përditësuar me sukses."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Dhënia e të drejtave të administratorit në një model lejeve kërkon të drejta administratori."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Ndryshimi i një modeli lejeve që ka të drejta administratori kërkon të drejta administratori."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Modeli i lejeve nuk mund të përditësohej."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2041,7 +2037,7 @@ msgstr "Shto përdorues"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Nuk ka model lejeve pa të drejta superpërdoruesi për ta caktuar."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2789,7 +2785,7 @@ msgstr "Modeli i lejes është shtuar me sukses."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Modeli i lejeve nuk mund të shtohej."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3746,25 +3742,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Nuk keni leje të ndryshoni modelin e lejeve."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Ndryshimi i modelit tuaj të lejeve kërkon lejen për të ndryshuar përdoruesit e tjerë."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Caktimi i një modeli lejeve me të drejta administratori kërkon të drejta administratori."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3822,8 +3814,7 @@ msgstr "Nuk ke të drejtë të shtosh një regjistrim tek ky shablloni i zonës.
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Nuk keni leje të shtoni këtë lloj regjistrimi në një model zone."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3851,9 +3842,7 @@ msgstr "Gabim:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Nuk keni leje të fshini këtë lloj regjistrimi nga një model zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3869,9 +3858,7 @@ msgstr "Gabim j"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Këto lloje regjistrimesh u lanë jashtë modelit sepse nuk mund t'i shtoni: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3912,7 +3899,7 @@ msgstr "Nuk ke të drejtë të shtosh rekordin NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nuk keni leje të shtoni regjistrim LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3925,7 +3912,7 @@ msgstr "Nuk ke të drejtë të ndryshosh rekordin NS."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nuk keni leje të ndryshoni këtë regjistrim LUA."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3938,7 +3925,7 @@ msgstr "Nuk keni të drejtë të fshini të dhënat NS."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nuk keni leje të fshini regjistrime LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -4125,7 +4112,7 @@ msgstr "Një. I gjithë zinxhiri i sRV-së duhet të jetë DNSSEC-i i shënuar"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. TLSA të dhënat duhet të gjenden në  ZZZZZ. ZZZZZZZ."
+msgstr "2. Rekordet TLSA duhet të gjenden në _$port._$protocol.$hostname, ku $port, $protocol dhe $hostname vijnë nga objektivi i kërkimit SRV"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4207,9 +4194,7 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Pjesa lokale e një adrese email është plot me SHA-256 dhe është vendosur "
-"para  smimecert. ZZZZZ"
+msgstr "Pjesa lokale e një adrese email hashohet me SHA-256 dhe vendoset përpara _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -4648,9 +4633,7 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Format rekord LOC i pavlefshëm. Formati duhet të jetë: d1 [m1] [s1] zZZZZ d2 "
-"[m2] {\"E\"|\"W\"}A alt[\"m\"] [siz[\"m\"] [hp[\"m\"]."
+msgstr "Format i pavlefshëm i rekordit LOC. Formati duhet të jetë: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5143,9 +5126,7 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
-"Emri i rekordit nuk ndjek formatin standart OPANPKEY (ZZZZ. hapurpkey.ZZPZ). "
-"Format standart rekomandohet për ndërveprim."
+msgstr "Emri i rekordit nuk ndjek formatin standard OPENPGPKEY (<hash>._openpgpkey.<domain>). Formati standard rekomandohet për ndërveprueshmëri."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -5740,8 +5721,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Format rekord i pavlefshëm DLV. Pritej: ZZZZZZZZZZ <digest-type> <digest>."
+msgstr "Format i pavlefshëm i rekordit DLV. Pritej: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -6152,7 +6132,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "Rekordi URI duhet të jetë në formatin: ZZZZZZZZZZ \"<target URI>\""
+msgstr "Rekordi URI duhet të jetë në formatin: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -7200,7 +7180,7 @@ msgstr "Fusha e përparësisë për të dhënat e DS duhet të jetë 0 ose bosh.
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "Rekordi i DS duhet të jetë në format: ZZZZZOZ <digest-type> <digest>"
+msgstr "Rekordi DS duhet të jetë në formatin: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7852,9 +7832,7 @@ msgstr "Prioriteti duhet të jetë 0 për regjistrimet RESINFO."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr ""
-"Rekordi i SVCB duhet të fillojë me një prioritet dhe objektiv: ZZZZZZZZZZZZZ "
-"[Z<params>...]"
+msgstr "Rekordi SVCB duhet të fillojë me një prioritet dhe një objektiv: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -8651,7 +8629,7 @@ msgstr "Prioriteti duhet të jetë 0 për regjistrimet BRID."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "Të dhënat DMARC duhet të vendosen në  dmarc.ZZZZZZZ."
+msgstr "Rekordet DMARC duhet të vendosen në _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -9712,7 +9690,7 @@ msgstr "Përdoruesi i zgjedhur tashmë e zotëron zonën."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Përditësimi i regjistrimeve të zonës dështoi: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10047,11 +10025,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr ""
-"Këshillë: Për regjistrimet e SOA - s, përdorni ZZZONE [ZZONE] </code>Z si "
-"emër dhe <code>ONS1] [HOSTMASTER] [SERIAL] 28,800 7200 604,800 86400 ZZ</"
-"code>H si përmbajtje. Rregjistrimet e SOA-s kërkohen për funksionalitetin e "
-"duhur të zonës DNS."
+msgstr "Këshillë: Për rekordet SOA, përdorni <code>[ZONE]</code> si emër dhe <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> si përmbajtje. Rekordet SOA kërkohen për funksionimin e saktë të zonës DNS."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -10127,15 +10101,15 @@ msgstr "Shembuj emri"
 
 #: templates/modern/add_zone_templ_record.html:164
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "Për një nëndomanë: ZZZZubdomain."
+msgstr "Për një nëndomen: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:165
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "Për një dosje të egër: ZZZZZZ."
+msgstr "Për një rekord wildcard: <code>*.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "Për vetë domenën: ZZZZONE [ZZONE] </code>ZZO"
+msgstr "Për domenin vetë: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "Content Examples"
@@ -10143,26 +10117,24 @@ msgstr "Shembuj të përmbajtjes"
 
 #: templates/modern/add_zone_templ_record.html:171
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr ""
-"SOA: ZZZOZ [NS1] [HOSTMASTER] [SERIAL] 28,800 7200 604,800 86400 ZZZZO1ZZOZ"
+msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:172
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
-msgstr ""
-"MX për Microsoft 365: ZZZDMAIN - [TLD].mail. Mbrojtje.out look.comZO1ZOZ"
+msgstr "MX për Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "Një rekord: ZZZZZ192.0.2.10Z</code>ZZZ"
+msgstr "Rekord A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: ZZZZZZZZOZONE. [ZZONE] </code>OZOZAplem.com.</code>ZZZ"
+msgstr "CNAME: <code>target.[ZONE]</code> ose <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TX për SF: ZZZZZZV=spf1 mx iip4:192.0.2.0/24 - allZO</code>OZ"
+msgstr "TXT për SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -10976,7 +10948,7 @@ msgstr "Shembull: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prioriteti dhe TTL janë opsionale (parazgjedhje: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11477,12 +11449,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY në pritje: seriali %serial% nuk është konfirmuar ende"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY u dërgua me serialin %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12012,7 +11984,7 @@ msgstr "e.g., \"192.168.1.0/24\" ose \"10.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:53
 msgid "e.g., \"2001:db8:1:1\""
-msgstr "e.g., \"2001:db8:1:1\""
+msgstr "p.sh., \"2001:db8:1:1\""
 
 #: templates/modern/batch_ptr_record.html:57
 msgid "Host Prefix"
@@ -12495,7 +12467,7 @@ msgstr "Ndryshuar"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Ndryshuar së fundi nga %account% më %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12730,7 +12702,7 @@ msgstr "Zona pa pronarë"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Të caktoheni si pronar i të gjitha zonave të listuara?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14080,9 +14052,7 @@ msgstr "e personalizuar"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr ""
-"Për t'u kthyer në shabllon standart, hiq ose riemëro skedarët e "
-"personalizuar në zZZZevemplates/emails/indux/Z</code>Z."
+msgstr "Për t'u kthyer te shabllonet standarde, hiqni ose riemërtoni skedarët e shablloneve të personalizuara në <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -14093,10 +14063,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr ""
-"Ju mund të krijoni shabllon e personalizuar e-mail duke i vendosur ato në "
-"ZZZAKPlates/emails/Z</code>ZZZZ për të anulluar këto shabllone standarte me "
-"projektet tuaja."
+msgstr "Mund të krijoni shabllone email të personalizuara duke i vendosur në <code>templates/emails/custom/</code> për të mbivendosur këto shabllone standarde me modelet tuaja."
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -14550,16 +14517,13 @@ msgstr "Përdorues kundër grupeve"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"Kur është caktuar në ZZZZZZOzerZOZOZ: Leja aplikohet në të gjithë sistemin."
+msgstr "Kur caktohet për <strong>përdoruesit</strong>: Lejet zbatohen globalisht në të gjithë sistemin."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr ""
-"Kur është caktuar në ZZZZgroups Z</strong>ZZZZZ: Leja aplikohet vetëm në "
-"zonat që zotërohen nga ai grup."
+msgstr "Kur caktohet për <strong>grupet</strong>: Lejet zbatohen vetëm për zonat që zotërohen nga ai grup."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"
@@ -14924,7 +14888,7 @@ msgstr "Eksportet e zonës së reve"
 
 #: lib/Module/ZoneImportExport/templates/import.html:224
 msgid "$ORIGIN and $TTL directives"
-msgstr "ZZZZZ dhe $TTL direktiva"
+msgstr "Direktivat $ORIGIN dhe $TTL"
 
 #: lib/Module/ZoneImportExport/templates/import.html:225
 msgid "Multi-line records"
@@ -14973,7 +14937,7 @@ msgstr "Rezultatet e RDAP"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Ju lutemi shkruani një emër domeni për të kryer një kërkim RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15520,9 +15484,7 @@ msgstr "Hiq directory \"instal/\" nga serveri juaj"
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the username "
 "\"admin\" and the password you set in step 4"
-msgstr ""
-"Hyrje në ZZZZZZAKminZO</a> duke përdorur emrin e përdoruesit \"admin\" dhe "
-"fjalëkalimin e vendosur në hapin 4"
+msgstr "Hyni në <a href=\"../index.php\">Poweradmin</a> duke përdorur emrin e përdoruesit \"admin\" dhe fjalëkalimin që vendosët në hapin 4"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -15572,9 +15534,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Shënim: PostgreSQL dhe SQLite duhet të përdorin të njëjtën bazë të dhënash për PowerDNS dhe për Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15724,9 +15684,7 @@ msgstr "Nuk mund të lidhet me bazën e të dhënave PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Vendosja e parametrave gjuhësorë dështoi. Gjuha e zgjedhur mund të mos mbështetet në këtë sistem. Ju lutemi kontaktoni administratorin tuaj."
 
 #, php-format
 # OBSOLETE: msgid ""

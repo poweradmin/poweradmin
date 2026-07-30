@@ -1737,7 +1737,7 @@ msgstr "Неважећа вредност за %s. Дозвољене вредн
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Врсту метаподатака %s може да мења само администратор."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1861,23 +1861,19 @@ msgstr "Шаблон дозвола је успешно ажуриран."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Додељивање администраторских права у шаблону дозвола захтева администраторска права."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Уређивање шаблона дозвола са администраторским правима захтева администраторска права."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Шаблон дозвола није могао да се ажурира."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1896,7 +1892,7 @@ msgstr "Претрага"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Дневник промена записа"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -1938,7 +1934,7 @@ msgstr "Додај корисника"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Није доступан ниједан шаблон дозвола без суперкорисничких права за додељивање."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2474,11 +2470,11 @@ msgstr "Немате дозволу за преглед ове странице.
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Подразумевани TTL по типу записа"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Неважеће прослеђивање форме."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2491,12 +2487,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Сачувано подразумеваних вредности: %d; обрисано: %d. Одбијене неважеће вредности за: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Сачувано подразумеваних вредности: %d; обрисано: %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2678,7 +2674,7 @@ msgstr "Шаблон дозвола је успешно додат."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Шаблон дозвола није могао да се дода."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2840,17 +2836,17 @@ msgstr "Директне зоне"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Немате дозволу за синхронизацију зона из PowerDNS-а."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Зоне синхронизоване из PowerDNS-а: %d додато, %d ажурирано, %d уклоњено."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Синхронизација зоне није успела: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3566,17 +3562,13 @@ msgstr "Не, задржи овог супермастера"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Приказује се статус повезивости за autoprimary сервере подешене у табели испод."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Приказује се статус повезивости за супермастере подешене у табели испод."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3614,25 +3606,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Немате дозволу за промену шаблона дозвола."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Промена сопственог шаблона дозвола захтева дозволу за уређивање других корисника."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Додељивање шаблона дозвола са администраторским правима захтева администраторска права."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3690,8 +3678,7 @@ msgstr "Немате дозволу за додавање записа у ова
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Немате дозволу за додавање овог типа записа у шаблон зоне."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3718,9 +3705,7 @@ msgstr "Грешка при ажурирању записа шаблона зо�
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Немате дозволу за брисање овог типа записа из шаблона зоне."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3736,9 +3721,7 @@ msgstr "Грешка при провери власништва шаблона: 
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Ови типови записа су изостављени из шаблона јер их не можете додати: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3779,7 +3762,7 @@ msgstr "Немате дозволу за додавање NS записа."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Немате дозволу за додавање LUA записа."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3792,7 +3775,7 @@ msgstr "Немате дозволу за уређивање овог NS запи
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Немате дозволу за уређивање овог LUA записа."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3805,7 +3788,7 @@ msgstr "Немате дозволу за брисање NS записа."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Немате дозволу за брисање LUA записа."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -8564,11 +8547,11 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "Ажурирање PTR записа је прескочено: тип записа није A или AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Застарели PTR запис је уклоњен."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -8648,7 +8631,7 @@ msgstr "Изабрани корисник већ поседује зону."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Ажурирање записа зоне није успело: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9257,12 +9240,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Свака мрежа (CIDR блок) се мапира на тачно један преглед. Ресолвери у тој мрежи добијају само варијанте зоне додељене мапираном прегледу. PowerDNS прво процењује мреже са најдужим префиксом, тако да специфичнија подмрежа (на пример 10.0.1.0/24) има предност над ширим опсегом (10.0.0.0/8) када оба одговарају клијенту."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9566,7 +9544,7 @@ msgstr "групе"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Верзија повезаног PowerDNS-а"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -9666,7 +9644,7 @@ msgstr "Одјава"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Тренутне глобалне подразумеване вредности"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -9674,11 +9652,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Подразумевани TTL (у секундама)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "празно = користи глобалну подразумевану вредност"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -9694,7 +9672,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(за PTR записе у реверсним зонама) или"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -9788,7 +9766,7 @@ msgstr "Дневници АПИ активности"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Понашање API дневника:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -9796,11 +9774,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Бележи догађаје животног циклуса API кључева (креирање, регенерисање, укидање, промене дозвола) и аутентификоване API захтеве. Филтрирајте по кориснику или операцији да бисте проверили активност спољних интеграција. Осетљиве вредности (кључеви, токени) никада се не записују у овај дневник."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9828,7 +9802,7 @@ msgstr "Дневници промена зоне"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Понашање дневника зона:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -9836,11 +9810,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Овај ток активности бележи сваку операцију над зонама и записима (креирања, уређивања, брисања, DNSSEC радње, увозе) као равни низ у формату кључ:вредност. За структуриране снимке пре/после и приказ разлика у променама записа, погледајте Дневник промена записа."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -9877,7 +9847,7 @@ msgstr "Пример: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Приоритет и TTL су опциони (подразумевано: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10352,12 +10322,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY на чекању: серијски број %serial% још није потврђен"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY послат при серијском броју %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11341,7 +11311,7 @@ msgstr "Poslednja izmena"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Последњи уредио %account% дана %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11442,11 +11412,11 @@ msgstr "MFA није конфигурисан"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Преузми зоне из PowerDNS-а и усклади локалну табелу"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Синхронизуј из PowerDNS-а"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -11574,7 +11544,7 @@ msgstr "Зоне без власника"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Поставити себе као власника свих приказаних зона?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12206,7 +12176,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Понашање дневника промена:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12215,12 +12185,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Свако додавање, уређивање или брисање записа и свако креирање или брисање зоне, као и уређивање метаподатака, овде бележи снимак пре/после, заједно са корисником и временом. Дневници никада не истичу аутоматски - старе редове обришите ручно ако табела постане велика. Користите пречице за временски период да бисте се усредсредили на недавну активност или извезите у CSV/JSON за спољне системе ревизије."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12260,11 +12225,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Нису пронађене промене записа"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Пробајте други филтер или временски период"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -12539,7 +12504,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Наследи глобалну поставку"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -12627,11 +12592,11 @@ msgstr "Прикажи појединачно дугме за брисање"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Приказ само имена хоста"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Уклони суфикс зоне из имена записа у приказу за уређивање"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -12733,7 +12698,7 @@ msgstr "Дневници активности корисника"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Понашање дневника корисника:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -12741,11 +12706,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Бележи догађаје корисничких налога као што су пријаве, промене лозинке, ажурирања чланства у групама и администраторске радње над корисничким записима. Сваки унос приказује радњу, извршиоца, погођеног корисника и време. Филтрирајте по операцији или кориснику да бисте проверили промене приступа."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12789,13 +12750,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "Прегледи различитим клијентима достављају различите варијанте зоне на основу мреже из које је упит послат ресолверу. Свака варијанта се именује као zone..variant (на пример, example.com..trusted) и мора постојати као одвојена зона у PowerDNS-у пре него што се овде додели. Варијанте деле исто име, али се различито разрешавају по прегледу, тако да исто име хоста може одговарати различитим IP адресама у зависности од мреже клијента."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -13054,7 +13009,7 @@ msgstr "обрнуте зоне"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Дневник промена записа"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13088,27 +13043,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Проверите да ли pdns_api.key у config/settings.php одговара API кључу подешеном у PowerDNS-у."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Проверите да ли pdns_api.server_name одговара оном што PowerDNS пријављује (подразумевано 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS је одбио захтев. Проверите дневник PowerDNS сервера да бисте открили узрок - чест повод након увоза зона директно у PowerDNS базу података је један неисправан запис због којег серијализација зоне не успева."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13271,7 +13219,7 @@ msgstr "Спољне апликације ће моћи да се аутенти
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Понашање API кључева:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13279,11 +13227,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "API кључеви омогућавају спољним апликацијама приступ Poweradmin API-ју. Сваки кључ је повезан са вашим корисничким налогом и наслеђује ваше дозволе, тако да укидање налога укида и све његове кључеве. Кључеве третирајте као тајне - они дају исти приступ као пријава под вашим именом."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13442,7 +13386,7 @@ msgstr "Дневници активности групе"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Понашање дневника група:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -13450,11 +13394,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Бележи догађаје животног циклуса група (креирање, уређивање, брисање) и промене чланства (додати или уклоњени корисници). Сваки унос приказује радњу, извршиоца, погођену групу и време. Корисно за проверу промена приступа зонама преко власништва групе."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13738,11 +13678,11 @@ msgstr "RDAP резултати за"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Унесите име домена за RDAP претрагу."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Креирај корисника са ограниченим правима"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -13750,29 +13690,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Креирај корисника са ограниченим правима"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Ограничена права над базом података:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Креирајте корисника базе података са ограниченим правима (select, insert, update, delete) само за Poweradmin табеле. Приступ PowerDNS табелама није потребан када се користи API бекенд."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Креирајте корисника базе података са ограниченим правима (select, insert, update, delete) да би Poweradmin приступао PowerDNS табелама."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13780,13 +13715,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Извршите следеће команде:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Након што додате новог корисника, наставите са овим поступком инсталације."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -13796,13 +13730,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Пошто користите SQLite, нема потребе да креирате новог корисника са ограниченим правима."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Настави на корак"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -13810,7 +13742,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Креирај конфигурациону датотеку"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -13818,25 +13750,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Креирајте датотеку"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "са следећим садржајем:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Изаберите језик"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Изаберите језик за инсталацију"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Изаберите жељени језик да бисте наставили са инсталацијом:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -13848,7 +13779,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Подешавање везе са базом података"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -13856,11 +13787,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Изаберите како Poweradmin комуницира са PowerDNS-ом:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Директан приступ табелама PowerDNS базе података"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13876,7 +13807,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Подешавања PowerDNS API-ја"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13884,7 +13815,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL крајње тачке PowerDNS API-ја."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -13892,7 +13823,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API кључ (из поставке api-key у pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -13900,11 +13831,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "Име PowerDNS сервера за API позиве (обично \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Подешавања везе са базом података"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -13914,17 +13845,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Подесите везу са базом података са правима за креирање табела. Локација PowerDNS-а може се навести одвојено ако је потребно."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Подесите везу са базом података за Poweradmin табеле (корисници, дозволе, зоне). PowerDNS табеле нису потребне."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13944,31 +13871,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Тип сервера базе података."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Унесите корисничко име"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Корисничко име базе података са правима за креирање табела."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Лозинка за овог корисника базе података."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Избегавајте наводнике, обрнуте косе црте и прекиде реда."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Унесите име хоста"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Име хоста сервера базе података (обично \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -13976,27 +13903,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Унесите порт базе података"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Порт сервера базе података."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Унесите име базе података"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Име базе података (користиће се за Poweradmin табеле)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Пуна путања до SQLite датотеке базе података"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Датотека мора постојати и веб сервер мора имати право читања и писања. Користите апсолутну путању."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14008,7 +13935,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Скуп знакова за нове табеле. Оставите празно за подразумевану вредност базе података."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14017,8 +13944,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Правила упоређивања знакова. Оставите празно за подразумевану вредност базе података."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -14030,11 +13956,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Оставите празно за исту базу података"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL база података са PowerDNS табелама (ако је другачија)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -14060,7 +13986,7 @@ msgstr "Fiksno postavljeno za početni administratorski nalog."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Унесите лозинку"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14072,7 +13998,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Провера системских услова"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14080,7 +14006,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Захтева PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14088,11 +14014,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "потребан је најмање један"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Обавезне PHP екстензије"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14108,43 +14034,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Није откривено - потребно за URL рутирање"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Није могуће открити (PHP-FPM) - проверите да ли је омогућено"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Проверите да је преписивање URL адреса подешено (погледајте nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Проверите да је преписивање URL адреса подешено за ваш веб сервер"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Све обавезне компоненте су доступне."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Можете наставити са инсталацијом."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Неке обавезне компоненте нису доступне."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Инсталирајте компоненте које недостају пре него што наставите."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Подешавање налога и сервера имена"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Подешавање налога и сервера имена"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14152,7 +14078,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Сада ћемо прикупити све податке за саму конфигурацију."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14163,24 +14089,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin држи сопствене табеле (корисници, дозволе, метаподаци зона) у подешеној бази података чак и када је изабран PowerDNS API бекенд. Ови подаци за пријаву односе се на ту базу података, не на PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Корисничко име базе података за Poweradmin са ограниченим приступом. Не користи се за пријаву у веб интерфејс."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Унесите лозинку корисника"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Лозинка за ово корисничко име."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14192,11 +14114,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Унесите DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Подразумевани hostmaster за SOA записе."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14204,11 +14126,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Унесите примарни сервер имена"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Примарни сервер имена за нове зоне."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14216,11 +14138,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Унесите секундарни сервер имена"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Секундарни сервер имена за нове зоне."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14232,7 +14154,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Опциони терцијарни сервер имена за нове зоне."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14240,7 +14162,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Опциони кватернарни сервер имена за нове зоне."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14252,27 +14174,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Честитамо! Ваша Poweradmin инсталација је сада подешена."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Важно безбедносно обавештење:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Морате уклонити директоријум \"install/\" из корена Poweradmin инсталације."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Poweradmin неће радити ако директоријум install постоји, из безбедносних разлога."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14280,7 +14198,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Уклоните директоријум \"install/\" са вашег сервера"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14292,7 +14210,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Почните да подешавате своје DNS зоне и записе"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14304,21 +14222,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Пре него што наставите, проверите да имате:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "Инсталиран PowerDNS са креираним табелама базе података (или подешен API приступ)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Подаци за приступ бази података (име хоста, корисничко име, лозинка)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Дозволу за креирање табела за Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14328,56 +14245,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Подесите везу са базом података, креирајте администраторски налог и генеришите конфигурациону датотеку."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Напомена: PostgreSQL и SQLite морају користити исту базу података и за PowerDNS и за Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "PowerDNS табеле које недостају:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin захтева ове PowerDNS табеле да би исправно радио."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Ажурирање базе података... завршено!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Проблеми са ограничењима страних кључева:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Инсталер није могао да уклони постојеће табеле због ограничења страних кључева"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Ово се може десити при поновној инсталацији ако имате прилагођена ограничења или ако друге табеле референцирају ове табеле"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Можете ручно онемогућити проверу страних кључева пре покретања инсталера:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14385,31 +14293,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Проверите да SQLite датотека базе података постоји"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Проверите да веб сервер има дозволе за читање и писање датотеке базе података"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Проверите да је пуна путања до датотеке базе података исправна и доступна"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Проверите да су подаци за приступ бази података исправни"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Проверите да корисник базе података има довољне привилегије"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Проверите да је сервер базе података покренут и доступан"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14420,75 +14326,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite датотека базе података %s не постоји. Креирајте датотеку базе података пре него што наставите."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "SQLite датотека базе података %s није читљива. Проверите дозволе датотеке."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "У SQLite датотеку базе података %s није могуће писати. Проверите дозволе датотеке."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Није могуће приступити SQLite датотеци базе података %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API URL је обавезан када се користи API бекенд."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API кључ је обавезан када се користи API бекенд."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Конфигурациона датотека није пронађена. Креирајте датотеку config/settings.php пре него што наставите."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Одвојене PowerDNS базе података подржане су само са MySQL-ом. За PostgreSQL и SQLite користите исту базу података."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "У бази података \"%s\" недостају PowerDNS табеле: %s. Проверите да је PowerDNS исправно инсталиран у овој бази података."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Није могуће повезати се на PowerDNS базу података \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Постављање локализације није успело. Изабрана локализација можда није подржана на овом систему. Обратите се администратору."
 
 #, php-format
 # OBSOLETE: msgid ""

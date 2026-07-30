@@ -166,7 +166,7 @@ msgstr "Certifikatet skal svare nøjagtigt til (PKIX- EE)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:109
 msgid "2 - Trust Anchor Assertion"
-msgstr "2 - Trust Anchor Assertion"
+msgstr "2 - Trust Anchor-erklæring"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:109
 msgid "Certificate must chain to specified anchor (DANE-TA)"
@@ -1841,7 +1841,7 @@ msgstr "Ugyldig værdi for %s. Tilladte værdier: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadatatypen %s kan kun ændres af en administrator."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1967,23 +1967,19 @@ msgstr "Tilladelsesskabelonen er blevet opdateret med succes."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Det kræver administratorrettigheder at tildele administratorrettigheder i en tilladelsesskabelon."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Det kræver administratorrettigheder at redigere en tilladelsesskabelon med administratorrettigheder."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Tilladelsesskabelonen kunne ikke opdateres."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2044,7 +2040,7 @@ msgstr "Tilføj bruger"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Der er ingen tilladelsesskabelon uden superbrugerrettigheder, som kan tildeles."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2575,7 +2571,7 @@ msgstr "Du har ikke tilladelse til at redigere DNS-optegnelser."
 #: lib/Application/Controller/BatchPtrRecordController.php:93
 #: templates/modern/batch_ptr_record.html:17 templates/modern/header.html:182
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "PTR-poster i bulk"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -2792,7 +2788,7 @@ msgstr "Tilladelsesskabelonen er blevet tilføjet med succes."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Tilladelsesskabelonen kunne ikke tilføjes."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -3733,25 +3729,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Du har ikke tilladelse til at ændre tilladelsesskabelonen."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Det kræver tilladelse til at redigere andre brugere at ændre din egen tilladelsesskabelon."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Det kræver administratorrettigheder at tildele en tilladelsesskabelon med administratorrettigheder."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3810,8 +3802,7 @@ msgstr ""
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Du har ikke tilladelse til at tilføje denne posttype til en zoneskabelon."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3838,9 +3829,7 @@ msgstr "Fejl ved opdatering af skabelon for zone:"
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Du har ikke tilladelse til at slette denne posttype fra en zoneskabelon."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3856,9 +3845,7 @@ msgstr "Fejl ved kontrol af skabelonejerskab:"
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Disse posttyper blev udeladt af skabelonen, fordi du ikke må tilføje dem: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3899,7 +3886,7 @@ msgstr "Du har ikke tilladelse til at tilføje NS rekord."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Du har ikke tilladelse til at tilføje LUA-poster."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3912,7 +3899,7 @@ msgstr "Du har ikke tilladelse til at redigere denne NS rekord."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Du har ikke tilladelse til at redigere denne LUA-post."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3925,7 +3912,7 @@ msgstr "Du har ikke tilladelse til at slette NS-poster."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Du har ikke tilladelse til at slette LUA-poster."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9599,7 +9586,7 @@ msgstr "Den valgte bruger ejer allerede zonen."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Kunne ikke opdatere zonens poster: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9845,7 +9832,7 @@ msgstr "Supplerende aktioner"
 
 #: templates/modern/api_key_regenerate.html:10
 msgid "Regenerate API Key"
-msgstr "Regenerate API Key"
+msgstr "Gendan API-nøgle"
 
 #: templates/modern/api_key_edit.html:139
 msgid "Creates a new key, invalidating the old one"
@@ -10814,7 +10801,7 @@ msgstr "Viser logfiler for zoner du ejer."
 
 #: templates/modern/list_log_zones.html:26
 msgid "Zone Change Logs"
-msgstr "Zone Change Logs"
+msgstr "Ændringslog for zoner"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
@@ -10846,7 +10833,7 @@ msgstr "Bulk tilføje poster"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
-msgstr "Bulk Add Records"
+msgstr "Tilføj poster i bulk"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10868,7 +10855,7 @@ msgstr "Eksempel: www, A, 192.168.1.1,0,3600, webserver"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prioritet og TTL er valgfrie (standard: prioritet=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11298,7 +11285,7 @@ msgstr "IPv4-tilbageførselszoner:"
 
 #: templates/modern/list_reverse_zones.html:69
 msgid "IPv6 reverse zones:"
-msgstr "IPv6 reverse zones:"
+msgstr "IPv6-omvendte zoner:"
 
 #: templates/modern/search.html:119 templates/modern/search.html:324
 msgid "Rows per page:"
@@ -11363,12 +11350,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY afventer: serienummer %serial% er endnu ikke bekræftet"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY sendt ved serienummer %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11943,7 +11930,7 @@ msgstr "Opret PTR Records"
 
 #: templates/modern/batch_ptr_record.html:119
 msgid "PTR Record Information"
-msgstr "PTR Record Information"
+msgstr "Oplysninger om PTR-post"
 
 #: templates/modern/api_key_add.html:77
 msgid "Important Information"
@@ -12195,7 +12182,7 @@ msgstr "Nej, behold denne skabelon"
 
 #: templates/modern/dns_wizard_select.html:12
 msgid "DNS Record Wizard"
-msgstr "DNS Record Wizard"
+msgstr "DNS-postguide"
 
 #: templates/modern/dns_wizard_select.html:19
 msgid ""
@@ -12385,7 +12372,7 @@ msgstr "Senest ændret"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Senest redigeret af %account% den %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12544,7 +12531,7 @@ msgstr "Nej, hold denne rekord"
 
 #: templates/default/mfa_verify.html:6 templates/modern/mfa_verify.html:6
 msgid "Two-Factor Authentication"
-msgstr "Two-Factor Authentication"
+msgstr "Tofaktorgodkendelse"
 
 #: templates/default/mfa_verify.html:20 templates/modern/mfa_verify.html:20
 msgid "Enter verification code"
@@ -12620,7 +12607,7 @@ msgstr "Zoner uden ejere"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Vil du tildele dig selv som ejer af alle viste zoner?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -14326,7 +14313,7 @@ msgstr "Zonerne vil forblive i systemet."
 
 #: templates/default/api_keys.html:6 templates/modern/api_keys.html:6
 msgid "API Keys Management"
-msgstr "API Keys Management"
+msgstr "Administration af API-nøgler"
 
 #: templates/default/api_keys.html:9 templates/modern/api_keys.html:9
 msgid "Add new API key"
@@ -14859,7 +14846,7 @@ msgstr "RDAP- resultater for"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Indtast et domænenavn for at foretage et RDAP-opslag."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -15005,7 +14992,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL til PowerDNS API-endepunktet."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -15101,7 +15088,7 @@ msgstr "Angiv databaseport"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Port på databaseserveren."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
@@ -15457,9 +15444,7 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Bemærk: PostgreSQL og SQLite skal bruge den samme database til både PowerDNS og Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15602,9 +15587,7 @@ msgstr "Kan ikke forbinde til PowerDNS database %s: %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes muligvis ikke på dette system. Kontakt din administrator."
 
 #, php-format
 # OBSOLETE: msgid ""

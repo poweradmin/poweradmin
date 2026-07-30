@@ -1736,7 +1736,7 @@ msgstr "Nederīga %s vērtība. Atļautās vērtības: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadatu veidu %s var mainīt tikai administrators."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1859,23 +1859,19 @@ msgstr "Atļauju veidne veiksmīgi atjaunināta."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Lai atļauju veidnē piešķirtu administratora tiesības, ir nepieciešamas administratora tiesības."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Lai rediģētu atļauju veidni ar administratora tiesībām, ir nepieciešamas administratora tiesības."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Atļauju veidni nevarēja atjaunināt."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -1894,7 +1890,7 @@ msgstr "Meklēt"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Ierakstu izmaiņu žurnāls"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -1936,7 +1932,7 @@ msgstr "Pievienot lietotāju"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Nav pieejama neviena atļauju veidne bez virslietotāja tiesībām, ko piešķirt."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2470,11 +2466,11 @@ msgstr "Jums nav atļaujas skatīt šo lapu."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Noklusētie TTL pēc ieraksta veida"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Nederīga formas nosūtīšana."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2487,12 +2483,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Saglabāti %d noklusējumi; notīrīti %d. Noraidītas nederīgas vērtības: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Saglabāti %d noklusējumi; notīrīti %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2674,7 +2670,7 @@ msgstr "Atļauju veidne veiksmīgi pievienota."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Atļauju veidni nevarēja pievienot."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2835,17 +2831,17 @@ msgstr "Turpzonas"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Jums nav atļaujas sinhronizēt zonas no PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "No PowerDNS sinhronizētās zonas: %d pievienotas, %d atjauninātas, %d dzēstas."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Zonu sinhronizācija neizdevās: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3562,17 +3558,13 @@ msgstr "Nē, paturēt šo galveno"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
+msgstr "Tiek parādīts savienojuma statuss autoprimary serveriem, kas konfigurēti tabulā zemāk."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
+msgstr "Tiek parādīts savienojuma statuss supermaster serveriem, kas konfigurēti tabulā zemāk."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3608,25 +3600,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Jums nav atļaujas mainīt atļauju veidni."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Lai mainītu savu atļauju veidni, ir nepieciešama atļauja rediģēt citus lietotājus."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Lai piešķirtu atļauju veidni ar administratora tiesībām, ir nepieciešamas administratora tiesības."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3684,8 +3672,7 @@ msgstr "Jums nav atļaujas pievienot ierakstu šai zonas veidnei."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Jums nav atļaujas pievienot šo ieraksta veidu zonas veidnei."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3712,9 +3699,7 @@ msgstr "Kļūda, atjauninot zonas veidnes ierakstu: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Jums nav atļaujas dzēst šo ieraksta veidu no zonas veidnes."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3730,9 +3715,7 @@ msgstr "Kļūda, pārbaudot veidnes īpašumtiesības: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Šie ierakstu veidi netika iekļauti veidnē, jo jums nav atļaujas tos pievienot: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3773,7 +3756,7 @@ msgstr "Jums nav atļaujas pievienot NS ierakstu."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Jums nav atļaujas pievienot LUA ierakstu."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3786,7 +3769,7 @@ msgstr "Jums nav atļaujas rediģēt šo NS ierakstu."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Jums nav atļaujas rediģēt šo LUA ierakstu."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3799,7 +3782,7 @@ msgstr "Jums nav atļaujas dzēst NS ierakstus."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Jums nav atļaujas dzēst LUA ierakstus."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -8510,11 +8493,11 @@ msgstr "Reversais ieraksts pievienots. PTR %s jau eksistē → %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "PTR atjaunināšana izlaista: ieraksta veids nav A vai AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Novecojušais PTR ieraksts dzēsts."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -8594,7 +8577,7 @@ msgstr "Atlasītais lietotājs jau ir zonas īpašnieks."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Neizdevās atjaunināt zonas ierakstus: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -9202,12 +9185,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
+msgstr "Katrs tīkls (CIDR bloks) tiek piesaistīts tikai vienam skatam. Šī tīkla atrisinātāji saņem tikai tos zonas variantus, kas piešķirti piesaistītajam skatam. PowerDNS vispirms izvērtē tīklus ar garāko prefiksu, tāpēc konkrētāks apakštīkls (piemēram, 10.0.1.0/24) aizstāj plašāku diapazonu (10.0.0.0/8), ja abi atbilst klientam."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9511,7 +9489,7 @@ msgstr "grupas"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Pievienotā PowerDNS versija"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -9611,7 +9589,7 @@ msgstr "Iziet"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Pašreizējie globālie noklusējumi"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -9619,11 +9597,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Noklusētais TTL (sekundes)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "tukšs = izmantot globālo noklusējumu"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -9639,7 +9617,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(PTR ierakstiem reversajās zonās) vai"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -9732,7 +9710,7 @@ msgstr "API aktivitāšu žurnāli"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "API žurnāla darbība:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -9740,11 +9718,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
+msgstr "Reģistrē API atslēgu dzīves cikla notikumus (izveide, atjaunošana, atsaukšana, atļauju izmaiņas) un autentificētus API pieprasījumus. Filtrējiet pēc lietotāja vai darbības, lai auditētu ārējo integrāciju aktivitāti. Sensitīvas vērtības (atslēgas, marķieri) šajā žurnālā nekad netiek ierakstītas."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9772,7 +9746,7 @@ msgstr "Zonas izmaiņu žurnāli"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Zonu žurnāla darbība:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -9780,11 +9754,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
+msgstr "Šī aktivitāšu plūsma reģistrē katru ar zonām un ierakstiem veikto darbību (izveide, rediģēšana, dzēšana, DNSSEC darbības, importēšana) kā vienkāršu key:value notikuma virkni. Strukturētiem stāvokļa attēliem pirms/pēc un ierakstu izmaiņu salīdzinājuma skatam skatiet ierakstu izmaiņu žurnālu."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -9823,7 +9793,7 @@ msgstr "Piemērs: www,A,192.168.1.1,0,3600,web server"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Prioritāte un TTL nav obligāti (noklusējumi: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -10299,12 +10269,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY gaida: sērijas numurs %serial% vēl nav apstiprināts"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY nosūtīts ar sērijas numuru %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -11283,7 +11253,7 @@ msgstr "Pēdējoreiz mainīts"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Pēdējo reizi rediģēja %account% %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -11384,11 +11354,11 @@ msgstr "MFA nav konfigurēts"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Iegūt zonas no PowerDNS un saskaņot vietējo tabulu"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Sinhronizēt no PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -11514,7 +11484,7 @@ msgstr "Zonas bez īpašniekiem"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Piešķirt sevi kā īpašnieku visām uzskaitītajām zonām?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -12143,7 +12113,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Izmaiņu žurnāla darbība:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -12152,12 +12122,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
+msgstr "Katra ieraksta pievienošana/rediģēšana/dzēšana un zonas izveide/dzēšana/metadatu rediģēšana šeit tiek fiksēta ar stāvokļa attēlu pirms/pēc, kā arī lietotāju un laika zīmogu. Žurnāla ieraksti nekad automātiski nebeidzas - dzēsiet vecās rindas manuāli, ja tabula kļūst pārāk liela. Izmantojiet laika perioda saīsnes, lai koncentrētos uz nesenajām darbībām, vai eksportējiet uz CSV/JSON, lai padotu datus ārējām audita sistēmām."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12197,11 +12162,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Ierakstu izmaiņas nav atrastas"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Izmēģiniet citu filtru vai laika periodu"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -12473,7 +12438,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Pārmantot globālo iestatījumu"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -12561,11 +12526,11 @@ msgstr "Rādīt individuālu dzēšanas pogu katram ierakstam"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Rādīt tikai resursdatora nosaukumu"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Noņemt zonas sufiksu no ierakstu nosaukumiem rediģēšanas skatā"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -12666,7 +12631,7 @@ msgstr "Lietotāja aktivitāšu žurnāli"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Lietotāju žurnāla darbība:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -12674,11 +12639,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
+msgstr "Reģistrē lietotāju kontu notikumus, piemēram, pieteikšanās, paroļu maiņas, grupu dalības atjauninājumus un administratora darbības ar lietotāju ierakstiem. Katrs ieraksts parāda darbību, izpildītāju, ietekmēto lietotāju un laika zīmogu. Filtrējiet pēc darbības vai lietotāja, lai auditētu piekļuves izmaiņas."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12722,13 +12683,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
+msgstr "Skati piegādā dažādiem klientiem dažādus zonas variantus atkarībā no tīkla, no kura tika veikts vaicājums atrisinātājam. Katrs variants tiek nosaukts formā zone..variant (piemēram, example.com..trusted), un pirms piešķiršanas šeit tam PowerDNS jāpastāv kā atsevišķai zonai. Varianti dala vienu nosaukumu, bet katrā skatā atrisinās atšķirīgi, tāpēc viens un tas pats resursdatora nosaukums var atbildēt ar dažādām IP adresēm atkarībā no klienta tīkla."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -12986,7 +12941,7 @@ msgstr "reversās zonas"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Ierakstu izmaiņu žurnāls"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -13020,27 +12975,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Pārbaudiet, vai pdns_api.key failā config/settings.php sakrīt ar PowerDNS konfigurēto API atslēgu."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Pārbaudiet, vai pdns_api.server_name sakrīt ar to, ko ziņo PowerDNS (noklusējums 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS noraidīja pieprasījumu. Iemeslu pārbaudiet PowerDNS servera žurnālā - bieži sastopams izraisītājs pēc zonu importēšanas tieši PowerDNS datubāzē ir viens nepareizi formatēts ieraksts, kas neļauj serializēt zonu."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13202,7 +13150,7 @@ msgstr "Ārējās lietotnes varēs autentificēties, izmantojot šo atslēgu."
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "API atslēgu darbība:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -13210,11 +13158,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
+msgstr "API atslēgas ļauj ārējām lietojumprogrammām piekļūt Poweradmin API. Katra atslēga ir saistīta ar jūsu lietotāja kontu un pārmanto jūsu atļaujas, tāpēc konta atsaukšana atsauc arī visas tā atslēgas. Uzskatiet atslēgas par noslēpumiem - tās piešķir tādu pašu piekļuvi kā pieteikšanās ar jūsu kontu."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13369,7 +13313,7 @@ msgstr "Grupas aktivitāšu žurnāli"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Grupu žurnāla darbība:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -13377,11 +13321,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
+msgstr "Reģistrē grupu dzīves cikla notikumus (izveide, rediģēšana, dzēšana) un dalības izmaiņas (pievienotie vai izņemtie lietotāji). Katrs ieraksts parāda darbību, izpildītāju, ietekmēto grupu un laika zīmogu. Noderīgi, lai auditētu zonu piekļuves izmaiņas, kas notiek caur grupu īpašumtiesībām."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13665,11 +13605,11 @@ msgstr "RDAP rezultāti"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Lūdzu, ievadiet domēna nosaukumu, lai veiktu RDAP meklēšanu."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Izveidot lietotāju ar ierobežotām tiesībām"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -13677,29 +13617,24 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Izveidot lietotāju ar ierobežotām tiesībām"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Ierobežotas datubāzes tiesības:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
+msgstr "Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, update, delete) tikai Poweradmin tabulām. Izmantojot API aizmuguri, piekļuve PowerDNS tabulām nav nepieciešama."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
+msgstr "Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, update, delete), lai Poweradmin varētu piekļūt PowerDNS tabulām."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13707,13 +13642,12 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Izpildiet šādas komandas:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Pēc jaunā lietotāja pievienošanas turpiniet šo instalēšanas procedūru."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -13723,13 +13657,11 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "Tā kā izmantojat SQLite, jauns lietotājs ar ierobežotām tiesībām nav jāizveido."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Turpināt uz soli"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -13737,7 +13669,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Izveidot konfigurācijas failu"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -13745,25 +13677,24 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Izveidojiet failu"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "ar šādu saturu:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Izvēlieties valodu"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Izvēlieties instalēšanas valodu"
 
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Lūdzu, izvēlieties vēlamo valodu, lai turpinātu instalēšanu:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -13775,7 +13706,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Datubāzes savienojuma konfigurēšana"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -13783,11 +13714,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Izvēlieties, kā Poweradmin sazinās ar PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Tieša piekļuve PowerDNS datubāzes tabulām"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13803,7 +13734,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "PowerDNS API iestatījumi"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13811,7 +13742,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "PowerDNS API galapunkta URL."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -13819,7 +13750,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API atslēga (no pdns.conf api-key iestatījuma)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -13827,11 +13758,11 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "PowerDNS servera nosaukums API izsaukumiem (parasti \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Datubāzes savienojuma iestatījumi"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -13841,17 +13772,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
+msgstr "Konfigurējiet datubāzes savienojumu ar tabulu izveides tiesībām. PowerDNS atrašanās vietu, ja nepieciešams, var norādīt atsevišķi."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
+msgstr "Konfigurējiet datubāzes savienojumu Poweradmin tabulām (lietotāji, atļaujas, zonas). PowerDNS tabulas nav nepieciešamas."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13871,31 +13798,31 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Datubāzes servera veids."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Norādiet lietotājvārdu"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Datubāzes lietotājvārds ar tiesībām izveidot tabulas."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Šī datubāzes lietotāja parole."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Izvairieties no pēdiņām, apgrieztajām slīpsvītrām un rindu pārtraukumiem."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Norādiet resursdatora nosaukumu"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Datubāzes servera resursdatora nosaukums (parasti \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -13903,27 +13830,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Norādiet datubāzes portu"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Datubāzes servera ports."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Norādiet datubāzes nosaukumu"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Datubāzes nosaukums (tiks izmantots Poweradmin tabulām)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Pilns ceļš līdz SQLite datubāzes failam"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Failam jāpastāv, un tīmekļa serverim jābūt lasīšanas/rakstīšanas piekļuvei. Izmantojiet absolūto ceļu."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -13935,7 +13862,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Rakstzīmju kopa jaunām tabulām. Atstājiet tukšu, lai izmantotu datubāzes noklusējumu."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -13944,8 +13871,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Kārtošanas noteikumi rakstzīmju salīdzināšanai. Atstājiet tukšu, lai izmantotu datubāzes noklusējumu."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -13957,11 +13883,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Atstājiet tukšu, lai izmantotu to pašu datubāzi"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL datubāze ar PowerDNS tabulām (ja atšķiras)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -13987,7 +13913,7 @@ msgstr "Fiksēts sākotnējam administratora kontam."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Norādiet paroli"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -13999,7 +13925,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Sistēmas prasību pārbaude"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -14007,7 +13933,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Nepieciešams PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -14015,11 +13941,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "nepieciešams vismaz viens"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Nepieciešamie PHP paplašinājumi"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -14035,43 +13961,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Nav noteikts - nepieciešams URL maršrutēšanai"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Nevar noteikt (PHP-FPM) - pārliecinieties, ka tas ir iespējots"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Pārliecinieties, ka URL pārrakstīšana ir konfigurēta (skatiet nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Pārliecinieties, ka URL pārrakstīšana ir konfigurēta jūsu tīmekļa serverim"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Visi nepieciešamie komponenti ir pieejami."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Varat turpināt instalēšanu."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Daži nepieciešamie komponenti nav atrasti."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Lūdzu, instalējiet trūkstošos komponentus pirms turpināšanas."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Konta un nosaukumu serveru iestatīšana"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Konta un nosaukumu serveru iestatīšana"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14079,7 +14005,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Tagad savāksim visu informāciju pašai konfigurācijai."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -14090,24 +14016,20 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
+msgstr "Poweradmin uztur savas tabulas (lietotāji, atļaujas, zonu metadati) konfigurētajā datubāzē arī tad, ja ir izvēlēta PowerDNS API aizmugure. Šie akreditācijas dati ir paredzēti šai datubāzei, nevis PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Poweradmin datubāzes lietotājvārds ar ierobežotu piekļuvi. Nav paredzēts pieteikšanās tīmekļa saskarnē."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Norādiet lietotāja paroli"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Šī lietotājvārda parole."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14119,11 +14041,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Norādiet DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Noklusētais hostmaster SOA ierakstiem."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -14131,11 +14053,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Norādiet primāro nosaukumu serveri"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Primārais nosaukumu serveris jaunām zonām."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -14143,11 +14065,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Norādiet sekundāro nosaukumu serveri"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Sekundārais nosaukumu serveris jaunām zonām."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -14159,7 +14081,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Neobligāts terciārais nosaukumu serveris jaunām zonām."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -14167,7 +14089,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Neobligāts ceturtais nosaukumu serveris jaunām zonām."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -14179,27 +14101,23 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Apsveicam! Jūsu Poweradmin instalācija tagad ir konfigurēta."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Svarīgs drošības paziņojums:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
+msgstr "Jums jādzēš direktorija \"install/\" no Poweradmin saknes direktorijas."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Drošības apsvērumu dēļ Poweradmin nedarbosies, kamēr pastāv instalēšanas direktorija."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14207,7 +14125,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Dzēsiet direktoriju \"install/\" no sava servera"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14219,7 +14137,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Sāciet konfigurēt savas DNS zonas un ierakstus"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -14231,21 +14149,20 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Pirms turpināt, pārliecinieties, ka jums ir:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "Instalēts PowerDNS ar izveidotām datubāzes tabulām (vai konfigurētu API piekļuvi)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Datubāzes akreditācijas dati (resursdatora nosaukums, lietotājvārds, parole)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Atļauja izveidot tabulas Poweradmin vajadzībām"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -14255,56 +14172,47 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Konfigurējiet datubāzes savienojumu, izveidojiet administratora kontu un ģenerējiet konfigurācijas failu."
 
 #: install/templates/step3.html.twig:28
 #, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Piezīme: PostgreSQL un SQLite gadījumā gan PowerDNS, gan Poweradmin jāizmanto viena un tā pati datubāze."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Trūkst PowerDNS tabulu:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin ir nepieciešamas šīs PowerDNS tabulas, lai darbotos pareizi."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Datubāzes atjaunināšana... pabeigta!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Ārējo atslēgu ierobežojumu problēmas:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
+msgstr "Instalētājs nevarēja dzēst esošās tabulas ārējo atslēgu ierobežojumu dēļ"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Tas var notikt atkārtotas instalēšanas laikā, ja ir pielāgoti ierobežojumi vai ja uz tabulām atsaucas citas tabulas"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
+msgstr "Pirms instalētāja palaišanas varat mēģināt manuāli atspējot ārējo atslēgu pārbaudes:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14312,31 +14220,29 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Pārliecinieties, ka SQLite datubāzes fails pastāv"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
+msgstr "Pārbaudiet, vai tīmekļa serverim ir lasīšanas un rakstīšanas atļaujas datubāzes failam"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Pārbaudiet, vai pilnais ceļš līdz datubāzes failam ir pareizs un pieejams"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Pārbaudiet, vai datubāzes akreditācijas dati ir pareizi"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Pārbaudiet, vai datubāzes lietotājam ir pietiekamas privilēģijas"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Pārliecinieties, ka datubāzes serveris darbojas un ir pieejams"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -14347,75 +14253,63 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite datubāzes fails %s nepastāv. Lūdzu, izveidojiet datubāzes failu pirms turpināšanas."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "SQLite datubāzes fails %s nav lasāms. Lūdzu, pārbaudiet faila atļaujas."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "SQLite datubāzes fails %s nav rakstāms. Lūdzu, pārbaudiet faila atļaujas."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nevarēja piekļūt SQLite datubāzes failam %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "Izmantojot API aizmuguri, PowerDNS API URL ir obligāts."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Izmantojot API aizmuguri, PowerDNS API atslēga ir obligāta."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Konfigurācijas fails nav atrasts. Lūdzu, izveidojiet failu config/settings.php pirms turpināšanas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
+msgstr "Atsevišķas PowerDNS datubāzes tiek atbalstītas tikai ar MySQL. PostgreSQL un SQLite gadījumā, lūdzu, izmantojiet vienu un to pašu datubāzi."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "Datubāzē \"%s\" trūkst PowerDNS tabulu: %s. Lūdzu, pārliecinieties, ka PowerDNS ir pareizi instalēts šajā datubāzē."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nevar izveidot savienojumu ar PowerDNS datubāzi \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
 #, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
 
 #, php-format
 # OBSOLETE: msgid ""

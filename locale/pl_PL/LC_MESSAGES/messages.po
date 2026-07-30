@@ -1840,7 +1840,7 @@ msgstr "Nieprawidłowa wartość dla %s. Dozwolone wartości: %s."
 #, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "Metadata kind %s can only be changed by an administrator."
+msgstr "Rodzaj metadanych %s może zostać zmieniony wyłącznie przez administratora."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
@@ -1966,23 +1966,19 @@ msgstr "Szablon uprawnień został pomyślnie zaktualizowany."
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr ""
-"Granting administrator rights in a permission template requires "
-"administrator rights."
+msgstr "Nadanie uprawnień administratora w szablonie uprawnień wymaga uprawnień administratora."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
 #, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Editing a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Edycja szablonu uprawnień z uprawnieniami administratora wymaga uprawnień administratora."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
 #, auto-english-fallback
 msgid "The permission template could not be updated."
-msgstr "The permission template could not be updated."
+msgstr "Nie udało się zaktualizować szablonu uprawnień."
 
 #: lib/Application/Controller/ListGroupsController.php:58
 #: templates/modern/manage_group_members.html:3
@@ -2001,7 +1997,7 @@ msgstr "Szukaj"
 #: lib/Application/Controller/ListRecordChangesController.php:63
 #: templates/modern/list_record_changes.html:9
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Dziennik zmian rekordów"
 
 #: lib/Application/Controller/ListRecordChangesController.php:135
 msgid "Invalid page number."
@@ -2043,7 +2039,7 @@ msgstr "Dodaj użytkownika"
 #: lib/Application/Controller/AddUserController.php:128
 #, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "No non-superuser permission template is available to assign."
+msgstr "Brak dostępnego szablonu uprawnień bez uprawnień superużytkownika, który można przypisać."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2598,11 +2594,11 @@ msgstr "Nie masz uprawnień do przeglądania tej strony."
 #: lib/Application/Controller/RecordTypeDefaultsController.php:51
 #: templates/modern/record_type_defaults.html:6
 msgid "Default TTLs by record type"
-msgstr "Default TTLs by record type"
+msgstr "Domyślne wartości TTL według typu rekordu"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:82
 msgid "Invalid form submission."
-msgstr "Invalid form submission."
+msgstr "Nieprawidłowe przesłanie formularza."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:90
 msgid ""
@@ -2615,12 +2611,12 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
+msgstr "Zapisano %d wartości domyślnych; wyczyszczono %d. Odrzucono nieprawidłowe wartości dla: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
 msgid "Saved %d default(s); cleared %d."
-msgstr "Saved %d default(s); cleared %d."
+msgstr "Zapisano %d wartości domyślnych; wyczyszczono %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -2802,7 +2798,7 @@ msgstr "Szablon uprawnień został pomyślnie dodany."
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
 msgid "The permission template could not be added."
-msgstr "The permission template could not be added."
+msgstr "Nie udało się dodać szablonu uprawnień."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:51
 #: templates/default/header.html:247 templates/modern/header.html:354
@@ -2964,17 +2960,17 @@ msgstr "Strefy wprost"
 
 #: lib/Application/Controller/ListForwardZonesController.php:92
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Nie masz uprawnień do synchronizowania stref z PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Strefy zsynchronizowane z PowerDNS: dodano %d, zaktualizowano %d, usunięto %d."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Synchronizacja strefy nie udała się: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
@@ -3758,25 +3754,21 @@ msgstr ""
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 #, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
-msgstr "You do not have the permission to change the permission template."
+msgstr "Nie masz uprawnień do zmiany szablonu uprawnień."
 
 #: lib/Domain/Model/UserManager.php:87
 #, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr ""
-"Changing your own permission template requires the permission to edit other "
-"users."
+msgstr "Zmiana własnego szablonu uprawnień wymaga uprawnienia do edycji innych użytkowników."
 
 #: lib/Domain/Model/UserManager.php:89
 #, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr ""
-"Assigning a permission template with administrator rights requires "
-"administrator rights."
+msgstr "Przypisanie szablonu uprawnień z uprawnieniami administratora wymaga uprawnień administratora."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3834,8 +3826,7 @@ msgstr "Nie masz uprawnień do dodawania rekordu do tego szablonu strefy."
 #, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
-msgstr ""
-"You do not have the permission to add this record type to a zone template."
+msgstr "Nie masz uprawnień do dodania tego typu rekordu do szablonu strefy."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
@@ -3862,9 +3853,7 @@ msgstr "Błąd aktualizacji rekordu szablonu strefy: "
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
-msgstr ""
-"You do not have the permission to delete this record type from a zone "
-"template."
+msgstr "Nie masz uprawnień do usunięcia tego typu rekordu z szablonu strefy."
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
@@ -3880,9 +3869,7 @@ msgstr "Błąd sprawdzania własności szablonu: "
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr ""
-"These record types were left out of the template because you may not add "
-"them: %s"
+msgstr "Te typy rekordów zostały pominięte w szablonie, ponieważ nie możesz ich dodawać: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3923,7 +3910,7 @@ msgstr "Nie masz uprawnień do dodawania rekordu NS."
 #: lib/Domain/Model/Permission.php:165
 #, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nie masz uprawnień do dodania rekordu LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
@@ -3936,7 +3923,7 @@ msgstr "Nie masz uprawnień do edycji tego rekordu NS."
 #: lib/Domain/Model/Permission.php:170
 #, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nie masz uprawnień do edycji tego rekordu LUA."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
@@ -3949,7 +3936,7 @@ msgstr "Nie masz uprawnień do usuwania rekordów NS."
 #: lib/Domain/Model/Permission.php:175
 #, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nie masz uprawnień do usuwania rekordów LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
@@ -9633,11 +9620,11 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR update skipped: record type is not A or AAAA."
+msgstr "Pominięto aktualizację PTR: typ rekordu nie jest A ani AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
-msgstr "Stale PTR record removed."
+msgstr "Usunięto nieaktualny rekord PTR."
 
 #: lib/Domain/Service/Dns/RecordManager.php:321
 msgid "A record with this hostname, type, and content already exists."
@@ -9718,7 +9705,7 @@ msgstr "Wybrany użytkownik już jest właścicielem strefy."
 #, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
-msgstr "Failed to update zone records: %s"
+msgstr "Nie udało się zaktualizować rekordów strefy: %s"
 
 #: templates/modern/api_key_regenerated.html:5
 msgid "API Key Regenerated"
@@ -10665,7 +10652,7 @@ msgstr "grupy"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Wersja połączonego PowerDNS"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10765,7 +10752,7 @@ msgstr "Wyloguj"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
-msgstr "Current global defaults"
+msgstr "Aktualne globalne wartości domyślne"
 
 #: templates/modern/record_type_defaults.html:19
 msgid "Record type"
@@ -10773,11 +10760,11 @@ msgstr "Record type"
 
 #: templates/modern/record_type_defaults.html:20
 msgid "Default TTL (seconds)"
-msgstr "Default TTL (seconds)"
+msgstr "Domyślny TTL (w sekundach)"
 
 #: templates/modern/record_type_defaults.html:35
 msgid "empty = use global default"
-msgstr "empty = use global default"
+msgstr "puste = użyj globalnej wartości domyślnej"
 
 #: templates/modern/record_type_defaults.html:45
 msgid "Save defaults"
@@ -10793,7 +10780,7 @@ msgstr ""
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
-msgstr "(for PTRs in reverse zones) or"
+msgstr "(dla rekordów PTR w strefach odwrotnych) lub"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
 msgid "Edit comment"
@@ -10891,7 +10878,7 @@ msgstr "Logi aktywności API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "API Log Behavior:"
+msgstr "Działanie dziennika API:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10931,7 +10918,7 @@ msgstr "Logi zmian stref"
 
 #: templates/modern/list_log_zones.html:28
 msgid "Zone Log Behavior:"
-msgstr "Zone Log Behavior:"
+msgstr "Działanie dziennika stref:"
 
 #: templates/modern/list_log_zones.html:29
 msgid ""
@@ -10981,7 +10968,7 @@ msgstr "Przykład: www,A,192.168.1.1,0,3600,serwer www"
 #: templates/modern/bulk_record_add.html:31
 #, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
-msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priorytet i TTL są opcjonalne (domyślnie: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:32
 msgid "Comment is optional"
@@ -11483,12 +11470,12 @@ msgstr "-"
 #: templates/modern/list_forward_zones.html:210
 #, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
-msgstr "NOTIFY pending: serial %serial% not yet acknowledged"
+msgstr "NOTIFY oczekuje: numer seryjny %serial% nie został jeszcze potwierdzony"
 
 #: templates/modern/list_forward_zones.html:212
 #, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
-msgstr "NOTIFY sent at serial %serial%"
+msgstr "NOTIFY wysłano przy numerze seryjnym %serial%"
 
 #: templates/modern/search.html:308
 msgid "Delete zone(s)"
@@ -12511,7 +12498,7 @@ msgstr "Ostatnio zmieniono"
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
 #, auto-english-fallback
 msgid "Last edited by %account% on %date%"
-msgstr "Last edited by %account% on %date%"
+msgstr "Ostatnio edytowane przez %account% dnia %date%"
 
 #: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
@@ -12612,11 +12599,11 @@ msgstr "MFA nie skonfigurowane"
 
 #: templates/modern/list_forward_zones.html:20
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Pobierz strefy z PowerDNS i uzgodnij lokalną tabelę"
 
 #: templates/modern/list_forward_zones.html:21
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Synchronizuj z PowerDNS"
 
 #: templates/modern/list_template_zones.html:13
 msgid "Total number of zones:"
@@ -12744,7 +12731,7 @@ msgstr "Strefy bez właścicieli"
 #: templates/modern/database_consistency.html:53
 #, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
-msgstr "Assign yourself as owner of all listed zones?"
+msgstr "Przypisać siebie jako właściciela wszystkich wymienionych stref?"
 
 #: templates/modern/database_consistency.html:58
 msgid "Assign all to me"
@@ -13396,7 +13383,7 @@ msgstr "entries"
 
 #: templates/modern/list_record_changes.html:17
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Działanie dziennika zmian:"
 
 #: templates/modern/list_record_changes.html:18
 msgid ""
@@ -13451,11 +13438,11 @@ msgstr "after"
 
 #: templates/modern/list_record_changes.html:210
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Nie znaleziono zmian rekordów"
 
 #: templates/modern/list_record_changes.html:211
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Spróbuj innego filtra lub innego przedziału czasu"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
@@ -13746,7 +13733,7 @@ msgstr "Region"
 
 #: templates/modern/user_preferences.html:51
 msgid "Inherit global setting"
-msgstr "Inherit global setting"
+msgstr "Dziedzicz ustawienie globalne"
 
 #: templates/modern/user_preferences.html:58
 msgid "City"
@@ -13834,11 +13821,11 @@ msgstr "Wyświetlaj indywidualny przycisk usuwania dla każdego rekordu"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Wyświetlanie tylko nazwy hosta"
 
 #: templates/modern/user_preferences.html:198
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Usuwaj przyrostek strefy z nazw rekordów w widoku edycji"
 
 #: templates/modern/user_preferences.html:213
 msgid "Save Preferences"
@@ -13941,7 +13928,7 @@ msgstr "Logi aktywności użytkowników"
 
 #: templates/modern/list_log_users.html:13
 msgid "User Log Behavior:"
-msgstr "User Log Behavior:"
+msgstr "Działanie dziennika użytkowników:"
 
 #: templates/modern/list_log_users.html:14
 msgid ""
@@ -14282,7 +14269,7 @@ msgstr "Strefy odwrotne"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
-msgstr "Record change log"
+msgstr "Dziennik zmian rekordów"
 
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
@@ -14316,27 +14303,20 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
+msgstr "Sprawdź, czy pdns_api.key w config/settings.php odpowiada kluczowi API skonfigurowanemu w PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
+msgstr "Sprawdź, czy pdns_api.server_name odpowiada nazwie zgłaszanej przez PowerDNS (domyślnie 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
+msgstr "PowerDNS odrzucił żądanie. Przyczynę sprawdź w dzienniku serwera PowerDNS - częstą przyczyną po zaimportowaniu stref bezpośrednio do bazy danych PowerDNS jest jeden nieprawidłowo sformułowany rekord, który uniemożliwia serializację strefy."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -14501,7 +14481,7 @@ msgstr ""
 
 #: templates/default/api_keys.html:178 templates/modern/api_keys.html:178
 msgid "API Key Behavior:"
-msgstr "API Key Behavior:"
+msgstr "Działanie kluczy API:"
 
 #: templates/default/api_keys.html:179 templates/modern/api_keys.html:179
 msgid ""
@@ -14688,7 +14668,7 @@ msgstr "Logi aktywności grupy"
 
 #: templates/modern/list_log_groups.html:13
 msgid "Group Log Behavior:"
-msgstr "Group Log Behavior:"
+msgstr "Działanie dziennika grup:"
 
 #: templates/modern/list_log_groups.html:14
 msgid ""
@@ -14986,11 +14966,11 @@ msgstr "Wyniki RDAP dla"
 #: lib/Module/Rdap/templates/rdap.html:44
 #, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Podaj nazwę domeny, aby wykonać zapytanie RDAP."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Utwórz użytkownika o ograniczonych uprawnieniach"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -14998,11 +14978,11 @@ msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Utwórz użytkownika z ograniczonymi uprawnieniami"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Ograniczone uprawnienia do bazy danych:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
@@ -15028,7 +15008,7 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Wykonaj następujące polecenia:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
@@ -15049,7 +15029,7 @@ msgstr ""
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Przejdź do kroku"
 
 #: install/templates/base.html.twig:38
 msgid "Installation step"
@@ -15057,7 +15037,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Utwórz plik konfiguracyjny"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -15065,19 +15045,19 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Utwórz plik"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "o następującej treści:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Wybierz język"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Wybierz język instalacji"
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -15094,7 +15074,7 @@ msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Konfigurowanie połączenia z bazą danych"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -15102,11 +15082,11 @@ msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Wybierz sposób komunikacji Poweradmin z PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Bezpośredni dostęp do tabel bazy danych PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -15122,7 +15102,7 @@ msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "Ustawienia API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -15130,7 +15110,7 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "Adres URL punktu końcowego API PowerDNS."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -15138,7 +15118,7 @@ msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "Klucz API PowerDNS (z ustawienia api-key w pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
@@ -15150,7 +15130,7 @@ msgstr "Nazwa serwera PowerDNS dla wywołań API (zwykle \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Ustawienia połączenia z bazą danych"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -15190,27 +15170,27 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Typ serwera bazy danych."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Podaj nazwę użytkownika"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Nazwa użytkownika bazy danych z uprawnieniami do tworzenia tabel."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Hasło dla tego użytkownika bazy danych."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Unikaj cudzysłowów, ukośników odwrotnych i znaków nowego wiersza."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Podaj nazwę hosta"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
@@ -15222,27 +15202,27 @@ msgstr "DB Port"
 
 #: install/templates/step4.html.twig:154
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Podaj port bazy danych"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Port serwera bazy danych."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Podaj nazwę bazy danych"
 
 #: install/templates/step4.html.twig:168
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Nazwa bazy danych (zostanie użyta dla tabel Poweradmin)."
 
 #: install/templates/step4.html.twig:170
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Pełna ścieżka do pliku bazy danych SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr "Plik musi istnieć i być dostępny do odczytu oraz zapisu dla serwera WWW. Użyj ścieżki absolutnej."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -15254,7 +15234,7 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Zestaw znaków dla nowych tabel. Pozostaw puste, aby użyć wartości domyślnej bazy danych."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -15277,11 +15257,11 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:216
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Pozostaw puste, aby użyć tej samej bazy danych"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "Baza danych MySQL z tabelami PowerDNS (jeśli jest inna)."
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -15307,7 +15287,7 @@ msgstr "Ustawione na stałe dla początkowego konta administratora."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Podaj hasło"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15319,7 +15299,7 @@ msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Sprawdzenie wymagań systemowych"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -15327,7 +15307,7 @@ msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Wymaga PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -15335,11 +15315,11 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "wymagany co najmniej jeden"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Wymagane rozszerzenia PHP"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
@@ -15355,43 +15335,43 @@ msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected - required for URL routing"
-msgstr "Not detected - required for URL routing"
+msgstr "Nie wykryto - wymagane do routingu URL"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) - ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) - ensure it is enabled"
+msgstr "Nie można wykryć (PHP-FPM) - upewnij się, że jest włączone"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Upewnij się, że przepisywanie adresów URL jest skonfigurowane (zobacz nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Upewnij się, że przepisywanie adresów URL jest skonfigurowane dla Twojego serwera WWW"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Wszystkie wymagane komponenty są dostępne."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "Możesz kontynuować instalację."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Brakuje niektórych wymaganych komponentów."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Zainstaluj brakujące komponenty przed kontynuowaniem."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Konfiguracja konta i serwerów nazw"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Konfiguracja konta oraz serwerów nazw"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -15399,7 +15379,7 @@ msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Teraz zbierzemy wszystkie dane potrzebne do samej konfiguracji."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
@@ -15424,11 +15404,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Podaj hasło użytkownika"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Hasło dla tej nazwy użytkownika."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -15440,11 +15420,11 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Podaj hostmastera DNS"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Domyślny hostmaster dla rekordów SOA."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
@@ -15452,11 +15432,11 @@ msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Podaj główny serwer nazw"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Główny serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
@@ -15464,11 +15444,11 @@ msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Podaj pomocniczy serwer nazw"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Pomocniczy serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
@@ -15480,7 +15460,7 @@ msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Opcjonalny trzeci serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
@@ -15488,7 +15468,7 @@ msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Opcjonalny czwarty serwer nazw dla nowych stref."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -15500,11 +15480,11 @@ msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Gratulacje! Twoja instalacja Poweradmin została skonfigurowana."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Ważna informacja dotycząca bezpieczeństwa:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -15538,7 +15518,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Rozpocznij konfigurowanie swoich stref i rekordów DNS"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
@@ -15550,7 +15530,7 @@ msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Przed kontynuowaniem upewnij się, że posiadasz:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
@@ -15561,11 +15541,11 @@ msgstr ""
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Dane dostępowe do bazy danych (nazwa hosta, nazwa użytkownika, hasło)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Uprawnienie do tworzenia tabel dla Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
@@ -15584,25 +15564,23 @@ msgstr ""
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr ""
-"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
-"Poweradmin."
+msgstr "Uwaga: PostgreSQL i SQLite muszą używać tej samej bazy danych zarówno dla PowerDNS, jak i dla Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Brakujące tabele PowerDNS:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin wymaga tych tabel PowerDNS do prawidłowego działania."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Aktualizowanie bazy danych... gotowe!"
 
 #: install/helpers/InstallStepHandler.php:225
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Problemy z ograniczeniami kluczy obcych:"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
@@ -15633,7 +15611,7 @@ msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:236
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Upewnij się, że plik bazy danych SQLite istnieje"
 
 #: install/helpers/InstallStepHandler.php:237
 msgid ""
@@ -15644,19 +15622,19 @@ msgstr ""
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Sprawdź, czy pełna ścieżka do pliku bazy danych jest poprawna i dostępna"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Sprawdź, czy dane dostępowe do bazy danych są poprawne"
 
 #: install/helpers/InstallStepHandler.php:245
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Sprawdź, czy użytkownik bazy danych ma wystarczające uprawnienia"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Upewnij się, że serwer bazy danych działa i jest dostępny"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
@@ -15687,15 +15665,15 @@ msgstr ""
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nie można uzyskać dostępu do pliku bazy danych SQLite %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "Adres URL API PowerDNS jest wymagany przy korzystaniu z backendu API."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "Klucz API PowerDNS jest wymagany przy korzystaniu z backendu API."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
@@ -15732,9 +15710,7 @@ msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
+msgstr "Nie udało się ustawić ustawień regionalnych. Wybrane ustawienia regionalne mogą nie być obsługiwane w tym systemie. Skontaktuj się z administratorem."
 
 #, php-format
 # OBSOLETE: msgid ""
