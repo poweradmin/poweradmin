@@ -5828,9 +5828,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. Pencatatan NAMA-CAN harus "
-"memiliki nilai keutamaan 0."
+msgstr "Nilai tidak sah untuk medan keutamaan. Rekod CNAME mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
@@ -5855,17 +5853,13 @@ msgstr "Ini bukan rekod yang sah. Ada CNAME dengan nama ini."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr ""
-"Target CONAC haruslah nama domain yang sepenuhnya memenuhi syarat (FQDN). "
-"Nama-nama satu label tidak diperbolehkan."
+msgstr "Sasaran CNAME mestilah nama domain yang layak sepenuhnya (FQDN). Nama satu label tidak dibenarkan."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr ""
-"Target CONAC haruslah nama domain yang sepenuhnya memenuhi syarat (FQDN) "
-"dengan domain top-level yang sah."
+msgstr "Sasaran CNAME mestilah nama domain yang layak sepenuhnya (FQDN) dengan domain peringkat atas yang sah."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -5875,9 +5869,7 @@ msgstr "Karakter tak valid dalam konten rekod DHCID."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr ""
-"Rekod sesuai dengan RFC 4701 dan RFC 4703, DHCID harus ditempatkan pada nama "
-"yang sama dengan rekod A atau AAA yang sesuai dengan mereka."
+msgstr "Mengikut RFC 4701 dan RFC 4703, rekod DHCID perlu diletakkan pada nama yang sama dengan rekod A atau AAAA yang berkaitan dengannya."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -5943,9 +5935,7 @@ msgstr ""
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
-"Jenis digest %d bukan jenis standar (1 untuk SHA-256) didefinisikan dalam "
-"RFC 4701."
+msgstr "Jenis digest DHCID %d bukan jenis standard (1 untuk SHA-256) yang ditakrifkan dalam RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -5985,9 +5975,7 @@ msgstr "Bidang keutamaan untuk rekod RRSIG harus 0 atau kosong"
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr ""
-"Rekod RRISG seharusnya hanya dibuat oleh server DNS Anda ketika "
-"menandatangani sebuah zona. Manipulasi Manual visual tidak dianjurkan."
+msgstr "Rekod RRSIG hanya perlu dicipta oleh pelayan DNS anda semasa menandatangani zon. Manipulasi manual tidak disyorkan."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
@@ -5999,11 +5987,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "Kandungan rekod RRISG tidak boleh kosong."
+msgstr "Kandungan rekod RRSIG tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
-msgstr "Rekod RRISIG mengandung karakter tidak sah."
+msgstr "Rekod RRSIG mengandungi aksara tidak sah."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -6015,11 +6003,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr "Jenis yang dicakup RRISIG harus merupakan jenis rekod DNS yang valid."
+msgstr "Jenis yang dilindungi RRSIG mestilah jenis rekod DNS yang sah."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "Bidang algoritme RRISIG harus bernilai angka."
+msgstr "Medan algoritma RRSIG mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
@@ -6104,19 +6092,19 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
-msgstr "Bidang label RRISIG harus bernilai angka."
+msgstr "Medan label RRSIG mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "Bidang label RRISIG harus bernilai masuk akal (0-128)."
+msgstr "Medan label RRSIG mestilah nilai yang munasabah (0-128)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
-msgstr "Bidang TTL asli RRISIG harus bernilai numerik."
+msgstr "Medan TTL asal RRSIG mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr "RRISG asli TTL harus merupakan integer positif yang valid."
+msgstr "TTL asal RRSIG mestilah integer positif yang sah."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
@@ -6133,7 +6121,7 @@ msgstr "Ekspirasi RRSIG harus dalam format YYYYYMMDHMMSS."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
-msgstr "Absepsi RRISG harus dalam format YYYYYMMDHHmmSS."
+msgstr "Permulaan RRSIG mestilah dalam format YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
@@ -6188,43 +6176,36 @@ msgstr "Tak dapat mengurai penanda waktu untuk memeriksa periode validitas."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
-msgstr "Bidang tag kunci RRISIG harus bernilai angka."
+msgstr "Medan tag kunci RRSIG mestilah nilai berangka."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
-msgstr "Tag kunci RRISIG harus bernilai sah antara 0 dan 65535."
+msgstr "Tag kunci RRSIG mestilah nilai sah antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"Nama penandatangan RRISIG harus merupakan nama domain yang memenuhi syarat "
-"(akhir dengan titik)."
+msgstr "Nama penandatangan RRSIG mestilah nama domain yang layak sepenuhnya (berakhir dengan titik)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "Nama penandatangan RRISIG harus nama domain yang sah."
+msgstr "Nama penandatangan RRSIG mestilah nama domain yang sah."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "Tanda tangan RRISIG tidak boleh kosong."
+msgstr "Tandatangan RRSIG tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr ""
-"signature tampaknya bukan data terenkod base64 yang valid. Tanda tangan "
-"RRISG seharusnya base64 dikodekan."
+msgstr "Tandatangan itu nampaknya bukan data yang dikodkan base64 yang sah. Tandatangan RRSIG perlu dikodkan base64."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
-msgstr ""
-"Rekod RRISG merupakan bagian dari DNSSEC dan menyediakan tanda-tangan "
-"kriptografi untuk rekod DNS. Mereka harus dikelola secara otomatis oleh "
-"server DNS."
+msgstr "Rekod RRSIG adalah sebahagian daripada DNSSEC dan menyediakan tandatangan kriptografi untuk rekod DNS. Ia perlu diurus secara automatik oleh pelayan DNS."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
@@ -6448,9 +6429,7 @@ msgstr ""
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"Rekod EUEl64 menggunakan pemisah titik dua (xx:xx:xxx:xxx:xxx:xxx:xxx) "
-"tetapi membutuhkan pemisah hypen (xx-xx-xx-x-xx-xx-xx-xx-xx-xxx-xxxx)."
+msgstr "Rekod EUI64 menggunakan pemisah titik bertindih (xx:xx:xx:xx:xx:xx:xx:xx) tetapi memerlukan pemisah sengkang (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -6464,9 +6443,7 @@ msgstr ""
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr ""
-"Rekod EUDI64 tampaknya dalam format dotted. Format haruslah xx-x-x-x-x-x-x-x-"
-"x-x-x-xx."
+msgstr "Rekod EUI64 nampaknya dalam format bertitik. Format mestilah xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
@@ -6831,9 +6808,7 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"Rekod EUAL48 menggunakan pemisah titik dua (xx:xxx:xxx:xxx:xxxx) tetapi "
-"membutuhkan pemisah hypen (xx-xx-x-xx-xx-xxx-xxxxx)."
+msgstr "Rekod EUI48 menggunakan pemisah titik bertindih (xx:xx:xx:xx:xx:xx) tetapi memerlukan pemisah sengkang (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -6846,17 +6821,13 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr ""
-"Rekod EUCI48 tampaknya dalam format Cisco. Format haruslah xx-x-x-x-x-x-x-x-"
-"xxx."
+msgstr "Rekod EUI48 nampaknya dalam format Cisco. Format mestilah xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr ""
-"Rekod EUAI48 harus berupa alamat MAC yang valid dalam format xx-xx-x-xx-xx-"
-"xxx (di mana x adalah digit heksadesimal)."
+msgstr "Rekod EUI48 mestilah alamat MAC yang sah dalam format xx-xx-xx-xx-xx-xx (di mana x ialah digit heksadesimal)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -7251,7 +7222,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
-msgstr "Keutamaan VVCB harus antara 0 dan 65535."
+msgstr "Keutamaan SVCB mestilah antara 0 dan 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
@@ -7808,9 +7779,7 @@ msgstr ""
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr ""
-"Rekod SSHAFP harus mengandung algoritme, jenis sidik jari dan sidik jari "
-"yang dipisahkan dengan spasi."
+msgstr "Rekod SSHFP mesti mengandungi algoritma, jenis cap jari dan cap jari yang dipisahkan dengan ruang."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
@@ -8418,9 +8387,7 @@ msgstr "Nama domain tak valid dalam rekod SRV."
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr ""
-"Konten rekam LVVV harus memiliki berat, port dan target (3 bidang). "
-"Keutamaan harus berada di bidang keutamaan."
+msgstr "Kandungan rekod SRV mesti mempunyai berat, port dan sasaran (3 medan). Keutamaan perlu berada dalam medan keutamaan."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -8441,7 +8408,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "Target LVV tidak boleh kosong."
+msgstr "Sasaran SRV tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -8472,9 +8439,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. Rekod AAA harus memiliki nilai "
-"keutamaan 0."
+msgstr "Nilai tidak sah untuk medan keutamaan. Rekod AAAA mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -8506,9 +8471,7 @@ msgstr ""
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"Rekod NSEEC3 adalah bagian dari DNSSEC dan seharusnya hanya dikelola bersama "
-"dengan rekod DNSSEC lainnya (DNSKEY, RRSIG, dll)."
+msgstr "Rekod NSEC3 adalah sebahagian daripada DNSSEC dan hanya perlu diurus bersama rekod DNSSEC yang lain (DNSKEY, RRSIG, dll.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
@@ -8575,9 +8538,7 @@ msgstr "Rekod NSEC3 berisi jenis rekod tidak sah: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"Jenis RRISIG biasanya harus hadir dalam peta bit jenis NSEC3 untuk zona "
-"DNSSEC-signed."
+msgstr "Jenis RRSIG lazimnya perlu hadir dalam peta bit jenis NSEC3 untuk zon yang ditandatangani DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -9025,7 +8986,7 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "update PTR yang dilewati: jenis rekod bukan A atau AAA."
+msgstr "Kemas kini PTR dilangkau: jenis rekod bukan A atau AAAA."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
@@ -9558,7 +9519,7 @@ msgstr "CNAME: <code>target [ZONE]</code> atau <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "<code>Zv=spf1 mx ip4:192.0.2.0/24 -all</code>"
+msgstr "TXT untuk SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:18
 msgid "Enter the IP address of the master nameserver"
@@ -11447,7 +11408,7 @@ msgstr ""
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
-msgstr "New York"
+msgstr "Cipta Rekod PTR"
 
 #: templates/modern/batch_ptr_record.html:119
 msgid "PTR Record Information"
@@ -11764,7 +11725,7 @@ msgstr "Tambah rekod baru"
 
 #: templates/modern/edit.html:189 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Zodiak Panduan untuk DMARC, SPF, DKIM, CAA, TLS, dan SRV rekod"
+msgstr "Wizard berpandu untuk rekod DMARC, SPF, DKIM, CAA, TLSA dan SRV"
 
 #: templates/modern/edit.html:21 templates/modern/edit.html:620
 msgid "Multi-record mode"
@@ -13734,7 +13695,7 @@ msgstr "Kembali ke kunci DNSSEC"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
-msgstr "Rekod DNSBOKY"
+msgstr "Rekod DNSKEY"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
