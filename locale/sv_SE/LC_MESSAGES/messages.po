@@ -5730,38 +5730,38 @@ msgstr "Ogiltigt tecken i SRV-prioritet."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr "Du måste ange en SRV-prioritet för en SRV-post."
+msgstr "Ogiltigt värde för MX-prioritetsfältet. Måste vara mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "Ogiltigt tecken i SRV-vikt."
+msgstr "Prioritetsfältet ska inte användas för HTTPS-poster eftersom prioriteten är en del av innehållet."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "Du måste ange en SRV-vikt för en SRV-post."
+msgstr "HTTPS-posten måste innehålla minst ett prioritetsvärde och ett målvärde."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "Ogiltigt tecken i SRV-port."
+msgstr "HTTPS-postens prioritet måste vara ett nummer mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "Du måste ange en SRV-port för en SRV-post."
+msgstr "HTTPS-postens mål måste vara antingen \".\" eller ett giltigt fullständigt kvalificerat domännamn."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr "Ogiltigt tecken i SSHFP-algoritm."
+msgstr "HTTPS-poster i AliasMode (priority=0) med målet \".\" får inte ha några parametrar enligt RFC 9460."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr "Du måste ange en SSHFP-algoritm för en SSHFP-post."
+msgstr "HTTPS-postens parametrar måste anges i formatet key=value separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5810,50 +5810,50 @@ msgstr "Parametern \"%s\" är markerad som obligatorisk men saknas i posten."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "Du måste ange CAA-flaggor för en CAA-post."
+msgstr "RFC 2930 kräver att TKEY-poster har TTL=0 för att förhindra cachning. Det nuvarande TTL-värdet som är skilt från noll kan orsaka problem med äldre DNS-implementationer."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
-msgstr "Ogiltigt CAA-taggvärde."
+msgstr "Prioritetsfältet för TKEY-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:142
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "Du måste ange en CAA-tagg för en CAA-post."
+msgstr "TKEY-poster är inte till för autentisering av DNS-data, utan för nyckeletablering mellan DNS-servrar/resolvrar."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
-msgstr "NAPTR-ordningsvärdet måste vara ett heltal mellan 0 och 65535."
+msgstr "Ogiltiga tecken i TKEY-postens innehåll."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "Du måste ange ett NAPTR-ordningsvärde för en NAPTR-post."
+msgstr "TKEY-posten måste innehålla algoritmnamn, starttid, utgångstid, läge, fel och nyckeldata separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "NAPTR-preferensvärdet måste vara ett heltal mellan 0 och 65535."
+msgstr "TKEY-algoritmnamnet måste vara ett giltigt domännamn som slutar med en punkt (t.ex. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "Du måste ange ett NAPTR-preferensvärde för en NAPTR-post."
+msgstr "TKEY-starttiden måste vara en giltig Unix-tidsstämpel eller anges i formatet YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "Du måste ange NAPTR-flaggor för en NAPTR-post."
+msgstr "TKEY-utgångstiden måste vara en giltig Unix-tidsstämpel eller anges i formatet YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "Du måste ange en NAPTR-tjänst för en NAPTR-post."
+msgstr "TKEY-läget måste vara ett nummer mellan 1 och 5 (1: servertilldelning, 2: Diffie-Hellman-utbyte, 3: GSS-API-förhandling, 4: resolvertilldelning, 5: nyckelborttagning)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5961,11 +5961,11 @@ msgstr "Ogiltigt tecken i CERT-nyckeltagg."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr "Du måste ange en CERT-nyckeltagg för en CERT-post."
+msgstr "Överväg att använda HTTPS istället för HTTP för bättre säkerhet."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr "Ogiltigt tecken i CERT-algoritm."
+msgstr "FTP anses vara mindre säkert än alternativ som SFTP eller HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
@@ -6057,7 +6057,7 @@ msgstr "Ogiltigt tecken i återförsöksintervall."
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr "Du måste ange ett återförsöksintervall för en SOA-post."
+msgstr "VIKTIGT: RFC 2230 kräver att KX-poster signeras med DNSSEC. Osignerade KX-poster MÅSTE ignoreras av säkerhetsskäl."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
@@ -6079,7 +6079,7 @@ msgstr "Ogiltigt tecken i negativt TTL."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
-msgstr "Du måste ange ett negativt TTL för en SOA-post."
+msgstr "Ogiltigt värde för KX-preferensfältet. Måste vara mellan 0 och 65535."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
@@ -6113,7 +6113,7 @@ msgstr "MX-prioriteten måste vara ett heltal mellan 0 och 65535."
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "SRV-prioriteten måste vara ett heltal mellan 0 och 65535."
+msgstr "Att använda \".\" (roten) för RMAILBX anger att ägaren av MINFO-posten ansvarar för sig själv."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6135,20 +6135,20 @@ msgstr "SSHFP-algoritmen måste vara ett heltal mellan 0 och 255."
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "SSHFP-fingeravtryckstypen måste vara ett heltal mellan 0 och 255."
+msgstr "Prioritetsfältet för MINFO-poster måste vara 0 eller tomt. MINFO använder inte prioritetsvärden enligt RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
-msgstr "TLSA-certifikatanvändningen måste vara ett heltal mellan 0 och 255."
+msgstr "Prioritetsfältet för SPF-poster måste vara 0 eller tomt"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
-msgstr "TLSA-väljaren måste vara ett heltal mellan 0 och 255."
+msgstr "SPF-posten måste börja med \"v=spf1\""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr "TLSA-matchningstypen måste vara ett heltal mellan 0 och 255."
+msgstr "SPF-posten överskrider gränsen på 255 tecken. Dela upp den på flera TXT-poster."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
@@ -6218,53 +6218,51 @@ msgstr "Okänd mekanism: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "CERT-algoritmen måste vara ett heltal mellan 0 och 255."
+msgstr "SPF-posten bör ha antingen en avslutande \"all\"-mekanism eller en \"redirect\"-modifierare (RFC 7208 avsnitt 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "HTTPS-prioriteten måste vara ett heltal mellan 0 och 65535."
+msgstr "SPF-posten har både en \"all\"-mekanism och en \"redirect\"-modifierare. \"redirect\"-modifieraren ignoreras när \"all\" finns med (RFC 7208 avsnitt 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "SVCB-prioriteten måste vara ett heltal mellan 0 och 65535."
+msgstr "Ogiltigt värde för prioritetsfältet. CNAME-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr "SOA-serienumret måste vara ett heltal mellan 0 och 4294967295."
+msgstr "Detta är inte ett giltigt CNAME. Det finns redan en post med detta namn."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-"SOA-uppdateringsintervallet måste vara ett heltal mellan 0 och 2147483647."
+msgstr "Detta är inte ett giltigt CNAME. Har du tilldelat posten en MX- eller NS-post?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
-msgstr ""
-"SOA-återförsöksintervallet måste vara ett heltal mellan 0 och 2147483647."
+msgstr "Tomma CNAME-poster är inte tillåtna."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "SOA-utgångsintervallet måste vara ett heltal mellan 0 och 2147483647."
+msgstr "Detta är inte en giltig post. Det finns redan ett CNAME med detta namn."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "SOA-negativt TTL måste vara ett heltal mellan 0 och 2147483647."
+msgstr "CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN). Namn med en enda etikett är inte tillåtna."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "En domän med wildcard MX-post får inte ha några andra MX-poster."
+msgstr "CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN) med en giltig toppdomän."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -7141,7 +7139,7 @@ msgstr "Ogiltig IP-adress: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
-msgstr "NSEC3-iterationer"
+msgstr "Prioritetsfältet för CAA-poster måste vara 0 eller tomt."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
@@ -7149,11 +7147,11 @@ msgstr "CAA-posten måste innehålla flaggor, tagg och värde separerade med bla
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "NSEC3-flaggor"
+msgstr "CAA-flaggor måste vara ett nummer mellan 0 och 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
-msgstr "Uppdatera NSEC3-parametrar"
+msgstr "CAA-taggen får endast innehålla ASCII-bokstäver och siffror."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
