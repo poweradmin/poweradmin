@@ -37,7 +37,7 @@
 
                     <div class="d-flex justify-content-between">
                         <div>
-                            <button type="submit" class="btn btn-primary btn-sm" name="submit">
+                            <button type="submit" class="btn btn-primary btn-sm" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                 <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Records{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">

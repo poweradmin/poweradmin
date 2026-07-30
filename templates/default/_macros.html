@@ -14,7 +14,7 @@
 {# Confirm/cancel pair for delete confirmation pages. The confirm button
    submits the enclosing POST form; the cancel link navigates away. #}
 {% macro delete_actions(confirm_label, cancel_url, cancel_label, confirm_testid = '', cancel_testid = '', confirm_name = '') %}
-<button type="submit" class="btn btn-danger btn-sm"{% if confirm_name %} name="{{ confirm_name }}"{% endif %}{% if confirm_testid %} data-testid="{{ confirm_testid }}"{% endif %}>
+<button type="submit" class="btn btn-danger btn-sm" data-busy-text="{% trans %}Saving...{% endtrans %}"{% if confirm_name %} name="{{ confirm_name }}"{% endif %}{% if confirm_testid %} data-testid="{{ confirm_testid }}"{% endif %}>
     <i class="bi bi-trash-fill me-1 text-white"></i>{{ confirm_label }}
 </button>
 <a href="{{ cancel_url }}" class="btn btn-secondary btn-sm"{% if cancel_testid %} data-testid="{{ cancel_testid }}"{% endif %}>

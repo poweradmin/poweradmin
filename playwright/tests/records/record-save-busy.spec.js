@@ -75,4 +75,45 @@ test.describe('Record save busy state - Issue #1409', () => {
     await expect(button).not.toHaveAttribute('aria-busy', 'true');
     await expect(button.locator('.spinner-border')).toHaveCount(0);
   });
+
+  // The confirm button comes from the shared delete_actions macro, so this
+  // covers every delete-confirmation page at once.
+  test('shows a spinner on the shared delete confirmation button', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+    const zoneName = `busy-delete-${Date.now()}.example.com`;
+    await page.goto('/zones/add/master');
+    await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('networkidle');
+
+    await page.goto('/zones/forward?letter=all');
+    const row = page.locator('tr', { hasText: zoneName }).first();
+    const href = await row.locator('a[href*="/edit"]').first().getAttribute('href');
+    const zoneId = href && href.match(/\/zones\/(\d+)\/edit/)?.[1];
+    expect(zoneId).toBeTruthy();
+
+    await page.goto(`/zones/${zoneId}/delete`);
+
+    // Record the button state at submit time and stash it somewhere that
+    // survives the navigation, rather than racing the page unload.
+    await page.evaluate(() => {
+      document.addEventListener('submit', () => {
+        const b = document.querySelector('[data-testid="confirm-delete-zone"]');
+        sessionStorage.setItem('busyProbe', JSON.stringify({
+          ariaBusy: b.getAttribute('aria-busy'),
+          spinner: !!b.querySelector('.spinner-border'),
+          label: b.textContent.trim(),
+        }));
+      });
+    });
+
+    await page.locator('[data-testid="confirm-delete-zone"]').click();
+    await page.waitForLoadState('domcontentloaded');
+
+    const probe = JSON.parse(await page.evaluate(() => sessionStorage.getItem('busyProbe')));
+    expect(probe.ariaBusy).toBe('true');
+    expect(probe.spinner).toBe(true);
+    expect(probe.label).toBe('Saving...');
+  });
 });

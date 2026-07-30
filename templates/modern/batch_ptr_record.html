@@ -94,7 +94,7 @@
 
                     <div class="d-flex justify-content-between">
                         <div>
-                            <button type="submit" class="btn btn-sm btn-primary">
+                            <button type="submit" class="btn btn-sm btn-primary" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Create PTR Records{% endtrans %}
                             </button>
                             {% if has_zone_id %}

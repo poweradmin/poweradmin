@@ -31,7 +31,7 @@
 
         <p class="small text-muted mb-3">{% trans %}Create a new DNS record in this zone{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" novalidate data-busy-submit>
+        <form class="needs-validation" method="post" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
 

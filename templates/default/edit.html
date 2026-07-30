@@ -44,7 +44,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate data-busy-submit>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -317,7 +317,7 @@
         </div>
         {% endif %}
 
-        <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate data-busy-submit>
+        <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
 
@@ -643,7 +643,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate data-busy-submit>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -876,7 +876,7 @@
                             {% if can_manage_dnssec %}
                             <form method="post" action="" class="d-inline">
                                 {{ macros.csrf_field() }}
-                                <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone">
+                                <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                     <i class="bi bi-shield-check me-1 text-success"></i>{% trans %}Sign zone{% endtrans %}
                                 </button>
                             </form>

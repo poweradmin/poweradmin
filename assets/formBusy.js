@@ -18,11 +18,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Shows a spinner on the clicked submit button of forms marked data-busy-submit
-// and blocks repeat submits. Saves on a slow backend can take several seconds.
+// Shows a spinner on any clicked submit button carrying data-busy-text and
+// blocks repeat submits. Saves on a slow backend can take several seconds.
 (function () {
     'use strict';
 
+    const busyForms = [];
     const busyButtons = [];
 
     // The submitter keeps its name/value in the payload, so it is never disabled:
@@ -57,28 +58,28 @@
         button.classList.remove('pe-none');
     }
 
-    // Registered on DOMContentLoaded so this runs after the inline validation
-    // handler in footer.html, making event.defaultPrevented meaningful here.
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('form[data-busy-submit]').forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (event.defaultPrevented) {
-                    return;
-                }
+    // Delegated on document, so the form's own listeners - including the
+    // needs-validation handler in footer.html - always run first and
+    // event.defaultPrevented is meaningful regardless of registration order.
+    document.addEventListener('submit', function (event) {
+        // event.submitter also resolves buttons bound through a form="" attribute
+        const button = event.submitter;
+        if (!button || button.tagName !== 'BUTTON' || !button.dataset.busyText) {
+            return;
+        }
+        if (event.defaultPrevented) {
+            return;
+        }
 
-                if (form.dataset.busySubmitting === '1') {
-                    event.preventDefault();
-                    return;
-                }
-                form.dataset.busySubmitting = '1';
+        const form = event.target;
+        if (form.dataset.busySubmitting === '1') {
+            event.preventDefault();
+            return;
+        }
+        form.dataset.busySubmitting = '1';
+        busyForms.push(form);
 
-                // event.submitter also resolves buttons bound through a form="" attribute
-                const button = event.submitter;
-                if (button && button.tagName === 'BUTTON') {
-                    markBusy(button);
-                }
-            });
-        });
+        markBusy(button);
     });
 
     // Restoring a bfcache snapshot would otherwise show a stuck spinner
@@ -87,7 +88,7 @@
             return;
         }
         busyButtons.splice(0).forEach(clearBusy);
-        document.querySelectorAll('form[data-busy-submit]').forEach(function (form) {
+        busyForms.splice(0).forEach(function (form) {
             delete form.dataset.busySubmitting;
         });
     });

@@ -20,7 +20,7 @@
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate data-busy-submit>
+        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
             {{ macros.csrf_field() }}
 
             <div class="table-responsive">
