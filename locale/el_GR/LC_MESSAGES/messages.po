@@ -1583,9 +1583,7 @@ msgstr ""
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr ""
-"Η καταγραφή και η αντίστοιχη εγγραφή της Α/ΑΑΑΑ διαγράφηκαν αλλά το σχόλιο "
-"διατηρήθηκε επειδή υπάρχουν παρόμοια αρχεία."
+msgstr "Η εγγραφή και η αντίστοιχη εγγραφή A/AAAA διαγράφηκαν, αλλά το σχόλιο διατηρήθηκε επειδή υπάρχουν παρόμοιες εγγραφές."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
@@ -4171,8 +4169,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr ""
-"1. Ολόκληρη η αλυσίδα των αναζήτησης VRV πρέπει να είναι DNSSEC-υπογραφεί"
+msgstr "1. Ολόκληρη η αλυσίδα των αναζητήσεων SRV πρέπει να είναι υπογεγραμμένη με DNSSEC"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
@@ -4185,9 +4182,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
-"3. Τόσο τα αρχεία VRV και TLSA πρέπει να έχουν DNSSEC κατάσταση επικύρωσης "
-"\"ασφαλής\""
+msgstr "3. Τόσο οι εγγραφές SRV όσο και οι TLSA πρέπει να έχουν κατάσταση επικύρωσης DNSSEC \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
@@ -4241,9 +4236,7 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"Εάν χρησιμοποιείτε CNAME, βεβαιωθείτε ότι ολόκληρη η αλυσίδα CNAME έχει "
-"υπογραφεί για να λειτουργήσει σωστά η TLSA (RFC 7671)."
+msgstr "Εάν χρησιμοποιείτε CNAME, βεβαιωθείτε ότι ολόκληρη η αλυσίδα CNAME είναι υπογεγραμμένη με DNSSEC ώστε το TLSA να λειτουργεί σωστά (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -5417,9 +5410,7 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Απαιτούνται ακριβή ρολόγια συστήματος τόσο στον πελάτη όσο και στον "
-"εξυπηρετητή για να λειτουργεί σωστά η ΤΠΔ."
+msgstr "Απαιτούνται ακριβή ρολόγια συστήματος τόσο στον πελάτη όσο και στον εξυπηρετητή για να λειτουργεί σωστά το TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -8651,10 +8642,7 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr ""
-"ΚΡΙΤΙΚΟ: SHFP records REQUIRE DNSSEC επικύρωση για την παροχή τυχόν οφέλη "
-"ασφάλειας. Χωρίς την DNSSEC, δεν προσφέρουν καμία προστασία από ανθρωπο-στο-"
-"μεσαίο επιθέσεις."
+msgstr "ΚΡΙΣΙΜΟ: Οι εγγραφές SSHFP ΑΠΑΙΤΟΥΝ επικύρωση DNSSEC για να παρέχουν οποιοδήποτε όφελος ασφάλειας. Χωρίς DNSSEC, δεν προσφέρουν καμία προστασία από επιθέσεις man-in-the-middle."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -9209,8 +9197,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr ""
-"Μη έγκυρη τιμή για το πεδίο βάρους της εγγραφής SVV. Πρέπει να είναι 0-65535."
+msgstr "Μη έγκυρη τιμή για το πεδίο βάρους της εγγραφής SRV. Πρέπει να είναι 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -9248,7 +9235,7 @@ msgstr "Μη έγκυρη τιμή για το πεδίο προτεραιότη
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "Οι διευθύνσεις IPv6 δεν πρέπει να χρησιμοποιούνται σε αρχεία AAA."
+msgstr "Οι μη καθορισμένες (::) ή loopback (::1) διευθύνσεις IPv6 δεν πρέπει να χρησιμοποιούνται σε εγγραφές AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -9260,9 +9247,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
-"Μη έγκυρη τιμή για το πεδίο προτεραιότητας. Τα αρχεία AAA πρέπει να έχουν "
-"προτεραιότητα 0."
+msgstr "Μη έγκυρη τιμή για το πεδίο προτεραιότητας. Οι εγγραφές AAAA πρέπει να έχουν τιμή προτεραιότητας 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -9977,7 +9962,7 @@ msgstr "Αντιγραφή!"
 
 #: templates/modern/dnssec_delete_key.html:5
 msgid "DNSSEC"
-msgstr "ΔΝSSEC"
+msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:118
 msgid "Deactivate key"
@@ -11233,9 +11218,7 @@ msgstr "Βέλτιστες Πρακτικές"
 
 #: templates/modern/bulk_record_add.html:71
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr ""
-"Για CNAME, MX, αρχεία SVV, βεβαιωθείτε ότι το περιεχόμενο τελειώνει με μια "
-"τελεία (.)"
+msgstr "Για εγγραφές CNAME, MX, SRV, βεβαιωθείτε ότι το περιεχόμενο τελειώνει με τελεία (.)"
 
 #: templates/modern/bulk_record_add.html:72
 msgid "Use @ for records at the zone apex (root domain)"

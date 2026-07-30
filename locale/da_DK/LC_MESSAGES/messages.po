@@ -496,7 +496,7 @@ msgstr "Avancerede indstillinger for SPF- og DKIM-indstillingstilstande"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
-msgstr "DCIM Alignment Mode"
+msgstr "DKIM Alignment Mode"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "Relaxed"
@@ -504,7 +504,7 @@ msgstr "Afslappet"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:145
 msgid "DKIM domain can be subdomain of From: domain"
-msgstr "DCIM domæne kan være underdomæne af Fra: domæne"
+msgstr "DKIM domæne kan være underdomæne af Fra: domæne"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "Strict"
@@ -512,7 +512,7 @@ msgstr "Streng"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:146
 msgid "DKIM domain must exactly match From: domain"
-msgstr "DCIM domæne skal nøjagtigt matche Fra: domæne"
+msgstr "DKIM domæne skal nøjagtigt matche Fra: domæne"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:151
 msgid "SPF Alignment Mode"
@@ -913,7 +913,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
-msgstr "DCIM Record"
+msgstr "DKIM Record"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:47
 msgid "Email signature verification public key"
@@ -938,7 +938,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
-msgstr "Konfiguration af DCIM"
+msgstr "Konfiguration af DKIM"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:77
 msgid ""
@@ -986,9 +986,7 @@ msgstr "Testtilstand"
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr ""
-"Aktivér testtilstand (t = y). DCIM underskrifter vil være til stede, men "
-"ikke håndhæves. Brug ved første ibrugtagning."
+msgstr "Aktivér testtilstand (t=y). DKIM-signaturer vil være til stede, men ikke håndhæves. Brug ved første ibrugtagning."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
@@ -1048,9 +1046,7 @@ msgstr ""
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
-msgstr ""
-"Testtilstand er aktiveret (t = y). DCIM-underskrifterne vil ikke blive "
-"håndhævet. Deaktivér dette når testen er færdig."
+msgstr "Testtilstand er aktiveret (t=y). DKIM-signaturer vil ikke blive håndhævet. Deaktivér dette, når testen er færdig."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
@@ -4092,7 +4088,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr "1. Hele kæden af SRV-opslag skal være DNSEC- signeret"
+msgstr "1. Hele kæden af SRV-opslag skal være DNSSEC-signeret"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
@@ -4327,17 +4323,13 @@ msgstr ""
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC3PARAM-records er en del af DNSSEC og bør kun forvaltes sammen med andre "
-"DNSSEC-records (DNSECEY, RRSIG osv.)."
+msgstr "NSEC3PARAM-records er en del af DNSSEC og bør kun forvaltes sammen med andre DNSSEC-records (DNSKEY, RRSIG osv.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manuel redigering NSEC3PARAM optegnelser anbefales ikke, da de er typisk "
-"genereret automatisk af DNSEC- bevidste navnervere."
+msgstr "Manuel redigering af NSEC3PARAM-records anbefales ikke, da de typisk genereres automatisk af DNSSEC-bevidste navneservere."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
@@ -5010,17 +5002,13 @@ msgstr ""
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC-records er en del af DNSSEC og bør kun forvaltes sammen med andre "
-"DNSSEC-records (DNSSEC, RRSIG osv.)."
+msgstr "NSEC-records er en del af DNSSEC og bør kun forvaltes sammen med andre DNSSEC-records (DNSKEY, RRSIG osv.)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manuel redigering NSEC optegnelser anbefales ikke, da de er typisk genereret "
-"automatisk af DNSEC- bevidste navnervere."
+msgstr "Manuel redigering af NSEC-records anbefales ikke, da de typisk genereres automatisk af DNSSEC-bevidste navneservere."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
@@ -5086,9 +5074,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type bør typisk være til stede i NSEC type bit kort for DNSEC- "
-"signerede zoner."
+msgstr "RRSIG-typen bør typisk være til stede i NSEC-typebitkort for DNSSEC-signerede zoner."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
@@ -5151,9 +5137,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"ÅBENPGPKEY rekord er usædvanligt lille. Kontroller at dette er en gyldig "
-"OpenPGP offentlig nøgle."
+msgstr "OPENPGPKEY-record er usædvanligt lille. Kontrollér, at dette er en gyldig OpenPGP offentlig nøgle."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -5191,9 +5175,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
-"ÅBENPGPKEY optegnelser er ikke en erstatning for OpenPGP Web of Trust. "
-"Yderligere kontrolmetoder anbefales stadig."
+msgstr "OPENPGPKEY-records er ikke en erstatning for OpenPGP Web of Trust. Yderligere kontrolmetoder anbefales stadig."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
@@ -8368,7 +8350,7 @@ msgstr "SSHFP SHA-1 fingeraftryk skal være 40 tegn lang."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "SHFP SHA- 256 fingeraftryk skal være 64 tegn."
+msgstr "SSHFP SHA-256-fingeraftryk skal være 64 tegn langt."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -8475,9 +8457,7 @@ msgstr ""
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr ""
-"For DNSSEC-områdenøgler (flag = 257, protokol = 3) anvendes DNSSKEY-records "
-"i stedet for KEY-records."
+msgstr "For DNSSEC-zonenøgler (flag=257, protokol=3) bør DNSKEY-records anvendes i stedet for KEY-records."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -8990,17 +8970,13 @@ msgstr ""
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC3-records er en del af DNSSEC og bør kun forvaltes sammen med andre "
-"DNSSEC-records (DNSECEY, RRSIG osv.)."
+msgstr "NSEC3-records er en del af DNSSEC og bør kun forvaltes sammen med andre DNSSEC-records (DNSKEY, RRSIG osv.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manuel redigering NSEC3 records anbefales ikke, da de er typisk genereret "
-"automatisk af DNSEC- bevidste navnervere."
+msgstr "Manuel redigering af NSEC3-records anbefales ikke, da de typisk genereres automatisk af DNSSEC-bevidste navneservere."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -9059,9 +9035,7 @@ msgstr "NSEC3 record indeholder en ugyldig record type: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type bør typisk være til stede i NSEC3 type bit kort for DNSEC- "
-"signerede zoner."
+msgstr "RRSIG-typen bør typisk være til stede i NSEC3-typebitkort for DNSSEC-signerede zoner."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -9115,9 +9089,7 @@ msgstr ""
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr ""
-"Denne rekord følger RFC 3403. Vær opmærksom på, at nogle DNS-servere måske "
-"ikke fuldt ud understøtter alle NAptR-funktioner."
+msgstr "Denne record følger RFC 3403. Vær opmærksom på, at nogle DNS-servere måske ikke fuldt ud understøtter alle NAPTR-funktioner."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -9141,7 +9113,7 @@ msgstr "NAPTR record order skal være mellem 0 og 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "NAptR record præference skal være mellem 0 og 65535."
+msgstr "NAPTR-record præference skal være et tal mellem 0 og 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -9149,7 +9121,7 @@ msgstr "NAPTR record flag skal være en citeret streng."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
-msgstr "NAptR record flag må kun indeholde A, P, S eller U."
+msgstr "NAPTR-record flag må kun indeholde A, P, S eller U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
@@ -9212,9 +9184,7 @@ msgstr ""
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr ""
-"Dette synes at være en ENUM NAptR record (RFC 6116). Sørg for at domænet er "
-"under e164.arpa eller et privat ENUM træ."
+msgstr "Dette synes at være en ENUM NAPTR-record (RFC 6116). Sørg for, at domænet er under e164.arpa eller et privat ENUM-træ."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
