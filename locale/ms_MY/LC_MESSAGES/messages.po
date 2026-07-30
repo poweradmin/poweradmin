@@ -2938,19 +2938,19 @@ msgstr "Ciri API PowerDNS tidak dikonfigurasikan. Sila tetapkan URL dan kunci AP
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
-msgstr "Anda tidak memiliki kebenaran untuk mengakses fitur ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengakses ciri ini."
 
 #: lib/Application/Controller/ExampleController.php:213
 msgid "Operation completed successfully."
-msgstr "Operasi gagal."
+msgstr "Operasi berjaya diselesaikan."
 
 #: lib/Application/Controller/ExampleController.php:217
 msgid "Failed to process the request. Please try again."
-msgstr "Gagal memproses permintaan. Tolong coba lagi."
+msgstr "Gagal memproses permintaan. Sila cuba lagi."
 
 #: lib/Application/Controller/ExampleController.php:224
 msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "Kesalahan tak terduga terjadi. \\\"Coba hubungi Administrator\\\"."
+msgstr "Ralat yang tidak dijangka telah berlaku. Sila hubungi pentadbir."
 
 #: lib/Application/Controller/SamlCallbackController.php:109
 msgid "Unknown SAML endpoint"
@@ -2962,110 +2962,100 @@ msgstr "Anda telah log keluar"
 
 #: lib/Application/Controller/SamlCallbackController.php:165
 msgid "Logout completed (with warnings): "
-msgstr "Log keluar selesai (dengan peringatan):"
+msgstr "Log keluar selesai (dengan amaran): "
 
 #: lib/Application/Controller/EditRecordController.php:115
 msgid "You do not have permission to view this record."
-msgstr "Anda tidak memiliki kebenaran untuk melihat rekod ini."
+msgstr "Anda tidak mempunyai kebenaran untuk melihat rekod ini."
 
 #: lib/Application/Controller/EditRecordController.php:130
 msgid "You do not have permission to edit this record."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit rekod ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit rekod ini."
 
 #: lib/Application/Controller/EditRecordController.php:345
 msgid "The record has been updated successfully."
-msgstr "Rekod ini telah berhasil dikemas kini."
+msgstr "Rekod ini telah berjaya dikemas kini."
 
 #: lib/Application/Controller/ChangePasswordController.php:93
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr ""
-"Pengguna LDAP di sini tidak dapat mengubah kata sandinya. Sila hubungi "
-"administrator anda."
+msgstr "Pengguna LDAP tidak boleh menukar kata laluan mereka di sini. Sila hubungi pentadbir anda."
 
 #: lib/Application/Controller/ChangePasswordController.php:94
 msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr ""
-"Pengguna otentifikasi melalui Single Sign-On tidak dapat mengubah kata sandi "
-"mereka di sini. Sila hubungi administrator anda atau ubah kata sandi melalui "
-"penyedia identitas anda."
+msgstr "Pengguna yang disahkan melalui Single Sign-On tidak boleh menukar kata laluan mereka di sini. Sila hubungi pentadbir anda atau tukar kata laluan anda melalui penyedia identiti anda."
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr ""
-"Pengguna pengesahihan luar luaran tidak dapat mengubah password mereka di "
-"sini. Sila hubungi administrator anda."
+msgstr "Pengguna pengesahan luaran tidak boleh menukar kata laluan mereka di sini. Sila hubungi pentadbir anda."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:11
 msgid "Change Password"
-msgstr "Kata Sandi Perubahan"
+msgstr "Tukar Kata Laluan"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "Algoritme ECDSA P-256 harus menggunakan 256 bit"
+msgstr "Algoritma ECDSA P-256 mesti menggunakan 256 bit"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:135
 msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "Algoritme ECDSA P-384 harus menggunakan 384 bit"
+msgstr "Algoritma ECDSA P-384 mesti menggunakan 384 bit"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:141
 msgid "ED25519 algorithm must use 256 bits"
-msgstr "Algoritme ED25519 harus menggunakan 256 bit"
+msgstr "Algoritma ED25519 mesti menggunakan 256 bit"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:146
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"Algoritme ED448 harus menggunakan 456 bit (tidak didukung dalam UI ini)"
+msgstr "Algoritma ED448 mesti menggunakan 456 bit (tidak disokong dalam UI ini)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:153
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"Algoritma RSA harus menggunakan 1024 atau 2048 bit untuk keselamatan yang "
-"memadai"
+msgstr "Algoritma RSA sepatutnya menggunakan 1024 atau 2048 bit untuk keselamatan yang mencukupi"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Zone key has been added successfully."
-msgstr "Kunci zon berhasil ditambahkan."
+msgstr "Kunci zon telah berjaya ditambah."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:179
 msgid "Failed to add new DNSSEC key."
-msgstr "Gagal untuk menambah kunci DNSSEC baru."
+msgstr "Gagal menambah kunci DNSSEC baharu."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:183
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "Kesalahan worm terjadi ketika menambahkan kunci DNSSEC:"
+msgstr "Ralat berlaku semasa menambah kunci DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:187
 msgid "Please select both algorithm and bits"
-msgstr "Sila pilih algoritma dan bit"
+msgstr "Sila pilih kedua-dua algoritma dan bit"
 
 #: lib/Application/Controller/EditGroupController.php:83
 msgid "You do not have permission to edit groups."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit kumpulan."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit kumpulan."
 
 #: lib/Application/Controller/EditGroupController.php:97
 #: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
 msgid "Edit Group"
-msgstr "Grup Edit"
+msgstr "Edit Kumpulan"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
-msgstr "Grup telah berhasil dikemas kini."
+msgstr "Kumpulan telah berjaya dikemas kini."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus seorang supermaster."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
-msgstr "Alamat IP tak valid."
+msgstr "Alamat IP tidak sah."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:90
 msgid "Invalid NS name."
@@ -3073,20 +3063,20 @@ msgstr "Nama NS tidak sah."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:115
 msgid "Super master does not exist."
-msgstr "Guru Super tidak ada."
+msgstr "Supermaster tidak wujud."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Supermaster telah berhasil dipadam."
+msgstr "Supermaster telah berjaya dipadam."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
 msgid "Bulk Registration"
-msgstr "Pendaftaran Bulk"
+msgstr "Pendaftaran Pukal"
 
 #: lib/Application/Controller/BulkRegistrationController.php:134
 msgid "Owner must be a numeric user ID."
-msgstr "Pemilik harus ID pengguna numerik."
+msgstr "Pemilik mestilah ID pengguna berangka."
 
 #: lib/Application/Controller/BulkRegistrationController.php:214
 msgid "Failed to add zone."
@@ -3094,48 +3084,42 @@ msgstr "Gagal menambah zon."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
 msgid "Zones has been added successfully."
-msgstr "Zona-zona telah berhasil ditambahkan."
+msgstr "Zon telah berjaya ditambah."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
 msgid "Some zone(s) could not be added."
-msgstr "Beberapa zona tidak dapat ditambahkan."
+msgstr "Sesetengah zon tidak dapat ditambah."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:36
 msgid "You do not have the permission to change the default zone template."
-msgstr "Anda tidak memiliki kebenaran untuk mengubah templat zona baku."
+msgstr "Anda tidak mempunyai kebenaran untuk menukar templat zon lalai."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:50
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr ""
-"Bendera baku dibersihkan, tetapi tetapan konfigurasi "
-"dns.default_zone_template masih aktif."
+msgstr "Bendera lalai telah dikosongkan, tetapi tetapan konfigurasi dns.default_zone_template masih aktif."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
-msgstr "Templat zona default dibersihkan."
+msgstr "Templat zon lalai telah dikosongkan."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:75
 msgid "Default zone template updated."
-msgstr "Templat zona standar dikemas kini."
+msgstr "Templat zon lalai telah dikemas kini."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:183
 msgid "User-owner assignment is disabled by the current zone ownership mode."
-msgstr ""
-"Penugasan pemilik-pengguna (User-owner assignment) dilumpuhkan oleh mod "
-"kepemilikan zona saat ini."
+msgstr "Umpukan pemilik pengguna dilumpuhkan oleh mod pemilikan zon semasa."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:190
 msgid "Owner has been added successfully."
-msgstr "Pemilik telah berhasil ditambahkan."
+msgstr "Pemilik telah berjaya ditambah."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:296
 msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr ""
-"Tidak dapat menghapus pemilik terakhir: ini akan meninggalkan zona tanpa "
-"kepemilikan."
+msgstr "Tidak dapat membuang pemilik terakhir: ini akan meninggalkan zon tanpa sebarang pemilikan."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:226
 msgid ""
@@ -3156,22 +3140,20 @@ msgstr ""
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
-msgstr "Pemiliknya berhasil dipindahkan."
+msgstr "Pemilik telah berjaya dibuang."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:253
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
-msgstr ""
-"Penugasan kepemilikan Grup-Kerja Grup dilumpuhkan oleh mod kepemilikan zona "
-"saat ini."
+msgstr "Umpukan pemilikan kumpulan dilumpuhkan oleh mod pemilikan zon semasa."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:265
 msgid "You do not have permission to assign this group."
-msgstr "Anda tidak memiliki kebenaran untuk menetapkan kumpulan ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengumpukkan kumpulan ini."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:273
 msgid "Group has been added successfully."
-msgstr "Grup Group telah berhasil ditambahkan."
+msgstr "Kumpulan telah berjaya ditambah."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:302
 msgid ""
@@ -3192,7 +3174,7 @@ msgstr ""
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
-msgstr "Grup Ogos telah berhasil dipadam."
+msgstr "Kumpulan telah berjaya dibuang."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add another owner or a group first."
@@ -3200,9 +3182,7 @@ msgstr "Tambah pemilik lain atau kumpulan terlebih dahulu."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr ""
-"T ambah pemilik pengguna lain terlebih dahulu (mod pemilikan zon adalah "
-"users_only)."
+msgstr "Tambah pemilik pengguna lain terlebih dahulu (mod pemilikan zon ialah users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
@@ -3221,39 +3201,37 @@ msgstr "Tindakan ini memerlukan permintaan POST."
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
-msgstr ""
-"fungsionalitas DNSSEC tidak tersedia. Sila periksa konfigurasi API PowerDNS."
+msgstr "Fungsi DNSSEC tidak tersedia. Sila semak konfigurasi API PowerDNS."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:118
 msgid "Zone key has been successfully deactivated."
-msgstr "Kunci zon berhasil dilumpuhkan."
+msgstr "Kunci zon telah berjaya dinyahaktifkan."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:119
 msgid "Failed to deactivate zone key."
-msgstr "Gagal menonaktifkan kunci zona."
+msgstr "Gagal menyahaktifkan kunci zon."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:122
 msgid "Zone key has been successfully activated."
-msgstr "Kunci zon berhasil diaktifkan."
+msgstr "Kunci zon telah berjaya diaktifkan."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:123
 msgid "Failed to activate zone key."
-msgstr "Gagal mengaktifkan kunci zona."
+msgstr "Gagal mengaktifkan kunci zon."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:136
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
-msgstr ""
-"Sebuah kesalahan terjadi ketika mentoggling kunci DNSSEC. Tolong coba lagi."
+msgstr "Ralat berlaku semasa menogol kunci DNSSEC. Sila cuba lagi."
 
 #: lib/Application/Service/RequestValidator.php:69
 #, php-format
 msgid "The %s field is required."
-msgstr "Lapangan %s diperlukan."
+msgstr "Medan %s diperlukan."
 
 #: lib/Application/Service/RequestValidator.php:77
 #, php-format
 msgid "The %s field must be a number."
-msgstr "Bidang %s harus nombor."
+msgstr "Medan %s mestilah nombor."
 
 #: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
 #: templates/modern/users.html:196
@@ -3267,11 +3245,11 @@ msgstr "Tidak"
 
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Account is temporarily locked. Please try again later."
-msgstr "Akun untuk sementara terkunci. Coba lagi nanti."
+msgstr "Akaun dikunci buat sementara waktu. Sila cuba lagi kemudian."
 
 #: lib/Application/Service/SqlAuthenticator.php:155
 msgid "The user account is disabled."
-msgstr "Akun pengguna dilumpuhkan."
+msgstr "Akaun pengguna dilumpuhkan."
 
 #: lib/Application/Service/SqlAuthenticator.php:244
 msgid "Authentication failed!"
@@ -3279,39 +3257,39 @@ msgstr "Pengesahan gagal!"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:204
 msgid "Session expired, please login again."
-msgstr "Sesi kedaluwarsa, sila login lagi."
+msgstr "Sesi telah tamat tempoh, sila log masuk semula."
 
 #: lib/Application/Service/PasswordChangeService.php:66
 msgid "Failed to update password"
-msgstr "Gagal memperbaharui kata sandi"
+msgstr "Gagal mengemas kini kata laluan"
 
 #: lib/Application/Service/OidcService.php:242
 msgid "Authentication failed: Invalid state parameter"
-msgstr "Pengesahihan gagal: Parameter keadaan tidak sah"
+msgstr "Pengesahan gagal: Parameter keadaan tidak sah"
 
 #: lib/Application/Service/OidcService.php:263
 msgid "Authentication failed: No authorization code"
-msgstr "Otentikasi gagal: Tidak ada kode otorisasi"
+msgstr "Pengesahan gagal: Tiada kod kebenaran"
 
 #: lib/Application/Service/SamlService.php:222
 msgid "Authentication failed: Invalid session"
-msgstr "Otentikasi gagal: Sesi tidak sah"
+msgstr "Pengesahan gagal: Sesi tidak sah"
 
 #: lib/Application/Service/SamlService.php:385
 msgid "Authentication failed: Unable to create or update user account"
-msgstr "Otentikasi gagal: Tidak dapat membuat atau memperbarui akun pengguna"
+msgstr "Pengesahan gagal: Tidak dapat mencipta atau mengemas kini akaun pengguna"
 
 #: lib/Application/Service/LdapAuthenticator.php:284
 msgid "LDAP Authentication failed!"
-msgstr "Otentikasi LDAP ACTP gagal!"
+msgstr "Pengesahan LDAP gagal!"
 
 #: lib/Application/Service/LdapAuthenticator.php:169
 msgid "Failed to connect to LDAP server!"
-msgstr "Gagal menyambung ke server LDAP!"
+msgstr "Gagal menyambung ke pelayan LDAP!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to bind to LDAP server!"
-msgstr "Gagal mengikat ke server LDAP!"
+msgstr "Gagal mengikat ke pelayan LDAP!"
 
 #: lib/Application/Service/LdapAuthenticator.php:219
 msgid "Failed to search LDAP."
@@ -3319,28 +3297,27 @@ msgstr "Gagal mencari LDAP."
 
 #: lib/Application/Service/LdapAuthenticator.php:236
 msgid "Failed to authenticate against LDAP."
-msgstr "Gagal diautentikasikan dengan LDAP."
+msgstr "Gagal mengesahkan terhadap LDAP."
 
 #: lib/Application/Service/SamlService.php:280
 msgid "Authentication failed: Invalid SAML response"
-msgstr "Otentikasi gagal: Respon SASL tidak sah"
+msgstr "Pengesahan gagal: Respons SAML tidak sah"
 
 #: lib/Infrastructure/Repository/SqlDomainRepository.php:143
 msgid "This is an invalid zone name."
-msgstr "Ini adalah nama zona tidak sah."
+msgstr "Ini ialah nama zon yang tidak sah."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
-msgstr ""
-"Templat ini ditugaskan untuk setidaknya satu pengguna dan satu kumpulan."
+msgstr "Templat ini diumpukkan kepada sekurang-kurangnya seorang pengguna dan satu kumpulan."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
-msgstr "Templat ini ditugaskan untuk setidaknya satu pengguna."
+msgstr "Templat ini diumpukkan kepada sekurang-kurangnya seorang pengguna."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
-msgstr "Templat ini ditugaskan untuk setidaknya satu kumpulan."
+msgstr "Templat ini diumpukkan kepada sekurang-kurangnya satu kumpulan."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:102
 msgid "Primary"
@@ -3353,11 +3330,11 @@ msgstr "Sekunder"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:114
 #: lib/Module/ZoneImportExport/templates/import.html:129
 msgid "Native"
-msgstr "Penduduk Asli"
+msgstr "Native"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:115
 msgid "Producer"
-msgstr "Produser"
+msgstr "Producer"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:116
 msgid "Consumer"
@@ -3366,15 +3343,15 @@ msgstr "Consumer"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:112
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Master"
-msgstr "Tuan"
+msgstr "Master"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:113
 msgid "Slave"
-msgstr "Hamba"
+msgstr "Slave"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Autoprimaries"
-msgstr "Otoprima"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
@@ -3382,7 +3359,7 @@ msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "Otoprimar"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
@@ -3390,7 +3367,7 @@ msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "Adonan"
+msgstr "Tambah autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
@@ -3398,7 +3375,7 @@ msgstr "Tambah supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Andorra"
+msgstr "Edit autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
@@ -3406,15 +3383,15 @@ msgstr "Edit supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "Otomotif dihapuskan"
+msgstr "Padam autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "Luncurkan supermaster"
+msgstr "Padam supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
-msgstr "Otomotif"
+msgstr "Perihal Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
@@ -3430,103 +3407,97 @@ msgstr "Apa itu Supermaster?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
-msgstr "Cari otoprimer..."
+msgstr "Cari autoprimary..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "Supermaster pencarian..."
+msgstr "Cari supermaster..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
-msgstr "Tak ada yang harus ditunjukkan dalam daftar ini."
+msgstr "Tiada autoprimary untuk dipaparkan dalam senarai ini."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Tidak ada supermaster untuk ditunjukkan dalam daftar ini."
+msgstr "Tiada supermaster untuk dipaparkan dalam senarai ini."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "Alamat IP untuk autoprimary"
+msgstr "Alamat IP autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Alamat IP dari supermaster"
+msgstr "Alamat IP supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "Pilihlah account yang akan memiliki autoprimary ini"
+msgstr "Pilih akaun yang akan memiliki autoprimary ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Tak ada yang akan memiliki supermaster ini."
+msgstr "Pilih akaun yang akan memiliki supermaster ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
-msgstr "Pengorbanan Tentang Pengeditan Sendiri"
+msgstr "Perihal Mengedit Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Menggoda Supermaster"
+msgstr "Perihal Mengedit Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr ""
-"Anda dapat mengubah alamat IP, nama host, atau akun untuk autoprimary ini."
+msgstr "Anda boleh mengubah suai alamat IP, nama hos, atau akaun untuk autoprimary ini."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Anda dapat mengubah alamat IP, nama host, atau akun untuk supermaster ini."
+msgstr "Anda boleh mengubah suai alamat IP, nama hos, atau akaun untuk supermaster ini."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
-msgstr "Rincian Autoprimary"
+msgstr "Butiran Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "Detail Supermaster"
+msgstr "Butiran Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "Anda akan menghapus autoprimary"
+msgstr "Anda akan memadam autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "Anda akan menghapus supermaster"
+msgstr "Anda akan memadam supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "Ya, hapus autoprimary ini"
+msgstr "Ya, padam autoprimary ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "Ya, hapus ini supermaster"
+msgstr "Ya, padam supermaster ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "Tidak, jaga autoprimary ini"
+msgstr "Tidak, kekalkan autoprimary ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "Tidak, jaga supermaster ini"
+msgstr "Tidak, kekalkan supermaster ini"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Memperlihatkan status konektivitas untuk server autoprimer dikonfigurasi "
-"dalam tabel di bawah ini."
+msgstr "Memaparkan status ketersambungan bagi pelayan autoprimary yang dikonfigurasikan dalam jadual di bawah."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Memperlihatkan status konektivitas untuk para supermaster yang dikonfigurasi "
-"dalam tabel di bawah ini."
+msgstr "Memaparkan status ketersambungan bagi supermaster yang dikonfigurasikan dalam jadual di bawah."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3539,30 +3510,26 @@ msgstr ""
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr ""
-"Kunci enkripsi sesi baku standar digunakan, sila set di fail konfigurasi "
-"Anda."
+msgstr "Kunci penyulitan sesi lalai sedang digunakan, sila tetapkannya dalam fail konfigurasi anda."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
 msgid "reCAPTCHA verification failed. Please try again."
-msgstr "Pengesahan reCAPTCHA rea gagal. Tolong coba lagi."
+msgstr "Pengesahan reCAPTCHA gagal. Sila cuba lagi."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:189
 msgid "An empty password is not allowed"
-msgstr "Kata sandi kosong tidak diperbolehkan"
+msgstr "Kata laluan kosong tidak dibenarkan"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:232
 msgid "LDAP authentication is disabled"
-msgstr "Otentikasi LDAP lumpuhkan"
+msgstr "Pengesahan LDAP dilumpuhkan"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:426
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
-msgstr ""
-"Ralat basis data tak valid: Tidak dapat memeriksa otentikasi pengguna. Sila "
-"periksa konfigurasi pangkalan data anda."
+msgstr "Ralat pangkalan data: Tidak dapat mengesahkan pengesahan pengguna. Sila semak konfigurasi pangkalan data anda."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 msgid "You do not have the permission to change the permission template."
@@ -3586,11 +3553,11 @@ msgstr ""
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
-msgstr "Masukkan alamat email yang valid."
+msgstr "Masukkan alamat e-mel yang sah."
 
 #: lib/Domain/Model/UserManager.php:522
 msgid "Username exist already, please choose another one."
-msgstr "Nama pengguna tidak ada sudah ada, sila pilih yang lain."
+msgstr "Nama pengguna sudah wujud, sila pilih yang lain."
 
 #: lib/Domain/Model/UserManager.php:534
 msgid "Email address already exists, please choose another one."
@@ -3602,40 +3569,39 @@ msgstr "Masukkan nama pengguna yang sah."
 
 #: lib/Domain/Model/ZoneTemplate.php:307
 msgid "Zone template not found."
-msgstr "Tidak dijumpai."
+msgstr "Templat zon tidak dijumpai."
 
 #: lib/Domain/Model/ZoneTemplate.php:311
 msgid "Only global zone templates can be set as the default."
-msgstr "Hanya templat zona global yang dapat ditetapkan sebagai baku."
+msgstr "Hanya templat zon global boleh ditetapkan sebagai lalai."
 
 #: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error setting default zone template: "
-msgstr "Ralat ketika menetapkan templat zona default:"
+msgstr "Ralat semasa menetapkan templat zon lalai: "
 
 #: lib/Domain/Model/ZoneTemplate.php:346
 msgid "Error clearing default zone template: "
-msgstr "Ralat sewaktu membersihkan zon templat default:"
+msgstr "Ralat semasa mengosongkan templat zon lalai: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Ralat ketika membuat templat zon:"
+msgstr "Ralat semasa mencipta templat zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Ralat ketika menambahkan rekod SOA default ke templat:"
+msgstr "Ralat semasa menambah rekod SOA lalai ke templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Ralat sewaktu menghapus templat zona:"
+msgstr "Ralat semasa memadam templat zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Ralat memadam templat zona pengguna:"
+msgstr "Ralat semasa memadam templat zon pengguna: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
-msgstr ""
-"Anda tidak memiliki kebenaran untuk menambahkan rekod ke zon templet ini."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod ke templat zon ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
 msgid ""
@@ -3646,15 +3612,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
 msgid "Your content field doesnt have a legit value."
-msgstr "Bidang konten Anda tidak memiliki nilai legit."
+msgstr "Medan kandungan anda tidak mempunyai nilai yang sah."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "Keutamaan untuk rekod MX/SRV harus berupa angka antara 0 dan 65535."
+msgstr "Keutamaan bagi rekod MX/SRV mestilah nombor antara 0 dan 65535."
 
 #: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have the permission to edit this record."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit rekod ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit rekod ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -3662,7 +3628,7 @@ msgstr "Rekod ini bukan milik templat zon ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Ralat saat memperbarui rekod templat zona:"
+msgstr "Ralat semasa mengemas kini rekod templat zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 msgid ""
@@ -3674,11 +3640,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Ralat sewaktu menghapus rekod templat zone:"
+msgstr "Ralat semasa memadam rekod templat zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Ralat ketika memeriksa kepemilikan templat:"
+msgstr "Ralat semasa menyemak pemilikan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, php-format
@@ -3691,19 +3657,19 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Ralat sewaktu memeriksa zona menggunakan templat:"
+msgstr "Ralat semasa mendapatkan zon yang menggunakan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Gagal mendapatkan daftar zona menggunakan templat:"
+msgstr "Gagal mendapatkan senarai zon yang menggunakan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit zon template."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit templat zon."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Ralat sewaktu menyahlink zona dari templat:"
+msgstr "Ralat semasa menyahpaut zon daripada templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
@@ -3711,19 +3677,19 @@ msgstr "Ralat semasa mendapatkan zon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Ralat memeriksa keberadaan nama templat:"
+msgstr "Ralat semasa menyemak kewujudan nama templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
-msgstr "Ralat mencari templat dengan nama:"
+msgstr "Ralat semasa mencari templat mengikut nama: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Ralat memeriksa keberadaan templat:"
+msgstr "Ralat semasa menyemak kewujudan templat: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod NS."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod NS."
 
 #: lib/Domain/Model/Permission.php:165
 msgid "You do not have the permission to add LUA record."
@@ -3731,11 +3697,11 @@ msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod LUA."
 
 #: lib/Domain/Model/Permission.php:166
 msgid "You do not have the permission to add SOA record."
-msgstr "Anda tidak memiliki kebenaran untuk menambahkan rekod SOA."
+msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod SOA."
 
 #: lib/Domain/Model/Permission.php:169
 msgid "You do not have the permission to edit this NS record."
-msgstr "Anda tidak memiliki kebenaran untuk menyunting rekod NS ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit rekod NS ini."
 
 #: lib/Domain/Model/Permission.php:170
 msgid "You do not have the permission to edit this LUA record."
@@ -3743,11 +3709,11 @@ msgstr "Anda tidak mempunyai kebenaran untuk menyunting rekod LUA ini."
 
 #: lib/Domain/Model/Permission.php:171
 msgid "You do not have the permission to edit this SOA record."
-msgstr "Anda tidak memiliki kebenaran untuk mengedit rekod SOA ini."
+msgstr "Anda tidak mempunyai kebenaran untuk mengedit rekod SOA ini."
 
 #: lib/Domain/Model/Permission.php:174
 msgid "You do not have the permission to delete NS records."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus rekod NS."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod NS."
 
 #: lib/Domain/Model/Permission.php:175
 msgid "You do not have the permission to delete LUA records."
@@ -3755,112 +3721,100 @@ msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod LUA."
 
 #: lib/Domain/Model/Permission.php:176
 msgid "You do not have the permission to delete SOA records."
-msgstr "Anda tidak memiliki kebenaran untuk menghapus rekod SOA."
+msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod SOA."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
-msgstr "Semua zona memiliki pemilik"
+msgstr "Semua zon mempunyai pemilik"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
-msgstr "Zona %d dijumpai tanpa pemilik"
+msgstr "%d zon dijumpai tanpa pemilik"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
-msgstr "Semua zona budak memiliki alamat IP master"
+msgstr "Semua zon slave mempunyai alamat IP master"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
-msgstr "Zona budak %d dijumpai tanpa alamat IP master"
+msgstr "%d zon slave dijumpai tanpa alamat IP master"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
-msgstr "Semua rekod milik zona yang ada"
+msgstr "Semua rekod tergolong dalam zon yang sedia ada"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
-msgstr "Rekod yatim piatu %d dijumpai"
+msgstr "%d rekod yatim dijumpai"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
-msgstr "Tidak ada rekod SOA duplikasi dijumpai"
+msgstr "Tiada rekod SOA pendua dijumpai"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
-msgstr "Zona %d memiliki rekod SOA duplikat"
+msgstr "%d zon mempunyai rekod SOA pendua"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
-msgstr "Semua zona memiliki rekod SOA"
+msgstr "Semua zon mempunyai rekod SOA"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
-msgstr "Zona %d dijumpai tanpa rekod SOA"
+msgstr "%d zon dijumpai tanpa rekod SOA"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
-msgstr "Lapangan keutamaan untuk rekod IPSECKEY harus 0 atau kosong"
+msgstr "Medan keutamaan bagi rekod IPSECKEY mestilah 0 atau kosong"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr ""
-"Rekod IPSECKEY harus digunakan dengan DNSSEC untuk memastikan transmisi aman "
-"bahan kunci (RFC 4025 Section 4)."
+msgstr "Rekod IPSECKEY sepatutnya digunakan bersama DNSSEC untuk memastikan penghantaran bahan kunci yang selamat (RFC 4025 Section 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr ""
-"Kunci publik dalam rekod IPSECKEY harus diputar secara teratur untuk "
-"keselamatan yang ditingkatkan."
+msgstr "Kunci awam dalam rekod IPSECKEY sepatutnya diputarkan secara berkala untuk keselamatan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
-msgstr ""
-"Saat menggunakan gerbang nama domain, pastikan baik rekod DNS maju maupun "
-"mundur ada dan diamankan dengan baik dengan DNSSEC."
+msgstr "Apabila menggunakan get laluan nama domain, pastikan kedua-dua rekod DNS hadapan dan songsang wujud serta dilindungi dengan betul menggunakan DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
-msgstr "Karakter tak valid dalam konten rekod IPSECKEY."
+msgstr "Aksara tidak sah dalam kandungan rekod IPSECKEY."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:166
 msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
-msgstr ""
-"Rekod IPSECKEY harus berisi preseden, jenis gateway, algoritma, gateway, dan "
-"kunci publik."
+msgstr "Rekod IPSECKEY mesti mengandungi precedence, gateway type, algorithm, gateway, dan public key."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
-msgstr "Keutamaan IPSECKEY harus nombor antara 0 dan 255."
+msgstr "Precedence IPSECKEY mestilah nombor antara 0 dan 255."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:181
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
-msgstr ""
-"Jenis gateway IPSECKEY harus 0 (Tidak ada gateway), 1 (IPv4), 2 (IPv6), atau "
-"3 (Nama utama)"
+msgstr "Jenis gateway IPSECKEY mestilah 0 (Tiada gateway), 1 (IPv4), 2 (IPv6), atau 3 (Nama domain)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
-msgstr ""
-"Algoritme IPSECKEY harus 0 (Tidak ada kunci), 1 (RSA), 2 (DSA), 3 (ECDSA), "
-"atau 4 (Ed25519)."
+msgstr "Algoritma IPSECKEY mestilah 0 (Tiada kunci), 1 (RSA), 2 (DSA), 3 (ECDSA), atau 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -3868,41 +3822,37 @@ msgstr "Untuk jenis gateway 0 (Tiada gateway), gateway mestilah \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
-msgstr "Untuk gateway jenis 1, gateway harus alamat IPv4 yang valid."
+msgstr "Bagi jenis gateway 1, gateway mestilah alamat IPv4 yang sah."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:208
 msgid "For gateway type 2, gateway must be a valid IPv6 address."
-msgstr "Untuk gateway jenis 2, gateway harus alamat IPv6 yang valid."
+msgstr "Bagi jenis gateway 2, gateway mestilah alamat IPv6 yang sah."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:218
 msgid "For gateway type 3, gateway must be a valid domain name."
-msgstr "Untuk gateway jenis 3, gateway harus merupakan nama domain yang sah."
+msgstr "Bagi jenis gateway 3, gateway mestilah nama domain yang sah."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
-msgstr "Kunci publik IPSECKEY diperlukan ketika algoritma bukan 0."
+msgstr "Kunci awam IPSECKEY diperlukan apabila algoritma bukan 0."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:232
 msgid "IPSECKEY public key must be properly Base64 encoded."
-msgstr "Kunci publik IPSECKEY harus benar Base64 dikodekan."
+msgstr "Kunci awam IPSECKEY mesti dikodkan Base64 dengan betul."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr "Kunci RSA seharusnya mengikuti format yang ditakrifkan dalam RFC 3110."
+msgstr "Kunci RSA sepatutnya mengikut format yang ditakrifkan dalam RFC 3110."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
-msgstr ""
-"Kunci-kunci DSA seharusnya mengikuti format yang didefinisikan dalam RFC "
-"2536."
+msgstr "Kunci DSA sepatutnya mengikut format yang ditakrifkan dalam RFC 2536."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:248
 msgid ""
 "When algorithm is 0 (No key), the public key field is typically empty or "
 "ignored."
-msgstr ""
-"Algoritma adalah 0 (Tidak ada kunci), medan kunci publik biasanya kosong "
-"atau diabaikan."
+msgstr "Apabila algoritma ialah 0 (Tiada kunci), medan kunci awam biasanya kosong atau diabaikan."
 
 #: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
 msgid "HHIT record content must be a non-empty base64-encoded blob."
@@ -3916,25 +3866,21 @@ msgstr "Keutamaan mestilah 0 untuk rekod HHIT."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr ""
-"Anda tidak dapat menunjuk rekod NS atau MX ke rekod CNAME. Nama pertama "
-"CNAME, atau nama lain."
+msgstr "Anda tidak boleh menghalakan rekod NS atau MX ke rekod CNAME. Buang atau namakan semula rekod CNAME itu dahulu, atau gunakan nama lain."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
-msgstr "Karakter tidak sah dalam nama hos."
+msgstr "Aksara tidak sah dalam nama hos."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:122
 msgid ""
 "Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), "
 "ensure:"
-msgstr ""
-"Nama Name muncul dalam format rekod SRV. Untuk TLS dengan SRV (RFC 7673), "
-"pastikan:"
+msgstr "Nama kelihatan dalam format rekod SRV. Untuk TLSA dengan SRV (RFC 7673), pastikan:"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr "1. Seluruh rangkaian pencarian SRV haruslah DNSSEC-signed"
+msgstr "1. Keseluruhan rantaian carian SRV mesti ditandatangani DNSSEC"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
@@ -3947,8 +3893,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
-"2. Rekod SRV maupun TLSA harus memiliki status validasi DNSSEC \"secure\""
+msgstr "3. Kedua-dua rekod SRV dan TLSA mesti mempunyai status pengesahan DNSSEC \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
@@ -3962,69 +3907,53 @@ msgstr ""
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr ""
-"Rekod TLSA menggunakan protokol non-standar. Protokol yang umum adalah tcp, "
-"udp, dan sctp."
+msgstr "Rekod TLSA menggunakan protokol bukan piawai. Protokol yang lazim ialah tcp, udp, dan sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr ""
-"Ini tampaknya menjadi rekod TLS untuk SMTP. Rekod Ensurance MX juga "
-"dikonfigurasi dengan benar."
+msgstr "Ini kelihatan seperti rekod TLSA untuk SMTP. Pastikan rekod MX juga dikonfigurasikan dengan betul."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr ""
-"Ini tampaknya rekod TLS untuk HTTPS. Pastikan sijil sepadan dengan domain "
-"dalam rekod TLSA."
+msgstr "Ini kelihatan seperti rekod TLSA untuk HTTPS. Pastikan sijil sepadan dengan domain dalam rekod TLSA."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr ""
-"Ini tampaknya menjadi rekod TLS untuk DNS over TLS. Pastikan server DNS anda "
-"dikonfigurasi dengan baik untuk DoT."
+msgstr "Ini kelihatan seperti rekod TLSA untuk DNS over TLS. Pastikan pelayan DNS anda dikonfigurasikan dengan betul untuk DoT."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
-msgstr ""
-"KRITIKAL: Rekod TLSA REQUIRE DNSSEC untuk memberikan manfaat keselamatan "
-"apapun. Pastikan domain anda adalah DNSSEC-signed."
+msgstr "KRITIKAL: Rekod TLSA MEMERLUKAN DNSSEC untuk memberikan sebarang manfaat keselamatan. Pastikan domain anda ditandatangani DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"Jika menggunakan CNAMEs, pastikan seluruh rantaian CNAME adalah DNSSEC-"
-"signed untuk TLS untuk bekerja dengan benar (RFC 7671)."
+msgstr "Jika menggunakan CNAME, pastikan keseluruhan rantaian CNAME ditandatangani DNSSEC supaya TLSA berfungsi dengan betul (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr "Ini tampaknya rekod SMIMEA (RFC 8162) untuk sijil S/MIME."
+msgstr "Ini kelihatan seperti rekod SMIMEA (RFC 8162) untuk sijil S/MIME."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr ""
-"Rekod SMIMEA menggunakan format yang sama dengan TLSA tetapi mengasosiasikan "
-"sijil S/MIME dengan alamat email."
+msgstr "Rekod SMIMEA menggunakan format yang sama seperti TLSA tetapi mengaitkan sijil S/MIME dengan alamat e-mel."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
-"Bahagian tempatan alamat email dicincang dengan SHA-256 dan diletakkan "
-"sebelum _smimecert.<domain>"
+msgstr "Bahagian tempatan alamat e-mel dicincang dengan SHA-256 dan diletakkan sebelum _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -4037,196 +3966,156 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
-msgstr ""
-"Nilai yang tidak sah untuk bidang keutamaan. Rekod TLSA harus memiliki nilai "
-"keutamaan 0."
+msgstr "Nilai tidak sah bagi medan keutamaan. Rekod TLSA mesti mempunyai nilai keutamaan 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Rekod TLSA harus mengandung penggunaan, pemilih, jenis-sepadan, dan data-"
-"sijil yang dipisahkan oleh spasi."
+msgstr "Rekod TLSA mesti mengandungi usage, selector, matching-type, dan certificate-data yang dipisahkan oleh ruang."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
-msgstr "Bidang penggunaan TLSA harus berupa angka antara 0 dan 3."
+msgstr "Medan usage TLSA mestilah nombor antara 0 dan 3."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:266
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr ""
-"Penggunaan keabsahan 0 (PKIX-TA) memerlukan penanganan sijil CA yang tepat "
-"dan dapat diputus apabila sijil habis."
+msgstr "Usage 0 (PKIX-TA) memerlukan pengurusan sijil CA yang betul dan mungkin rosak apabila sijil tamat tempoh."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
-msgstr ""
-"Penggunaan 1 (PKIX-EE) bergantung pada baik DANE maupun validasi PKIX "
-"tradisional. Menyalahkan ketika sijil berakhir."
+msgstr "Usage 1 (PKIX-EE) bergantung pada kedua-dua pengesahan DANE dan PKIX tradisional. Mungkin rosak apabila sijil tamat tempoh."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
 "Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
 "certificates expire."
-msgstr ""
-"Kegunaan 2 (DANE-TA) memerlukan manajemen jangkar kepercayaan yang tepat dan "
-"dapat rusak ketika sijil kadaluarsa."
+msgstr "Usage 2 (DANE-TA) memerlukan pengurusan sauh kepercayaan yang betul dan mungkin rosak apabila sijil tamat tempoh."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
 msgid ""
 "Usage 3 (DANE-EE) is recommended by RFC 7671 as it is not affected by "
 "certificate expiration or CA validation issues."
-msgstr ""
-"Penggunaan UDEN 3 (DANE-EE) disarankan oleh RFC 7671 kerana tidak "
-"terpengaruh oleh masalah kedaluwarsa sijil atau validasi CA."
+msgstr "Usage 3 (DANE-EE) disyorkan oleh RFC 7671 kerana ia tidak terjejas oleh tamat tempoh sijil atau isu pengesahan CA."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:277
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"Nama samaran RFC 7671 merekomendasikan penggunaan=3 (DANE-EE), pemilih=1 "
-"(SPKI), pencocokan-jenis=1 (SHA-256) sebagai konfigurasi paling kuat."
+msgstr "RFC 7671 mengesyorkan usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) sebagai konfigurasi yang paling kukuh."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr ""
-"Bidang pemilih TLSA harus 0 (sijil lengkap) atau 1 (SubjectPublicKeyInfo)."
+msgstr "Medan selector TLSA mestilah 0 (Sijil penuh) atau 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
-msgstr ""
-"Pemilih 0 (Sijil lengkap) dapat rusak ketika atribut sijil berubah. Pemilih "
-"1 (SPKI) disarankan."
+msgstr "Selector 0 (Sijil penuh) mungkin rosak apabila atribut sijil berubah. Selector 1 (SPKI) disyorkan."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr ""
-"ruas jenis TLSA yang sepadan harus 0 (Pertandingan tepat), 1 (SHA-256, atau "
-"2 (SHA-512)."
+msgstr "Medan matching type TLSA mestilah 0 (Padanan tepat), 1 (SHA-256), atau 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Matching-type 0 (Pertandingan tepat) tidak disarankan. Keserasian dan "
-"keselamatan yang lebih baik."
+msgstr "Matching-type 0 (Padanan tepat) tidak disyorkan. SHA-256 (1) memberikan keserasian dan keselamatan yang lebih baik."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
-msgstr "Data sijil TLSA harus berupa string heksadesimal."
+msgstr "Data sijil TLSA mestilah rentetan heksadesimal."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
-msgstr "Data sijil TLSA SHA-256 harus panjang 64 karakter."
+msgstr "Data sijil TLSA SHA-256 mestilah sepanjang 64 aksara."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:317
 msgid "TLSA SHA-512 certificate data must be 128 characters long."
-msgstr "Data sijil TLSA SHA-512 harus panjang 128 karakter."
+msgstr "Data sijil TLSA SHA-512 mestilah sepanjang 128 aksara."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "Data sijil sepadan persis TLSA tampaknya terlalu pendek untuk valid."
+msgstr "Data sijil padanan tepat TLSA kelihatan terlalu pendek untuk menjadi sah."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr ""
-"Rekod NSEC3PARAM MUST hanya hadir di apex zona (domain root, bukan "
-"subdomain)."
+msgstr "Rekod NSEC3PARAM MESTI hadir hanya di apeks zon (domain akar, bukan subdomain)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
-msgstr "Konten rekod NSEC3PARAM tidak dapat kosong."
+msgstr "Kandungan rekod NSEC3PARAM tidak boleh kosong."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "Rekod NSEC3PARAM berisi karakter tidak sah."
+msgstr "Rekod NSEC3PARAM mengandungi aksara tidak sah."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:143
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr ""
-"Menurut RFC 5155 dan RFC 9077, rekod NSEC3PARAM harus memiliki TTL yang sama "
-"dengan ladang TTL minimum SOA."
+msgstr "Menurut RFC 5155 dan RFC 9077, rekod NSEC3PARAM sepatutnya mempunyai TTL yang sama dengan medan TTL minimum SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"Rekod NSEC3PARAM adalah bagian dari DNSSEC dan seharusnya hanya dikelola "
-"bersama dengan rekod DNSSEC lainnya (DNSKEY, RRSIG, dll)."
+msgstr "Rekod NSEC3PARAM ialah sebahagian daripada DNSSEC dan sepatutnya diurus bersama rekod DNSSEC yang lain sahaja (DNSKEY, RRSIG, dll.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Pengeditan rekod NSEC3PARAM secara manual tidak disarankan kerana biasanya "
-"dihasilkan secara otomatis oleh server nama yang sadar-internal DNSSEC."
+msgstr "Mengedit rekod NSEC3PARAM secara manual tidak disyorkan kerana ia biasanya dijana secara automatik oleh pelayan nama yang menyokong DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
 "NSEC3PARAM records indicate to authoritative servers which parameters to use "
 "for NSEC3-based authenticated denial of existence."
-msgstr ""
-"Rekod NSEC3PARAM menunjukkan ke server otoritatif yang parameter untuk "
-"digunakan untuk NSEC3-based diotentikasi penyangkalan keberadaan."
+msgstr "Rekod NSEC3PARAM memberitahu pelayan berautoriti parameter mana yang perlu digunakan untuk penafian kewujudan yang disahkan berasaskan NSEC3."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr ""
-"Saat memperbarui parameter NSEC3, baik rekod NSEC3 maupun NSEC3PARAM harus "
-"diregenerasi dengan parameter yang sama."
+msgstr "Apabila mengemas kini parameter NSEC3, kedua-dua rekod NSEC3 dan NSEC3PARAM mesti dijana semula dengan parameter yang sama."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
-msgstr ""
-"Rekod NSEC3PARAM harus mengandung algoritma hash, flag, iterasi, dan garam "
-"yang tepat."
+msgstr "Rekod NSEC3PARAM mesti mengandungi tepat hash algorithm, flags, iterations, dan salt."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
-msgstr "Algoritme hash NSEC3PARAM harus 1 (SHA-1)."
+msgstr "Algoritma hash NSEC3PARAM mestilah 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:193
 msgid "NSEC3PARAM flags must be between 0 and 255."
-msgstr "Bendera NSEC3PARAM harus berada di antara 0 dan 255."
+msgstr "Bendera NSEC3PARAM mestilah antara 0 dan 255."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
 "Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
 "unsigned delegations."
-msgstr ""
-"Nilai bendera 1 menunjukkan Opt-Out sedang digunakan. Ini berarti rekod "
-"NSEC3 mungkin meliputi delegasi yang tidak ditugaskan."
+msgstr "Nilai bendera 1 menunjukkan Opt-Out sedang digunakan. Ini bermakna rekod NSEC3 mungkin merangkumi delegasi yang tidak ditandatangani."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
 "RFC 9276 recommends using Opt-Out only for very large and sparsely signed "
 "zones where the majority of records are insecure delegations."
-msgstr ""
-"merekomendasikan untuk menggunakan Opt-Out hanya untuk zona yang sangat "
-"besar dan jarang ditandatangani di mana mayoritas rekod adalah delegasi yang "
-"tidak aman."
+msgstr "RFC 9276 mengesyorkan penggunaan Opt-Out hanya untuk zon yang sangat besar dan jarang ditandatangani di mana majoriti rekod ialah delegasi yang tidak selamat."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
