@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 13:24+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4246,7 +4246,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76

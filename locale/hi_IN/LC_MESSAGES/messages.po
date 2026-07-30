@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -134,7 +134,9 @@ msgstr "होस्टनाम"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "सेवा के लिए होस्ट नाम (जोन एपेक्स @ के लिए खाली छोड़ दें)। रिकॉर्ड _port._protocol.hostname पर बनाया जाएगा"
+msgstr ""
+"सेवा के लिए होस्ट नाम (जोन एपेक्स @ के लिए खाली छोड़ दें)। रिकॉर्ड "
+"_port._protocol.hostname पर बनाया जाएगा"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -636,7 +638,9 @@ msgstr "डोमेन शामिल करें"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "डोमेन जिनकी SPF रिकॉर्ड को शामिल किया जाना चाहिए (एक प्रति पंक्ति)। आम: _spf.google.com, spf.protection.outlook.com"
+msgstr ""
+"डोमेन जिनकी SPF रिकॉर्ड को शामिल किया जाना चाहिए (एक प्रति पंक्ति)। आम: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1076,7 +1080,9 @@ msgstr "डोमेन"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "डोमेन नाम (जोन एपेक्स @ के लिए खाली छोड़ दें)। पूर्ण रिकॉर्ड नाम होगा: _service._protocol.domain"
+msgstr ""
+"डोमेन नाम (जोन एपेक्स @ के लिए खाली छोड़ दें)। पूर्ण रिकॉर्ड नाम होगा: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1292,13 +1298,17 @@ msgstr "आपको इस क्षेत्र को संशोधित �
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है लेकिन कोई समूह मौजूद नहीं है। पहले एक समूह बनाएं।"
+msgstr ""
+"नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है लेकिन कोई "
+"समूह मौजूद नहीं है। पहले एक समूह बनाएं।"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है और आप किसी भी समूह के सदस्य नहीं हैं। किसी प्रशासक से कहें कि वह पहले आपको एक समूह में जोड़ दे।"
+msgstr ""
+"नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है और आप किसी "
+"भी समूह के सदस्य नहीं हैं। किसी प्रशासक से कहें कि वह पहले आपको एक समूह में जोड़ दे।"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -1793,7 +1803,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "%s के लिए अमान्य मान। अनुमत मान: %s।"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "मेटाडेटा प्रकार %s को केवल एक प्रशासक ही बदल सकता है।"
@@ -1916,21 +1925,19 @@ msgid "The permission template has been updated successfully."
 msgstr "अनुमति टेम्पलेट सफलतापूर्वक अद्यतन किया गया है।"
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr "अनुमति टेम्पलेट में प्रशासक अधिकार देने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "प्रशासक अधिकारों वाले अनुमति टेम्पलेट को संपादित करने के लिए प्रशासक अधिकार आवश्यक हैं।"
+msgstr ""
+"प्रशासक अधिकारों वाले अनुमति टेम्पलेट को संपादित करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "अनुमति टेम्पलेट अद्यतन नहीं किया जा सका।"
 
@@ -1991,7 +1998,6 @@ msgid "Add User"
 msgstr "उपयोगकर्ता जोड़ें"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "असाइन करने के लिए कोई गैर-सुपरयूज़र अनुमति टेम्पलेट उपलब्ध नहीं है।"
 
@@ -2445,13 +2451,17 @@ msgstr "प्राथमिक क्षेत्र जोड़ें"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "जोन स्वामित्व मोड groups_only है लेकिन कोई समूह मौजूद नहीं है। जोन जोड़ने से पहले एक समूह बनाएं।"
+msgstr ""
+"जोन स्वामित्व मोड groups_only है लेकिन कोई समूह मौजूद नहीं है। जोन जोड़ने से पहले एक समूह "
+"बनाएं।"
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "जोन स्वामित्व मोड groups_only है, लेकिन आप किसी भी समूह के सदस्य नहीं हैं। जोन बनाने से पहले आपको एक समूह में जोड़ने के लिए एक प्रशासक से पूछें।"
+msgstr ""
+"जोन स्वामित्व मोड groups_only है, लेकिन आप किसी भी समूह के सदस्य नहीं हैं। जोन बनाने से "
+"पहले आपको एक समूह में जोड़ने के लिए एक प्रशासक से पूछें।"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2532,7 +2542,9 @@ msgstr "अमान्य रूप प्रस्तुतीकरण।"
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr "record_type_defaults तालिका मौजूद नहीं है। डिफ़ॉल्ट सहेजने से पहले 4.5.0 स्कीमा अद्यतन लागू करें।"
+msgstr ""
+"record_type_defaults तालिका मौजूद नहीं है। डिफ़ॉल्ट सहेजने से पहले 4.5.0 स्कीमा अद्यतन "
+"लागू करें।"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -2718,7 +2730,6 @@ msgid "The permission template has been added successfully."
 msgstr "अनुमति टेम्पलेट सफलतापूर्वक जोड़ा गया है।"
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "अनुमति टेम्पलेट जोड़ा नहीं जा सका।"
 
@@ -3209,7 +3220,8 @@ msgstr "आपको डिफ़ॉल्ट क्षेत्र टेम्
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "डिफ़ॉल्ट ध्वज स्पष्ट, लेकिन dns.default_zone_template config सेटिंग अभी भी सक्रिय है।"
+msgstr ""
+"डिफ़ॉल्ट ध्वज स्पष्ट, लेकिन dns.default_zone_template config सेटिंग अभी भी सक्रिय है।"
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3238,13 +3250,17 @@ msgstr "अंतिम मालिक को नहीं हटा सकत�
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "अंतिम उपयोगकर्ता स्वामी को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और इसके लिए कम से कम एक उपयोगकर्ता स्वामी आवश्यक है। पहले कोई अन्य उपयोगकर्ता स्वामी जोड़ें।"
+msgstr ""
+"अंतिम उपयोगकर्ता स्वामी को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और "
+"इसके लिए कम से कम एक उपयोगकर्ता स्वामी आवश्यक है। पहले कोई अन्य उपयोगकर्ता स्वामी जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "उपयोगकर्ता मालिक को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और जोन के पास कोई समूह मालिक नहीं है। पहले समूह जोड़ें।"
+msgstr ""
+"उपयोगकर्ता मालिक को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और जोन के पास "
+"कोई समूह मालिक नहीं है। पहले समूह जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3267,13 +3283,17 @@ msgstr "समूह को सफलतापूर्वक जोड़ा �
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr "अंतिम समूह को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और कम से कम एक समूह की आवश्यकता है। पहले समूह जोड़ें।"
+msgstr ""
+"अंतिम समूह को नहीं हटा सकता: जोन स्वामित्व मोड groups_only है और कम से कम एक समूह की "
+"आवश्यकता है। पहले समूह जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr "समूह को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और ज़ोन का कोई उपयोगकर्ता स्वामी नहीं है। पहले एक उपयोगकर्ता स्वामी जोड़ें।"
+msgstr ""
+"समूह को हटाया नहीं जा सकता: ज़ोन स्वामित्व मोड users_only है और ज़ोन का कोई "
+"उपयोगकर्ता स्वामी नहीं है। पहले एक उपयोगकर्ता स्वामी जोड़ें।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3640,19 +3660,18 @@ msgstr ""
 "विन्यास की जांच करें।"
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "आपको अनुमति टेम्पलेट बदलने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "अपना स्वयं का अनुमति टेम्पलेट बदलने के लिए अन्य उपयोगकर्ताओं को संपादित करने की अनुमति आवश्यक है।"
+msgstr ""
+"अपना स्वयं का अनुमति टेम्पलेट बदलने के लिए अन्य उपयोगकर्ताओं को संपादित करने की अनुमति "
+"आवश्यक है।"
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3711,7 +3730,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "आपको इस क्षेत्र के टेम्पलेट में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "आपको इस रिकॉर्ड प्रकार को क्षेत्र टेम्पलेट में जोड़ने की अनुमति नहीं है।"
@@ -3737,7 +3755,6 @@ msgid "Error updating zone template record: "
 msgstr "क्षेत्र टेम्पलेट रिकॉर्ड अद्यतन करने में त्रुटि:"
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3752,7 +3769,6 @@ msgid "Error checking template ownership: "
 msgstr "टेम्पलेट स्वामित्व की जांच करने में त्रुटि:"
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3796,7 +3812,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "आपको NS रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "आपको LUA रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
@@ -3809,7 +3824,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "आपको इस एन एस रिकॉर्ड को संपादित करने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "आपको इस LUA रिकॉर्ड को संपादित करने की अनुमति नहीं है।"
 
@@ -3822,7 +3836,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "आपको NS रिकॉर्ड को हटाने की अनुमति नहीं है।"
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "आपको LUA रिकॉर्ड हटाने की अनुमति नहीं है।"
 
@@ -4025,7 +4038,9 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA रिकॉर्ड नाम आम तौर पर _port._protocol.hostname प्रारूप का पालन करना चाहिए (जैसे, _443._tcp.www.example.com)."
+msgstr ""
+"TLSA रिकॉर्ड नाम आम तौर पर _port._protocol.hostname प्रारूप का पालन करना चाहिए "
+"(जैसे, _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4091,13 +4106,17 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "एक ईमेल पते का स्थानीय हिस्सा SHA-256 से हैश किया जाता है और _smimecert.<domain> से पहले रखा जाता है"
+msgstr ""
+"एक ईमेल पते का स्थानीय हिस्सा SHA-256 से हैश किया जाता है और _smimecert.<domain> से "
+"पहले रखा जाता है"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA रिकॉर्ड आम तौर पर \"_port._protocol.hostname\" (जैसे, \"_443._tcp.www.example.com\") पर रखा जाना चाहिए।"
+msgstr ""
+"TLSA रिकॉर्ड आम तौर पर \"_port._protocol.hostname\" (जैसे, "
+"\"_443._tcp.www.example.com\") पर रखा जाना चाहिए।"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4521,11 +4540,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Invalid LOC रिकॉर्ड प्रारूप। प्रारूप होना चाहिए: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"]] [vp[\"m\"]]]]]]]] "
-"[vp[\"m\"]]]]]]]]"
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Invalid LOC रिकॉर्ड प्रारूप। प्रारूप होना चाहिए: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4992,7 +5008,9 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "रिकॉर्ड नाम मानक OPENPGPKEY प्रारूप (<hash>._openpgpkey.<domain>) का पालन नहीं करता है। इंटरऑपरेबिलिटी के लिए मानक प्रारूप की सिफारिश की जाती है।"
+msgstr ""
+"रिकॉर्ड नाम मानक OPENPGPKEY प्रारूप (<hash>._openpgpkey.<domain>) का पालन नहीं "
+"करता है। इंटरऑपरेबिलिटी के लिए मानक प्रारूप की सिफारिश की जाती है।"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7644,20 +7662,26 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA रिकॉर्ड में स्थानीय भाग का हैश 64-वर्ण वाला SHA-256 हेक्स हैश होना चाहिए। प्रारूप होना चाहिए: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA रिकॉर्ड में स्थानीय भाग का हैश 64-वर्ण वाला SHA-256 हेक्स हैश होना चाहिए। "
+"प्रारूप होना चाहिए: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA रिकॉर्ड नाम इस प्रारूप में है: SHA256(local-part)._smimecert.domain.tld, %s जैसे ईमेल पतों के लिए"
+msgstr ""
+"SMIMEA रिकॉर्ड नाम इस प्रारूप में है: SHA256(local-part)._smimecert.domain.tld, %s "
+"जैसे ईमेल पतों के लिए"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "यह मानक SMIMEA नाम प्रारूप का उपयोग नहीं करता है। SMIMEA रिकॉर्ड को आम तौर पर इसका उपयोग करना चाहिए: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"यह मानक SMIMEA नाम प्रारूप का उपयोग नहीं करता है। SMIMEA रिकॉर्ड को आम तौर पर "
+"इसका उपयोग करना चाहिए: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8680,7 +8704,9 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "प्रोटोकॉल \"%s\" अच्छी तरह से ज्ञात प्रोटोकॉल की सूची में नहीं है। आम प्रोटोकॉल _tcp और _udp हैं।"
+msgstr ""
+"प्रोटोकॉल \"%s\" अच्छी तरह से ज्ञात प्रोटोकॉल की सूची में नहीं है। आम प्रोटोकॉल _tcp और "
+"_udp हैं।"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -9359,7 +9385,6 @@ msgid "The selected user already owns the zone."
 msgstr "चयनित उपयोगकर्ता पहले से ही ज़ोन का मालिक है।"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "क्षेत्र के रिकॉर्ड अद्यतन करने में विफल: %s"
@@ -10610,7 +10635,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "उदाहरण: www,A,192.168.1.1,0,3600,वेब सर्वर"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "प्राथमिकता और TTL वैकल्पिक हैं (डिफ़ॉल्ट: priority=0, ttl="
 
@@ -10992,7 +11016,6 @@ msgid "At least one special character"
 msgstr "कम से कम एक विशेष चरित्र"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -11096,12 +11119,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY लंबित: सीरियल %serial% की अभी पुष्टि नहीं हुई"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "सीरियल %serial% पर NOTIFY भेजा गया"
 
@@ -12110,7 +12131,6 @@ msgid "Last modified"
 msgstr "अंतिम संशोधित"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "अंतिम बार %account% द्वारा %date% को संपादित किया गया"
 
@@ -12343,7 +12363,6 @@ msgid "Zones Without Owners"
 msgstr "मालिक के बिना क्षेत्र"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "सूचीबद्ध सभी क्षेत्रों का मालिक स्वयं को बनाएं?"
 
@@ -12594,7 +12613,9 @@ msgstr "ऐड-जोन फॉर्म पर पूर्व-चयनित"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "dns.default_zone_template के माध्यम से कॉन्फ़िगर किया गया - बदलने के लिए settings.php संपादित करें"
+msgstr ""
+"dns.default_zone_template के माध्यम से कॉन्फ़िगर किया गया - बदलने के लिए "
+"settings.php संपादित करें"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13890,13 +13911,17 @@ msgstr "PowerDNS API त्रुटि"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "उस pdns_api.key को config/settings.php में PowerDNS में कॉन्फ़िगर की गई API कुंजी से मेल खाता है।"
+msgstr ""
+"उस pdns_api.key को config/settings.php में PowerDNS में कॉन्फ़िगर की गई API कुंजी से "
+"मेल खाता है।"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "उस pdns_api.server_name से मेल खाता है जो PowerDNS रिपोर्ट (डिफ़ॉल्ट 'localhost') है।"
+msgstr ""
+"उस pdns_api.server_name से मेल खाता है जो PowerDNS रिपोर्ट (डिफ़ॉल्ट 'localhost') "
+"है।"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14547,7 +14572,6 @@ msgid "RDAP results for"
 msgstr "RDAP परिणाम"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP लुकअप करने के लिए कृपया एक डोमेन नाम दर्ज करें।"
 
@@ -15137,11 +15161,12 @@ msgstr ""
 "डेटाबेस कनेक्शन को कॉन्फ़िगर करें, व्यवस्थापक खाता बनाएं और कॉन्फ़िगरेशन फ़ाइल उत्पन्न करें।"
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "ध्यान दें: PostgreSQL और SQLite के लिए PowerDNS और Poweradmin दोनों को एक ही डेटाबेस का उपयोग करना चाहिए।"
+msgstr ""
+"ध्यान दें: PostgreSQL और SQLite के लिए PowerDNS और Poweradmin दोनों को एक ही "
+"डेटाबेस का उपयोग करना चाहिए।"
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15275,77 +15300,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS डेटाबेस \"%s\" से कनेक्ट नहीं कर सकते: %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने प्रशासक से संपर्क करें।"
+msgstr ""
+"लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
+"प्रशासक से संपर्क करें।"
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "%s पर कोई कॉन्फ़िगरेशन फ़ाइल नहीं मिली। कृपया एक बनाने के लिए <a href=\"install/"
-# OBSOLETE: "\">installer</a> का उपयोग करें, या कॉन्फ़िगरेशन फ़ाइल को मैन्युअल रूप से बनाने के लिए।"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a> डायरेक्टरी मौजूद है, आपको इसे आगे बढ़ने से पहले "
-# OBSOLETE: "निकालना होगा।"
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "आप एक SLAVE क्षेत्र से रिकॉर्ड नहीं हटा सकते हैं।"
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "आप एक SLAVE क्षेत्र में रिकॉर्ड संपादित नहीं कर सकते।"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "SOA रिकॉर्ड के नाम क्षेत्र के लिए अमान्य मूल्य। यह क्षेत्र का नाम होना चाहिए।"
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "SOA रिकॉर्ड में अमान्य ईमेल पता।"
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "अज्ञात रिकॉर्ड प्रकार।"
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "एक क्षेत्र के लिए कम से कम एक मालिक होना चाहिए।"
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "प्रवेश"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "निर्माण के बाद"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "क्षेत्र मालिक बदलें"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "आप किसी भी समय उपयोगकर्ता सूची से ज़ोन स्वामित्व को दूसरे उपयोगकर्ता में ट्रांसफर कर "
-# OBSOLETE: "सकते हैं।"
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "उपयोगकर्ता प्रबंधित करें"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "सूची टेम्पलेट"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "यह टेम्पलेट उपयोगकर्ताओं को अपनी अनुमतियों के सेट को जल्दी से लागू करने के लिए सौंपा जा "
-# OBSOLETE: "सकता है। यहाँ किए गए बदलाव उन सभी उपयोगकर्ताओं को प्रभावित करेंगे जिनके पास इस "
-# OBSOLETE: "टेम्पलेट को सौंपा गया है।"
+# OBSOLETE: "Invalid LOC रिकॉर्ड प्रारूप। प्रारूप होना चाहिए: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
+# OBSOLETE: "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"]] "
+# OBSOLETE: "[vp[\"m\"]]]]]]]] [vp[\"m\"]]]]]]]]"
 
 
 

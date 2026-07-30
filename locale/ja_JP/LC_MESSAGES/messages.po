@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1814,7 +1814,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "%s の値が無効です。許可される値: %s。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "メタデータ種別 %s は管理者のみが変更できます。"
@@ -1937,21 +1936,18 @@ msgid "The permission template has been updated successfully."
 msgstr "権限テンプレートが正常に更新されました。"
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr "権限テンプレートで管理者権限を付与するには、管理者権限が必要です。"
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
 msgstr "管理者権限を含む権限テンプレートを編集するには、管理者権限が必要です。"
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "権限テンプレートを更新できませんでした。"
 
@@ -2012,9 +2008,9 @@ msgid "Add User"
 msgstr "ユーザーを追加"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "割り当て可能な、スーパーユーザー権限を含まない権限テンプレートがありません。"
+msgstr ""
+"割り当て可能な、スーパーユーザー権限を含まない権限テンプレートがありません。"
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2574,7 +2570,9 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "デフォルト値を %d 件保存し、%d 件を消去しました。次の項目の無効な値は拒否されました: %s。"
+msgstr ""
+"デフォルト値を %d 件保存し、%d 件を消去しました。次の項目の無効な値は拒否され"
+"ました: %s。"
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2751,7 +2749,6 @@ msgid "The permission template has been added successfully."
 msgstr "権限テンプレートが正常に追加されました。"
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "権限テンプレートを追加できませんでした。"
 
@@ -2919,7 +2916,8 @@ msgstr "PowerDNS からゾーンを同期する権限がありません。"
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "PowerDNS からゾーンを同期しました: 追加 %d 件、更新 %d 件、削除 %d 件。"
+msgstr ""
+"PowerDNS からゾーンを同期しました: 追加 %d 件、更新 %d 件、削除 %d 件。"
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3693,23 +3691,22 @@ msgstr ""
 "ください。"
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "権限テンプレートを変更する権限がありません。"
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "自分の権限テンプレートを変更するには、他のユーザーを編集する権限が必要です。"
+msgstr ""
+"自分の権限テンプレートを変更するには、他のユーザーを編集する権限が必要です。"
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "管理者権限を含む権限テンプレートを割り当てるには、管理者権限が必要です。"
+msgstr ""
+"管理者権限を含む権限テンプレートを割り当てるには、管理者権限が必要です。"
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3764,7 +3761,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "このゾーンテンプレートにレコードを追加する権限がありません。"
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "このレコードタイプをゾーンテンプレートに追加する権限がありません。"
@@ -3790,7 +3786,6 @@ msgid "Error updating zone template record: "
 msgstr "ゾーンテンプレートレコードの更新エラー："
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3805,12 +3800,13 @@ msgid "Error checking template ownership: "
 msgstr "テンプレート所有権の確認エラー："
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "次のレコードタイプは追加が許可されていないため、テンプレートから除外されました: %s"
+msgstr ""
+"次のレコードタイプは追加が許可されていないため、テンプレートから除外されまし"
+"た: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3849,7 +3845,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "NSレコードを追加する権限がありません。"
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "LUA レコードを追加する権限がありません。"
 
@@ -3862,7 +3857,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "このNSレコードを編集する権限がありません。"
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "この LUA レコードを編集する権限がありません。"
 
@@ -3875,7 +3869,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "LUA レコードを削除する権限がありません。"
 
@@ -4597,11 +4590,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 [s1]] "
-"{\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-"[vp[\"m\"]]。"
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -9515,7 +9505,8 @@ msgstr ""
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
-msgstr "PTR の更新をスキップしました: レコードタイプが A または AAAA ではありません。"
+msgstr ""
+"PTR の更新をスキップしました: レコードタイプが A または AAAA ではありません。"
 
 #: lib/Domain/Service/ReverseRecordCreator.php:258
 msgid "Stale PTR record removed."
@@ -9596,7 +9587,6 @@ msgid "The selected user already owns the zone."
 msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "ゾーンのレコードを更新できませんでした: %s"
@@ -10853,7 +10843,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "例：www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "優先度と TTL は省略可能です (デフォルト: priority=0, ttl="
 
@@ -11236,7 +11225,6 @@ msgid "At least one special character"
 msgstr "特殊文字を少なくとも1文字"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -11340,12 +11328,10 @@ msgid "-"
 msgstr "−"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY 保留中: シリアル %serial% はまだ確認されていません"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "シリアル %serial% で NOTIFY を送信しました"
 
@@ -12362,7 +12348,6 @@ msgid "Last modified"
 msgstr "最終更新"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "最終編集: %account% (%date%)"
 
@@ -12594,7 +12579,6 @@ msgid "Zones Without Owners"
 msgstr "所有者のないゾーン"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "一覧にあるすべてのゾーンの所有者を自分に設定しますか?"
 
@@ -14153,20 +14137,28 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "config/settings.php の pdns_api.key が PowerDNS に設定された API キーと一致しているか確認してください。"
+msgstr ""
+"config/settings.php の pdns_api.key が PowerDNS に設定された API キーと一致し"
+"ているか確認してください。"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "pdns_api.server_name が PowerDNS が報告する名前 (デフォルトは 'localhost') と一致しているか確認してください。"
+msgstr ""
+"pdns_api.server_name が PowerDNS が報告する名前 (デフォルトは 'localhost') と"
+"一致しているか確認してください。"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS がリクエストを拒否しました。原因は PowerDNS サーバーのログで確認してください。ゾーンを PowerDNS のデータベースへ直接インポートした後によくある原因は、ゾーンのシリアライズに失敗する不正な形式のレコードが 1 件含まれていることです。"
+msgstr ""
+"PowerDNS がリクエストを拒否しました。原因は PowerDNS サーバーのログで確認して"
+"ください。ゾーンを PowerDNS のデータベースへ直接インポートした後によくある原"
+"因は、ゾーンのシリアライズに失敗する不正な形式のレコードが 1 件含まれているこ"
+"とです。"
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -14811,7 +14803,6 @@ msgid "RDAP results for"
 msgstr "のRDAP結果"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP 検索を実行するドメイン名を入力してください。"
 
@@ -15069,7 +15060,9 @@ msgstr "SQLite データベースファイルの絶対パス"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "ファイルが存在し、ウェブサーバーが読み書きできる必要があります。絶対パスを指定してください。"
+msgstr ""
+"ファイルが存在し、ウェブサーバーが読み書きできる必要があります。絶対パスを指"
+"定してください。"
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -15081,7 +15074,9 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "新しいテーブルの文字セット。空欄の場合はデータベースのデフォルトを使用します。"
+msgstr ""
+"新しいテーブルの文字セット。空欄の場合はデータベースのデフォルトを使用しま"
+"す。"
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -15107,7 +15102,8 @@ msgstr "同じデータベースを使う場合は空欄にしてください"
 
 #: install/templates/step4.html.twig:219
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "PowerDNS のテーブルがある MySQL データベース (別のデータベースの場合)。"
+msgstr ""
+"PowerDNS のテーブルがある MySQL データベース (別のデータベースの場合)。"
 
 #: install/templates/step4.html.twig:227
 msgid "Poweradmin Account"
@@ -15189,11 +15185,14 @@ msgstr "検出できません (PHP-FPM) - 有効になっていることを確�
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "URL の書き換えが設定されていることを確認してください (nginx.conf.example を参照)"
+msgstr ""
+"URL の書き換えが設定されていることを確認してください (nginx.conf.example を参"
+"照)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "お使いのウェブサーバーで URL の書き換えが設定されていることを確認してください"
+msgstr ""
+"お使いのウェブサーバーで URL の書き換えが設定されていることを確認してください"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -15408,11 +15407,12 @@ msgstr ""
 "す。"
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "注意: PostgreSQL と SQLite では、PowerDNS と Poweradmin で同じデータベースを使用する必要があります。"
+msgstr ""
+"注意: PostgreSQL と SQLite では、PowerDNS と Poweradmin で同じデータベースを"
+"使用する必要があります。"
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15420,7 +15420,8 @@ msgstr "不足している PowerDNS のテーブル:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin が正しく動作するには、これらの PowerDNS のテーブルが必要です。"
+msgstr ""
+"Poweradmin が正しく動作するには、これらの PowerDNS のテーブルが必要です。"
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
@@ -15468,7 +15469,8 @@ msgstr ""
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "データベースファイルの絶対パスが正しく、アクセスできることを確認してください"
+msgstr ""
+"データベースファイルの絶対パスが正しく、アクセスできることを確認してください"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
@@ -15555,80 +15557,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS データベース \"%s\" に接続できません: %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされていない可能性があります。管理者にお問い合わせください。"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "設定ファイルが見つかりません。<a href=\"install/\">インストーラー</a>を使"
-# OBSOLETE: "用して作成するか、%sファイルを手動で作成してください。"
+msgstr ""
+"ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされ"
+"ていない可能性があります。管理者にお問い合わせください。"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a>ディレクトリが存在します。続行する前に削"
-# OBSOLETE: "除する必要があります。first before proceeding."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "SLAVEゾーンからレコードを削除できません。"
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "SLAVEゾーンのレコードを編集できません。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SOAレコードの名前フィールドの値が無効です。ゾーンの名前である必要がありま"
-# OBSOLETE: "す。"
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "SOAレコードの無効なメールアドレスです。"
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "不明なレコードタイプです。"
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "ゾーンには少なくとも1人のオーナーが必要です。"
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "アクセス"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "作成後"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "ゾーン所有者の変更"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "ユーザー一覧から、いつでもゾーンの所有権を他のユーザーに移すことができま"
-# OBSOLETE: "す。"
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "ユーザーの管理"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "テンプレートをリスト"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "このテンプレートはユーザーに割り当てて、権限セットを迅速に適用できます。こ"
-# OBSOLETE: "こで行った変更は、このテンプレートが割り当てられているすべてのユーザーに影"
-# OBSOLETE: "響します。で行われた変更は、このテンプレートが割り当てられているすべての"
-# OBSOLETE: "ユーザーに影響します。"
+# OBSOLETE: "無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 "
+# OBSOLETE: "[s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] "
+# OBSOLETE: "[hp[\"m\"] [vp[\"m\"]]。"
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -134,7 +134,9 @@ msgstr "Värdnamn"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Värdnamn för tjänsten (lämna tomt för zonens apex @). Posten skapas som _port._protocol.hostname"
+msgstr ""
+"Värdnamn för tjänsten (lämna tomt för zonens apex @). Posten skapas som "
+"_port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1092,7 +1094,9 @@ msgstr "Domän"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domännamn (lämna tomt för zonens apex @). Fullständigt postnamn blir: _service._protocol.domain"
+msgstr ""
+"Domännamn (lämna tomt för zonens apex @). Fullständigt postnamn blir: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1817,7 +1821,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Ogiltigt värde för %s. Tillåtna värden: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metadatatypen %s kan endast ändras av en administratör."
@@ -1941,21 +1944,22 @@ msgid "The permission template has been updated successfully."
 msgstr "Behörighetsmallen har uppdaterats."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Att ge administratörsrättigheter i en behörighetsmall kräver administratörsrättigheter."
+msgstr ""
+"Att ge administratörsrättigheter i en behörighetsmall kräver "
+"administratörsrättigheter."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Att redigera en behörighetsmall med administratörsrättigheter kräver administratörsrättigheter."
+msgstr ""
+"Att redigera en behörighetsmall med administratörsrättigheter kräver "
+"administratörsrättigheter."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Behörighetsmallen kunde inte uppdateras."
 
@@ -2016,9 +2020,9 @@ msgid "Add User"
 msgstr "Lägg till användare"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "Det finns ingen behörighetsmall utan superanvändarrättigheter att tilldela."
+msgstr ""
+"Det finns ingen behörighetsmall utan superanvändarrättigheter att tilldela."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2574,7 +2578,8 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Sparade %d standardvärde(n); rensade %d. Ogiltiga värden avvisades för: %s."
+msgstr ""
+"Sparade %d standardvärde(n); rensade %d. Ogiltiga värden avvisades för: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2755,7 +2760,6 @@ msgid "The permission template has been added successfully."
 msgstr "Behörighetsmallen har lagts till."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Behörighetsmallen kunde inte läggas till."
 
@@ -2923,7 +2927,9 @@ msgstr "Du har inte behörighet att synkronisera zoner från PowerDNS."
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zoner synkroniserade från PowerDNS: %d tillagda, %d uppdaterade, %d borttagna."
+msgstr ""
+"Zoner synkroniserade från PowerDNS: %d tillagda, %d uppdaterade, %d "
+"borttagna."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3653,13 +3659,17 @@ msgstr "Nej, behåll denna supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "Visar anslutningsstatus för de autoprimary-servrar som är konfigurerade i tabellen nedan."
+msgstr ""
+"Visar anslutningsstatus för de autoprimary-servrar som är konfigurerade i "
+"tabellen nedan."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr "Visar anslutningsstatus för de supermasters som är konfigurerade i tabellen nedan."
+msgstr ""
+"Visar anslutningsstatus för de supermasters som är konfigurerade i tabellen "
+"nedan."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3696,23 +3706,24 @@ msgstr ""
 "databaskonfiguration."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "Du har inte behörighet att ändra behörighetsmallen."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Att ändra din egen behörighetsmall kräver behörighet att redigera andra användare."
+msgstr ""
+"Att ändra din egen behörighetsmall kräver behörighet att redigera andra "
+"användare."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Att tilldela en behörighetsmall med administratörsrättigheter kräver administratörsrättigheter."
+msgstr ""
+"Att tilldela en behörighetsmall med administratörsrättigheter kräver "
+"administratörsrättigheter."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3767,7 +3778,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "Du har inte behörighet att lägga till en post i denna zonmall."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Du har inte behörighet att lägga till denna posttyp i en zonmall."
@@ -3793,7 +3803,6 @@ msgid "Error updating zone template record: "
 msgstr "Fel vid uppdatering av zonmallspost: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3808,12 +3817,13 @@ msgid "Error checking template ownership: "
 msgstr "Fel vid kontroll av mallägarskap: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Dessa posttyper utelämnades från mallen eftersom du inte får lägga till dem: %s"
+msgstr ""
+"Dessa posttyper utelämnades från mallen eftersom du inte får lägga till dem: "
+"%s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3852,7 +3862,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "Visa säkerhetshändelse"
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "Du har inte behörighet att lägga till LUA-post."
 
@@ -3865,7 +3874,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "Obehörig åtkomst"
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "Du har inte behörighet att redigera denna LUA-post."
 
@@ -3878,7 +3886,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "Brutit mot policy"
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "Du har inte behörighet att ta bort LUA-poster."
 
@@ -4080,7 +4087,9 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA-postnamnet bör vanligtvis följa formatet _port._protocol.hostname (t.ex. _443._tcp.www.example.com)."
+msgstr ""
+"TLSA-postnamnet bör vanligtvis följa formatet _port._protocol.hostname "
+"(t.ex. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4154,7 +4163,9 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA-poster bör vanligtvis placeras på \"_port._protocol.hostname\" (t.ex. \"_443._tcp.www.example.com\")."
+msgstr ""
+"TLSA-poster bör vanligtvis placeras på \"_port._protocol.hostname\" (t.ex. "
+"\"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4584,10 +4595,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5736,11 +5745,14 @@ msgstr "Ogiltigt värde för MX-prioritetsfältet. Måste vara mellan 0 och 6553
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "Prioritetsfältet ska inte användas för HTTPS-poster eftersom prioriteten är en del av innehållet."
+msgstr ""
+"Prioritetsfältet ska inte användas för HTTPS-poster eftersom prioriteten är "
+"en del av innehållet."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "HTTPS-posten måste innehålla minst ett prioritetsvärde och ett målvärde."
+msgstr ""
+"HTTPS-posten måste innehålla minst ett prioritetsvärde och ett målvärde."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
@@ -5750,18 +5762,24 @@ msgstr "HTTPS-postens prioritet måste vara ett nummer mellan 0 och 65535."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS-postens mål måste vara antingen \".\" eller ett giltigt fullständigt kvalificerat domännamn."
+msgstr ""
+"HTTPS-postens mål måste vara antingen \".\" eller ett giltigt fullständigt "
+"kvalificerat domännamn."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr "HTTPS-poster i AliasMode (priority=0) med målet \".\" får inte ha några parametrar enligt RFC 9460."
+msgstr ""
+"HTTPS-poster i AliasMode (priority=0) med målet \".\" får inte ha några "
+"parametrar enligt RFC 9460."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr "HTTPS-postens parametrar måste anges i formatet key=value separerade med mellanslag."
+msgstr ""
+"HTTPS-postens parametrar måste anges i formatet key=value separerade med "
+"mellanslag."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5810,7 +5828,10 @@ msgstr "Parametern \"%s\" är markerad som obligatorisk men saknas i posten."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 kräver att TKEY-poster har TTL=0 för att förhindra cachning. Det nuvarande TTL-värdet som är skilt från noll kan orsaka problem med äldre DNS-implementationer."
+msgstr ""
+"RFC 2930 kräver att TKEY-poster har TTL=0 för att förhindra cachning. Det "
+"nuvarande TTL-värdet som är skilt från noll kan orsaka problem med äldre DNS-"
+"implementationer."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5820,7 +5841,9 @@ msgstr "Prioritetsfältet för TKEY-poster måste vara 0 eller tomt"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY-poster är inte till för autentisering av DNS-data, utan för nyckeletablering mellan DNS-servrar/resolvrar."
+msgstr ""
+"TKEY-poster är inte till för autentisering av DNS-data, utan för "
+"nyckeletablering mellan DNS-servrar/resolvrar."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5830,30 +5853,41 @@ msgstr "Ogiltiga tecken i TKEY-postens innehåll."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY-posten måste innehålla algoritmnamn, starttid, utgångstid, läge, fel och nyckeldata separerade med mellanslag."
+msgstr ""
+"TKEY-posten måste innehålla algoritmnamn, starttid, utgångstid, läge, fel "
+"och nyckeldata separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TKEY-algoritmnamnet måste vara ett giltigt domännamn som slutar med en punkt (t.ex. hmac-sha256.)."
+msgstr ""
+"TKEY-algoritmnamnet måste vara ett giltigt domännamn som slutar med en punkt "
+"(t.ex. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY-starttiden måste vara en giltig Unix-tidsstämpel eller anges i formatet YYYYMMDDHHmmSS."
+msgstr ""
+"TKEY-starttiden måste vara en giltig Unix-tidsstämpel eller anges i formatet "
+"YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY-utgångstiden måste vara en giltig Unix-tidsstämpel eller anges i formatet YYYYMMDDHHmmSS."
+msgstr ""
+"TKEY-utgångstiden måste vara en giltig Unix-tidsstämpel eller anges i "
+"formatet YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY-läget måste vara ett nummer mellan 1 och 5 (1: servertilldelning, 2: Diffie-Hellman-utbyte, 3: GSS-API-förhandling, 4: resolvertilldelning, 5: nyckelborttagning)."
+msgstr ""
+"TKEY-läget måste vara ett nummer mellan 1 och 5 (1: servertilldelning, 2: "
+"Diffie-Hellman-utbyte, 3: GSS-API-förhandling, 4: resolvertilldelning, 5: "
+"nyckelborttagning)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5867,13 +5901,16 @@ msgstr "Ogiltigt tecken i LOC-breddgrad."
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr "Diffie-Hellman-läget bör autentiseras med TSIG eller SIG(0) för att förhindra man-in-the-middle-attacker."
+msgstr ""
+"Diffie-Hellman-läget bör autentiseras med TSIG eller SIG(0) för att "
+"förhindra man-in-the-middle-attacker."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr "Nyckelborttagning MÅSTE autentiseras med TSIG med den nyckel som tas bort."
+msgstr ""
+"Nyckelborttagning MÅSTE autentiseras med TSIG med den nyckel som tas bort."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -5882,7 +5919,9 @@ msgstr "TKEY-fel måste vara ett giltigt DNS RCODE-nummer mellan 0 och 23."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr "TKEY-nyckeldata måste vara giltig base64-kodad data eller en hexadecimal sträng."
+msgstr ""
+"TKEY-nyckeldata måste vara giltig base64-kodad data eller en hexadecimal "
+"sträng."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
@@ -5893,7 +5932,9 @@ msgstr "Du måste ange en LOC-höjd för en LOC-post."
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "Utbyten av TKEY-poster bör säkras - autentiseringen beror på vilket läge som används."
+msgstr ""
+"Utbyten av TKEY-poster bör säkras - autentiseringen beror på vilket läge som "
+"används."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
@@ -5931,33 +5972,43 @@ msgstr "Du måste ange en SMIMEA-väljare för en SMIMEA-post."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "TTL-värdet överskrider det högsta tillåtna (%d). RFC 2181 begränsar det till ett 32-bitars heltal med tecken."
+msgstr ""
+"TTL-värdet överskrider det högsta tillåtna (%d). RFC 2181 begränsar det till "
+"ett 32-bitars heltal med tecken."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr "TTL-värdet (%d) är under det rekommenderade minimivärdet %d sekunder (5 minuter). Låga TTL-värden ökar DNS-trafiken."
+msgstr ""
+"TTL-värdet (%d) är under det rekommenderade minimivärdet %d sekunder (5 "
+"minuter). Låga TTL-värden ökar DNS-trafiken."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL-värdet (%d) är över det rekommenderade maxvärdet %d sekunder (1 vecka). Höga TTL-värden fördröjer DNS-uppdateringar."
+msgstr ""
+"TTL-värdet (%d) är över det rekommenderade maxvärdet %d sekunder (1 vecka). "
+"Höga TTL-värden fördröjer DNS-uppdateringar."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr "TTL för SOA-posten (%d) är under det rekommenderade minimivärdet %d sekunder (1 timme)."
+msgstr ""
+"TTL för SOA-posten (%d) är under det rekommenderade minimivärdet %d sekunder "
+"(1 timme)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "URI-poster bör skyddas med DNSSEC för att förhindra manipulation av angripare."
+msgstr ""
+"URI-poster bör skyddas med DNSSEC för att förhindra manipulation av "
+"angripare."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5987,7 +6038,8 @@ msgstr "URI-posten måste ha formatet: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "URI-prioriteten måste vara mellan 0 och 65535 (16-bitars osignerat heltal)."
+msgstr ""
+"URI-prioriteten måste vara mellan 0 och 65535 (16-bitars osignerat heltal)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
@@ -6057,7 +6109,9 @@ msgstr "Ogiltigt tecken i återförsöksintervall."
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr "VIKTIGT: RFC 2230 kräver att KX-poster signeras med DNSSEC. Osignerade KX-poster MÅSTE ignoreras av säkerhetsskäl."
+msgstr ""
+"VIKTIGT: RFC 2230 kräver att KX-poster signeras med DNSSEC. Osignerade KX-"
+"poster MÅSTE ignoreras av säkerhetsskäl."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
@@ -6095,7 +6149,9 @@ msgstr "MINFO-postens innehåll får inte vara tomt."
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr "MINFO-posten måste innehålla både ansvarig brevlåda och felbrevlåda, åtskilda med ett mellanslag (RFC 1035 avsnitt 3.3.7)."
+msgstr ""
+"MINFO-posten måste innehålla både ansvarig brevlåda och felbrevlåda, "
+"åtskilda med ett mellanslag (RFC 1035 avsnitt 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
@@ -6105,13 +6161,17 @@ msgstr "Ogiltigt värdnamn för ansvarig brevlåda (RMAILBX)."
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "RFC 1035 noterar att många e-postlistor använder en brevlåda \"list-name-request\" för fältet ansvarig brevlåda."
+msgstr ""
+"RFC 1035 noterar att många e-postlistor använder en brevlåda \"list-name-"
+"request\" för fältet ansvarig brevlåda."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "Att använda \".\" (roten) för RMAILBX anger att ägaren av MINFO-posten ansvarar för sig själv."
+msgstr ""
+"Att använda \".\" (roten) för RMAILBX anger att ägaren av MINFO-posten "
+"ansvarar för sig själv."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6133,7 +6193,9 @@ msgstr "SSHFP-algoritmen måste vara ett heltal mellan 0 och 255."
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "Prioritetsfältet för MINFO-poster måste vara 0 eller tomt. MINFO använder inte prioritetsvärden enligt RFC 1035."
+msgstr ""
+"Prioritetsfältet för MINFO-poster måste vara 0 eller tomt. MINFO använder "
+"inte prioritetsvärden enligt RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -6146,7 +6208,9 @@ msgstr "SPF-posten måste börja med \"v=spf1\""
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr "SPF-posten överskrider gränsen på 255 tecken. Dela upp den på flera TXT-poster."
+msgstr ""
+"SPF-posten överskrider gränsen på 255 tecken. Dela upp den på flera TXT-"
+"poster."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
@@ -6216,30 +6280,40 @@ msgstr "Okänd mekanism: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "SPF-posten bör ha antingen en avslutande \"all\"-mekanism eller en \"redirect\"-modifierare (RFC 7208 avsnitt 4.6.2)."
+msgstr ""
+"SPF-posten bör ha antingen en avslutande \"all\"-mekanism eller en "
+"\"redirect\"-modifierare (RFC 7208 avsnitt 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "SPF-posten har både en \"all\"-mekanism och en \"redirect\"-modifierare. \"redirect\"-modifieraren ignoreras när \"all\" finns med (RFC 7208 avsnitt 6.1)."
+msgstr ""
+"SPF-posten har både en \"all\"-mekanism och en \"redirect\"-modifierare. "
+"\"redirect\"-modifieraren ignoreras när \"all\" finns med (RFC 7208 avsnitt "
+"6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "Ogiltigt värde för prioritetsfältet. CNAME-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde för prioritetsfältet. CNAME-poster måste ha prioritetsvärdet "
+"0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr "Detta är inte ett giltigt CNAME. Det finns redan en post med detta namn."
+msgstr ""
+"Detta är inte ett giltigt CNAME. Det finns redan en post med detta namn."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr "Detta är inte ett giltigt CNAME. Har du tilldelat posten en MX- eller NS-post?"
+msgstr ""
+"Detta är inte ett giltigt CNAME. Har du tilldelat posten en MX- eller NS-"
+"post?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
@@ -6248,19 +6322,24 @@ msgstr "Tomma CNAME-poster är inte tillåtna."
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "Detta är inte en giltig post. Det finns redan ett CNAME med detta namn."
+msgstr ""
+"Detta är inte en giltig post. Det finns redan ett CNAME med detta namn."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN). Namn med en enda etikett är inte tillåtna."
+msgstr ""
+"CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN). Namn "
+"med en enda etikett är inte tillåtna."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN) med en giltig toppdomän."
+msgstr ""
+"CNAME-målet måste vara ett fullständigt kvalificerat domännamn (FQDN) med en "
+"giltig toppdomän."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -6270,7 +6349,9 @@ msgstr "Ogiltiga tecken i DHCID-postens innehåll."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "Enligt RFC 4701 och RFC 4703 bör DHCID-poster placeras vid samma namn som de A- eller AAAA-poster de hör till."
+msgstr ""
+"Enligt RFC 4701 och RFC 4703 bör DHCID-poster placeras vid samma namn som de "
+"A- eller AAAA-poster de hör till."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -6281,25 +6362,34 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "Enligt RFC 4703 används DHCID-poster för att upptäcka kollisioner när flera DHCP-klienter gör anspråk på samma namn. Att en DHCID-post finns betyder att namnet används av en DHCP-klient."
+msgstr ""
+"Enligt RFC 4703 används DHCID-poster för att upptäcka kollisioner när flera "
+"DHCP-klienter gör anspråk på samma namn. Att en DHCID-post finns betyder att "
+"namnet används av en DHCP-klient."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID-posten får bara innehålla giltiga base64-tecken (A-Z, a-z, 0-9, +, /, =)."
+msgstr ""
+"DHCID-posten får bara innehålla giltiga base64-tecken (A-Z, a-z, 0-9, +, /, "
+"=)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID-posten har ogiltig base64-utfyllnad. Likhetstecken (=) bör bara förekomma i slutet av data."
+msgstr ""
+"DHCID-posten har ogiltig base64-utfyllnad. Likhetstecken (=) bör bara "
+"förekomma i slutet av data."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "DHCID-posten har ogiltig base64-längd. Base64-data måste vara en multipel av 4 tecken (med base64-utfyllnad)."
+msgstr ""
+"DHCID-posten har ogiltig base64-längd. Base64-data måste vara en multipel av "
+"4 tecken (med base64-utfyllnad)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6309,39 +6399,51 @@ msgstr "DHCID-posten måste innehålla giltig base64-kodad data."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DHCID-posten är för kort. Den avkodade datan måste innehålla minst 3 byte (typkoder och digest)."
+msgstr ""
+"DHCID-posten är för kort. Den avkodade datan måste innehålla minst 3 byte "
+"(typkoder och digest)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID-identifierartypen 0x%04X är inte någon av standardtyperna som definieras i RFC 4701 (0x0000, 0x0001, 0x0002)."
+msgstr ""
+"DHCID-identifierartypen 0x%04X är inte någon av standardtyperna som "
+"definieras i RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID-digesttypen %d är inte den standardtyp (1 för SHA-256) som definieras i RFC 4701."
+msgstr ""
+"DHCID-digesttypen %d är inte den standardtyp (1 för SHA-256) som definieras "
+"i RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "En DHCID-post med SHA-256-digest (typ 1) måste vara minst 35 byte i avkodad form (2 för identifierartyp, 1 för digesttyp och 32 för SHA-256-digesten)."
+msgstr ""
+"En DHCID-post med SHA-256-digest (typ 1) måste vara minst 35 byte i avkodad "
+"form (2 för identifierartyp, 1 för digesttyp och 32 för SHA-256-digesten)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
 "DHCID records should be updated only by authorized DHCP clients or servers "
 "to prevent conflicts and unauthorized DNS updates."
-msgstr "DHCID-poster bör bara uppdateras av behöriga DHCP-klienter eller DHCP-servrar för att förhindra konflikter och obehöriga DNS-uppdateringar."
+msgstr ""
+"DHCID-poster bör bara uppdateras av behöriga DHCP-klienter eller DHCP-"
+"servrar för att förhindra konflikter och obehöriga DNS-uppdateringar."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:208
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "Överväg att använda DNSSEC eller TSIG-autentisering (RFC 3007) för säkra DHCID-uppdateringar, så som rekommenderas i RFC 4701."
+msgstr ""
+"Överväg att använda DNSSEC eller TSIG-autentisering (RFC 3007) för säkra "
+"DHCID-uppdateringar, så som rekommenderas i RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6355,13 +6457,17 @@ msgstr "Prioritetsfältet för RRSIG-poster måste vara 0 eller tomt"
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr "RRSIG-poster bör bara skapas av din DNS-server när en zon signeras. Manuell hantering rekommenderas inte."
+msgstr ""
+"RRSIG-poster bör bara skapas av din DNS-server när en zon signeras. Manuell "
+"hantering rekommenderas inte."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "Regelbundna nyckelbyten är rekommenderad praxis: ZSK var 1-3 månad, KSK var 1-2 år."
+msgstr ""
+"Regelbundna nyckelbyten är rekommenderad praxis: ZSK var 1-3 månad, KSK var "
+"1-2 år."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6375,7 +6481,9 @@ msgstr "RRSIG-posten innehåller ogiltiga tecken."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG-posten måste innehålla covered-type, algoritm, labels, original TTL, utgångstid, starttid, nyckeltagg, signerarnamn och signatur."
+msgstr ""
+"RRSIG-posten måste innehålla covered-type, algoritm, labels, original TTL, "
+"utgångstid, starttid, nyckeltagg, signerarnamn och signatur."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6389,25 +6497,31 @@ msgstr "RRSIG-algoritmfältet måste vara ett numeriskt värde."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "Algoritm 1 (RSA/MD5) är föråldrad och bör INTE användas på grund av kryptografiska svagheter."
+msgstr ""
+"Algoritm 1 (RSA/MD5) är föråldrad och bör INTE användas på grund av "
+"kryptografiska svagheter."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritm 3 (DSA/SHA1) anses osäker och bör ersättas med starkare algoritmer."
+msgstr ""
+"Algoritm 3 (DSA/SHA1) anses osäker och bör ersättas med starkare algoritmer."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritm 5 (RSA/SHA-1) anses osäker och bör ersättas med starkare algoritmer."
+msgstr ""
+"Algoritm 5 (RSA/SHA-1) anses osäker och bör ersättas med starkare algoritmer."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr "Algoritm 7 (RSASHA1-NSEC3-SHA1) använder SHA-1, som inte längre anses säkert. Överväg att använda RSA/SHA-256 eller nyare algoritmer."
+msgstr ""
+"Algoritm 7 (RSASHA1-NSEC3-SHA1) använder SHA-1, som inte längre anses "
+"säkert. Överväg att använda RSA/SHA-256 eller nyare algoritmer."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
@@ -6419,25 +6533,33 @@ msgstr "Är du säker på att du vill ta bort denna zon?"
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "Algoritm 13 (ECDSA P-256 med SHA-256) ger god säkerhet med mindre signaturer än RSA."
+msgstr ""
+"Algoritm 13 (ECDSA P-256 med SHA-256) ger god säkerhet med mindre signaturer "
+"än RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Algoritm 14 (ECDSA P-384 med SHA-384) ger stark säkerhet med mindre signaturer än RSA."
+msgstr ""
+"Algoritm 14 (ECDSA P-384 med SHA-384) ger stark säkerhet med mindre "
+"signaturer än RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr "Algoritm 15 (ED25519) erbjuder modern säkerhet men kan ha kompatibilitetsproblem med äldre DNSSEC-validerare."
+msgstr ""
+"Algoritm 15 (ED25519) erbjuder modern säkerhet men kan ha "
+"kompatibilitetsproblem med äldre DNSSEC-validerare."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
-msgstr "Algoritm 16 (ED448) erbjuder stark, modern säkerhet men kan ha kompatibilitetsproblem med äldre DNSSEC-validerare."
+msgstr ""
+"Algoritm 16 (ED448) erbjuder stark, modern säkerhet men kan ha "
+"kompatibilitetsproblem med äldre DNSSEC-validerare."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
@@ -6464,7 +6586,10 @@ msgstr "RRSIG original TTL måste vara ett giltigt positivt heltal."
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr "Original TTL är större än 1 dygn (86400). För DNSSEC-poster föredras normalt kortare TTL-värden, eftersom det ger snabbare återhämtning om en nyckel komprometteras."
+msgstr ""
+"Original TTL är större än 1 dygn (86400). För DNSSEC-poster föredras normalt "
+"kortare TTL-värden, eftersom det ger snabbare återhämtning om en nyckel "
+"komprometteras."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -6478,13 +6603,17 @@ msgstr "RRSIG-starttiden måste anges i formatet YYYYMMDDHHmmSS."
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr "Utgångstiden måste vara senare än starttiden. Den här signaturen ser ut att ha gått ut innan den blev giltig."
+msgstr ""
+"Utgångstiden måste vara senare än starttiden. Den här signaturen ser ut att "
+"ha gått ut innan den blev giltig."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr "KRITISKT: Den här signaturen har redan gått ut. Den kommer inte att valideras av DNSSEC-resolvers."
+msgstr ""
+"KRITISKT: Den här signaturen har redan gått ut. Den kommer inte att "
+"valideras av DNSSEC-resolvers."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
@@ -6500,14 +6629,19 @@ msgstr "Huvudserver borttagen"
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr "VARNING: Den här signaturen är inte giltig än. Den kommer inte att valideras av DNSSEC-resolvers förrän starttiden har nåtts."
+msgstr ""
+"VARNING: Den här signaturen är inte giltig än. Den kommer inte att valideras "
+"av DNSSEC-resolvers förrän starttiden har nåtts."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "Signaturens giltighetstid är över 90 dagar, vilket är längre än rekommenderad praxis. Långa giltighetstider ökar sårbarheten om en nyckel komprometteras."
+msgstr ""
+"Signaturens giltighetstid är över 90 dagar, vilket är längre än "
+"rekommenderad praxis. Långa giltighetstider ökar sårbarheten om en nyckel "
+"komprometteras."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6524,7 +6658,9 @@ msgstr "RRSIG-nyckeltaggen måste vara ett giltigt värde mellan 0 och 65535."
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "RRSIG-signerarnamnet måste vara ett fullständigt kvalificerat domännamn (avslutas med en punkt)."
+msgstr ""
+"RRSIG-signerarnamnet måste vara ett fullständigt kvalificerat domännamn "
+"(avslutas med en punkt)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
@@ -6538,19 +6674,25 @@ msgstr "RRSIG-signaturen får inte vara tom."
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr "Signaturen ser inte ut att vara giltig base64-kodad data. RRSIG-signaturer ska vara base64-kodade."
+msgstr ""
+"Signaturen ser inte ut att vara giltig base64-kodad data. RRSIG-signaturer "
+"ska vara base64-kodade."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
-msgstr "RRSIG-poster är en del av DNSSEC och tillhandahåller kryptografiska signaturer för DNS-poster. De bör hanteras automatiskt av DNS-servern."
+msgstr ""
+"RRSIG-poster är en del av DNSSEC och tillhandahåller kryptografiska "
+"signaturer för DNS-poster. De bör hanteras automatiskt av DNS-servern."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "Kom ihåg att RRSIG-poster måste genereras om innan de går ut för att DNSSEC-valideringen ska fortsätta fungera."
+msgstr ""
+"Kom ihåg att RRSIG-poster måste genereras om innan de går ut för att DNSSEC-"
+"valideringen ska fortsätta fungera."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -6584,7 +6726,9 @@ msgstr "RP-posten innehåller ogiltiga tecken."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP-posten måste innehålla brevlådedomän (mbox-dname) och txt-postdomän (txt-dname)."
+msgstr ""
+"RP-posten måste innehålla brevlådedomän (mbox-dname) och txt-postdomän (txt-"
+"dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6596,30 +6740,40 @@ msgstr "Kunde inte ta bort zonmall"
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr "RP-posten används mer sällan i dag. Överväg att använda WHOIS-poster eller andra kontaktmekanismer i stället."
+msgstr ""
+"RP-posten används mer sällan i dag. Överväg att använda WHOIS-poster eller "
+"andra kontaktmekanismer i stället."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "Se till att motsvarande TXT-poster finns för fältet txt-dname om du inte använder en punkt (.)."
+msgstr ""
+"Se till att motsvarande TXT-poster finns för fältet txt-dname om du inte "
+"använder en punkt (.)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr "Att använda \".\" som brevlådedomän betyder att ingen ansvarig person anges. Det rekommenderas inte för domäner i produktion."
+msgstr ""
+"Att använda \".\" som brevlådedomän betyder att ingen ansvarig person anges. "
+"Det rekommenderas inte för domäner i produktion."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP-brevlådans domän måste vara ett fullständigt kvalificerat domännamn (avslutas med en punkt)."
+msgstr ""
+"RP-brevlådans domän måste vara ett fullständigt kvalificerat domännamn "
+"(avslutas med en punkt)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
-msgstr "RP-brevlådans lokala del innehåller ogiltiga tecken. Endast tecken som är giltiga i e-postadresser är tillåtna."
+msgstr ""
+"RP-brevlådans lokala del innehåller ogiltiga tecken. Endast tecken som är "
+"giltiga i e-postadresser är tillåtna."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
@@ -6630,7 +6784,9 @@ msgstr "Brevlådedomänen representerar e-postadressen: %s"
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr "RP-brevlådans domändel innehåller understreck, vilket inte är tillåtet i domännamn."
+msgstr ""
+"RP-brevlådans domändel innehåller understreck, vilket inte är tillåtet i "
+"domännamn."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
@@ -6660,17 +6816,23 @@ msgstr "RP-brevlådans domändel är inte ett giltigt domännamn."
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr "Brevlådedomänen ska använda samma format som RNAME-fältet i SOA-poster, med @ utbytt mot en punkt."
+msgstr ""
+"Brevlådedomänen ska använda samma format som RNAME-fältet i SOA-poster, med "
+"@ utbytt mot en punkt."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr "Att använda \".\" som TXT-domän betyder att det inte finns någon TXT-post med ytterligare information."
+msgstr ""
+"Att använda \".\" som TXT-domän betyder att det inte finns någon TXT-post "
+"med ytterligare information."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT-domänen måste vara ett fullständigt kvalificerat domännamn (avslutas med en punkt)."
+msgstr ""
+"RP TXT-domänen måste vara ett fullständigt kvalificerat domännamn (avslutas "
+"med en punkt)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6696,7 +6858,9 @@ msgstr "Kunde inte tillämpa mall"
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr "Se till att det finns en TXT-post vid det här domännamnet med kontaktinformation till den ansvariga personen."
+msgstr ""
+"Se till att det finns en TXT-post vid det här domännamnet med "
+"kontaktinformation till den ansvariga personen."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -6713,7 +6877,9 @@ msgstr "Kunde inte uppdatera zonkommentar"
 msgid ""
 "This appears to be an IPv6 interface identifier (has the universal/local bit "
 "flipped compared to standard EUI-64)."
-msgstr "Detta ser ut att vara en IPv6-gränssnittsidentifierare (universal/local-biten är omvänd jämfört med standard-EUI-64)."
+msgstr ""
+"Detta ser ut att vara en IPv6-gränssnittsidentifierare (universal/local-"
+"biten är omvänd jämfört med standard-EUI-64)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
@@ -6723,43 +6889,57 @@ msgstr "Prioritetsfältet för EUI64-poster måste vara 0 eller tomt."
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 avråder från att publicera EUI-64-adresser i det publika DNS på grund av möjliga konsekvenser för integriteten."
+msgstr ""
+"RFC 7043 avråder från att publicera EUI-64-adresser i det publika DNS på "
+"grund av möjliga konsekvenser för integriteten."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64-posten använder kolon som avgränsare (xx:xx:xx:xx:xx:xx:xx:xx) men kräver bindestreck som avgränsare (xx-xx-xx-xx-xx-xx-xx-xx)."
+msgstr ""
+"EUI64-posten använder kolon som avgränsare (xx:xx:xx:xx:xx:xx:xx:xx) men "
+"kräver bindestreck som avgränsare (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64-posten saknar avgränsare. Formatet måste vara xx-xx-xx-xx-xx-xx-xx-xx med bindestreck mellan oktetterna."
+msgstr ""
+"EUI64-posten saknar avgränsare. Formatet måste vara xx-xx-xx-xx-xx-xx-xx-xx "
+"med bindestreck mellan oktetterna."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64-posten verkar vara i punktformat. Formatet måste vara xx-xx-xx-xx-xx-xx-xx-xx."
+msgstr ""
+"EUI64-posten verkar vara i punktformat. Formatet måste vara xx-xx-xx-xx-xx-"
+"xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "EUI64-posten måste vara en giltig EUI-64-adress i formatet xx-xx-xx-xx-xx-xx-xx-xx (där x är en hexadecimal siffra)."
+msgstr ""
+"EUI64-posten måste vara en giltig EUI-64-adress i formatet xx-xx-xx-xx-xx-xx-"
+"xx-xx (där x är en hexadecimal siffra)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
 "This appears to be a multicast address (the least significant bit of the "
 "first octet is set to 1)."
-msgstr "Detta ser ut att vara en multicast-adress (den minst signifikanta biten i den första oktetten är satt till 1)."
+msgstr ""
+"Detta ser ut att vara en multicast-adress (den minst signifikanta biten i "
+"den första oktetten är satt till 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:163
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr "Detta ser ut att vara en lokalt administrerad adress (den näst minst signifikanta biten i den första oktetten är satt till 1)."
+msgstr ""
+"Detta ser ut att vara en lokalt administrerad adress (den näst minst "
+"signifikanta biten i den första oktetten är satt till 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -6773,11 +6953,14 @@ msgstr "DNSSEC-nycklar"
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr "Den här DNAME-posten verkar ligga vid zonens apex. Enligt RFC 6672 kräver DNAME vid zonens apex särskild hantering av NS-poster och relaterade poster."
+msgstr ""
+"Den här DNAME-posten verkar ligga vid zonens apex. Enligt RFC 6672 kräver "
+"DNAME vid zonens apex särskild hantering av NS-poster och relaterade poster."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "DNAME-målet måste vara ett giltigt fullständigt kvalificerat domännamn."
+msgstr ""
+"DNAME-målet måste vara ett giltigt fullständigt kvalificerat domännamn."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
@@ -6787,7 +6970,9 @@ msgstr "DNAME-posten kan inte peka på sig själv."
 msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
-msgstr "DNAME-målet verkar vara en underdomän till ägarnamnet. Det kan skapa problematiska cirkulära referenser när underdomäner slås upp."
+msgstr ""
+"DNAME-målet verkar vara en underdomän till ägarnamnet. Det kan skapa "
+"problematiska cirkulära referenser när underdomäner slås upp."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -6797,37 +6982,49 @@ msgstr "Prioritetsfältet för DNAME-poster måste vara 0 eller tomt."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "Enligt RFC 6672 måste DNAME-poster vara unika vid ett givet ägarnamn (singleton-regeln)."
+msgstr ""
+"Enligt RFC 6672 måste DNAME-poster vara unika vid ett givet ägarnamn "
+"(singleton-regeln)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "DNAME- och CNAME-poster FÅR INTE finnas vid samma ägarnamn (RFC 6672 avsnitt 2.3)."
+msgstr ""
+"DNAME- och CNAME-poster FÅR INTE finnas vid samma ägarnamn (RFC 6672 avsnitt "
+"2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr "DNAME-poster FÅR INTE finnas vid samma ägarnamn som NS-poster, om inte ägarnamnet är zonens apex."
+msgstr ""
+"DNAME-poster FÅR INTE finnas vid samma ägarnamn som NS-poster, om inte "
+"ägarnamnet är zonens apex."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr "DNAME skapar syntetiska alias för alla underdomäner till sitt ägarnamn. Tänk noga igenom detta när du planerar zonstrukturen."
+msgstr ""
+"DNAME skapar syntetiska alias för alla underdomäner till sitt ägarnamn. Tänk "
+"noga igenom detta när du planerar zonstrukturen."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr "DS-poster ska normalt placeras vid delegeringspunkter, inte vid zonens apex. Kontrollera om detta är avsiktligt."
+msgstr ""
+"DS-poster ska normalt placeras vid delegeringspunkter, inte vid zonens apex. "
+"Kontrollera om detta är avsiktligt."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr "Detta är en särskild CDS-borttagningspost (RFC 8078) som signalerar till föräldrazonen att DS-posten ska tas bort."
+msgstr ""
+"Detta är en särskild CDS-borttagningspost (RFC 8078) som signalerar till "
+"föräldrazonen att DS-posten ska tas bort."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
@@ -6836,7 +7033,8 @@ msgstr "Prioritetsfältet för DS-poster måste vara 0 eller tomt."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "DS-posten måste ha formatet: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"DS-posten måste ha formatet: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -6854,14 +7052,17 @@ msgstr "DNSSEC-nyckel uppdaterad"
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "%s (algoritm %d) är en REKOMMENDERAD algoritm att använda enligt RFC 8624."
+msgstr ""
+"%s (algoritm %d) är en REKOMMENDERAD algoritm att använda enligt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "%s (algoritm %d) används allmänt, men nyare algoritmer som ECDSAP256SHA256 (13) eller ED25519 (15) är att föredra."
+msgstr ""
+"%s (algoritm %d) används allmänt, men nyare algoritmer som ECDSAP256SHA256 "
+"(13) eller ED25519 (15) är att föredra."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
@@ -6873,7 +7074,9 @@ msgstr "%s (algoritm %d) är valfri att implementera enligt RFC 8624."
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "%s (algoritm %d) REKOMMENDERAS INTE för användning enligt RFC 8624. Överväg att använda ECDSAP256SHA256 (13) eller ED25519 (15) i stället."
+msgstr ""
+"%s (algoritm %d) REKOMMENDERAS INTE för användning enligt RFC 8624. Överväg "
+"att använda ECDSAP256SHA256 (13) eller ED25519 (15) i stället."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6883,7 +7086,9 @@ msgstr "DNSSEC inaktiverad för zon"
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr "SHA-1 (digesttyp 1) REKOMMENDERAS INTE enligt RFC 8624. SHA-256 (digesttyp 2) är den rekommenderade digestalgoritmen."
+msgstr ""
+"SHA-1 (digesttyp 1) REKOMMENDERAS INTE enligt RFC 8624. SHA-256 (digesttyp "
+"2) är den rekommenderade digestalgoritmen."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
@@ -6896,7 +7101,9 @@ msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr "SHA-384 (digesttyp 4) är ett bra val vid högre säkerhetskrav, men SHA-256 (digesttyp 2) räcker för de flesta installationer och har bredare stöd."
+msgstr ""
+"SHA-384 (digesttyp 4) är ett bra val vid högre säkerhetskrav, men SHA-256 "
+"(digesttyp 2) räcker för de flesta installationer och har bredare stöd."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -6915,55 +7122,73 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS-poster upprättar en förtroendekedja från föräldrazoner till barnzoner. Föräldrazonen måste ha den här DS-posten och barnzonen måste ha motsvarande DNSKEY-post."
+msgstr ""
+"DS-poster upprättar en förtroendekedja från föräldrazoner till barnzoner. "
+"Föräldrazonen måste ha den här DS-posten och barnzonen måste ha motsvarande "
+"DNSKEY-post."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr "CSYNC-poster ska bara placeras vid zonens apex (RFC 7477). Den här posten kanske inte behandlas av föräldrazonens agenter."
+msgstr ""
+"CSYNC-poster ska bara placeras vid zonens apex (RFC 7477). Den här posten "
+"kanske inte behandlas av föräldrazonens agenter."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC-poster måste vara DNSSEC-signerade för att behandlas av föräldrazonens agenter (RFC 7477). Se till att din zon är korrekt signerad med DNSSEC."
+msgstr ""
+"CSYNC-poster måste vara DNSSEC-signerade för att behandlas av föräldrazonens "
+"agenter (RFC 7477). Se till att din zon är korrekt signerad med DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "Det ska bara finnas en CSYNC-post per zon (RFC 7477). Flera poster kan orsaka oväntat beteende."
+msgstr ""
+"Det ska bara finnas en CSYNC-post per zon (RFC 7477). Flera poster kan "
+"orsaka oväntat beteende."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr "Inga flaggor är satta i den här CSYNC-posten. Posten kanske inte behandlas omedelbart av föräldrazonens agenter."
+msgstr ""
+"Inga flaggor är satta i den här CSYNC-posten. Posten kanske inte behandlas "
+"omedelbart av föräldrazonens agenter."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "Flaggan \"immediate\" (0x0001) är inte satt. Föräldraagenter kan fördröja behandlingen av den här posten."
+msgstr ""
+"Flaggan \"immediate\" (0x0001) är inte satt. Föräldraagenter kan fördröja "
+"behandlingen av den här posten."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "Flaggan \"soaminimum\" (0x0002) är inte satt. Validering av SOA-serienumret tillämpas kanske inte."
+msgstr ""
+"Flaggan \"soaminimum\" (0x0002) är inte satt. Validering av SOA-serienumret "
+"tillämpas kanske inte."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "Ogiltigt värde i prioritetsfältet. CSYNC-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. CSYNC-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Ogiltigt SOA Serial i CSYNC-posten. Det måste vara ett 32-bitars osignerat heltal (0-4294967295)."
+msgstr ""
+"Ogiltigt SOA Serial i CSYNC-posten. Det måste vara ett 32-bitars osignerat "
+"heltal (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6977,7 +7202,9 @@ msgstr "Ogiltiga Flags i CSYNC-posten. Flags måste vara mellan 0 och 65535."
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr "Ogiltiga Flags i CSYNC-posten. Endast bitarna 0-1 är definierade (värdena 0-3). Giltiga värden är 0, 1, 2 eller 3."
+msgstr ""
+"Ogiltiga Flags i CSYNC-posten. Endast bitarna 0-1 är definierade (värdena "
+"0-3). Giltiga värden är 0, 1, 2 eller 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
@@ -7000,20 +7227,28 @@ msgstr "Kryptografisk nyckel finns inte"
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
-msgstr "Synkronisering av NS-poster kräver noggrant övervägande. Föräldrazoner kan ha särskilda regler för NS-poster som kan hindra att synkroniseringen lyckas."
+msgstr ""
+"Synkronisering av NS-poster kräver noggrant övervägande. Föräldrazoner kan "
+"ha särskilda regler för NS-poster som kan hindra att synkroniseringen lyckas."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
 "Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section "
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
-msgstr "Obs: Det verkliga wire-formatet för CSYNC Type Bit Map följer formatet i RFC 4034 avsnitt 4.1.2. Poweradmin använder en förenklad representation med posttyper separerade med blanksteg."
+msgstr ""
+"Obs: Det verkliga wire-formatet för CSYNC Type Bit Map följer formatet i RFC "
+"4034 avsnitt 4.1.2. Poweradmin använder en förenklad representation med "
+"posttyper separerade med blanksteg."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "RFC 7477 kräver ett \"allt eller inget\"-förhållningssätt vid CSYNC-bearbetning. Om någon typ inte kan synkroniseras görs inga ändringar alls av föräldrazonen."
+msgstr ""
+"RFC 7477 kräver ett \"allt eller inget\"-förhållningssätt vid CSYNC-"
+"bearbetning. Om någon typ inte kan synkroniseras görs inga ändringar alls av "
+"föräldrazonen."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
@@ -7029,24 +7264,32 @@ msgstr "Kunde inte uppdatera kryptografisk nyckel"
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48-posten använder kolon som avgränsare (xx:xx:xx:xx:xx:xx) men kräver bindestreck som avgränsare (xx-xx-xx-xx-xx-xx)."
+msgstr ""
+"EUI48-posten använder kolon som avgränsare (xx:xx:xx:xx:xx:xx) men kräver "
+"bindestreck som avgränsare (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "EUI48-posten saknar avgränsare. Formatet måste vara xx-xx-xx-xx-xx-xx med bindestreck mellan oktetterna."
+msgstr ""
+"EUI48-posten saknar avgränsare. Formatet måste vara xx-xx-xx-xx-xx-xx med "
+"bindestreck mellan oktetterna."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr "EUI48-posten verkar vara i Cisco-format. Formatet måste vara xx-xx-xx-xx-xx-xx."
+msgstr ""
+"EUI48-posten verkar vara i Cisco-format. Formatet måste vara xx-xx-xx-xx-xx-"
+"xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48-posten måste vara en giltig MAC-adress i formatet xx-xx-xx-xx-xx-xx (där x är en hexadecimal siffra)."
+msgstr ""
+"EUI48-posten måste vara en giltig MAC-adress i formatet xx-xx-xx-xx-xx-xx "
+"(där x är en hexadecimal siffra)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -7058,25 +7301,33 @@ msgstr "Kunde inte aktivera nyckel"
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Postnamnet ser inte ut att vara ett standardnamn för en omvänd DNS-zon (bör sluta med .in-addr.arpa för IPv4 eller .ip6.arpa för IPv6)."
+msgstr ""
+"Postnamnet ser inte ut att vara ett standardnamn för en omvänd DNS-zon (bör "
+"sluta med .in-addr.arpa för IPv4 eller .ip6.arpa för IPv6)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr "Prioritetsfältet för PTR-poster bör vara 0 eller tomt. Det angivna värdet ignoreras."
+msgstr ""
+"Prioritetsfältet för PTR-poster bör vara 0 eller tomt. Det angivna värdet "
+"ignoreras."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr "PTR-poster bör ha motsvarande framåtposter (A/AAAA) för att undvika problem med tjänster som kontrollerar omvänd DNS."
+msgstr ""
+"PTR-poster bör ha motsvarande framåtposter (A/AAAA) för att undvika problem "
+"med tjänster som kontrollerar omvänd DNS."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "E-postservrar kräver ofta korrekt konfigurerad omvänd DNS för att ta emot post från din server."
+msgstr ""
+"E-postservrar kräver ofta korrekt konfigurerad omvänd DNS för att ta emot "
+"post från din server."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -7141,7 +7392,8 @@ msgstr "Prioritetsfältet för CAA-poster måste vara 0 eller tomt."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA-posten måste innehålla flaggor, tagg och värde separerade med blanksteg."
+msgstr ""
+"CAA-posten måste innehålla flaggor, tagg och värde separerade med blanksteg."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -7156,7 +7408,9 @@ msgstr "CAA-taggen får endast innehålla ASCII-bokstäver och siffror."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "Kritisk flagga satt för okänd tagg \"%s\". Detta kan göra att utfärdandet av certifikat misslyckas."
+msgstr ""
+"Kritisk flagga satt för okänd tagg \"%s\". Detta kan göra att utfärdandet av "
+"certifikat misslyckas."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -7195,7 +7449,9 @@ msgstr "Kunde inte aktivera NSEC3"
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr "Värdet för contactphone får bara innehålla siffror, blanksteg och skiljetecken som är vanliga i telefonnummer."
+msgstr ""
+"Värdet för contactphone får bara innehålla siffror, blanksteg och "
+"skiljetecken som är vanliga i telefonnummer."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
@@ -7262,7 +7518,9 @@ msgstr "Ogiltig API-nyckel"
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Ogiltig IPv4-prefixlängd för RFC 2317. Vanligen 24-32 (klasslös delegering oftast 25-31)."
+msgstr ""
+"Ogiltig IPv4-prefixlängd för RFC 2317. Vanligen 24-32 (klasslös delegering "
+"oftast 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7290,7 +7548,9 @@ msgstr "Ta bort API-nyckel"
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "SOA-valideringsparametrarna är inte satta. Anropa setSOAParams() först eller skicka dem som argument."
+msgstr ""
+"SOA-valideringsparametrarna är inte satta. Anropa setSOAParams() först eller "
+"skicka dem som argument."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -7332,19 +7592,24 @@ msgstr "Kunde inte kopiera API-nyckel"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:232
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Serienumret måste vara ett 32-bitars heltal utan tecken (0 till 4294967295)."
+msgstr ""
+"Serienumret måste vara ett 32-bitars heltal utan tecken (0 till 4294967295)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
-msgstr "Serienumret verkar använda formatet YYYYMMDDnn men innehåller ett ogiltigt datum. Det är tillåtet men rekommenderas inte."
+msgstr ""
+"Serienumret verkar använda formatet YYYYMMDDnn men innehåller ett ogiltigt "
+"datum. Det är tillåtet men rekommenderas inte."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:259
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr "SOA-posten måste ha exakt 7 fält (primär NS, e-post, serial, refresh, retry, expire, minimum)."
+msgstr ""
+"SOA-posten måste ha exakt 7 fält (primär NS, e-post, serial, refresh, retry, "
+"expire, minimum)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -7361,13 +7626,17 @@ msgstr "SOA-fältet %s måste vara ett positivt heltal."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA-värdet %s (%d) är under det minimivärde som rekommenderas i RFC 2308 (%d). Detta är tillåtet men rekommenderas inte."
+msgstr ""
+"SOA-värdet %s (%d) är under det minimivärde som rekommenderas i RFC 2308 "
+"(%d). Detta är tillåtet men rekommenderas inte."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr "SOA:s retry-värde bör vara mindre än refresh-värdet enligt RFC 2308. Det är tillåtet men rekommenderas inte."
+msgstr ""
+"SOA:s retry-värde bör vara mindre än refresh-värdet enligt RFC 2308. Det är "
+"tillåtet men rekommenderas inte."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:310
 msgid ""
@@ -7422,7 +7691,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB-parametrar måste anges i formatet key=value, separerade med blanksteg."
+msgstr ""
+"SVCB-parametrar måste anges i formatet key=value, separerade med blanksteg."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7440,51 +7710,67 @@ msgstr ""
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Flera CNAME-poster med samma namn är inte tillåtna. Det skulle bryta mot DNS-standarden."
+msgstr ""
+"Flera CNAME-poster med samma namn är inte tillåtna. Det skulle bryta mot DNS-"
+"standarden."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "En CNAME-post kan inte finnas tillsammans med andra posttyper för samma namn. Hittade en befintlig %s-post."
+msgstr ""
+"En CNAME-post kan inte finnas tillsammans med andra posttyper för samma "
+"namn. Hittade en befintlig %s-post."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr "Den här posten står i konflikt med en befintlig CNAME-post med samma namn. En CNAME-post kan inte samexistera med andra posttyper."
+msgstr ""
+"Den här posten står i konflikt med en befintlig CNAME-post med samma namn. "
+"En CNAME-post kan inte samexistera med andra posttyper."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Hashen av local-part i SMIMEA-poster ska vara en SHA-256-hash i hexadecimal form med 64 tecken. Formatet ska vara: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Hashen av local-part i SMIMEA-poster ska vara en SHA-256-hash i hexadecimal "
+"form med 64 tecken. Formatet ska vara: SHA256(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Namnet på en SMIMEA-post har formatet: SHA256(local-part)._smimecert.domain.tld för e-postadresser som %s"
+msgstr ""
+"Namnet på en SMIMEA-post har formatet: SHA256(local-"
+"part)._smimecert.domain.tld för e-postadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Detta använder inte standardformatet för SMIMEA-namn. SMIMEA-poster ska normalt använda: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Detta använder inte standardformatet för SMIMEA-namn. SMIMEA-poster ska "
+"normalt använda: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "Ogiltigt värde i prioritetsfältet. SMIMEA-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. SMIMEA-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA gör e-postadresser synliga i DNS. Tänk på konsekvenserna för integriteten när du publicerar SMIMEA-poster."
+msgstr ""
+"SMIMEA gör e-postadresser synliga i DNS. Tänk på konsekvenserna för "
+"integriteten när du publicerar SMIMEA-poster."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -7498,7 +7784,9 @@ msgstr "SMIMEA-posten innehåller ogiltiga tecken."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA-posten måste innehålla usage, selector, matching-type och certificate-data separerade med blanksteg."
+msgstr ""
+"SMIMEA-posten måste innehålla usage, selector, matching-type och certificate-"
+"data separerade med blanksteg."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7508,58 +7796,81 @@ msgstr "SMIMEA:s usage-fält måste vara ett tal mellan 0 och 3."
 msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
-msgstr "PKIX-TA-användning (0) kräver att CA-certifikatet finns i certifikatets valideringskedja. Se till att denna CA är allmänt känd och betrodd."
+msgstr ""
+"PKIX-TA-användning (0) kräver att CA-certifikatet finns i certifikatets "
+"valideringskedja. Se till att denna CA är allmänt känd och betrodd."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE-användning (1) kräver att slutentitetens certifikat valideras enligt PKIX:s valideringsregler. Se till att korrekta mellanliggande certifikat finns tillgängliga."
+msgstr ""
+"PKIX-EE-användning (1) kräver att slutentitetens certifikat valideras enligt "
+"PKIX:s valideringsregler. Se till att korrekta mellanliggande certifikat "
+"finns tillgängliga."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA-användning (2) utser det här certifikatet till trust anchor för validering av slutentitetens certifikat. Se till att certifikatet skyddas ordentligt."
+msgstr ""
+"DANE-TA-användning (2) utser det här certifikatet till trust anchor för "
+"validering av slutentitetens certifikat. Se till att certifikatet skyddas "
+"ordentligt."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE-användning (3) rekommenderas eftersom den ger den enklaste driftsättningen, med direkt användning av certifikatet utan ytterligare validering."
+msgstr ""
+"DANE-EE-användning (3) rekommenderas eftersom den ger den enklaste "
+"driftsättningen, med direkt användning av certifikatet utan ytterligare "
+"validering."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA:s selector-fält måste vara 0 (fullständigt certifikat) eller 1 (SubjectPublicKeyInfo)."
+msgstr ""
+"SMIMEA:s selector-fält måste vara 0 (fullständigt certifikat) eller 1 "
+"(SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
 "Selector 0 (Full certificate) means the entire certificate is matched. Using "
 "selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
-msgstr "Selector 0 (fullständigt certifikat) innebär att hela certifikatet matchas. Selector 1 (SubjectPublicKeyInfo) rekommenderas eftersom den ger större flexibilitet vid förnyelse av certifikat."
+msgstr ""
+"Selector 0 (fullständigt certifikat) innebär att hela certifikatet matchas. "
+"Selector 1 (SubjectPublicKeyInfo) rekommenderas eftersom den ger större "
+"flexibilitet vid förnyelse av certifikat."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:233
 msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "Selector 1 (SubjectPublicKeyInfo) rekommenderas eftersom den gör det möjligt att förnya certifikatet utan att uppdatera SMIMEA-posten, så länge den publika nyckeln är oförändrad."
+msgstr ""
+"Selector 1 (SubjectPublicKeyInfo) rekommenderas eftersom den gör det möjligt "
+"att förnya certifikatet utan att uppdatera SMIMEA-posten, så länge den "
+"publika nyckeln är oförändrad."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "SMIMEA:s matching-type-fält måste vara 0 (exakt matchning), 1 (SHA-256) eller 2 (SHA-512)."
+msgstr ""
+"SMIMEA:s matching-type-fält måste vara 0 (exakt matchning), 1 (SHA-256) "
+"eller 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr "Matchningstyp 0 (exakt matchning) använder rå certifikatdata. SHA-256 (typ 1) rekommenderas för bättre prestanda och kompatibilitet."
+msgstr ""
+"Matchningstyp 0 (exakt matchning) använder rå certifikatdata. SHA-256 (typ "
+"1) rekommenderas för bättre prestanda och kompatibilitet."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -7570,7 +7881,9 @@ msgstr "API-hastighetsgräns överskred"
 msgid ""
 "Matching type 2 (SHA-512) provides the highest security but may have "
 "compatibility issues with some implementations."
-msgstr "Matchningstyp 2 (SHA-512) ger högsta säkerhet men kan ha kompatibilitetsproblem med vissa implementationer."
+msgstr ""
+"Matchningstyp 2 (SHA-512) ger högsta säkerhet men kan ha "
+"kompatibilitetsproblem med vissa implementationer."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
@@ -7588,54 +7901,71 @@ msgstr "SMIMEA:s SHA-512-certifikatdata måste vara 128 tecken lång."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "Rekommenderad SMIMEA-konfiguration är usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) och matching-type=1 (SHA-256)."
+msgstr ""
+"Rekommenderad SMIMEA-konfiguration är usage=3 (DANE-EE), selector=1 "
+"(SubjectPublicKeyInfo) och matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "VARNING: SMIMEA (RFC 8162) är för närvarande ett EXPERIMENTELLT protokoll och har kanske inte brett stöd."
+msgstr ""
+"VARNING: SMIMEA (RFC 8162) är för närvarande ett EXPERIMENTELLT protokoll "
+"och har kanske inte brett stöd."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
 "CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
 "SMIMEA offers NO security benefit."
-msgstr "KRITISKT: SMIMEA-poster KRÄVER DNSSEC för att ge säkerhet. Utan DNSSEC ger SMIMEA INGEN säkerhetsvinst."
+msgstr ""
+"KRITISKT: SMIMEA-poster KRÄVER DNSSEC för att ge säkerhet. Utan DNSSEC ger "
+"SMIMEA INGEN säkerhetsvinst."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "OBS: Posttypen L64 är definierad i RFC 6742 som ett experimentellt protokoll, inte som en formell IETF-standard."
+msgstr ""
+"OBS: Posttypen L64 är definierad i RFC 6742 som ett experimentellt "
+"protokoll, inte som en formell IETF-standard."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L64-poster bör endast användas med Identifier-Locator Network Protocol (ILNP)."
+msgstr ""
+"L64-poster bör endast användas med Identifier-Locator Network Protocol "
+"(ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr "En IP-värd som INTE har stöd för ILNPv6 FÅR INTE ha L64-poster i sina DNS-uppgifter (RFC 6742 avsnitt 3.2)."
+msgstr ""
+"En IP-värd som INTE har stöd för ILNPv6 FÅR INTE ha L64-poster i sina DNS-"
+"uppgifter (RFC 6742 avsnitt 3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742 rekommenderar mycket låga TTL-värden för L64-poster som hör till mobila eller flerhemmade noder, eftersom locator-värdena kan ändras ofta."
+msgstr ""
+"RFC 6742 rekommenderar mycket låga TTL-värden för L64-poster som hör till "
+"mobila eller flerhemmade noder, eftersom locator-värdena kan ändras ofta."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr "L64-poster för delnät (med wildcard-poster i DNS) används normalt när det angivna delnätet är, har varit eller kan bli mobilt (RFC 6742 avsnitt 3.2)."
+msgstr ""
+"L64-poster för delnät (med wildcard-poster i DNS) används normalt när det "
+"angivna delnätet är, har varit eller kan bli mobilt (RFC 6742 avsnitt 3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
-msgstr "L64-posten måste innehålla preferens och locator64 separerade med mellanslag."
+msgstr ""
+"L64-posten måste innehålla preferens och locator64 separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
@@ -7645,14 +7975,20 @@ msgstr "L64-preferens måste vara ett tal mellan 0 och 65535."
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
-msgstr "L64-locator måste vara ett giltigt 64-bitars hexadecimalt IPv6-adressegment som består av exakt 4 grupper av hexadecimala siffror (t.ex. 2001:0db8:1140:1000)."
+msgstr ""
+"L64-locator måste vara ett giltigt 64-bitars hexadecimalt IPv6-adressegment "
+"som består av exakt 4 grupper av hexadecimala siffror (t.ex. "
+"2001:0db8:1140:1000)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
 "L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
-msgstr "L64-locator bör inte använda ospecificerade adresser (0000:0000:0000:0000) eller adresser med enbart ettor (ffff:ffff:ffff:ffff), eftersom de kan vara olämpliga som ILNP-locatorer."
+msgstr ""
+"L64-locator bör inte använda ospecificerade adresser (0000:0000:0000:0000) "
+"eller adresser med enbart ettor (ffff:ffff:ffff:ffff), eftersom de kan vara "
+"olämpliga som ILNP-locatorer."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
@@ -7695,7 +8031,9 @@ msgstr "Prioritetsfältet för CDNSKEY-poster måste vara 0 eller tomt"
 msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
-msgstr "RFC 7344 rekommenderar att du även publicerar en motsvarande CDS-post om du publicerar en CDNSKEY-post."
+msgstr ""
+"RFC 7344 rekommenderar att du även publicerar en motsvarande CDS-post om du "
+"publicerar en CDNSKEY-post."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -7705,13 +8043,17 @@ msgstr "Ogiltiga tecken i innehållet i CDNSKEY-posten."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "Formatet \"0 3 0 0\" från erratat till RFC 8078 används; överväg att använda standardformatet \"0 3 0 AA==\"."
+msgstr ""
+"Formatet \"0 3 0 0\" från erratat till RFC 8078 används; överväg att använda "
+"standardformatet \"0 3 0 AA==\"."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "En CDNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik nyckel separerade med mellanslag."
+msgstr ""
+"En CDNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik "
+"nyckel separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -7721,7 +8063,9 @@ msgstr "CDNSKEY-flaggor måste vara 0, 256 eller 257."
 msgid ""
 "Flag 257 indicates a Key Signing Key (KSK). Ensure this key is properly "
 "managed according to your DNSSEC key rollover policy."
-msgstr "Flagga 257 anger en Key Signing Key (KSK). Se till att nyckeln hanteras korrekt enligt din policy för DNSSEC-nyckelrollover."
+msgstr ""
+"Flagga 257 anger en Key Signing Key (KSK). Se till att nyckeln hanteras "
+"korrekt enligt din policy för DNSSEC-nyckelrollover."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
@@ -7735,7 +8079,9 @@ msgstr "CDNSKEY-algoritm måste vara ett tal mellan 1 och 16."
 msgid ""
 "Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to "
 "shorter key and signature size, resulting in smaller DNS packets."
-msgstr "Algoritm 8 (RSASHA256) ersätts av ECDSAP256SHA256 (13) eftersom nyckel- och signaturstorleken är mindre, vilket ger mindre DNS-paket."
+msgstr ""
+"Algoritm 8 (RSASHA256) ersätts av ECDSAP256SHA256 (13) eftersom nyckel- och "
+"signaturstorleken är mindre, vilket ger mindre DNS-paket."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:208
 msgid ""
@@ -7773,19 +8119,25 @@ msgstr "API-cacheträfffrekvens"
 msgid ""
 "WARNING: This LUA record contains potentially unsafe file or system "
 "operations. These may be blocked by PowerDNS security mechanisms."
-msgstr "VARNING: Denna LUA-post innehåller fil- eller systemoperationer som kan vara osäkra. De kan blockeras av säkerhetsmekanismerna i PowerDNS."
+msgstr ""
+"VARNING: Denna LUA-post innehåller fil- eller systemoperationer som kan vara "
+"osäkra. De kan blockeras av säkerhetsmekanismerna i PowerDNS."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr "Denna LUA-post använder explicit returläge (börjar med semikolon). Se till att ditt Lua-skript uttryckligen returnerar rätt värde."
+msgstr ""
+"Denna LUA-post använder explicit returläge (börjar med semikolon). Se till "
+"att ditt Lua-skript uttryckligen returnerar rätt värde."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr "Denna LUA-post verkar inte använda vanliga Lua-funktioner i PowerDNS. Kontrollera att den returnerar ett värde som passar posttypen."
+msgstr ""
+"Denna LUA-post verkar inte använda vanliga Lua-funktioner i PowerDNS. "
+"Kontrollera att den returnerar ett värde som passar posttypen."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
@@ -7811,7 +8163,9 @@ msgstr "Lägg till API-hastighetsgräns"
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
-msgstr "En LUA-post i implicit returläge bör vara ett giltigt funktionsanrop eller en funktionsdefinition med nyckelorden \"function\" och \"end\"."
+msgstr ""
+"En LUA-post i implicit returläge bör vara ett giltigt funktionsanrop eller "
+"en funktionsdefinition med nyckelorden \"function\" och \"end\"."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
@@ -7833,25 +8187,33 @@ msgstr "Kunde inte ta bort API-hastighetsgräns"
 msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
-msgstr "För bästa säkerhet bör du publicera både SHA-1- och SHA-256-fingeravtryck för kompatibilitet, men låta klienterna föredra SHA-256."
+msgstr ""
+"För bästa säkerhet bör du publicera både SHA-1- och SHA-256-fingeravtryck "
+"för kompatibilitet, men låta klienterna föredra SHA-256."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr "En SSHFP-post måste innehålla algoritm, fingeravtryckstyp och fingeravtryck separerade med mellanslag."
+msgstr ""
+"En SSHFP-post måste innehålla algoritm, fingeravtryckstyp och fingeravtryck "
+"separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "SSHFP-algoritm måste vara 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) eller 6 (Ed448)."
+msgstr ""
+"SSHFP-algoritm måste vara 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) eller 6 "
+"(Ed448)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
 "DSA keys are considered weak and are deprecated in many SSH implementations. "
 "Consider using RSA, Ed25519, or Ed448 instead."
-msgstr "DSA-nycklar anses svaga och är föråldrade i många SSH-implementationer. Överväg att använda RSA, Ed25519 eller Ed448 i stället."
+msgstr ""
+"DSA-nycklar anses svaga och är föråldrade i många SSH-implementationer. "
+"Överväg att använda RSA, Ed25519 eller Ed448 i stället."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
@@ -7898,13 +8260,18 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "KRITISKT: SSHFP-poster KRÄVER DNSSEC-validering för att ge någon säkerhetsnytta. Utan DNSSEC ger de inget skydd mot man-in-the-middle-attacker."
+msgstr ""
+"KRITISKT: SSHFP-poster KRÄVER DNSSEC-validering för att ge någon "
+"säkerhetsnytta. Utan DNSSEC ger de inget skydd mot man-in-the-middle-"
+"attacker."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "Konfigurera SSH-klienter med \"VerifyHostKeyDNS yes\" för att använda SSHFP-poster vid verifiering av servern."
+msgstr ""
+"Konfigurera SSH-klienter med \"VerifyHostKeyDNS yes\" för att använda SSHFP-"
+"poster vid verifiering av servern."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -7932,7 +8299,9 @@ msgstr "Kunde inte lägga till API-kvot"
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr "Den nya brevlådan är samma som den gamla brevlådan. MR-poster är avsedda för omdirigering till en annan brevlåda."
+msgstr ""
+"Den nya brevlådan är samma som den gamla brevlådan. MR-poster är avsedda för "
+"omdirigering till en annan brevlåda."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -7942,7 +8311,9 @@ msgstr "Kunde inte ta bort API-kvot"
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "MR-poster markerades som EXPERIMENTELLA i RFC 1035 och används sällan i moderna e-postsystem."
+msgstr ""
+"MR-poster markerades som EXPERIMENTELLA i RFC 1035 och används sällan i "
+"moderna e-postsystem."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -7953,7 +8324,9 @@ msgstr "API-kvoten finns redan"
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr "MR-posten anger att e-postanvändaren har flyttat från den gamla brevlådan till den nya brevlådan."
+msgstr ""
+"MR-posten anger att e-postanvändaren har flyttat från den gamla brevlådan "
+"till den nya brevlådan."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
@@ -7963,7 +8336,9 @@ msgstr "Redigera API-kvot"
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "KEY-poster har gjorts obsoleta av RFC 4034. Använd DNSKEY-poster i stället för DNSSEC."
+msgstr ""
+"KEY-poster har gjorts obsoleta av RFC 4034. Använd DNSKEY-poster i stället "
+"för DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
@@ -7979,7 +8354,9 @@ msgstr "Algoritm 1 (RSA/MD5) anses kryptografiskt svag och bör inte användas."
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "För DNSSEC-zonnycklar (flags=257, protocol=3) bör DNSKEY-poster användas i stället för KEY-poster."
+msgstr ""
+"För DNSSEC-zonnycklar (flags=257, protocol=3) bör DNSKEY-poster användas i "
+"stället för KEY-poster."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -7987,7 +8364,8 @@ msgstr "Uppdatera API-kvot"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY-posten måste innehålla flaggor, protokoll, algoritm och publik nyckel."
+msgstr ""
+"KEY-posten måste innehålla flaggor, protokoll, algoritm och publik nyckel."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
@@ -7997,7 +8375,9 @@ msgstr "KEY-flaggor måste vara ett tal mellan 0 och 65535."
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr "Ovanligt flaggvärde. Vanliga värden är 0 (autentisering förbjuden), 256 (användarnyckel) eller 257 (zonnyckel)."
+msgstr ""
+"Ovanligt flaggvärde. Vanliga värden är 0 (autentisering förbjuden), 256 "
+"(användarnyckel) eller 257 (zonnyckel)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
@@ -8006,7 +8386,8 @@ msgstr "Kvotåterställningsperiod"
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
-msgstr "Ovanligt protokollvärde. Protokoll 3 (DNSSEC) är vanligast för KEY-poster."
+msgstr ""
+"Ovanligt protokollvärde. Protokoll 3 (DNSSEC) är vanligast för KEY-poster."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -8016,7 +8397,9 @@ msgstr "KEY-algoritm måste vara ett tal mellan 0 och 255."
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr "Ovanligt algoritmvärde. Vanliga värden är 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)."
+msgstr ""
+"Ovanligt algoritmvärde. Vanliga värden är 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
+"(RSA/SHA-1), 8 (RSA/SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
@@ -8042,7 +8425,8 @@ msgstr "DMARC-poster måste placeras på _dmarc.<domain>."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "Ogiltigt värde i prioritetsfältet. DMARC-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. DMARC-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -8052,7 +8436,9 @@ msgstr "API-webhook"
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "DMARC-posten överskrider gränsen på 255 tecken. För komplexa policyer bör du förenkla posten eller använda URI-referenser."
+msgstr ""
+"DMARC-posten överskrider gränsen på 255 tecken. För komplexa policyer bör du "
+"förenkla posten eller använda URI-referenser."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -8067,20 +8453,27 @@ msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr "Med \"p=none\" får du insyn i e-postautentiseringen utan att leveransen påverkas. Överväg en striktare policy när du har gått igenom rapporterna."
+msgstr ""
+"Med \"p=none\" får du insyn i e-postautentiseringen utan att leveransen "
+"påverkas. Överväg en striktare policy när du har gått igenom rapporterna."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "DMARC-taggen för underdomänpolicy (sp) måste vara någon av: none, quarantine, reject"
+msgstr ""
+"DMARC-taggen för underdomänpolicy (sp) måste vara någon av: none, "
+"quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC-taggen för DKIM-justering (adkim) måste vara r (relaxed) eller s (strict)"
+msgstr ""
+"DMARC-taggen för DKIM-justering (adkim) måste vara r (relaxed) eller s "
+"(strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC-taggen för SPF-justering (aspf) måste vara r (relaxed) eller s (strict)"
+msgstr ""
+"DMARC-taggen för SPF-justering (aspf) måste vara r (relaxed) eller s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8091,7 +8484,9 @@ msgstr "DMARC-procenttaggen (pct) måste vara mellan 0 och 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "DMARC-policyn tillämpas på endast %d%% av meddelandena. Detta bör endast användas när policyn införs."
+msgstr ""
+"DMARC-policyn tillämpas på endast %d%% av meddelandena. Detta bör endast "
+"användas när policyn införs."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8101,7 +8496,9 @@ msgstr "DMARC-taggen för rapportintervall (ri) måste vara ett positivt heltal"
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DMARC-taggen för felrapporteringsalternativ (fo) får endast innehålla 0, 1, d, s eller kolonseparerade kombinationer"
+msgstr ""
+"DMARC-taggen för felrapporteringsalternativ (fo) får endast innehålla 0, 1, "
+"d, s eller kolonseparerade kombinationer"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8131,13 +8528,17 @@ msgstr "Obligatorisk DMARC-tagg saknas: %s"
 msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
-msgstr "DMARC-posten anger inga rapporterings-URI:er (rua eller ruf). Det kan begränsa din möjlighet att följa upp autentiseringsresultaten."
+msgstr ""
+"DMARC-posten anger inga rapporterings-URI:er (rua eller ruf). Det kan "
+"begränsa din möjlighet att följa upp autentiseringsresultaten."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:109
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "Detta är en DMARC-post som behandlas som en TXT-post. DMARC-poster ska använda posttypen TXT med innehåll som börjar med \"v=DMARC1\"."
+msgstr ""
+"Detta är en DMARC-post som behandlas som en TXT-post. DMARC-poster ska "
+"använda posttypen TXT med innehåll som börjar med \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -8152,25 +8553,32 @@ msgstr "Webhook-timeout"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "Innehållet i TXT-posten överskrider maxlängden %d byte. Minska innehållets storlek."
+msgstr ""
+"Innehållet i TXT-posten överskrider maxlängden %d byte. Minska innehållets "
+"storlek."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "Varje sträng i en TXT-post får vara högst 255 byte. Dela upp långt innehåll i flera strängar."
+msgstr ""
+"Varje sträng i en TXT-post får vara högst 255 byte. Dela upp långt innehåll "
+"i flera strängar."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Det totala innehållet i TXT-posten överskrider maxlängden %d byte. Minska innehållets storlek."
+msgstr ""
+"Det totala innehållet i TXT-posten överskrider maxlängden %d byte. Minska "
+"innehållets storlek."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "Ogiltigt värde i prioritetsfältet. TXT-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. TXT-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -8179,13 +8587,16 @@ msgstr "Webhook-leveranshistorik"
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Ogiltigt värde i prioritetsfältet. A-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. A-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr "CDS-poster ska endast placeras vid zonens apex, inte på underdomäner, enligt kraven i RFC 7344."
+msgstr ""
+"CDS-poster ska endast placeras vid zonens apex, inte på underdomäner, enligt "
+"kraven i RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -8195,7 +8606,9 @@ msgstr "Prioritetsfältet för CDS-poster måste vara 0 eller tomt"
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr "Enligt RFC 8078 bör CDS-poster vara oförändrade under en tid innan föräldrazoner accepterar dem."
+msgstr ""
+"Enligt RFC 8078 bör CDS-poster vara oförändrade under en tid innan "
+"föräldrazoner accepterar dem."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -8205,13 +8618,17 @@ msgstr "Ogiltiga tecken i innehållet i CDS-posten."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "Detta är en CDS-post för borttagning enligt RFC 8078. Den signalerar att motsvarande DS-poster ska tas bort hos föräldrazonen."
+msgstr ""
+"Detta är en CDS-post för borttagning enligt RFC 8078. Den signalerar att "
+"motsvarande DS-poster ska tas bort hos föräldrazonen."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "En CDS-post måste innehålla key-tag, algoritm, digest-typ och digest separerade med mellanslag."
+msgstr ""
+"En CDS-post måste innehålla key-tag, algoritm, digest-typ och digest "
+"separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -8229,20 +8646,26 @@ msgstr "CDS-digesttyp måste vara 1 (SHA-1), 2 (SHA-256) eller 4 (SHA-384)."
 msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
-msgstr "SHA-1 (digest-typ 1) är föråldrad av säkerhetsskäl. Överväg att använda SHA-256 (digest-typ 2) eller SHA-384 (digest-typ 4) i stället."
+msgstr ""
+"SHA-1 (digest-typ 1) är föråldrad av säkerhetsskäl. Överväg att använda "
+"SHA-256 (digest-typ 2) eller SHA-384 (digest-typ 4) i stället."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "CDS-digest måste vara en giltig hexsträng med längden %d för den valda digesttypen."
+msgstr ""
+"CDS-digest måste vara en giltig hexsträng med längden %d för den valda "
+"digesttypen."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "CDS-poster måste åtföljas av matchande CDNSKEY-poster enligt rekommendationen i RFC 7344."
+msgstr ""
+"CDS-poster måste åtföljas av matchande CDNSKEY-poster enligt "
+"rekommendationen i RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -8252,13 +8675,17 @@ msgstr "CDS-poster ska endast placeras vid zonens apex (inte på underdomäner).
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "OBS: Posttypen L32 är definierad i RFC 6742 som ett experimentellt protokoll, inte som en formell IETF-standard."
+msgstr ""
+"OBS: Posttypen L32 är definierad i RFC 6742 som ett experimentellt "
+"protokoll, inte som en formell IETF-standard."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L32-poster bör endast användas med Identifier-Locator Network Protocol (ILNP)."
+msgstr ""
+"L32-poster bör endast användas med Identifier-Locator Network Protocol "
+"(ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
@@ -8270,11 +8697,14 @@ msgstr "Kunde inte återleverera webhook"
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742 rekommenderar mycket låga TTL-värden för L32-poster som hör till mobila eller flerhemmade noder, eftersom locator-värdena kan ändras ofta."
+msgstr ""
+"RFC 6742 rekommenderar mycket låga TTL-värden för L32-poster som hör till "
+"mobila eller flerhemmade noder, eftersom locator-värdena kan ändras ofta."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32-posten måste innehålla preferens och locator separerade med mellanslag."
+msgstr ""
+"L32-posten måste innehålla preferens och locator separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
@@ -8292,13 +8722,17 @@ msgstr "L32-locator måste vara en fullständigt angiven IPv4-adress."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32-locator får inte använda broadcast- eller ospecificerade adresser (0.0.0.0 eller 255.255.255.255)."
+msgstr ""
+"L32-locator får inte använda broadcast- eller ospecificerade adresser "
+"(0.0.0.0 eller 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr "Prioritet 0 är giltig men ovanlig. Vanligtvis börjar SRV-poster på prioritet 10 eller högre."
+msgstr ""
+"Prioritet 0 är giltig men ovanlig. Vanligtvis börjar SRV-poster på prioritet "
+"10 eller högre."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
@@ -8308,27 +8742,35 @@ msgstr "Namnet på en SRV-post måste ha formatet _service._protocol.domain"
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
-msgstr "Ogiltigt tjänstevärde i SRV-posten. Tjänstenamnet måste börja med ett understreck följt av alfanumeriska tecken."
+msgstr ""
+"Ogiltigt tjänstevärde i SRV-posten. Tjänstenamnet måste börja med ett "
+"understreck följt av alfanumeriska tecken."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr "Ogiltigt protokollvärde i SRV-posten. Protokollet måste börja med ett understreck följt av alfanumeriska tecken."
+msgstr ""
+"Ogiltigt protokollvärde i SRV-posten. Protokollet måste börja med ett "
+"understreck följt av alfanumeriska tecken."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "Tjänstenamnet \"%s\" finns inte i listan över välkända tjänster. Detta är tillåtet men ovanligt."
+msgstr ""
+"Tjänstenamnet \"%s\" finns inte i listan över välkända tjänster. Detta är "
+"tillåtet men ovanligt."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Protokollet \"%s\" finns inte i listan över välkända protokoll. Vanliga protokoll är _tcp och _udp."
+msgstr ""
+"Protokollet \"%s\" finns inte i listan över välkända protokoll. Vanliga "
+"protokoll är _tcp och _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8338,7 +8780,9 @@ msgstr "Ogiltigt domännamn i SRV-posten."
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr "Innehållet i en SRV-post måste innehålla vikt, port och mål (3 fält). Prioriteten ska anges i prioritetsfältet."
+msgstr ""
+"Innehållet i en SRV-post måste innehålla vikt, port och mål (3 fält). "
+"Prioriteten ska anges i prioritetsfältet."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -8353,7 +8797,9 @@ msgstr "Ogiltigt värde i portfältet för SRV-posten. Måste vara 1-65535."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "Port %d skiljer sig från standardporten %d för tjänsten %s. Detta är tillåtet men ovanligt."
+msgstr ""
+"Port %d skiljer sig från standardporten %d för tjänsten %s. Detta är "
+"tillåtet men ovanligt."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8385,14 +8831,17 @@ msgstr "Granskningslogg-retention"
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Ogiltigt värde i prioritetsfältet. AAAA-poster måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. AAAA-poster måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "Ägarnamn för NSEC3-poster ska normalt vara en Base32hex-kodad hash följd av zonnamnet (t.ex. \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+msgstr ""
+"Ägarnamn för NSEC3-poster ska normalt vara en Base32hex-kodad hash följd av "
+"zonnamnet (t.ex. \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8406,31 +8855,41 @@ msgstr "NSEC3-posten innehåller ogiltiga tecken."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "Enligt RFC 5155 och RFC 9077 bör NSEC3-poster ha samma TTL som SOA-postens fält för minsta TTL."
+msgstr ""
+"Enligt RFC 5155 och RFC 9077 bör NSEC3-poster ha samma TTL som SOA-postens "
+"fält för minsta TTL."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3-poster är en del av DNSSEC och bör endast hanteras tillsammans med övriga DNSSEC-poster (DNSKEY, RRSIG med flera)."
+msgstr ""
+"NSEC3-poster är en del av DNSSEC och bör endast hanteras tillsammans med "
+"övriga DNSSEC-poster (DNSKEY, RRSIG med flera)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "Det rekommenderas inte att redigera NSEC3-poster manuellt, eftersom de normalt genereras automatiskt av namnservrar med DNSSEC-stöd."
+msgstr ""
+"Det rekommenderas inte att redigera NSEC3-poster manuellt, eftersom de "
+"normalt genereras automatiskt av namnservrar med DNSSEC-stöd."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr "NSEC3-poster kräver en motsvarande NSEC3PARAM-post vid zonens apex som anger vilka NSEC3-parametrar som används."
+msgstr ""
+"NSEC3-poster kräver en motsvarande NSEC3PARAM-post vid zonens apex som anger "
+"vilka NSEC3-parametrar som används."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "En NSEC3-post måste minst innehålla hashalgoritm, flaggor, iterationer, salt och nästa hashade ägarnamn."
+msgstr ""
+"En NSEC3-post måste minst innehålla hashalgoritm, flaggor, iterationer, salt "
+"och nästa hashade ägarnamn."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -8452,7 +8911,9 @@ msgstr "NSEC3-salt måste vara - (för tomt) eller ett hexadecimalt värde."
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "NSEC3-postens nästa hashade ägarnamn måste vara ett giltigt Base32hex-kodat värde (med tecknen 0-9 och A-V)."
+msgstr ""
+"NSEC3-postens nästa hashade ägarnamn måste vara ett giltigt Base32hex-kodat "
+"värde (med tecknen 0-9 och A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
@@ -8469,19 +8930,25 @@ msgstr "NSEC3-posten innehåller en ogiltig posttyp: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr "Typen RRSIG bör normalt finnas med i NSEC3-postens typbitkarta för DNSSEC-signerade zoner."
+msgstr ""
+"Typen RRSIG bör normalt finnas med i NSEC3-postens typbitkarta för DNSSEC-"
+"signerade zoner."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "Denna NSEC3-post innehåller både typerna SOA och NS, vilket antyder att den kan gälla en zons apex."
+msgstr ""
+"Denna NSEC3-post innehåller både typerna SOA och NS, vilket antyder att den "
+"kan gälla en zons apex."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "För en zons apex som använder NSEC3 bör typen NSEC3PARAM normalt finnas med tillsammans med DNSKEY."
+msgstr ""
+"För en zons apex som använder NSEC3 bör typen NSEC3PARAM normalt finnas med "
+"tillsammans med DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8503,31 +8970,41 @@ msgstr "Ogiltigt format på domännamnet."
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "Detta ser ut att vara en ENUM-domän. NAPTR-poster ska använda tjänstefältet E2U och följa RFC 6116."
+msgstr ""
+"Detta ser ut att vara en ENUM-domän. NAPTR-poster ska använda tjänstefältet "
+"E2U och följa RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "Komplexa regexp-mönster i NAPTR-poster kan vara svåra att felsöka och underhålla."
+msgstr ""
+"Komplexa regexp-mönster i NAPTR-poster kan vara svåra att felsöka och "
+"underhålla."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr "Denna post följer RFC 3403. Observera att vissa DNS-servrar kanske inte har fullt stöd för alla NAPTR-funktioner."
+msgstr ""
+"Denna post följer RFC 3403. Observera att vissa DNS-servrar kanske inte har "
+"fullt stöd för alla NAPTR-funktioner."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr "Ogiltigt värde i prioritetsfältet. NAPTR-poster anger prioriteten i innehållsfältet och måste ha prioritetsvärdet 0."
+msgstr ""
+"Ogiltigt värde i prioritetsfältet. NAPTR-poster anger prioriteten i "
+"innehållsfältet och måste ha prioritetsvärdet 0."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
-msgstr "En NAPTR-post måste innehålla värdena order, preferens, flaggor, tjänst, regexp och ersättning."
+msgstr ""
+"En NAPTR-post måste innehålla värdena order, preferens, flaggor, tjänst, "
+"regexp och ersättning."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
@@ -8557,7 +9034,9 @@ msgstr "Regexp i en NAPTR-post måste vara en sträng inom citattecken."
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "Ersättningen i en NAPTR-post måste vara antingen \".\" eller ett giltigt fullständigt kvalificerat domännamn."
+msgstr ""
+"Ersättningen i en NAPTR-post måste vara antingen \".\" eller ett giltigt "
+"fullständigt kvalificerat domännamn."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -8568,7 +9047,10 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR-tjänsten måste följa formatet: [protocol][+rs][+rs]... där protocol och rs börjar med en bokstav och innehåller alfanumeriska tecken, bindestreck, kolon eller plustecken (högst 32 tecken var)."
+msgstr ""
+"NAPTR-tjänsten måste följa formatet: [protocol][+rs][+rs]... där protocol "
+"och rs börjar med en bokstav och innehåller alfanumeriska tecken, "
+"bindestreck, kolon eller plustecken (högst 32 tecken var)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8596,7 +9078,9 @@ msgstr "Kunde inte ladda ner backup-koder"
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr "Detta ser ut att vara en ENUM-NAPTR-post (RFC 6116). Kontrollera att domänen ligger under e164.arpa eller i ett privat ENUM-träd."
+msgstr ""
+"Detta ser ut att vara en ENUM-NAPTR-post (RFC 6116). Kontrollera att domänen "
+"ligger under e164.arpa eller i ett privat ENUM-träd."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -8614,7 +9098,9 @@ msgstr "2FA-verifieringskod"
 msgid ""
 "DNSKEY records are typically placed at the zone apex. This record does not "
 "appear to be at a zone apex, which is unusual for DNSSEC deployments."
-msgstr "DNSKEY-poster placeras normalt vid zonens apex. Denna post verkar inte ligga vid en zons apex, vilket är ovanligt vid DNSSEC-driftsättningar."
+msgstr ""
+"DNSKEY-poster placeras normalt vid zonens apex. Denna post verkar inte ligga "
+"vid en zons apex, vilket är ovanligt vid DNSSEC-driftsättningar."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
@@ -8624,7 +9110,9 @@ msgstr "Prioritetsfältet för DNSKEY-poster måste vara 0 eller tomt."
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "En DNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik nyckel separerade med mellanslag."
+msgstr ""
+"En DNSKEY-post måste innehålla flaggor, protokoll, algoritm och publik "
+"nyckel separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -8634,7 +9122,9 @@ msgstr "DNSKEY-flaggor måste vara 0, 256 eller 257."
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
-msgstr "Flaggvärdet 0 anger att nyckeln INTE är avsedd att användas som zonnyckel i DNSSEC. Kontrollera att det är avsiktligt."
+msgstr ""
+"Flaggvärdet 0 anger att nyckeln INTE är avsedd att användas som zonnyckel i "
+"DNSSEC. Kontrollera att det är avsiktligt."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
@@ -8646,7 +9136,9 @@ msgstr "Kräv 2FA för alla användare"
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr "Flaggvärdet 257 anger att detta är en Key Signing Key (KSK) med både Zone Key- och SEP-bitarna satta."
+msgstr ""
+"Flaggvärdet 257 anger att detta är en Key Signing Key (KSK) med både Zone "
+"Key- och SEP-bitarna satta."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
@@ -8660,7 +9152,9 @@ msgstr "DNSKEY-algoritm måste vara ett tal mellan 1 och 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "ECDSAP256SHA256 (algoritm 13) är den REKOMMENDERADE algoritmen för DNSSEC-signering enligt RFC 8624."
+msgstr ""
+"ECDSAP256SHA256 (algoritm 13) är den REKOMMENDERADE algoritmen för DNSSEC-"
+"signering enligt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8679,14 +9173,18 @@ msgstr "%s (algoritm %d) anges som valfri att implementera i RFC 8624."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s (algoritm %d) är FÖRÅLDRAD enligt RFC 8624. Använd inte denna algoritm i nya installationer."
+msgstr ""
+"%s (algoritm %d) är FÖRÅLDRAD enligt RFC 8624. Använd inte denna algoritm i "
+"nya installationer."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Algoritm %d FÅR INTE implementeras enligt RFC 8624. Detta värde bör inte användas."
+msgstr ""
+"Algoritm %d FÅR INTE implementeras enligt RFC 8624. Detta värde bör inte "
+"användas."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8696,7 +9194,9 @@ msgstr "DNSKEY publik nyckel måste vara giltig base64-kodad data."
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr "RSA-nyckelns storlek är mindre än 2048 bitar. RFC 8624 rekommenderar minst 2048 bitar för RSA-nycklar."
+msgstr ""
+"RSA-nyckelns storlek är mindre än 2048 bitar. RFC 8624 rekommenderar minst "
+"2048 bitar för RSA-nycklar."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
@@ -8790,13 +9290,17 @@ msgstr "SOA-posten har ett ogiltigt innehållsformat."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "SOA-formatet ska vara: primary-ns hostmaster serial refresh retry expire minimum"
+msgstr ""
+"SOA-formatet ska vara: primary-ns hostmaster serial refresh retry expire "
+"minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Zonen har inga NS-poster (namnserver) vid apex. Minst en NS-post vid apex krävs för DNSSEC."
+msgstr ""
+"Zonen har inga NS-poster (namnserver) vid apex. Minst en NS-post vid apex "
+"krävs för DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -8826,7 +9330,9 @@ msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Ogiltigt SRV-format. Använd: name,SRV,\"weight port target\",priority,ttl eller name,SRV,target,weight,port,ttl"
+msgstr ""
+"Ogiltigt SRV-format. Använd: name,SRV,\"weight port target\",priority,ttl "
+"eller name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -8847,7 +9353,9 @@ msgstr "En PTR-post för %s som pekar på %s finns redan."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "Omvänd post tillagd. Varning: Det finns redan en PTR-post för %s som pekar på: %s. Flera PTR-poster för samma IP rekommenderas inte."
+msgstr ""
+"Omvänd post tillagd. Varning: Det finns redan en PTR-post för %s som pekar "
+"på: %s. Flera PTR-poster för samma IP rekommenderas inte."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
@@ -8932,7 +9440,6 @@ msgid "The selected user already owns the zone."
 msgstr "Skapa säkerhetsvarning"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Kunde inte uppdatera zonens poster: %s"
@@ -8953,7 +9460,9 @@ msgstr "Kunde inte ta bort säkerhetsvarning"
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr "Detta är enda gången din nya API-nyckel visas. Spara den nu, eftersom du inte kommer att kunna se den igen."
+msgstr ""
+"Detta är enda gången din nya API-nyckel visas. Spara den nu, eftersom du "
+"inte kommer att kunna se den igen."
 
 #: templates/modern/api_key_created.html:21
 msgid "Name:"
@@ -9035,7 +9544,9 @@ msgstr "Du är på väg att inaktivera en DNSSEC-nyckel (ID"
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "Att inaktivera en aktiv nyckel påverkar zonens säkerhet och kan orsaka valideringsfel."
+msgstr ""
+"Att inaktivera en aktiv nyckel påverkar zonens säkerhet och kan orsaka "
+"valideringsfel."
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
@@ -9049,7 +9560,9 @@ msgstr "Du är på väg att aktivera en DNSSEC-nyckel (ID"
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "Om du aktiverar nyckeln blir den en del av den aktiva DNSSEC-signeringskedjan för denna zon."
+msgstr ""
+"Om du aktiverar nyckeln blir den en del av den aktiva DNSSEC-"
+"signeringskedjan för denna zon."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
@@ -9205,7 +9718,9 @@ msgstr "E-postmallvariabler"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "När du har redigerat posten måste du komma ihåg att uppdatera zonerna som använder mallen genom att klicka på \"Uppdatera zoner\" på mallsidan."
+msgstr ""
+"När du har redigerat posten måste du komma ihåg att uppdatera zonerna som "
+"använder mallen genom att klicka på \"Uppdatera zoner\" på mallsidan."
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -9253,14 +9768,20 @@ msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr "Varning: CNAME-poster i domänens rot (zonens apex) rekommenderas inte och kan orsaka problem. SOA- och NS-poster krävs i domänens rot och kan inte finnas tillsammans med CNAME."
+msgstr ""
+"Varning: CNAME-poster i domänens rot (zonens apex) rekommenderas inte och "
+"kan orsaka problem. SOA- och NS-poster krävs i domänens rot och kan inte "
+"finnas tillsammans med CNAME."
 
 #: templates/modern/add_zone_templ_record.html:75
 msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "Tips: För SOA-poster använder du <code>[ZONE]</code> som namn och <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> som innehåll. SOA-poster krävs för att en DNS-zon ska fungera korrekt."
+msgstr ""
+"Tips: För SOA-poster använder du <code>[ZONE]</code> som namn och "
+"<code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> som "
+"innehåll. SOA-poster krävs för att en DNS-zon ska fungera korrekt."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -9433,7 +9954,9 @@ msgstr "Uppdatera systemmeddelande"
 #: templates/default/dnssec.html:15 templates/modern/dnssec.html:15
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr "Denna åtgärd tar bort alla DNSSEC-nycklar och inaktiverar DNSSEC för denna zon."
+msgstr ""
+"Denna åtgärd tar bort alla DNSSEC-nycklar och inaktiverar DNSSEC för denna "
+"zon."
 
 #: templates/default/dnssec.html:17 templates/modern/dnssec.html:17
 msgid "Are you sure you want to unsign the zone"
@@ -9543,7 +10066,12 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr "Varje nätverk (CIDR-block) mappas till exakt en vy. Resolvers i det nätverket får endast de zonvarianter som är tilldelade den mappade vyn. PowerDNS utvärderar nätverk med längsta prefix först, så ett mer specifikt subnät (till exempel 10.0.1.0/24) har företräde framför ett bredare intervall (10.0.0.0/8) när båda matchar en klient."
+msgstr ""
+"Varje nätverk (CIDR-block) mappas till exakt en vy. Resolvers i det "
+"nätverket får endast de zonvarianter som är tilldelade den mappade vyn. "
+"PowerDNS utvärderar nätverk med längsta prefix först, så ett mer specifikt "
+"subnät (till exempel 10.0.1.0/24) har företräde framför ett bredare "
+"intervall (10.0.0.0/8) när båda matchar en klient."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9584,7 +10112,8 @@ msgstr "Kunde inte inaktivera meddelande"
 #: templates/modern/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr "Ange din e-postadress så skickar vi en länk för att återställa ditt lösenord."
+msgstr ""
+"Ange din e-postadress så skickar vi en länk för att återställa ditt lösenord."
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
@@ -9814,7 +10343,10 @@ msgstr "Visa systemlogg"
 msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
-msgstr "Medlemmarna kommer att förlora åtkomsten till alla zoner som gruppen äger. Zoner som blir helt utan ägare finns kvar men blir oåtkomliga för vanliga användare."
+msgstr ""
+"Medlemmarna kommer att förlora åtkomsten till alla zoner som gruppen äger. "
+"Zoner som blir helt utan ägare finns kvar men blir oåtkomliga för vanliga "
+"användare."
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "Yes, delete this group"
@@ -10024,7 +10556,9 @@ msgstr "Systemkrav"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Zonmallar gör att du kan skapa fördefinierade uppsättningar av DNS-poster som snabbt kan tillämpas när du skapar nya zoner."
+msgstr ""
+"Zonmallar gör att du kan skapa fördefinierade uppsättningar av DNS-poster "
+"som snabbt kan tillämpas när du skapar nya zoner."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -10075,7 +10609,11 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr "Loggar händelser i API-nycklarnas livscykel (skapande, förnyelse, återkallande, behörighetsändringar) och autentiserade API-anrop. Filtrera på användare eller åtgärd för att granska aktivitet från externa integrationer. Känsliga värden (nycklar, tokens) skrivs aldrig till denna logg."
+msgstr ""
+"Loggar händelser i API-nycklarnas livscykel (skapande, förnyelse, "
+"återkallande, behörighetsändringar) och autentiserade API-anrop. Filtrera på "
+"användare eller åtgärd för att granska aktivitet från externa integrationer. "
+"Känsliga värden (nycklar, tokens) skrivs aldrig till denna logg."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10111,7 +10649,11 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr "Detta aktivitetsflöde loggar varje åtgärd som utförs mot zoner och poster (skapande, redigering, borttagning, DNSSEC-åtgärder, importer) som en enkel nyckel:värde-sträng. För strukturerade före/efter-ögonblicksbilder och en diff-vy över poständringar, se ändringsloggen för poster."
+msgstr ""
+"Detta aktivitetsflöde loggar varje åtgärd som utförs mot zoner och poster "
+"(skapande, redigering, borttagning, DNSSEC-åtgärder, importer) som en enkel "
+"nyckel:värde-sträng. För strukturerade före/efter-ögonblicksbilder och en "
+"diff-vy över poständringar, se ändringsloggen för poster."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10146,7 +10688,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Exempel: www,A,192.168.1.1,0,3600,webbserver"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Prioritet och TTL är valfria (standard: priority=0, ttl="
 
@@ -10541,7 +11082,6 @@ msgid "At least one special character"
 msgstr "Minst ett specialtecken"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -10646,12 +11186,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY väntar: serienummer %serial% har ännu inte bekräftats"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY skickat vid serienummer %serial%"
 
@@ -11671,7 +12209,6 @@ msgid "Last modified"
 msgstr "Senast ändrad"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Senast redigerad av %account% den %date%"
 
@@ -11904,7 +12441,6 @@ msgid "Zones Without Owners"
 msgstr "Zoner utan ägare"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Ange dig själv som ägare till alla listade zoner?"
 
@@ -12562,7 +13098,14 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr "Varje tillägg, redigering och borttagning av poster samt varje skapande, borttagning och metadataredigering av zoner sparar en före/efter-ögonblicksbild här, tillsammans med användaren och tidsstämpeln. Loggar upphör aldrig automatiskt - rensa gamla rader manuellt om tabellen blir stor. Använd genvägarna för tidsintervall för att fokusera på den senaste aktiviteten, eller exportera till CSV/JSON för att mata externa granskningssystem."
+msgstr ""
+"Varje tillägg, redigering och borttagning av poster samt varje skapande, "
+"borttagning och metadataredigering av zoner sparar en före/efter-"
+"ögonblicksbild här, tillsammans med användaren och tidsstämpeln. Loggar "
+"upphör aldrig automatiskt - rensa gamla rader manuellt om tabellen blir "
+"stor. Använd genvägarna för tidsintervall för att fokusera på den senaste "
+"aktiviteten, eller exportera till CSV/JSON för att mata externa "
+"granskningssystem."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -13100,7 +13643,12 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr "Loggar händelser för användarkonton, till exempel inloggningar, lösenordsändringar, ändringar av gruppmedlemskap och administratörsåtgärder på användarposter. Varje rad visar åtgärden, vem som utförde den, den berörda användaren och en tidsstämpel. Filtrera på åtgärd eller användare för att granska ändringar av åtkomst."
+msgstr ""
+"Loggar händelser för användarkonton, till exempel inloggningar, "
+"lösenordsändringar, ändringar av gruppmedlemskap och administratörsåtgärder "
+"på användarposter. Varje rad visar åtgärden, vem som utförde den, den "
+"berörda användaren och en tidsstämpel. Filtrera på åtgärd eller användare "
+"för att granska ändringar av åtkomst."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13146,7 +13694,13 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Vyer levererar olika zonvarianter till olika klienter beroende på vilket nätverk som frågade resolvern. Varje variant heter zon..variant (till exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, så samma värdnamn kan svara med olika IP-adresser beroende på klientens nätverk."
+msgstr ""
+"Vyer levererar olika zonvarianter till olika klienter beroende på vilket "
+"nätverk som frågade resolvern. Varje variant heter zon..variant (till "
+"exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS "
+"innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, "
+"så samma värdnamn kan svara med olika IP-adresser beroende på klientens "
+"nätverk."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -13457,20 +14011,28 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Kontrollera att pdns_api.key i config/settings.php matchar den API-nyckel som är konfigurerad i PowerDNS."
+msgstr ""
+"Kontrollera att pdns_api.key i config/settings.php matchar den API-nyckel "
+"som är konfigurerad i PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Kontrollera att pdns_api.server_name matchar det som PowerDNS rapporterar (standard 'localhost')."
+msgstr ""
+"Kontrollera att pdns_api.server_name matchar det som PowerDNS rapporterar "
+"(standard 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS avvisade begäran. Kontrollera PowerDNS-serverns logg för att hitta orsaken - en vanlig utlösare efter att zoner har importerats direkt i PowerDNS-databasen är en enda felaktig post som gör att zonserialiseringen misslyckas."
+msgstr ""
+"PowerDNS avvisade begäran. Kontrollera PowerDNS-serverns logg för att hitta "
+"orsaken - en vanlig utlösare efter att zoner har importerats direkt i "
+"PowerDNS-databasen är en enda felaktig post som gör att zonserialiseringen "
+"misslyckas."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13516,7 +14078,8 @@ msgstr "Kopiera alla DS-poster till urklipp"
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
-msgstr "DS-poster ska läggas till i föräldrazonen för att etablera förtroendekedjan."
+msgstr ""
+"DS-poster ska läggas till i föräldrazonen för att etablera förtroendekedjan."
 
 #: templates/modern/add_record.html:13 templates/modern/add_record.html:15
 msgid "Add record to zone"
@@ -13641,7 +14204,11 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr "API-nycklar låter externa program komma åt Poweradmins API. Varje nyckel är kopplad till ditt användarkonto och ärver dina behörigheter, så om ditt konto återkallas återkallas även alla dess nycklar. Behandla nycklar som hemligheter - de ger samma åtkomst som att logga in som dig."
+msgstr ""
+"API-nycklar låter externa program komma åt Poweradmins API. Varje nyckel är "
+"kopplad till ditt användarkonto och ärver dina behörigheter, så om ditt "
+"konto återkallas återkallas även alla dess nycklar. Behandla nycklar som "
+"hemligheter - de ger samma åtkomst som att logga in som dig."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13824,7 +14391,11 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr "Loggar händelser i gruppernas livscykel (skapa, redigera, ta bort) och ändringar av medlemskap (användare som läggs till eller tas bort). Varje rad visar åtgärden, vem som utförde den, den berörda gruppen och en tidsstämpel. Användbart för att granska ändringar av zonåtkomst som styrs av gruppägande."
+msgstr ""
+"Loggar händelser i gruppernas livscykel (skapa, redigera, ta bort) och "
+"ändringar av medlemskap (användare som läggs till eller tas bort). Varje rad "
+"visar åtgärden, vem som utförde den, den berörda gruppen och en tidsstämpel. "
+"Användbart för att granska ändringar av zonåtkomst som styrs av gruppägande."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14109,7 +14680,6 @@ msgid "RDAP results for"
 msgstr "RDAP-resultat för"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Ange ett domännamn för att göra en RDAP-sökning."
 
@@ -14134,13 +14704,18 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr "Skapa en databasanvändare med begränsade rättigheter (select, insert, update, delete) endast för Poweradmins tabeller. Åtkomst till PowerDNS-tabellerna krävs inte när API-backend används."
+msgstr ""
+"Skapa en databasanvändare med begränsade rättigheter (select, insert, "
+"update, delete) endast för Poweradmins tabeller. Åtkomst till PowerDNS-"
+"tabellerna krävs inte när API-backend används."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "Skapa en databasanvändare med begränsade rättigheter (select, insert, update, delete) så att Poweradmin kan komma åt PowerDNS-tabellerna."
+msgstr ""
+"Skapa en databasanvändare med begränsade rättigheter (select, insert, "
+"update, delete) så att Poweradmin kan komma åt PowerDNS-tabellerna."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14153,7 +14728,8 @@ msgstr "Kör följande kommandon:"
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr "När du har lagt till den nya användaren fortsätter du med installationen."
+msgstr ""
+"När du har lagt till den nya användaren fortsätter du med installationen."
 
 #: install/templates/step4.html.twig:173
 msgid "Note:"
@@ -14163,7 +14739,9 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Eftersom du använder SQLite behöver du inte skapa någon ny användare med begränsade rättigheter."
+msgstr ""
+"Eftersom du använder SQLite behöver du inte skapa någon ny användare med "
+"begränsade rättigheter."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -14278,13 +14856,17 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr "Konfigurera databasanslutningen med rättigheter att skapa tabeller. PowerDNS-platsen kan anges separat om det behövs."
+msgstr ""
+"Konfigurera databasanslutningen med rättigheter att skapa tabeller. PowerDNS-"
+"platsen kan anges separat om det behövs."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "Konfigurera databasanslutningen för Poweradmins tabeller (användare, behörigheter, zoner). PowerDNS-tabeller krävs inte."
+msgstr ""
+"Konfigurera databasanslutningen för Poweradmins tabeller (användare, "
+"behörigheter, zoner). PowerDNS-tabeller krävs inte."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -14356,7 +14938,9 @@ msgstr "Fullständig sökväg till SQLite-databasfilen"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Filen måste finnas och webbservern måste ha läs- och skrivåtkomst. Använd en absolut sökväg."
+msgstr ""
+"Filen måste finnas och webbservern måste ha läs- och skrivåtkomst. Använd en "
+"absolut sökväg."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -14368,7 +14952,8 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Teckenuppsättning för nya tabeller. Lämna tomt för databasens standardvärde."
+msgstr ""
+"Teckenuppsättning för nya tabeller. Lämna tomt för databasens standardvärde."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -14377,7 +14962,9 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Sorteringsregler för teckenjämförelse. Lämna tomt för databasens standardvärde."
+msgstr ""
+"Sorteringsregler för teckenjämförelse. Lämna tomt för databasens "
+"standardvärde."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -14522,12 +15109,17 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin har sina egna tabeller (användare, behörigheter, zonmetadata) i den konfigurerade databasen även när PowerDNS API-backend är valt. Dessa inloggningsuppgifter gäller den databasen, inte PowerDNS."
+msgstr ""
+"Poweradmin har sina egna tabeller (användare, behörigheter, zonmetadata) i "
+"den konfigurerade databasen även när PowerDNS API-backend är valt. Dessa "
+"inloggningsuppgifter gäller den databasen, inte PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Poweradmins databasanvändare med begränsad åtkomst. Används inte för inloggning i webbgränssnittet."
+msgstr ""
+"Poweradmins databasanvändare med begränsad åtkomst. Används inte för "
+"inloggning i webbgränssnittet."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14623,7 +15215,9 @@ msgstr "Du måste ta bort katalogen \"install/\" från Poweradmins rotkatalog."
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Poweradmin fungerar inte om installationskatalogen finns kvar, av säkerhetsskäl."
+msgstr ""
+"Poweradmin fungerar inte om installationskatalogen finns kvar, av "
+"säkerhetsskäl."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14660,7 +15254,9 @@ msgstr "Innan du fortsätter, se till att du har:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr "PowerDNS installerat med databastabellerna skapade (eller API-åtkomst konfigurerad)"
+msgstr ""
+"PowerDNS installerat med databastabellerna skapade (eller API-åtkomst "
+"konfigurerad)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -14678,14 +15274,17 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr "Konfigurera databasanslutningen, skapa administratörskontot och generera konfigurationsfilen."
+msgstr ""
+"Konfigurera databasanslutningen, skapa administratörskontot och generera "
+"konfigurationsfilen."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Observera: PostgreSQL och SQLite måste använda samma databas för både PowerDNS och Poweradmin."
+msgstr ""
+"Observera: PostgreSQL och SQLite måste använda samma databas för både "
+"PowerDNS och Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14706,19 +15305,25 @@ msgstr "Problem med främmande nycklar:"
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr "Installationsprogrammet kunde inte ta bort befintliga tabeller på grund av villkor för främmande nycklar"
+msgstr ""
+"Installationsprogrammet kunde inte ta bort befintliga tabeller på grund av "
+"villkor för främmande nycklar"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr "Detta kan inträffa vid ominstallation om du har egna villkor eller om tabeller refereras av andra tabeller"
+msgstr ""
+"Detta kan inträffa vid ominstallation om du har egna villkor eller om "
+"tabeller refereras av andra tabeller"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr "Du kan försöka inaktivera kontrollerna av främmande nycklar manuellt innan du kör installationsprogrammet:"
+msgstr ""
+"Du kan försöka inaktivera kontrollerna av främmande nycklar manuellt innan "
+"du kör installationsprogrammet:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14732,11 +15337,14 @@ msgstr "Se till att SQLite-databasfilen finns"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Kontrollera att webbservern har läs- och skrivrättigheter till databasfilen"
+msgstr ""
+"Kontrollera att webbservern har läs- och skrivrättigheter till databasfilen"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Kontrollera att den fullständiga sökvägen till databasfilen är korrekt och åtkomlig"
+msgstr ""
+"Kontrollera att den fullständiga sökvägen till databasfilen är korrekt och "
+"åtkomlig"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
@@ -14759,19 +15367,23 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite-databasfilen %s finns inte. Skapa databasfilen innan du fortsätter."
+msgstr ""
+"SQLite-databasfilen %s finns inte. Skapa databasfilen innan du fortsätter."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr "SQLite-databasfilen %s går inte att läsa. Kontrollera filrättigheterna."
+msgstr ""
+"SQLite-databasfilen %s går inte att läsa. Kontrollera filrättigheterna."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "SQLite-databasfilen %s går inte att skriva till. Kontrollera filrättigheterna."
+msgstr ""
+"SQLite-databasfilen %s går inte att skriva till. Kontrollera "
+"filrättigheterna."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
@@ -14790,20 +15402,26 @@ msgstr "PowerDNS API-nyckel krävs när API-backend används."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Ingen konfigurationsfil hittades. Skapa filen config/settings.php innan du fortsätter."
+msgstr ""
+"Ingen konfigurationsfil hittades. Skapa filen config/settings.php innan du "
+"fortsätter."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "Separata PowerDNS-databaser stöds endast med MySQL. För PostgreSQL och SQLite ska du använda samma databas."
+msgstr ""
+"Separata PowerDNS-databaser stöds endast med MySQL. För PostgreSQL och "
+"SQLite ska du använda samma databas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "PowerDNS-tabeller saknas i databasen \"%s\": %s. Se till att PowerDNS är korrekt installerat i denna databas."
+msgstr ""
+"PowerDNS-tabeller saknas i databasen \"%s\": %s. Se till att PowerDNS är "
+"korrekt installerat i denna databas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
@@ -14811,80 +15429,19 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan inte ansluta till PowerDNS-databasen \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på detta system. Kontakta din administratör."
+msgstr ""
+"Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
+"detta system. Kontakta din administratör."
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Ingen konfigurationsfil hittades på %s. Använd <a href=\"install/"
-# OBSOLETE: "\">installationsguiden</a> för att skapa en, eller skapa "
-# OBSOLETE: "konfigurationsfilen manuellt."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Katalogen <a href=\"install/\">install/</a> finns kvar, du måste ta bort "
-# OBSOLETE: "den innan du fortsätter."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "Du kan inte radera poster från en SLAVE-zon."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "Du kan inte redigera poster i en SLAVE-zon."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "API-nyckel genererad"
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "API-nyckel kopierad till urklipp"
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "IP-adress"
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "Det måste finnas minst en ägare för en zon."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Databasserver"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Efter skapande"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Ändra zonägare"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Du kan när som helst överföra ägarskap av en zon till en annan användare "
-# OBSOLETE: "från användarlistan."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Hantera användare"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Lista mallar"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Denna mall kan tilldelas till användare för att snabbt tillämpa dess "
-# OBSOLETE: "uppsättning behörigheter. Ändringar som görs här kommer att påverka alla "
-# OBSOLETE: "användare som har denna mall tilldelad.dess uppsättning behörigheter. "
-# OBSOLETE: "Ändringar som görs här kommer att påverka alla användare och grupper som "
-# OBSOLETE: "har denna mall tilldelad."
+# OBSOLETE: "Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
+# OBSOLETE: "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 
 

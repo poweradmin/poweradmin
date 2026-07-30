@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -136,7 +136,9 @@ msgstr "Ainm an Bhrú"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Hostname don tseirbhís (fág folamh don apex crios @). Cruthófar an taifead ag _port._protocol.hostname"
+msgstr ""
+"Hostname don tseirbhís (fág folamh don apex crios @). Cruthófar an taifead "
+"ag _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -652,7 +654,9 @@ msgstr "San áireamh Fearainn"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Fearainn ar cheart a dtaifid SPF a chur san áireamh (ceann amháin in aghaidh na líne). Coitianta: _spf.google.com, spf.protection.outlook.com"
+msgstr ""
+"Fearainn ar cheart a dtaifid SPF a chur san áireamh (ceann amháin in aghaidh "
+"na líne). Coitianta: _spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1104,7 +1108,9 @@ msgstr "Fearainn"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Ainm fearainn (fág folamh don apex crios @). Beidh ainm iomlán an taifid: _service._protocol.domain"
+msgstr ""
+"Ainm fearainn (fág folamh don apex crios @). Beidh ainm iomlán an taifid: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1326,13 +1332,17 @@ msgstr "Níl cead agat an crios seo a mhodhnú."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only ach níl aon ghrúpaí ann. Cruthaigh grúpa ar dtús."
+msgstr ""
+"Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only ach "
+"níl aon ghrúpaí ann. Cruthaigh grúpa ar dtús."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only agus níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa ar dtús."
+msgstr ""
+"Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only agus "
+"níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa ar dtús."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -1848,7 +1858,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Luach neamhbhailí do %s. Luachanna ceadaithe: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Ní féidir ach le riarthóir an cineál meiteashonraí %s a athrú."
@@ -1974,21 +1983,22 @@ msgid "The permission template has been updated successfully."
 msgstr "Tá an teimpléad cead tugtha cothrom le dáta go rathúil."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Teastaíonn cearta riarthóra chun cearta riarthóra a bhronnadh i dteimpléad ceadanna."
+msgstr ""
+"Teastaíonn cearta riarthóra chun cearta riarthóra a bhronnadh i dteimpléad "
+"ceadanna."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta riarthóra aige a chur in eagar."
+msgstr ""
+"Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
+"riarthóra aige a chur in eagar."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Níorbh fhéidir an teimpléad ceadanna a nuashonrú."
 
@@ -2049,9 +2059,9 @@ msgid "Add User"
 msgstr "Cuir iarratas isteach"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "Níl teimpléad ceadanna ar fáil le sannadh nach bhfuil cearta superuser aige."
+msgstr ""
+"Níl teimpléad ceadanna ar fáil le sannadh nach bhfuil cearta superuser aige."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2523,13 +2533,17 @@ msgstr "Cuir le Crios na Bunscoile"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "Is é groups_only an mód úinéireachta crios ach níl aon ghrúpaí ann. Cruthaigh grúpa sula gcuirfidh tú criosanna leis."
+msgstr ""
+"Is é groups_only an mód úinéireachta crios ach níl aon ghrúpaí ann. "
+"Cruthaigh grúpa sula gcuirfidh tú criosanna leis."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "Is é groups_only an mód úinéireachta crios ach níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa sula gcruthóidh tú criosanna."
+msgstr ""
+"Is é groups_only an mód úinéireachta crios ach níl tú i do bhall d'aon "
+"ghrúpa. Iarr ar riarthóir tú a chur le grúpa sula gcruthóidh tú criosanna."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2610,12 +2624,16 @@ msgstr "aighneacht fhoirm luachmhar."
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr "Tá an tábla record_type_defaults ar iarraidh. Cuir nuashonrú scéime 4.5.0 i bhfeidhm sula sábhálfaidh tú na réamhshocruithe."
+msgstr ""
+"Tá an tábla record_type_defaults ar iarraidh. Cuir nuashonrú scéime 4.5.0 i "
+"bhfeidhm sula sábhálfaidh tú na réamhshocruithe."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Sábháil %d réamhshocraithe / s); glanadh %d. Luachanna neamhbhailí Diúltaithe le haghaidh: %s."
+msgstr ""
+"Sábháil %d réamhshocraithe / s); glanadh %d. Luachanna neamhbhailí "
+"Diúltaithe le haghaidh: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2808,7 +2826,6 @@ msgid "The permission template has been added successfully."
 msgstr "Tá an teimpléad cead curtha leis go rathúil."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Níorbh fhéidir an teimpléad ceadanna a chur leis."
 
@@ -3322,7 +3339,9 @@ msgstr "Ní gá duit an cead a athrú ar an teimpléad crios réamhshocraithe."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "Bratach réamhshocraithe soiléir, ach tá an suíomh config dns.default_zone_template gníomhach fós."
+msgstr ""
+"Bratach réamhshocraithe soiléir, ach tá an suíomh config "
+"dns.default_zone_template gníomhach fós."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3353,13 +3372,19 @@ msgstr ""
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "Ní féidir an t-úinéir úsáideora deireanach a bhaint: is é users_only an mód úinéireachta crios agus teastaíonn úinéir úsáideora amháin ar a laghad. Cuir úinéir úsáideora eile leis ar dtús."
+msgstr ""
+"Ní féidir an t-úinéir úsáideora deireanach a bhaint: is é users_only an mód "
+"úinéireachta crios agus teastaíonn úinéir úsáideora amháin ar a laghad. Cuir "
+"úinéir úsáideora eile leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "Ní féidir an t-úinéir úsáideora a bhaint: is é groups_only an mód úinéireachta crios agus níl aon úinéirí grúpa ag an gcrios. Cuir grúpa leis ar dtús."
+msgstr ""
+"Ní féidir an t-úinéir úsáideora a bhaint: is é groups_only an mód "
+"úinéireachta crios agus níl aon úinéirí grúpa ag an gcrios. Cuir grúpa leis "
+"ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3384,13 +3409,17 @@ msgstr "Tá Grúpa curtha leis go rathúil."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr "Ní féidir an grúpa deireanach a bhaint: is é groups_only an mód úinéireachta crios agus teastaíonn grúpa amháin ar a laghad. Cuir grúpa eile leis ar dtús."
+msgstr ""
+"Ní féidir an grúpa deireanach a bhaint: is é groups_only an mód úinéireachta "
+"crios agus teastaíonn grúpa amháin ar a laghad. Cuir grúpa eile leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr "Ní féidir an grúpa a bhaint: is é users_only an mód úinéireachta crios agus níl aon úinéirí úsáideora ag an gcrios. Cuir úinéir úsáideora leis ar dtús."
+msgstr ""
+"Ní féidir an grúpa a bhaint: is é users_only an mód úinéireachta crios agus "
+"níl aon úinéirí úsáideora ag an gcrios. Cuir úinéir úsáideora leis ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3402,7 +3431,9 @@ msgstr "Cuir úinéir eile nó grúpa ar dtús."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:339
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "Cuir úinéir úsáideora eile leis ar dtús (is é users_only an mód úinéireachta crios)."
+msgstr ""
+"Cuir úinéir úsáideora eile leis ar dtús (is é users_only an mód úinéireachta "
+"crios)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:341
 msgid "Add a group first (zone ownership mode is groups_only)."
@@ -3769,23 +3800,24 @@ msgstr ""
 "Seiceáil do chumraíocht bunachar sonraí."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "Níl cead agat an teimpléad ceadanna a athrú."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Teastaíonn cead úsáideoirí eile a chur in eagar chun do theimpléad ceadanna féin a athrú."
+msgstr ""
+"Teastaíonn cead úsáideoirí eile a chur in eagar chun do theimpléad ceadanna "
+"féin a athrú."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta riarthóra aige a shannadh."
+msgstr ""
+"Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
+"riarthóra aige a shannadh."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3842,7 +3874,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "Níl cead agat taifead a chur leis an teimpléad crios seo."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Níl cead agat an cineál taifid seo a chur le teimpléad creasa."
@@ -3868,7 +3899,6 @@ msgid "Error updating zone template record: "
 msgstr "Earráid cothrom le dáta taifead teimpléad crios:"
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3883,12 +3913,13 @@ msgid "Error checking template ownership: "
 msgstr "Earráid seiceáil úinéireacht teimpléad:"
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Fágadh na cineálacha taifid seo as an teimpléad mar níl cead agat iad a chur leis: %s"
+msgstr ""
+"Fágadh na cineálacha taifid seo as an teimpléad mar níl cead agat iad a chur "
+"leis: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3927,7 +3958,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "Ní gá duit an cead a chur taifead NS."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "Níl cead agat taifead LUA a chur leis."
 
@@ -3940,7 +3970,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "Ní gá duit an cead a chur in eagar an taifead NS."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "Níl cead agat an taifead LUA seo a chur in eagar."
 
@@ -3953,7 +3982,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "Níl cead agat taifid NS a scriosadh."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "Níl cead agat taifid LUA a scriosadh."
 
@@ -4159,7 +4187,9 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "Ba chóir go leanfadh ainm taifead TLSA an fhormáid _port._protocol.hostname de ghnáth (m.sh., _443._tcp.www.example.com)."
+msgstr ""
+"Ba chóir go leanfadh ainm taifead TLSA an fhormáid _port._protocol.hostname "
+"de ghnáth (m.sh., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4226,13 +4256,17 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "Déantar hais SHA-256 ar an gcuid áitiúil de sheoladh ríomhphoist agus cuirtear í roimh _smimecert.<domain>"
+msgstr ""
+"Déantar hais SHA-256 ar an gcuid áitiúil de sheoladh ríomhphoist agus "
+"cuirtear í roimh _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "Ba cheart taifid TLSA a chur ag \"_port._protocol.hostname\" de ghnáth (m.sh., \"_443._tcp.www.example.com\")."
+msgstr ""
+"Ba cheart taifid TLSA a chur ag \"_port._protocol.hostname\" de ghnáth "
+"(m.sh., \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4667,11 +4701,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Formáid taifead LOC neamhbhailí. Ba cheart go mbeadh an fhormáid: d1 [m1 "
-"[s1]] {\"N\"|\"S\"} d2 [m2]] {\"E\"|\"W\"} alt[\"m]] [siz[\"m\"] [hp[\"m]] "
-"[vp[\"m]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Formáid taifead LOC neamhbhailí. Ba cheart go mbeadh an fhormáid: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5165,7 +5196,10 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Ní leanann ainm an taifid an fhormáid chaighdeánach OPENPGPKEY (<hash>._openpgpkey.<domain>). Moltar an fhormáid chaighdeánach le haghaidh idir-inoibritheachta."
+msgstr ""
+"Ní leanann ainm an taifid an fhormáid chaighdeánach OPENPGPKEY "
+"(<hash>._openpgpkey.<domain>). Moltar an fhormáid chaighdeánach le haghaidh "
+"idir-inoibritheachta."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -5937,7 +5971,9 @@ msgstr "Ní mór DoH cosán tús a chur le Slais ar aghaidh (/)."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr "Paraiméadar \"%s\" marcáilte mar éigeantach ach nach bhfuil san áireamh sa taifead."
+msgstr ""
+"Paraiméadar \"%s\" marcáilte mar éigeantach ach nach bhfuil san áireamh sa "
+"taifead."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -7854,7 +7890,9 @@ msgstr "Ní mór SOA %s a bheith slánuimhir dearfach."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA %s luach (%d) faoi bhun an RFC 2308 molta íosta (%d). Ceadaítear é seo ach ní mholtar é."
+msgstr ""
+"SOA %s luach (%d) faoi bhun an RFC 2308 molta íosta (%d). Ceadaítear é seo "
+"ach ní mholtar é."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7968,20 +8006,28 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Ba chóir gur hais heicsidheachúlach SHA-256 de 64 carachtar a bheadh sa hais local-part i dtaifid SMIMEA. Ba chóir gurb í an fhormáid: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Ba chóir gur hais heicsidheachúlach SHA-256 de 64 carachtar a bheadh sa hais "
+"local-part i dtaifid SMIMEA. Ba chóir gurb í an fhormáid: SHA256(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Tá ainm taifead SMIMEA san fhormáid: SHA256(local-part)._smimecert.domain.tld le haghaidh seoltaí ríomhphoist mar %s"
+msgstr ""
+"Tá ainm taifead SMIMEA san fhormáid: SHA256(local-"
+"part)._smimecert.domain.tld le haghaidh seoltaí ríomhphoist mar %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Ní úsáideann sé seo an fhormáid ainm chaighdeánach SMIMEA. Ba chóir do thaifid SMIMEA an fhormáid seo a úsáid de ghnáth: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Ní úsáideann sé seo an fhormáid ainm chaighdeánach SMIMEA. Ba chóir do "
+"thaifid SMIMEA an fhormáid seo a úsáid de ghnáth: SHA256(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8752,7 +8798,9 @@ msgstr "Ní mór DMARC chlib céatadánach (pct) a bheith idir 0 agus 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "Tá beartas DMARC i bhfeidhm ach %d%% de theachtaireachtaí. Níor cheart é sin a úsáid ach amháin le linn rolladh amach beartais."
+msgstr ""
+"Tá beartas DMARC i bhfeidhm ach %d%% de theachtaireachtaí. Níor cheart é sin "
+"a úsáid ach amháin le linn rolladh amach beartais."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -9008,7 +9056,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "Ní mór ainm taifead SRV a bheith san fhormáid _service._protocol.domain"
+msgstr ""
+"Ní mór ainm taifead SRV a bheith san fhormáid _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -9040,7 +9089,9 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Níl an prótacal \"%s\" ar liosta na bprótacal aitheanta. Is prótacail choitianta _tcp agus _udp."
+msgstr ""
+"Níl an prótacal \"%s\" ar liosta na bprótacal aitheanta. Is prótacail "
+"choitianta _tcp agus _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -9069,7 +9120,9 @@ msgstr ""
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "Tá difríocht idir Port %d ón gcalafort caighdeánach %d do sheirbhís %s. Tá sé seo ceadaithe ach neamhghnách."
+msgstr ""
+"Tá difríocht idir Port %d ón gcalafort caighdeánach %d do sheirbhís %s. Tá "
+"sé seo ceadaithe ach neamhghnách."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -9651,7 +9704,9 @@ msgstr "Tá taifead PTR do %s dírithe ar %s ann cheana féin."
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "Chuir Reverse record leis. Rabhadh: Tá taifead PTR do %s ann cheana féin dírithe ar: %s. Ní mholtar taifid PTR il don IP céanna."
+msgstr ""
+"Chuir Reverse record leis. Rabhadh: Tá taifead PTR do %s ann cheana féin "
+"dírithe ar: %s. Ní mholtar taifid PTR il don IP céanna."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:245
 msgid "PTR update skipped: record type is not A or AAAA."
@@ -9737,7 +9792,6 @@ msgid "The selected user already owns the zone."
 msgstr "Is leis an úsáideoir roghnaithe cheana féin an crios."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Theip ar nuashonrú taifid an chreasa: %s"
@@ -11012,7 +11066,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Sampla: www,A,192.168.1.1,0,3600, freastalaí gréasáin"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Tá tosaíocht agus TTL roghnach (réamhshocruithe: priority=0, ttl="
 
@@ -11411,7 +11464,6 @@ msgid "At least one special character"
 msgstr "carachtar speisialta amháin ar a laghad"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -11516,12 +11568,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY ar feitheamh: níl sraithuimhir %serial% admhaithe go fóill"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY seolta ag sraithuimhir %serial%"
 
@@ -12550,7 +12600,6 @@ msgid "Last modified"
 msgstr "Clár na dToghthóirí"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Curtha in eagar go deireanach ag %account% ar %date%"
 
@@ -12786,7 +12835,6 @@ msgid "Zones Without Owners"
 msgstr "Criosanna Gan Úinéirí"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Sann tú féin mar úinéir ar na criosanna liostaithe go léir?"
 
@@ -13042,7 +13090,9 @@ msgstr "Réamhroghnaithe ar an bhfoirm add-zone"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "Cumraithe trí dns.default_zone_template - cuir settings.php in eagar chun é a athrú"
+msgstr ""
+"Cumraithe trí dns.default_zone_template - cuir settings.php in eagar chun é "
+"a athrú"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -14368,13 +14418,17 @@ msgstr "Earráid PowerDNS API"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Seiceáil go pdns_api.key i config / settings.php oireann an eochair API cumraithe i PowerDNS."
+msgstr ""
+"Seiceáil go pdns_api.key i config / settings.php oireann an eochair API "
+"cumraithe i PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Seiceáil go oireann pdns_api.server_name cad tuarascálacha PowerDNS (réamhshocrú 'óstáil áitiúil')."
+msgstr ""
+"Seiceáil go oireann pdns_api.server_name cad tuarascálacha PowerDNS "
+"(réamhshocrú 'óstáil áitiúil')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -15043,7 +15097,6 @@ msgid "RDAP results for"
 msgstr "Torthaí RDAP le haghaidh"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Iontráil ainm fearainn chun cuardach RDAP a dhéanamh."
 
@@ -15652,11 +15705,12 @@ msgstr ""
 "cumraíochta a ghiniúint."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Nóta: Ní mór do PostgreSQL agus SQLite an bunachar sonraí céanna a úsáid do PowerDNS agus Poweradmin."
+msgstr ""
+"Nóta: Ní mór do PostgreSQL agus SQLite an bunachar sonraí céanna a úsáid do "
+"PowerDNS agus Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15778,7 +15832,9 @@ msgstr "PowerDNS API eochair ag teastáil nuair a úsáid API cúlú."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Níor aimsíodh aon chomhad cumraíochta. Cruthaigh an comhad config/settings.php sula rachaidh tú ar aghaidh."
+msgstr ""
+"Níor aimsíodh aon chomhad cumraíochta. Cruthaigh an comhad config/"
+"settings.php sula rachaidh tú ar aghaidh."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
@@ -15803,80 +15859,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Ní féidir ceangal le bunachar sonraí PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don locale roghnaithe. Déan teagmháil le do riarthóir."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Níl aon chomhad cumraíochta le fáil ag %s. Bain úsáid as an <a "
-# OBSOLETE: "href=\"install/\">suiteálaí</a> chun ceann a chruthú, nó cruthaigh an "
-# OBSOLETE: "comhad cumraíochta de láimh."
+msgstr ""
+"Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
+"locale roghnaithe. Déan teagmháil le do riarthóir."
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "An <a href=\"install/\">install / </a> eolaire ann, ní mór duit é a "
-# OBSOLETE: "bhaint den chéad uair roimh dul ar aghaidh."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "Ní féidir leat taifid a scriosadh ó chrios CLSVE."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "Ní féidir leat taifid in eagar i gcrios CLSVE."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Luach luachmhar do réimse ainm taifead SOA. Ba chóir go mbeadh sé ainm an "
-# OBSOLETE: "chrios."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "Seoladh ríomhphoist luachmhar i dtaifead SOA."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "Cineál taifead aitheanta."
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "Ní mór úinéir amháin ar a laghad a bheith ann do chrios."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Rochtain ar Fhaisnéis"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Tar éis Creation"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Athrú úinéir crios"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Is féidir leat aistriú úinéireacht crios chuig úsáideoir eile ón liosta "
-# OBSOLETE: "úsáideora ag am ar bith."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Bainistigh úsáideoirí"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Liosta teimpléid"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Is féidir an teimpléad seo a shannadh d'úsáideoirí a sraith ceadanna a "
-# OBSOLETE: "chur i bhfeidhm go tapa. Beidh athruithe a rinneadh anseo difear do gach "
-# OBSOLETE: "úsáideoir a bhfuil an teimpléad a shanntar."
+# OBSOLETE: "Formáid taifead LOC neamhbhailí. Ba cheart go mbeadh an fhormáid: d1 [m1 "
+# OBSOLETE: "[s1]] {\"N\"|\"S\"} d2 [m2]] {\"E\"|\"W\"} alt[\"m]] [siz[\"m\"] "
+# OBSOLETE: "[hp[\"m]] [vp[\"m]]]."
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -133,7 +133,9 @@ msgstr "שם מארח"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "שם מארח עבור השירות (השאר ריק עבור אפקס האזור @). הרשומה תיווצר ב-_port._protocol.hostname"
+msgstr ""
+"שם מארח עבור השירות (השאר ריק עבור אפקס האזור @). הרשומה תיווצר "
+"ב-_port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -622,7 +624,9 @@ msgstr "כולל Domains"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "דומיינים שרשומות ה-SPF שלהם צריכות להיכלל (אחד בכל שורה). נפוצים: _spf.google.com, spf.protection.outlook.com"
+msgstr ""
+"דומיינים שרשומות ה-SPF שלהם צריכות להיכלל (אחד בכל שורה). נפוצים: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -1053,7 +1057,9 @@ msgstr "דומיין"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "שם דומיין (השאר ריק עבור אפקס האזור @). שם הרשומה המלא יהיה: _service._protocol.domain"
+msgstr ""
+"שם דומיין (השאר ריק עבור אפקס האזור @). שם הרשומה המלא יהיה: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1266,13 +1272,17 @@ msgstr "אין לך רשות לשנות את האזור הזה."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only אך לא קיימות קבוצות. צור קבוצה תחילה."
+msgstr ""
+"אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only אך לא קיימות "
+"קבוצות. צור קבוצה תחילה."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only ואינך חבר באף קבוצה. בקש ממנהל להוסיף אותך לקבוצה תחילה."
+msgstr ""
+"אי אפשר לייבא אזור חדש: zone_ownership_mode הוא groups_only ואינך חבר באף "
+"קבוצה. בקש ממנהל להוסיף אותך לקבוצה תחילה."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
 msgid "Import session expired. Please upload the file again."
@@ -1756,7 +1766,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "ערך לא תקין עבור %s. ערכים מותרים: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "סוג המטא-נתונים %s ניתן לשינוי על ידי מנהל מערכת בלבד."
@@ -1878,21 +1887,18 @@ msgid "The permission template has been updated successfully."
 msgstr "תבנית ההרשאה מעודכנת בהצלחה."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr "הענקת הרשאות מנהל בתבנית הרשאות מחייבת הרשאות מנהל."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
 msgstr "עריכת תבנית הרשאות הכוללת הרשאות מנהל מחייבת הרשאות מנהל."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "לא ניתן היה לעדכן את תבנית ההרשאות."
 
@@ -1953,7 +1959,6 @@ msgid "Add User"
 msgstr "הוסף משתמשים"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "אין תבנית הרשאות ללא הרשאות משתמש-על שניתן להקצות."
 
@@ -2405,13 +2410,17 @@ msgstr "הוסף אזור ראשוני"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "מצב הבעלות על האזור הוא groups_only אך לא קיימות קבוצות. צור קבוצה לפני הוספת אזורים."
+msgstr ""
+"מצב הבעלות על האזור הוא groups_only אך לא קיימות קבוצות. צור קבוצה לפני "
+"הוספת אזורים."
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "מצב הבעלות על האזור הוא groups_only אך אינך חבר באף קבוצה. בקש ממנהל להוסיף אותך לקבוצה לפני יצירת אזורים."
+msgstr ""
+"מצב הבעלות על האזור הוא groups_only אך אינך חבר באף קבוצה. בקש ממנהל להוסיף "
+"אותך לקבוצה לפני יצירת אזורים."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:143
 msgid ""
@@ -2487,7 +2496,9 @@ msgstr "הגשת טופס לא חוקי"
 msgid ""
 "The record_type_defaults table is missing. Apply the 4.5.0 schema update "
 "before saving defaults."
-msgstr "טבלת record_type_defaults חסרה. החל את עדכון הסכימה 4.5.0 לפני שמירת ברירות המחדל."
+msgstr ""
+"טבלת record_type_defaults חסרה. החל את עדכון הסכימה 4.5.0 לפני שמירת ברירות "
+"המחדל."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
@@ -2673,7 +2684,6 @@ msgid "The permission template has been added successfully."
 msgstr "תבנית ההרשאה נוספה בהצלחה."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "לא ניתן היה להוסיף את תבנית ההרשאות."
 
@@ -3159,7 +3169,8 @@ msgstr "אין לך רשות לשנות את תבנית אזור ברירת המ
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "דגל Default הבהיר, אך הגדרת התצורה של dns.default_zone_template עדיין פעילה."
+msgstr ""
+"דגל Default הבהיר, אך הגדרת התצורה של dns.default_zone_template עדיין פעילה."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:53
 msgid "Default zone template cleared."
@@ -3186,13 +3197,17 @@ msgstr "לא ניתן להסיר את הבעלים האחרונים: זה יעז
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "לא ניתן להסיר את בעל המשתמש האחרון: מצב הבעלות על האזור הוא users_only ודורש לפחות בעל משתמש אחד. הוסף בעל משתמש נוסף תחילה."
+msgstr ""
+"לא ניתן להסיר את בעל המשתמש האחרון: מצב הבעלות על האזור הוא users_only ודורש "
+"לפחות בעל משתמש אחד. הוסף בעל משתמש נוסף תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:232
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "לא ניתן להסיר בעל משתמש: מצב הבעלות על האזור הוא groups_only ולאזור אין בעלי קבוצה. הוסף קבוצה תחילה."
+msgstr ""
+"לא ניתן להסיר בעל משתמש: מצב הבעלות על האזור הוא groups_only ולאזור אין בעלי "
+"קבוצה. הוסף קבוצה תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:239
 msgid "Owner has been removed successfully."
@@ -3215,13 +3230,17 @@ msgstr "הקבוצה נוספה בהצלחה."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr "לא ניתן להסיר את הקבוצה האחרונה: מצב הבעלות על האזור הוא groups_only ודורש לפחות קבוצה אחת. הוסף קבוצה נוספת תחילה."
+msgstr ""
+"לא ניתן להסיר את הקבוצה האחרונה: מצב הבעלות על האזור הוא groups_only ודורש "
+"לפחות קבוצה אחת. הוסף קבוצה נוספת תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr "לא ניתן להסיר קבוצה: מצב הבעלות על האזור הוא users_only ולאזור אין בעלי משתמש. הוסף בעל משתמש תחילה."
+msgstr ""
+"לא ניתן להסיר קבוצה: מצב הבעלות על האזור הוא users_only ולאזור אין בעלי "
+"משתמש. הוסף בעל משתמש תחילה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
@@ -3583,19 +3602,16 @@ msgstr ""
 "הנתונים שלך."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "אין לך הרשאה לשנות את תבנית ההרשאות."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
 msgstr "שינוי תבנית ההרשאות שלך מחייב הרשאה לעריכת משתמשים אחרים."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3654,7 +3670,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "אין לך רשות להוסיף תיעוד לתבנית אזור זה."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "אין לך הרשאה להוסיף סוג רשומה זה לתבנית אזור."
@@ -3680,7 +3695,6 @@ msgid "Error updating zone template record: "
 msgstr "תמונת מצב:"
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3695,7 +3709,6 @@ msgid "Error checking template ownership: "
 msgstr "חתימה לבדיקת שגיאות:"
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3739,7 +3752,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "אין לך רשות להוסיף תקליט NS."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "אין לך הרשאה להוסיף רשומת LUA."
 
@@ -3752,7 +3764,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "אין לך רשות לערוך את השיא הזה."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "אין לך הרשאה לערוך רשומת LUA זו."
 
@@ -3765,7 +3776,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "אין לך רשות למחוק רשומות NS."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "אין לך הרשאה למחוק רשומות LUA."
 
@@ -3961,7 +3971,9 @@ msgstr "רשומות SRV ו TLSA חייבות להיות מעמד אימות DNS
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "שם רשומת TLSA צריך בדרך כלל לעקוב אחר הפורמט _port._protocol.hostname (למשל, _443._tcp.www.example.com)."
+msgstr ""
+"שם רשומת TLSA צריך בדרך כלל לעקוב אחר הפורמט _port._protocol.hostname (למשל, "
+"_443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4024,13 +4036,17 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "החלק המקומי של כתובת דוא\"ל עובר גיבוב עם SHA-256 וממוקם לפני _smimecert.<domain>"
+msgstr ""
+"החלק המקומי של כתובת דוא\"ל עובר גיבוב עם SHA-256 וממוקם לפני _smimecert."
+"<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "רשומות TLSA צריכות בדרך כלל להיות ממוקמות ב-\"_port._protocol.hostname\" (למשל, \"_443._tcp.www.example.com\")."
+msgstr ""
+"רשומות TLSA צריכות בדרך כלל להיות ממוקמות ב-\"_port._protocol.hostname\" "
+"(למשל, \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4438,10 +4454,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"פורמט הרשומות Invalid LOC (ב) ויקרא י\"א ויקרא י\"א ויקרא י\"א ויקרא י\"א "
-"ויקרא י\"א)"
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "פורמט רשומת LOC לא חוקי. הפורמט צריך להיות: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4891,7 +4905,9 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "שם הרשומה אינו עוקב אחר הפורמט התקני של OPENPGPKEY (<hash>._openpgpkey.<domain>). מומלץ להשתמש בפורמט התקני לצורך תאימות הדדית."
+msgstr ""
+"שם הרשומה אינו עוקב אחר הפורמט התקני של OPENPGPKEY (<hash>._openpgpkey."
+"<domain>). מומלץ להשתמש בפורמט התקני לצורך תאימות הדדית."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -7442,20 +7458,26 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "גיבוב החלק המקומי ברשומות SMIMEA צריך להיות גיבוב SHA-256 הקסדצימלי באורך 64 תווים. הפורמט צריך להיות: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"גיבוב החלק המקומי ברשומות SMIMEA צריך להיות גיבוב SHA-256 הקסדצימלי באורך 64 "
+"תווים. הפורמט צריך להיות: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "שם רשומת SMIMEA הוא בפורמט: SHA256(local-part)._smimecert.domain.tld עבור כתובות דוא\"ל כמו %s"
+msgstr ""
+"שם רשומת SMIMEA הוא בפורמט: SHA256(local-part)._smimecert.domain.tld עבור "
+"כתובות דוא\"ל כמו %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "זה אינו משתמש בפורמט השם התקני של SMIMEA. רשומות SMIMEA צריכות בדרך כלל להשתמש ב: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"זה אינו משתמש בפורמט השם התקני של SMIMEA. רשומות SMIMEA צריכות בדרך כלל "
+"להשתמש ב: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -8177,7 +8199,8 @@ msgstr "תג אחוז DMARC חייב להיות בין 0 ל 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "מדיניות DMARC מוחלת רק על %d%% של הודעות. זה צריך לשמש רק במהלך מדיניות."
+msgstr ""
+"מדיניות DMARC מוחלת רק על %d%% של הודעות. זה צריך לשמש רק במהלך מדיניות."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8449,7 +8472,9 @@ msgstr "שם השירות \"%s\" אינו ברשימת השירותים הידו
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "הפרוטוקול \"%s\" אינו ברשימת הפרוטוקולים המוכרים. פרוטוקולים נפוצים הם _tcp ו-_udp."
+msgstr ""
+"הפרוטוקול \"%s\" אינו ברשימת הפרוטוקולים המוכרים. פרוטוקולים נפוצים הם _tcp "
+"ו-_udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -9113,7 +9138,6 @@ msgid "The selected user already owns the zone."
 msgstr "המשתמש הנבחר כבר הבעלים של האזור."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "עדכון רשומות האזור נכשל: %s"
@@ -10352,7 +10376,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "דוגמה: www,A,192.168.1.1,0,3600,web Server"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "עדיפות ו-TTL הם אופציונליים (ברירת מחדל: priority=0, ttl="
 
@@ -10728,7 +10751,6 @@ msgid "At least one special character"
 msgstr "לפחות דמות מיוחדת"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -10831,12 +10853,10 @@ msgid "-"
 msgstr "- -"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY בהמתנה: המספר הסידורי %serial% עדיין לא אושר"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY נשלח במספר הסידורי %serial%"
 
@@ -11831,7 +11851,6 @@ msgid "Last modified"
 msgstr "שינוי אחרון"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "נערך לאחרונה על ידי %account% בתאריך %date%"
 
@@ -12062,7 +12081,6 @@ msgid "Zones Without Owners"
 msgstr "אזורים ללא הבעלים"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "להגדיר אותך כבעלים של כל האזורים המופיעים ברשימה?"
 
@@ -12316,7 +12334,8 @@ msgstr "נבחר מראש על טופס התוספת"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "מוגדר באמצעות dns.default_zone_template - ערוך את settings.php כדי לשנות"
+msgstr ""
+"מוגדר באמצעות dns.default_zone_template - ערוך את settings.php כדי לשנות"
 
 #: templates/modern/list_zone_templ.html:52
 msgid "default (config)"
@@ -13602,13 +13621,17 @@ msgstr "שגיאה API PowerDNS"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "בדוק כי pdns_api.key בקובץ config/settings.php תואם למפתח ה-API המוגדר ב-PowerDNS."
+msgstr ""
+"בדוק כי pdns_api.key בקובץ config/settings.php תואם למפתח ה-API המוגדר "
+"ב-PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "בדוק את זה pdns_api.server_name תואם את דוחות PowerDNS (default \"localhost\")."
+msgstr ""
+"בדוק את זה pdns_api.server_name תואם את דוחות PowerDNS (default "
+"\"localhost\")."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
@@ -14249,7 +14272,6 @@ msgid "RDAP results for"
 msgstr "תוצאות RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "יש להזין שם מתחם לביצוע חיפוש RDAP."
 
@@ -14832,11 +14854,12 @@ msgid ""
 msgstr "חיבור מסד נתונים, ליצור חשבון admin, וליצור קובץ תצורה."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "הערה: PostgreSQL ו-SQLite חייבים להשתמש באותו מסד נתונים גם עבור PowerDNS וגם עבור Poweradmin."
+msgstr ""
+"הערה: PostgreSQL ו-SQLite חייבים להשתמש באותו מסד נתונים גם עבור PowerDNS "
+"וגם עבור Poweradmin."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14970,73 +14993,19 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "לא ניתן להתחבר למסד הנתונים PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל המערכת."
+msgstr ""
+"הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
+"המערכת."
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "אין קובץ תצורה שנמצא ב-%s. אנא השתמש ב- <a href=\"install/\"> Installer</"
-# OBSOLETE: "a> כדי ליצור אחד, או ליצור את קובץ התצורה באופן ידני."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "מנהל ה- <a href=\"install/\">/</a> קיים, עליך להסיר אותו קודם לפני שתמשיך."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "אתה לא יכול למחוק רשומות מאזור SLAVE."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "אי אפשר לערוך רשומות באזור SLAVE."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "ערך לא חוקי עבור שם שדה רשומות SOA. זה צריך להיות השם של האזור."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "כתובת דואר אלקטרוני לא חוקית ב-SOA."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "סוג שיא לא ידוע"
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "צריך להיות לפחות בעל אחד באזור."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "גישה"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "לאחר הבריאה"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "שינוי האזור"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr "ניתן להעביר בעלות על אזור למשתמש אחר ברשימת המשתמשים בכל עת."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "ניהול משתמשים"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "תבניות רשימה"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "תבנית זו ניתן להקצות למשתמשים כדי ליישם במהירות את מערך ההרשאות שלה. "
-# OBSOLETE: "שינויים שנעשו כאן ישפיעו על כל המשתמשים שיש להם תבנית זו שהוקצה."
+# OBSOLETE: "פורמט הרשומות Invalid LOC (ב) ויקרא י\"א ויקרא י\"א ויקרא י\"א ויקרא י\"א "
+# OBSOLETE: "ויקרא י\"א)"
 
 
 

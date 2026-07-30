@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2025-06-05 21:30+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -135,7 +135,9 @@ msgstr "Имя хоста"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "Имя хоста для службы (оставьте пустым для вершины зоны @). Запись будет создана в _port._protocol.hostname"
+msgstr ""
+"Имя хоста для службы (оставьте пустым для вершины зоны @). Запись будет "
+"создана в _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -1104,7 +1106,9 @@ msgstr "Домен"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Имя домена (оставьте пустым для вершины зоны @). Полное имя записи будет: _service._protocol.domain"
+msgstr ""
+"Имя домена (оставьте пустым для вершины зоны @). Полное имя записи будет: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1830,7 +1834,9 @@ msgstr "Метаданные зоны"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "Тип метаданных %s принимает только одно значение. Добавьте только одну строку для этого типа."
+msgstr ""
+"Тип метаданных %s принимает только одно значение. Добавьте только одну "
+"строку для этого типа."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1838,7 +1844,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Недопустимое значение для %s. Допустимые значения: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Тип метаданных %s может изменить только администратор."
@@ -1847,7 +1852,9 @@ msgstr "Тип метаданных %s может изменить только 
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "Пользовательский тип метаданных, сохраняемый напрямую в таблице domainmetadata PowerDNS."
+msgstr ""
+"Пользовательский тип метаданных, сохраняемый напрямую в таблице "
+"domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -1960,21 +1967,21 @@ msgid "The permission template has been updated successfully."
 msgstr "Шаблон разрешений успешно обновлён."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Для выдачи прав администратора в шаблоне прав требуются права администратора."
+msgstr ""
+"Для выдачи прав администратора в шаблоне прав требуются права администратора."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Для изменения шаблона прав с правами администратора требуются права администратора."
+msgstr ""
+"Для изменения шаблона прав с правами администратора требуются права "
+"администратора."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Не удалось обновить шаблон прав."
 
@@ -2035,7 +2042,6 @@ msgid "Add User"
 msgstr "Добавить пользователя"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "Нет доступного для назначения шаблона прав без прав суперпользователя."
 
@@ -2604,7 +2610,9 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Сохранено значений по умолчанию: %d; очищено: %d. Отклонены недопустимые значения для: %s."
+msgstr ""
+"Сохранено значений по умолчанию: %d; очищено: %d. Отклонены недопустимые "
+"значения для: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2789,7 +2797,6 @@ msgid "The permission template has been added successfully."
 msgstr "Шаблон разрешений успешно добавлен."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Не удалось добавить шаблон прав."
 
@@ -2958,7 +2965,8 @@ msgstr "У вас нет прав на синхронизацию зон из Po
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Зоны синхронизированы из PowerDNS: добавлено %d, обновлено %d, удалено %d."
+msgstr ""
+"Зоны синхронизированы из PowerDNS: добавлено %d, обновлено %d, удалено %d."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3745,23 +3753,24 @@ msgstr ""
 "Проверьте конфигурацию базы данных."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "У вас нет прав на изменение шаблона прав."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Для изменения собственного шаблона прав требуется право на редактирование других пользователей."
+msgstr ""
+"Для изменения собственного шаблона прав требуется право на редактирование "
+"других пользователей."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Для назначения шаблона прав с правами администратора требуются права администратора."
+msgstr ""
+"Для назначения шаблона прав с правами администратора требуются права "
+"администратора."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3816,7 +3825,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "У вас нет разрешения для добавления записи в этот шаблон зоны."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "У вас нет прав на добавление записи этого типа в шаблон зоны."
@@ -3842,7 +3850,6 @@ msgid "Error updating zone template record: "
 msgstr "Ошибка обновления записи шаблона зоны: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3857,12 +3864,13 @@ msgid "Error checking template ownership: "
 msgstr "Ошибка проверки владения шаблоном: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Эти типы записей не включены в шаблон, так как вам не разрешено их добавлять: %s"
+msgstr ""
+"Эти типы записей не включены в шаблон, так как вам не разрешено их "
+"добавлять: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3901,7 +3909,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "У вас нет разрешения на добавление NS записи."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "У вас нет прав на добавление записи LUA."
 
@@ -3914,7 +3921,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "У вас нет разрешения на редактирование этой NS записи."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "У вас нет прав на изменение этой записи LUA."
 
@@ -3927,7 +3933,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "У вас нет разрешения на удаление NS записей."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "У вас нет прав на удаление записей LUA."
 
@@ -4204,7 +4209,9 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "Записи TLSA обычно должны размещаться в \"_port._protocol.hostname\" (например, \"_443._tcp.www.example.com\")."
+msgstr ""
+"Записи TLSA обычно должны размещаться в \"_port._protocol.hostname\" "
+"(например, \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4643,11 +4650,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|"
-"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-"[vp[\"m\"]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -7945,20 +7949,26 @@ msgstr ""
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Хеш локальной части в записях SMIMEA должен быть 64-символьным SHA-256 hex-хешем. Формат должен быть: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Хеш локальной части в записях SMIMEA должен быть 64-символьным SHA-256 hex-"
+"хешем. Формат должен быть: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Имя записи SMIMEA имеет формат: SHA256(local-part)._smimecert.domain.tld для адресов электронной почты вроде %s"
+msgstr ""
+"Имя записи SMIMEA имеет формат: SHA256(local-part)._smimecert.domain.tld для "
+"адресов электронной почты вроде %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Это не использует стандартный формат имени SMIMEA. Записи SMIMEA обычно должны использовать: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Это не использует стандартный формат имени SMIMEA. Записи SMIMEA обычно "
+"должны использовать: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -9600,7 +9610,9 @@ msgstr "Неверный формат. Ожидается как минимум:
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Неверный формат SRV. Используйте: name,SRV,\"weight port target\",priority,ttl или name,SRV,target,weight,port,ttl"
+msgstr ""
+"Неверный формат SRV. Используйте: name,SRV,\"weight port "
+"target\",priority,ttl или name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -9709,7 +9721,6 @@ msgid "The selected user already owns the zone."
 msgstr "Выбранный пользователь уже владеет зоной."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Не удалось обновить записи зоны: %s"
@@ -10968,7 +10979,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Пример: www,A,192.168.1.1,0,3600,веб сервер"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Приоритет и TTL необязательны (по умолчанию: priority=0, ttl="
 
@@ -11365,7 +11375,6 @@ msgid "At least one special character"
 msgstr "Хотя бы один специальный символ"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -11470,12 +11479,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY в ожидании: серийный номер %serial% ещё не подтверждён"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY отправлен с серийным номером %serial%"
 
@@ -12495,7 +12502,6 @@ msgid "Last modified"
 msgstr "Изменено"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Последнее изменение: %account%, %date%"
 
@@ -12728,7 +12734,6 @@ msgid "Zones Without Owners"
 msgstr "Зоны Без Владельцев"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Назначить себя владельцем всех перечисленных зон?"
 
@@ -13236,7 +13241,9 @@ msgstr "Neskolko znacheniy"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "Для метаданных вроде ALLOW-AXFR-FROM добавьте несколько строк с одинаковым типом. Каждое значение хранится отдельно, по одной строке на значение."
+msgstr ""
+"Для метаданных вроде ALLOW-AXFR-FROM добавьте несколько строк с одинаковым "
+"типом. Каждое значение хранится отдельно, по одной строке на значение."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -14303,20 +14310,27 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Проверьте, что значение pdns_api.key в config/settings.php совпадает с ключом API, настроенным в PowerDNS."
+msgstr ""
+"Проверьте, что значение pdns_api.key в config/settings.php совпадает с "
+"ключом API, настроенным в PowerDNS."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Проверьте, что pdns_api.server_name совпадает с именем, которое сообщает PowerDNS (по умолчанию 'localhost')."
+msgstr ""
+"Проверьте, что pdns_api.server_name совпадает с именем, которое сообщает "
+"PowerDNS (по умолчанию 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS отклонил запрос. Причину смотрите в журнале сервера PowerDNS - частая причина после импорта зон напрямую в базу данных PowerDNS - одна некорректная запись, из-за которой не удаётся сериализовать зону."
+msgstr ""
+"PowerDNS отклонил запрос. Причину смотрите в журнале сервера PowerDNS - "
+"частая причина после импорта зон напрямую в базу данных PowerDNS - одна "
+"некорректная запись, из-за которой не удаётся сериализовать зону."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -14962,7 +14976,6 @@ msgid "RDAP results for"
 msgstr "Результаты RDAP для"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Введите доменное имя, чтобы выполнить запрос RDAP."
 
@@ -15219,7 +15232,9 @@ msgstr "Полный путь к файлу базы данных SQLite"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Файл должен существовать и быть доступен веб-серверу для чтения и записи. Используйте абсолютный путь."
+msgstr ""
+"Файл должен существовать и быть доступен веб-серверу для чтения и записи. "
+"Используйте абсолютный путь."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -15231,7 +15246,9 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Кодировка для новых таблиц. Оставьте пустым, чтобы использовать значение базы данных по умолчанию."
+msgstr ""
+"Кодировка для новых таблиц. Оставьте пустым, чтобы использовать значение "
+"базы данных по умолчанию."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -15538,7 +15555,8 @@ msgstr ""
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Данные для подключения к базе данных (имя хоста, имя пользователя, пароль)"
+msgstr ""
+"Данные для подключения к базе данных (имя хоста, имя пользователя, пароль)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -15557,11 +15575,12 @@ msgstr ""
 "сгенерируйте файл конфигурации."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Примечание: при использовании PostgreSQL и SQLite PowerDNS и Poweradmin должны использовать одну и ту же базу данных."
+msgstr ""
+"Примечание: при использовании PostgreSQL и SQLite PowerDNS и Poweradmin "
+"должны использовать одну и ту же базу данных."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15663,11 +15682,14 @@ msgstr "Не удалось получить доступ к файлу базы
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "При использовании API в качестве бэкенда необходимо указать URL API PowerDNS."
+msgstr ""
+"При использовании API в качестве бэкенда необходимо указать URL API PowerDNS."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "При использовании API в качестве бэкенда необходимо указать ключ API PowerDNS."
+msgstr ""
+"При использовании API в качестве бэкенда необходимо указать ключ API "
+"PowerDNS."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
@@ -15700,80 +15722,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Не удаётся подключиться к базе данных PowerDNS \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Не удалось установить локаль. Выбранная локаль может не поддерживаться в этой системе. Обратитесь к администратору."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Файл конфигурации не найден. Пожалуйста, используйте <a href=\"install/"
-# OBSOLETE: "\">установщик</a> для его создания или создайте файл %s вручную."
+msgstr ""
+"Не удалось установить локаль. Выбранная локаль может не поддерживаться в "
+"этой системе. Обратитесь к администратору."
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Каталог <a href=\"install/\">install/</a> существует, вы должны удалить "
-# OBSOLETE: "его перед продолжением."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "Вы не можете удалять записи из зоны SLAVE."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "Вы не можете редактировать записи в зоне SLAVE."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Недопустимое значение для поля имени записи SOA. Должно быть имя зоны."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "Недопустимый адрес электронной почты в записи SOA."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "Неизвестный тип записи."
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "У зоны должен быть хотя бы один владелец."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Доступ"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "После создания"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Изменить владельца зоны"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Вы можете в любой момент передать владение зоной другому пользователю из "
-# OBSOLETE: "списка пользователей."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Управление пользователями"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Список шаблонов"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Этот шаблон можно назначить пользователям для быстрого применения его "
-# OBSOLETE: "набора разрешений. Изменения, внесенные здесь, повлияют на всех "
-# OBSOLETE: "пользователей, которым назначен этот шаблон.разрешений. Изменения, "
-# OBSOLETE: "внесенные здесь, повлияют на всех пользователей, которым назначен этот "
-# OBSOLETE: "шаблон."
+# OBSOLETE: "Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|"
+# OBSOLETE: "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+# OBSOLETE: "[vp[\"m\"]]]."
 
 
 

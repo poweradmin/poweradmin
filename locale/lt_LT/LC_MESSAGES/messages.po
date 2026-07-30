@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1073,7 +1073,8 @@ msgstr "Pasirinktinis paslaugos pavadinimas"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Paslaugos pavadinimas turi prasidėti apatiniu brūkšniu (pvz., _myservice)"
+msgstr ""
+"Paslaugos pavadinimas turi prasidėti apatiniu brūkšniu (pvz., _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1100,7 +1101,9 @@ msgstr "Domenas"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo pavadinimas bus: _service._protocol.domain"
+msgstr ""
+"Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo "
+"pavadinimas bus: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1826,7 +1829,9 @@ msgstr "Zonos metaduomenys"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "Metaduomenų tipas %s priima tik vieną reikšmę. Pridėkite tik vieną eilutę šiam tipui."
+msgstr ""
+"Metaduomenų tipas %s priima tik vieną reikšmę. Pridėkite tik vieną eilutę "
+"šiam tipui."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1834,7 +1839,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Neteisinga %s reikšmė. Leidžiamos reikšmės: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metaduomenų tipą %s gali pakeisti tik administratorius."
@@ -1843,7 +1847,9 @@ msgstr "Metaduomenų tipą %s gali pakeisti tik administratorius."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "Pasirinktinis metaduomenų tipas, saugomas tiesiogiai PowerDNS domainmetadata lentelėje."
+msgstr ""
+"Pasirinktinis metaduomenų tipas, saugomas tiesiogiai PowerDNS domainmetadata "
+"lentelėje."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -1956,21 +1962,22 @@ msgid "The permission template has been updated successfully."
 msgstr "Leidimų šablonas sėkmingai atnaujintas."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Administratoriaus teisėms suteikti teisių šablone reikia administratoriaus teisių."
+msgstr ""
+"Administratoriaus teisėms suteikti teisių šablone reikia administratoriaus "
+"teisių."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Teisių šablonui su administratoriaus teisėmis redaguoti reikia administratoriaus teisių."
+msgstr ""
+"Teisių šablonui su administratoriaus teisėmis redaguoti reikia "
+"administratoriaus teisių."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Nepavyko atnaujinti teisių šablono."
 
@@ -2031,9 +2038,9 @@ msgid "Add User"
 msgstr "Pridėti naudotoją"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "Nėra teisių šablono be supernaudotojo teisių, kurį būtų galima priskirti."
+msgstr ""
+"Nėra teisių šablono be supernaudotojo teisių, kurį būtų galima priskirti."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2595,7 +2602,9 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Išsaugota numatytųjų reikšmių: %d; išvalyta: %d. Atmestos netinkamos reikšmės: %s."
+msgstr ""
+"Išsaugota numatytųjų reikšmių: %d; išvalyta: %d. Atmestos netinkamos "
+"reikšmės: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2780,7 +2789,6 @@ msgid "The permission template has been added successfully."
 msgstr "Leidimų šablonas sėkmingai pridėtas."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Nepavyko pridėti teisių šablono."
 
@@ -2948,7 +2956,8 @@ msgstr "Neturite teisės sinchronizuoti zonų iš PowerDNS."
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zonos sinchronizuotos iš PowerDNS: pridėta %d, atnaujinta %d, pašalinta %d."
+msgstr ""
+"Zonos sinchronizuotos iš PowerDNS: pridėta %d, atnaujinta %d, pašalinta %d."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3681,13 +3690,17 @@ msgstr "Ne, palikti šį supermasterį"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "Rodoma toliau esančioje lentelėje sukonfigūruotų autoprimary serverių ryšio būsena."
+msgstr ""
+"Rodoma toliau esančioje lentelėje sukonfigūruotų autoprimary serverių ryšio "
+"būsena."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr "Rodoma toliau esančioje lentelėje sukonfigūruotų supermaster serverių ryšio būsena."
+msgstr ""
+"Rodoma toliau esančioje lentelėje sukonfigūruotų supermaster serverių ryšio "
+"būsena."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3725,23 +3738,24 @@ msgstr ""
 "Patikrinkite duomenų bazės konfigūraciją."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "Neturite teisės pakeisti teisių šablono."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Norint pakeisti savo teisių šabloną, reikia teisės redaguoti kitus naudotojus."
+msgstr ""
+"Norint pakeisti savo teisių šabloną, reikia teisės redaguoti kitus "
+"naudotojus."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Norint priskirti teisių šabloną su administratoriaus teisėmis, reikia administratoriaus teisių."
+msgstr ""
+"Norint priskirti teisių šabloną su administratoriaus teisėmis, reikia "
+"administratoriaus teisių."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3796,7 +3810,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "Neturite leidimo pridėti įrašo į šį zonos šabloną."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Neturite teisės pridėti šio tipo įrašo į zonos šabloną."
@@ -3822,7 +3835,6 @@ msgid "Error updating zone template record: "
 msgstr "Klaida atnaujinant zonos šablono įrašą: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3837,7 +3849,6 @@ msgid "Error checking template ownership: "
 msgstr "Klaida tikrinant šablono priklausomybę: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3881,7 +3892,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "Neturite leidimo pridėti NS įrašo."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "Neturite teisės pridėti LUA įrašo."
 
@@ -3894,7 +3904,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "Neturite leidimo redaguoti šio NS įrašo."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "Neturite teisės redaguoti šio LUA įrašo."
 
@@ -3907,7 +3916,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "Neturite leidimo šalinti NS įrašų."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "Neturite teisės trinti LUA įrašų."
 
@@ -4116,7 +4124,9 @@ msgstr ""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA įrašo pavadinimas paprastai turėtų atitikti formatą _port._protocol.hostname (pvz., _443._tcp.www.example.com)."
+msgstr ""
+"TLSA įrašo pavadinimas paprastai turėtų atitikti formatą "
+"_port._protocol.hostname (pvz., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4190,7 +4200,9 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA įrašai paprastai turėtų būti dedami \"_port._protocol.hostname\" (pvz., \"_443._tcp.www.example.com\")."
+msgstr ""
+"TLSA įrašai paprastai turėtų būti dedami \"_port._protocol.hostname\" (pvz., "
+"\"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4621,11 +4633,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Neteisingas LOC įrašo formatas. Formatas turėtų būti: l1 [m1 [s1]] {\"Š\"|"
-"\"P\"} l2 [m2 [s2]] {\"R\"|\"V\"} aukš[\"m\"] [dyd[\"m\"] [ht[\"m\"] "
-"[vt[\"m\"]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Neteisingas LOC įrašo formatas. Formatas turėtų būti: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -7870,7 +7879,9 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA įrašo pavadinimas yra formatu: SHA256(local-part)._smimecert.domain.tld el. pašto adresams kaip %s"
+msgstr ""
+"SMIMEA įrašo pavadinimas yra formatu: SHA256(local-"
+"part)._smimecert.domain.tld el. pašto adresams kaip %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -9620,7 +9631,6 @@ msgid "The selected user already owns the zone."
 msgstr "Pasirinktas naudotojas jau valdo zoną."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Nepavyko atnaujinti zonos įrašų: %s"
@@ -10249,7 +10259,12 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr "Kiekvienas tinklas (CIDR blokas) susiejamas su lygiai vienu vaizdu. To tinklo skyrikliai gauna tik tuos zonos variantus, kurie priskirti susietam vaizdui. PowerDNS pirmiausia vertina ilgiausią prefiksą, todėl konkretesnis potinklis (pavyzdžiui, 10.0.1.0/24) turi viršenybę prieš platesnį rėžį (10.0.0.0/8), kai abu atitinka klientą."
+msgstr ""
+"Kiekvienas tinklas (CIDR blokas) susiejamas su lygiai vienu vaizdu. To "
+"tinklo skyrikliai gauna tik tuos zonos variantus, kurie priskirti susietam "
+"vaizdui. PowerDNS pirmiausia vertina ilgiausią prefiksą, todėl konkretesnis "
+"potinklis (pavyzdžiui, 10.0.1.0/24) turi viršenybę prieš platesnį rėžį "
+"(10.0.0.0/8), kai abu atitinka klientą."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -10794,7 +10809,12 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr "Registruoja API raktų gyvavimo ciklo įvykius (kūrimą, pergeneravimą, atšaukimą, teisių pakeitimus) ir autentifikuotas API užklausas. Filtruokite pagal naudotoją arba operaciją, kad patikrintumėte išorinių integracijų veiklą. Slapti duomenys (raktai, prieigos raktai) į šį žurnalą niekada nerašomi."
+msgstr ""
+"Registruoja API raktų gyvavimo ciklo įvykius (kūrimą, pergeneravimą, "
+"atšaukimą, teisių pakeitimus) ir autentifikuotas API užklausas. Filtruokite "
+"pagal naudotoją arba operaciją, kad patikrintumėte išorinių integracijų "
+"veiklą. Slapti duomenys (raktai, prieigos raktai) į šį žurnalą niekada "
+"nerašomi."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -10830,7 +10850,11 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr "Šioje veiklos sekoje registruojama kiekviena su zonomis ir įrašais atlikta operacija (kūrimas, redagavimas, trynimas, DNSSEC veiksmai, importavimas) kaip paprasta key:value įvykio eilutė. Struktūrizuotų būsenų prieš ir po pakeitimo bei įrašų pakeitimų palyginimo ieškokite įrašų pakeitimų žurnale."
+msgstr ""
+"Šioje veiklos sekoje registruojama kiekviena su zonomis ir įrašais atlikta "
+"operacija (kūrimas, redagavimas, trynimas, DNSSEC veiksmai, importavimas) "
+"kaip paprasta key:value įvykio eilutė. Struktūrizuotų būsenų prieš ir po "
+"pakeitimo bei įrašų pakeitimų palyginimo ieškokite įrašų pakeitimų žurnale."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -10867,7 +10891,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Pavyzdys: www,A,192.168.1.1,0,3600,žiniatinklio serveris"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Prioritetas ir TTL yra neprivalomi (numatyta: priority=0, ttl="
 
@@ -11250,7 +11273,6 @@ msgid "At least one special character"
 msgstr "Bent vienas specialus simbolis"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -11355,12 +11377,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY vykdomas: serijos numeris %serial% dar nepatvirtintas"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY išsiųstas su serijos numeriu %serial%"
 
@@ -12378,7 +12398,6 @@ msgid "Last modified"
 msgstr "Paskutinis pakeitimas"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Paskutinį kartą redagavo %account% %date%"
 
@@ -12611,7 +12630,6 @@ msgid "Zones Without Owners"
 msgstr "Zonos be savininkų"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Priskirti save visų išvardytų zonų savininku?"
 
@@ -13120,7 +13138,9 @@ msgstr "Kelios reiksmes"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "Tokiems metaduomenims kaip ALLOW-AXFR-FROM pridėkite kelias eilutes su tuo pačiu tipu. Kiekviena reikšmė saugoma atskirai, viena eilutė vienai reikšmei."
+msgstr ""
+"Tokiems metaduomenims kaip ALLOW-AXFR-FROM pridėkite kelias eilutes su tuo "
+"pačiu tipu. Kiekviena reikšmė saugoma atskirai, viena eilutė vienai reikšmei."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -13267,7 +13287,13 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr "Kiekvienas įrašo pridėjimas, redagavimas ar trynimas ir zonos sukūrimas, ištrynimas ar metaduomenų redagavimas čia išsaugo būsenas prieš ir po pakeitimo kartu su naudotoju bei laiko žyma. Žurnalai automatiškai niekada nepasibaigia - jei lentelė labai išauga, senus įrašus išretinkite rankiniu būdu. Naudokite laiko intervalo nuorodas, kad matytumėte naujausią veiklą, arba eksportuokite į CSV/JSON išorinėms audito sistemoms."
+msgstr ""
+"Kiekvienas įrašo pridėjimas, redagavimas ar trynimas ir zonos sukūrimas, "
+"ištrynimas ar metaduomenų redagavimas čia išsaugo būsenas prieš ir po "
+"pakeitimo kartu su naudotoju bei laiko žyma. Žurnalai automatiškai niekada "
+"nepasibaigia - jei lentelė labai išauga, senus įrašus išretinkite rankiniu "
+"būdu. Naudokite laiko intervalo nuorodas, kad matytumėte naujausią veiklą, "
+"arba eksportuokite į CSV/JSON išorinėms audito sistemoms."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -13804,7 +13830,12 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr "Registruoja naudotojų paskyrų įvykius, tokius kaip prisijungimai, slaptažodžių pakeitimai, grupių narystės atnaujinimai ir administratoriaus veiksmai su naudotojų įrašais. Kiekviename įraše nurodomas veiksmas, jį atlikęs asmuo, susijęs naudotojas ir laiko žyma. Filtruokite pagal operaciją arba naudotoją, kad patikrintumėte prieigos pakeitimus."
+msgstr ""
+"Registruoja naudotojų paskyrų įvykius, tokius kaip prisijungimai, "
+"slaptažodžių pakeitimai, grupių narystės atnaujinimai ir administratoriaus "
+"veiksmai su naudotojų įrašais. Kiekviename įraše nurodomas veiksmas, jį "
+"atlikęs asmuo, susijęs naudotojas ir laiko žyma. Filtruokite pagal operaciją "
+"arba naudotoją, kad patikrintumėte prieigos pakeitimus."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -13850,7 +13881,14 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas vadinamas zona..variantas (pavyzdžiui, example.com..trusted) ir prieš priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento tinklą."
+msgstr ""
+"Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal "
+"tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas "
+"vadinamas zona..variantas (pavyzdžiui, example.com..trusted) ir prieš "
+"priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą "
+"patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats "
+"kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento "
+"tinklą."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14160,20 +14198,27 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Patikrinkite, ar pdns_api.key reikšmė config/settings.php faile atitinka PowerDNS sukonfigūruotą API raktą."
+msgstr ""
+"Patikrinkite, ar pdns_api.key reikšmė config/settings.php faile atitinka "
+"PowerDNS sukonfigūruotą API raktą."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Patikrinkite, ar pdns_api.server_name atitinka PowerDNS nurodomą pavadinimą (numatytasis 'localhost')."
+msgstr ""
+"Patikrinkite, ar pdns_api.server_name atitinka PowerDNS nurodomą pavadinimą "
+"(numatytasis 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS atmetė užklausą. Priežasties ieškokite PowerDNS serverio žurnale - dažna priežastis po zonų importavimo tiesiai į PowerDNS duomenų bazę yra vienas netaisyklingas įrašas, dėl kurio nepavyksta serializuoti zonos."
+msgstr ""
+"PowerDNS atmetė užklausą. Priežasties ieškokite PowerDNS serverio žurnale - "
+"dažna priežastis po zonų importavimo tiesiai į PowerDNS duomenų bazę yra "
+"vienas netaisyklingas įrašas, dėl kurio nepavyksta serializuoti zonos."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -14346,7 +14391,11 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr "API raktai leidžia išorinėms programoms naudotis Poweradmin API. Kiekvienas raktas susietas su jūsų naudotojo paskyra ir perima jūsų teises, todėl atšaukus paskyrą atšaukiami ir visi jos raktai. Laikykite raktus paslaptyje - jie suteikia tokią pačią prieigą kaip ir prisijungimas jūsų vardu."
+msgstr ""
+"API raktai leidžia išorinėms programoms naudotis Poweradmin API. Kiekvienas "
+"raktas susietas su jūsų naudotojo paskyra ir perima jūsų teises, todėl "
+"atšaukus paskyrą atšaukiami ir visi jos raktai. Laikykite raktus paslaptyje "
+"- jie suteikia tokią pačią prieigą kaip ir prisijungimas jūsų vardu."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -14529,7 +14578,11 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr "Registruoja grupių gyvavimo ciklo įvykius (kūrimą, redagavimą, trynimą) ir narystės pakeitimus (pridėtus arba pašalintus naudotojus). Kiekviename įraše nurodomas veiksmas, jį atlikęs asmuo, susijusi grupė ir laiko žyma. Naudinga tikrinant prieigos prie zonų pakeitimus, kylančius iš grupinės nuosavybės."
+msgstr ""
+"Registruoja grupių gyvavimo ciklo įvykius (kūrimą, redagavimą, trynimą) ir "
+"narystės pakeitimus (pridėtus arba pašalintus naudotojus). Kiekviename įraše "
+"nurodomas veiksmas, jį atlikęs asmuo, susijusi grupė ir laiko žyma. Naudinga "
+"tikrinant prieigos prie zonų pakeitimus, kylančius iš grupinės nuosavybės."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -14814,7 +14867,6 @@ msgid "RDAP results for"
 msgstr "RDAP rezultatai"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Įveskite domeno vardą, kad atliktumėte RDAP paiešką."
 
@@ -14839,13 +14891,18 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr "Sukurkite duomenų bazės naudotoją su apribotomis teisėmis (select, insert, update, delete) tik Poweradmin lentelėms. Naudojant API sąsają, prieigos prie PowerDNS lentelių nereikia."
+msgstr ""
+"Sukurkite duomenų bazės naudotoją su apribotomis teisėmis (select, insert, "
+"update, delete) tik Poweradmin lentelėms. Naudojant API sąsają, prieigos "
+"prie PowerDNS lentelių nereikia."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "Sukurkite duomenų bazės naudotoją su apribotomis teisėmis (select, insert, update, delete), kad Poweradmin galėtų naudotis PowerDNS lentelėmis."
+msgstr ""
+"Sukurkite duomenų bazės naudotoją su apribotomis teisėmis (select, insert, "
+"update, delete), kad Poweradmin galėtų naudotis PowerDNS lentelėmis."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14868,7 +14925,8 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Kadangi naudojate SQLite, naujo apribotų teisių naudotojo kurti nereikia."
+msgstr ""
+"Kadangi naudojate SQLite, naujo apribotų teisių naudotojo kurti nereikia."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -14983,13 +15041,17 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr "Sukonfigūruokite duomenų bazės ryšį su teisėmis kurti lenteles. Jei reikia, PowerDNS vietą galima nurodyti atskirai."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį su teisėmis kurti lenteles. Jei reikia, "
+"PowerDNS vietą galima nurodyti atskirai."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "Sukonfigūruokite duomenų bazės ryšį Poweradmin lentelėms (naudotojai, teisės, zonos). PowerDNS lentelių nereikia."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį Poweradmin lentelėms (naudotojai, "
+"teisės, zonos). PowerDNS lentelių nereikia."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -15061,7 +15123,9 @@ msgstr "Visas kelias iki SQLite duomenų bazės failo"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Failas turi egzistuoti ir būti prieinamas žiniatinklio serveriui skaityti bei rašyti. Naudokite absoliutų kelią."
+msgstr ""
+"Failas turi egzistuoti ir būti prieinamas žiniatinklio serveriui skaityti "
+"bei rašyti. Naudokite absoliutų kelią."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -15073,7 +15137,9 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Naujų lentelių simbolių rinkinys. Palikite tuščią, kad būtų naudojama duomenų bazės numatytoji reikšmė."
+msgstr ""
+"Naujų lentelių simbolių rinkinys. Palikite tuščią, kad būtų naudojama "
+"duomenų bazės numatytoji reikšmė."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -15082,7 +15148,9 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Simbolių lyginimo (collation) taisyklės. Palikite tuščią, kad būtų naudojama duomenų bazės numatytoji reikšmė."
+msgstr ""
+"Simbolių lyginimo (collation) taisyklės. Palikite tuščią, kad būtų naudojama "
+"duomenų bazės numatytoji reikšmė."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -15180,11 +15248,13 @@ msgstr "Nepavyksta nustatyti (PHP-FPM) - įsitikinkite, kad tai įjungta"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Įsitikinkite, kad sukonfigūruotas URL perrašymas (žr. nginx.conf.example)"
+msgstr ""
+"Įsitikinkite, kad sukonfigūruotas URL perrašymas (žr. nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Įsitikinkite, kad jūsų žiniatinklio serveryje sukonfigūruotas URL perrašymas"
+msgstr ""
+"Įsitikinkite, kad jūsų žiniatinklio serveryje sukonfigūruotas URL perrašymas"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -15227,12 +15297,17 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin savo lenteles (naudotojai, teisės, zonų metaduomenys) laiko sukonfigūruotoje duomenų bazėje net ir tada, kai pasirinkta PowerDNS API sąsaja. Šie prisijungimo duomenys skirti tai duomenų bazei, o ne PowerDNS."
+msgstr ""
+"Poweradmin savo lenteles (naudotojai, teisės, zonų metaduomenys) laiko "
+"sukonfigūruotoje duomenų bazėje net ir tada, kai pasirinkta PowerDNS API "
+"sąsaja. Šie prisijungimo duomenys skirti tai duomenų bazei, o ne PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Poweradmin duomenų bazės naudotojo vardas su apribota prieiga. Ne prisijungimui prie žiniatinklio sąsajos."
+msgstr ""
+"Poweradmin duomenų bazės naudotojo vardas su apribota prieiga. Ne "
+"prisijungimui prie žiniatinklio sąsajos."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -15322,13 +15397,15 @@ msgstr "Svarbus saugumo pranešimas:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr "Turite pašalinti katalogą \"install/\" iš Poweradmin šakninio katalogo."
+msgstr ""
+"Turite pašalinti katalogą \"install/\" iš Poweradmin šakninio katalogo."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Saugumo sumetimais Poweradmin neveiks, jei įdiegimo katalogas egzistuoja."
+msgstr ""
+"Saugumo sumetimais Poweradmin neveiks, jei įdiegimo katalogas egzistuoja."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -15365,11 +15442,15 @@ msgstr "Prieš tęsdami įsitikinkite, kad turite:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr "Įdiegtą PowerDNS su sukurtomis duomenų bazės lentelėmis (arba sukonfigūruotą API prieigą)"
+msgstr ""
+"Įdiegtą PowerDNS su sukurtomis duomenų bazės lentelėmis (arba sukonfigūruotą "
+"API prieigą)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Duomenų bazės prisijungimo duomenis (kompiuterio vardą, naudotojo vardą, slaptažodį)"
+msgstr ""
+"Duomenų bazės prisijungimo duomenis (kompiuterio vardą, naudotojo vardą, "
+"slaptažodį)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -15383,14 +15464,17 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr "Sukonfigūruokite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir sugeneruokite konfigūracijos failą."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir "
+"sugeneruokite konfigūracijos failą."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Pastaba: naudojant PostgreSQL ir SQLite, PowerDNS ir Poweradmin turi naudoti tą pačią duomenų bazę."
+msgstr ""
+"Pastaba: naudojant PostgreSQL ir SQLite, PowerDNS ir Poweradmin turi naudoti "
+"tą pačią duomenų bazę."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -15411,19 +15495,25 @@ msgstr "Išorinių raktų apribojimų problemos:"
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr "Diegimo programa negalėjo pašalinti esamų lentelių dėl išorinių raktų apribojimų"
+msgstr ""
+"Diegimo programa negalėjo pašalinti esamų lentelių dėl išorinių raktų "
+"apribojimų"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr "Tai gali nutikti pakartotinio įdiegimo metu, jei turite savų apribojimų arba jei į lenteles nurodo kitos lentelės"
+msgstr ""
+"Tai gali nutikti pakartotinio įdiegimo metu, jei turite savų apribojimų arba "
+"jei į lenteles nurodo kitos lentelės"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr "Prieš paleisdami diegimo programą galite pabandyti rankiniu būdu išjungti išorinių raktų tikrinimą:"
+msgstr ""
+"Prieš paleisdami diegimo programą galite pabandyti rankiniu būdu išjungti "
+"išorinių raktų tikrinimą:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -15437,11 +15527,15 @@ msgstr "Įsitikinkite, kad SQLite duomenų bazės failas egzistuoja"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Patikrinkite, ar žiniatinklio serveris turi duomenų bazės failo skaitymo ir rašymo teises"
+msgstr ""
+"Patikrinkite, ar žiniatinklio serveris turi duomenų bazės failo skaitymo ir "
+"rašymo teises"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Patikrinkite, ar visas kelias iki duomenų bazės failo yra teisingas ir prieinamas"
+msgstr ""
+"Patikrinkite, ar visas kelias iki duomenų bazės failo yra teisingas ir "
+"prieinamas"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
@@ -15464,7 +15558,9 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų bazės failą."
+msgstr ""
+"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų "
+"bazės failą."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
@@ -15476,7 +15572,8 @@ msgstr "SQLite duomenų bazės failas %s neskaitomas. Patikrinkite failo teises.
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "Į SQLite duomenų bazės failą %s negalima rašyti. Patikrinkite failo teises."
+msgstr ""
+"Į SQLite duomenų bazės failą %s negalima rašyti. Patikrinkite failo teises."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
@@ -15495,20 +15592,26 @@ msgstr "Naudojant API sąsają, PowerDNS API raktas yra būtinas."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Konfigūracijos failas nerastas. Prieš tęsdami sukurkite failą config/settings.php."
+msgstr ""
+"Konfigūracijos failas nerastas. Prieš tęsdami sukurkite failą config/"
+"settings.php."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. Naudodami PostgreSQL ir SQLite, naudokite tą pačią duomenų bazę."
+msgstr ""
+"Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. Naudodami "
+"PostgreSQL ir SQLite, naudokite tą pačią duomenų bazę."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "Duomenų bazėje \"%s\" trūksta PowerDNS lentelių: %s. Įsitikinkite, kad PowerDNS tinkamai įdiegtas šioje duomenų bazėje."
+msgstr ""
+"Duomenų bazėje \"%s\" trūksta PowerDNS lentelių: %s. Įsitikinkite, kad "
+"PowerDNS tinkamai įdiegtas šioje duomenų bazėje."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
@@ -15516,80 +15619,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti nepalaikoma. Kreipkitės į savo administratorių."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
-# OBSOLETE: "programa</a> jo sukūrimui arba sukurkite %s failą rankiniu būdu."
+msgstr ""
+"Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
+"nepalaikoma. Kreipkitės į savo administratorių."
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant "
-# OBSOLETE: "turite jį pašalinti."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "Negalite ištrinti įrašų iš SLAVE zonos."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "Negalite redaguoti įrašų SLAVE zonoje."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Netinkama reikšmė SOA įrašo vardo laukui. Tai turėtų būti zonos "
-# OBSOLETE: "pavadinimas."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "Neteisingas el. pašto adresas SOA įraše."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "Nežinomas įrašo tipas."
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "Zona turi turėti bent vieną savininką."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Prieiga"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Po sukūrimo"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Keisti zonos savininką"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bet kuriuo metu galite perduoti zonos nuosavybę kitam vartotojui iš "
-# OBSOLETE: "vartotojų sąrašo."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Tvarkyti vartotojus"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Šablonų sąrašas"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Šis šablonas gali būti priskirtas vartotojams greitam jo teisių rinkinio "
-# OBSOLETE: "taikymui. Čia atlikti pakeitimai paveiks visus vartotojus, kuriems "
-# OBSOLETE: "priskirtas šis šablonas.taikymui. Čia atlikti keitimai paveiks visus "
-# OBSOLETE: "naudotojus, kuriems priskirtas šis šablonas."
+# OBSOLETE: "Neteisingas LOC įrašo formatas. Formatas turėtų būti: l1 [m1 [s1]] {\"Š\"|"
+# OBSOLETE: "\"P\"} l2 [m2 [s2]] {\"R\"|\"V\"} aukš[\"m\"] [dyd[\"m\"] [ht[\"m\"] "
+# OBSOLETE: "[vt[\"m\"]]]."
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -1724,7 +1724,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "%s 的值无效。允许的值：%s。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "元数据类型 %s 只能由管理员更改。"
@@ -1846,21 +1845,18 @@ msgid "The permission template has been updated successfully."
 msgstr "权限模板已成功更新。"
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr "在权限模板中授予管理员权限需要管理员权限。"
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
 msgstr "编辑具有管理员权限的权限模板需要管理员权限。"
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "无法更新权限模板。"
 
@@ -1921,7 +1917,6 @@ msgid "Add User"
 msgstr "添加用户"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
 msgstr "没有可供分配的非超级用户权限模板。"
 
@@ -2640,7 +2635,6 @@ msgid "The permission template has been added successfully."
 msgstr "权限模板已成功添加。"
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "无法添加权限模板。"
 
@@ -3551,19 +3545,16 @@ msgid ""
 msgstr "数据库错误：无法验证用户身份。请检查数据库配置。"
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "您没有更改权限模板的权限。"
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
 msgstr "更改自己的权限模板需要具有编辑其他用户的权限。"
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3622,7 +3613,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "您没有向此区域模板添加记录的权限。"
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "您没有将此记录类型添加到区域模板的权限。"
@@ -3648,7 +3638,6 @@ msgid "Error updating zone template record: "
 msgstr "更新区域模板记录错误："
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3663,7 +3652,6 @@ msgid "Error checking template ownership: "
 msgstr "检查模板所有权错误："
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3707,7 +3695,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "您没有添加 NS 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "您没有添加 LUA 记录的权限。"
 
@@ -3720,7 +3707,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "您没有编辑此 NS 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "您没有编辑此 LUA 记录的权限。"
 
@@ -3733,7 +3719,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "您没有删除 NS 记录的权限。"
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "您没有删除 LUA 记录的权限。"
 
@@ -4363,10 +4348,8 @@ msgstr "无效的大小、水平精度或垂直精度值。这些值必须在 0 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"无效的 LOC 记录格式。格式应为：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
-"{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]。"
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "无效的 LOC 记录格式。格式应为：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -8758,7 +8741,6 @@ msgid "The selected user already owns the zone."
 msgstr "选定的用户已拥有该区域。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "无法更新区域记录：%s"
@@ -9985,7 +9967,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "示例：www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "优先级和 TTL 为可选项（默认值：priority=0, ttl="
 
@@ -10357,7 +10338,6 @@ msgid "At least one special character"
 msgstr "至少一个特殊字符"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -10460,12 +10440,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY 待确认：序列号 %serial% 尚未被确认"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "已在序列号 %serial% 时发送 NOTIFY"
 
@@ -11449,7 +11427,6 @@ msgid "Last modified"
 msgstr "最后修改"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "最后由 %account% 于 %date% 编辑"
 
@@ -11680,7 +11657,6 @@ msgid "Zones Without Owners"
 msgstr "没有所有者的区域"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "将您自己指定为所有列出区域的所有者？"
 
@@ -13198,20 +13174,26 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "请检查 config/settings.php 中的 pdns_api.key 是否与 PowerDNS 中配置的 API 密钥一致。"
+msgstr ""
+"请检查 config/settings.php 中的 pdns_api.key 是否与 PowerDNS 中配置的 API 密"
+"钥一致。"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "请检查 pdns_api.server_name 是否与 PowerDNS 报告的名称一致（默认为 'localhost'）。"
+msgstr ""
+"请检查 pdns_api.server_name 是否与 PowerDNS 报告的名称一致（默认为 "
+"'localhost'）。"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS 拒绝了该请求。请查看 PowerDNS 服务器日志以确定原因 - 在将区域直接导入 PowerDNS 数据库之后，常见原因是某条格式错误的记录导致区域序列化失败。"
+msgstr ""
+"PowerDNS 拒绝了该请求。请查看 PowerDNS 服务器日志以确定原因 - 在将区域直接导"
+"入 PowerDNS 数据库之后，常见原因是某条格式错误的记录导致区域序列化失败。"
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13831,7 +13813,6 @@ msgid "RDAP results for"
 msgstr "RDAP 查询结果"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "请输入域名以执行 RDAP 查询。"
 
@@ -14406,11 +14387,12 @@ msgid ""
 msgstr "配置数据库连接,创建管理员账户,并生成配置文件。"
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "注意：使用 PostgreSQL 和 SQLite 时，PowerDNS 和 Poweradmin 必须使用同一个数据库。"
+msgstr ""
+"注意：使用 PostgreSQL 和 SQLite 时，PowerDNS 和 Poweradmin 必须使用同一个数据"
+"库。"
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14540,73 +14522,18 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到 PowerDNS 数据库 \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
+msgstr ""
+"无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动"
-# OBSOLETE: "创建 %s 文件。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a> 目录存在，在继续之前必须先删除它。"
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "您不能从SLAVE区域删除记录。"
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "您不能在SLAVE区域中编辑记录。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "SOA 记录名称字段的值无效。应该是区域的名称。"
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "SOA 记录中的电子邮件地址无效。"
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "未知的记录类型。"
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "一个区域必须至少有一个所有者。"
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "访问"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "创建后"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "更改区域所有者"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr "您可以随时从用户列表将区域所有权转让给其他用户。"
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "管理用户"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "列出模板"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "此模板可以分配给用户以快速应用其权限集。此处所做的更改将影响所有已分配此模"
-# OBSOLETE: "板的用户。的用户。"
+# OBSOLETE: "无效的 LOC 记录格式。格式应为：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
+# OBSOLETE: "{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]。"
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Latvian\n"
@@ -254,7 +254,10 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr "Heksadecimāls jaucējkods vai pilni sertifikāta dati (atkarībā no atbilstības veida). SHA-256 gadījumā izmantojiet: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+msgstr ""
+"Heksadecimāls jaucējkods vai pilni sertifikāta dati (atkarībā no atbilstības "
+"veida). SHA-256 gadījumā izmantojiet: \"openssl x509 -in cert.pem -pubkey "
+"-noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -614,7 +617,9 @@ msgstr "Iekļaut domēnus"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Domēni, kuru SPF ierakstus iekļaut (viens rindā). Bieži izmantoti: _spf.google.com, spf.protection.outlook.com"
+msgstr ""
+"Domēni, kuru SPF ierakstus iekļaut (viens rindā). Bieži izmantoti: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -668,14 +673,20 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr "SPF ieraksts pārsniedz DNS uzmeklēšanu ierobežojumu (%d/10). Tā dēļ SPF pārbaude neizdosies. Noņemiet dažus include/a/mx mehānismus vai izmantojiet to vietā ip4/ip6."
+msgstr ""
+"SPF ieraksts pārsniedz DNS uzmeklēšanu ierobežojumu (%d/10). Tā dēļ SPF "
+"pārbaude neizdosies. Noņemiet dažus include/a/mx mehānismus vai izmantojiet "
+"to vietā ip4/ip6."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr "SPF ierakstā ir %d DNS uzmeklēšanas (ierobežojums ir 10). Apsveriet ip4/ip6 izmantošanu include mehānismu vietā vai apvienojiet include ierakstus, lai nepārsniegtu ierobežojumu."
+msgstr ""
+"SPF ierakstā ir %d DNS uzmeklēšanas (ierobežojums ir 10). Apsveriet ip4/ip6 "
+"izmantošanu include mehānismu vietā vai apvienojiet include ierakstus, lai "
+"nepārsniegtu ierobežojumu."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
@@ -1025,7 +1036,9 @@ msgstr "Domēns"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Domēna vārds (atstājiet tukšu zonas virsotnei @). Pilnais ieraksta nosaukums būs: _service._protocol.domain"
+msgstr ""
+"Domēna vārds (atstājiet tukšu zonas virsotnei @). Pilnais ieraksta nosaukums "
+"būs: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1733,7 +1746,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Nederīga %s vērtība. Atļautās vērtības: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metadatu veidu %s var mainīt tikai administrators."
@@ -1855,21 +1867,22 @@ msgid "The permission template has been updated successfully."
 msgstr "Atļauju veidne veiksmīgi atjaunināta."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Lai atļauju veidnē piešķirtu administratora tiesības, ir nepieciešamas administratora tiesības."
+msgstr ""
+"Lai atļauju veidnē piešķirtu administratora tiesības, ir nepieciešamas "
+"administratora tiesības."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Lai rediģētu atļauju veidni ar administratora tiesībām, ir nepieciešamas administratora tiesības."
+msgstr ""
+"Lai rediģētu atļauju veidni ar administratora tiesībām, ir nepieciešamas "
+"administratora tiesības."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Atļauju veidni nevarēja atjaunināt."
 
@@ -1930,9 +1943,9 @@ msgid "Add User"
 msgstr "Pievienot lietotāju"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "Nav pieejama neviena atļauju veidne bez virslietotāja tiesībām, ko piešķirt."
+msgstr ""
+"Nav pieejama neviena atļauju veidne bez virslietotāja tiesībām, ko piešķirt."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2483,7 +2496,8 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Saglabāti %d noklusējumi; notīrīti %d. Noraidītas nederīgas vērtības: %s."
+msgstr ""
+"Saglabāti %d noklusējumi; notīrīti %d. Noraidītas nederīgas vērtības: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2668,7 +2682,6 @@ msgid "The permission template has been added successfully."
 msgstr "Atļauju veidne veiksmīgi pievienota."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Atļauju veidni nevarēja pievienot."
 
@@ -2836,7 +2849,8 @@ msgstr "Jums nav atļaujas sinhronizēt zonas no PowerDNS."
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "No PowerDNS sinhronizētās zonas: %d pievienotas, %d atjauninātas, %d dzēstas."
+msgstr ""
+"No PowerDNS sinhronizētās zonas: %d pievienotas, %d atjauninātas, %d dzēstas."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3044,7 +3058,10 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr "Lietotāji, kas autentificēti ar vienoto pieteikšanos (Single Sign-On), šeit nevar nomainīt savu paroli. Lūdzu, sazinieties ar administratoru vai nomainiet paroli pie sava identitātes nodrošinātāja."
+msgstr ""
+"Lietotāji, kas autentificēti ar vienoto pieteikšanos (Single Sign-On), šeit "
+"nevar nomainīt savu paroli. Lūdzu, sazinieties ar administratoru vai "
+"nomainiet paroli pie sava identitātes nodrošinātāja."
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
@@ -3558,13 +3575,17 @@ msgstr "Nē, paturēt šo galveno"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "Tiek parādīts savienojuma statuss autoprimary serveriem, kas konfigurēti tabulā zemāk."
+msgstr ""
+"Tiek parādīts savienojuma statuss autoprimary serveriem, kas konfigurēti "
+"tabulā zemāk."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr "Tiek parādīts savienojuma statuss supermaster serveriem, kas konfigurēti tabulā zemāk."
+msgstr ""
+"Tiek parādīts savienojuma statuss supermaster serveriem, kas konfigurēti "
+"tabulā zemāk."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3598,23 +3619,24 @@ msgstr ""
 "Datubāzes kļūda: nevar pārbaudīt autentifikāciju. Pārbaudiet konfigurāciju."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "Jums nav atļaujas mainīt atļauju veidni."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Lai mainītu savu atļauju veidni, ir nepieciešama atļauja rediģēt citus lietotājus."
+msgstr ""
+"Lai mainītu savu atļauju veidni, ir nepieciešama atļauja rediģēt citus "
+"lietotājus."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Lai piešķirtu atļauju veidni ar administratora tiesībām, ir nepieciešamas administratora tiesības."
+msgstr ""
+"Lai piešķirtu atļauju veidni ar administratora tiesībām, ir nepieciešamas "
+"administratora tiesības."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3669,7 +3691,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "Jums nav atļaujas pievienot ierakstu šai zonas veidnei."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Jums nav atļaujas pievienot šo ieraksta veidu zonas veidnei."
@@ -3695,7 +3716,6 @@ msgid "Error updating zone template record: "
 msgstr "Kļūda, atjauninot zonas veidnes ierakstu: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3710,12 +3730,13 @@ msgid "Error checking template ownership: "
 msgstr "Kļūda, pārbaudot veidnes īpašumtiesības: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Šie ierakstu veidi netika iekļauti veidnē, jo jums nav atļaujas tos pievienot: %s"
+msgstr ""
+"Šie ierakstu veidi netika iekļauti veidnē, jo jums nav atļaujas tos "
+"pievienot: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3754,7 +3775,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "Jums nav atļaujas pievienot NS ierakstu."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "Jums nav atļaujas pievienot LUA ierakstu."
 
@@ -3767,7 +3787,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "Jums nav atļaujas rediģēt šo NS ierakstu."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "Jums nav atļaujas rediģēt šo LUA ierakstu."
 
@@ -3780,7 +3799,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "Jums nav atļaujas dzēst NS ierakstus."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "Jums nav atļaujas dzēst LUA ierakstus."
 
@@ -3953,7 +3971,9 @@ msgstr "1. Visai SRV meklēšanas ķēdei jābūt parakstītai ar DNSSEC"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. TLSA ierakstiem jāatrodas nosaukumā _$port._$protocol.$hostname, kur $port, $protocol un $hostname ir no SRV uzmeklēšanas mērķa"
+msgstr ""
+"2. TLSA ierakstiem jāatrodas nosaukumā _$port._$protocol.$hostname, kur "
+"$port, $protocol un $hostname ir no SRV uzmeklēšanas mērķa"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -3964,7 +3984,9 @@ msgstr "3. Gan SRV, gan TLSA ierakstiem jābūt DNSSEC statusam \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA ieraksta nosaukumam parasti jāatbilst formātam _port._protocol.hostname (piemēram, _443._tcp.www.example.com)."
+msgstr ""
+"TLSA ieraksta nosaukumam parasti jāatbilst formātam _port._protocol.hostname "
+"(piemēram, _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -4026,7 +4048,9 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA ieraksti parasti jānovieto \"_port._protocol.hostname\" (piemēram, \"_443._tcp.www.example.com\")."
+msgstr ""
+"TLSA ieraksti parasti jānovieto \"_port._protocol.hostname\" (piemēram, "
+"\"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4137,7 +4161,9 @@ msgstr "RFC 5155/9077: NSEC3PARAM TTL = SOA min."
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3PARAM ieraksti ir DNSSEC daļa, un tos vajadzētu pārvaldīt tikai kopā ar citiem DNSSEC ierakstiem (DNSKEY, RRSIG utt.)."
+msgstr ""
+"NSEC3PARAM ieraksti ir DNSSEC daļa, un tos vajadzētu pārvaldīt tikai kopā ar "
+"citiem DNSSEC ierakstiem (DNSKEY, RRSIG utt.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
@@ -4256,7 +4282,9 @@ msgstr ""
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr "FQDN vērtības ir ieteicams beigt ar punktu, lai nodrošinātu, ka tās tiek uzskatītas par absolūtiem domēna vārdiem, nevis relatīviem."
+msgstr ""
+"FQDN vērtības ir ieteicams beigt ar punktu, lai nodrošinātu, ka tās tiek "
+"uzskatītas par absolūtiem domēna vārdiem, nevis relatīviem."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
@@ -4374,8 +4402,8 @@ msgstr "Nederīgs izmērs vai precizitāte. Jābūt 0-90000000 metru."
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "Nederīgs LOC ieraksta formāts. Formātam jābūt: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Nederīgs LOC ieraksta formāts. Formātam jābūt: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4726,7 +4754,10 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr "Nākamā domēna vārda laukam jābūt nākamajam īpašnieka vārdam zonas kanoniskajā kārtībā. Kanoniskā kārtība neņem vērā reģistru un kārto pēc etiķetēm no labās uz kreiso pusi."
+msgstr ""
+"Nākamā domēna vārda laukam jābūt nākamajam īpašnieka vārdam zonas "
+"kanoniskajā kārtībā. Kanoniskā kārtība neņem vērā reģistru un kārto pēc "
+"etiķetēm no labās uz kreiso pusi."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4775,7 +4806,10 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Ieraksta nosaukums neatbilst standarta OPENPGPKEY formātam (<hash>._openpgpkey.<domain>). Savietojamības nolūkos ir ieteicams standarta formāts."
+msgstr ""
+"Ieraksta nosaukums neatbilst standarta OPENPGPKEY formātam "
+"(<hash>._openpgpkey.<domain>). Savietojamības nolūkos ir ieteicams standarta "
+"formāts."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -4786,7 +4820,9 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "OPENPGPKEY ieraksti parasti jāģenerē ar specializētiem rīkiem, piemēram, GnuPG ar opciju --print-dane-records, nevis jāizveido manuāli."
+msgstr ""
+"OPENPGPKEY ieraksti parasti jāģenerē ar specializētiem rīkiem, piemēram, "
+"GnuPG ar opciju --print-dane-records, nevis jāizveido manuāli."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4809,7 +4845,10 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "OPENPGPKEY ieraksta izmērs pārsniedz 4KB. RFC 7929 iesaka DNS ierakstus uzturēt pēc iespējas mazākus, lai nodrošinātu uzticamu pārsūtīšanu. Apsveriet minimāla atslēgas eksporta formāta izmantošanu."
+msgstr ""
+"OPENPGPKEY ieraksta izmērs pārsniedz 4KB. RFC 7929 iesaka DNS ierakstus "
+"uzturēt pēc iespējas mazākus, lai nodrošinātu uzticamu pārsūtīšanu. "
+"Apsveriet minimāla atslēgas eksporta formāta izmantošanu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4833,7 +4872,10 @@ msgstr "Dekodētais saturs nesatur publiskās atslēgas paketi (tag 6/14)."
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr "OPENPGPKEY ierakstiem NEPIECIEŠAMS DNSSEC, lai tie sniegtu jebkādu drošības ieguvumu. Bez DNSSEC pārbaudes šie ieraksti nedod nekādas drošības priekšrocības."
+msgstr ""
+"OPENPGPKEY ierakstiem NEPIECIEŠAMS DNSSEC, lai tie sniegtu jebkādu drošības "
+"ieguvumu. Bez DNSSEC pārbaudes šie ieraksti nedod nekādas drošības "
+"priekšrocības."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -4863,7 +4905,10 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr "Brīdinājums: HINFO ieraksti atklāj potenciāli sensitīvu informāciju par resursdatora aparatūru un programmatūru, kas var būt noderīga uzbrucējiem. Pirms izmantošanas publiski pieejamā DNS apsveriet drošības sekas."
+msgstr ""
+"Brīdinājums: HINFO ieraksti atklāj potenciāli sensitīvu informāciju par "
+"resursdatora aparatūru un programmatūru, kas var būt noderīga uzbrucējiem. "
+"Pirms izmantošanas publiski pieejamā DNS apsveriet drošības sekas."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -5231,7 +5276,10 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr "SVARĪGI: DLV ieraksti ir atzīti par novecojušiem ar RFC 8749 (2020. gada marts). Lielākie DNS atrisinātāji DLV atbalstu ir noņēmuši vai atzinuši par novecojušu. Apsveriet to vietā standarta DNSSEC pārbaudi ar DS ierakstiem."
+msgstr ""
+"SVARĪGI: DLV ieraksti ir atzīti par novecojušiem ar RFC 8749 (2020. gada "
+"marts). Lielākie DNS atrisinātāji DLV atbalstu ir noņēmuši vai atzinuši par "
+"novecojušu. Apsveriet to vietā standarta DNSSEC pārbaudi ar DS ierakstiem."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5408,7 +5456,10 @@ msgstr "Parametrs \"%s\" ir obligāts, bet nav iekļauts ierakstā."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 nosaka, ka TKEY ierakstiem TTL jābūt 0, lai novērstu kešošanu. Pašreizējais no nulles atšķirīgais TTL var radīt problēmas vecākām DNS implementācijām."
+msgstr ""
+"RFC 2930 nosaka, ka TKEY ierakstiem TTL jābūt 0, lai novērstu kešošanu. "
+"Pašreizējais no nulles atšķirīgais TTL var radīt problēmas vecākām DNS "
+"implementācijām."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5451,7 +5502,10 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY režīmam jābūt skaitlim no 1 līdz 5 (1: servera piešķiršana, 2: Diffie-Hellman apmaiņa, 3: GSS-API sarunas, 4: atrisinātāja piešķiršana, 5: atslēgas dzēšana)."
+msgstr ""
+"TKEY režīmam jābūt skaitlim no 1 līdz 5 (1: servera piešķiršana, 2: Diffie-"
+"Hellman apmaiņa, 3: GSS-API sarunas, 4: atrisinātāja piešķiršana, 5: "
+"atslēgas dzēšana)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5881,7 +5935,10 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "Saskaņā ar RFC 4703 DHCID ieraksti tiek izmantoti sadursmju noteikšanai, kad vairāki DHCP klienti pieprasa vienu un to pašu nosaukumu. DHCID ieraksta esamība norāda, ka nosaukumu izmanto DHCP klients."
+msgstr ""
+"Saskaņā ar RFC 4703 DHCID ieraksti tiek izmantoti sadursmju noteikšanai, kad "
+"vairāki DHCP klienti pieprasa vienu un to pašu nosaukumu. DHCID ieraksta "
+"esamība norāda, ka nosaukumu izmanto DHCP klients."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
@@ -5929,7 +5986,10 @@ msgstr "DHCID digesta veids %d nav standarta veids saskaņā ar RFC 4701."
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "DHCID ierakstam ar SHA-256 jaucējkodu (1. veids) atkodētā veidā jābūt vismaz 35 baitus garam (2 identifikatora veidam, 1 jaucējkoda veidam un 32 SHA-256 jaucējkodam)."
+msgstr ""
+"DHCID ierakstam ar SHA-256 jaucējkodu (1. veids) atkodētā veidā jābūt vismaz "
+"35 baitus garam (2 identifikatora veidam, 1 jaucējkoda veidam un 32 SHA-256 "
+"jaucējkodam)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -5975,7 +6035,10 @@ msgstr "RRSIG ieraksts satur nederīgas rakstzīmes."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG ierakstam jāsatur segtais tips, algoritms, etiķešu skaits, sākotnējais TTL, derīguma beigas, derīguma sākums, atslēgas identifikators, parakstītāja nosaukums un paraksts."
+msgstr ""
+"RRSIG ierakstam jāsatur segtais tips, algoritms, etiķešu skaits, sākotnējais "
+"TTL, derīguma beigas, derīguma sākums, atslēgas identifikators, parakstītāja "
+"nosaukums un paraksts."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6107,7 +6170,10 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "Paraksta derīguma periods pārsniedz 90 dienas, kas ir ilgāk, nekā ieteicams. Ilgi derīguma periodi palielina apdraudējumu atslēgas kompromitēšanas gadījumā."
+msgstr ""
+"Paraksta derīguma periods pārsniedz 90 dienas, kas ir ilgāk, nekā ieteicams. "
+"Ilgi derīguma periodi palielina apdraudējumu atslēgas kompromitēšanas "
+"gadījumā."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6520,7 +6586,9 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS ieraksti izveido uzticamības ķēdi no vecākzonas uz bērnzonu. Vecākzonā jābūt šim DS ierakstam, bet bērnzonā - atbilstošajam DNSKEY ierakstam."
+msgstr ""
+"DS ieraksti izveido uzticamības ķēdi no vecākzonas uz bērnzonu. Vecākzonā "
+"jābūt šim DS ierakstam, bet bērnzonā - atbilstošajam DNSKEY ierakstam."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
@@ -6532,7 +6600,10 @@ msgstr "CSYNC tikai zonas virsotnē (RFC 7477)."
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC ierakstiem nepieciešama DNSSEC parakstīšana, lai vecākzonas aģenti tos apstrādātu (RFC 7477). Pārliecinieties, ka jūsu zona ir pareizi parakstīta ar DNSSEC."
+msgstr ""
+"CSYNC ierakstiem nepieciešama DNSSEC parakstīšana, lai vecākzonas aģenti tos "
+"apstrādātu (RFC 7477). Pārliecinieties, ka jūsu zona ir pareizi parakstīta "
+"ar DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -6665,7 +6736,9 @@ msgstr ""
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Ieraksta nosaukums neizskatās pēc standarta reversās DNS zonas nosaukuma (tam jābeidzas ar .in-addr.arpa IPv4 gadījumā vai .ip6.arpa IPv6 gadījumā)."
+msgstr ""
+"Ieraksta nosaukums neizskatās pēc standarta reversās DNS zonas nosaukuma "
+"(tam jābeidzas ar .in-addr.arpa IPv4 gadījumā vai .ip6.arpa IPv6 gadījumā)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -7070,7 +7143,10 @@ msgstr "Šis ieraksts konfliktē ar esošu CNAME."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA ierakstos local-part jaucējvērtībai jābūt 64 rakstzīmju SHA-256 heksadecimālai jaucējvērtībai. Formātam jābūt: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA ierakstos local-part jaucējvērtībai jābūt 64 rakstzīmju SHA-256 "
+"heksadecimālai jaucējvērtībai. Formātam jābūt: SHA256(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7083,7 +7159,9 @@ msgstr "SMIMEA nosaukuma formāts: SHA256._smimecert.domain.tld (%s)."
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Šis neizmanto standarta SMIMEA nosaukuma formātu. SMIMEA ierakstiem parasti jāizmanto: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Šis neizmanto standarta SMIMEA nosaukuma formātu. SMIMEA ierakstiem parasti "
+"jāizmanto: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7126,20 +7204,28 @@ msgstr "PKIX-TA (0) prasa CA validācijas ceļā."
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE lietojums (1) prasa, lai galasubjekta sertifikāts tiktu pārbaudīts pēc PKIX pārbaudes noteikumiem. Pārliecinieties, ka ir pieejami nepieciešamie starpsertifikāti."
+msgstr ""
+"PKIX-EE lietojums (1) prasa, lai galasubjekta sertifikāts tiktu pārbaudīts "
+"pēc PKIX pārbaudes noteikumiem. Pārliecinieties, ka ir pieejami "
+"nepieciešamie starpsertifikāti."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA lietojums (2) nosaka šo sertifikātu par uzticamības enkuru galasubjekta sertifikāta pārbaudei. Pārliecinieties, ka šis sertifikāts ir pienācīgi aizsargāts."
+msgstr ""
+"DANE-TA lietojums (2) nosaka šo sertifikātu par uzticamības enkuru "
+"galasubjekta sertifikāta pārbaudei. Pārliecinieties, ka šis sertifikāts ir "
+"pienācīgi aizsargāts."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE lietojums (3) ir ieteicams, jo tas nodrošina vienkāršāko ieviešanu ar tiešu sertifikāta izmantošanu bez papildu pārbaudes."
+msgstr ""
+"DANE-EE lietojums (3) ir ieteicams, jo tas nodrošina vienkāršāko ieviešanu "
+"ar tiešu sertifikāta izmantošanu bez papildu pārbaudes."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
@@ -7159,7 +7245,10 @@ msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "Selektors 1 (SubjectPublicKeyInfo) ir ieteicams, jo tas ļauj atjaunot sertifikātu bez SMIMEA ierakstu atjaunināšanas, kamēr publiskā atslēga paliek nemainīga."
+msgstr ""
+"Selektors 1 (SubjectPublicKeyInfo) ir ieteicams, jo tas ļauj atjaunot "
+"sertifikātu bez SMIMEA ierakstu atjaunināšanas, kamēr publiskā atslēga "
+"paliek nemainīga."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7519,7 +7608,10 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "KRITISKI: SSHFP ierakstiem NEPIECIEŠAMA DNSSEC pārbaude, lai tie sniegtu jebkādu drošības ieguvumu. Bez DNSSEC tie nesniedz nekādu aizsardzību pret starpnieka (man-in-the-middle) uzbrukumiem."
+msgstr ""
+"KRITISKI: SSHFP ierakstiem NEPIECIEŠAMA DNSSEC pārbaude, lai tie sniegtu "
+"jebkādu drošības ieguvumu. Bez DNSSEC tie nesniedz nekādu aizsardzību pret "
+"starpnieka (man-in-the-middle) uzbrukumiem."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -7762,7 +7854,9 @@ msgstr "DMARC nav rua/ruf URI. Ierobežo uzraudzību."
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "Šis ir DMARC ieraksts, kas tiek apstrādāts kā TXT ieraksta tips. DMARC ierakstiem jāizmanto TXT ieraksta tips ar saturu, kas sākas ar \"v=DMARC1\"."
+msgstr ""
+"Šis ir DMARC ieraksts, kas tiek apstrādāts kā TXT ieraksta tips. DMARC "
+"ierakstiem jāizmanto TXT ieraksta tips ar saturu, kas sākas ar \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -8047,7 +8141,9 @@ msgstr "NSEC3 ieraksti ir DNSSEC daļa un jāpārvalda kopā ar citiem."
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr "NSEC3 ierakstu manuāla rediģēšana nav ieteicama, jo tos parasti automātiski ģenerē DNSSEC atbalstoši vārdu serveri."
+msgstr ""
+"NSEC3 ierakstu manuāla rediģēšana nav ieteicama, jo tos parasti automātiski "
+"ģenerē DNSSEC atbalstoši vārdu serveri."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -8203,7 +8299,10 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR pakalpojumam jāatbilst formātam: [protocol][+rs][+rs]... kur protocol un rs sākas ar burtu un satur burtus un ciparus, defises, kolus vai plusa zīmes (katrs ne vairāk par 32 rakstzīmēm)."
+msgstr ""
+"NAPTR pakalpojumam jāatbilst formātam: [protocol][+rs][+rs]... kur protocol "
+"un rs sākas ar burtu un satur burtus un ciparus, defises, kolus vai plusa "
+"zīmes (katrs ne vairāk par 32 rakstzīmēm)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8574,7 +8673,6 @@ msgid "The selected user already owns the zone."
 msgstr "Atlasītais lietotājs jau ir zonas īpašnieks."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Neizdevās atjaunināt zonas ierakstus: %s"
@@ -9185,7 +9283,12 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr "Katrs tīkls (CIDR bloks) tiek piesaistīts tikai vienam skatam. Šī tīkla atrisinātāji saņem tikai tos zonas variantus, kas piešķirti piesaistītajam skatam. PowerDNS vispirms izvērtē tīklus ar garāko prefiksu, tāpēc konkrētāks apakštīkls (piemēram, 10.0.1.0/24) aizstāj plašāku diapazonu (10.0.0.0/8), ja abi atbilst klientam."
+msgstr ""
+"Katrs tīkls (CIDR bloks) tiek piesaistīts tikai vienam skatam. Šī tīkla "
+"atrisinātāji saņem tikai tos zonas variantus, kas piešķirti piesaistītajam "
+"skatam. PowerDNS vispirms izvērtē tīklus ar garāko prefiksu, tāpēc "
+"konkrētāks apakštīkls (piemēram, 10.0.1.0/24) aizstāj plašāku diapazonu "
+"(10.0.0.0/8), ja abi atbilst klientam."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9718,7 +9821,12 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr "Reģistrē API atslēgu dzīves cikla notikumus (izveide, atjaunošana, atsaukšana, atļauju izmaiņas) un autentificētus API pieprasījumus. Filtrējiet pēc lietotāja vai darbības, lai auditētu ārējo integrāciju aktivitāti. Sensitīvas vērtības (atslēgas, marķieri) šajā žurnālā nekad netiek ierakstītas."
+msgstr ""
+"Reģistrē API atslēgu dzīves cikla notikumus (izveide, atjaunošana, "
+"atsaukšana, atļauju izmaiņas) un autentificētus API pieprasījumus. "
+"Filtrējiet pēc lietotāja vai darbības, lai auditētu ārējo integrāciju "
+"aktivitāti. Sensitīvas vērtības (atslēgas, marķieri) šajā žurnālā nekad "
+"netiek ierakstītas."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9754,7 +9862,11 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr "Šī aktivitāšu plūsma reģistrē katru ar zonām un ierakstiem veikto darbību (izveide, rediģēšana, dzēšana, DNSSEC darbības, importēšana) kā vienkāršu key:value notikuma virkni. Strukturētiem stāvokļa attēliem pirms/pēc un ierakstu izmaiņu salīdzinājuma skatam skatiet ierakstu izmaiņu žurnālu."
+msgstr ""
+"Šī aktivitāšu plūsma reģistrē katru ar zonām un ierakstiem veikto darbību "
+"(izveide, rediģēšana, dzēšana, DNSSEC darbības, importēšana) kā vienkāršu "
+"key:value notikuma virkni. Strukturētiem stāvokļa attēliem pirms/pēc un "
+"ierakstu izmaiņu salīdzinājuma skatam skatiet ierakstu izmaiņu žurnālu."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -9791,7 +9903,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Piemērs: www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Prioritāte un TTL nav obligāti (noklusējumi: priority=0, ttl="
 
@@ -10030,7 +10141,10 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Lai gan mēs cenšamies uzturēt sistēmas pieejamību, mēs nevaram garantēt 100% darbspējas laiku. Lietotājiem nevajadzētu paļauties tikai uz šo sistēmu kritiskās DNS darbībās bez atbilstošām rezerves kopijām un uzraudzības."
+msgstr ""
+"Lai gan mēs cenšamies uzturēt sistēmas pieejamību, mēs nevaram garantēt 100% "
+"darbspējas laiku. Lietotājiem nevajadzētu paļauties tikai uz šo sistēmu "
+"kritiskās DNS darbībās bez atbilstošām rezerves kopijām un uzraudzības."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10041,7 +10155,10 @@ msgid ""
 "This system is provided \"as is\" without any warranties. The administrators "
 "are not liable for any damages or losses resulting from the use of this "
 "system."
-msgstr "Šī sistēma tiek nodrošināta \"kā tāda\" bez jebkādām garantijām. Administratori nav atbildīgi par zaudējumiem vai bojājumiem, kas radušies šīs sistēmas lietošanas rezultātā."
+msgstr ""
+"Šī sistēma tiek nodrošināta \"kā tāda\" bez jebkādām garantijām. "
+"Administratori nav atbildīgi par zaudējumiem vai bojājumiem, kas radušies "
+"šīs sistēmas lietošanas rezultātā."
 
 #: templates/modern/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -10162,7 +10279,6 @@ msgid "At least one special character"
 msgstr "Vismaz viens speciāls simbols"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -10267,12 +10383,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY gaida: sērijas numurs %serial% vēl nav apstiprināts"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY nosūtīts ar sērijas numuru %serial%"
 
@@ -11251,7 +11365,6 @@ msgid "Last modified"
 msgstr "Pēdējoreiz mainīts"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Pēdējo reizi rediģēja %account% %date%"
 
@@ -11482,7 +11595,6 @@ msgid "Zones Without Owners"
 msgstr "Zonas bez īpašniekiem"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Piešķirt sevi kā īpašnieku visām uzskaitītajām zonām?"
 
@@ -11785,7 +11897,11 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr "Zonas veidnes maiņa pārraksta uz veidni balstītos ierakstus, bet saglabā manuāli pievienotos. Veidnes izmaiņas zonas automātiski neatjaunina - lai piemērotu izmaiņas, veidnes rediģēšanas laikā izmantojiet pogu \"Atjaunināt zonas\"."
+msgstr ""
+"Zonas veidnes maiņa pārraksta uz veidni balstītos ierakstus, bet saglabā "
+"manuāli pievienotos. Veidnes izmaiņas zonas automātiski neatjaunina - lai "
+"piemērotu izmaiņas, veidnes rediģēšanas laikā izmantojiet pogu \"Atjaunināt "
+"zonas\"."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -11912,7 +12028,9 @@ msgstr "Veidnes ieraksti"
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr "Šai veidnei nav SOA ieraksta. DNS zonām pareizai darbībai parasti ir nepieciešams SOA ieraksts, un bez tā DNSSEC parakstīšana var neizdoties."
+msgstr ""
+"Šai veidnei nav SOA ieraksta. DNS zonām pareizai darbībai parasti ir "
+"nepieciešams SOA ieraksts, un bez tā DNSSEC parakstīšana var neizdoties."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."
@@ -12122,7 +12240,13 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr "Katra ieraksta pievienošana/rediģēšana/dzēšana un zonas izveide/dzēšana/metadatu rediģēšana šeit tiek fiksēta ar stāvokļa attēlu pirms/pēc, kā arī lietotāju un laika zīmogu. Žurnāla ieraksti nekad automātiski nebeidzas - dzēsiet vecās rindas manuāli, ja tabula kļūst pārāk liela. Izmantojiet laika perioda saīsnes, lai koncentrētos uz nesenajām darbībām, vai eksportējiet uz CSV/JSON, lai padotu datus ārējām audita sistēmām."
+msgstr ""
+"Katra ieraksta pievienošana/rediģēšana/dzēšana un zonas izveide/dzēšana/"
+"metadatu rediģēšana šeit tiek fiksēta ar stāvokļa attēlu pirms/pēc, kā arī "
+"lietotāju un laika zīmogu. Žurnāla ieraksti nekad automātiski nebeidzas - "
+"dzēsiet vecās rindas manuāli, ja tabula kļūst pārāk liela. Izmantojiet laika "
+"perioda saīsnes, lai koncentrētos uz nesenajām darbībām, vai eksportējiet uz "
+"CSV/JSON, lai padotu datus ārējām audita sistēmām."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12639,7 +12763,12 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr "Reģistrē lietotāju kontu notikumus, piemēram, pieteikšanās, paroļu maiņas, grupu dalības atjauninājumus un administratora darbības ar lietotāju ierakstiem. Katrs ieraksts parāda darbību, izpildītāju, ietekmēto lietotāju un laika zīmogu. Filtrējiet pēc darbības vai lietotāja, lai auditētu piekļuves izmaiņas."
+msgstr ""
+"Reģistrē lietotāju kontu notikumus, piemēram, pieteikšanās, paroļu maiņas, "
+"grupu dalības atjauninājumus un administratora darbības ar lietotāju "
+"ierakstiem. Katrs ieraksts parāda darbību, izpildītāju, ietekmēto lietotāju "
+"un laika zīmogu. Filtrējiet pēc darbības vai lietotāja, lai auditētu "
+"piekļuves izmaiņas."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12683,7 +12812,14 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Skati piegādā dažādiem klientiem dažādus zonas variantus atkarībā no tīkla, no kura tika veikts vaicājums atrisinātājam. Katrs variants tiek nosaukts formā zone..variant (piemēram, example.com..trusted), un pirms piešķiršanas šeit tam PowerDNS jāpastāv kā atsevišķai zonai. Varianti dala vienu nosaukumu, bet katrā skatā atrisinās atšķirīgi, tāpēc viens un tas pats resursdatora nosaukums var atbildēt ar dažādām IP adresēm atkarībā no klienta tīkla."
+msgstr ""
+"Skati piegādā dažādiem klientiem dažādus zonas variantus atkarībā no tīkla, "
+"no kura tika veikts vaicājums atrisinātājam. Katrs variants tiek nosaukts "
+"formā zone..variant (piemēram, example.com..trusted), un pirms piešķiršanas "
+"šeit tam PowerDNS jāpastāv kā atsevišķai zonai. Varianti dala vienu "
+"nosaukumu, bet katrā skatā atrisinās atšķirīgi, tāpēc viens un tas pats "
+"resursdatora nosaukums var atbildēt ar dažādām IP adresēm atkarībā no "
+"klienta tīkla."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -12975,20 +13111,27 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Pārbaudiet, vai pdns_api.key failā config/settings.php sakrīt ar PowerDNS konfigurēto API atslēgu."
+msgstr ""
+"Pārbaudiet, vai pdns_api.key failā config/settings.php sakrīt ar PowerDNS "
+"konfigurēto API atslēgu."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Pārbaudiet, vai pdns_api.server_name sakrīt ar to, ko ziņo PowerDNS (noklusējums 'localhost')."
+msgstr ""
+"Pārbaudiet, vai pdns_api.server_name sakrīt ar to, ko ziņo PowerDNS "
+"(noklusējums 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS noraidīja pieprasījumu. Iemeslu pārbaudiet PowerDNS servera žurnālā - bieži sastopams izraisītājs pēc zonu importēšanas tieši PowerDNS datubāzē ir viens nepareizi formatēts ieraksts, kas neļauj serializēt zonu."
+msgstr ""
+"PowerDNS noraidīja pieprasījumu. Iemeslu pārbaudiet PowerDNS servera žurnālā "
+"- bieži sastopams izraisītājs pēc zonu importēšanas tieši PowerDNS datubāzē "
+"ir viens nepareizi formatēts ieraksts, kas neļauj serializēt zonu."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13158,7 +13301,11 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr "API atslēgas ļauj ārējām lietojumprogrammām piekļūt Poweradmin API. Katra atslēga ir saistīta ar jūsu lietotāja kontu un pārmanto jūsu atļaujas, tāpēc konta atsaukšana atsauc arī visas tā atslēgas. Uzskatiet atslēgas par noslēpumiem - tās piešķir tādu pašu piekļuvi kā pieteikšanās ar jūsu kontu."
+msgstr ""
+"API atslēgas ļauj ārējām lietojumprogrammām piekļūt Poweradmin API. Katra "
+"atslēga ir saistīta ar jūsu lietotāja kontu un pārmanto jūsu atļaujas, tāpēc "
+"konta atsaukšana atsauc arī visas tā atslēgas. Uzskatiet atslēgas par "
+"noslēpumiem - tās piešķir tādu pašu piekļuvi kā pieteikšanās ar jūsu kontu."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13321,7 +13468,11 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr "Reģistrē grupu dzīves cikla notikumus (izveide, rediģēšana, dzēšana) un dalības izmaiņas (pievienotie vai izņemtie lietotāji). Katrs ieraksts parāda darbību, izpildītāju, ietekmēto grupu un laika zīmogu. Noderīgi, lai auditētu zonu piekļuves izmaiņas, kas notiek caur grupu īpašumtiesībām."
+msgstr ""
+"Reģistrē grupu dzīves cikla notikumus (izveide, rediģēšana, dzēšana) un "
+"dalības izmaiņas (pievienotie vai izņemtie lietotāji). Katrs ieraksts parāda "
+"darbību, izpildītāju, ietekmēto grupu un laika zīmogu. Noderīgi, lai "
+"auditētu zonu piekļuves izmaiņas, kas notiek caur grupu īpašumtiesībām."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13603,7 +13754,6 @@ msgid "RDAP results for"
 msgstr "RDAP rezultāti"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Lūdzu, ievadiet domēna nosaukumu, lai veiktu RDAP meklēšanu."
 
@@ -13628,13 +13778,18 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr "Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, update, delete) tikai Poweradmin tabulām. Izmantojot API aizmuguri, piekļuve PowerDNS tabulām nav nepieciešama."
+msgstr ""
+"Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, "
+"update, delete) tikai Poweradmin tabulām. Izmantojot API aizmuguri, piekļuve "
+"PowerDNS tabulām nav nepieciešama."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, update, delete), lai Poweradmin varētu piekļūt PowerDNS tabulām."
+msgstr ""
+"Izveidojiet datubāzes lietotāju ar ierobežotām tiesībām (select, insert, "
+"update, delete), lai Poweradmin varētu piekļūt PowerDNS tabulām."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13657,7 +13812,9 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Tā kā izmantojat SQLite, jauns lietotājs ar ierobežotām tiesībām nav jāizveido."
+msgstr ""
+"Tā kā izmantojat SQLite, jauns lietotājs ar ierobežotām tiesībām nav "
+"jāizveido."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -13772,13 +13929,17 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr "Konfigurējiet datubāzes savienojumu ar tabulu izveides tiesībām. PowerDNS atrašanās vietu, ja nepieciešams, var norādīt atsevišķi."
+msgstr ""
+"Konfigurējiet datubāzes savienojumu ar tabulu izveides tiesībām. PowerDNS "
+"atrašanās vietu, ja nepieciešams, var norādīt atsevišķi."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "Konfigurējiet datubāzes savienojumu Poweradmin tabulām (lietotāji, atļaujas, zonas). PowerDNS tabulas nav nepieciešamas."
+msgstr ""
+"Konfigurējiet datubāzes savienojumu Poweradmin tabulām (lietotāji, atļaujas, "
+"zonas). PowerDNS tabulas nav nepieciešamas."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13814,7 +13975,8 @@ msgstr "Šī datubāzes lietotāja parole."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Izvairieties no pēdiņām, apgrieztajām slīpsvītrām un rindu pārtraukumiem."
+msgstr ""
+"Izvairieties no pēdiņām, apgrieztajām slīpsvītrām un rindu pārtraukumiem."
 
 #: install/templates/step4.html.twig:143
 msgid "Provide the hostname"
@@ -13850,7 +14012,9 @@ msgstr "Pilns ceļš līdz SQLite datubāzes failam"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Failam jāpastāv, un tīmekļa serverim jābūt lasīšanas/rakstīšanas piekļuvei. Izmantojiet absolūto ceļu."
+msgstr ""
+"Failam jāpastāv, un tīmekļa serverim jābūt lasīšanas/rakstīšanas piekļuvei. "
+"Izmantojiet absolūto ceļu."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -13862,7 +14026,9 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Rakstzīmju kopa jaunām tabulām. Atstājiet tukšu, lai izmantotu datubāzes noklusējumu."
+msgstr ""
+"Rakstzīmju kopa jaunām tabulām. Atstājiet tukšu, lai izmantotu datubāzes "
+"noklusējumu."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -13871,7 +14037,9 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Kārtošanas noteikumi rakstzīmju salīdzināšanai. Atstājiet tukšu, lai izmantotu datubāzes noklusējumu."
+msgstr ""
+"Kārtošanas noteikumi rakstzīmju salīdzināšanai. Atstājiet tukšu, lai "
+"izmantotu datubāzes noklusējumu."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -13969,11 +14137,14 @@ msgstr "Nevar noteikt (PHP-FPM) - pārliecinieties, ka tas ir iespējots"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Pārliecinieties, ka URL pārrakstīšana ir konfigurēta (skatiet nginx.conf.example)"
+msgstr ""
+"Pārliecinieties, ka URL pārrakstīšana ir konfigurēta (skatiet "
+"nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Pārliecinieties, ka URL pārrakstīšana ir konfigurēta jūsu tīmekļa serverim"
+msgstr ""
+"Pārliecinieties, ka URL pārrakstīšana ir konfigurēta jūsu tīmekļa serverim"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -14016,12 +14187,17 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin uztur savas tabulas (lietotāji, atļaujas, zonu metadati) konfigurētajā datubāzē arī tad, ja ir izvēlēta PowerDNS API aizmugure. Šie akreditācijas dati ir paredzēti šai datubāzei, nevis PowerDNS."
+msgstr ""
+"Poweradmin uztur savas tabulas (lietotāji, atļaujas, zonu metadati) "
+"konfigurētajā datubāzē arī tad, ja ir izvēlēta PowerDNS API aizmugure. Šie "
+"akreditācijas dati ir paredzēti šai datubāzei, nevis PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Poweradmin datubāzes lietotājvārds ar ierobežotu piekļuvi. Nav paredzēts pieteikšanās tīmekļa saskarnē."
+msgstr ""
+"Poweradmin datubāzes lietotājvārds ar ierobežotu piekļuvi. Nav paredzēts "
+"pieteikšanās tīmekļa saskarnē."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14111,13 +14287,16 @@ msgstr "Svarīgs drošības paziņojums:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr "Jums jādzēš direktorija \"install/\" no Poweradmin saknes direktorijas."
+msgstr ""
+"Jums jādzēš direktorija \"install/\" no Poweradmin saknes direktorijas."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Drošības apsvērumu dēļ Poweradmin nedarbosies, kamēr pastāv instalēšanas direktorija."
+msgstr ""
+"Drošības apsvērumu dēļ Poweradmin nedarbosies, kamēr pastāv instalēšanas "
+"direktorija."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14154,11 +14333,14 @@ msgstr "Pirms turpināt, pārliecinieties, ka jums ir:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr "Instalēts PowerDNS ar izveidotām datubāzes tabulām (vai konfigurētu API piekļuvi)"
+msgstr ""
+"Instalēts PowerDNS ar izveidotām datubāzes tabulām (vai konfigurētu API "
+"piekļuvi)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Datubāzes akreditācijas dati (resursdatora nosaukums, lietotājvārds, parole)"
+msgstr ""
+"Datubāzes akreditācijas dati (resursdatora nosaukums, lietotājvārds, parole)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -14172,14 +14354,17 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr "Konfigurējiet datubāzes savienojumu, izveidojiet administratora kontu un ģenerējiet konfigurācijas failu."
+msgstr ""
+"Konfigurējiet datubāzes savienojumu, izveidojiet administratora kontu un "
+"ģenerējiet konfigurācijas failu."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Piezīme: PostgreSQL un SQLite gadījumā gan PowerDNS, gan Poweradmin jāizmanto viena un tā pati datubāze."
+msgstr ""
+"Piezīme: PostgreSQL un SQLite gadījumā gan PowerDNS, gan Poweradmin "
+"jāizmanto viena un tā pati datubāze."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14187,7 +14372,8 @@ msgstr "Trūkst PowerDNS tabulu:"
 
 #: install/helpers/InstallStepHandler.php:195
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin ir nepieciešamas šīs PowerDNS tabulas, lai darbotos pareizi."
+msgstr ""
+"Poweradmin ir nepieciešamas šīs PowerDNS tabulas, lai darbotos pareizi."
 
 #: install/helpers/InstallStepHandler.php:203
 msgid "Updating database... done!"
@@ -14200,19 +14386,24 @@ msgstr "Ārējo atslēgu ierobežojumu problēmas:"
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr "Instalētājs nevarēja dzēst esošās tabulas ārējo atslēgu ierobežojumu dēļ"
+msgstr ""
+"Instalētājs nevarēja dzēst esošās tabulas ārējo atslēgu ierobežojumu dēļ"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr "Tas var notikt atkārtotas instalēšanas laikā, ja ir pielāgoti ierobežojumi vai ja uz tabulām atsaucas citas tabulas"
+msgstr ""
+"Tas var notikt atkārtotas instalēšanas laikā, ja ir pielāgoti ierobežojumi "
+"vai ja uz tabulām atsaucas citas tabulas"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr "Pirms instalētāja palaišanas varat mēģināt manuāli atspējot ārējo atslēgu pārbaudes:"
+msgstr ""
+"Pirms instalētāja palaišanas varat mēģināt manuāli atspējot ārējo atslēgu "
+"pārbaudes:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14226,11 +14417,14 @@ msgstr "Pārliecinieties, ka SQLite datubāzes fails pastāv"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Pārbaudiet, vai tīmekļa serverim ir lasīšanas un rakstīšanas atļaujas datubāzes failam"
+msgstr ""
+"Pārbaudiet, vai tīmekļa serverim ir lasīšanas un rakstīšanas atļaujas "
+"datubāzes failam"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Pārbaudiet, vai pilnais ceļš līdz datubāzes failam ir pareizs un pieejams"
+msgstr ""
+"Pārbaudiet, vai pilnais ceļš līdz datubāzes failam ir pareizs un pieejams"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
@@ -14253,19 +14447,23 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite datubāzes fails %s nepastāv. Lūdzu, izveidojiet datubāzes failu pirms turpināšanas."
+msgstr ""
+"SQLite datubāzes fails %s nepastāv. Lūdzu, izveidojiet datubāzes failu pirms "
+"turpināšanas."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr "SQLite datubāzes fails %s nav lasāms. Lūdzu, pārbaudiet faila atļaujas."
+msgstr ""
+"SQLite datubāzes fails %s nav lasāms. Lūdzu, pārbaudiet faila atļaujas."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "SQLite datubāzes fails %s nav rakstāms. Lūdzu, pārbaudiet faila atļaujas."
+msgstr ""
+"SQLite datubāzes fails %s nav rakstāms. Lūdzu, pārbaudiet faila atļaujas."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
@@ -14284,20 +14482,26 @@ msgstr "Izmantojot API aizmuguri, PowerDNS API atslēga ir obligāta."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Konfigurācijas fails nav atrasts. Lūdzu, izveidojiet failu config/settings.php pirms turpināšanas."
+msgstr ""
+"Konfigurācijas fails nav atrasts. Lūdzu, izveidojiet failu config/"
+"settings.php pirms turpināšanas."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "Atsevišķas PowerDNS datubāzes tiek atbalstītas tikai ar MySQL. PostgreSQL un SQLite gadījumā, lūdzu, izmantojiet vienu un to pašu datubāzi."
+msgstr ""
+"Atsevišķas PowerDNS datubāzes tiek atbalstītas tikai ar MySQL. PostgreSQL un "
+"SQLite gadījumā, lūdzu, izmantojiet vienu un to pašu datubāzi."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "Datubāzē \"%s\" trūkst PowerDNS tabulu: %s. Lūdzu, pārliecinieties, ka PowerDNS ir pareizi instalēts šajā datubāzē."
+msgstr ""
+"Datubāzē \"%s\" trūkst PowerDNS tabulu: %s. Lūdzu, pārliecinieties, ka "
+"PowerDNS ir pareizi instalēts šajā datubāzē."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
@@ -14305,73 +14509,19 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nevar izveidot savienojumu ar PowerDNS datubāzi \"%s\": %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
+msgstr ""
+"Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
+"atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigurācijas fails %s nav atrasts. Lietojiet <a href=\"install/"
-# OBSOLETE: "\">instalētāju</a>."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a> eksistē, noņemiet to pirms turpināšanas."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "Jūs nevarat dzēst ierakstus no SLAVE zonas."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "Jūs nevarat rediģēt ierakstus SLAVE zonā."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "Nederīga SOA nosaukuma lauka vērtība. Jābūt zonas nosaukumam."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "Nederīga e-pasta adrese SOA ierakstā."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "Nezināms ieraksta veids."
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "Jābūt vismaz vienam zonas īpašniekam."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Piekļuve"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Pēc izveides"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Mainīt zonas īpašnieku"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Jūs jebkurā laikā varat nodot zonas īpašumtiesības citam lietotājam no "
-# OBSOLETE: "lietotāju saraksta."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Pārvaldīt lietotājus"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Veidņu saraksts"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr "Šo veidni var piešķirt lietotājiem. Izmaiņas ietekmēs visus."
+# OBSOLETE: "Nederīgs LOC ieraksta formāts. Formātam jābūt: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 
 

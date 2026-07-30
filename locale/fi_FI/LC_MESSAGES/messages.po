@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 11:44+0300\n"
+"POT-Creation-Date: 2026-07-30 17:49+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Finnish\n"
@@ -86,7 +86,10 @@ msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr "TLSA-tietueet vaativat, että DNSSEC on otettu käyttöön tälle alueelle. Ilman DNSSEC:iä TLSA-tietueet eivät tuo tietoturvahyötyä ja asiakasohjelmat voivat sivuuttaa ne."
+msgstr ""
+"TLSA-tietueet vaativat, että DNSSEC on otettu käyttöön tälle alueelle. Ilman "
+"DNSSEC:iä TLSA-tietueet eivät tuo tietoturvahyötyä ja asiakasohjelmat voivat "
+"sivuuttaa ne."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
@@ -252,7 +255,10 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr "Heksadesimaalinen tiiviste tai koko varmennedata (riippuu vastaavuustyypistä). SHA-256:lle käytä \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+msgstr ""
+"Heksadesimaalinen tiiviste tai koko varmennedata (riippuu "
+"vastaavuustyypistä). SHA-256:lle käytä \"openssl x509 -in cert.pem -pubkey "
+"-noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -608,7 +614,9 @@ msgstr "Sisällytä toimialueet"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "Toimialueet, joiden SPF-tietueet sisällytetään (yksi per rivi). Yleisiä: _spf.google.com, spf.protection.outlook.com"
+msgstr ""
+"Toimialueet, joiden SPF-tietueet sisällytetään (yksi per rivi). Yleisiä: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -663,14 +671,20 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr "SPF-tietue ylittää DNS-hakujen rajan (%d/10). Tämä saa SPF-tarkistuksen epäonnistumaan. Poista joitakin include/a/mx-mekanismeja tai käytä niiden sijaan ip4/ip6."
+msgstr ""
+"SPF-tietue ylittää DNS-hakujen rajan (%d/10). Tämä saa SPF-tarkistuksen "
+"epäonnistumaan. Poista joitakin include/a/mx-mekanismeja tai käytä niiden "
+"sijaan ip4/ip6."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr "SPF-tietueessa on %d DNS-hakua (raja on 10). Harkitse ip4/ip6:n käyttöä include-mekanismien sijaan tai yhdistä include-viittauksia pysyäksesi rajan alapuolella."
+msgstr ""
+"SPF-tietueessa on %d DNS-hakua (raja on 10). Harkitse ip4/ip6:n käyttöä "
+"include-mekanismien sijaan tai yhdistä include-viittauksia pysyäksesi rajan "
+"alapuolella."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:304
 #, php-format
@@ -1021,7 +1035,9 @@ msgstr "Toimialue"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr "Toimialuenimi (jätä tyhjäksi juurelle @). Tietueen koko nimi on: _service._protocol.domain"
+msgstr ""
+"Toimialuenimi (jätä tyhjäksi juurelle @). Tietueen koko nimi on: "
+"_service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
@@ -1721,7 +1737,6 @@ msgid "Invalid value for %s. Allowed values: %s."
 msgstr "Virheellinen arvo kohteelle %s. Sallitut arvot: %s."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:479
-#, auto-english-fallback
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metatietolajia %s voi muuttaa vain ylläpitäjä."
@@ -1844,21 +1859,22 @@ msgid "The permission template has been updated successfully."
 msgstr "Käyttöoikeusmalli on päivitetty onnistuneesti."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
-#, auto-english-fallback
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
-msgstr "Ylläpitäjän oikeuksien myöntäminen käyttöoikeusmallissa vaatii ylläpitäjän oikeudet."
+msgstr ""
+"Ylläpitäjän oikeuksien myöntäminen käyttöoikeusmallissa vaatii ylläpitäjän "
+"oikeudet."
 
 #: lib/Application/Controller/EditPermTemplController.php:179
-#, auto-english-fallback
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Ylläpitäjän oikeudet sisältävän käyttöoikeusmallin muokkaaminen vaatii ylläpitäjän oikeudet."
+msgstr ""
+"Ylläpitäjän oikeudet sisältävän käyttöoikeusmallin muokkaaminen vaatii "
+"ylläpitäjän oikeudet."
 
 #: lib/Application/Controller/EditPermTemplController.php:180
-#, auto-english-fallback
 msgid "The permission template could not be updated."
 msgstr "Käyttöoikeusmallin päivittäminen ei onnistunut."
 
@@ -1919,9 +1935,10 @@ msgid "Add User"
 msgstr "Lisää käyttäjä"
 
 #: lib/Application/Controller/AddUserController.php:128
-#, auto-english-fallback
 msgid "No non-superuser permission template is available to assign."
-msgstr "Määritettävissä ei ole käyttöoikeusmallia, jolla ei ole pääkäyttäjän oikeuksia."
+msgstr ""
+"Määritettävissä ei ole käyttöoikeusmallia, jolla ei ole pääkäyttäjän "
+"oikeuksia."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
@@ -2465,7 +2482,9 @@ msgstr ""
 #: lib/Application/Controller/RecordTypeDefaultsController.php:134
 #, php-format
 msgid "Saved %d default(s); cleared %d. Rejected invalid values for: %s."
-msgstr "Tallennettiin %d oletusarvo(a); tyhjennettiin %d. Hylättiin virheelliset arvot: %s."
+msgstr ""
+"Tallennettiin %d oletusarvo(a); tyhjennettiin %d. Hylättiin virheelliset "
+"arvot: %s."
 
 #: lib/Application/Controller/RecordTypeDefaultsController.php:143
 #, php-format
@@ -2646,7 +2665,6 @@ msgid "The permission template has been added successfully."
 msgstr "Käyttöoikeusmalli on lisätty onnistuneesti."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
-#, auto-english-fallback
 msgid "The permission template could not be added."
 msgstr "Käyttöoikeusmallin lisääminen ei onnistunut."
 
@@ -2815,7 +2833,8 @@ msgstr "Sinulla ei ole oikeutta synkronoida alueita PowerDNS:stä."
 #: lib/Application/Controller/ListForwardZonesController.php:103
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Alueet synkronoitu PowerDNS:stä: %d lisätty, %d päivitetty, %d poistettu."
+msgstr ""
+"Alueet synkronoitu PowerDNS:stä: %d lisätty, %d päivitetty, %d poistettu."
 
 #: lib/Application/Controller/ListForwardZonesController.php:111
 #, php-format
@@ -3530,13 +3549,17 @@ msgstr "Ei, säilytä tämä supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "Näytetään alla olevassa taulukossa määritettyjen autoprimary-palvelinten yhteystila."
+msgstr ""
+"Näytetään alla olevassa taulukossa määritettyjen autoprimary-palvelinten "
+"yhteystila."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr "Näytetään alla olevassa taulukossa määritettyjen supermaster-palvelinten yhteystila."
+msgstr ""
+"Näytetään alla olevassa taulukossa määritettyjen supermaster-palvelinten "
+"yhteystila."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""
@@ -3570,23 +3593,23 @@ msgid ""
 msgstr "Tietokantavirhe: Todennusta ei voi vahvistaa. Tarkista määritys."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
-#, auto-english-fallback
 msgid "You do not have the permission to change the permission template."
 msgstr "Sinulla ei ole oikeutta vaihtaa käyttöoikeusmallia."
 
 #: lib/Domain/Model/UserManager.php:87
-#, auto-english-fallback
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
-msgstr "Oman käyttöoikeusmallin vaihtaminen vaatii oikeuden muokata muita käyttäjiä."
+msgstr ""
+"Oman käyttöoikeusmallin vaihtaminen vaatii oikeuden muokata muita käyttäjiä."
 
 #: lib/Domain/Model/UserManager.php:89
-#, auto-english-fallback
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
-msgstr "Ylläpitäjän oikeudet sisältävän käyttöoikeusmallin määrittäminen vaatii ylläpitäjän oikeudet."
+msgstr ""
+"Ylläpitäjän oikeudet sisältävän käyttöoikeusmallin määrittäminen vaatii "
+"ylläpitäjän oikeudet."
 
 #: lib/Domain/Model/UserManager.php:530
 msgid "Enter a valid email address."
@@ -3641,7 +3664,6 @@ msgid "You do not have the permission to add a record to this zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tietuetta tähän aluemalliin."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tätä tietuetyyppiä aluemalliin."
@@ -3667,7 +3689,6 @@ msgid "Error updating zone template record: "
 msgstr "Virhe aluemallin tietueen päivityksessä:"
 
 #: lib/Domain/Model/ZoneTemplate.php:847
-#, auto-english-fallback
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
@@ -3682,12 +3703,12 @@ msgid "Error checking template ownership: "
 msgstr "Virhe mallin omistuksen tarkistamisessa:"
 
 #: lib/Domain/Model/ZoneTemplate.php:964
-#, auto-english-fallback
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
-msgstr "Nämä tietuetyypit jätettiin pois mallista, koska et voi lisätä niitä: %s"
+msgstr ""
+"Nämä tietuetyypit jätettiin pois mallista, koska et voi lisätä niitä: %s"
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
@@ -3726,7 +3747,6 @@ msgid "You do not have the permission to add NS record."
 msgstr "Sinulla ei ole oikeutta lisätä NS-tietuetta."
 
 #: lib/Domain/Model/Permission.php:165
-#, auto-english-fallback
 msgid "You do not have the permission to add LUA record."
 msgstr "Sinulla ei ole oikeutta lisätä LUA-tietuetta."
 
@@ -3739,7 +3759,6 @@ msgid "You do not have the permission to edit this NS record."
 msgstr "Sinulla ei ole oikeutta muokata tätä NS-tietuetta."
 
 #: lib/Domain/Model/Permission.php:170
-#, auto-english-fallback
 msgid "You do not have the permission to edit this LUA record."
 msgstr "Sinulla ei ole oikeutta muokata tätä LUA-tietuetta."
 
@@ -3752,7 +3771,6 @@ msgid "You do not have the permission to delete NS records."
 msgstr "Sinulla ei ole oikeutta poistaa NS-tietueita."
 
 #: lib/Domain/Model/Permission.php:175
-#, auto-english-fallback
 msgid "You do not have the permission to delete LUA records."
 msgstr "Sinulla ei ole oikeutta poistaa LUA-tietueita."
 
@@ -3927,7 +3945,9 @@ msgstr "1. Koko SRV-hakujen ketjun on oltava DNSSEC-allekirjoitettu"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. TLSA-tietueiden tulee löytyä nimestä _$port._$protocol.$hostname, jossa $port, $protocol ja $hostname tulevat SRV-haun kohteesta"
+msgstr ""
+"2. TLSA-tietueiden tulee löytyä nimestä _$port._$protocol.$hostname, jossa "
+"$port, $protocol ja $hostname tulevat SRV-haun kohteesta"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -3938,7 +3958,9 @@ msgstr "3. Sekä SRV- että TLSA-tietueilla DNSSEC-tilan on oltava \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr "TLSA-tietueen nimen tulisi yleensä olla muodossa _port._protocol.hostname (esim. _443._tcp.www.example.com)."
+msgstr ""
+"TLSA-tietueen nimen tulisi yleensä olla muodossa _port._protocol.hostname "
+"(esim. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -3996,7 +4018,9 @@ msgstr "Sähköpostin paikallinen osa SHA-256 ja ennen _smimecert.<domain>"
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr "TLSA-tietueet tulisi yleensä sijoittaa kohtaan \"_port._protocol.hostname\" (esim. \"_443._tcp.www.example.com\")."
+msgstr ""
+"TLSA-tietueet tulisi yleensä sijoittaa kohtaan \"_port._protocol.hostname\" "
+"(esim. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -4108,7 +4132,9 @@ msgstr "RFC 5155/9077:n mukaan NSEC3PARAM TTL = SOA minimum."
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr "NSEC3PARAM-tietueet ovat osa DNSSEC:iä, ja niitä tulisi hallita vain muiden DNSSEC-tietueiden (DNSKEY, RRSIG jne.) yhteydessä."
+msgstr ""
+"NSEC3PARAM-tietueet ovat osa DNSSEC:iä, ja niitä tulisi hallita vain muiden "
+"DNSSEC-tietueiden (DNSKEY, RRSIG jne.) yhteydessä."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
@@ -4228,7 +4254,9 @@ msgstr ""
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr "FQDN-arvot on suositeltavaa päättää pisteeseen, jotta ne tulkitaan absoluuttisiksi verkkotunnuksiksi eikä suhteellisiksi."
+msgstr ""
+"FQDN-arvot on suositeltavaa päättää pisteeseen, jotta ne tulkitaan "
+"absoluuttisiksi verkkotunnuksiksi eikä suhteellisiksi."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
@@ -4347,8 +4375,8 @@ msgstr "Virheellinen koko tai tarkkuus. 0-90000000 metriä."
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr "Virheellinen LOC-tietueen muoto. Muodon tulee olla: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr "Virheellinen LOC-tietueen muoto. Muodon tulee olla: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4696,7 +4724,10 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr "Seuraavan verkkotunnuksen kentän on oltava alueen kanonisessa järjestyksessä seuraava omistajanimi. Kanoninen järjestys ei erottele kirjainkokoa ja lajittelee nimiosat oikealta vasemmalle."
+msgstr ""
+"Seuraavan verkkotunnuksen kentän on oltava alueen kanonisessa järjestyksessä "
+"seuraava omistajanimi. Kanoninen järjestys ei erottele kirjainkokoa ja "
+"lajittelee nimiosat oikealta vasemmalle."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4745,7 +4776,10 @@ msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr "Tietueen nimi ei noudata vakiomuotoista OPENPGPKEY-muotoa (<hash>._openpgpkey.<domain>). Vakiomuotoa suositellaan yhteentoimivuuden vuoksi."
+msgstr ""
+"Tietueen nimi ei noudata vakiomuotoista OPENPGPKEY-muotoa "
+"(<hash>._openpgpkey.<domain>). Vakiomuotoa suositellaan yhteentoimivuuden "
+"vuoksi."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -4756,7 +4790,9 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "OPENPGPKEY-tietueet tulisi yleensä luoda erikoistyökaluilla, kuten GnuPG:llä ja sen --print-dane-records-valitsimella, eikä käsin."
+msgstr ""
+"OPENPGPKEY-tietueet tulisi yleensä luoda erikoistyökaluilla, kuten GnuPG:llä "
+"ja sen --print-dane-records-valitsimella, eikä käsin."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4779,7 +4815,10 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "OPENPGPKEY-tietueen koko ylittää 4KB. RFC 7929 suosittelee pitämään DNS-tietueet mahdollisimman pieninä luotettavan siirron varmistamiseksi. Harkitse mahdollisimman suppean avaimen vientimuodon käyttöä."
+msgstr ""
+"OPENPGPKEY-tietueen koko ylittää 4KB. RFC 7929 suosittelee pitämään DNS-"
+"tietueet mahdollisimman pieninä luotettavan siirron varmistamiseksi. "
+"Harkitse mahdollisimman suppean avaimen vientimuodon käyttöä."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4804,7 +4843,9 @@ msgstr "Dekoodatussa sisällössä ei julkisen avaimen pakettia."
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr "OPENPGPKEY-tietueet VAATIVAT DNSSEC:iä tuottaakseen mitään tietoturvahyötyä. Ilman DNSSEC-varmennusta nämä tietueet eivät anna lainkaan tietoturvaetua."
+msgstr ""
+"OPENPGPKEY-tietueet VAATIVAT DNSSEC:iä tuottaakseen mitään tietoturvahyötyä. "
+"Ilman DNSSEC-varmennusta nämä tietueet eivät anna lainkaan tietoturvaetua."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -4822,7 +4863,9 @@ msgstr "OPENPGPKEY ei korvaa OpenPGP Web of Trustia."
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr "Luo OPENPGPKEY-tietueet erikoistyökaluilla, kuten GnuPG:llä ja sen --print-dane-records-valitsimella, jotta muoto ja sisältö ovat oikeat."
+msgstr ""
+"Luo OPENPGPKEY-tietueet erikoistyökaluilla, kuten GnuPG:llä ja sen --print-"
+"dane-records-valitsimella, jotta muoto ja sisältö ovat oikeat."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -4834,7 +4877,10 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr "Varoitus: HINFO-tietueet paljastavat mahdollisesti arkaluonteisia tietoja palvelimen laitteistosta ja ohjelmistosta, joista voi olla hyötyä hyökkääjille. Arvioi tietoturvavaikutukset ennen käyttöä julkisessa DNS:ssä."
+msgstr ""
+"Varoitus: HINFO-tietueet paljastavat mahdollisesti arkaluonteisia tietoja "
+"palvelimen laitteistosta ja ohjelmistosta, joista voi olla hyötyä "
+"hyökkääjille. Arvioi tietoturvavaikutukset ennen käyttöä julkisessa DNS:ssä."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -5107,7 +5153,9 @@ msgstr "CERT-tietueiden prioriteettikentän on oltava 0 tai tyhjä"
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr "RFC 4398:n mukaisesti huomioi DNS-tietueiden kokorajoitukset CERT-tietueita käyttäessäsi. Suuret varmenteet voivat aiheuttaa DNS-viestien pirstoutumista."
+msgstr ""
+"RFC 4398:n mukaisesti huomioi DNS-tietueiden kokorajoitukset CERT-tietueita "
+"käyttäessäsi. Suuret varmenteet voivat aiheuttaa DNS-viestien pirstoutumista."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
@@ -5142,7 +5190,9 @@ msgstr "CERT-tyypin on oltava 0-65535 tai kelvollinen mnemoninen."
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr "URL-pohjaiset varmennetyypit (IPKIX, ISPKI, IPGP, IACPKIX) tuovat ylimääräisen epäsuoran viittauksen ja mahdollisia tietoturvariskejä."
+msgstr ""
+"URL-pohjaiset varmennetyypit (IPKIX, ISPKI, IPGP, IACPKIX) tuovat "
+"ylimääräisen epäsuoran viittauksen ja mahdollisia tietoturvariskejä."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -5201,7 +5251,11 @@ msgid ""
 "IMPORTANT: DLV records have been obsoleted by RFC 8749 (March 2020). Major "
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
-msgstr "TÄRKEÄÄ: DLV-tietueet on todettu vanhentuneiksi RFC 8749:ssä (maaliskuu 2020). Suuret DNS-selvittäjät ovat poistaneet DLV-tuen tai merkinneet sen vanhentuneeksi. Harkitse sen sijaan tavanomaista DNSSEC-varmennusta DS-tietueiden avulla."
+msgstr ""
+"TÄRKEÄÄ: DLV-tietueet on todettu vanhentuneiksi RFC 8749:ssä (maaliskuu "
+"2020). Suuret DNS-selvittäjät ovat poistaneet DLV-tuen tai merkinneet sen "
+"vanhentuneeksi. Harkitse sen sijaan tavanomaista DNSSEC-varmennusta DS-"
+"tietueiden avulla."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -5379,7 +5433,10 @@ msgstr "Parametri \"%s\" on pakollinen mutta ei ole tietueessa."
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 vaatii, että TKEY-tietueiden TTL on 0 välimuistiin tallentamisen estämiseksi. Nykyinen nollasta poikkeava TTL voi aiheuttaa ongelmia vanhemmissa DNS-toteutuksissa."
+msgstr ""
+"RFC 2930 vaatii, että TKEY-tietueiden TTL on 0 välimuistiin tallentamisen "
+"estämiseksi. Nykyinen nollasta poikkeava TTL voi aiheuttaa ongelmia "
+"vanhemmissa DNS-toteutuksissa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5399,7 +5456,9 @@ msgstr "Virheellisiä merkkejä TKEY-tietueen sisällössä."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY-tietueen on sisällettävä välilyönneillä eroteltuina kentät algorithm-name, inception-time, expiration-time, mode, error ja key-data."
+msgstr ""
+"TKEY-tietueen on sisällettävä välilyönneillä eroteltuina kentät algorithm-"
+"name, inception-time, expiration-time, mode, error ja key-data."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -5422,7 +5481,10 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "TKEY-tilan on oltava luku väliltä 1-5 (1: palvelimen määritys, 2: Diffie-Hellman-vaihto, 3: GSS-API-neuvottelu, 4: selvittäjän määritys, 5: avaimen poisto)."
+msgstr ""
+"TKEY-tilan on oltava luku väliltä 1-5 (1: palvelimen määritys, 2: Diffie-"
+"Hellman-vaihto, 3: GSS-API-neuvottelu, 4: selvittäjän määritys, 5: avaimen "
+"poisto)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5850,7 +5912,10 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "RFC 4703:n mukaan DHCID-tietueita käytetään törmäysten havaitsemiseen, kun useampi DHCP-asiakas vaatii samaa nimeä. DHCID-tietueen olemassaolo kertoo, että nimi on DHCP-asiakkaan käytössä."
+msgstr ""
+"RFC 4703:n mukaan DHCID-tietueita käytetään törmäysten havaitsemiseen, kun "
+"useampi DHCP-asiakas vaatii samaa nimeä. DHCID-tietueen olemassaolo kertoo, "
+"että nimi on DHCP-asiakkaan käytössä."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
@@ -5898,7 +5963,10 @@ msgstr "DHCID-tiivistetyyppi %d ei ole vakiotyyppi (RFC 4701)."
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "SHA-256-tiivisteen (tyyppi 1) sisältävän DHCID-tietueen on oltava purettuna vähintään 35 tavua (2 tunnistetyypille, 1 tiivistetyypille ja 32 SHA-256-tiivisteelle)."
+msgstr ""
+"SHA-256-tiivisteen (tyyppi 1) sisältävän DHCID-tietueen on oltava purettuna "
+"vähintään 35 tavua (2 tunnistetyypille, 1 tiivistetyypille ja 32 SHA-256-"
+"tiivisteelle)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -5944,7 +6012,10 @@ msgstr "RRSIG-tietue sisältää virheellisiä merkkejä."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "RRSIG-tietueen on sisällettävä katettu tyyppi, algoritmi, nimiosien lukumäärä, alkuperäinen TTL, vanhentumisaika, voimaantuloaika, avaintunniste, allekirjoittajan nimi ja allekirjoitus."
+msgstr ""
+"RRSIG-tietueen on sisällettävä katettu tyyppi, algoritmi, nimiosien "
+"lukumäärä, alkuperäinen TTL, vanhentumisaika, voimaantuloaika, "
+"avaintunniste, allekirjoittajan nimi ja allekirjoitus."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6078,7 +6149,10 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "Allekirjoituksen voimassaoloaika on yli 90 päivää, mikä on suositeltua pidempi. Pitkät voimassaoloajat kasvattavat haavoittuvuutta, jos avain vaarantuu."
+msgstr ""
+"Allekirjoituksen voimassaoloaika on yli 90 päivää, mikä on suositeltua "
+"pidempi. Pitkät voimassaoloajat kasvattavat haavoittuvuutta, jos avain "
+"vaarantuu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6493,7 +6567,10 @@ msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr "DS-tietueet muodostavat luottamusketjun ylemmästä alueesta alialueeseen. Ylemmällä alueella on oltava tämä DS-tietue ja alialueella sitä vastaava DNSKEY-tietue."
+msgstr ""
+"DS-tietueet muodostavat luottamusketjun ylemmästä alueesta alialueeseen. "
+"Ylemmällä alueella on oltava tämä DS-tietue ja alialueella sitä vastaava "
+"DNSKEY-tietue."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
@@ -6505,7 +6582,10 @@ msgstr "CSYNC-tietueet vain alueen juuressa (RFC 7477)."
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr "CSYNC-tietueet vaativat DNSSEC-allekirjoituksen, jotta ylemmän tason toimijat käsittelevät ne (RFC 7477). Varmista, että alueesi on allekirjoitettu oikein DNSSEC:llä."
+msgstr ""
+"CSYNC-tietueet vaativat DNSSEC-allekirjoituksen, jotta ylemmän tason "
+"toimijat käsittelevät ne (RFC 7477). Varmista, että alueesi on "
+"allekirjoitettu oikein DNSSEC:llä."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -6639,7 +6719,9 @@ msgstr "Tämä on yleislähetysosoite, ei välttämättä kelvollinen kaikkialla
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "Tietueen nimi ei näytä olevan tavanomainen käänteisen DNS-alueen nimi (sen tulisi päättyä .in-addr.arpa IPv4:llä tai .ip6.arpa IPv6:lla)."
+msgstr ""
+"Tietueen nimi ei näytä olevan tavanomainen käänteisen DNS-alueen nimi (sen "
+"tulisi päättyä .in-addr.arpa IPv4:llä tai .ip6.arpa IPv6:lla)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -7047,7 +7129,9 @@ msgstr "Tämä tietue ristiriidassa olemassa olevan CNAME:n kanssa."
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
-msgstr "SMIMEA-tietueiden local-part-tiivisteen tulisi olla 64-merkkinen SHA-256-heksatiiviste. Muodon tulisi olla: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"SMIMEA-tietueiden local-part-tiivisteen tulisi olla 64-merkkinen SHA-256-"
+"heksatiiviste. Muodon tulisi olla: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
@@ -7060,7 +7144,9 @@ msgstr "SMIMEA-nimi: SHA256._smimecert.domain.tld (%s)."
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr "Tämä ei käytä vakiomuotoista SMIMEA-nimeä. SMIMEA-tietueiden tulisi yleensä käyttää muotoa: SHA256(local-part)._smimecert.domain.tld"
+msgstr ""
+"Tämä ei käytä vakiomuotoista SMIMEA-nimeä. SMIMEA-tietueiden tulisi yleensä "
+"käyttää muotoa: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -7104,20 +7190,28 @@ msgstr "PKIX-TA (0) vaatii CA:n validointipolulla."
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "PKIX-EE-käyttötapa (1) vaatii, että loppukohteen varmenne tarkistetaan PKIX-varmennussääntöjen mukaan. Varmista, että tarvittavat välivarmenteet ovat saatavilla."
+msgstr ""
+"PKIX-EE-käyttötapa (1) vaatii, että loppukohteen varmenne tarkistetaan PKIX-"
+"varmennussääntöjen mukaan. Varmista, että tarvittavat välivarmenteet ovat "
+"saatavilla."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr "DANE-TA-käyttötapa (2) määrittää tämän varmenteen luottamusankkuriksi, jolla loppukohteen varmenne tarkistetaan. Varmista, että tämä varmenne on suojattu asianmukaisesti."
+msgstr ""
+"DANE-TA-käyttötapa (2) määrittää tämän varmenteen luottamusankkuriksi, jolla "
+"loppukohteen varmenne tarkistetaan. Varmista, että tämä varmenne on suojattu "
+"asianmukaisesti."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "DANE-EE-käyttötapaa (3) suositellaan, koska se on yksinkertaisin ottaa käyttöön: varmennetta käytetään suoraan ilman lisätarkistuksia."
+msgstr ""
+"DANE-EE-käyttötapaa (3) suositellaan, koska se on yksinkertaisin ottaa "
+"käyttöön: varmennetta käytetään suoraan ilman lisätarkistuksia."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
@@ -7137,7 +7231,10 @@ msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "Valitsinta 1 (SubjectPublicKeyInfo) suositellaan, koska se mahdollistaa varmenteen uusimisen ilman SMIMEA-tietueen päivitystä niin kauan kuin julkinen avain pysyy samana."
+msgstr ""
+"Valitsinta 1 (SubjectPublicKeyInfo) suositellaan, koska se mahdollistaa "
+"varmenteen uusimisen ilman SMIMEA-tietueen päivitystä niin kauan kuin "
+"julkinen avain pysyy samana."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7496,7 +7593,10 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr "KRIITTINEN: SSHFP-tietueet VAATIVAT DNSSEC-varmennuksen tuottaakseen mitään tietoturvahyötyä. Ilman DNSSEC:iä ne eivät suojaa lainkaan välimieshyökkäyksiltä."
+msgstr ""
+"KRIITTINEN: SSHFP-tietueet VAATIVAT DNSSEC-varmennuksen tuottaakseen mitään "
+"tietoturvahyötyä. Ilman DNSSEC:iä ne eivät suojaa lainkaan "
+"välimieshyökkäyksiltä."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -7742,7 +7842,10 @@ msgstr "DMARC ei määritä rua/ruf-URI:a. Rajoittaa valvontaa."
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "Tämä on DMARC-tietue, joka käsitellään TXT-tietuetyyppinä. DMARC-tietueiden tulee käyttää TXT-tietuetyyppiä, ja niiden sisällön tulee alkaa merkinnällä \"v=DMARC1\"."
+msgstr ""
+"Tämä on DMARC-tietue, joka käsitellään TXT-tietuetyyppinä. DMARC-tietueiden "
+"tulee käyttää TXT-tietuetyyppiä, ja niiden sisällön tulee alkaa merkinnällä "
+"\"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -7810,7 +7913,9 @@ msgstr "Virheellisiä merkkejä CDS-tietueen sisällössä."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "Tämä on RFC 8078:ssa määritelty CDS-poistotietue. Se ilmoittaa, että vastaavat DS-tietueet tulee poistaa ylemmältä alueelta."
+msgstr ""
+"Tämä on RFC 8078:ssa määritelty CDS-poistotietue. Se ilmoittaa, että "
+"vastaavat DS-tietueet tulee poistaa ylemmältä alueelta."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -8006,7 +8111,10 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "NSEC3-tietueen omistajanimen tulisi yleensä olla Base32hex-koodattu tiiviste, jonka perässä on alueen nimi (esim. \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+msgstr ""
+"NSEC3-tietueen omistajanimen tulisi yleensä olla Base32hex-koodattu "
+"tiiviste, jonka perässä on alueen nimi (esim. "
+"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8185,7 +8293,10 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR-palvelun on noudatettava muotoa: [protocol][+rs][+rs]... jossa protocol ja rs alkavat kirjaimella ja sisältävät kirjaimia, numeroita, väliviivoja, kaksoispisteitä tai plusmerkkejä (enintään 32 merkkiä kumpikin)."
+msgstr ""
+"NAPTR-palvelun on noudatettava muotoa: [protocol][+rs][+rs]... jossa "
+"protocol ja rs alkavat kirjaimella ja sisältävät kirjaimia, numeroita, "
+"väliviivoja, kaksoispisteitä tai plusmerkkejä (enintään 32 merkkiä kumpikin)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8259,7 +8370,9 @@ msgstr "Lippu 0: ei ole DNSSEC-alueavain."
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr "Lippuarvo 256 tarkoittaa, että tämä on Zone Signing Key (ZSK), jossa Zone Key -bitti on asetettu ja SEP-bitti ei ole asetettu."
+msgstr ""
+"Lippuarvo 256 tarkoittaa, että tämä on Zone Signing Key (ZSK), jossa Zone "
+"Key -bitti on asetettu ja SEP-bitti ei ole asetettu."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
@@ -8553,7 +8666,6 @@ msgid "The selected user already owns the zone."
 msgstr "Valittu käyttäjä omistaa jo alueen."
 
 #: lib/Domain/Service/Dns/DomainManager.php:1146
-#, auto-english-fallback
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Alueen tietueiden päivittäminen epäonnistui: %s"
@@ -8874,14 +8986,21 @@ msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr "Varoitus: CNAME-tietueita ei suositella verkkotunnuksen juuressa (alueen kärjessä), ja ne voivat aiheuttaa ongelmia. SOA- ja NS-tietueet vaaditaan verkkotunnuksen juuressa, eivätkä ne voi esiintyä yhdessä CNAME-tietueen kanssa."
+msgstr ""
+"Varoitus: CNAME-tietueita ei suositella verkkotunnuksen juuressa (alueen "
+"kärjessä), ja ne voivat aiheuttaa ongelmia. SOA- ja NS-tietueet vaaditaan "
+"verkkotunnuksen juuressa, eivätkä ne voi esiintyä yhdessä CNAME-tietueen "
+"kanssa."
 
 #: templates/modern/add_zone_templ_record.html:75
 msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "Vihje: Käytä SOA-tietueissa nimenä <code>[ZONE]</code> ja sisältönä <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>. SOA-tietueet vaaditaan, jotta DNS-alue toimii oikein."
+msgstr ""
+"Vihje: Käytä SOA-tietueissa nimenä <code>[ZONE]</code> ja sisältönä "
+"<code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>. SOA-"
+"tietueet vaaditaan, jotta DNS-alue toimii oikein."
 
 #: templates/modern/edit_zone_templ_record.html:94
 msgid "Update record"
@@ -9164,7 +9283,12 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr "Jokainen verkko (CIDR-lohko) yhdistetään täsmälleen yhteen näkymään. Kyseisen verkon resolverit saavat vain siihen näkymään määritetyt aluevariantit. PowerDNS arvioi verkot pisimmän etuliitteen mukaan, joten tarkempi aliverkko (esimerkiksi 10.0.1.0/24) ohittaa laajemman alueen (10.0.0.0/8), kun molemmat täsmäävät asiakkaaseen."
+msgstr ""
+"Jokainen verkko (CIDR-lohko) yhdistetään täsmälleen yhteen näkymään. "
+"Kyseisen verkon resolverit saavat vain siihen näkymään määritetyt "
+"aluevariantit. PowerDNS arvioi verkot pisimmän etuliitteen mukaan, joten "
+"tarkempi aliverkko (esimerkiksi 10.0.1.0/24) ohittaa laajemman alueen "
+"(10.0.0.0/8), kun molemmat täsmäävät asiakkaaseen."
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9696,7 +9820,12 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr "Kirjaa API-avainten elinkaaritapahtumat (luonti, uudelleenluonti, kumoaminen, oikeuksien muutokset) ja todennetut API-pyynnöt. Suodata käyttäjän tai toiminnon mukaan, kun haluat tarkastaa ulkoisten integraatioiden toimintaa. Arkaluontoisia arvoja (avaimia, tokeneita) ei kirjoiteta koskaan tähän lokiin."
+msgstr ""
+"Kirjaa API-avainten elinkaaritapahtumat (luonti, uudelleenluonti, "
+"kumoaminen, oikeuksien muutokset) ja todennetut API-pyynnöt. Suodata "
+"käyttäjän tai toiminnon mukaan, kun haluat tarkastaa ulkoisten "
+"integraatioiden toimintaa. Arkaluontoisia arvoja (avaimia, tokeneita) ei "
+"kirjoiteta koskaan tähän lokiin."
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9732,7 +9861,11 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr "Tämä toimintosyöte kirjaa kaikki alueille ja tietueille tehdyt toiminnot (luonnit, muokkaukset, poistot, DNSSEC-toiminnot, tuonnit) yksitasoisena key:value-tapahtumamerkkijonona. Jäsennellyt tilannevedokset ennen ja jälkeen sekä tietuemuutosten vertailunäkymän löydät tietuemuutoslokista."
+msgstr ""
+"Tämä toimintosyöte kirjaa kaikki alueille ja tietueille tehdyt toiminnot "
+"(luonnit, muokkaukset, poistot, DNSSEC-toiminnot, tuonnit) yksitasoisena "
+"key:value-tapahtumamerkkijonona. Jäsennellyt tilannevedokset ennen ja "
+"jälkeen sekä tietuemuutosten vertailunäkymän löydät tietuemuutoslokista."
 
 #: templates/modern/list_template_zones.html:52
 msgid "Domain name"
@@ -9767,7 +9900,6 @@ msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Esimerkki: www,A,192.168.1.1,0,3600,web server"
 
 #: templates/modern/bulk_record_add.html:31
-#, auto-english-fallback
 msgid "Priority and TTL are optional (defaults: priority=0, ttl="
 msgstr "Prioriteetti ja TTL ovat valinnaisia (oletukset: priority=0, ttl="
 
@@ -10001,7 +10133,11 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Vaikka pyrimme ylläpitämään järjestelmän saatavuutta, emme voi taata 100 %:n käyttöaikaa. Käyttäjät eivät saa luottaa pelkästään tähän järjestelmään kriittisissä DNS-toiminnoissa ilman asianmukaisia varmuuskopioita ja valvontaa."
+msgstr ""
+"Vaikka pyrimme ylläpitämään järjestelmän saatavuutta, emme voi taata 100 %:n "
+"käyttöaikaa. Käyttäjät eivät saa luottaa pelkästään tähän järjestelmään "
+"kriittisissä DNS-toiminnoissa ilman asianmukaisia varmuuskopioita ja "
+"valvontaa."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10133,7 +10269,6 @@ msgid "At least one special character"
 msgstr "Vähintään yksi erikoismerkki"
 
 #: templates/modern/_macros.html:25 templates/modern/_macros.html:34
-#, auto-english-fallback
 msgid "X"
 msgstr "X"
 
@@ -10238,12 +10373,10 @@ msgid "-"
 msgstr "-"
 
 #: templates/modern/list_forward_zones.html:210
-#, auto-english-fallback
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY odottaa: sarjanumeroa %serial% ei ole vielä vahvistettu"
 
 #: templates/modern/list_forward_zones.html:212
-#, auto-english-fallback
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY lähetetty sarjanumerolla %serial%"
 
@@ -11081,7 +11214,9 @@ msgstr "Luo API-avain"
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr "Kun luot uuden API-avaimen, avain näytetään vain KERRAN. Tallenna se turvalliseen paikkaan, sillä et voi hakea sitä enää myöhemmin."
+msgstr ""
+"Kun luot uuden API-avaimen, avain näytetään vain KERRAN. Tallenna se "
+"turvalliseen paikkaan, sillä et voi hakea sitä enää myöhemmin."
 
 #: templates/default/api_key_add.html:80 templates/modern/api_key_add.html:81
 msgid "If you lose the key, you'll need to regenerate it."
@@ -11218,7 +11353,6 @@ msgid "Last modified"
 msgstr "Viimeksi muokattu"
 
 #: templates/modern/edit.html:426 templates/modern/edit.html:466
-#, auto-english-fallback
 msgid "Last edited by %account% on %date%"
 msgstr "Viimeksi muokannut %account% %date%"
 
@@ -11449,7 +11583,6 @@ msgid "Zones Without Owners"
 msgstr "Alueet ilman omistajia"
 
 #: templates/modern/database_consistency.html:53
-#, auto-english-fallback
 msgid "Assign yourself as owner of all listed zones?"
 msgstr "Määritetäänkö sinut kaikkien luettelossa olevien alueiden omistajaksi?"
 
@@ -11752,7 +11885,10 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr "Alueen mallin vaihtaminen korvaa malliin perustuvat tietueet mutta säilyttää käsin lisätyt. Mallin muutokset eivät päivitä alueita automaattisesti - ota muutokset käyttöön mallia muokatessasi \"Päivitä alueet\" -painikkeella."
+msgstr ""
+"Alueen mallin vaihtaminen korvaa malliin perustuvat tietueet mutta säilyttää "
+"käsin lisätyt. Mallin muutokset eivät päivitä alueita automaattisesti - ota "
+"muutokset käyttöön mallia muokatessasi \"Päivitä alueet\" -painikkeella."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -11879,7 +12015,10 @@ msgstr "Mallin tietueet"
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr "Tällä mallilla ei ole SOA-tietuetta. DNS-alueet vaativat yleensä SOA-tietueen toimiakseen oikein, ja DNSSEC-allekirjoitus voi epäonnistua ilman sitä."
+msgstr ""
+"Tällä mallilla ei ole SOA-tietuetta. DNS-alueet vaativat yleensä SOA-"
+"tietueen toimiakseen oikein, ja DNSSEC-allekirjoitus voi epäonnistua ilman "
+"sitä."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."
@@ -12088,7 +12227,13 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr "Jokainen tietueen lisäys, muokkaus ja poisto sekä alueen luonti, poisto ja metatietojen muokkaus tallentaa tähän tilannevedoksen ennen ja jälkeen sekä käyttäjän ja aikaleiman. Lokit eivät vanhene automaattisesti - poista vanhat rivit käsin, jos taulu kasvaa suureksi. Käytä aikavälin pikavalintoja tuoreen toiminnan tarkasteluun tai vie tiedot CSV- tai JSON-muotoon ulkoisiin tarkastusjärjestelmiin."
+msgstr ""
+"Jokainen tietueen lisäys, muokkaus ja poisto sekä alueen luonti, poisto ja "
+"metatietojen muokkaus tallentaa tähän tilannevedoksen ennen ja jälkeen sekä "
+"käyttäjän ja aikaleiman. Lokit eivät vanhene automaattisesti - poista vanhat "
+"rivit käsin, jos taulu kasvaa suureksi. Käytä aikavälin pikavalintoja "
+"tuoreen toiminnan tarkasteluun tai vie tiedot CSV- tai JSON-muotoon "
+"ulkoisiin tarkastusjärjestelmiin."
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12603,7 +12748,12 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr "Kirjaa käyttäjätilien tapahtumat, kuten kirjautumiset, salasanan vaihdot, ryhmäjäsenyyksien muutokset ja ylläpitäjän toimet käyttäjätietueisiin. Jokainen merkintä näyttää toiminnon, tekijän, kohteena olevan käyttäjän ja aikaleiman. Suodata toiminnon tai käyttäjän mukaan, kun haluat tarkastaa käyttöoikeuksien muutoksia."
+msgstr ""
+"Kirjaa käyttäjätilien tapahtumat, kuten kirjautumiset, salasanan vaihdot, "
+"ryhmäjäsenyyksien muutokset ja ylläpitäjän toimet käyttäjätietueisiin. "
+"Jokainen merkintä näyttää toiminnon, tekijän, kohteena olevan käyttäjän ja "
+"aikaleiman. Suodata toiminnon tai käyttäjän mukaan, kun haluat tarkastaa "
+"käyttöoikeuksien muutoksia."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12647,7 +12797,14 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Näkymät tarjoavat eri asiakkaille eri aluevariantteja sen verkon perusteella, josta resolverilta kysyttiin. Jokainen variantti nimetään muodossa alue..variantti (esimerkiksi example.com..trusted), ja sen on oltava PowerDNS:ssä erillisenä alueena ennen kuin se voidaan määrittää tässä. Varianteilla on sama nimi, mutta ne ratkeavat eri tavoin näkymän mukaan, joten sama isäntänimi voi vastata eri IP-osoitteilla asiakkaan verkon mukaan."
+msgstr ""
+"Näkymät tarjoavat eri asiakkaille eri aluevariantteja sen verkon "
+"perusteella, josta resolverilta kysyttiin. Jokainen variantti nimetään "
+"muodossa alue..variantti (esimerkiksi example.com..trusted), ja sen on "
+"oltava PowerDNS:ssä erillisenä alueena ennen kuin se voidaan määrittää "
+"tässä. Varianteilla on sama nimi, mutta ne ratkeavat eri tavoin näkymän "
+"mukaan, joten sama isäntänimi voi vastata eri IP-osoitteilla asiakkaan "
+"verkon mukaan."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -12939,20 +13096,27 @@ msgstr "PowerDNS API error"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "Tarkista, että config/settings.php-tiedoston pdns_api.key vastaa PowerDNS:ään määritettyä API-avainta."
+msgstr ""
+"Tarkista, että config/settings.php-tiedoston pdns_api.key vastaa "
+"PowerDNS:ään määritettyä API-avainta."
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "Tarkista, että pdns_api.server_name vastaa PowerDNS:n ilmoittamaa nimeä (oletus 'localhost')."
+msgstr ""
+"Tarkista, että pdns_api.server_name vastaa PowerDNS:n ilmoittamaa nimeä "
+"(oletus 'localhost')."
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS hylkäsi pyynnön. Tarkista syy PowerDNS-palvelimen lokista - yleinen aiheuttaja alueiden suoran tietokantatuonnin jälkeen on yksittäinen virheellinen tietue, joka estää alueen sarjallistamisen."
+msgstr ""
+"PowerDNS hylkäsi pyynnön. Tarkista syy PowerDNS-palvelimen lokista - yleinen "
+"aiheuttaja alueiden suoran tietokantatuonnin jälkeen on yksittäinen "
+"virheellinen tietue, joka estää alueen sarjallistamisen."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13122,7 +13286,11 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr "API-avaimilla ulkoiset sovellukset voivat käyttää Poweradminin API:a. Jokainen avain on sidottu käyttäjätiliisi ja perii käyttöoikeutesi, joten tilin kumoaminen kumoaa myös kaikki sen avaimet. Käsittele avaimia salaisuuksina - ne antavat saman pääsyn kuin kirjautuminen sinuna."
+msgstr ""
+"API-avaimilla ulkoiset sovellukset voivat käyttää Poweradminin API:a. "
+"Jokainen avain on sidottu käyttäjätiliisi ja perii käyttöoikeutesi, joten "
+"tilin kumoaminen kumoaa myös kaikki sen avaimet. Käsittele avaimia "
+"salaisuuksina - ne antavat saman pääsyn kuin kirjautuminen sinuna."
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13182,7 +13350,9 @@ msgstr "Käyttöoikeusryhmät"
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
-msgstr "Käyttöoikeudet on jaettu alla ryhmiin hallinnan helpottamiseksi. Käytä hakutoimintoa löytääksesi tietyt käyttöoikeudet nopeasti."
+msgstr ""
+"Käyttöoikeudet on jaettu alla ryhmiin hallinnan helpottamiseksi. Käytä "
+"hakutoimintoa löytääksesi tietyt käyttöoikeudet nopeasti."
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"
@@ -13286,7 +13456,12 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr "Kirjaa ryhmien elinkaaritapahtumat (luonti, muokkaus, poisto) ja jäsenyyksien muutokset (käyttäjien lisäykset ja poistot). Jokainen merkintä näyttää toiminnon, tekijän, kohteena olevan ryhmän ja aikaleiman. Hyödyllinen ryhmäomistuksen kautta tapahtuvien alueoikeuksien muutosten tarkastamiseen."
+msgstr ""
+"Kirjaa ryhmien elinkaaritapahtumat (luonti, muokkaus, poisto) ja "
+"jäsenyyksien muutokset (käyttäjien lisäykset ja poistot). Jokainen merkintä "
+"näyttää toiminnon, tekijän, kohteena olevan ryhmän ja aikaleiman. "
+"Hyödyllinen ryhmäomistuksen kautta tapahtuvien alueoikeuksien muutosten "
+"tarkastamiseen."
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13569,7 +13744,6 @@ msgid "RDAP results for"
 msgstr "RDAP-tulokset"
 
 #: lib/Module/Rdap/templates/rdap.html:44
-#, auto-english-fallback
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Anna verkkotunnus RDAP-haun tekemiseksi."
 
@@ -13594,13 +13768,18 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr "Luo tietokantakäyttäjä rajoitetuin oikeuksin (select, insert, update, delete) vain Poweradminin tauluihin. PowerDNS-taulujen käyttöoikeutta ei tarvita API-taustajärjestelmää käytettäessä."
+msgstr ""
+"Luo tietokantakäyttäjä rajoitetuin oikeuksin (select, insert, update, "
+"delete) vain Poweradminin tauluihin. PowerDNS-taulujen käyttöoikeutta ei "
+"tarvita API-taustajärjestelmää käytettäessä."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "Luo tietokantakäyttäjä rajoitetuin oikeuksin (select, insert, update, delete), jotta Poweradmin voi käyttää PowerDNS-tauluja."
+msgstr ""
+"Luo tietokantakäyttäjä rajoitetuin oikeuksin (select, insert, update, "
+"delete), jotta Poweradmin voi käyttää PowerDNS-tauluja."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13623,7 +13802,9 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr "Koska käytät SQLiteä, uutta rajoitetuin oikeuksin varustettua käyttäjää ei tarvitse luoda."
+msgstr ""
+"Koska käytät SQLiteä, uutta rajoitetuin oikeuksin varustettua käyttäjää ei "
+"tarvitse luoda."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -13738,13 +13919,17 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr "Määritä tietokantayhteys, jolla on taulujen luontioikeudet. PowerDNS:n sijainti voidaan tarvittaessa määrittää erikseen."
+msgstr ""
+"Määritä tietokantayhteys, jolla on taulujen luontioikeudet. PowerDNS:n "
+"sijainti voidaan tarvittaessa määrittää erikseen."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "Määritä tietokantayhteys Poweradminin tauluille (käyttäjät, käyttöoikeudet, alueet). PowerDNS-tauluja ei tarvita."
+msgstr ""
+"Määritä tietokantayhteys Poweradminin tauluille (käyttäjät, käyttöoikeudet, "
+"alueet). PowerDNS-tauluja ei tarvita."
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13816,7 +14001,9 @@ msgstr "SQLite-tietokantatiedoston koko polku"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "Tiedoston on oltava olemassa ja verkkopalvelimella on oltava siihen luku- ja kirjoitusoikeus. Käytä absoluuttista polkua."
+msgstr ""
+"Tiedoston on oltava olemassa ja verkkopalvelimella on oltava siihen luku- ja "
+"kirjoitusoikeus. Käytä absoluuttista polkua."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -13828,7 +14015,9 @@ msgstr "Use default"
 
 #: install/templates/step4.html.twig:188
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Uusien taulujen merkistö. Jätä tyhjäksi, jos haluat käyttää tietokannan oletusta."
+msgstr ""
+"Uusien taulujen merkistö. Jätä tyhjäksi, jos haluat käyttää tietokannan "
+"oletusta."
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
@@ -13837,7 +14026,9 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:200
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr "Merkkien vertailusäännöt. Jätä tyhjäksi, jos haluat käyttää tietokannan oletusta."
+msgstr ""
+"Merkkien vertailusäännöt. Jätä tyhjäksi, jos haluat käyttää tietokannan "
+"oletusta."
 
 #: install/templates/step4.html.twig:209
 msgid "PowerDNS Database"
@@ -13935,11 +14126,14 @@ msgstr "Ei voida havaita (PHP-FPM) - varmista, että se on käytössä"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Varmista, että URL-uudelleenkirjoitus on määritetty (katso nginx.conf.example)"
+msgstr ""
+"Varmista, että URL-uudelleenkirjoitus on määritetty (katso "
+"nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Varmista, että URL-uudelleenkirjoitus on määritetty verkkopalvelimellesi"
+msgstr ""
+"Varmista, että URL-uudelleenkirjoitus on määritetty verkkopalvelimellesi"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -13982,12 +14176,18 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin säilyttää omat taulunsa (käyttäjät, käyttöoikeudet, alueiden metatiedot) määritetyssä tietokannassa myös silloin, kun PowerDNS API -taustajärjestelmä on valittuna. Nämä tunnistetiedot koskevat kyseistä tietokantaa, eivät PowerDNS:ää."
+msgstr ""
+"Poweradmin säilyttää omat taulunsa (käyttäjät, käyttöoikeudet, alueiden "
+"metatiedot) määritetyssä tietokannassa myös silloin, kun PowerDNS API "
+"-taustajärjestelmä on valittuna. Nämä tunnistetiedot koskevat kyseistä "
+"tietokantaa, eivät PowerDNS:ää."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Poweradminin tietokantakäyttäjänimi rajoitetuin oikeuksin. Ei tarkoitettu web-käyttöliittymään kirjautumiseen."
+msgstr ""
+"Poweradminin tietokantakäyttäjänimi rajoitetuin oikeuksin. Ei tarkoitettu "
+"web-käyttöliittymään kirjautumiseen."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14077,13 +14277,15 @@ msgstr "Tärkeä turvallisuushuomautus:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr "Sinun on poistettava \"install/\"-hakemisto Poweradminin juurihakemistosta."
+msgstr ""
+"Sinun on poistettava \"install/\"-hakemisto Poweradminin juurihakemistosta."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr "Poweradmin ei toimi, jos asennushakemisto on olemassa - tämä on turvatoimi."
+msgstr ""
+"Poweradmin ei toimi, jos asennushakemisto on olemassa - tämä on turvatoimi."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14120,7 +14322,9 @@ msgstr "Varmista ennen jatkamista, että sinulla on:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr "PowerDNS asennettuna ja tietokantataulut luotuina (tai API-käyttö määritettynä)"
+msgstr ""
+"PowerDNS asennettuna ja tietokantataulut luotuina (tai API-käyttö "
+"määritettynä)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -14138,14 +14342,16 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr "Määritä tietokantayhteys, luo ylläpitäjätili ja muodosta asetustiedosto."
+msgstr ""
+"Määritä tietokantayhteys, luo ylläpitäjätili ja muodosta asetustiedosto."
 
 #: install/templates/step3.html.twig:28
-#, auto-english-fallback
 msgid ""
 "Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
 "Poweradmin."
-msgstr "Huomaa: PostgreSQL ja SQLite vaativat, että PowerDNS ja Poweradmin käyttävät samaa tietokantaa."
+msgstr ""
+"Huomaa: PostgreSQL ja SQLite vaativat, että PowerDNS ja Poweradmin käyttävät "
+"samaa tietokantaa."
 
 #: install/helpers/InstallStepHandler.php:194
 msgid "Missing PowerDNS tables:"
@@ -14166,19 +14372,25 @@ msgstr "Viiteavainrajoitteiden ongelmat:"
 #: install/helpers/InstallStepHandler.php:227
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr "Asennusohjelma ei voinut poistaa olemassa olevia tauluja viiteavainrajoitteiden vuoksi"
+msgstr ""
+"Asennusohjelma ei voinut poistaa olemassa olevia tauluja "
+"viiteavainrajoitteiden vuoksi"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr "Näin voi käydä uudelleenasennuksen aikana, jos sinulla on omia rajoitteita tai jos muut taulut viittaavat tauluihin"
+msgstr ""
+"Näin voi käydä uudelleenasennuksen aikana, jos sinulla on omia rajoitteita "
+"tai jos muut taulut viittaavat tauluihin"
 
 #: install/helpers/InstallStepHandler.php:229
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr "Voit yrittää poistaa viiteavaintarkistukset käytöstä käsin ennen asennusohjelman suorittamista:"
+msgstr ""
+"Voit yrittää poistaa viiteavaintarkistukset käytöstä käsin ennen "
+"asennusohjelman suorittamista:"
 
 #: install/helpers/InstallStepHandler.php:242
 msgid "Suggestions:"
@@ -14192,11 +14404,14 @@ msgstr "Varmista, että SQLite-tietokantatiedosto on olemassa"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr "Tarkista, että verkkopalvelimella on luku- ja kirjoitusoikeudet tietokantatiedostoon"
+msgstr ""
+"Tarkista, että verkkopalvelimella on luku- ja kirjoitusoikeudet "
+"tietokantatiedostoon"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Varmista, että tietokantatiedoston koko polku on oikea ja saavutettavissa"
+msgstr ""
+"Varmista, että tietokantatiedoston koko polku on oikea ja saavutettavissa"
 
 #: install/helpers/InstallStepHandler.php:244
 msgid "Verify database credentials are correct"
@@ -14219,19 +14434,24 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr "SQLite-tietokantatiedostoa %s ei ole olemassa. Luo tietokantatiedosto ennen jatkamista."
+msgstr ""
+"SQLite-tietokantatiedostoa %s ei ole olemassa. Luo tietokantatiedosto ennen "
+"jatkamista."
 
 #: install/helpers/DatabaseHelper.php:178
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr "SQLite-tietokantatiedostoa %s ei voi lukea. Tarkista tiedoston oikeudet."
+msgstr ""
+"SQLite-tietokantatiedostoa %s ei voi lukea. Tarkista tiedoston oikeudet."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr "SQLite-tietokantatiedostoon %s ei voi kirjoittaa. Tarkista tiedoston oikeudet."
+msgstr ""
+"SQLite-tietokantatiedostoon %s ei voi kirjoittaa. Tarkista tiedoston "
+"oikeudet."
 
 #: install/helpers/DatabaseHelper.php:198
 #, php-format
@@ -14250,20 +14470,26 @@ msgstr "PowerDNS API -avain vaaditaan, kun käytetään API-taustajärjestelmä�
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr "Asetustiedostoa ei löytynyt. Luo config/settings.php-tiedosto ennen jatkamista."
+msgstr ""
+"Asetustiedostoa ei löytynyt. Luo config/settings.php-tiedosto ennen "
+"jatkamista."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "Erillisiä PowerDNS-tietokantoja tuetaan vain MySQL:llä. Käytä PostgreSQL:n ja SQLiten kanssa samaa tietokantaa."
+msgstr ""
+"Erillisiä PowerDNS-tietokantoja tuetaan vain MySQL:llä. Käytä PostgreSQL:n "
+"ja SQLiten kanssa samaa tietokantaa."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "Tietokannasta \"%s\" puuttuvat PowerDNS-taulut: %s. Varmista, että PowerDNS on asennettu oikein tähän tietokantaan."
+msgstr ""
+"Tietokannasta \"%s\" puuttuvat PowerDNS-taulut: %s. Varmista, että PowerDNS "
+"on asennettu oikein tähän tietokantaan."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
@@ -14271,73 +14497,20 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS-tietokantaan \"%s\" ei voi yhdistää: %s"
 
 #: install/helpers/LocaleHandler.php:92
-#, auto-english-fallback
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr "Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
+msgstr ""
+"Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä "
+"tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
 
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found at %s. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create the configuration file manually."
+# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
+# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Asetustiedostoa %s ei löydy. Käytä <a href=\"install/\">asentajaa</a>."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "The <a href=\"install/\">install/</a> directory exists, you must remove "
-# OBSOLETE: "it first before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "<a href=\"install/\">install/</a> -kansio on olemassa, poista se ensin."
-
-# OBSOLETE: msgid "You cannot delete records from a SLAVE zone."
-# OBSOLETE: msgstr "SLAVE-alueen tietueita ei voi poistaa."
-
-# OBSOLETE: msgid "You cannot edit records in a SLAVE zone."
-# OBSOLETE: msgstr "SLAVE-alueen tietueita ei voi muokata."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for name field of SOA record. It should be the name of the "
-# OBSOLETE: "zone."
-# OBSOLETE: msgstr "Virheellinen SOA-nimikentän arvo. Sen on oltava alueen nimi."
-
-# OBSOLETE: msgid "Invalid email address in SOA record."
-# OBSOLETE: msgstr "Virheellinen sähköpostiosoite SOA-tietueessa."
-
-# OBSOLETE: msgid "Unknown record type."
-# OBSOLETE: msgstr "Tuntematon tietuetyyppi."
-
-# OBSOLETE: msgid "There must be at least one owner for a zone."
-# OBSOLETE: msgstr "Alueella on oltava vähintään yksi omistaja."
-
-# OBSOLETE: msgid "Access"
-# OBSOLETE: msgstr "Pääsy"
-
-# OBSOLETE: msgid "After Creation"
-# OBSOLETE: msgstr "Luonnin jälkeen"
-
-# OBSOLETE: msgid "Change zone owner"
-# OBSOLETE: msgstr "Vaihda vyöhykkeen omistaja"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
-# OBSOLETE: "time."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Voit siirtää vyöhykkeen omistajuuden toiselle käyttäjälle "
-# OBSOLETE: "käyttäjäluettelosta milloin tahansa."
-
-# OBSOLETE: msgid "Manage users"
-# OBSOLETE: msgstr "Hallitse käyttäjiä"
-
-# OBSOLETE: msgid "List templates"
-# OBSOLETE: msgstr "Mallien luettelo"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Tämä malli voidaan määrittää käyttäjille. Muutokset vaikuttavat kaikkiin."
+# OBSOLETE: "Virheellinen LOC-tietueen muoto. Muodon tulee olla: d1 [m1 [s1]] {\"N\"|"
+# OBSOLETE: "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+# OBSOLETE: "[vp[\"m\"]]]."
 
 
 
