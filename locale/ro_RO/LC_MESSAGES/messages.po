@@ -11877,7 +11877,7 @@ msgstr "Opțional"
 
 #: templates/modern/batch_ptr_record.html:59
 msgid "Leave empty to use just the domain for PTR records"
-msgstr "Lăsați gol pentru a folosi doar domeniul"
+msgstr "Lăsați gol pentru a folosi doar domeniul pentru înregistrările PTR"
 
 #: templates/modern/batch_ptr_record.html:65
 msgid "Required"

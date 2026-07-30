@@ -494,7 +494,7 @@ msgstr "Rregullimet e drejtimit"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:136
 msgid "Advanced settings for SPF and DKIM alignment modes"
-msgstr "Rregullimet e detajuara për drejtimin SF dhe DKIM"
+msgstr "Rregullimet e detajuara për modalitetet e drejtimit SPF dhe DKIM"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
@@ -518,7 +518,7 @@ msgstr "Domain DKIM duhet të krahasohet saktësisht nga: domain"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:151
 msgid "SPF Alignment Mode"
-msgstr "Modaliteti i drejtimit SF"
+msgstr "Modaliteti i drejtimit SPF"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "SPF domain can be subdomain of From: domain"
@@ -578,7 +578,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:48
 msgid "SPF Record"
-msgstr "Regjistri SF"
+msgstr "Rekordi SPF"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:49
 msgid "Authorized mail server configuration"
@@ -604,11 +604,11 @@ msgstr "Autorizo të gjithë serverët e renditur në të dhënat MX për këtë
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AAA Records"
+msgstr "Rekordet A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
-msgstr "Autorizo regjistrimet A dhe AAA"
+msgstr "Autorizo rekordet A dhe AAAA të domenit"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:81
 msgid "IP Addresses"
@@ -660,7 +660,7 @@ msgstr "Mekanizmi"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "Shtesa shtesë A/AA"
+msgstr "Hoste shtesë A/AAAA"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
@@ -741,9 +741,7 @@ msgstr "Domen include i pavlefshëm: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr ""
-"Nuk është zgjedhur asnjë mekanizëm. Ky rekord SF do të përmbajë vetëm "
-"veprimin e paracaktuar."
+msgstr "Nuk është zgjedhur asnjë mekanizëm. Ky rekord SPF do të përmbajë vetëm veprimin e paracaktuar."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
@@ -870,7 +868,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
-msgstr "E pavlefshme. Duhet të jetë çështje, çështje e egër ose jodef"
+msgstr "Etiketë CAA e pavlefshme. Duhet të jetë issue, issuewild ose iodef"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:210
 msgid "CA provider is required"
@@ -940,7 +938,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
-msgstr "Konfigurimi"
+msgstr "Konfigurimi i DKIM"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:77
 msgid ""
@@ -1185,9 +1183,7 @@ msgstr "Format i pavlefshëm emri i host"
 msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
-msgstr ""
-"Objektivi duhet të jetë një emërues, jo një adresë IP. Krijo fillimisht një "
-"rekord A ose AAA për emrin e host."
+msgstr "Objektivi duhet të jetë një emër hosti, jo një adresë IP. Krijo fillimisht një rekord A ose AAAA për emrin e hostit."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:295
 msgid "Priority must be between 0 and 65535"
@@ -1587,7 +1583,7 @@ msgstr "Rekordi dhe regjistrimi përkatës PTR janë fshirë me sukses."
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
-msgstr "Dokumenti dhe regjistrimi përkatës i tij A/AA janë fshirë me sukses."
+msgstr "Rekordi dhe rekordi përkatës A/AAAA i tij janë fshirë me sukses."
 
 #: lib/Application/Controller/DeleteRecordController.php:235
 msgid ""
@@ -1600,7 +1596,7 @@ msgstr ""
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "Dokumentimi është fshirë me sukses. Nuk u gjet asnjë regjistrim A/AAA."
+msgstr "Rekordi është fshirë me sukses. Nuk u gjet asnjë rekord A/AAAA përkatës."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
@@ -2244,9 +2240,7 @@ msgstr "Zona është firmosur me sukses."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr ""
-"Nënshkrimi i zonës kërkohet me sukses, por verifikimi dështoi. Kontrollo "
-"çelësat DNSSEK."
+msgstr "Nënshkrimi i zonës u kërkua me sukses, por verifikimi dështoi. Kontrollo çelësat DNSSEC."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
@@ -2551,9 +2545,7 @@ msgstr "Zona është krijuar dhe nënshkruar me sukses me DNSSEC."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr ""
-"Zona u krijua dhe u kërkua nënshkrimi, por verifikimi dështoi. Kontrollo "
-"çelësat DNSSEK."
+msgstr "Zona u krijua dhe u kërkua nënshkrimi, por verifikimi dështoi. Kontrollo çelësat DNSSEC."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -2858,7 +2850,7 @@ msgstr "Autentifikimi i të dhënave SOA dështoi"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Default SOA record created successfully"
-msgstr "E prezgjedhur"
+msgstr "Rekordi i paracaktuar SOA u krijua me sukses"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:166
 msgid "Failed to create default SOA record"
@@ -3801,7 +3793,7 @@ msgstr "Gabim gjatë krijimit të shabllon të zonës: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Gabim prezgjedhur "
+msgstr "Gabim gjatë shtimit të rekordit të paracaktuar SOA në shabllon: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
@@ -3984,9 +3976,7 @@ msgstr "Fusha e përparësisë për të dhënat IPSECKEY duhet të jetë 0 ose b
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr ""
-"Të dhënat e IPSKEY duhet të përdoren me DNSSEC për të siguruar transmetimin "
-"e materialit kyç (RFC 4025 Seksion 4)."
+msgstr "Rekordet IPSECKEY duhet të përdoren me DNSSEC për të siguruar transmetimin e sigurt të materialit të çelësave (RFC 4025 Seksioni 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -4032,9 +4022,7 @@ msgstr ""
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
-msgstr ""
-"Algoritmi IPSKEY duhet të jetë 0 (asnjë çelës), 1 (RSA), 2 (DSA), 3 (ECDSA), "
-"ose 4 (Ed25519)."
+msgstr "Algoritmi IPSECKEY duhet të jetë 0 (asnjë çelës), 1 (RSA), 2 (DSA), 3 (ECDSA) ose 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -4054,11 +4042,11 @@ msgstr "Për gateway të llojit 3, gateway duhet të jetë një emër domeni i v
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
-msgstr "IPSKEY kyç publik kërkohet kur algoritmi nuk është 0."
+msgstr "Çelësi publik IPSECKEY kërkohet kur algoritmi nuk është 0."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:232
 msgid "IPSECKEY public key must be properly Base64 encoded."
-msgstr "Çelësi publik i IPSEKEY duhet të jetë siç duhet i koduar Base64."
+msgstr "Çelësi publik IPSECKEY duhet të jetë i koduar siç duhet me Base64."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
@@ -4108,7 +4096,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr "Një. I gjithë zinxhiri i sRV-së duhet të jetë DNSSEC-i i shënuar"
+msgstr "1. I gjithë zinxhiri i kërkimeve SRV duhet të jetë i nënshkruar me DNSSEC"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
@@ -5139,53 +5127,43 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "Fusha e përparësisë për të dhënat OPANPKEY duhet të jetë 0 ose bosh"
+msgstr "Fusha e përparësisë për rekordet OPENPGPKEY duhet të jetë 0 ose bosh"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"Të dhënat OPANPKEY duhet të gjenerohen zakonisht duke përdorur mjete të "
-"specializuara si GnuPG me opsionin e --print-dekordeve, në vend se të "
-"krijohet manualisht."
+msgstr "Rekordet OPENPGPKEY zakonisht duhet të gjenerohen duke përdorur mjete të specializuara si GnuPG me opsionin --print-dane-records, në vend që të krijohen manualisht."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "Përmbajtja diskografike OPANPKEY nuk mund të jetë bosh."
+msgstr "Përmbajtja e rekordit OPENPGPKEY nuk mund të jetë bosh."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Gërma të pavlefshme në përmbajtjen diskografike OPANPKEY."
+msgstr "Gërma të pavlefshme në përmbajtjen e rekordit OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr ""
-"Të dhënat e OPANPKEY duhet të përmbajnë të dhëna të vlefshme bazë 64-in e "
-"koduara."
+msgstr "Rekordet OPENPGPKEY duhet të përmbajnë të dhëna të vlefshme të koduara me base64."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "Rekordi i OPANPKEY përmban të dhëna të pavlefshme bazë64."
+msgstr "Rekordi OPENPGPKEY përmban të dhëna base64 të pavlefshme."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
-"Rekordi OPANPKEY kalon 4KB në madhësi. RFC 7929 rekomandon mbajtjen e "
-"regjistrimeve DNS sa më të vogla që të jetë e mundur për të siguruar "
-"transport të besueshëm. Shqyrtoni përdorimin e një formati minimal eksporti."
+msgstr "Rekordi OPENPGPKEY kalon 4KB në madhësi. RFC 7929 rekomandon mbajtjen e rekordeve DNS sa më të vogla që të jetë e mundur për të siguruar transport të besueshëm. Shqyrtoni përdorimin e një formati minimal eksporti çelësi."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"Rekordi OPANPKEY është jashtëzakonisht i vogël. Vërteto se ky është një "
-"çelës publik i vlefshëm OpenPGP."
+msgstr "Rekordi OPENPGPKEY është jashtëzakonisht i vogël. Vërteto se ky është një çelës publik i vlefshëm OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -5207,34 +5185,25 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr ""
-"OPENPGKEY regjistron REQUESIT DNSSEK për ndonjë përfitim sigurie. Pa "
-"vlerësimin e DNSSEC - së, këto regjistrime nuk japin asnjë avantazh sigurie."
+msgstr "Rekordet OPENPGPKEY KËRKOJNË DNSSEC për çdo përfitim sigurie. Pa validimin e DNSSEC, këto rekorde nuk ofrojnë asnjë avantazh sigurie."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr ""
-"Të dhënat e OPANPKEY janë EKSPERIMIAL si për RFC 7929 dhe mund të mos "
-"mbështeten nga të gjithë klientët e postës elektronike apo zbatimi i "
-"OpenPGPP."
+msgstr "Rekordet OPENPGPKEY janë EKSPERIMENTALE sipas RFC 7929 dhe mund të mos mbështeten nga të gjithë klientët e postës elektronike ose implementimet e OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
-"Të dhënat e OPENPGKEY nuk janë zëvendësim për Rrjetin e Trustit OpenPGP. "
-"Janë rekomanduar ende metoda të tjera verifikimi."
+msgstr "Rekordet OPENPGPKEY nuk janë zëvendësim për OpenPGP Web of Trust. Metodat shtesë të verifikimit rekomandohen ende."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr ""
-"Për të krijuar të dhënat OPANPKEY, përdorni mjete të specializuara si GnuPG "
-"me opsionin --print-dekord për të siguruar formatin dhe përmbajtjen korrekte."
+msgstr "Për të krijuar rekorde OPENPGPKEY, përdorni mjete të specializuara si GnuPG me opsionin --print-dane-records për të siguruar formatin dhe përmbajtjen korrekte."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -5298,129 +5267,100 @@ msgstr ""
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
-"SIGUR kohatamp është më shumë se 24 orë e vjetër. Kjo mund të tregojë një "
-"problem rilojë sulmi apo sinkronizimi i orës."
+msgstr "Vula kohore TSIG është më e vjetër se 24 orë. Kjo mund të tregojë një sulm riluajtjeje ose një problem sinkronizimi të orës."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr ""
-"Në të ardhmen është vendosur një model i rëndësishëm. Kjo mund të tregojë "
-"një problem të sinkronizimit të orës."
+msgstr "Vula kohore TSIG është vendosur në të ardhmen. Kjo mund të tregojë një problem të sinkronizimit të orës."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr ""
-"Çelësat e TIGUT duhet të rrotullohen herë pas here si një praktikë më e mirë "
-"për sigurinë."
+msgstr "Çelësat TSIG duhet të rrotullohen herë pas here si praktikë më e mirë për sigurinë."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr ""
-"TIG ofron autentifikimin e transaksioneve por jo integritetin e të dhënave. "
-"Shqyrtoni përdorimin e DNSSEC - it përveç TIGËS."
+msgstr "TSIG ofron autentifikimin e transaksioneve, por jo integritetin e të dhënave. Shqyrtoni përdorimin e DNSSEC përveç TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Në server dhe klient për të punuar si duhet kërkohen orë të sakta të "
-"sistemit."
+msgstr "Kërkohen orë të sakta sistemi si në klient ashtu edhe në server që TSIG të funksionojë saktë."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"Rekordi i TIG duhet të përmbajë të paktën emrin e algoritmit, kohëntamp, "
-"karamel, mac, origjinal-id, gabim, dhe të tjerë të ndarë nga hapësira."
+msgstr "Rekordi TSIG duhet të përmbajë të paktën algorithm-name, timestamp, fudge, mac, original-id, error dhe other-len, të ndara me hapësira."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
-"Emri i algoritmit TLS duhet të jetë një emër i vlefshëm domain që përfundon "
-"me një pikë (p.sh., hmac-sha256.)."
+msgstr "Emri i algoritmit TSIG duhet të jetë një emër domeni i vlefshëm që përfundon me një pikë (p.sh., hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "Tundty timetamp duhet të jetë një integrues jo-negativ."
+msgstr "Vula kohore TSIG duhet të jetë një numër i plotë jo-negativ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "Kazani i TGUT duhet të jetë një integrues jo-negativ."
+msgstr "Fudge i TSIG duhet të jetë një numër i plotë jo-negativ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"TIGACM duhet të jetë një stringë e vlefshme bazë e koduar 64 ose string "
-"hexadecimal."
+msgstr "MAC i TSIG duhet të jetë një varg i vlefshëm i koduar me base64 ose një varg heksadecimal."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
-msgstr ""
-"Titrat u sollen tek ju nga*Erip2 dhe Jona Skrt* RFC 8945 rekomandon një "
-"minimum prej 16 oktetesh për sigurinë."
+msgstr "MAC i TSIG është shumë i shkurtër. RFC 8945 rekomandon minimumi 16 oktete për sigurinë."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "ID origjinale e TIG duhet të jetë një numër midis 0 dhe 65535."
+msgstr "ID origjinale e TSIG duhet të jetë një numër midis 0 dhe 65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr ""
-"Gabimi i TIGS duhet të jetë një numër i vlefshëm DNS RKODE midis 0 dhe 23."
+msgstr "Gabimi i TSIG duhet të jetë një numër i vlefshëm DNS RCODE midis 0 dhe 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:250
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
-msgstr ""
-"Kodi i gabimit TIG 16 (BEDIG) tregon se firma në regjistrimin e TIGS është e "
-"pavlefshme. Kontrollo çelësat dhe konfigurimin kripto."
+msgstr "Kodi i gabimit TSIG 16 (BADSIG) tregon se nënshkrimi në rekordin TSIG është i pavlefshëm. Kontrollo çelësat dhe konfigurimin kriptografik."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr ""
-"Gabimi i TIG 17 (BADKEY) tregon se çelësi i përdorur në rekordin TIG është i "
-"pavlefshëm. Verifikimi i kyçit është konfiguruar në të dy serverat DNS."
+msgstr "Kodi i gabimit TSIG 17 (BADKEY) tregon se çelësi i përdorur në rekordin TSIG është i pavlefshëm. Verifiko që çelësi është konfiguruar në të dy serverat DNS."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr ""
-"Kodi i gabimit TIG 18 (BADTIME) tregon se stema në rekordin TIG është jashtë "
-"dritares së lejuar të kohës. Kontrollo sinkronizimin e orës."
+msgstr "Kodi i gabimit TSIG 18 (BADTIME) tregon se vula kohore në rekordin TSIG është jashtë dritares së lejuar të kohës. Kontrollo sinkronizimin e orës."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
-"Kodi 22 i gabimit TIG (BADTRUNC) tregon se matrica në rekordin TIGS është e "
-"pavlefshme. Kontrollo konfigurimin e madhësisë MAC."
+msgstr "Kodi i gabimit TSIG 22 (BADTRUNC) tregon se MAC-u i shkurtuar në rekordin TSIG është i pavlefshëm. Kontrollo konfigurimin e madhësisë së MAC."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TIG tjetër-len duhet të jetë një integrues jo-negativ."
+msgstr "Other-len i TSIG duhet të jetë një numër i plotë jo-negativ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"TIG-Data tjetër duhet të jetë një stringë e vlefshme e koduar 64 ose string "
-"hexadecimal."
+msgstr "Other-data i TSIG duhet të jetë një varg i vlefshëm i koduar me base64 ose një varg heksadecimal."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -5434,30 +5374,24 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
-"HMAC-SHA256 rekomandohet nga RFC 8945 si algoritmi i preferuar i TIG për "
-"shumicën e vendosjeve."
+msgstr "HMAC-SHA256 rekomandohet nga RFC 8945 si algoritmi i preferuar TSIG për shumicën e vendosjeve."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
-msgstr "Emri i algoritmit TLS duhet të mbarojë me një pikë."
+msgstr "Emri i algoritmit TSIG duhet të përfundojë me një pikë."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
-msgstr ""
-"Algoritmi i TLS duhet të jetë një emër i vlefshëm domain që përfundon me një "
-"pikë."
+msgstr "Emri i algoritmit TSIG duhet të jetë një emër domeni i vlefshëm që përfundon me një pikë."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
-msgstr ""
-"Duke përdorur një emër algoritmi jo standard TIG. Kjo mund të mos mbështetet "
-"gjerësisht."
+msgstr "Duke përdorur një emër algoritmi TSIG jo standard. Kjo mund të mos mbështetet gjerësisht."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945 rekomandon përdorimin e HMAC-SHA256 si algoritm standard TIG."
+msgstr "RFC 8945 rekomandon përdorimin e HMAC-SHA256 si algoritmin standard TSIG."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -5994,17 +5928,13 @@ msgstr "Moda GSS-API kërkon të dhëna kyçe për të frenuar një shenjë GSS-
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
-"Moda Diffie- Hellman duhet të identifikohen duke përdorur TIG apo SIG0 për "
-"të parandaluar sulmet në mes të njeriut."
+msgstr "Modaliteti Diffie-Hellman duhet të autentifikohet duke përdorur TSIG ose SIG(0) për të parandaluar sulmet man-in-the-middle."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr ""
-"Operacionet e fshirjes së kyçit MUST mund të identifikohen duke përdorur TIG "
-"me kyçin e fshirë."
+msgstr "Operacionet e fshirjes së çelësit DUHET të autentifikohen duke përdorur TSIG me çelësin që po fshihet."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -6343,7 +6273,7 @@ msgstr "Fusha e përparësisë për të dhënat SPF duhet të jetë 0 ose bosh"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
-msgstr "Rekordi SF duhet të fillojë me \"v=spf1\""
+msgstr "Rekordi SPF duhet të fillojë me \"v=spf1\""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
@@ -6531,9 +6461,7 @@ msgstr ""
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr ""
-"Rekordi i DHCIS ka gjatësi të pavlefshme bazë64. Base64 të dhëna duhet të "
-"jenë një shumëfish prej 4 simbolesh (me faqosje)."
+msgstr "Rekordi DHCID ka gjatësi base64 të pavlefshme. Të dhënat Base64 duhet të jenë shumëfish i 4 karaktereve (me mbushje)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6589,9 +6517,7 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr ""
-"Shqyrtoni përdorimin e identifikimit DNSSEC ose TIG (RFC 3007) për të "
-"siguruar azhornime DHCID siç rekomandohet nga RFC 4701."
+msgstr "Shqyrtoni përdorimin e autentifikimit DNSSEC ose TSIG (RFC 3007) për azhurnime të sigurta DHCID siç rekomandohet nga RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6617,7 +6543,7 @@ msgstr "Ndërrimi i rregullt i çelësave është praktikë sigurie e këshillue
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "Përmbajtja e regjistrimit nuk mund të jetë bosh."
+msgstr "Përmbajtja e rekordit RRSIG nuk mund të jetë bosh."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
@@ -6699,9 +6625,7 @@ msgstr ""
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr ""
-"Algoritmi 15 (ED25519) ofron siguri moderne, por mund të ketë probleme "
-"kompatibiliteti me njerëz më të vjetër të vlefshëm."
+msgstr "Algoritmi 15 (ED25519) ofron siguri moderne, por mund të ketë probleme kompatibiliteti me validues më të vjetër DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
@@ -6729,11 +6653,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
-msgstr "Fusha origjinale e TTL duhet të jetë një vlerë numerike."
+msgstr "Fusha origjinale TTL e RRSIG duhet të jetë një vlerë numerike."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr "RSIG origjinal TTL duhet të jetë një integrues i vlefshëm pozitiv."
+msgstr "TTL origjinal i RRSIG duhet të jetë një numër i plotë pozitiv i vlefshëm."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
@@ -6808,7 +6732,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
-msgstr "Fusha e targës së kyçit duhet të jetë një vlerë numerike."
+msgstr "Fusha e etiketës së çelësit RRSIG duhet të jetë një vlerë numerike."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
@@ -6828,7 +6752,7 @@ msgstr "Emri i nënshkruesit RRSIG duhet të jetë një emër i vlefshëm domain
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "Firma RSIG nuk mund të jetë bosh."
+msgstr "Nënshkrimi RRSIG nuk mund të jetë bosh."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
@@ -6994,37 +6918,33 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"Domain RP TX duhet të jetë një emër domain plotësisht i kualifikuar (end me "
-"një pikë)."
+msgstr "Domeni RP TXT duhet të jetë një emër domeni plotësisht i kualifikuar (të përfundojë me një pikë)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
-msgstr "Domain RPXT nuk është një emër i vlefshëm domain."
+msgstr "Domeni RP TXT nuk është një emër domeni i vlefshëm."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:320
 msgid "RP TXT domain contains empty label."
-msgstr "Domain RPXT përmban etiketë bosh."
+msgstr "Domeni RP TXT përmban etiketë bosh."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "Etiketa e domain RPXT tejkalon gjatësinë maksimale të 63 gërmave."
+msgstr "Etiketa e domenit RP TXT tejkalon gjatësinë maksimale prej 63 karakteresh."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
-msgstr "Domain RPXT përmban shkronja apo format të pavlefshëm."
+msgstr "Domeni RP TXT përmban karaktere ose format të pavlefshëm."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
 msgid "RP TXT domain exceeds maximum length of 253 characters."
-msgstr "Domain RP TX tejkalon gjatësinë maksimale të 253 gërmave."
+msgstr "Domeni RP TXT tejkalon gjatësinë maksimale prej 253 karakteresh."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr ""
-"Siguro një regjistrim TX ekziston në këtë emër domain që përmban "
-"informacione kontakti për personin përgjegjës."
+msgstr "Siguro që një rekord TXT ekziston në këtë emër domeni që përmban informacione kontakti për personin përgjegjës."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -7070,13 +6990,13 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "Rregjistrimi i BEI64-ës mungon për ndarje. Formati me."
+msgstr "Rekordit EUI64 i mungojnë ndarësit. Formati duhet të jetë xx-xx-xx-xx-xx-xx-xx-xx me viza midis okteteve."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "Rekordi i BEI64 duket të jetë në format me pika. Formati"
+msgstr "Rekordi EUI64 duket të jetë në format me pika. Formati duhet të jetë xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
@@ -7302,26 +7222,19 @@ msgstr ""
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr ""
-"Të dhënat CSINC duhet të vendosen vetëm në apex të zonës (RFC 7477). Ky "
-"dokumentim mund të mos përpunohet nga prindërit."
+msgstr "Rekordet CSYNC duhet të vendosen vetëm në apeksin e zonës (RFC 7477). Ky rekord mund të mos përpunohet nga agjentët prindërorë."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr ""
-"Regjistrimet CSINC kërkojnë që nënshkrimi i DNSSEC të përpunohet nga "
-"agjentët prindërorë (RFC 7477). Siguroni që zona juaj të nënshkruhet siç "
-"duhet me DNSSEC."
+msgstr "Rekordet CSYNC kërkojnë nënshkrim DNSSEC për t'u përpunuar nga agjentët prindërorë (RFC 7477). Siguroni që zona juaj të jetë nënshkruar siç duhet me DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr ""
-"Vetëm një rekord CSINC duhet të ekzistojë për zonën (RFC 7477). Shumë "
-"regjistrime mund të shkaktojnë sjellje të papritura."
+msgstr "Vetëm një rekord CSYNC duhet të ekzistojë për zonë (RFC 7477). Rekorde të shumta mund të shkaktojnë sjellje të papritur."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
@@ -7351,17 +7264,13 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr ""
-"Vlerë e pavlefshme për fushën e përparësisë. Regjistrimet CSINC duhet të "
-"kenë vlerë parësore 0."
+msgstr "Vlerë e pavlefshme për fushën e përparësisë. Rekordet CSYNC duhet të kenë vlerë përparësie 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr ""
-"Serial i pavlefshëm SOA në rekordin CSINC. Duhet të jetë një integrim 32-bit "
-"i panënshkruar (0-4294967295)."
+msgstr "Serial SOA i pavlefshëm në rekordin CSYNC. Duhet të jetë një numër i plotë 32-bit pa shenjë (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -7414,22 +7323,17 @@ msgid ""
 "Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section "
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
-msgstr ""
-"Shënim: Formati i vërtetë i telave për SYNC Lloji Bit Map ndjek RFC 4034 "
-"Seksion 4.1.2. Poweradmin përdor një përfaqësim të thjeshtuar me tipe "
-"rekorde të ndarë nga hapësira."
+msgstr "Shënim: Formati i vërtetë i telit për CSYNC Type Bit Map ndjek formatin e RFC 4034 Seksioni 4.1.2. Poweradmin përdor një përfaqësim të thjeshtuar me tipe rekordesh të ndara me hapësira."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr ""
-"RFC 7477 kërkon një qasje \"të gjithë apo asgjë\" ndaj përpunimit të CSINC. "
-"Nëse asnjë lloj nuk mund të sinkronizohet, prindi nuk do të bëjë ndryshime."
+msgstr "RFC 7477 kërkon një qasje \"të gjitha ose asgjë\" ndaj përpunimit të CSYNC. Nëse ndonjë tip nuk mund të sinkronizohet, prindi nuk do të bëjë asnjë ndryshim."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Prioriteti duhet të jetë 0 për të dhënat e BEI48."
+msgstr "Prioriteti duhet të jetë 0 për rekordet EUI48."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:115
 msgid ""
@@ -8810,9 +8714,7 @@ msgstr ""
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr ""
-"Çdo varg rekord duhet të jetë 255 bytes ose më pak. Ndajeni përmbajtjen e "
-"gjatë në vargje të shumëfishta."
+msgstr "Çdo varg i rekordit TXT duhet të jetë 255 bajt ose më pak. Ndajeni përmbajtjen e gjatë në vargje të shumëfishta."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
@@ -9074,7 +8976,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
-msgstr "Shënjestër i pavlefshëm."
+msgstr "Objektiv SRV i pavlefshëm."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
@@ -9084,9 +8986,7 @@ msgstr "Vlerë e pavlefshme për fushën e përparësisë së rekordit SRV."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr ""
-"E papërcaktuar (:) ose e bllokuar (:1) adresat IPv6 nuk duhet të përdoren në "
-"të dhënat AAA."
+msgstr "Adresat IPv6 të papërcaktuara (::) ose loopback (::1) nuk duhet të përdoren në rekordet AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -9097,9 +8997,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
-"Vlerë e pavlefshme për fushën e përparësisë. Të dhënat e AAA duhet të kenë "
-"vlerën kryesore të 0."
+msgstr "Vlerë e pavlefshme për fushën e përparësisë. Rekordet AAAA duhet të kenë vlerë përparësie 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -9208,9 +9106,7 @@ msgstr ""
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"Ky rekord përmban si SOA ashtu edhe NS, duke treguar se mund të jetë për një "
-"zonë apex."
+msgstr "Ky rekord NSEC3 përmban si tipin SOA ashtu edhe NS, duke treguar se mund të jetë për një apeks zone."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
@@ -9299,7 +9195,7 @@ msgstr "Shërbimi rekord NAPTR duhet të jetë një varg i cituar."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "Rexp duhet të jetë një stringë e cituar."
+msgstr "Regexp i rekordit NAPTR duhet të jetë një varg i cituar."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -9371,7 +9267,7 @@ msgstr "Rexp NAPTR përmban një model potencialisht të rrezikshëm: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "Negati është shumë i gjatë. Gjatësia maksimale është 1000 shkronja."
+msgstr "Regexp i NAPTR është shumë i gjatë. Gjatësia maksimale është 1000 karaktere."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -9684,7 +9580,7 @@ msgstr "Dështoi krijimi i zonës: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:314
 msgid "Failed to create SOA record for zone."
-msgstr "Dështoi nga për."
+msgstr "Dështoi krijimi i rekordit SOA për zonën."
 
 #: lib/Domain/Service/Dns/DomainManager.php:369
 #, php-format
@@ -10290,7 +10186,7 @@ msgstr "Veprimet"
 
 #: templates/default/dnssec.html:91 templates/modern/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
-msgstr "Nuk u gjet asnjë çelës për këtë zonë"
+msgstr "Nuk u gjet asnjë çelës DNSSEC për këtë zonë"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate this key"
@@ -12425,7 +12321,7 @@ msgstr "Shto PTR"
 
 #: templates/modern/edit.html:668 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
-msgstr "Shto A"
+msgstr "Shto A/AAAA"
 
 #: templates/modern/edit.html:107 templates/modern/edit.html:707
 msgid "This record already exists"
@@ -12807,7 +12703,7 @@ msgstr "Zona pa rekorde SOA"
 
 #: templates/modern/database_consistency.html:283
 msgid "Create default SOA record"
-msgstr "Paracaktuar"
+msgstr "Krijo rekordin e paracaktuar SOA"
 
 #: templates/modern/database_consistency.html:322
 msgid "Are you sure you want to delete the slave zone"
@@ -14364,7 +14260,7 @@ msgstr "Dokumente DNSKEY"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
-msgstr "Kopjo gjithçka"
+msgstr "Kopjo të gjitha rekordet DNSKEY në clipboard"
 
 #: templates/modern/dnssec_ds_dnskey.html:61
 msgid "Copy this record"
