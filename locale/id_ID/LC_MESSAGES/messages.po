@@ -1712,7 +1712,7 @@ msgstr "Pengaturan MFA"
 
 #: lib/Application/Controller/MfaSetupController.php:215
 msgid "Failed to create MFA record."
-msgstr "Gagal membuat catatan MFA."
+msgstr "Gagal membuat rekaman MFA."
 
 #: lib/Application/Controller/MfaSetupController.php:222
 msgid "MFA is already enabled."
@@ -1949,7 +1949,7 @@ msgstr "ID zona diperlukan."
 
 #: lib/Application/Controller/ListPermTemplController.php:41
 msgid "You do not have the permission to edit permission templates."
-msgstr "Anda tidak memiliki izin untuk mengedit template izin."
+msgstr "Anda tidak memiliki izin untuk mengedit templat izin."
 
 #: lib/Application/Controller/EditPermTemplController.php:67
 #: templates/modern/edit_perm_templ.html:17
@@ -1958,7 +1958,7 @@ msgstr "Edit Templat Izin"
 
 #: lib/Application/Controller/EditPermTemplController.php:126
 msgid "The permission template has been updated successfully."
-msgstr "Template izin telah berhasil diperbarui."
+msgstr "Templat izin telah berhasil diperbarui."
 
 #: lib/Application/Controller/AddPermTemplController.php:141
 #, auto-english-fallback
@@ -2042,7 +2042,7 @@ msgstr "Tidak ada templat izin non-superuser yang tersedia untuk ditetapkan."
 
 #: lib/Application/Controller/EditUserController.php:305
 msgid "Invalid permission template: must be a user template"
-msgstr "Template izin tidak valid: harus berupa template pengguna"
+msgstr "Templat izin tidak valid: harus berupa templat pengguna"
 
 #: lib/Application/Controller/AddUserController.php:151
 msgid "The user has been created successfully."
@@ -2102,11 +2102,11 @@ msgstr "Anda tidak memiliki izin untuk mengedit akun superuser."
 
 #: lib/Application/Controller/EditZoneTemplController.php:64
 msgid "No template ID provided."
-msgstr "ID template tidak disediakan."
+msgstr "ID templat tidak disediakan."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "You do not have the permission to edit zone templates."
-msgstr "Anda tidak memiliki izin untuk mengedit template zona."
+msgstr "Anda tidak memiliki izin untuk mengedit templat zona."
 
 #: lib/Application/Controller/EditZoneTemplController.php:78
 msgid "Edit Zone Template"
@@ -2114,11 +2114,11 @@ msgstr "Edit Templat Zona"
 
 #: lib/Application/Controller/EditZoneTemplController.php:94
 msgid "There is no zone template with this ID."
-msgstr "Tidak ada template zona dengan ID ini."
+msgstr "Tidak ada templat zona dengan ID ini."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:156
 msgid "Zone template has been updated successfully."
-msgstr "Template zona telah berhasil diperbarui."
+msgstr "Templat zona telah berhasil diperbarui."
 
 #: lib/Application/Controller/EditZoneTemplController.php:237
 msgid "Zones have been updated successfully."
@@ -2126,11 +2126,11 @@ msgstr "Zona telah berhasil diperbarui."
 
 #: lib/Application/Controller/EditZoneTemplController.php:248
 msgid "You do not have permission to create new zone templates."
-msgstr "Anda tidak memiliki izin untuk membuat template zona baru."
+msgstr "Anda tidak memiliki izin untuk membuat templat zona baru."
 
 #: lib/Domain/Model/ZoneTemplate.php:367 lib/Domain/Model/ZoneTemplate.php:1224
 msgid "Zone template with this name already exists, please choose another one."
-msgstr "Template zona dengan nama ini sudah ada, silakan pilih nama lain."
+msgstr "Templat zona dengan nama ini sudah ada, silakan pilih nama lain."
 
 #: lib/Application/Controller/EditZoneTemplController.php:279
 msgid "Please enter a different name when using Save As."
@@ -2138,11 +2138,11 @@ msgstr "Silakan masukkan nama yang berbeda saat menggunakan Simpan Sebagai."
 
 #: lib/Application/Controller/EditZoneTemplController.php:303
 msgid "Zone template has been copied successfully."
-msgstr "Template zona telah berhasil disalin."
+msgstr "Templat zona telah berhasil disalin."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
-msgstr "Anda tidak memiliki izin untuk melihat template zona."
+msgstr "Anda tidak memiliki izin untuk melihat templat zona."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:43
 msgid "Template Zones"
@@ -2150,11 +2150,11 @@ msgstr "Zona Templat"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:60
 msgid "Invalid template ID."
-msgstr "ID template tidak valid."
+msgstr "ID templat tidak valid."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:54
 msgid "Template does not exist."
-msgstr "Template tidak ditemukan."
+msgstr "Templat tidak ditemukan."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:71
 msgid "You do not have permission to view this zone."
@@ -2167,7 +2167,7 @@ msgstr "Log Pengguna"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
-msgstr "Anda tidak memiliki izin untuk memutuskan tautan zona dari template."
+msgstr "Anda tidak memiliki izin untuk memutuskan tautan zona dari templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:55
 msgid "No zones selected."
@@ -2178,7 +2178,7 @@ msgstr "Tidak ada zona yang dipilih."
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
 msgstr[0] "%d zona berhasil dilepas dari templat."
-msgstr[1] "%d zones have been unlinked from template successfully."
+msgstr[1] "%d zona berhasil dilepas dari templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
@@ -2189,7 +2189,7 @@ msgstr[1] "%d zones could not be unlinked."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
-msgstr "Gagal memutuskan tautan zona dari template."
+msgstr "Gagal memutuskan tautan zona dari templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "No valid zones selected."
@@ -2197,7 +2197,7 @@ msgstr "Tidak ada zona valid yang dipilih."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:146
 msgid "Template not found."
-msgstr "Template tidak ditemukan."
+msgstr "Templat tidak ditemukan."
 
 #: lib/Application/Controller/UserAgreementController.php:101
 msgid "User agreement accepted successfully."
@@ -2284,7 +2284,7 @@ msgstr "Anda tidak dapat menerapkan templat ke zona hanya-baca."
 
 #: lib/Application/Controller/EditController.php:616
 msgid "Zone template has been changed successfully."
-msgstr "Template zona telah berhasil diubah."
+msgstr "Templat zona telah berhasil diubah."
 
 #: lib/Application/Controller/EditRecordController.php:124
 msgid "You cannot edit records in a read-only zone."
@@ -2351,7 +2351,7 @@ msgstr "Terlalu banyak percobaan yang gagal. Silakan coba lagi nanti."
 
 #: lib/Application/Controller/MfaVerifyController.php:167
 msgid "No MFA record found. Please contact administrator."
-msgstr "Catatan MFA tidak ditemukan. Silakan hubungi administrator."
+msgstr "Rekaman MFA tidak ditemukan. Silakan hubungi administrator."
 
 #: lib/Application/Controller/MfaVerifyController.php:172
 msgid "An error occurred. Please try again."
@@ -2401,7 +2401,7 @@ msgstr "%d rekaman berhasil ditambahkan."
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr "%d catatan yang cocok juga dibuat."
+msgstr "%d rekaman yang cocok juga dibuat."
 
 #: lib/Application/Controller/AddRecordController.php:523
 #, php-format
@@ -2438,7 +2438,7 @@ msgstr "Zona telah berhasil dihapus."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:85
 msgid "You do not have the permission to edit zone template records."
-msgstr "Anda tidak memiliki izin untuk mengedit rekaman template zona."
+msgstr "Anda tidak memiliki izin untuk mengedit rekaman templat zona."
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
@@ -2450,15 +2450,15 @@ msgstr "Autentikasi gagal: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
 msgid "You do not have permission to create zone templates."
-msgstr "Anda tidak memiliki izin untuk membuat template zona."
+msgstr "Anda tidak memiliki izin untuk membuat templat zona."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:127
 msgid "Template name can't be an empty string."
-msgstr "Nama template tidak boleh kosong."
+msgstr "Nama templat tidak boleh kosong."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:151
 msgid "Zone template has been created successfully."
-msgstr "Template zona telah berhasil dibuat."
+msgstr "Templat zona telah berhasil dibuat."
 
 #: lib/Application/Controller/OidcLoginController.php:89
 msgid "No OIDC providers are configured"
@@ -2609,7 +2609,7 @@ msgstr "Menyimpan %d nilai bawaan; menghapus %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
-msgstr "Anda tidak memiliki izin untuk melihat template zona."
+msgstr "Anda tidak memiliki izin untuk melihat templat zona."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2626,7 +2626,7 @@ msgstr "Tambah Grup"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
-msgstr "Template izin tidak valid: harus berupa template grup"
+msgstr "Templat izin tidak valid: harus berupa templat grup"
 
 #: lib/Application/Controller/AddGroupController.php:138
 msgid "Group has been created successfully."
@@ -2769,7 +2769,7 @@ msgstr[1] "%d zones could not be removed."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
-msgstr "Anda tidak memiliki izin untuk menambahkan template izin."
+msgstr "Anda tidak memiliki izin untuk menambahkan templat izin."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
 #: templates/modern/add_perm_templ.html:16
@@ -2778,7 +2778,7 @@ msgstr "Tambah Templat Izin"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
-msgstr "Template izin telah berhasil ditambahkan."
+msgstr "Templat izin telah berhasil ditambahkan."
 
 #: lib/Application/Controller/AddPermTemplController.php:142
 #, auto-english-fallback
@@ -2868,7 +2868,7 @@ msgstr "Anda telah keluar."
 
 #: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:898
 msgid "You do not have the permission to add a zone template."
-msgstr "Anda tidak memiliki izin untuk menambahkan template zona."
+msgstr "Anda tidak memiliki izin untuk menambahkan templat zona."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
 msgid "Add Zone Template"
@@ -2876,7 +2876,7 @@ msgstr "Tambah Templat Zona"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
-msgstr "Template zona telah berhasil ditambahkan."
+msgstr "Templat zona telah berhasil ditambahkan."
 
 #: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
@@ -2904,11 +2904,11 @@ msgstr "Tambah Zona Sekunder"
 
 #: lib/Domain/Model/ZoneTemplate.php:465 lib/Domain/Model/ZoneTemplate.php:506
 msgid "You do not have the permission to delete zone templates."
-msgstr "Anda tidak memiliki izin untuk menghapus template zona."
+msgstr "Anda tidak memiliki izin untuk menghapus templat zona."
 
 #: lib/Application/Controller/DeleteZoneTemplController.php:98
 msgid "Zone template has been deleted successfully."
-msgstr "Template zona telah berhasil dihapus."
+msgstr "Templat zona telah berhasil dihapus."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
@@ -2990,7 +2990,7 @@ msgstr "Terjadi kesalahan saat mengimpor kunci PEM: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:79
 msgid "You do not have the permission to add records to zone templates."
-msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke template zona."
+msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke templat zona."
 
 #: lib/Application/Controller/EditUserController.php:83
 #: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
@@ -3078,15 +3078,15 @@ msgstr "View jaringan"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
-msgstr "Anda tidak memiliki izin untuk menghapus template izin."
+msgstr "Anda tidak memiliki izin untuk menghapus templat izin."
 
 #: lib/Application/Controller/DeletePermTemplController.php:91
 msgid "The permission template has been deleted successfully."
-msgstr "Template izin telah berhasil dihapus."
+msgstr "Templat izin telah berhasil dihapus."
 
 #: lib/Application/Controller/DeletePermTemplController.php:93
 msgid "The permission template could not be deleted."
-msgstr "Template izin tidak dapat dihapus."
+msgstr "Templat izin tidak dapat dihapus."
 
 #: lib/Application/Controller/PdnsStatusController.php:58
 msgid "The PowerDNS status feature is disabled in the system configuration."
@@ -3502,15 +3502,15 @@ msgstr "Ini bukan nama zona yang valid."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
-msgstr "Template ini ditetapkan ke setidaknya satu pengguna dan satu grup."
+msgstr "Templat ini ditetapkan ke setidaknya satu pengguna dan satu grup."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
-msgstr "Template ini ditetapkan ke setidaknya satu pengguna."
+msgstr "Templat ini ditetapkan ke setidaknya satu pengguna."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
-msgstr "Template ini ditetapkan ke setidaknya satu grup."
+msgstr "Templat ini ditetapkan ke setidaknya satu grup."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:102
 msgid "Primary"
@@ -3782,24 +3782,23 @@ msgstr "Galat menghapus templat zona default: "
 
 #: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:972
 msgid "Error creating zone template: "
-msgstr "Kesalahan membuat template zona: "
+msgstr "Kesalahan membuat templat zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:428
 msgid "Error adding default SOA record to template: "
-msgstr "Kesalahan menambahkan rekaman SOA default ke template: "
+msgstr "Kesalahan menambahkan rekaman SOA default ke templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:490
 msgid "Error deleting zone template: "
-msgstr "Kesalahan menghapus template zona: "
+msgstr "Kesalahan menghapus templat zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:514
 msgid "Error deleting user zone templates: "
-msgstr "Kesalahan menghapus template zona pengguna: "
+msgstr "Kesalahan menghapus templat zona pengguna: "
 
 #: lib/Domain/Model/ZoneTemplate.php:642
 msgid "You do not have the permission to add a record to this zone template."
-msgstr ""
-"Anda tidak memiliki izin untuk menambahkan rekaman ke template zona ini."
+msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke templat zona ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:766
 #, auto-english-fallback
@@ -3821,11 +3820,11 @@ msgstr "Anda tidak memiliki izin untuk mengedit rekaman ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
-msgstr "Rekaman tidak termasuk dalam template zona ini."
+msgstr "Rekaman tidak termasuk dalam templat zona ini."
 
 #: lib/Domain/Model/ZoneTemplate.php:818
 msgid "Error updating zone template record: "
-msgstr "Kesalahan memperbarui rekaman template zona: "
+msgstr "Kesalahan memperbarui rekaman templat zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:847
 #, auto-english-fallback
@@ -3836,11 +3835,11 @@ msgstr "Anda tidak memiliki izin untuk menghapus jenis rekaman ini dari templat 
 
 #: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error deleting zone template record: "
-msgstr "Kesalahan menghapus rekaman template zona: "
+msgstr "Kesalahan menghapus rekaman templat zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:878
 msgid "Error checking template ownership: "
-msgstr "Kesalahan memeriksa kepemilikan template: "
+msgstr "Kesalahan memeriksa kepemilikan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:964
 #, auto-english-fallback
@@ -3852,19 +3851,19 @@ msgstr "Jenis rekaman berikut tidak disertakan dalam templat karena Anda tidak b
 
 #: lib/Domain/Model/ZoneTemplate.php:1103
 msgid "Error retrieving zones using template: "
-msgstr "Kesalahan mengambil zona yang menggunakan template: "
+msgstr "Kesalahan mengambil zona yang menggunakan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Failed to get list of zones using template: "
-msgstr "Gagal mendapatkan daftar zona yang menggunakan template: "
+msgstr "Gagal mendapatkan daftar zona yang menggunakan templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1221
 msgid "You do not have the permission to edit a zone template."
-msgstr "Anda tidak memiliki izin untuk mengedit template zona."
+msgstr "Anda tidak memiliki izin untuk mengedit templat zona."
 
 #: lib/Domain/Model/ZoneTemplate.php:1269
 msgid "Error unlinking zone from template: "
-msgstr "Kesalahan memutuskan tautan zona dari template: "
+msgstr "Kesalahan memutuskan tautan zona dari templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1318
 msgid "Error retrieving zones: "
@@ -3872,7 +3871,7 @@ msgstr "Kesalahan mengambil zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1337
 msgid "Error checking template name existence: "
-msgstr "Kesalahan memeriksa keberadaan nama template: "
+msgstr "Kesalahan memeriksa keberadaan nama templat: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1358
 msgid "Error looking up template by name: "
@@ -3880,7 +3879,7 @@ msgstr "Kesalahan mencari templat berdasarkan nama: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1381
 msgid "Error checking template existence: "
-msgstr "Kesalahan memeriksa keberadaan template: "
+msgstr "Kesalahan memeriksa keberadaan templat: "
 
 #: lib/Domain/Model/Permission.php:164
 msgid "You do not have the permission to add NS record."
@@ -7613,7 +7612,7 @@ msgstr "Selector 1 (SubjectPublicKeyInfo) direkomendasikan karena memungkinkan p
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "Anda tidak memiliki izin untuk mengubah kepemilikan zone."
+msgstr "Kolom matching type SMIMEA harus 0 (Pencocokan persis), 1 (SHA-256), atau 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -9258,7 +9257,7 @@ msgstr "Menghapus kunci ini secara permanen"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
-msgstr "Template zona"
+msgstr "Templat zona"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
@@ -9272,7 +9271,7 @@ msgstr "Pengingat"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "Setelah mengedit rekaman ini, jangan lupa memperbarui zona yang menggunakan template ini dengan mengklik \"Perbarui zona\" di halaman template."
+msgstr "Setelah mengedit rekaman ini, jangan lupa memperbarui zona yang menggunakan templat ini dengan mengklik \"Perbarui zona\" di halaman templat."
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -10063,11 +10062,11 @@ msgstr "Tambah templat zona untuk"
 
 #: templates/modern/edit_perm_templ.html:24
 msgid "Provide a name for your template"
-msgstr "Berikan nama untuk template Anda"
+msgstr "Berikan nama untuk templat Anda"
 
 #: templates/modern/edit_zone_templ.html:138
 msgid "Optional description to help identify this template"
-msgstr "Deskripsi opsional untuk membantu mengidentifikasi template ini"
+msgstr "Deskripsi opsional untuk membantu mengidentifikasi templat ini"
 
 #: templates/modern/edit_zone_templ.html:146
 msgid "Global template"
@@ -10093,7 +10092,7 @@ msgstr "Tentang Templat"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Template zona memungkinkan Anda membuat kumpulan rekaman DNS yang telah ditentukan sebelumnya dan dapat diterapkan dengan cepat saat membuat zona baru."
+msgstr "Templat zona memungkinkan Anda membuat kumpulan rekaman DNS yang telah ditentukan sebelumnya dan dapat diterapkan dengan cepat saat membuat zona baru."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -10123,7 +10122,7 @@ msgstr "Tips & Contoh"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Buat template yang berbeda untuk jenis situs web yang berbeda (mis., \"Basic Website\", \"Email Server\")"
+msgstr "Buat templat yang berbeda untuk jenis situs web yang berbeda (mis., \"Basic Website\", \"Email Server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -10192,23 +10191,23 @@ msgstr "Semua operasi"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "Tambah rekod massal"
+msgstr "Tambah rekaman massal"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
-msgstr "Tambah Rekod Massal"
+msgstr "Tambah Rekaman Massal"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
-msgstr "Rekod"
+msgstr "Rekaman"
 
 #: templates/modern/bulk_record_add.html:28
 msgid "Provide at least one record"
-msgstr "Berikan setidaknya satu rekod"
+msgstr "Berikan setidaknya satu rekaman"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: nama,tipe,konten,prioritas,ttl,komentar (satu rekod per baris)"
+msgstr "Format: nama,tipe,konten,prioritas,ttl,komentar (satu rekaman per baris)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -10229,7 +10228,7 @@ msgstr "Masukkan hanya nama host - nama zona akan ditambahkan secara otomatis"
 
 #: templates/modern/bulk_record_add.html:41
 msgid "Add Records"
-msgstr "Tambah Rekod"
+msgstr "Tambah Rekaman"
 
 #: templates/modern/bulk_record_add.html:56
 msgid "Instructions"
@@ -10241,7 +10240,7 @@ msgstr "Format Input"
 
 #: templates/modern/bulk_record_add.html:62
 msgid "Enter one record per line using CSV format"
-msgstr "Masukkan satu rekod per baris menggunakan format CSV"
+msgstr "Masukkan satu rekaman per baris menggunakan format CSV"
 
 #: templates/modern/bulk_record_add.html:63
 msgid "Required fields: name, type, content"
@@ -10253,7 +10252,7 @@ msgstr "Bidang opsional: prioritas, ttl, komentar"
 
 #: templates/modern/bulk_record_add.html:65
 msgid "Records are validated before creation"
-msgstr "Rekod divalidasi sebelum dibuat"
+msgstr "Rekaman divalidasi sebelum dibuat"
 
 #: templates/modern/bulk_record_add.html:69
 msgid "Best Practices"
@@ -10261,27 +10260,27 @@ msgstr "Praktik Terbaik"
 
 #: templates/modern/bulk_record_add.html:71
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr "Untuk rekod CNAME, MX, SRV, pastikan konten diakhiri dengan titik (.)"
+msgstr "Untuk rekaman CNAME, MX, SRV, pastikan konten diakhiri dengan titik (.)"
 
 #: templates/modern/bulk_record_add.html:72
 msgid "Use @ for records at the zone apex (root domain)"
-msgstr "Gunakan @ untuk rekod di puncak zona (domain root)"
+msgstr "Gunakan @ untuk rekaman di puncak zona (domain root)"
 
 #: templates/modern/bulk_record_add.html:73
 msgid "Quote TXT record values that contain spaces"
-msgstr "Kutip nilai rekod TXT yang berisi spasi"
+msgstr "Kutip nilai rekaman TXT yang berisi spasi"
 
 #: templates/modern/bulk_record_add.html:81
 msgid "Record Type Examples"
-msgstr "Contoh Tipe Rekod"
+msgstr "Contoh Tipe Rekaman"
 
 #: templates/modern/bulk_record_add.html:85
 msgid "Common Records"
-msgstr "Rekod Umum"
+msgstr "Rekaman Umum"
 
 #: templates/modern/bulk_record_add.html:94
 msgid "Advanced Records"
-msgstr "Rekod Lanjutan"
+msgstr "Rekaman Lanjutan"
 
 #: templates/modern/bulk_record_add.html:99
 msgid "legacy"
@@ -10301,7 +10300,7 @@ msgstr "Peringatan: Silakan Tinjau Sebelum Melanjutkan"
 
 #: templates/modern/dns_wizard_form.html:198
 msgid "Create Record"
-msgstr "Buat Rekod"
+msgstr "Buat Rekaman"
 
 #: templates/modern/dns_wizard_form.html:201
 msgid "Back to Wizard Selection"
@@ -10442,9 +10441,7 @@ msgstr ""
 #: templates/modern/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
-msgstr ""
-"Anda bertanggung jawab atas keakuratan rekod DNS yang Anda buat atau "
-"modifikasi"
+msgstr "Anda bertanggung jawab atas keakuratan rekaman DNS yang Anda buat atau modifikasi"
 
 #: templates/modern/user_agreement_content.html:16
 msgid ""
@@ -10686,11 +10683,11 @@ msgstr "Templat"
 
 #: templates/modern/list_forward_zones.html:157
 msgid "SOA record is disabled, the zone will not be served"
-msgstr "Catatan SOA dinonaktifkan, zona tidak akan dilayani"
+msgstr "Rekaman SOA dinonaktifkan, zona tidak akan dilayani"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "Zone has no SOA record"
-msgstr "Zona tidak memiliki catatan SOA"
+msgstr "Zona tidak memiliki rekaman SOA"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
@@ -10794,11 +10791,11 @@ msgstr ""
 
 #: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
-msgstr "Key Signing Key - menandatangani rekod DNSKEY di zona"
+msgstr "Key Signing Key - menandatangani rekaman DNSKEY di zona"
 
 #: templates/modern/dnssec_add_key.html:179
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - menandatangani semua rekod lain di zona"
+msgstr "Zone Signing Key - menandatangani semua rekaman lain di zona"
 
 #: templates/modern/dnssec_add_key.html:184
 msgid "Recommended Settings"
@@ -11027,9 +11024,7 @@ msgstr "Zona yang akan dilepaskan"
 msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
-msgstr ""
-"Melepaskan zona dari templatnya tidak akan menghapus rekod apa pun. Zona "
-"tidak akan lagi menerima pembaruan ketika templat dimodifikasi."
+msgstr "Melepaskan zona dari templatnya tidak akan menghapus rekaman apa pun. Zona tidak akan lagi menerima pembaruan ketika templat dimodifikasi."
 
 #: templates/modern/confirm_unlink_zones_templ.html:66
 msgid "Yes, unlink this zone"
@@ -11189,7 +11184,7 @@ msgstr "Catatan Penting"
 #: templates/modern/add_supermaster.html:79
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
-msgstr "Nama host harus cocok persis dengan yang muncul di rekod NS zona."
+msgstr "Nama host harus cocok persis dengan yang muncul di rekaman NS zona."
 
 #: templates/modern/add_supermaster.html:80
 msgid ""
@@ -11260,7 +11255,7 @@ msgstr "Opsional"
 
 #: templates/modern/batch_ptr_record.html:59
 msgid "Leave empty to use just the domain for PTR records"
-msgstr "Biarkan kosong untuk hanya menggunakan domain untuk rekod PTR"
+msgstr "Biarkan kosong untuk hanya menggunakan domain untuk rekaman PTR"
 
 #: templates/modern/batch_ptr_record.html:65
 msgid "Required"
@@ -11276,27 +11271,25 @@ msgstr "Menggunakan nilai TTL default dari konfigurasi"
 
 #: templates/modern/batch_ptr_record.html:86
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Buat rekod A/AAAA forward di zona primer"
+msgstr "Buat rekaman A/AAAA forward di zona primer"
 
 #: templates/modern/batch_ptr_record.html:91
 msgid "Create PTRs only for existing A/AAAA records in forward zone"
-msgstr "Buat PTR hanya untuk rekod A/AAAA yang ada di zona forward"
+msgstr "Buat PTR hanya untuk rekaman A/AAAA yang ada di zona forward"
 
 #: templates/modern/batch_ptr_record.html:92
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr ""
-"Jika dicentang, rekod PTR hanya akan dibuat untuk IP yang memiliki rekod A/"
-"AAAA terkait di domain yang ditentukan"
+msgstr "Jika dicentang, rekaman PTR hanya akan dibuat untuk IP yang memiliki rekaman A/AAAA terkait di domain yang ditentukan"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
-msgstr "Buat Rekod PTR"
+msgstr "Buat Rekaman PTR"
 
 #: templates/modern/batch_ptr_record.html:119
 msgid "PTR Record Information"
-msgstr "Informasi Rekod PTR"
+msgstr "Informasi Rekaman PTR"
 
 #: templates/modern/api_key_add.html:77
 msgid "Important Information"
@@ -11304,7 +11297,7 @@ msgstr "Informasi Penting"
 
 #: templates/modern/batch_ptr_record.html:124
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "Alat ini membuat rekod PTR secara massal. Dua mode tersedia:"
+msgstr "Alat ini membuat rekaman PTR secara massal. Dua mode tersedia:"
 
 #: templates/modern/batch_ptr_record.html:126
 msgid "All IPs"
@@ -11312,7 +11305,7 @@ msgstr "Semua IP"
 
 #: templates/modern/batch_ptr_record.html:126
 msgid "Creates PTR records for every IP in the network range"
-msgstr "Membuat rekod PTR untuk setiap IP dalam rentang jaringan"
+msgstr "Membuat rekaman PTR untuk setiap IP dalam rentang jaringan"
 
 #: templates/modern/batch_ptr_record.html:127
 msgid "Matching only"
@@ -11322,9 +11315,7 @@ msgstr "Hanya yang cocok"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr ""
-"Membuat rekod PTR hanya untuk IP yang memiliki rekod A/AAAA yang ada di zona "
-"forward"
+msgstr "Membuat rekaman PTR hanya untuk IP yang memiliki rekaman A/AAAA yang ada di zona forward"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11378,9 +11369,7 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr ""
-"Gunakan \"Buat PTR hanya untuk rekod A/AAAA yang ada\" untuk mengisi PTR "
-"berdasarkan zona forward Anda"
+msgstr "Gunakan \"Buat PTR hanya untuk rekaman A/AAAA yang ada\" untuk mengisi PTR berdasarkan zona forward Anda"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -11394,9 +11383,7 @@ msgstr ""
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
-"Centang \"Buat rekod A/AAAA forward\" untuk secara otomatis membuat rekod "
-"forward yang cocok (dinonaktifkan saat menggunakan mode pencocokan)"
+msgstr "Centang \"Buat rekaman A/AAAA forward\" untuk secara otomatis membuat rekaman forward yang cocok (dinonaktifkan saat menggunakan mode pencocokan)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -11440,23 +11427,21 @@ msgstr "Tambah Kepemilikan Grup"
 
 #: templates/modern/edit_zone_templ.html:94 templates/modern/add_record.html:5
 msgid "Add record"
-msgstr "Tambah rekod"
+msgstr "Tambah rekaman"
 
 #: templates/modern/add_zone_templ_record.html:13
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
-"Setelah menambahkan rekod ini, ingatlah untuk memperbarui zona menggunakan "
-"templat ini dengan mengklik \"Perbarui zona\" di halaman templat."
+msgstr "Setelah menambahkan rekaman ini, ingatlah untuk memperbarui zona menggunakan templat ini dengan mengklik \"Perbarui zona\" di halaman templat."
 
 #: templates/modern/add_zone_templ_record.html:23
 msgid "Add record to zone template"
-msgstr "Tambah rekod ke templat zona"
+msgstr "Tambah rekaman ke templat zona"
 
 #: templates/modern/add_zone_templ_record.html:26
 msgid "Create a new record for this zone template"
-msgstr "Buat rekod baru untuk templat zona ini"
+msgstr "Buat rekaman baru untuk templat zona ini"
 
 #: templates/modern/_partials/log_list.html:20
 msgid "Total logs"
@@ -11500,7 +11485,7 @@ msgstr "Ekspor entri log yang difilter. Filter saat ini akan diterapkan."
 
 #: templates/modern/list_record_changes.html:173
 msgid "records to export"
-msgstr "catatan untuk diekspor"
+msgstr "rekaman untuk diekspor"
 
 #: templates/modern/list_record_changes.html:175
 msgid "Format"
@@ -11548,15 +11533,13 @@ msgstr "Tidak, pertahankan templat ini"
 
 #: templates/modern/dns_wizard_select.html:12
 msgid "DNS Record Wizard"
-msgstr "Wizard Rekod DNS"
+msgstr "Wizard Rekaman DNS"
 
 #: templates/modern/dns_wizard_select.html:19
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr ""
-"Pilih wizard untuk membantu Anda membuat rekod DNS kompleks dengan formulir "
-"terpandu alih-alih entri teks manual."
+msgstr "Pilih wizard untuk membantu Anda membuat rekaman DNS kompleks dengan formulir terpandu alih-alih entri teks manual."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
@@ -11609,15 +11592,15 @@ msgstr "Edit"
 
 #: templates/modern/edit.html:11 templates/modern/edit.html:610
 msgid "Add new record"
-msgstr "Tambah rekod baru"
+msgstr "Tambah rekaman baru"
 
 #: templates/modern/edit.html:189 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Wizard terpandu untuk rekod DMARC, SPF, DKIM, CAA, TLSA, dan SRV"
+msgstr "Wizard terpandu untuk rekaman DMARC, SPF, DKIM, CAA, TLSA, dan SRV"
 
 #: templates/modern/edit.html:21 templates/modern/edit.html:620
 msgid "Multi-record mode"
-msgstr "Mode multi-rekod"
+msgstr "Mode multi-rekaman"
 
 #: templates/modern/edit.html:563 templates/modern/edit.html:623
 msgid "Bulk add"
@@ -11629,11 +11612,11 @@ msgstr "Gagal menambahkan"
 
 #: templates/modern/edit.html:36 templates/modern/edit.html:635
 msgid "record(s). Please check the record format."
-msgstr "rekod. Silakan periksa format rekod."
+msgstr "rekaman. Silakan periksa format rekaman."
 
 #: templates/modern/edit.html:38 templates/modern/edit.html:637
 msgid "Failed to add records. Please check the record format."
-msgstr "Gagal menambahkan rekod. Silakan periksa format rekod."
+msgstr "Gagal menambahkan rekaman. Silakan periksa format rekaman."
 
 #: templates/modern/edit.html:41 templates/modern/edit.html:640
 msgid "Content validation failed:"
@@ -11641,7 +11624,7 @@ msgstr "Validasi konten gagal:"
 
 #: templates/modern/edit.html:41 templates/modern/edit.html:640
 msgid "Invalid value for record type"
-msgstr "Nilai tidak valid untuk tipe rekod"
+msgstr "Nilai tidak valid untuk tipe rekaman"
 
 #: templates/modern/edit.html:43 templates/modern/edit.html:642
 msgid "Please provide all required information."
@@ -11657,7 +11640,7 @@ msgstr "Tambah A/AAAA"
 
 #: templates/modern/edit.html:107 templates/modern/edit.html:707
 msgid "This record already exists"
-msgstr "Rekod ini sudah ada"
+msgstr "Rekaman ini sudah ada"
 
 #: templates/modern/edit.html:119 templates/modern/edit.html:719
 msgid "Invalid priority"
@@ -11693,11 +11676,11 @@ msgstr "Lihat Metadata"
 
 #: templates/default/edit.html:231 templates/modern/edit.html:231
 msgid "No records match your filter criteria."
-msgstr "Tidak ada rekod yang cocok dengan kriteria filter Anda."
+msgstr "Tidak ada rekaman yang cocok dengan kriteria filter Anda."
 
 #: templates/default/edit.html:239 templates/modern/edit.html:239
 msgid "This zone does not have any records."
-msgstr "Zona ini tidak memiliki rekod."
+msgstr "Zona ini tidak memiliki rekaman."
 
 #: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "Filter:"
@@ -11729,7 +11712,7 @@ msgstr "dari"
 
 #: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "total records"
-msgstr "total rekod"
+msgstr "total rekaman"
 
 #: templates/default/edit.html:393 templates/modern/edit.html:393
 msgid "Last modified"
@@ -11746,7 +11729,7 @@ msgstr "Edit yang dipilih"
 
 #: templates/modern/edit.html:525 templates/modern/search.html:487
 msgid "Delete record(s)"
-msgstr "Hapus rekod"
+msgstr "Hapus rekaman"
 
 #: templates/modern/edit.html:533 templates/modern/search.html:89
 msgid "Comments"
@@ -11859,11 +11842,11 @@ msgstr "PTR"
 
 #: templates/modern/delete_record.html:9
 msgid "Delete Record"
-msgstr "Hapus Rekod"
+msgstr "Hapus Rekaman"
 
 #: templates/modern/delete_record.html:16
 msgid "You are about to delete a record in zone"
-msgstr "Anda akan menghapus rekod di zona"
+msgstr "Anda akan menghapus rekaman di zona"
 
 #: templates/modern/delete_zone_templ_record.html:14
 msgid "This action cannot be undone."
@@ -11871,27 +11854,27 @@ msgstr "Tindakan ini tidak dapat dibatalkan."
 
 #: templates/modern/delete_zone_templ_record.html:19
 msgid "Record Details"
-msgstr "Detail Rekod"
+msgstr "Detail Rekaman"
 
 #: templates/modern/delete_record.html:58
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr "Anda mencoba menghapus rekod yang diperlukan agar zona ini berfungsi."
+msgstr "Anda mencoba menghapus rekaman yang diperlukan agar zona ini berfungsi."
 
 #: templates/modern/delete_record.html:69
 msgid "Also delete corresponding PTR record (if exists)"
-msgstr "Hapus juga rekod PTR terkait (jika ada)"
+msgstr "Hapus juga rekaman PTR terkait (jika ada)"
 
 #: templates/modern/delete_record.html:78
 msgid "Also delete corresponding A/AAAA record (if exists)"
-msgstr "Hapus juga rekod A/AAAA terkait (jika ada)"
+msgstr "Hapus juga rekaman A/AAAA terkait (jika ada)"
 
 #: templates/modern/delete_zone_templ_record.html:49
 msgid "Yes, delete this record"
-msgstr "Ya, hapus rekod ini"
+msgstr "Ya, hapus rekaman ini"
 
 #: templates/modern/delete_zone_templ_record.html:49
 msgid "No, keep this record"
-msgstr "Tidak, pertahankan rekod ini"
+msgstr "Tidak, pertahankan rekaman ini"
 
 #: templates/default/mfa_verify.html:6 templates/modern/mfa_verify.html:6
 msgid "Two-Factor Authentication"
@@ -12007,19 +11990,19 @@ msgstr "Hapus zona slave"
 
 #: templates/modern/database_consistency.html:154
 msgid "Records Not Belonging to Any Zone"
-msgstr "Rekod yang Tidak Termasuk Zona Mana Pun"
+msgstr "Rekaman yang Tidak Termasuk Zona Mana Pun"
 
 #: templates/modern/database_consistency.html:165
 msgid "Record ID"
-msgstr "ID Rekod"
+msgstr "ID Rekaman"
 
 #: templates/modern/database_consistency.html:189
 msgid "Delete orphaned record"
-msgstr "Hapus rekod yang tidak terhubung"
+msgstr "Hapus rekaman yang tidak terhubung"
 
 #: templates/modern/database_consistency.html:205
 msgid "Zones with Duplicate SOA Records"
-msgstr "Zona dengan Rekod SOA Duplikat"
+msgstr "Zona dengan Rekaman SOA Duplikat"
 
 #: templates/modern/database_consistency.html:218
 msgid "SOA Count"
@@ -12031,11 +12014,11 @@ msgstr "Pertahankan SOA pertama, hapus duplikat"
 
 #: templates/modern/database_consistency.html:254
 msgid "Zones Without SOA Records"
-msgstr "Zona Tanpa Rekod SOA"
+msgstr "Zona Tanpa Rekaman SOA"
 
 #: templates/modern/database_consistency.html:283
 msgid "Create default SOA record"
-msgstr "Buat rekod SOA default"
+msgstr "Buat rekaman SOA default"
 
 #: templates/modern/database_consistency.html:322
 msgid "Are you sure you want to delete the slave zone"
@@ -12043,7 +12026,7 @@ msgstr "Apakah Anda yakin ingin menghapus zona slave"
 
 #: templates/modern/database_consistency.html:325
 msgid "Are you sure you want to delete the orphaned record"
-msgstr "Apakah Anda yakin ingin menghapus rekod yang tidak terhubung"
+msgstr "Apakah Anda yakin ingin menghapus rekaman yang tidak terhubung"
 
 #: templates/modern/database_consistency.html:328
 msgid "Are you sure you want to delete this item?"
@@ -12138,7 +12121,7 @@ msgstr "default"
 
 #: templates/modern/add_zone_master.html:53
 msgid "Optional: Apply predefined records from a template"
-msgstr "Opsional: Terapkan rekod yang telah ditentukan dari templat"
+msgstr "Opsional: Terapkan rekaman yang telah ditentukan dari templat"
 
 #: templates/modern/add_zone_master.html:59
 msgid "SOA serial policy"
@@ -12200,7 +12183,7 @@ msgstr "Templat zona untuk"
 
 #: templates/modern/list_zone_templ.html:16
 msgid "Search templates..."
-msgstr "Cari template..."
+msgstr "Cari templat..."
 
 #: templates/modern/edit_zone_templ.html:127
 msgid "Template name"
@@ -12277,11 +12260,7 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr ""
-"Mengubah templat zona menimpa rekod berbasis templat tetapi mempertahankan "
-"penambahan manual. Modifikasi templat tidak secara otomatis memperbarui zona "
-"- gunakan tombol \"Perbarui Zona\" saat mengedit templat untuk menerapkan "
-"perubahan."
+msgstr "Mengubah templat zona menimpa rekaman berbasis templat tetapi mempertahankan penambahan manual. Modifikasi templat tidak secara otomatis memperbarui zona - gunakan tombol \"Perbarui Zona\" saat mengedit templat untuk menerapkan perubahan."
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -12403,20 +12382,17 @@ msgstr ""
 
 #: templates/modern/edit_zone_templ.html:26
 msgid "Template Records"
-msgstr "Rekod Templat"
+msgstr "Rekaman Templat"
 
 #: templates/modern/edit_zone_templ.html:30
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr ""
-"Templat ini tidak memiliki rekod SOA. Zona DNS biasanya memerlukan rekod SOA "
-"untuk berfungsi dengan baik, dan penandatanganan DNSSEC mungkin gagal "
-"tanpanya."
+msgstr "Templat ini tidak memiliki rekaman SOA. Zona DNS biasanya memerlukan rekaman SOA untuk berfungsi dengan baik, dan penandatanganan DNSSEC mungkin gagal tanpanya."
 
 #: templates/modern/edit_zone_templ.html:36
 msgid "This zone template does not have any records yet."
-msgstr "Templat zona ini belum memiliki rekod."
+msgstr "Templat zona ini belum memiliki rekaman."
 
 #: templates/modern/edit_zone_templ.html:101
 msgid "View zones"
@@ -12440,27 +12416,25 @@ msgstr "Simpan Sebagai"
 
 #: templates/modern/edit_zone_templ.html:175
 msgid "The following placeholders can be used in template records"
-msgstr "Placeholder berikut dapat digunakan dalam rekod templat"
+msgstr "Placeholder berikut dapat digunakan dalam rekaman templat"
 
 #: templates/modern/edit_zone_templ.html:312
 msgid "Warning: Missing SOA Record"
-msgstr "Peringatan: Rekod SOA Hilang"
+msgstr "Peringatan: Rekaman SOA Hilang"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Templat zona ini tidak memiliki rekod SOA (Start of Authority)."
+msgstr "Templat zona ini tidak memiliki rekaman SOA (Start of Authority)."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr ""
-"Zona DNS biasanya memerlukan rekod SOA untuk berfungsi dengan baik, dan "
-"penandatanganan DNSSEC mungkin gagal tanpanya."
+msgstr "Zona DNS biasanya memerlukan rekaman SOA untuk berfungsi dengan baik, dan penandatanganan DNSSEC mungkin gagal tanpanya."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Apakah Anda ingin melanjutkan tanpa menambahkan rekod SOA?"
+msgstr "Apakah Anda ingin melanjutkan tanpa menambahkan rekaman SOA?"
 
 #: templates/modern/edit_zone_templ.html:326
 msgid "Continue Without SOA"
@@ -12596,23 +12570,21 @@ msgstr "Terima & Lanjutkan"
 
 #: templates/modern/delete_records.html:13
 msgid "Delete records"
-msgstr "Hapus rekod"
+msgstr "Hapus rekaman"
 
 #: templates/modern/delete_records.html:17
 msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
-msgstr ""
-"Apakah Anda yakin ingin menghapus rekod berikut? Tindakan ini tidak dapat "
-"dibatalkan."
+msgstr "Apakah Anda yakin ingin menghapus rekaman berikut? Tindakan ini tidak dapat dibatalkan."
 
 #: templates/modern/delete_records.html:60
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "Hapus juga rekod PTR terkait (jika ada)"
+msgstr "Hapus juga rekaman PTR terkait (jika ada)"
 
 #: templates/modern/delete_records.html:65
 msgid "Yes, delete these records"
-msgstr "Ya, hapus rekod ini"
+msgstr "Ya, hapus rekaman ini"
 
 #: templates/modern/list_record_changes.html:12
 msgid "entries"
@@ -13008,7 +12980,7 @@ msgstr "Perilaku Antarmuka"
 
 #: templates/modern/user_preferences.html:139
 msgid "Record form"
-msgstr "Formulir rekod"
+msgstr "Formulir rekaman"
 
 #: templates/modern/user_preferences.html:148
 msgid "Save buttons"
@@ -13020,19 +12992,19 @@ msgstr "Tampilan Edit Zona"
 
 #: templates/modern/user_preferences.html:164
 msgid "Show record ID"
-msgstr "Tampilkan ID rekod"
+msgstr "Tampilkan ID rekaman"
 
 #: templates/modern/user_preferences.html:165
 msgid "Display record ID column in edit view"
-msgstr "Tampilkan kolom ID rekod di tampilan edit"
+msgstr "Tampilkan kolom ID rekaman di tampilan edit"
 
 #: templates/modern/user_preferences.html:173
 msgid "Show add record form"
-msgstr "Tampilkan formulir tambah rekod"
+msgstr "Tampilkan formulir tambah rekaman"
 
 #: templates/modern/user_preferences.html:174
 msgid "Display inline add record form in edit view"
-msgstr "Tampilkan formulir tambah rekod inline di tampilan edit"
+msgstr "Tampilkan formulir tambah rekaman inline di tampilan edit"
 
 #: templates/modern/user_preferences.html:181
 msgid "Show edit buttons"
@@ -13040,7 +13012,7 @@ msgstr "Tampilkan tombol edit"
 
 #: templates/modern/user_preferences.html:182
 msgid "Display individual edit button per record"
-msgstr "Tampilkan tombol edit individual per rekod"
+msgstr "Tampilkan tombol edit individual per rekaman"
 
 #: templates/modern/user_preferences.html:189
 msgid "Show delete buttons"
@@ -13048,7 +13020,7 @@ msgstr "Tampilkan tombol hapus"
 
 #: templates/modern/user_preferences.html:190
 msgid "Display individual delete button per record"
-msgstr "Tampilkan tombol hapus individual per rekod"
+msgstr "Tampilkan tombol hapus individual per rekaman"
 
 #: templates/modern/user_preferences.html:197
 msgid "Hostname-only display"
@@ -13100,7 +13072,7 @@ msgstr "Zona ditemukan"
 
 #: templates/default/search.html:321 templates/modern/search.html:321
 msgid "Records found"
-msgstr "Rekod ditemukan"
+msgstr "Rekaman ditemukan"
 
 #: templates/default/search.html:502 templates/modern/search.html:502
 msgid "Try different search terms or filters"
@@ -13120,11 +13092,11 @@ msgstr "zona yang dipilih?"
 
 #: templates/default/search.html:691 templates/modern/search.html:691
 msgid "Confirm Record Deletion"
-msgstr "Konfirmasi Penghapusan Rekod"
+msgstr "Konfirmasi Penghapusan Rekaman"
 
 #: templates/default/search.html:696 templates/modern/search.html:696
 msgid "selected record(s)?"
-msgstr "rekod yang dipilih?"
+msgstr "rekaman yang dipilih?"
 
 #: templates/modern/delete_domains.html:4
 msgid "Delete zones"
@@ -13554,7 +13526,7 @@ msgstr "DS dan kunci DNS"
 
 #: templates/modern/dnssec_ds_dnskey.html:20
 msgid "DNSSEC public records for zone"
-msgstr "Rekod publik DNSSEC untuk zona"
+msgstr "Rekaman publik DNSSEC untuk zona"
 
 #: templates/modern/dnssec_ds_dnskey.html:26
 msgid "Back to DNSSEC keys"
@@ -13562,50 +13534,49 @@ msgstr "Kembali ke kunci DNSSEC"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
-msgstr "Rekod DNSKEY"
+msgstr "Rekaman DNSKEY"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
-msgstr "Salin semua catatan DNSKEY ke papan klip"
+msgstr "Salin semua rekaman DNSKEY ke papan klip"
 
 #: templates/modern/dnssec_ds_dnskey.html:61
 msgid "Copy this record"
-msgstr "Salin catatan ini"
+msgstr "Salin rekaman ini"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
-msgstr "Rekod DS"
+msgstr "Rekaman DS"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
-msgstr "Salin semua catatan DS ke papan klip"
+msgstr "Salin semua rekaman DS ke papan klip"
 
 #: templates/modern/dnssec_ds_dnskey.html:66
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
-msgstr ""
-"Rekod DS harus ditambahkan ke zona induk untuk membentuk rantai kepercayaan."
+msgstr "Rekaman DS harus ditambahkan ke zona induk untuk membentuk rantai kepercayaan."
 
 #: templates/modern/add_record.html:13 templates/modern/add_record.html:15
 msgid "Add record to zone"
-msgstr "Tambah rekod ke zona"
+msgstr "Tambah rekaman ke zona"
 
 #: templates/default/add_record.html:27 templates/modern/add_record.html:27
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Catatan tidak dapat ditambahkan. Periksa data dan coba lagi."
+msgstr "Rekaman tidak dapat ditambahkan. Periksa data dan coba lagi."
 
 #: templates/default/add_record.html:32 templates/modern/add_record.html:32
 msgid "Create a new DNS record in this zone"
-msgstr "Buat rekod DNS baru di zona ini"
+msgstr "Buat rekaman DNS baru di zona ini"
 
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
-msgstr "Tambah rekod lain"
+msgstr "Tambah rekaman lain"
 
 #: templates/default/add_record.html:197 templates/modern/add_record.html:197
 msgid "Add records"
-msgstr "Tambah rekod"
+msgstr "Tambah rekaman"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -13784,15 +13755,15 @@ msgstr ""
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"
-msgstr "Hapus rekod"
+msgstr "Hapus rekaman"
 
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
-msgstr "Hapus Rekod Templat"
+msgstr "Hapus Rekaman Templat"
 
 #: templates/modern/delete_zone_templ_record.html:14
 msgid "You are about to delete a record from template"
-msgstr "Anda akan menghapus rekod dari templat"
+msgstr "Anda akan menghapus rekaman dari templat"
 
 #: templates/modern/dnssec_delete_key.html:105
 msgid "Delete key"
@@ -13859,7 +13830,7 @@ msgstr "Setelah membuat grup, Anda dapat menambahkan anggota dan menetapkan zona
 
 #: templates/modern/list_perm_templ.html:6
 msgid "Group Templates"
-msgstr "Template Grup"
+msgstr "Templat Grup"
 
 #: templates/modern/list_perm_templ.html:36
 msgid "No permission templates found"
@@ -13867,7 +13838,7 @@ msgstr "Tidak ada templat izin yang ditemukan"
 
 #: templates/modern/list_perm_templ.html:70
 msgid "Template Types:"
-msgstr "Tipe Template:"
+msgstr "Tipe Templat:"
 
 #: templates/modern/list_perm_templ.html:70
 msgid "templates apply globally"
