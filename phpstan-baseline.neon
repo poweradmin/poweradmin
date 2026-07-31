@@ -139,7 +139,7 @@ parameters:
 			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
 
 		-
-			message: '#^Class cognitive complexity is 92, keep it under 60$#'
+			message: '#^Class cognitive complexity is 94, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php
@@ -151,7 +151,7 @@ parameters:
 			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController\:\:updateRecord\(\)" is 29, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController\:\:updateRecord\(\)" is 31, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php

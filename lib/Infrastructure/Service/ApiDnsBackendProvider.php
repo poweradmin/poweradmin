@@ -757,13 +757,16 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
-        $zones = $this->getZones();
+        // Read zones.id here rather than the provider's zone list, which reports
+        // domain_id: callers feed this straight back in as a zone id, and the two
+        // numbering schemes collide, silently landing records in another zone.
+        $stmt = $this->db->query("SELECT id, zone_name FROM zones WHERE zone_name IS NOT NULL");
         $foundId = -1;
         $bestLength = -1;
 
         $lowerName = strtolower($reverseName);
-        foreach ($zones as $zone) {
-            $zoneName = strtolower($zone['name']);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zoneName = strtolower((string)$row['zone_name']);
             if (!str_ends_with($zoneName, '.arpa')) {
                 continue;
             }
@@ -773,7 +776,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             if (DnsHelper::isWithinZone($lowerName, $zoneName)) {
                 if (strlen($zoneName) > $bestLength) {
                     $bestLength = strlen($zoneName);
-                    $foundId = (int)$zone['id'];
+                    $foundId = (int)$row['id'];
                 }
             }
         }

@@ -263,7 +263,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
     public function getNewRecordId(int $domainId, string $name, string $type, string $content): int|string|null
     {
-        $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
+        $records = $this->backendProvider->getRecordsByName($domainId, $name, $type);
         foreach ($records as $r) {
             if (strtolower($r['name']) === strtolower($name) && $r['type'] === $type && $r['content'] === $content) {
                 return $r['id'] ?? null;

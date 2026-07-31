@@ -898,8 +898,18 @@ class ZonesRecordsController extends PublicApiController
                     'ptr_updated' => $ptrUpdated
                 ];
             } else {
+                // The old id is dead once name/type/content/prio change, so look up
+                // the one the record now has. Returning the old one would hand the
+                // caller an identifier that 404s on its next request.
+                $newRecordId = $this->recordRepository->getNewRecordId(
+                    $zoneId,
+                    DnsHelper::restoreZoneSuffix($recordData['name'], $zoneName ?: ''),
+                    $recordData['type'],
+                    $recordData['content']
+                ) ?? $recordId;
+
                 $formattedRecord = [
-                    'id' => $this->formatRecordId($recordId),
+                    'id' => $this->formatRecordId($newRecordId),
                     'zone_id' => $zoneId,
                     'name' => DnsHelper::stripZoneSuffix($recordData['name'], $zoneName),
                     'type' => $recordData['type'],
