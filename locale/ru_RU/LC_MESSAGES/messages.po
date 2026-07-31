@@ -1868,11 +1868,11 @@ msgstr "Пользовательские"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:661
 msgid "Multi"
-msgstr "Mnozhestvennoe"
+msgstr "Множественное"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:662
 msgid "Single"
-msgstr "Odinochnoe"
+msgstr "Одиночное"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
@@ -9576,7 +9576,7 @@ msgstr "Были найдены следующие предупреждения:
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Pustaya stroka."
+msgstr "Пустая строка."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
@@ -11024,7 +11024,7 @@ msgstr "Расширенные Записи"
 
 #: templates/modern/bulk_record_add.html:99
 msgid "legacy"
-msgstr "ustarevshiy"
+msgstr "устаревший"
 
 #: templates/modern/dns_wizard_select.html:5
 msgid "DNS Wizard"
@@ -12422,7 +12422,7 @@ msgstr "Редактировать зону"
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
-msgstr "Metadannye"
+msgstr "Метаданные"
 
 #: templates/modern/edit.html:215 templates/modern/edit_zone_metadata.html:5
 msgid "View Metadata"
@@ -13202,11 +13202,11 @@ msgstr "Продолжить без SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "Redaktirovat' metadannye"
+msgstr "Редактировать метаданные"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
-msgstr "Neskolko znacheniy"
+msgstr "Несколько значений"
 
 #: templates/modern/edit_zone_metadata.html:23
 msgid ""
@@ -13218,15 +13218,15 @@ msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
-msgstr "Mnozhestvennoe znachenie"
+msgstr "Множественное значение"
 
 #: templates/modern/edit_zone_metadata.html:29
 msgid "Single value"
-msgstr "Odinochnoe znachenie"
+msgstr "Одиночное значение"
 
 #: templates/modern/edit_zone_metadata.html:39
 msgid "Kind"
-msgstr "Tip"
+msgstr "Тип"
 
 #: templates/modern/edit_zone_metadata.html:114
 msgid "requires"
@@ -13238,11 +13238,11 @@ msgstr "Добавить строку метаданных"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "Sokhranit' metadannye"
+msgstr "Сохранить метаданные"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"
-msgstr "Nazad k zone"
+msgstr "Назад к зоне"
 
 #: templates/modern/api_key_created.html:5
 msgid "API Key Created"

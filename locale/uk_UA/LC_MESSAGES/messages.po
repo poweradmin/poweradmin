@@ -1860,11 +1860,11 @@ msgstr "Користувацький"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:661
 msgid "Multi"
-msgstr "Bagatoznachne"
+msgstr "Багатозначне"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:662
 msgid "Single"
-msgstr "Odynychne"
+msgstr "Одиничне"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
@@ -9530,7 +9530,7 @@ msgstr "Виявлено такі попередження:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Porozhniy ryadok."
+msgstr "Порожній рядок."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
@@ -10976,7 +10976,7 @@ msgstr "Розширені записи"
 
 #: templates/modern/bulk_record_add.html:99
 msgid "legacy"
-msgstr "zastarile"
+msgstr "застаріле"
 
 #: templates/modern/dns_wizard_select.html:5
 msgid "DNS Wizard"
@@ -12378,7 +12378,7 @@ msgstr "Редагувати зону"
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
-msgstr "Metadani"
+msgstr "Метадані"
 
 #: templates/modern/edit.html:215 templates/modern/edit_zone_metadata.html:5
 msgid "View Metadata"
@@ -13159,11 +13159,11 @@ msgstr "Продовжити без SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "Redaguvaty metadani"
+msgstr "Редагувати метадані"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
-msgstr "Kilka znachen"
+msgstr "Кілька значень"
 
 #: templates/modern/edit_zone_metadata.html:23
 msgid ""
@@ -13175,15 +13175,15 @@ msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
-msgstr "Bagatoznachne"
+msgstr "Багатозначне значення"
 
 #: templates/modern/edit_zone_metadata.html:29
 msgid "Single value"
-msgstr "Odynychne znachennya"
+msgstr "Одиничне значення"
 
 #: templates/modern/edit_zone_metadata.html:39
 msgid "Kind"
-msgstr "Typ"
+msgstr "Тип"
 
 #: templates/modern/edit_zone_metadata.html:114
 msgid "requires"
@@ -13195,7 +13195,7 @@ msgstr "Додати рядок метаданих"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "Zberehty metadani"
+msgstr "Зберегти метадані"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"

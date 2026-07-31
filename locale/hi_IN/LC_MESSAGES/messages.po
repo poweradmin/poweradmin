@@ -11539,7 +11539,7 @@ msgstr "उपयोगकर्ता जोड़ें"
 
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
-msgstr "Auth type"
+msgstr "प्रमाणीकरण प्रकार"
 
 #: templates/default/users.html:50 templates/modern/users.html:50
 msgid "MFA"
@@ -14108,7 +14108,7 @@ msgstr "नई तालिकाओं के लिए Charset। डेटा
 
 #: install/templates/step4.html.twig:193
 msgid "DB collation"
-msgstr "DB Collation"
+msgstr "DB कोलेशन"
 
 #: install/templates/step4.html.twig:200
 msgid ""
