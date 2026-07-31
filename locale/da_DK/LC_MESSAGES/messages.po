@@ -6450,9 +6450,7 @@ msgstr ""
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID-id-type 0x% 04X er ikke en af standardtyperne defineret i RFC 4701 "
-"(0x0000, 0x0001, 0x0002)."
+msgstr "DHCID-id-type 0x%04X er ikke en af standardtyperne defineret i RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
