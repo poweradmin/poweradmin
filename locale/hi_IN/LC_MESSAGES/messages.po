@@ -13436,15 +13436,13 @@ msgstr "उपयोगकर्ता बनाम समूह"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"जब <strong>users</strong> को सौंपा गया: अनुमतियां पूरी तरह से सिस्टम में वैश्विक रूप से "
-"लागू होती हैं।"
+msgstr "जब <strong>उपयोगकर्ता</strong> को सौंपा गया: अनुमतियां पूरी तरह से सिस्टम में वैश्विक रूप से लागू होती हैं।"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "जब <strong>groups</strong> को सौंपा गया: अनुमति केवल उस समूह के स्वामित्व वाले ज़ोन पर लागू होती है।"
+msgstr "जब <strong>समूह</strong> को सौंपा गया: अनुमति केवल उस समूह के स्वामित्व वाले ज़ोन पर लागू होती है।"
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

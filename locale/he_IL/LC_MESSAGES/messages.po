@@ -9076,7 +9076,7 @@ msgstr "כל השדות נדרשים"
 
 #: templates/modern/edit_supermaster.html:73
 msgid "Update Credentials"
-msgstr "עדכון Credentials"
+msgstr "עדכון פרטי התחברות"
 
 #: templates/modern/edit_supermaster.html:77
 msgid "Important"
@@ -12187,7 +12187,7 @@ msgstr "הגדרת MFA הושלמה"
 
 #: templates/modern/mfa_recovery_codes.html:16
 msgid "Multi-Factor Authentication is now enabled"
-msgstr "Multi-Factor Authentication מופעל כעת"
+msgstr "אימות רב-שלבי מופעל כעת"
 
 #: templates/modern/mfa_recovery_codes.html:17
 msgid "Your account is now protected with multi-factor authentication."
@@ -12241,7 +12241,7 @@ msgstr "השבת MFA"
 
 #: templates/modern/mfa_recovery_codes.html:69
 msgid "Continue to Dashboard"
-msgstr "המשך ל-Dashboard"
+msgstr "המשך ללוח הבקרה"
 
 #: templates/modern/mfa_recovery_codes.html:98
 msgid "Poweradmin MFA Recovery Codes"
@@ -12370,7 +12370,7 @@ msgstr "קוד אימות נשלח לכתובת הדואר האלקטרוני ש
 msgid ""
 "Please enter the 6-digit code to verify and enable Multi-Factor "
 "Authentication."
-msgstr "אנא הזן את הקוד בן 6 הספרות כדי לאמת ולהפעיל Multi-Factor Authentication."
+msgstr "אנא הזן את הקוד בן 6 הספרות כדי לאמת ולהפעיל אימות רב-שלבי."
 
 #: templates/modern/mfa_verify_email.html:32
 msgid "Enter the 6-digit code from your email"

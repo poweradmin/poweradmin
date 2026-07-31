@@ -3489,11 +3489,11 @@ msgstr "حساب کاربری را انتخاب کنید که مالک این su
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
-msgstr "درباره Editing Autoprimaries"
+msgstr "درباره ویرایش Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "درباره Editing Supermasters"
+msgstr "درباره ویرایش Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
@@ -6004,9 +6004,7 @@ msgstr "رکوردهای DHCID تنها باید توسط مشتریان یا س
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr ""
-"با استفاده از DNSSEC یا TSIG Authentication (RFC 3007) برای به روز رسانی های "
-"امن DHCID که توسط RFC 4701 توصیه می شود، در نظر بگیرید."
+msgstr "با استفاده از DNSSEC یا احراز هویت TSIG (RFC 3007) برای به روز رسانی های امن DHCID که توسط RFC 4701 توصیه می شود، در نظر بگیرید."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -10235,7 +10233,7 @@ msgstr "درخواست New Reset Link"
 
 #: templates/modern/reset_password.html:30
 msgid "Password does not meet requirements"
-msgstr "Password الزامات را برآورده نمی کند"
+msgstr "رمز عبور الزامات را برآورده نمی کند"
 
 #: templates/modern/reset_password.html:39
 msgid "Enter your new password for"
@@ -10251,7 +10249,7 @@ msgstr "لطفا یک رمز عبور ارائه دهید"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
-msgstr "تایید Password"
+msgstr "تایید رمز عبور"
 
 #: templates/modern/reset_password.html:119
 msgid "Passwords do not match"
@@ -10259,7 +10257,7 @@ msgstr "پسوردها مطابقت ندارند"
 
 #: templates/modern/add_user.html:128
 msgid "Password Requirements"
-msgstr "الزامات Password"
+msgstr "الزامات رمز عبور"
 
 #: templates/modern/add_user.html:132 templates/modern/change_password.html:71
 msgid "Minimum length"

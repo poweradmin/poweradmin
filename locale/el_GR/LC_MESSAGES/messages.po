@@ -13835,15 +13835,13 @@ msgstr "Χρήστες έναντι ομάδων"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"Όταν ανατίθεται σε <strong>users</strong>: Οι άδειες ισχύουν παγκοσμίως σε "
-"ολόκληρο το σύστημα."
+msgstr "Όταν ανατίθεται σε <strong>χρήστες</strong>: Οι άδειες ισχύουν παγκοσμίως σε ολόκληρο το σύστημα."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "Όταν ανατίθεται σε <strong>groups</strong>: Οι άδειες ισχύουν μόνο για ζώνες που ανήκουν στη συγκεκριμένη ομάδα."
+msgstr "Όταν ανατίθεται σε <strong>ομάδες</strong>: Οι άδειες ισχύουν μόνο για ζώνες που ανήκουν στη συγκεκριμένη ομάδα."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

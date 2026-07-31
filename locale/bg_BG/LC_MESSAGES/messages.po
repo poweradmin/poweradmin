@@ -12709,7 +12709,7 @@ msgstr "Изключване на MFA"
 
 #: templates/modern/mfa_recovery_codes.html:69
 msgid "Continue to Dashboard"
-msgstr "Продължете към Dashboard"
+msgstr "Продължете към Дашборд"
 
 #: templates/modern/mfa_recovery_codes.html:98
 msgid "Poweradmin MFA Recovery Codes"
