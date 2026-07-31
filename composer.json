@@ -109,6 +109,14 @@
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
     "locale:stats": "python3 scripts/check_translation_stats.py",
+    "locale:msgfmt": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if ! msgfmt --check -o /dev/null \"$f\" 2>/dev/null; then echo \"FAIL: $f\"; msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -v 'warning:' | head -5; failed=1; fi; done; exit $failed",
+    "locale:mo-sync": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do mo=\"${f%.po}.mo\"; msgfmt -o /tmp/pa-mo-check.mo \"$f\" 2>/dev/null || continue; if ! cmp -s /tmp/pa-mo-check.mo \"$mo\"; then echo \"STALE: $mo does not match $f\"; failed=1; fi; done; rm -f /tmp/pa-mo-check.mo; exit $failed",
+    "locale:verify": [
+        "@locale:msgfmt",
+        "@locale:mo-sync",
+        "python3 scripts/check_translation_integrity.py --quiet",
+        "python3 scripts/check_locale_unicode.py"
+    ],
     "locale:all": [
         "@locale:check",
         "@locale:stats"

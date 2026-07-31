@@ -281,6 +281,54 @@ jobs:
         fi
         echo "All locale files have complete translations."
 
+    # --statistics above reports only empty msgstr. Format specifiers are checked
+    # by --check, and only its exit code says whether a translation dropped one.
+    - name: Validate format specifiers and plural forms
+      run: |
+        errors=0
+        for f in locale/*/LC_MESSAGES/*.po lib/Module/*/locale/*/*.po; do
+          [ -f "$f" ] || continue
+          if ! msgfmt --check -o /dev/null "$f" 2>/dev/null; then
+            echo "ERROR: $f"
+            msgfmt --check -o /dev/null "$f" 2>&1 | grep -v 'warning:' | head -5
+            errors=$((errors + 1))
+          fi
+        done
+        if [ "$errors" -gt 0 ]; then
+          echo ""
+          echo "Found $errors locale file(s) with invalid placeholders or plural forms."
+          exit 1
+        fi
+        echo "All locale files pass msgfmt --check."
+
+    # A .mo that no longer matches its .po ships the old text: gettext reads the
+    # .mo at runtime and never looks at the .po. Module catalogues are excluded -
+    # they ship .po only and have no compiled form to fall out of date.
+    - name: Check compiled .mo files are up to date
+      run: |
+        errors=0
+        for f in locale/*/LC_MESSAGES/*.po; do
+          [ -f "$f" ] || continue
+          mo="${f%.po}.mo"
+          if [ ! -f "$mo" ]; then
+            echo "ERROR: $mo is missing"
+            errors=$((errors + 1))
+            continue
+          fi
+          msgfmt -o /tmp/mo-check.mo "$f" 2>/dev/null || continue
+          if ! cmp -s /tmp/mo-check.mo "$mo"; then
+            echo "ERROR: $mo is stale - run python3 scripts/compile_messages.py"
+            errors=$((errors + 1))
+          fi
+        done
+        rm -f /tmp/mo-check.mo
+        if [ "$errors" -gt 0 ]; then
+          echo ""
+          echo "Found $errors stale or missing .mo file(s)."
+          exit 1
+        fi
+        echo "All compiled .mo files match their .po source."
+
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
