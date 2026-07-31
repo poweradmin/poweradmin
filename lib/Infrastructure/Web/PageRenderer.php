@@ -58,7 +58,7 @@ class PageRenderer
 
     private bool $twigEnvironmentReady = false;
     private ?array $languageVars = null;
-    private ?int $assetMtime = null;
+    private ?string $assetFingerprint = null;
 
     public function __construct(
         AppManager $app,
@@ -125,32 +125,38 @@ class PageRenderer
             $configFile = getenv('PA_CONFIG_PATH') ?: dirname(__DIR__, 3) . '/config/settings.php';
             $key .= (string)@filemtime($configFile);
         }
-        $message = Version::VERSION . '|' . $this->getAssetMtime();
+        $message = Version::VERSION . '|' . $this->getAssetFingerprint();
         return substr(hash_hmac('sha256', $message, $key), 0, 12);
     }
 
     /**
-     * Newest mtime across the assets the token versions, so editing one during
+     * Content digest of every asset the token versions, so editing one during
      * development or patching one in place busts the cache without a release.
+     * Hashing the bytes rather than mtime and size also covers a same-second
+     * replacement of identical length.
      */
-    private function getAssetMtime(): int
+    private function getAssetFingerprint(): string
     {
-        if ($this->assetMtime !== null) {
-            return $this->assetMtime;
+        if ($this->assetFingerprint !== null) {
+            return $this->assetFingerprint;
         }
 
-        $root = dirname(__DIR__, 3);
-        $newest = 0;
-        foreach (['/assets/*.js', '/templates/*/style/*.css'] as $pattern) {
-            foreach (glob($root . $pattern) ?: [] as $file) {
-                $mtime = @filemtime($file);
-                if ($mtime !== false && $mtime > $newest) {
-                    $newest = $mtime;
-                }
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($this->app->getThemeBasePath());
+        $patterns = [
+            dirname(__DIR__, 3) . '/assets/*.js',
+            rtrim($fsThemeBasePath, '/') . '/*/style/*.css',
+        ];
+
+        $parts = [];
+        foreach ($patterns as $pattern) {
+            foreach (glob($pattern) ?: [] as $file) {
+                $digest = @hash_file('xxh3', $file);
+                $parts[] = $file . ':' . ($digest === false ? '' : $digest);
             }
         }
+        sort($parts);
 
-        return $this->assetMtime = $newest;
+        return $this->assetFingerprint = hash('xxh3', implode('|', $parts));
     }
 
     /**
