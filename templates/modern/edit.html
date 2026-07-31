@@ -1191,8 +1191,8 @@
         }
 
         if (selectedRecordId) {
-            // Validate that the record ID is a valid integer
-            if (!/^\d+$/.test(selectedRecordId)) {
+            // Numeric in SQL mode, url-safe base64 in API mode
+            if (!/^[A-Za-z0-9_-]+$/.test(selectedRecordId)) {
                 console.error('Invalid record ID format');
                 return;
             }
