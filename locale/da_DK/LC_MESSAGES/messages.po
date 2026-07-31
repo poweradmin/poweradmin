@@ -5731,8 +5731,7 @@ msgstr "FTP anses for mindre sikker end alternativer som SFTP eller HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Overvej at bruge LDAPS (LDAP over SSL / TLS) til at sikre LDAP- forbindelser."
+msgstr "Overvej at bruge LDAPS (LDAP over SSL/TLS) til at sikre LDAP- forbindelser."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."

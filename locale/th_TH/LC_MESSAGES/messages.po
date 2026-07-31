@@ -5614,7 +5614,7 @@ msgstr "URI ที่ใช้โพรโทคอลนี้ต้องม�
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr "URI ของ HTTP/ HTTPS ต้องรวมชื่อโฮสต์ด้วย"
+msgstr "URI ของ HTTP/HTTPS ต้องรวมชื่อโฮสต์ด้วย"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."

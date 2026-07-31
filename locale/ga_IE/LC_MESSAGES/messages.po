@@ -5743,9 +5743,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Smaoinigh ag baint úsáide as LDAPS (LDAP thar SSL / TLS) chun naisc LDAP a "
-"dhaingniú."
+msgstr "Smaoinigh ag baint úsáide as LDAPS (LDAP thar SSL/TLS) chun naisc LDAP a dhaingniú."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."

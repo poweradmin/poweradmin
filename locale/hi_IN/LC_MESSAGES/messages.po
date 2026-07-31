@@ -4467,9 +4467,7 @@ msgstr "RKEY एल्गोरिथ्म क्षेत्र एक वै�
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr ""
-"Algorithm 1 (RSA / MD5) को डिप्रीकेटेड (RFC 6725) है और इसका उपयोग नहीं किया जाना "
-"चाहिए।"
+msgstr "Algorithm 1 (RSA/MD5) को डिप्रीकेटेड (RFC 6725) है और इसका उपयोग नहीं किया जाना चाहिए।"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
@@ -4483,9 +4481,7 @@ msgstr ""
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr ""
-"एल्गोरिथ्म 5 (RSA / SHA-1) को असुरक्षित माना जाता है और इसे एक मजबूत एल्गोरिथ्म के साथ "
-"प्रतिस्थापित किया जाना चाहिए।"
+msgstr "एल्गोरिथ्म 5 (RSA/SHA-1) को असुरक्षित माना जाता है और इसे एक मजबूत एल्गोरिथ्म के साथ प्रतिस्थापित किया जाना चाहिए।"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -6101,9 +6097,7 @@ msgstr ""
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
-"एल्गोरिथ्म 5 (RSA / SHA-1) को असुरक्षित माना जाता है और इसे मजबूत एल्गोरिदम के साथ "
-"प्रतिस्थापित किया जाना चाहिए।"
+msgstr "एल्गोरिथ्म 5 (RSA/SHA-1) को असुरक्षित माना जाता है और इसे मजबूत एल्गोरिदम के साथ प्रतिस्थापित किया जाना चाहिए।"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
