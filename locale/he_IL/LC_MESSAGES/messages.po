@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -936,7 +936,8 @@ msgstr ""
 "יוסרו באופן אוטומטי."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "סוג מפתח"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1569,8 +1570,8 @@ msgid "Invalid group ID."
 msgstr "מזהה קבוצתי לא חוקי"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "מחק קבוצה"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1927,7 +1928,7 @@ msgid "Search"
 msgstr "חיפוש"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "יומן שינויי רשומות"
 
@@ -1964,8 +1965,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "אין לך רשות להוסיף משתמש חדש."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "הוסף משתמש"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2010,9 +2011,9 @@ msgid "The record could not be deleted."
 msgstr "לא ניתן למחוק את הרשומה."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "יומני אזור"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "יומני האזור"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2092,8 +2093,8 @@ msgid "You do not have permission to view this zone."
 msgstr "אין לך רשות לראות את האזור הזה."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "יומני משתמש"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2135,7 +2136,8 @@ msgid "User agreement accepted successfully."
 msgstr "הסכם המשתמש התקבל בהצלחה."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "ערוך אזור"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2383,9 +2385,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "נכשל ליזום אימות OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "יומני קבוצות"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "יומני הקבוצה"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2515,7 +2517,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "נשמרו %d ברירות מחדל; נוקו %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "תבניות אזור"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2523,8 +2526,8 @@ msgid "You do not have permission to create groups."
 msgstr "אין לך רשות ליצור קבוצות."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "הוסף קבוצה"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2598,7 +2601,7 @@ msgstr "אירעה שגיאה בעת מחיקת מפתח ה-DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "תבניות הרשאות"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2675,8 +2678,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "אין לך רשות להוסיף תבניות הרשאות."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "הוספת תבנית הרשאות"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2772,7 +2775,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "אין לך רשות להוסיף תבנית אזור."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "הוספת תבנית אזור"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2888,7 +2892,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "אין לך רשות להוסיף רשומות לתבניות אזור."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "ערוך משתמש"
 
@@ -3063,8 +3067,8 @@ msgstr ""
 "שלך."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "שינוי הסיסמה"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3108,8 +3112,8 @@ msgid "You do not have permission to edit groups."
 msgstr "אין לך רשות לערוך קבוצות."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "ערוך קבוצה"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3137,7 +3141,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "ה-supermaster נמחק בהצלחה."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "רישום מרוכז"
 
@@ -9479,10 +9483,6 @@ msgstr "מחק מפתח API"
 msgid "Permanently removes this key"
 msgstr "באופן קבוע להסיר את המפתח"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "תבניות אזור"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "ערוך רשומה"
@@ -9739,9 +9739,9 @@ msgstr "פעולה זו תסיר את כל מפתחות ה-DNSSEC ותשבית �
 msgid "Are you sure you want to unsign the zone"
 msgstr "אתה בטוח שאתה רוצה לבטל את חתימת האזור"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "ביטול חתימת אזור"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "בטל חתימת אזור"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -9763,11 +9763,7 @@ msgstr "הוסף מפתח חדש"
 msgid "Show DS and DNSKEY"
 msgstr "הצג DS ו-DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "בטל חתימת אזור"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "מזהה"
 
@@ -9818,10 +9814,6 @@ msgid ""
 msgstr ""
 "הדבק מפתח פרטי מקודד ב-PEM (RSA או ECDSA). PowerDNS 4.7+ מסיק את גודל המפתח "
 "מתוכן ה-PEM - בחר את האלגוריתם ותפקיד המפתח המתאימים."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "סוג מפתח"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9890,8 +9882,8 @@ msgid ""
 msgstr ""
 "הזן את כתובת הדואר האלקטרוני שלך ואנחנו נשלח לך קישור כדי לאפס את הסיסמה שלך."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "כתובת דואר אלקטרוני"
 
 #: templates/modern/forgot_username.html:29
@@ -9905,14 +9897,6 @@ msgstr "שלח קישור איפוס"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "ניהול קבוצות"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "יומני הקבוצה"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "הוסף קבוצה"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -9937,14 +9921,6 @@ msgstr "ניהול חברים"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "ניהול אזורים"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "ערוך קבוצה"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "מחק קבוצה"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -9978,7 +9954,7 @@ msgstr "שומר..."
 msgid "Update"
 msgstr "עדכון"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "שם הקבוצה"
 
@@ -10288,7 +10264,7 @@ msgstr "ערוך הערה"
 msgid "Edit comment in zone"
 msgstr "עריכת הערה באזור"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "הוסף תבנית"
 
@@ -10311,10 +10287,6 @@ msgstr "תבנית גלובלית"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "להפוך את התבנית הזו זמינה לכל המשתמשים"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "הוספת תבנית אזור"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10400,10 +10372,6 @@ msgstr "כל האירועים"
 msgid "Logs"
 msgstr "יומנים"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "יומני האזור"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "מציג יומנים עבור אזורים שבבעלותך."
@@ -10436,12 +10404,8 @@ msgstr "שם הדומיין"
 msgid "All operations"
 msgstr "כל הפעולות"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "הוספת רשומות מרובות"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "הוספת רשומות מרובות"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10468,8 +10432,8 @@ msgstr "הערה היא אופציונלית"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "הזן שמות מארח בלבד - שם האזור יתווסף אוטומטית"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "הוסף רשומות"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10548,13 +10512,9 @@ msgstr "יצירת רשומה"
 msgid "Back to Wizard Selection"
 msgstr "חזרה לבחירת האשף"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
 msgstr "מחק משתמש"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
-msgstr "מחיקת משתמש"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
 msgid "You are about to delete the user"
@@ -10618,8 +10578,8 @@ msgstr "שמור את האזור כתבנית"
 msgid "Source Zone"
 msgstr "אזור מקור"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "שם תבנית"
 
 #: templates/modern/save-zone-template.html:29
@@ -10788,8 +10748,8 @@ msgstr "סיסמה לא עומדת בדרישות"
 msgid "Enter your new password for"
 msgstr "הזן את הסיסמה החדשה שלך עבור"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "סיסמה חדשה"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11034,10 +10994,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "עריכת פרופיל"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "ערוך משתמש"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11063,10 +11019,6 @@ msgstr "שמו המלא של המשתמש לזיהוי"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "לספק שם מלא"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "כתובת דואר אלקטרוני"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11253,10 +11205,6 @@ msgstr "כן, בטל את הקישור של אזור זה"
 msgid "Yes, unlink these zones"
 msgstr "כן, בטל את הקישור של אזורים אלה"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "תבניות הרשאות"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "הוסף"
@@ -11291,10 +11239,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "אנא בחרו סוג תבנית"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "הוספת תבנית"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11632,7 +11576,7 @@ msgstr "אתה"
 msgid "Add Owner"
 msgstr "הוסף הבעלים"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "בעלות הקבוצה"
 
@@ -11679,10 +11623,6 @@ msgstr "עד תאריך"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "נקה"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "מזהה"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -11878,10 +11818,6 @@ msgstr ""
 "טיפ: הזן רק את שם המארח (למשל 'www') ואת שם האזור יתווספו באופן אוטומטי. "
 "השתמש ב- \"@\" לאזור Apex/root."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "ערוך אזור"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "מטא-נתונים"
@@ -11994,14 +11930,6 @@ msgstr "לא חתום"
 msgid "User Management"
 msgstr "ניהול משתמשים"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "יומני משתמש"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "הוסף משתמש"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "סוג אימות"
@@ -12055,7 +11983,7 @@ msgstr "אין אזורי forward להצגה ברשימה זו."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "מחק רשומה"
 
@@ -12176,7 +12104,7 @@ msgstr "הקצה הכול אליי"
 msgid "Zone ID"
 msgstr "מזהה אזור"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "שם האזור"
 
@@ -12302,10 +12230,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "בחר קבוצות שאליהן יתווסף המשתמש החדש עם יצירתו."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "שם האזור"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "ציין שם אזור"
@@ -12396,10 +12320,6 @@ msgstr "תבניות אזור עבור"
 msgid "Search templates..."
 msgstr "חפש תבניות..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "שם תבנית"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "אזורים מקושרים"
@@ -12475,10 +12395,6 @@ msgstr ""
 "שינויים בתבנית אינם מעדכנים אזורים באופן אוטומטי - השתמש בכפתור \"עדכון "
 "אזורים\" בעת עריכת תבניות כדי להחיל את השינויים."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "שינוי הסיסמה"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "הסיסמה הנוכחית"
@@ -12486,10 +12402,6 @@ msgstr "הסיסמה הנוכחית"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "לספק את הסיסמה הנוכחית"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "סיסמה חדשה"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12724,11 +12636,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "מפתח API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "רישום בכמות גדולה"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "סוג אזור"
 
@@ -12747,10 +12655,6 @@ msgstr "הקלד דומיין אחד בכל שורה"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "הוספת אזורים"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "בעלות קבוצה"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -12888,11 +12792,11 @@ msgstr "החשבון שלך מוגן כעת באמצעות אימות רב-גו�
 msgid "Authentication method:"
 msgstr "שיטת אימות:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "יישום Authenticator"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "אימות דואר אלקטרוני"
 
@@ -12984,10 +12888,6 @@ msgstr "MFA מושבת כעת"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "החשבון שלך אינו מוגן באמצעות אימות רב-גורמי."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "אפליקציית Authenticator"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13011,10 +12911,6 @@ msgstr "קל לשימוש"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "הגדרת אימות אפליקציה"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "אימות דואר אלקטרוני"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13563,6 +13459,7 @@ msgid "PDNS Server"
 msgstr "שרת PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "שם השרת"
 
@@ -13663,18 +13560,6 @@ msgstr "מדד"
 msgid "No detailed metrics available."
 msgstr "אין מדדים מפורטים זמינים."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "איזורים קדימה"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "אזורים הפוכה"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "יומן שינויי רשומות"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "רשימת משתמשים"
@@ -13686,10 +13571,6 @@ msgstr "רשימת קבוצות"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "רשימת תבניות הרשאות"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "הוספת תבנית הרשאות"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13790,10 +13671,6 @@ msgstr "יצירת רשומת DNS חדשה באזור זה"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "הוסף רשומה נוספת"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "הוסף רשומות"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -13965,10 +13842,6 @@ msgstr ""
 "ההרשאות מאורגנות בקבוצות להלן לניהול קל יותר. השתמש בתכונת החיפוש כדי למצוא "
 "במהירות הרשאות ספציפיות."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "מחיקת רשומה"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "מחיקת רשומת תבנית"
@@ -14076,10 +13949,6 @@ msgstr ""
 "מתעד אירועי מחזור חיים של הקבוצה (יצירה, עריכה, מחיקה) ושינויי חברות (הוספת "
 "משתמשים או הסרתם). כל רשומה מציגה את הפעולה, המבצע, הקבוצה המושפעת וחותמת "
 "זמן. שימושי לביקורת שינויים בגישה לאזורים הנובעים מבעלות קבוצתית."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "שם הקבוצה"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14252,10 +14121,6 @@ msgstr "החלפת רשומות תואמות"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "הוסף את כל הרשומות"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "סוג אזור"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14499,10 +14364,6 @@ msgstr "מפתח API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "מפתח ה-API של PowerDNS (מתוך ההגדרה api-key בקובץ pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "שם Server"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

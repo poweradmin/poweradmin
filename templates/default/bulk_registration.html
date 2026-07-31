@@ -1,7 +1,7 @@
 {% import '_macros.html' as macros %}
 {{ macros.breadcrumb([
     {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
-    {label: 'Bulk registration'|trans},
+    {label: 'Bulk Registration'|trans},
 ]) }}
 
 {% if message %}
@@ -88,7 +88,7 @@
 
                     {% if group_owner_allowed and all_groups is not empty %}
                     <div class="mb-3">
-                        <label class="form-label">{% trans %}Group ownership{% endtrans %}</label>
+                        <label class="form-label">{% trans %}Group Ownership{% endtrans %}</label>
                         <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
                             {% for group in all_groups %}
                             <div class="form-check">

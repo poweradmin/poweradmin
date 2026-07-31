@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Finnish\n"
@@ -724,7 +724,9 @@ msgstr "Mekanismeja ei valittu. SPF-tietue sisältää vain oletustoiminnon."
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr "Merkinnän \"+all\" käyttäminen sallii kenen tahansa lähettää sähköpostia verkkotunnuksesi nimissä. Tätä ei suositella lainkaan."
+msgstr ""
+"Merkinnän \"+all\" käyttäminen sallii kenen tahansa lähettää sähköpostia "
+"verkkotunnuksesi nimissä. Tätä ei suositella lainkaan."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -936,8 +938,9 @@ msgstr ""
 "ja rivinvaihdot poistetaan automaattisesti."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
-msgstr "Avaimen tyyppi"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
+msgstr "avaimen tyyppi"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
@@ -1002,13 +1005,17 @@ msgstr "Julkinen avain vaikuttaa lyhyeltä. Varmista täysi avain."
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr "Liitit YKSITYISEN avaimen. DNS:ssä saa olla vain JULKINEN avain. Älä koskaan jaa yksityistä avaintasi!"
+msgstr ""
+"Liitit YKSITYISEN avaimen. DNS:ssä saa olla vain JULKINEN avain. Älä koskaan "
+"jaa yksityistä avaintasi!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "Julkinen avain näyttää sisältävän PEM-otsikot (BEGIN/END). Vain otsikoiden välinen base64-sisältö tarvitaan."
+msgstr ""
+"Julkinen avain näyttää sisältävän PEM-otsikot (BEGIN/END). Vain otsikoiden "
+"välinen base64-sisältö tarvitaan."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -1107,7 +1114,9 @@ msgstr "Prioriteetti"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "Pienemmillä arvoilla on korkeampi prioriteetti (10 on hyvä oletus). Asiakkaat kokeilevat palvelimia prioriteettijärjestyksessä."
+msgstr ""
+"Pienemmillä arvoilla on korkeampi prioriteetti (10 on hyvä oletus). "
+"Asiakkaat kokeilevat palvelimia prioriteettijärjestyksessä."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1117,7 +1126,9 @@ msgstr "Paino"
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
-msgstr "Kuormantasaukseen saman prioriteetin palvelimien kesken. Suurempi paino = enemmän liikennettä. 0 = ei kuormantasausta."
+msgstr ""
+"Kuormantasaukseen saman prioriteetin palvelimien kesken. Suurempi paino = "
+"enemmän liikennettä. 0 = ei kuormantasausta."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:261
 msgid "Service is required"
@@ -1570,8 +1581,8 @@ msgid "Invalid group ID."
 msgstr "Virheellinen ryhmän tunnus."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Poista ryhmä"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1929,7 +1940,7 @@ msgid "Search"
 msgstr "Haku"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Tietuemuutosloki"
 
@@ -1966,8 +1977,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Sinulla ei ole oikeutta lisätä uutta käyttäjää."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Lisää käyttäjä"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2014,9 +2025,9 @@ msgid "The record could not be deleted."
 msgstr "Tietuetta ei voitu poistaa."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Alueen lokit"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "alueen lokit"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2096,9 +2107,9 @@ msgid "You do not have permission to view this zone."
 msgstr "Sinulla ei ole oikeutta tarkastella tätä aluetta."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "Käyttäjän lokit"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "käyttäjän lokit"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2139,7 +2150,8 @@ msgid "User agreement accepted successfully."
 msgstr "Käyttäjäsopimus hyväksytty onnistuneesti."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Muokkaa aluetta"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2289,7 +2301,9 @@ msgstr "Tapahtui virhe. Yritä uudelleen."
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
-msgstr "Sähköpostivahvistus ei ole käytettävissä, koska sähköpostipalvelu on poistettu käytöstä. Käytä palautuskoodia."
+msgstr ""
+"Sähköpostivahvistus ei ole käytettävissä, koska sähköpostipalvelu on "
+"poistettu käytöstä. Käytä palautuskoodia."
 
 #: lib/Application/Controller/MfaVerifyController.php:354
 msgid "A new verification code has been sent to your email."
@@ -2388,9 +2402,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC-todennuksen käynnistys epäonnistui: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Ryhmän lokit"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "ryhmän lokit"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2528,16 +2542,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Tallennettiin %d oletusarvo(a); tyhjennettiin %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Aluemallit"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "aluemallit"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Sinulla ei ole oikeutta luoda ryhmiä."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Lisää ryhmä"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2611,7 +2626,7 @@ msgstr "DNSSEC-avaimen poistamisessa tapahtui virhe: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Käyttöoikeusmallit"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2688,8 +2703,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Sinulla ei ole oikeutta lisätä käyttöoikeusmalleja."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Lisää käyttöoikeusmalli"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2786,8 +2801,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Sinulla ei ole oikeutta lisätä aluemallia."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Lisää aluemalli"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "lisää aluemalli"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -2904,7 +2920,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Sinulla ei ole oikeutta lisätä tietueita aluemalleihin."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Muokkaa käyttäjää"
 
@@ -3077,11 +3093,13 @@ msgstr ""
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr "Ulkoista todennusta käyttävät käyttäjät eivät voi vaihtaa salasanaansa täällä. Ota yhteyttä järjestelmänvalvojaasi."
+msgstr ""
+"Ulkoista todennusta käyttävät käyttäjät eivät voi vaihtaa salasanaansa "
+"täällä. Ota yhteyttä järjestelmänvalvojaasi."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Vaihda salasana"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3125,8 +3143,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Sinulla ei ole oikeutta muokata ryhmiä."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Muokkaa ryhmää"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3154,7 +3172,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster on poistettu onnistuneesti."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Joukkorekisteröinti"
 
@@ -3963,7 +3981,9 @@ msgstr "Prioriteetin on oltava 0 HHIT-tietueille."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr "NS- tai MX-tietuetta ei voi osoittaa CNAME-tietueeseen. Poista tai nimeä CNAME-tietue ensin uudelleen tai valitse toinen nimi."
+msgstr ""
+"NS- tai MX-tietuetta ei voi osoittaa CNAME-tietueeseen. Poista tai nimeä "
+"CNAME-tietue ensin uudelleen tai valitse toinen nimi."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
@@ -4018,7 +4038,9 @@ msgstr ""
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr "Tämä näyttää olevan HTTPS:n TLSA-tietue. Varmista, että varmenne vastaa TLSA-tietueen verkkotunnusta."
+msgstr ""
+"Tämä näyttää olevan HTTPS:n TLSA-tietue. Varmista, että varmenne vastaa TLSA-"
+"tietueen verkkotunnusta."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
@@ -4074,7 +4096,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. TLSA-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. TLSA-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
@@ -4092,7 +4116,9 @@ msgstr "TLSA-käyttökentän on oltava numero välillä 0-3."
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr "Käyttö 0 (PKIX-TA) vaatii CA-varmenteiden asianmukaista hallintaa ja voi rikkoutua varmenteiden vanhentuessa."
+msgstr ""
+"Käyttö 0 (PKIX-TA) vaatii CA-varmenteiden asianmukaista hallintaa ja voi "
+"rikkoutua varmenteiden vanhentuessa."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
@@ -4176,7 +4202,9 @@ msgstr "TLSA-tarkan vastaavuuden tiedot vaikuttavat liian lyhyiltä."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM-tietueiden TULEE olla vain alueen juuressa (juuriverkkotunnus, ei aliverkkotunnus)."
+msgstr ""
+"NSEC3PARAM-tietueiden TULEE olla vain alueen juuressa (juuriverkkotunnus, ei "
+"aliverkkotunnus)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4303,7 +4331,9 @@ msgstr "NSEC3PARAM-suolan on oltava - (tyhjää varten) tai heksadesimaaliarvo."
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr "RFC 9276 suosittelee, että suolaa EI käytetä (merkitään \"-\"), mikä yksinkertaistaa toimintaa turvallisuutta heikentämättä."
+msgstr ""
+"RFC 9276 suosittelee, että suolaa EI käytetä (merkitään \"-\"), mikä "
+"yksinkertaistaa toimintaa turvallisuutta heikentämättä."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -4323,7 +4353,9 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "LP-tietueita tulee käyttää vain Identifier-Locator Network Protocol -protokollan (ILNP) kanssa."
+msgstr ""
+"LP-tietueita tulee käyttää vain Identifier-Locator Network Protocol "
+"-protokollan (ILNP) kanssa."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
@@ -4379,7 +4411,8 @@ msgstr "Virheellinen AFSDB-palvelimen nimi."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB-palvelimen isäntänimen on oltava täysin määritelty verkkotunnus (FQDN)."
+msgstr ""
+"AFSDB-palvelimen isäntänimen on oltava täysin määritelty verkkotunnus (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -4565,13 +4598,17 @@ msgstr "Algoritmi 1 (RSA/MD5) on vanhentunut (RFC 6725), EI saa käyttää."
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "Algoritmia 3 (DSA/SHA1) pidetään turvattomana, ja se tulisi korvata vahvemmalla algoritmilla."
+msgstr ""
+"Algoritmia 3 (DSA/SHA1) pidetään turvattomana, ja se tulisi korvata "
+"vahvemmalla algoritmilla."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "Algoritmia 5 (RSA/SHA-1) pidetään turvattomana, ja se tulisi korvata vahvemmalla algoritmilla."
+msgstr ""
+"Algoritmia 5 (RSA/SHA-1) pidetään turvattomana, ja se tulisi korvata "
+"vahvemmalla algoritmilla."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -4609,7 +4646,9 @@ msgstr ""
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr "Algoritmi 15 (Ed25519) tarjoaa modernin turvallisuuden, mutta siinä voi olla yhteensopivuusongelmia vanhempien validoijien kanssa."
+msgstr ""
+"Algoritmi 15 (Ed25519) tarjoaa modernin turvallisuuden, mutta siinä voi olla "
+"yhteensopivuusongelmia vanhempien validoijien kanssa."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
@@ -4669,7 +4708,9 @@ msgstr "RFC 3123 huomauttaa APL-tietueiden turvallisuudesta ACL-käytössä."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. APL-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. APL-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
@@ -4797,7 +4838,9 @@ msgstr "ALIAS-kohde ei voi osoittaa itseensä, koska se loisi silmukan."
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
-msgstr "Virheellinen arvo prioriteettikentässä. ALIAS-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. ALIAS-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
@@ -4827,7 +4870,9 @@ msgstr "NSEC mahdollistaa \"zone walking\" - kaikkien nimien listauksen."
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr "Jos alueen luettelointi on huolenaihe, harkitse NSEC3-tietueiden (RFC 5155) käyttöä, sillä ne käyttävät tiivistettyjä omistajanimiä."
+msgstr ""
+"Jos alueen luettelointi on huolenaihe, harkitse NSEC3-tietueiden (RFC 5155) "
+"käyttöä, sillä ne käyttävät tiivistettyjä omistajanimiä."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
@@ -5023,7 +5068,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. NS-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. NS-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
@@ -5251,7 +5298,9 @@ msgstr "ZONEMD-tietueen sarjanumeron on vastattava alueen SOA-sarjanumeroa."
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD-skeema-arvot 240-255 on varattu yksityiskäyttöön eivätkä välttämättä ole yhteentoimivia."
+msgstr ""
+"ZONEMD-skeema-arvot 240-255 on varattu yksityiskäyttöön eivätkä välttämättä "
+"ole yhteentoimivia."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5268,7 +5317,9 @@ msgstr "SHA-512 (algoritmi 2) vahvempi turva, enemmän resursseja."
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr "ZONEMD-tiivistealgoritmin arvot 240-255 on varattu yksityiskäyttöön eivätkä välttämättä ole yhteentoimivia."
+msgstr ""
+"ZONEMD-tiivistealgoritmin arvot 240-255 on varattu yksityiskäyttöön eivätkä "
+"välttämättä ole yhteentoimivia."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5281,7 +5332,9 @@ msgstr ""
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "ZONEMD-sarjanumeron on oltava luku väliltä 0-4294967295 (32-bittinen etumerkitön kokonaisluku)."
+msgstr ""
+"ZONEMD-sarjanumeron on oltava luku väliltä 0-4294967295 (32-bittinen "
+"etumerkitön kokonaisluku)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -5404,7 +5457,9 @@ msgstr "Varmenteen tiedot ovat "
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr "CERT-varmennetiedot saavat sisältää vain kelvollisia base64-merkkejä (A-Z, a-z, 0-9, +, /, =)."
+msgstr ""
+"CERT-varmennetiedot saavat sisältää vain kelvollisia base64-merkkejä (A-Z, a-"
+"z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -5837,7 +5892,9 @@ msgstr "URI ei saa olla tyhjä."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI:n on alettava kelvollisella skeemalla, joka alkaa kirjaimella, jota seuraavat kirjaimet, numerot, plus, piste tai yhdysmerkki."
+msgstr ""
+"URI:n on alettava kelvollisella skeemalla, joka alkaa kirjaimella, jota "
+"seuraavat kirjaimet, numerot, plus, piste tai yhdysmerkki."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
@@ -5949,7 +6006,9 @@ msgstr "Virheellinen vastuullisen postilaatikon nimi (RMAILBX)."
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "RFC 1035 huomauttaa, että monet postituslistat käyttävät vastuullisen postilaatikon kenttänä postilaatikkoa \"list-name-request\"."
+msgstr ""
+"RFC 1035 huomauttaa, että monet postituslistat käyttävät vastuullisen "
+"postilaatikon kenttänä postilaatikkoa \"list-name-request\"."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -5967,7 +6026,9 @@ msgstr "Virheellinen virhesähköpostin palvelin (EMAILBX)."
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "Merkinnän \".\" (juuri) käyttäminen EMAILBX-kentässä tarkoittaa, että virheet palautetaan viestin lähettäjälle."
+msgstr ""
+"Merkinnän \".\" (juuri) käyttäminen EMAILBX-kentässä tarkoittaa, että "
+"virheet palautetaan viestin lähettäjälle."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
@@ -5981,7 +6042,9 @@ msgstr ""
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "MINFO-tietueiden prioriteettikentän on oltava 0 tai tyhjä. MINFO ei käytä prioriteettiarvoja RFC 1035:n mukaan."
+msgstr ""
+"MINFO-tietueiden prioriteettikentän on oltava 0 tai tyhjä. MINFO ei käytä "
+"prioriteettiarvoja RFC 1035:n mukaan."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -6082,7 +6145,9 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "Virheellinen arvo prioriteettikentässä. CNAME-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. CNAME-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
@@ -6107,13 +6172,17 @@ msgstr "Tämä ei ole kelvollinen tietue. Tällä nimellä on jo CNAME."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN). Yhden tunnisteen nimiä ei sallita."
+msgstr ""
+"CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN). Yhden "
+"tunnisteen nimiä ei sallita."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN), jolla on kelvollinen ylätason verkkotunnus."
+msgstr ""
+"CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN), jolla on "
+"kelvollinen ylätason verkkotunnus."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -6145,13 +6214,17 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID-tietue saa sisältää vain kelvollisia base64-merkkejä (A-Z, a-z, 0-9, +, /, =)."
+msgstr ""
+"DHCID-tietue saa sisältää vain kelvollisia base64-merkkejä (A-Z, a-z, 0-9, "
+"+, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID-tietueessa on virheellinen base64-täyte. Yhtäläisyysmerkkejä (=) saa esiintyä vain tietojen lopussa."
+msgstr ""
+"DHCID-tietueessa on virheellinen base64-täyte. Yhtäläisyysmerkkejä (=) saa "
+"esiintyä vain tietojen lopussa."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
@@ -6169,7 +6242,9 @@ msgstr "DHCID-tietueen on sisällettävä kelvollista base64-dataa."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DHCID-tietue on liian lyhyt. Dekoodatun datan on sisällettävä vähintään 3 tavua (tyyppikoodit ja tiiviste)."
+msgstr ""
+"DHCID-tietue on liian lyhyt. Dekoodatun datan on sisällettävä vähintään 3 "
+"tavua (tyyppikoodit ja tiiviste)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
@@ -6210,7 +6285,9 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "Harkitse DNSSEC- tai TSIG-todennuksen (RFC 3007) käyttöä turvallisiin DHCID-päivityksiin, kuten RFC 4701 suosittelee."
+msgstr ""
+"Harkitse DNSSEC- tai TSIG-todennuksen (RFC 3007) käyttöä turvallisiin DHCID-"
+"päivityksiin, kuten RFC 4701 suosittelee."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6232,7 +6309,9 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "Säännölliset avainten vaihdot ovat suositeltu turvallisuuskäytäntö: ZSK 1-3 kuukauden välein, KSK 1-2 vuoden välein."
+msgstr ""
+"Säännölliset avainten vaihdot ovat suositeltu turvallisuuskäytäntö: ZSK 1-3 "
+"kuukauden välein, KSK 1-2 vuoden välein."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6269,13 +6348,17 @@ msgstr "Algoritmi 1 (RSA/MD5) vanhentunut, EI saa käyttää heikkouden takia."
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritmia 3 (DSA/SHA1) pidetään turvattomana, ja se tulisi korvata vahvemmilla algoritmeilla."
+msgstr ""
+"Algoritmia 3 (DSA/SHA1) pidetään turvattomana, ja se tulisi korvata "
+"vahvemmilla algoritmeilla."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritmia 5 (RSA/SHA-1) pidetään turvattomana, ja se tulisi korvata vahvemmilla algoritmeilla."
+msgstr ""
+"Algoritmia 5 (RSA/SHA-1) pidetään turvattomana, ja se tulisi korvata "
+"vahvemmilla algoritmeilla."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -6368,7 +6451,9 @@ msgstr "RRSIG-aloituksen on oltava YYYYMMDDHHmmSS-muodossa."
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr "Vanhenemisajan on oltava myöhäisempi kuin alkamisajan. Tämä allekirjoitus näyttää vanhentuneen ennen kuin se tuli voimaan."
+msgstr ""
+"Vanhenemisajan on oltava myöhäisempi kuin alkamisajan. Tämä allekirjoitus "
+"näyttää vanhentuneen ennen kuin se tuli voimaan."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
@@ -6490,7 +6575,9 @@ msgstr "RP-tietue sisältää virheellisiä merkkejä."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP-tietueen on sisällettävä mailbox-domain (mbox-dname) ja txt-record-domain (txt-dname)."
+msgstr ""
+"RP-tietueen on sisällettävä mailbox-domain (mbox-dname) ja txt-record-domain "
+"(txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6611,7 +6698,9 @@ msgstr "RP TXT -toimialue ylittää 253 merkkiä."
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr "Varmista, että tässä verkkotunnuksessa on TXT-tietue, joka sisältää vastuuhenkilön yhteystiedot."
+msgstr ""
+"Varmista, että tässä verkkotunnuksessa on TXT-tietue, joka sisältää "
+"vastuuhenkilön yhteystiedot."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
@@ -6659,7 +6748,9 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64-tietueesta puuttuvat erottimet. Muodon on oltava xx-xx-xx-xx-xx-xx-xx-xx, jossa oktettien välissä on yhdysmerkit."
+msgstr ""
+"EUI64-tietueesta puuttuvat erottimet. Muodon on oltava xx-xx-xx-xx-xx-xx-xx-"
+"xx, jossa oktettien välissä on yhdysmerkit."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -6732,7 +6823,9 @@ msgstr "DNAME-tietueiden prioriteettikentän on oltava 0 tai tyhjä."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "RFC 6672:n mukaan DNAME-tietueiden on oltava yksilöllisiä omistajanimeä kohden (singleton-sääntö)."
+msgstr ""
+"RFC 6672:n mukaan DNAME-tietueiden on oltava yksilöllisiä omistajanimeä "
+"kohden (singleton-sääntö)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -6922,17 +7015,22 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "Virheellinen arvo prioriteettikentässä. CSYNC-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. CSYNC-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Virheellinen SOA Serial CSYNC-tietueessa. Sen on oltava 32-bittinen etumerkitön kokonaisluku (0-4294967295)."
+msgstr ""
+"Virheellinen SOA Serial CSYNC-tietueessa. Sen on oltava 32-bittinen "
+"etumerkitön kokonaisluku (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Virheelliset liput CSYNC-tietueessa. Lippujen on oltava numeerinen arvo."
+msgstr ""
+"Virheelliset liput CSYNC-tietueessa. Lippujen on oltava numeerinen arvo."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
@@ -7026,13 +7124,17 @@ msgstr "EUI48 Cisco-muodossa. Muoto: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48-tietueen on oltava kelvollinen MAC-osoite muodossa xx-xx-xx-xx-xx-xx (jossa x on heksadesimaalinumero)."
+msgstr ""
+"EUI48-tietueen on oltava kelvollinen MAC-osoite muodossa xx-xx-xx-xx-xx-xx "
+"(jossa x on heksadesimaalinumero)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Tämä on yleislähetysosoite (kaikki ykkösiä), joka ei välttämättä ole kelvollinen kaikissa yhteyksissä."
+msgstr ""
+"Tämä on yleislähetysosoite (kaikki ykkösiä), joka ei välttämättä ole "
+"kelvollinen kaikissa yhteyksissä."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
@@ -7107,7 +7209,8 @@ msgstr "Virheellinen porttinumero: %d (on oltava 1-65535)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Virheellinen palvelimen muoto: %s (odotettiin IP:portti tai [IPv6]:portti)"
+msgstr ""
+"Virheellinen palvelimen muoto: %s (odotettiin IP:portti tai [IPv6]:portti)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
@@ -7236,7 +7339,9 @@ msgstr "Virheellinen aliverkon numero RFC 2317 -notaatiossa. IPv4: 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Virheellinen aliverkko RFC 2317 -notaatiossa. Sen on oltava heksadesimaalinen (0-9, a-f) IPv6:lle."
+msgstr ""
+"Virheellinen aliverkko RFC 2317 -notaatiossa. Sen on oltava "
+"heksadesimaalinen (0-9, a-f) IPv6:lle."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7244,13 +7349,17 @@ msgstr "Virheellinen aliverkko RFC 2317 -notaatiossa. Numeerinen tai heksa."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:173
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr "Virheellinen etuliitteen pituus RFC 2317 -notaatiossa. Sen on oltava numeerinen."
+msgstr ""
+"Virheellinen etuliitteen pituus RFC 2317 -notaatiossa. Sen on oltava "
+"numeerinen."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:185
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Virheellinen IPv4-etuliitteen pituus RFC 2317:lle. Yleensä 24-32 (luokaton delegointi tavallisesti 25-31)."
+msgstr ""
+"Virheellinen IPv4-etuliitteen pituus RFC 2317:lle. Yleensä 24-32 (luokaton "
+"delegointi tavallisesti 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7327,7 +7436,9 @@ msgstr ""
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
-msgstr "Sarjanumero näyttää käyttävän YYYYMMDDnn-muotoa, mutta sisältää virheellisen päivämäärän. Tämä on sallittua, mutta ei suositeltavaa."
+msgstr ""
+"Sarjanumero näyttää käyttävän YYYYMMDDnn-muotoa, mutta sisältää virheellisen "
+"päivämäärän. Tämä on sallittua, mutta ei suositeltavaa."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:259
 msgid ""
@@ -7368,7 +7479,9 @@ msgstr ""
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA-minimin (negatiivinen välimuistitus) arvo ylittää 24 tuntia (86400), mikä voi olla liiallinen RFC 2308:n mukaan."
+msgstr ""
+"SOA-minimin (negatiivinen välimuistitus) arvo ylittää 24 tuntia (86400), "
+"mikä voi olla liiallinen RFC 2308:n mukaan."
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7437,14 +7550,17 @@ msgstr ""
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Useita samannimisiä CNAME-tietueita ei sallita. Tämä loisi DNS-rikkomuksen."
+msgstr ""
+"Useita samannimisiä CNAME-tietueita ei sallita. Tämä loisi DNS-rikkomuksen."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "CNAME-tietue ei voi esiintyä samanaikaisesti muiden samannimisten tietuetyyppien kanssa. Löytyi olemassa oleva %s-tietue."
+msgstr ""
+"CNAME-tietue ei voi esiintyä samanaikaisesti muiden samannimisten "
+"tietuetyyppien kanssa. Löytyi olemassa oleva %s-tietue."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7483,7 +7599,9 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr "Virheellinen arvo prioriteettikentässä. SMIMEA-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. SMIMEA-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
@@ -7550,7 +7668,9 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA-valitsinkentän on oltava 0 (Full certificate) tai 1 (SubjectPublicKeyInfo)."
+msgstr ""
+"SMIMEA-valitsinkentän on oltava 0 (Full certificate) tai 1 "
+"(SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7650,7 +7770,9 @@ msgstr ""
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L64-tietueita tulee käyttää vain Identifier-Locator Network Protocol -protokollan (ILNP) kanssa."
+msgstr ""
+"L64-tietueita tulee käyttää vain Identifier-Locator Network Protocol "
+"-protokollan (ILNP) kanssa."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
@@ -7738,7 +7860,8 @@ msgstr "Prioriteetin on oltava 0 WALLET-tietueille."
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "CDNSKEY-tietueet julkaistaan yleensä alueen juureen, ei aliverkkotunnuksiin."
+msgstr ""
+"CDNSKEY-tietueet julkaistaan yleensä alueen juureen, ei aliverkkotunnuksiin."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -7760,7 +7883,9 @@ msgstr "Virheellisiä merkkejä CDNSKEY-tietueen sisällössä."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "Käytössä on RFC 8078:n erratumin mukainen muoto \"0 3 0 0\"; harkitse vakiomuodon \"0 3 0 AA==\" käyttöä."
+msgstr ""
+"Käytössä on RFC 8078:n erratumin mukainen muoto \"0 3 0 0\"; harkitse "
+"vakiomuodon \"0 3 0 AA==\" käyttöä."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
@@ -7874,7 +7999,9 @@ msgstr "LUA-tietueessa on epäsopivat aaltosulkeet. Tarkista syntaksi."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "Eksplisiittisessä return-tilassa (alkaa puolipisteellä) LUA-tietueen on sisällettävä vähintään yksi \"return\"-lause."
+msgstr ""
+"Eksplisiittisessä return-tilassa (alkaa puolipisteellä) LUA-tietueen on "
+"sisällettävä vähintään yksi \"return\"-lause."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -7959,7 +8086,9 @@ msgstr "SSHFP-sormenjälkityypin on oltava 1 (SHA-1) tai 2 (SHA-256)."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "SHA-1-sormenjäljet ovat vanhentuneita. RFC 6594 suosittelee SHA-256-sormenjälkien (tyyppi 2) käyttöä paremman turvallisuuden vuoksi."
+msgstr ""
+"SHA-1-sormenjäljet ovat vanhentuneita. RFC 6594 suosittelee SHA-256-"
+"sormenjälkien (tyyppi 2) käyttöä paremman turvallisuuden vuoksi."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
@@ -8144,7 +8273,9 @@ msgstr "DMARC-tietueet on sijoitettava _dmarc.<domain>."
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. DMARC-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. DMARC-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -8154,7 +8285,9 @@ msgstr "DMARC-tietueen on alettava \"v=DMARC1\""
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "DMARC-tietue ylittää 255 merkin rajan. Monimutkaisissa käytännöissä harkitse yksinkertaistamista tai URI-viittausten käyttöä."
+msgstr ""
+"DMARC-tietue ylittää 255 merkin rajan. Monimutkaisissa käytännöissä harkitse "
+"yksinkertaistamista tai URI-viittausten käyttöä."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -8181,11 +8314,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM -linjaustunnisteen (adkim) on oltava r (relaxed) tai s (strict)"
+msgstr ""
+"DMARC DKIM -linjaustunnisteen (adkim) on oltava r (relaxed) tai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF -linjaustunnisteen (aspf) on oltava r (relaxed) tai s (strict)"
+msgstr ""
+"DMARC SPF -linjaustunnisteen (aspf) on oltava r (relaxed) tai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8196,7 +8331,9 @@ msgstr "DMARC-prosenttitunnisteen (pct) on oltava välillä 0-100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "DMARC-käytäntöä sovelletaan vain %d%% viesteistä. Tätä tulisi käyttää vain käytännön käyttöönoton aikana."
+msgstr ""
+"DMARC-käytäntöä sovelletaan vain %d%% viesteistä. Tätä tulisi käyttää vain "
+"käytännön käyttöönoton aikana."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8281,7 +8418,9 @@ msgstr "TXT-sisältö kokonaisuudessaan ylittää %d tavua. Pienennä."
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. TXT-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. TXT-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -8377,7 +8516,9 @@ msgstr ""
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L32-tietueita tulee käyttää vain Identifier-Locator Network Protocol -protokollan (ILNP) kanssa."
+msgstr ""
+"L32-tietueita tulee käyttää vain Identifier-Locator Network Protocol "
+"-protokollan (ILNP) kanssa."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
@@ -8416,7 +8557,9 @@ msgstr "L32-paikantimen on oltava täysin määritelty IPv4-osoite."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32-paikannin ei voi käyttää yleislähetys- tai määrittämättömiä osoitteita (0.0.0.0 tai 255.255.255.255)."
+msgstr ""
+"L32-paikannin ei voi käyttää yleislähetys- tai määrittämättömiä osoitteita "
+"(0.0.0.0 tai 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8520,7 +8663,9 @@ msgstr "Site-local IPv6 (fec0::/10) vanhentunut, ei käyttöön."
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Virheellinen arvo prioriteettikentässä. AAAA-tietueilla on oltava prioriteettiarvo 0."
+msgstr ""
+"Virheellinen arvo prioriteettikentässä. AAAA-tietueilla on oltava "
+"prioriteettiarvo 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -8600,13 +8745,17 @@ msgstr "NSEC3-suolan on oltava - (tyhjä) tai heksa-arvo."
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "NSEC3:n seuraavan tiivistetyn omistajanimen on oltava kelvollinen Base32hex-koodattu arvo (käyttäen merkkejä 0-9 ja A-V)."
+msgstr ""
+"NSEC3:n seuraavan tiivistetyn omistajanimen on oltava kelvollinen Base32hex-"
+"koodattu arvo (käyttäen merkkejä 0-9 ja A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "Tyyppibittikarttojen tulisi olla läsnä osoittamassa, mitkä RR-tyypit ovat olemassa alkuperäisessä omistajanimessä."
+msgstr ""
+"Tyyppibittikarttojen tulisi olla läsnä osoittamassa, mitkä RR-tyypit ovat "
+"olemassa alkuperäisessä omistajanimessä."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8748,7 +8897,9 @@ msgstr "NAPTR regexp -muoto: erotin+kuvio+erotin+korvaus+erotin+liput."
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR regexp -lippujen (kolmannen erottimen jälkeen) tulisi sisältää vain \"i\" tai olla tyhjiä."
+msgstr ""
+"NAPTR regexp -lippujen (kolmannen erottimen jälkeen) tulisi sisältää vain "
+"\"i\" tai olla tyhjiä."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8850,14 +9001,18 @@ msgstr "%s (algoritmi %d) on valinnainen RFC 8624:n mukaan."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s (algoritmi %d) on VANHENTUNUT RFC 8624:n mukaan. Älä käytä tätä algoritmia uusissa käyttöönotoissa."
+msgstr ""
+"%s (algoritmi %d) on VANHENTUNUT RFC 8624:n mukaan. Älä käytä tätä "
+"algoritmia uusissa käyttöönotoissa."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Algoritmia %d EI SAA toteuttaa RFC 8624:n mukaan. Tätä arvoa ei tulisi käyttää."
+msgstr ""
+"Algoritmia %d EI SAA toteuttaa RFC 8624:n mukaan. Tätä arvoa ei tulisi "
+"käyttää."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -8969,7 +9124,9 @@ msgstr "SOA-muoto: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Alueella ei ole NS (Name Server) -tietueita juuressa. DNSSEC vaatii vähintään yhden juuren NS-tietueen."
+msgstr ""
+"Alueella ei ole NS (Name Server) -tietueita juuressa. DNSSEC vaatii "
+"vähintään yhden juuren NS-tietueen."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -9211,7 +9368,9 @@ msgstr "Olet poistamassa DNSSEC-avainta käytöstä (tunnus"
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "Aktiivisen avaimen poistaminen käytöstä vaikuttaa alueesi turvallisuuteen ja voi aiheuttaa validointivirheitä."
+msgstr ""
+"Aktiivisen avaimen poistaminen käytöstä vaikuttaa alueesi turvallisuuteen ja "
+"voi aiheuttaa validointivirheitä."
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
@@ -9364,10 +9523,6 @@ msgstr "Poista API-avain"
 #: templates/modern/api_key_edit.html:143
 msgid "Permanently removes this key"
 msgstr "Poistaa tämän avaimen pysyvästi"
-
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "aluemallit"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
@@ -9627,9 +9782,9 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Haluatko varmasti poistaa alueen allekirjoituksen"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "Poista alueen allekirjoitus"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "poista alueen allekirjoitus"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -9651,13 +9806,9 @@ msgstr "Lisää uusi avain"
 msgid "Show DS and DNSKEY"
 msgstr "Näytä DS ja DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "poista alueen allekirjoitus"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "Tunnus"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -9706,10 +9857,6 @@ msgid ""
 msgstr ""
 "Liitä PEM-koodattu yksityinen avain (RSA tai ECDSA). PowerDNS 4.7+ päättelee "
 "avaimen koon PEM-sisällöstä - valitse vastaava algoritmi ja avaimen rooli."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "avaimen tyyppi"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9778,9 +9925,9 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "Syötä sähköpostiosoitteesi, lähetämme linkin salasanan palautukseen."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "Sähköpostiosoite"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "sähköpostiosoite"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -9793,14 +9940,6 @@ msgstr "Lähetä palautuslinkki"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Ryhmähallinta"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "ryhmän lokit"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Lisää ryhmä"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -9825,14 +9964,6 @@ msgstr "Hallitse jäseniä"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Hallitse alueita"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Muokkaa ryhmää"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Poista ryhmä"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -9866,7 +9997,7 @@ msgstr "Tallennetaan..."
 msgid "Update"
 msgstr "Päivitä"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Ryhmän nimi"
 
@@ -10179,7 +10310,7 @@ msgstr "Muokkaa kommenttia"
 msgid "Edit comment in zone"
 msgstr "Muokkaa kommenttia alueella"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "lisää malli"
 
@@ -10202,10 +10333,6 @@ msgstr "Yleinen malli"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Tee tästä mallista kaikkien käyttäjien saataville"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "lisää aluemalli"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10293,10 +10420,6 @@ msgstr "Kaikki tapahtumat"
 msgid "Logs"
 msgstr "Lokit"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "alueen lokit"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Näytetään omistamiesi vyöhykkeiden lokit."
@@ -10329,13 +10452,9 @@ msgstr "Toimialuenimi"
 msgid "All operations"
 msgstr "Kaikki toiminnot"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "lisää tietueita joukolla"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "Lisää tietueita joukolla"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10362,8 +10481,8 @@ msgstr "Kommentti on valinnainen"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Syötä vain palvelinnimet - alueen nimi lisätään automaattisesti"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Lisää tietueet"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10442,12 +10561,8 @@ msgstr "Luo tietue"
 msgid "Back to Wizard Selection"
 msgstr "Takaisin ohjatun toiminnon valintaan"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Poista käyttäjä"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Poista käyttäjä"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10512,9 +10627,9 @@ msgstr "Tallenna alue mallina"
 msgid "Source Zone"
 msgstr "Lähdealue"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Mallin nimi"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "mallin nimi"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -10682,9 +10797,9 @@ msgstr "Salasana ei täytä vaatimuksia"
 msgid "Enter your new password for"
 msgstr "Syötä uusi salasana käyttäjälle"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "Uusi salasana"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "uusi salasana"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -10932,10 +11047,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Muokkaa profiilia"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Muokkaa käyttäjää"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -10961,10 +11072,6 @@ msgstr "Käyttäjän koko nimi tunnistamista varten"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Anna koko nimi"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "sähköpostiosoite"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11151,10 +11258,6 @@ msgstr "Kyllä, poista tämän alueen linkitys"
 msgid "Yes, unlink these zones"
 msgstr "Kyllä, poista näiden alueiden linkitys"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Käyttöoikeusmallit"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Lisää"
@@ -11188,10 +11291,6 @@ msgstr "Käyttäjämallit kaikille; ryhmämallit vain ryhmän alueille"
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Valitse mallin tyyppi"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Lisää malli"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11528,7 +11627,7 @@ msgstr "Sinä"
 msgid "Add Owner"
 msgstr "Lisää omistaja"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Ryhmän omistus"
 
@@ -11575,10 +11674,6 @@ msgstr "Tähän mennessä"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Tyhjennä"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Tunnus"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -11772,10 +11867,6 @@ msgstr ""
 "Vihje: syötä pelkkä isäntänimi (esim. 'www'), niin alueen nimi lisätään "
 "automaattisesti. Käytä merkkiä '@' alueen juurta varten."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Muokkaa aluetta"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metatiedot"
@@ -11888,14 +11979,6 @@ msgstr "Ei allekirjoitettu"
 msgid "User Management"
 msgstr "Käyttäjähallinta"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "käyttäjän lokit"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Lisää käyttäjä"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Todennustyyppi"
@@ -11949,7 +12032,7 @@ msgstr "Tässä listauksessa ei ole eteenpäin-alueita."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Poista tietue"
 
@@ -12070,7 +12153,7 @@ msgstr "Määritä kaikki minulle"
 msgid "Zone ID"
 msgstr "Alueen tunnus"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Alueen nimi"
 
@@ -12194,10 +12277,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Valitse ryhmät, joihin uusi käyttäjä lisätään."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "alueen nimi"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Anna alueen nimi"
@@ -12288,10 +12367,6 @@ msgstr "Aluemallit"
 msgid "Search templates..."
 msgstr "Hae malleja..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "mallin nimi"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Linkitetyt alueet"
@@ -12368,10 +12443,6 @@ msgstr ""
 "käsin lisätyt. Mallin muutokset eivät päivitä alueita automaattisesti - ota "
 "muutokset käyttöön mallia muokatessasi \"Päivitä alueet\" -painikkeella."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Vaihda salasana"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Nykyinen salasana"
@@ -12379,10 +12450,6 @@ msgstr "Nykyinen salasana"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Anna nykyinen salasana"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "uusi salasana"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12538,7 +12605,9 @@ msgstr "Tällä aluemallilla ei ole SOA (Start of Authority) -tietuetta."
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr "DNS-alueet vaativat yleensä SOA-tietueen toimiakseen oikein, ja DNSSEC-allekirjoitus voi epäonnistua ilman sitä."
+msgstr ""
+"DNS-alueet vaativat yleensä SOA-tietueen toimiakseen oikein, ja DNSSEC-"
+"allekirjoitus voi epäonnistua ilman sitä."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
@@ -12616,11 +12685,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API-avain:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "joukkorekisteröinti"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Alueen tyyppi"
 
@@ -12639,10 +12704,6 @@ msgstr "Yksi toimialue per rivi"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Lisää alueet"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Ryhmän omistus"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -12781,11 +12842,11 @@ msgstr "Tilisi on nyt suojattu monivaiheisella todennuksella."
 msgid "Authentication method:"
 msgstr "Todennustapa:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "todennussovellus"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "sähköpostivahvistus"
 
@@ -12849,7 +12910,9 @@ msgstr "MFA-asetus vaaditaan"
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr "Organisaatiosi edellyttää monivaiheista todennusta. Ota MFA käyttöön jatkaaksesi järjestelmän käyttöä."
+msgstr ""
+"Organisaatiosi edellyttää monivaiheista todennusta. Ota MFA käyttöön "
+"jatkaaksesi järjestelmän käyttöä."
 
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
@@ -12876,10 +12939,6 @@ msgstr "MFA on tällä hetkellä pois käytöstä"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Tiliäsi ei ole suojattu MFA:lla."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Todennussovellus"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -12902,10 +12961,6 @@ msgstr "Helppokäyttöinen"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Määritä sovelluksen todennus"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Sähköpostivahvistus"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13255,7 +13310,9 @@ msgstr "Toissijaisen alueen määritys"
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
-msgstr "Ensisijaisen nimipalvelimen IP-osoite (tukee IPv4:ää ja IPv6:ta, useat IP-osoitteet pilkuilla eroteltuina)"
+msgstr ""
+"Ensisijaisen nimipalvelimen IP-osoite (tukee IPv4:ää ja IPv6:ta, useat IP-"
+"osoitteet pilkuilla eroteltuina)"
 
 #: templates/modern/delete_zone_templ.html:5
 msgid "Delete template"
@@ -13449,6 +13506,7 @@ msgid "PDNS Server"
 msgstr "PDNS-palvelin"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Palvelimen nimi"
 
@@ -13549,18 +13607,6 @@ msgstr "Mittari"
 msgid "No detailed metrics available."
 msgstr "Yksityiskohtaisia mittareita ei ole saatavilla."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "eteenpäin-alueet"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "käänteiset alueet"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Tietuemuutosloki"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Käyttäjien luettelo"
@@ -13572,10 +13618,6 @@ msgstr "Ryhmien luettelo"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Käyttöoikeusmallien luettelo"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Lisää käyttöoikeusmalli"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13676,10 +13718,6 @@ msgstr "Luo uusi DNS-tietue tällä alueella"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Lisää uusi tietue"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -13850,10 +13888,6 @@ msgstr ""
 "Käyttöoikeudet on jaettu alla ryhmiin hallinnan helpottamiseksi. Käytä "
 "hakutoimintoa löytääksesi tietyt käyttöoikeudet nopeasti."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Poista tietue"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Poista mallin tietue"
@@ -13963,10 +13997,6 @@ msgstr ""
 "näyttää toiminnon, tekijän, kohteena olevan ryhmän ja aikaleiman. "
 "Hyödyllinen ryhmäomistuksen kautta tapahtuvien alueoikeuksien muutosten "
 "tarkastamiseen."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "ryhmän nimi"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14143,10 +14173,6 @@ msgstr "Korvaa vastaavat tietueet"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Lisää kaikki tietueet"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "alueen tyyppi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14391,10 +14417,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API -avain (pdns.conf-tiedoston api-key-asetuksesta)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

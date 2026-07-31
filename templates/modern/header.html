@@ -146,12 +146,12 @@
                             {% if can('zone_content_view_own') or can('zone_content_view_others') %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward">
-                                    <i class="bi bi-arrow-right me-2"></i>{% trans %}Forward zones{% endtrans %}
+                                    <i class="bi bi-arrow-right me-2"></i>{% trans %}Forward Zones{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse">
-                                    <i class="bi bi-arrow-left me-2"></i>{% trans %}Reverse zones{% endtrans %}
+                                    <i class="bi bi-arrow-left me-2"></i>{% trans %}Reverse Zones{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
@@ -172,7 +172,7 @@
                             {% if can('zone_master_add') %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/bulk-registration">
-                                    <i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}
+                                    <i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
@@ -192,7 +192,7 @@
                             {% if can('user_is_ueberuser') %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes">
-                                    <i class="bi bi-clock-history me-2"></i>{% trans %}Record change log{% endtrans %}
+                                    <i class="bi bi-clock-history me-2"></i>{% trans %}Record Change Log{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}

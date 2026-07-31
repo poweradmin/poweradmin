@@ -106,8 +106,8 @@
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         {% if can('zone_content_view_own') or can('zone_content_view_others') %}
-                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward" data-testid="list-forward-zones-link"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward zones{% endtrans %}</a></li>
-                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse" data-testid="list-reverse-zones-link"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward" data-testid="list-forward-zones-link"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward Zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse" data-testid="list-reverse-zones-link"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse Zones{% endtrans %}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         {% endif %}
                         {% if can('zone_master_add') %}
@@ -120,7 +120,7 @@
                         {% endif %}
                         {% if can('zone_master_add') %}
                         <li><a class="dropdown-item {{ current_page == 'bulk_registration' ? 'active' : '' }}"
-                               href="{{ base_url_prefix }}/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}</a>
+                               href="{{ base_url_prefix }}/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</a>
                         </li>
                         {% endif %}
                         {% if iface_add_reverse_record and (can('zone_content_view_own') or can('zone_content_view_others')) %}
@@ -136,7 +136,7 @@
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
                         {% if can('user_is_ueberuser') %}
-                        <li><a class="dropdown-item {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes"><i class="bi bi-clock-history me-2"></i>{% trans %}Record change log{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes"><i class="bi bi-clock-history me-2"></i>{% trans %}Record Change Log{% endtrans %}</a></li>
                         {% endif %}
                         {% endif %}
                     </ul>

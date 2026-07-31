@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Romanian\n"
@@ -975,7 +975,8 @@ msgstr ""
 "Spațiile și liniile noi vor fi eliminate automat."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Tip cheie"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1646,8 +1647,8 @@ msgid "Invalid group ID."
 msgstr "ID grup invalid."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Șterge grup"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -2020,7 +2021,7 @@ msgid "Search"
 msgstr "Căutare"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Jurnal de modificări ale înregistrărilor"
 
@@ -2057,8 +2058,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nu aveți permisiunea de a adăuga utilizator nou."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Adaugă utilizator"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2107,8 +2108,8 @@ msgid "The record could not be deleted."
 msgstr "Înregistrarea nu a putut fi ștearsă."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Jurnale zonă"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2190,8 +2191,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Nu aveți permisiunea de a vedea această zonă."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Jurnale utilizator"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2235,7 +2236,8 @@ msgid "User agreement accepted successfully."
 msgstr "Acord utilizator acceptat cu succes."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Editează zona"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2504,9 +2506,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Inițierea autentificării OIDC a eșuat: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Jurnale de grup"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Jurnale grup"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2648,7 +2650,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Au fost salvate %d valori implicite și șterse %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Șabloane de zonă"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2656,8 +2659,8 @@ msgid "You do not have permission to create groups."
 msgstr "Nu aveți permisiunea de a crea grupuri."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Adaugă grup"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2731,7 +2734,7 @@ msgstr "A apărut o eroare la ștergerea cheii DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Șabloane de permisiuni"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2812,8 +2815,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Nu aveți permisiunea de a adăuga șabloane de permisiuni."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Adaugă șablon de permisiuni"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2911,8 +2914,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Nu aveți permisiunea de a adăuga un șablon de zonă."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Adaugă șablon de zonă"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Adaugă șablon zonă"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -3032,7 +3036,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Nu aveți permisiunea de a adăuga înregistrări la șabloanele de zonă."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Editează utilizator"
 
@@ -3222,8 +3226,8 @@ msgstr ""
 "rugăm să contactați administratorul."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Schimbă parola"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3271,8 +3275,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Nu aveți permisiunea de a edita grupuri."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Editează grup"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3300,7 +3304,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermasterul a fost șters cu succes."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Înregistrare în masă"
 
@@ -10205,10 +10209,6 @@ msgstr "Șterge cheia API"
 msgid "Permanently removes this key"
 msgstr "Elimină definitiv această cheie"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Șabloane de zonă"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Editează înregistrarea"
@@ -10472,8 +10472,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Sunteți sigur că doriți să eliminați semnătura zonei"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Elimină semnătura zonei"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10496,11 +10496,7 @@ msgstr "Adaugă cheie nouă"
 msgid "Show DS and DNSKEY"
 msgstr "Afișează DS și DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Elimină semnătura zonei"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10552,10 +10548,6 @@ msgstr ""
 "Lipiți o cheie privată codificată în PEM (RSA sau ECDSA). PowerDNS 4.7+ "
 "deduce dimensiunea cheii din conținutul PEM - selectați algoritmul "
 "corespunzător și rolul cheii."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Tip cheie"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10628,8 +10620,8 @@ msgstr ""
 "Introduceți adresa dumneavoastră de e-mail și vă vom trimite un link pentru "
 "resetarea parolei."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "Adresă email"
 
 #: templates/modern/forgot_username.html:29
@@ -10643,14 +10635,6 @@ msgstr "Trimite link resetare"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Administrare grupuri"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Jurnale grup"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Adaugă grup"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10675,14 +10659,6 @@ msgstr "Administrează membrii"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Administrează zone"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Editează grup"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Șterge grup"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10718,7 +10694,7 @@ msgstr "Se salvează..."
 msgid "Update"
 msgstr "Actualizează"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Nume grup"
 
@@ -11035,7 +11011,7 @@ msgstr "Editează comentariu"
 msgid "Edit comment in zone"
 msgstr "Editează comentariu în zonă"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Adaugă șablon"
 
@@ -11058,10 +11034,6 @@ msgstr "Șablon global"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Face acest șablon disponibil tuturor utilizatorilor"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Adaugă șablon zonă"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11151,10 +11123,6 @@ msgstr "Toate evenimentele"
 msgid "Logs"
 msgstr "Jurnale"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Jurnale zonă"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Se afișează jurnalele pentru zonele pe care le dețineți."
@@ -11189,12 +11157,8 @@ msgstr "Nume domeniu"
 msgid "All operations"
 msgstr "Toate operațiile"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Adăugare masivă înregistrări"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Adăugare masivă înregistrări"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -11222,8 +11186,8 @@ msgstr "Comentariul este opțional"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Introduceți doar numele de gazdă - numele zonei va fi adăugat automat"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Adaugă înregistrări"
 
 #: templates/modern/bulk_record_add.html:56
@@ -11304,12 +11268,8 @@ msgstr "Creează înregistrare"
 msgid "Back to Wizard Selection"
 msgstr "Înapoi la selecție asistent"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Șterge utilizator"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Șterge utilizator"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11376,8 +11336,8 @@ msgstr "Salvează zona ca șablon"
 msgid "Source Zone"
 msgstr "Zonă sursă"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Nume șablon"
 
 #: templates/modern/save-zone-template.html:29
@@ -11561,8 +11521,8 @@ msgstr "Parola nu îndeplinește cerințele"
 msgid "Enter your new password for"
 msgstr "Introduceți noua parolă pentru"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Parolă nouă"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11812,10 +11772,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Editează profil"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Editează utilizator"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11841,10 +11797,6 @@ msgstr "Nume complet al utilizatorului pentru identificare"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Furnizați nume complet"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Adresă email"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -12037,10 +11989,6 @@ msgstr "Da, deconectează această zonă"
 msgid "Yes, unlink these zones"
 msgstr "Da, deconectează aceste zone"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Șabloane de permisiuni"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Adaugă"
@@ -12076,10 +12024,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Selectați un tip de șablon"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Adaugă șablon"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12432,7 +12376,7 @@ msgstr "Tu"
 msgid "Add Owner"
 msgstr "Adaugă proprietar"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Proprietate de grup"
 
@@ -12479,10 +12423,6 @@ msgstr "Până la data"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Șterge"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12683,10 +12623,6 @@ msgstr ""
 "Sfat: introduceți doar numele de gazdă (de ex. 'www'), iar numele zonei va "
 "fi adăugat automat. Folosiți '@' pentru apexul/rădăcina zonei."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Editează zona"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadate"
@@ -12799,14 +12735,6 @@ msgstr "Nesemnat"
 msgid "User Management"
 msgstr "Administrare utilizatori"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Jurnale utilizator"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Adaugă utilizator"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Tip autentificare"
@@ -12860,7 +12788,7 @@ msgstr "Nu există zone directe de afișat în această listare."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Șterge înregistrarea"
 
@@ -12985,7 +12913,7 @@ msgstr "Atribuie-mi toate"
 msgid "Zone ID"
 msgstr "ID zonă"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Nume zonă"
 
@@ -13112,10 +13040,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Selectați grupurile în care va fi adăugat noul utilizator la creare."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Nume zonă"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Furnizați numele zonei"
@@ -13206,10 +13130,6 @@ msgstr "Șabloane zonă pentru"
 msgid "Search templates..."
 msgstr "Caută șabloane..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Nume șablon"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Zone legate"
@@ -13287,10 +13207,6 @@ msgstr ""
 "actualizează automat zonele - folosiți butonul \"Actualizează zone\" atunci "
 "când editați șabloanele, pentru a aplica modificările."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Schimbă parola"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Parolă curentă"
@@ -13298,10 +13214,6 @@ msgstr "Parolă curentă"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Furnizați parola curentă"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Parolă nouă"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13542,11 +13454,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "Cheie API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Înregistrare în masă"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Tip zonă"
 
@@ -13565,10 +13473,6 @@ msgstr "Introduceți câte un domeniu pe linie"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Adaugă zone"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Proprietate de grup"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13712,11 +13616,11 @@ msgstr ""
 msgid "Authentication method:"
 msgstr "Metodă de autentificare:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Aplicație de autentificare"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Verificare email"
 
@@ -13816,10 +13720,6 @@ msgstr ""
 "Contul dumneavoastră nu este protejat prin autentificare cu mai mulți "
 "factori."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Aplicație de autentificare"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13843,10 +13743,6 @@ msgstr "Ușor de folosit"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Configurează autentificarea prin aplicație"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Verificare email"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14420,6 +14316,7 @@ msgid "PDNS Server"
 msgstr "Server PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Nume server"
 
@@ -14520,18 +14417,6 @@ msgstr "Metrică"
 msgid "No detailed metrics available."
 msgstr "Nu sunt metrici detaliate disponibile."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Zone directe"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Zone inverse"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Jurnal de modificări ale înregistrărilor"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Listă utilizatori"
@@ -14543,10 +14428,6 @@ msgstr "Listă grupuri"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Listă șabloane de permisiuni"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Adaugă șablon de permisiuni"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14652,10 +14533,6 @@ msgstr "Creează o înregistrare DNS nouă în această zonă"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Adaugă altă înregistrare"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14833,10 +14710,6 @@ msgstr ""
 "Permisiunile sunt organizate mai jos în grupuri, pentru o gestionare mai "
 "ușoară. Folosiți funcția de căutare pentru a găsi rapid anumite permisiuni."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Șterge înregistrarea"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Șterge înregistrarea din șablon"
@@ -14950,10 +14823,6 @@ msgstr ""
 "eliminați). Fiecare intrare arată acțiunea, autorul, grupul afectat și "
 "momentul. Util pentru auditarea modificărilor de acces la zone care rezultă "
 "din deținerea de către un grup."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Nume grup"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -15130,10 +14999,6 @@ msgstr "Înlocuiește înregistrările care se potrivesc"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Adaugă toate înregistrările"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Tip zonă"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15385,10 +15250,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Cheia API PowerDNS (din setarea api-key din pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

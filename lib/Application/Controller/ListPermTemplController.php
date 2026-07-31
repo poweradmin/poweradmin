@@ -42,7 +42,7 @@ class ListPermTemplController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_perm_templ');
-        $this->setPageTitle(_('Permission Templates'));
+        $this->setPageTitle(_('Permission templates'));
 
         $this->showListPermTempl();
     }

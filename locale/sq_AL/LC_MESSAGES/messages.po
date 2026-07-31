@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -970,7 +970,8 @@ msgstr ""
 "linjat e reja do të hiqen automatikisht."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Lloji i çelësit"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1632,9 +1633,9 @@ msgid "Invalid group ID."
 msgstr "ID e pavlefshme e grupit."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
-msgstr "Fshi Grupin"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
+msgstr "Fshi grupin"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -2002,7 +2003,7 @@ msgid "Search"
 msgstr "Kërko"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Historiku i ndryshimeve të regjistrimeve"
 
@@ -2039,8 +2040,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nuk ke të drejtë të shtosh një përdorues të ri."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Shto përdorues"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2088,9 +2089,9 @@ msgid "The record could not be deleted."
 msgstr "Regjistrimi nuk mund të fshihej."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Logs e zonës"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "Historiku i zonave"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2170,9 +2171,9 @@ msgid "You do not have permission to view this zone."
 msgstr "Nuk ke të drejtë të shohësh këtë zonë."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "Logs e përdoruesit"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "Logjet e përdoruesit"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2213,7 +2214,8 @@ msgid "User agreement accepted successfully."
 msgstr "Marrëveshja e përdoruesit u pranua me sukses."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Ndrysho zonën"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2476,9 +2478,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nisja e autentifikimit OIDC dështoi: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Logs e grupit"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Historiku i grupeve"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2620,7 +2622,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "U ruajtën %d vlerë(t) e parazgjedhura; u pastruan %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Modelet e zonave"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2628,9 +2631,9 @@ msgid "You do not have permission to create groups."
 msgstr "Nuk keni leje për të krijuar grupe."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
-msgstr "Shto Grupi"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
+msgstr "Shto grup"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
@@ -2704,7 +2707,7 @@ msgstr "U ndesh një gabim gjatë fshirjes së çelësit DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Modelet e lejeve"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2781,8 +2784,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Nuk ke leje të shtosh modele të lejeve."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Shto model lejesh"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2880,8 +2883,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Nuk ke të drejtë të shtosh një model zone."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Shto shabllon zone"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Shto model zone"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -3001,7 +3005,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Nuk ke të drejtë të shtosh regjistrime tek shabllonet e zonës."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Ndrysho përdorues"
 
@@ -3185,8 +3189,8 @@ msgstr ""
 "e tyre këtu. Vihu në kontakt me administratorin tuaj."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Ndrysho fjalëkalimin"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3231,8 +3235,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Ti nuk ke të drejta për të ndryshuar grupet."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Ndrysho grupin"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3260,7 +3264,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermasteri është fshirë me sukses."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Regjistrim masiv"
 
@@ -10074,10 +10078,6 @@ msgstr "Elemino çelësin API"
 msgid "Permanently removes this key"
 msgstr "Eleminon përgjithmonë këtë çelës"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Modelet e zonave"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Ndrysho regjistrimin"
@@ -10338,8 +10338,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Jeni i sigurt që dëshironi t'i hiqni nënshkrimin zonës"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Hiq nënshkrimin e zonës"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10362,11 +10362,7 @@ msgstr "Shto çelës të ri"
 msgid "Show DS and DNSKEY"
 msgstr "Shfaq DS dhe DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Hiq nënshkrimin e zonës"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10418,10 +10414,6 @@ msgstr ""
 "Ngjitni një çelës privat të koduar PEM (RSA ose ECDSA). PowerDNS 4.7+ nxjerr "
 "madhësinë e çelësit nga përmbajtja e PEM - zgjidhni algoritmin dhe rolin "
 "përkatës të çelësit."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Lloji i çelësit"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10493,9 +10485,9 @@ msgstr ""
 "Shkruaj adresën tuaj email dhe do t'ju dërgojmë një lidhje për të rivendosur "
 "fjalëkalimin tuaj."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "Adresa email"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "Adresa Email"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10508,14 +10500,6 @@ msgstr "Dërgo lidhjen e rivendosjes"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Menaxhimi i grupeve"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Historiku i grupeve"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Shto grup"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10540,14 +10524,6 @@ msgstr "Menaxho anëtarët"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Menaxho zonat"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Ndrysho grupin"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Fshi grupin"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10583,7 +10559,7 @@ msgstr "Po ruhet..."
 msgid "Update"
 msgstr "Përditëso"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Emri i grupit"
 
@@ -10898,7 +10874,7 @@ msgstr "Ndrysho komentin"
 msgid "Edit comment in zone"
 msgstr "Ndrysho komentin në zonën"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Shto model"
 
@@ -10921,10 +10897,6 @@ msgstr "Modeli global"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Përcakto këtë model në dispozicion të të gjithë përdoruesve"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Shto model zone"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11014,10 +10986,6 @@ msgstr "Të gjitha ngjarjet"
 msgid "Logs"
 msgstr "Logs"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Historiku i zonave"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Po shfaqet historiku për zonat që zotëroni."
@@ -11051,12 +11019,8 @@ msgstr "Emri i domenit"
 msgid "All operations"
 msgstr "Të gjitha veprimet"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Shto regjistrime në masë"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Shto regjistrime në masë"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -11084,9 +11048,9 @@ msgstr "Komenti është opsional"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Shkruaj vetëm emrin e host - emri i zonës do t'i shtohet automatikisht"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
-msgstr "Shto regjistrimet"
+#: templates/modern/add_record.html:197
+msgid "Add records"
+msgstr "Shto regjistrime"
 
 #: templates/modern/bulk_record_add.html:56
 msgid "Instructions"
@@ -11166,12 +11130,8 @@ msgstr "Krijo regjistrimin"
 msgid "Back to Wizard Selection"
 msgstr "Kthehu tek zgjedhja e ndihmësit"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Elemino përdorues"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Elemino përdorues"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11238,9 +11198,9 @@ msgstr "Ruaje zonën si shabllon"
 msgid "Source Zone"
 msgstr "Zona Burimi"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Emri i shabllonit"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "Emri i modelit"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11422,8 +11382,8 @@ msgstr "Fjalëkalimi nuk përmbush kërkesat"
 msgid "Enter your new password for"
 msgstr "Shkruaj fjalëkalimin e ri për"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Fjalëkalimi i ri"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11676,10 +11636,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Ndrysho profilin"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Ndrysho përdoruesin"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11705,10 +11661,6 @@ msgstr "Emri i plotë i përdoruesit për identifikimin"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Shkruaj emrin e plotë"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Adresa Email"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11902,10 +11854,6 @@ msgstr "Po, shkëpute këtë zonë"
 msgid "Yes, unlink these zones"
 msgstr "Po, shkëputi këto zona"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Modelet e lejeve"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Shto"
@@ -11941,10 +11889,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Ju lutem zgjidhni një lloj modeli"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Shto Shabllon"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12292,7 +12236,7 @@ msgstr "Ti"
 msgid "Add Owner"
 msgstr "Shto Pronarin"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Pronësia e grupit"
 
@@ -12339,10 +12283,6 @@ msgstr "Deri në datë"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Pastro"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Id"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12543,10 +12483,6 @@ msgstr ""
 "Këshillë: Shkruaj vetëm emrin e host (p.sh. 'www') dhe emri i zonës do të "
 "shtohet automatikisht. Përdor '@' për zonën apex/root."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Ndrysho zonën"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadata"
@@ -12659,14 +12595,6 @@ msgstr "Nuk është nënshkruar"
 msgid "User Management"
 msgstr "Menaxhimi i Përdoruesit"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Logjet e përdoruesit"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Shto përdorues"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Lloji i autentikimit"
@@ -12720,7 +12648,7 @@ msgstr "Nuk ka zona përpara për të shfaqur në këtë listë."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Elemino regjistrimin"
 
@@ -12845,7 +12773,7 @@ msgstr "Cakto të gjitha tek unë"
 msgid "Zone ID"
 msgstr "ID e zonës"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Emri i zonës"
 
@@ -12972,10 +12900,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Zgjidh grupet për t'i shtuar përdoruesit e ri tek krijimi."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Emri i zonës"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Shkruaj emrin e zonës"
@@ -13066,10 +12990,6 @@ msgstr "Modelet e zonave për"
 msgid "Search templates..."
 msgstr "Kërko modele..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Emri i modelit"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Zonat e lidhura"
@@ -13147,10 +13067,6 @@ msgstr ""
 "automatikisht - përdor butonin \"Përditëso zonat\" kur ndryshon modelet për "
 "të zbatuar ndryshimet."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Ndrysho fjalëkalimin"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Fjalëkalimi aktual"
@@ -13158,10 +13074,6 @@ msgstr "Fjalëkalimi aktual"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Shkruaj fjalëkalimin aktual"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Fjalëkalimi i ri"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13398,11 +13310,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "Çelësi API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Regjistrim masiv"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Lloji i zonës"
 
@@ -13421,10 +13329,6 @@ msgstr "Shkruani një domain për rresht"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Shto Zona"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Pronësia e grupit"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13565,11 +13469,11 @@ msgstr "Llogaria juaj tani është e mbrojtur me autentifikim shumë-faktorësh.
 msgid "Authentication method:"
 msgstr "Metoda e autentifikimit:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Program autentikues"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Verifikimi i email"
 
@@ -13665,10 +13569,6 @@ msgstr "MFA është çaktivizuar aktualisht"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Llogaria juaj nuk është e mbrojtur me autentifikim shumë-faktorësh."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Aplikacioni i autentifikimit"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13692,10 +13592,6 @@ msgstr "I lehtë për t'u përdorur"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Konfiguro autentifikimin me aplikacion"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Verifikimi Email"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14269,6 +14165,7 @@ msgid "PDNS Server"
 msgstr "Serveri PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Emri i serverit"
 
@@ -14369,18 +14266,6 @@ msgstr "Metrike"
 msgid "No detailed metrics available."
 msgstr "Nuk ka metrika të detajuara në dispozicion."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Zonat përpara"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Zona të kundërt"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Regjistri i ndryshimeve të regjistrimeve"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Listo përdoruesit"
@@ -14392,10 +14277,6 @@ msgstr "Listo grupet"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Lista e modeleve të lejeve"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Shto model lejesh"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14501,10 +14382,6 @@ msgstr "Krijo një regjistrim të ri DNS në këtë zonë"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Shto një regjistrim tjetër"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Shto regjistrime"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14683,10 +14560,6 @@ msgstr ""
 "Të drejtat janë organizuar në grupe më poshtë për menaxhim më të lehtë. "
 "Përdor funksionin e kërkimit për të gjetur shpejt të drejta të caktuara."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Elemino regjistrimin"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Elemino regjistrimin e modelit"
@@ -14800,10 +14673,6 @@ msgstr ""
 "tregon veprimin, kryerësin, grupin e prekur dhe një kohëshënues. I dobishëm "
 "për auditimin e ndryshimeve të aksesit në zona të ndërmjetësuara nga "
 "pronësia e grupit."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Emri i grupit"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14979,10 +14848,6 @@ msgstr "Zëvendëso regjistrimet përputhëse"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Shto të gjitha regjistrimet"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Lloji i zonës"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15232,10 +15097,6 @@ msgstr "Çelësi API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Çelësi API i PowerDNS (nga rregullimi api-key në pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Emri i serverit"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

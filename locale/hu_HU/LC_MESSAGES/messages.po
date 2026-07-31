@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -475,7 +475,9 @@ msgstr "Jelentések generálása, ha az SPF ellenőrzés sikertelen"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr "Mikor generáljon forenzikus jelentést (csak akkor érvényes, ha a forenzikus e-mail cím be van állítva)"
+msgstr ""
+"Mikor generáljon forenzikus jelentést (csak akkor érvényes, ha a forenzikus "
+"e-mail cím be van állítva)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
@@ -551,7 +553,8 @@ msgstr "Érvénytelen forenzikus jelentés e-mail cím"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:292
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
-msgstr "Nincsenek beállítva jelentési e-mail címek. Nem fog DMARC jelentéseket kapni."
+msgstr ""
+"Nincsenek beállítva jelentési e-mail címek. Nem fog DMARC jelentéseket kapni."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:305
 msgid ""
@@ -681,7 +684,9 @@ msgstr "Hiba (nem engedélyezett e-mailek elutasítása)"
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr "Házirend az egyetlen mechanizmusnak sem megfelelő e-mailekhez. Teszteléshez kezdje a ~all (softfail) értékkel."
+msgstr ""
+"Házirend az egyetlen mechanizmusnak sem megfelelő e-mailekhez. Teszteléshez "
+"kezdje a ~all (softfail) értékkel."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -946,8 +951,9 @@ msgstr ""
 "és a sortörések automatikusan eltávolításra kerülnek."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
-msgstr "Kulcs típus"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
+msgstr "kulcs típus"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
@@ -1598,8 +1604,8 @@ msgid "Invalid group ID."
 msgstr "Érvénytelen csoport azonosító."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Csoport törlése"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1963,7 +1969,7 @@ msgid "Search"
 msgstr "Keresés"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Rekordváltozási napló"
 
@@ -2000,8 +2006,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nincs jogosultsága új felhasználó hozzáadására."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Felhasználó hozzáadása"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2047,9 +2053,9 @@ msgid "The record could not be deleted."
 msgstr "A rekord nem volt törölhető."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Zóna naplók"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "zóna naplók"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2129,9 +2135,9 @@ msgid "You do not have permission to view this zone."
 msgstr "Nincs jogosultsága a zóna megtekintésére."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "Felhasználói naplók"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "felhasználói naplók"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2172,7 +2178,8 @@ msgid "User agreement accepted successfully."
 msgstr "Felhasználói megállapodás sikeresen elfogadva."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Zóna szerkesztése"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2339,7 +2346,9 @@ msgstr "Kérjük használjon helyreállítási kódot."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Nem sikerült elküldeni az ellenőrző kódot az e-mail címére. Használjon helyette helyreállítási kódot."
+msgstr ""
+"Nem sikerült elküldeni az ellenőrző kódot az e-mail címére. Használjon "
+"helyette helyreállítási kódot."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -2424,9 +2433,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nem sikerült elindítani az OIDC hitelesítést: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Csoport naplók"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "csoport naplók"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2566,16 +2575,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "%d alapérték mentve, %d törölve."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Zóna sablonok"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "zóna sablonok"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Nincs jogosultsága csoportok létrehozására."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Csoport hozzáadása"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2649,8 +2659,8 @@ msgstr "Hiba történt a DNSSEC kulcs törlése során: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "Engedély sablonok"
+msgid "Permission templates"
+msgstr "Engedélysablonok"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2726,9 +2736,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Nincs jogosultsága engedély sablon hozzáadására."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Engedély sablon hozzáadása"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Engedélysablon hozzáadása"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2824,8 +2834,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Nincs jogosultsága zóna sablon hozzáadására."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Zóna sablon hozzáadása"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "zóna sablon hozzáadása"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -2946,7 +2957,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Nincs jogosultsága rekordok hozzáadására zóna sablonokhoz."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Felhasználó szerkesztése"
 
@@ -3106,7 +3117,9 @@ msgstr "A rekord sikeresen frissítve."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr "Az LDAP felhasználók itt nem tudják megváltoztatni a jelszavukat. Forduljon a rendszergazdához."
+msgstr ""
+"Az LDAP felhasználók itt nem tudják megváltoztatni a jelszavukat. Forduljon "
+"a rendszergazdához."
 
 #: lib/Application/Controller/ChangePasswordController.php:94
 msgid ""
@@ -3127,8 +3140,8 @@ msgstr ""
 "jelszavukat. Forduljon a rendszergazdához."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Jelszó módosítása"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3172,8 +3185,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Nincs jogosultsága csoportok szerkesztésére."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Csoport szerkesztése"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3201,7 +3214,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "A supermaster sikeresen törölve."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Tömeges regisztráció"
 
@@ -4005,7 +4018,9 @@ msgstr "A DSA kulcsok az RFC 2536 formátumát kövessék."
 msgid ""
 "When algorithm is 0 (No key), the public key field is typically empty or "
 "ignored."
-msgstr "Ha az algoritmus 0 (No key), a nyilvános kulcs mezője általában üres vagy figyelmen kívül marad."
+msgstr ""
+"Ha az algoritmus 0 (No key), a nyilvános kulcs mezője általában üres vagy "
+"figyelmen kívül marad."
 
 #: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
 msgid "HHIT record content must be a non-empty base64-encoded blob."
@@ -4306,7 +4321,9 @@ msgstr ""
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
-msgstr "Az NSEC3PARAM rekordnak pontosan a hash algoritmust, a flageket, az iterációk számát és a saltot kell tartalmaznia."
+msgstr ""
+"Az NSEC3PARAM rekordnak pontosan a hash algoritmust, a flageket, az "
+"iterációk számát és a saltot kell tartalmaznia."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -5461,7 +5478,8 @@ msgstr "A ZONEMD hash algoritmus 0-255 közötti szám."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "A ZONEMD hash algoritmus 0 fenntartott, és nem szabványos használatra való."
+msgstr ""
+"A ZONEMD hash algoritmus 0 fenntartott, és nem szabványos használatra való."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5630,7 +5648,9 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "Érvénytelen DLV rekord formátum. Elvárt: <key-tag> <algorithm> <digest-type> <digest>."
+msgstr ""
+"Érvénytelen DLV rekord formátum. Elvárt: <key-tag> <algorithm> <digest-type> "
+"<digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5685,7 +5705,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "A digestnek csak hexadecimális karaktereket (0-9, a-f) szabad tartalmaznia."
+msgstr ""
+"A digestnek csak hexadecimális karaktereket (0-9, a-f) szabad tartalmaznia."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
@@ -5923,7 +5944,9 @@ msgstr ""
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "Elavult algoritmus észlelve. A jobb biztonság érdekében HMAC-SHA256 vagy erősebb ajánlott."
+msgstr ""
+"Elavult algoritmus észlelve. A jobb biztonság érdekében HMAC-SHA256 vagy "
+"erősebb ajánlott."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -8528,7 +8551,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "A DMARC DKIM igazítási címke (adkim) értéke r (rugalmas) vagy s (szigorú) lehet"
+msgstr ""
+"A DMARC DKIM igazítási címke (adkim) értéke r (rugalmas) vagy s (szigorú) "
+"lehet"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
@@ -8878,7 +8903,9 @@ msgstr "Az SRV cél nem lehet üres."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "Ha a cél \".\" (nincs szolgáltatás), a portnak és a súlynak is 0-nak kell lennie."
+msgstr ""
+"Ha a cél \".\" (nincs szolgáltatás), a portnak és a súlynak is 0-nak kell "
+"lennie."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -9776,10 +9803,6 @@ msgstr "API-kulcs törlése"
 msgid "Permanently removes this key"
 msgstr "Véglegesen eltávolítja a kulcsot"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "zóna sablonok"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Rekord szerkesztése"
@@ -10036,9 +10059,9 @@ msgstr "Minden DNSSEC kulcs eltávolítása és kikapcsolás."
 msgid "Are you sure you want to unsign the zone"
 msgstr "Biztosan eltávolítja a zóna aláírását"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "Zóna aláírás törlése"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "zóna aláírás törlése"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -10060,13 +10083,9 @@ msgstr "Új kulcs hozzáadása"
 msgid "Show DS and DNSKEY"
 msgstr "DS és DNSKEY megjelenítése"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "zóna aláírás törlése"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "Azonosító"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -10116,10 +10135,6 @@ msgstr ""
 "Illesszen be egy PEM-kódolású privát kulcsot (RSA vagy ECDSA). A PowerDNS "
 "4.7+ a kulcs méretét a PEM tartalmából vezeti le - válassza ki a megfelelő "
 "algoritmust és kulcsszerepet."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "kulcs típus"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10191,9 +10206,9 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "Adja meg e-mail címét és küldünk visszaállító linket."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "E-mail cím"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "e-mail cím"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10206,14 +10221,6 @@ msgstr "Visszaállító link küldése"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Csoportkezelés"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "csoport naplók"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Csoport hozzáadása"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10238,14 +10245,6 @@ msgstr "Tagok kezelése"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Zónák kezelése"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Csoport szerkesztése"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Csoport törlése"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10279,7 +10278,7 @@ msgstr "Mentés..."
 msgid "Update"
 msgstr "Frissítés"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Csoport neve"
 
@@ -10592,7 +10591,7 @@ msgstr "Megjegyzés szerkesztése"
 msgid "Edit comment in zone"
 msgstr "Megjegyzés szerkesztése a zónában"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "sablon hozzáadása"
 
@@ -10615,10 +10614,6 @@ msgstr "Globális sablon"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Sablon elérhetővé tétele minden felhasználónak"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "zóna sablon hozzáadása"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10706,10 +10701,6 @@ msgstr "Összes esemény"
 msgid "Logs"
 msgstr "Naplók"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "zóna naplók"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Az Ön tulajdonában lévő zónák naplóinak megjelenítése."
@@ -10743,13 +10734,9 @@ msgstr "Tartománynév"
 msgid "All operations"
 msgstr "Minden művelet"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "rekordok tömeges hozzáadása"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "Rekordok tömeges hozzáadása"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10777,8 +10764,8 @@ msgstr "A megjegyzés opcionális"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Csak gazdaneveket adjon meg - a zóna név automatikusan kerül"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Rekordok hozzáadása"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10857,12 +10844,8 @@ msgstr "Rekord létrehozása"
 msgid "Back to Wizard Selection"
 msgstr "Vissza a varázsló választáshoz"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Felhasználó törlése"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Felhasználó törlése"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10927,9 +10910,9 @@ msgstr "Zóna mentése sablonként"
 msgid "Source Zone"
 msgstr "Forrás zóna"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Sablon neve"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "sablon neve"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11101,9 +11084,9 @@ msgstr "A jelszó nem felel meg a követelményeknek"
 msgid "Enter your new password for"
 msgstr "Adja meg az új jelszavát"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "Új jelszó"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "új jelszó"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -11352,10 +11335,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Profil szerkesztése"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Felhasználó szerkesztése"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11381,10 +11360,6 @@ msgstr "A felhasználó teljes neve azonosításhoz"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Adja meg a teljes nevet"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "e-mail cím"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11574,10 +11549,6 @@ msgstr "Igen, leválasztom ezt a zónát"
 msgid "Yes, unlink these zones"
 msgstr "Igen, zónák leválasztása"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Engedélysablonok"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Hozzáadás"
@@ -11611,10 +11582,6 @@ msgstr "Felhasználói sablonok globálisan; csoport sablonok a csoport zónáir
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Válasszon sablon típust"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Sablon hozzáadása"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11854,7 +11821,9 @@ msgstr "Csak egyezés"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr "PTR rekordokat csak azokhoz az IP-címekhez hoz létre, amelyekhez már tartozik A/AAAA rekord az előre irányuló zónában"
+msgstr ""
+"PTR rekordokat csak azokhoz az IP-címekhez hoz létre, amelyekhez már "
+"tartozik A/AAAA rekord az előre irányuló zónában"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11898,7 +11867,9 @@ msgstr "Gyors tippek"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr "A Network Prefix melletti legördülő gombbal választhat a meglévő fordított zónák közül"
+msgstr ""
+"A Network Prefix melletti legördülő gombbal választhat a meglévő fordított "
+"zónák közül"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
@@ -11951,7 +11922,7 @@ msgstr "Ön"
 msgid "Add Owner"
 msgstr "Tulajdonos hozzáadása"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Csoport tulajdonjog"
 
@@ -11999,10 +11970,6 @@ msgstr "A mai napig"
 msgid "Clear"
 msgstr "Törlés"
 
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Azonosító"
-
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
 msgstr "Esemény"
@@ -12021,7 +11988,8 @@ msgstr "Naplók exportálása"
 
 #: templates/modern/list_record_changes.html:172
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Szűrt naplóbejegyzések exportálása. A jelenlegi szűrők érvényesek lesznek."
+msgstr ""
+"Szűrt naplóbejegyzések exportálása. A jelenlegi szűrők érvényesek lesznek."
 
 #: templates/modern/list_record_changes.html:173
 msgid "records to export"
@@ -12199,10 +12167,6 @@ msgstr ""
 "Tipp: elég csak a hosztnevet megadni (például 'www'), a zóna neve "
 "automatikusan hozzáadódik. A zóna csúcsához/gyökeréhez használja a '@' jelet."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Zóna szerkesztése"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metaadatok"
@@ -12315,14 +12279,6 @@ msgstr "Nincs aláírva"
 msgid "User Management"
 msgstr "Felhasználókezelés"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "felhasználói naplók"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Felhasználó hozzáadása"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Hitelesítés típusa"
@@ -12376,7 +12332,7 @@ msgstr "Nincsenek forward zónák a listában."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Rekord törlése"
 
@@ -12497,7 +12453,7 @@ msgstr "Összes hozzárendelése hozzám"
 msgid "Zone ID"
 msgstr "Zóna ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Zóna neve"
 
@@ -12622,10 +12578,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Válasszon csoportokat, amelyekhez az új felhasználó tartozik."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "zóna neve"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Adja meg a zóna nevét"
@@ -12716,10 +12668,6 @@ msgstr "Zóna sablonok"
 msgid "Search templates..."
 msgstr "Sablonok keresése..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "sablon neve"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Csatolt zónák"
@@ -12797,10 +12745,6 @@ msgstr ""
 "automatikusan a zónákat - a változások érvényesítéséhez használja a \"Zónák "
 "frissítése\" gombot a sablon szerkesztésekor."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Jelszó módosítása"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Jelenlegi jelszó"
@@ -12808,10 +12752,6 @@ msgstr "Jelenlegi jelszó"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Adja meg a jelenlegi jelszót"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "új jelszó"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13046,11 +12986,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API-kulcs:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "tömeges regisztráció"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Zóna típus"
 
@@ -13069,10 +13005,6 @@ msgstr "Egy tartomány soronként"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Zónák hozzáadása"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Csoporttulajdonlás"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13212,11 +13144,11 @@ msgstr "A fiókja most védve van MFA-val."
 msgid "Authentication method:"
 msgstr "Hitelesítési módszer:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "hitelesítő alkalmazás"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "e-mail ellenőrzés"
 
@@ -13310,10 +13242,6 @@ msgstr "Az MFA jelenleg ki van kapcsolva"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "A fiókja nincs védve többtényezős hitelesítéssel."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Hitelesítő alkalmazás"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13335,10 +13263,6 @@ msgstr "Könnyen használható"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Alkalmazás hitelesítés beállítása"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "E-mail ellenőrzés"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13823,7 +13747,9 @@ msgstr "egyéni sablon használatával"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "A normál sablonokhoz való visszatéréshez törölje vagy nevezze át az egyéni sablonfájlokat a <code>templates/emails/custom/</code> könyvtárban."
+msgstr ""
+"A normál sablonokhoz való visszatéréshez törölje vagy nevezze át az egyéni "
+"sablonfájlokat a <code>templates/emails/custom/</code> könyvtárban."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -13893,6 +13819,7 @@ msgid "PDNS Server"
 msgstr "PDNS szerver"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Szervernév"
 
@@ -13993,18 +13920,6 @@ msgstr "Mérték"
 msgid "No detailed metrics available."
 msgstr "Nincsenek részletes mérések."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "forward zónák"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "fordított zónák"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Rekordváltozási napló"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Felhasználók listája"
@@ -14016,10 +13931,6 @@ msgstr "Csoportok listája"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Engedélysablonok listája"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Engedélysablon hozzáadása"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14121,10 +14032,6 @@ msgstr "Új DNS rekord létrehozása ebben a zónában"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Egy másik rekord hozzáadása"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14301,10 +14208,6 @@ msgstr ""
 "rendezve. A keresés használatával gyorsan megtalálhatja az egyes "
 "jogosultságokat."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Rekord törlése"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Sablon rekord törlése"
@@ -14418,10 +14321,6 @@ msgstr ""
 "Minden bejegyzés megjeleníti a műveletet, a végrehajtót, az érintett "
 "csoportot és az időbélyeget. Hasznos a csoporttulajdonlás által közvetített "
 "zónahozzáférési változások ellenőrzéséhez."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "csoport neve"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14597,10 +14496,6 @@ msgstr "Egyező rekordok cseréje"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Összes rekord hozzáadása"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "zóna típus"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14846,10 +14741,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API-kulcs (a pdns.conf api-key beállításából)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

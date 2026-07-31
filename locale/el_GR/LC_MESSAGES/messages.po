@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -986,7 +986,8 @@ msgstr ""
 "αλληλογραφίας σας. Τα κενά και οι αλλαγές γραμμής θα αφαιρεθούν αυτόματα."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Τύπος κλειδιού"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1654,8 +1655,8 @@ msgid "Invalid group ID."
 msgstr "Μη έγκυρη ταυτότητα ομάδας."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Διαγραφή ομάδας"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -2030,7 +2031,7 @@ msgid "Search"
 msgstr "Αναζήτηση"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Καταγραφή αλλαγών εγγραφής"
 
@@ -2067,8 +2068,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Δεν έχετε την άδεια να προσθέσετε ένα νέο χρήστη."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Προσθήκη χρήστη"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2116,9 +2117,9 @@ msgid "The record could not be deleted."
 msgstr "Η εγγραφή δεν μπορεί να διαγραφεί."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Καταγραφές ζώνης"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "Καταγραφές ζωνών"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2199,8 +2200,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Δεν έχετε άδεια να δείτε αυτή τη ζώνη."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Καταγραφές χρηστών"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2242,7 +2243,8 @@ msgid "User agreement accepted successfully."
 msgstr "Η συμφωνία χρήστη έγινε δεκτή με επιτυχία."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Επεξεργασία ζώνης"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2511,9 +2513,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Αποτυχία εκκίνησης της ταυτοποίησης OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Καταγραφή ομάδας"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Καταγραφές ομάδων"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2654,16 +2656,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Αποθηκεύτηκαν %d προεπιλογές· εκκαθαρίστηκαν %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Πρότυπα ζώνης"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Πρότυπα ζωνών"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Δεν έχετε άδεια να δημιουργήσετε ομάδες."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Προσθήκη ομάδας"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2738,7 +2741,7 @@ msgstr "Συνέβη ένα σφάλμα κατά τη διαγραφή του �
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Πρότυπα αδειών"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2815,9 +2818,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Δεν έχετε την άδεια να προσθέσετε πρότυπα άδειας."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Προσθήκη προτύπου άδειας"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Προσθήκη προτύπου αδειών"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2914,7 +2917,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Δεν έχετε την άδεια να προσθέσετε ένα πρότυπο ζώνης."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Προσθήκη προτύπου ζώνης"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -3036,7 +3040,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Δεν έχετε την άδεια να προσθέσετε εγγραφές σε πρότυπα ζώνης."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Επεξεργασία χρήστη"
 
@@ -3222,9 +3226,9 @@ msgstr ""
 "εδώ. Παρακαλώ επικοινωνήστε με τον διαχειριστή σας."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
-msgstr "Αλλαγή κωδικού πρόσβασης"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
+msgstr "Τροποποίηση κωδικού πρόσβασης"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -3271,8 +3275,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Δεν έχετε άδεια να επεξεργαστείτε ομάδες."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Επεξεργασία ομάδας"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3300,7 +3304,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Ο supermaster έχει διαγραφεί με επιτυχία."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Μαζική καταχώριση"
 
@@ -10206,10 +10210,6 @@ msgstr "Διαγραφή κλειδιού API"
 msgid "Permanently removes this key"
 msgstr "Μόνιμη αφαίρεση αυτού του κλειδιού"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Πρότυπα ζωνών"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Επεξεργασία εγγραφής"
@@ -10475,8 +10475,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Είστε σίγουροι ότι θέλετε να καταργήσετε την υπογραφή της ζώνης"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Κατάργηση υπογραφής ζώνης"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10500,13 +10500,9 @@ msgstr "Προσθήκη νέου κλειδιού"
 msgid "Show DS and DNSKEY"
 msgstr "Εμφάνιση DS και DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Κατάργηση υπογραφής ζώνης"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "Αναγνωριστικό"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -10556,10 +10552,6 @@ msgstr ""
 "Επικολλήστε ένα ιδιωτικό κλειδί κωδικοποιημένο σε μορφή PEM (RSA ή ECDSA). "
 "Το PowerDNS 4.7+ αντλεί το μέγεθος του κλειδιού από τα περιεχόμενα PEM - "
 "επιλέξτε τον αντίστοιχο αλγόριθμο και τον ρόλο του κλειδιού."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Τύπος κλειδιού"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10633,8 +10625,8 @@ msgstr ""
 "Εισάγετε τη διεύθυνση email σας και θα σας στείλουμε ένα σύνδεσμο για να "
 "επαναφέρετε τον κωδικό σας."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
 
 #: templates/modern/forgot_username.html:29
@@ -10648,14 +10640,6 @@ msgstr "Αποστολή συνδέσμου επαναφοράς"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Διαχείριση ομάδων"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Καταγραφές ομάδων"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Προσθήκη ομάδας"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10680,14 +10664,6 @@ msgstr "Διαχείριση μελών"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Διαχείριση ζωνών"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Επεξεργασία ομάδας"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Διαγραφή ομάδας"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10723,7 +10699,7 @@ msgstr "Αποθήκευση..."
 msgid "Update"
 msgstr "Ενημέρωση"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Όνομα ομάδας"
 
@@ -11045,7 +11021,7 @@ msgstr "Επεξεργασία σχολίου"
 msgid "Edit comment in zone"
 msgstr "Επεξεργασία σχολίου στη ζώνη"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Προσθήκη προτύπου"
 
@@ -11068,10 +11044,6 @@ msgstr "Καθολικό πρότυπο"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Κάντε αυτό το πρότυπο διαθέσιμο σε όλους τους χρήστες"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Προσθήκη προτύπου ζώνης"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11163,10 +11135,6 @@ msgstr "Όλα τα συμβάντα"
 msgid "Logs"
 msgstr "Καταγραφές"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Καταγραφές ζωνών"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Εμφάνιση αρχείων καταγραφής για τις ζώνες που έχετε."
@@ -11200,12 +11168,8 @@ msgstr "Όνομα τομέα"
 msgid "All operations"
 msgstr "Όλες οι λειτουργίες"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Μαζική προσθήκη εγγραφών"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Μαζική προσθήκη εγγραφών"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -11234,8 +11198,8 @@ msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr ""
 "Εισάγετε μόνο ονόματα υπολογιστή - το όνομα ζώνης θα προστεθεί αυτόματα"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Προσθήκη εγγραφών"
 
 #: templates/modern/bulk_record_add.html:56
@@ -11316,12 +11280,8 @@ msgstr "Δημιουργία εγγραφής"
 msgid "Back to Wizard Selection"
 msgstr "Επιστροφή στην επιλογή οδηγού"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Διαγραφή χρήστη"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Διαγραφή χρήστη"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11388,8 +11348,8 @@ msgstr "Αποθήκευση ζώνης ως πρότυπο"
 msgid "Source Zone"
 msgstr "Ζώνη πηγής"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Όνομα προτύπου"
 
 #: templates/modern/save-zone-template.html:29
@@ -11577,8 +11537,8 @@ msgstr "Ο κωδικός πρόσβασης δεν πληροί τις απαι
 msgid "Enter your new password for"
 msgstr "Εισάγετε το νέο σας κωδικό πρόσβασης για"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Νέος κωδικός πρόσβασης"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11828,10 +11788,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Επεξεργασία προφίλ"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Επεξεργασία χρήστη"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11857,10 +11813,6 @@ msgstr "Πλήρες όνομα του χρήστη για αναγνώριση"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Αναφέρατε το πλήρες όνομα"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -12053,10 +12005,6 @@ msgstr "Ναι, αποσύνδεση αυτής της ζώνης"
 msgid "Yes, unlink these zones"
 msgstr "Ναι, αποσύνδεση αυτών των ζωνών"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Πρότυπα αδειών"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Προσθήκη"
@@ -12092,10 +12040,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Παρακαλώ επιλέξτε έναν τύπο προτύπου"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Προσθήκη προτύπου"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12447,7 +12391,7 @@ msgstr "Εσείς"
 msgid "Add Owner"
 msgstr "Προσθήκη ιδιοκτήτη"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Ιδιοκτησία ομάδας"
 
@@ -12495,10 +12439,6 @@ msgstr "Έως ημερομηνία"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Καθαρισμός"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Αναγνωριστικό"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12699,10 +12639,6 @@ msgstr ""
 "Συμβουλή: Εισάγετε μόνο το όνομα υπολογιστή (π.χ. 'www') και το όνομα ζώνης "
 "θα προστεθεί αυτόματα. Χρησιμοποιήστε το '@' για την κορυφή/ρίζα ζώνης."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Επεξεργασία ζώνης"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Μεταδεδομένα"
@@ -12815,14 +12751,6 @@ msgstr "Χωρίς υπογραφή"
 msgid "User Management"
 msgstr "Διαχείριση χρηστών"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Καταγραφές χρηστών"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Προσθήκη χρήστη"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Τύπος ταυτοποίησης"
@@ -12876,7 +12804,7 @@ msgstr "Δεν υπάρχουν ζώνες ευθείας αναζήτησης �
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Διαγραφή εγγραφής"
 
@@ -13001,7 +12929,7 @@ msgstr "Ανάθεση όλων σε εμένα"
 msgid "Zone ID"
 msgstr "ID ζώνης"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Ονομασία ζώνης"
 
@@ -13131,10 +13059,6 @@ msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Επιλέξτε ομάδες στις οποίες θα προστεθεί ο νέος χρήστης κατά τη δημιουργία."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Ονομασία ζώνης"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Αναφέρατε το όνομα ζώνης"
@@ -13225,10 +13149,6 @@ msgstr "Πρότυπα ζώνης για"
 msgid "Search templates..."
 msgstr "Αναζήτηση προτύπων..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Όνομα προτύπου"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Συνδεόμενες ζώνες"
@@ -13306,10 +13226,6 @@ msgstr ""
 "δεν ενημερώνουν αυτόματα τις ζώνες - χρησιμοποιήστε το κουμπί \"Ενημέρωση "
 "ζωνών\" κατά την επεξεργασία προτύπων για την εφαρμογή των αλλαγών."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Τροποποίηση κωδικού πρόσβασης"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Τρέχων κωδικός πρόσβασης"
@@ -13317,10 +13233,6 @@ msgstr "Τρέχων κωδικός πρόσβασης"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Παροχή τρέχοντος κωδικού πρόσβασης"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Νέος κωδικός πρόσβασης"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13563,11 +13475,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "Κλειδί API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Μαζική καταχώρηση"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Τύπος ζώνης"
 
@@ -13586,10 +13494,6 @@ msgstr "Πληκτρολογήστε έναν τομέα ανά γραμμή"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Προσθήκη ζωνών"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Ιδιοκτησία ομάδας"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13732,11 +13636,11 @@ msgstr ""
 msgid "Authentication method:"
 msgstr "Μέθοδος ταυτοποίησης:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Εφαρμογή ταυτοποίησης"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Επαλήθευση ηλεκτρονικού ταχυδρομείου"
 
@@ -13835,10 +13739,6 @@ msgid "Your account is not protected with multi-factor authentication."
 msgstr ""
 "Ο λογαριασμός σας δεν προστατεύεται με ταυτοποίηση πολλαπλών συντελεστών."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Εφαρμογή ταυτοποίησης"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13862,10 +13762,6 @@ msgstr "Εύκολο στη χρήση"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Ρύθμιση ταυτοποίησης εφαρμογής"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Επαλήθευση ηλεκτρονικού ταχυδρομείου"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14448,6 +14344,7 @@ msgid "PDNS Server"
 msgstr "Εξυπηρετητής PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Όνομα εξυπηρετητή"
 
@@ -14548,18 +14445,6 @@ msgstr "Μετρικό"
 msgid "No detailed metrics available."
 msgstr "Δεν υπάρχουν διαθέσιμες λεπτομερείς μετρήσεις."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Ζώνες ευθείας αναζήτησης"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Αντίστροφες ζώνες"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Καταγραφή αλλαγών εγγραφής"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Λίστα χρηστών"
@@ -14571,10 +14456,6 @@ msgstr "Λίστα ομάδων"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Λίστα προτύπων αδειών"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Προσθήκη προτύπου αδειών"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14681,10 +14562,6 @@ msgstr "Δημιουργία νέας εγγραφής DNS σε αυτή τη ζ
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Προσθήκη νέας εγγραφής"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Προσθήκη εγγραφών"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14868,10 +14745,6 @@ msgstr ""
 "Χρησιμοποιήστε τη λειτουργία αναζήτησης για να βρείτε γρήγορα συγκεκριμένες "
 "άδειες."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Διαγραφή εγγραφής"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Διαγραφή εγγραφής προτύπου"
@@ -14985,10 +14858,6 @@ msgstr ""
 "καταχώρηση δείχνει την ενέργεια, τον χρήστη που την εκτέλεσε, την ομάδα που "
 "επηρεάστηκε και μια χρονοσήμανση. Χρήσιμο για τον έλεγχο των αλλαγών "
 "πρόσβασης σε ζώνες που προκύπτουν από την ιδιοκτησία της ομάδας."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Όνομα ομάδας"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -15167,10 +15036,6 @@ msgstr "Αντικατάσταση εγγραφών που ταιριάζουν"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Προσθήκη όλων των εγγραφών"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Τύπος ζώνης"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15425,10 +15290,6 @@ msgstr "Κλειδί API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API κλειδί (από pdns.conf api-key ρύθμιση)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Όνομα εξυπηρετητή"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

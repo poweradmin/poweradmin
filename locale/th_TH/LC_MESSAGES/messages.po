@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -926,7 +926,8 @@ msgstr ""
 "ช่องว่างและการขึ้นบรรทัดใหม่จะถูกลบออกโดยอัตโนมัติ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "ชนิดกุญแจ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1553,8 +1554,8 @@ msgid "Invalid group ID."
 msgstr "หมายเลขกลุ่มไม่ถูกต้อง"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "ลบกลุ่ม"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1902,7 +1903,7 @@ msgid "Search"
 msgstr "ค้นหา"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "บันทึกการเปลี่ยนแปลงเรกคอร์ด"
 
@@ -1939,8 +1940,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มผู้ใช้ใหม่"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "เพิ่มผู้ใช้"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -1985,9 +1986,9 @@ msgid "The record could not be deleted."
 msgstr "ไม่สามารถลบเรกคอร์ดได้"
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "บันทึกของโซน"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "ปูมบันทึกของโซน"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2067,9 +2068,9 @@ msgid "You do not have permission to view this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูโซนนี้"
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "บันทึกของผู้ใช้"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "ปูมบันทึกของผู้ใช้"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2108,7 +2109,8 @@ msgid "User agreement accepted successfully."
 msgstr "ยอมรับข้อตกลงของผู้ใช้เรียบร้อยแล้ว"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "แก้ไขโซน"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2350,8 +2352,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "ล้มเหลวในการเริ่มการตรวจสอบสิทธิ์ OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "ปูมบันทึกของกลุ่ม"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2478,16 +2480,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "บันทึกค่าเริ่มต้น %d รายการ; ล้าง %d รายการ"
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "แม่แบบโซน"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "ต้นแบบโซน"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "คุณไม่ได้รับอนุญาตให้สร้างกลุ่ม"
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "เพิ่มกลุ่ม"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2561,8 +2564,8 @@ msgstr "เกิดข้อผิดพลาดขึ้นระหว่า
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "เทมเพลตสิทธิ์"
+msgid "Permission templates"
+msgstr "ต้นแบบสิทธิ์"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2634,9 +2637,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มเทมเพลตสิทธิ์"
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "เพิ่มเทมเพลตสิทธิ์"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "เพิ่มต้นแบบสิทธิ์"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2731,7 +2734,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มแม่แบบโซน"
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "เพิ่มแม่แบบโซน"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2847,7 +2851,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "คุณไม่มีสิทธิ์ในการเพิ่มบันทึกไปยังแม่แบบโซน"
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "แก้ไขผู้ใช้"
 
@@ -3019,8 +3023,8 @@ msgstr ""
 "ผู้ใช้การตรวจสอบสิทธิ์ภายนอกไม่สามารถเปลี่ยนแปลงรหัสผ่านได้ที่นี่ กรุณาติดต่อผู้ดูแลระบบของคุณ"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "เปลี่ยนรหัสผ่าน"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3064,8 +3068,8 @@ msgid "You do not have permission to edit groups."
 msgstr "คุณไม่มีสิทธิ์แก้ไขกลุ่ม"
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "แก้ไขกลุ่ม"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3093,7 +3097,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster ถูกลบเรียบร้อยแล้ว"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "การลงทะเบียนแบบกลุ่ม"
 
@@ -9269,10 +9273,6 @@ msgstr "ลบคีย์ API"
 msgid "Permanently removes this key"
 msgstr "เอากุญแจนี้ออกอย่างถาวร"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "ต้นแบบโซน"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "แก้ไขบันทึก"
@@ -9528,8 +9528,8 @@ msgstr "การกระทำนี้จะลบคีย์ DNSSEC ทั�
 msgid "Are you sure you want to unsign the zone"
 msgstr "คุณแน่ใจหรือว่าต้องการจะยกเลิกการเซ็นโซน"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "ยกเลิกการเซ็นโซน"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9552,11 +9552,7 @@ msgstr "เพิ่มคีย์ใหม่"
 msgid "Show DS and DNSKEY"
 msgstr "แสดง DS และ DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "ยกเลิกการเซ็นโซน"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "หมายเลข"
 
@@ -9607,10 +9603,6 @@ msgid ""
 msgstr ""
 "วางกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (RSA หรือ ECDSA) PowerDNS 4.7+ "
 "จะหาขนาดกุญแจจากเนื้อหา PEM - เลือกอัลกอริทึมและบทบาทของกุญแจให้ตรงกัน"
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "ชนิดกุญแจ"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9678,8 +9670,8 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "ป้อนที่อยู่อีเมลของคุณ และเราจะส่งลิงก์ให้คุณตั้งค่ารหัสผ่านของคุณใหม่"
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "ที่อยู่อีเมล"
 
 #: templates/modern/forgot_username.html:29
@@ -9693,14 +9685,6 @@ msgstr "ส่งลิงก์รีเซ็ต"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "การจัดการกลุ่ม"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "ปูมบันทึกของกลุ่ม"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "เพิ่มกลุ่ม"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -9725,14 +9709,6 @@ msgstr "จัดการสมาชิก"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "จัดการโซน"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "แก้ไขกลุ่ม"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "ลบกลุ่ม"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -9766,7 +9742,7 @@ msgstr "กำลังบันทึก..."
 msgid "Update"
 msgstr "ปรับปรุง"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "ชื่อกลุ่ม"
 
@@ -10075,7 +10051,7 @@ msgstr "แก้ไขหมายเหตุ"
 msgid "Edit comment in zone"
 msgstr "แก้ไขหมายเหตุในโซน"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "เพิ่มแม่แบบ"
 
@@ -10098,10 +10074,6 @@ msgstr "แม่แบบทั่วไป"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "ทำให้แม่แบบนี้ใช้ได้กับผู้ใช้ทั้งหมด"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "เพิ่มแม่แบบโซน"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10188,10 +10160,6 @@ msgstr "เหตุการณ์ทั้งหมด"
 msgid "Logs"
 msgstr "ปูมบันทึก"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "ปูมบันทึกของโซน"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "แสดงบันทึกสำหรับโซนที่คุณเป็นเจ้าของ"
@@ -10224,12 +10192,8 @@ msgstr "ชื่อโดเมน"
 msgid "All operations"
 msgstr "ปฏิบัติการทั้งหมด"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "เพิ่มเรกคอร์ดจำนวนมาก"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "เพิ่มเรกคอร์ดจำนวนมาก"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10256,8 +10220,8 @@ msgstr "หมายเหตุไม่จำเป็นต้องระบ
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "ป้อนชื่อโฮสต์เท่านั้น - ชื่อโซนจะถูกเพิ่มให้โดยอัตโนมัติ"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "เพิ่มบันทึก"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10336,12 +10300,8 @@ msgstr "สร้างเรกคอร์ด"
 msgid "Back to Wizard Selection"
 msgstr "กลับไปยังส่วนการเลือกของตัวช่วยเหลือ"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "ลบผู้ใช้"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "ลบผู้ใช้"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10406,8 +10366,8 @@ msgstr "บันทึกโซนเป็นต้นแบบ"
 msgid "Source Zone"
 msgstr "โซนต้นทาง"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "ชื่อแม่แบบ"
 
 #: templates/modern/save-zone-template.html:29
@@ -10574,8 +10534,8 @@ msgstr "รหัสผ่านไม่ตรงกับความต้อ
 msgid "Enter your new password for"
 msgstr "ใส่รหัสผ่านใหม่ของคุณสำหรับ"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "รหัสผ่านใหม่"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -10821,10 +10781,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "แก้ไขโพรไฟล์"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "แก้ไขผู้ใช้"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -10850,10 +10806,6 @@ msgstr "ชื่อเต็มของผู้ใช้สำหรับก
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "ให้ชื่อเต็ม"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "ที่อยู่อีเมล"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11040,10 +10992,6 @@ msgstr "ใช่ ยกเลิกการเชื่อมโยงโซ�
 msgid "Yes, unlink these zones"
 msgstr "ใช่ ยกเลิกการเชื่อมโยงโซนเหล่านี้"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "ต้นแบบสิทธิ์"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "เพิ่ม"
@@ -11077,10 +11025,6 @@ msgstr "ต้นแบบผู้ใช้มีผลทั้งระบบ
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "โปรดเลือกประเภทของต้นแบบ"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "เพิ่มแม่แบบ"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11413,7 +11357,7 @@ msgstr "คุณ"
 msgid "Add Owner"
 msgstr "เพิ่มเจ้าของ"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "การเป็นเจ้าของกลุ่ม"
 
@@ -11459,10 +11403,6 @@ msgstr "ถึงวันที่"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "ล้าง"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "หมายเลข"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -11657,10 +11597,6 @@ msgstr ""
 "เคล็ดลับ: ป้อนเฉพาะชื่อโฮสต์ (เช่น 'www') และชื่อโซนจะถูกเพิ่มโดยอัตโนมัติ ใช้เครื่องหมาย '@' "
 "สำหรับ apex/root ของโซน"
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "แก้ไขโซน"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "ข้อมูลกำกับ"
@@ -11773,14 +11709,6 @@ msgstr "ยังไม่ได้เซ็น"
 msgid "User Management"
 msgstr "การจัดการผู้ใช้"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "ปูมบันทึกของผู้ใช้"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "เพิ่มผู้ใช้"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "ประเภท Auth"
@@ -11834,7 +11762,7 @@ msgstr "ไม่มีฟอร์เวิร์ดโซนที่จะแ
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "ลบบันทึก"
 
@@ -11955,7 +11883,7 @@ msgstr "กำหนดทั้งหมดให้ฉัน"
 msgid "Zone ID"
 msgstr "รหัสโซน"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "ชื่อโซน"
 
@@ -12079,10 +12007,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "เลือกกลุ่มที่จะเพิ่มผู้ใช้ใหม่เข้าไปเมื่อสร้างผู้ใช้"
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "ชื่อโซน"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "ระบุชื่อโซน"
@@ -12173,10 +12097,6 @@ msgstr "แม่แบบโซนสำหรับ"
 msgid "Search templates..."
 msgstr "ค้นหาแม่แบบ..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "ชื่อแม่แบบ"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "โซนที่เชื่อมโยง"
@@ -12251,10 +12171,6 @@ msgstr ""
 "การแก้ไขแม่แบบจะไม่ปรับปรุงโซนโดยอัตโนมัติ - ใช้ปุ่ม \"Update Zones\" เมื่อทำการแก้ไขแม่แบบ "
 "เพื่อปรับใช้การเปลี่ยนแปลง"
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "เปลี่ยนรหัสผ่าน"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "รหัสผ่านปัจจุบัน"
@@ -12262,10 +12178,6 @@ msgstr "รหัสผ่านปัจจุบัน"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "ตั้งค่ารหัสผ่านปัจจุบัน"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "รหัสผ่านใหม่"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12499,11 +12411,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "กุญแจ API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "การลงทะเบียนจำนวนมาก"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "ชนิดของโซน"
 
@@ -12522,10 +12430,6 @@ msgstr "พิมพ์หนึ่งโดเมนต่อหนึ่งบ
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "เพิ่มโซน"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "ความเป็นเจ้าของแบบกลุ่ม"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -12662,11 +12566,11 @@ msgstr "ตอนนี้บัญชีของคุณได้รับก
 msgid "Authentication method:"
 msgstr "วิธีการการตรวจสอบสิทธิ์:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "โปรแกรมตรวจสอบสิทธิ์"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "ตรวจสอบอีเมล"
 
@@ -12757,10 +12661,6 @@ msgstr "ขณะนี้ MFA ถูกปิดใช้งานอยู่"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "บัญชีของคุณไม่ได้ถูกป้องกันด้วยการตรวจสอบสิทธิ์หลาย ๆ อัน"
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "โปรแกรมตรวจสอบสิทธิ์"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -12784,10 +12684,6 @@ msgstr "ใช้ง่าย"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "ตั้งค่าการตรวจสอบสิทธิ์กับโปรแกรม"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "การตรวจสอบสิทธิ์อีเมล"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13326,6 +13222,7 @@ msgid "PDNS Server"
 msgstr "เซิร์ฟเวอร์ PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "ชื่อเซิร์ฟเวอร์"
 
@@ -13426,18 +13323,6 @@ msgstr "เมตริก"
 msgid "No detailed metrics available."
 msgstr "ไม่มีตัววัดรายละเอียด"
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "โซนแบบ Forward"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "โซนย้อนกลับ"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "ปูมบันทึกการเปลี่ยนแปลงเรกคอร์ด"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "รายการผู้ใช้"
@@ -13449,10 +13334,6 @@ msgstr "รายการกลุ่ม"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "รายการต้นแบบสิทธิ์"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "เพิ่มต้นแบบสิทธิ์"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13552,10 +13433,6 @@ msgstr "สร้างเรกคอร์ด DNS ใหม่ในโซน�
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "เพิ่มบันทึกใหม่"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "เพิ่มบันทึก"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -13725,10 +13602,6 @@ msgstr ""
 "สิทธิ์ต่าง ๆ ถูกจัดระเบียบเป็นกลุ่มด้านล่างเพื่อให้จัดการได้ง่ายขึ้น "
 "ใช้คุณสมบัติการค้นหาเพื่อค้นหาสิทธิ์ที่ต้องการได้อย่างรวดเร็ว"
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "ลบเรกคอร์ด"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "ลบเรกคอร์ดของต้นแบบ"
@@ -13837,10 +13710,6 @@ msgstr ""
 "บันทึกเหตุการณ์ในวงจรชีวิตของกลุ่ม (สร้าง แก้ไข ลบ) และการเปลี่ยนแปลงสมาชิก "
 "(เพิ่มหรือนำผู้ใช้ออก) แต่ละรายการแสดงการกระทำ ผู้กระทำ กลุ่มที่ได้รับผลกระทบ และเวลา "
 "มีประโยชน์สำหรับการตรวจสอบการเปลี่ยนแปลงสิทธิ์การเข้าถึงโซนที่เกิดจากความเป็นเจ้าของของกลุ่ม"
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "ชื่อกลุ่ม"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14012,10 +13881,6 @@ msgstr "แทนที่บันทึกที่เข้าเงื่อ
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "เพิ่มบันทึกทั้งหมด"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "ชนิดของโซน"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14257,10 +14122,6 @@ msgstr "กุญแจ API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "กุญแจ API ของ PowerDNS (จากการตั้งค่า api-key ใน pdns.conf)"
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "ชื่อเซิร์ฟเวอร์"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

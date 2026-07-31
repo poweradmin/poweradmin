@@ -16,7 +16,7 @@
             {{ macros.card_header('bi-cloud-download', 'Slave Zone Configuration'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                    <label for="domain" class="form-label">{% trans %}Zone Name{% endtrans %} <span class="text-danger">*</span></label>
                     <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
                     <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
                     {% if is_reverse_zone %}

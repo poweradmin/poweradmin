@@ -90,7 +90,7 @@ class AddUserController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_user');
-        $this->setPageTitle(_('Add User'));
+        $this->setPageTitle(_('Add user'));
 
         $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 

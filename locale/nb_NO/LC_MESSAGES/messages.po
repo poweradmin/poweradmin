@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -959,7 +959,8 @@ msgstr ""
 "linjeskift fjernes automatisk."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Nøkkeltype"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1613,8 +1614,8 @@ msgid "Invalid group ID."
 msgstr "Ugyldig gruppe-ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Slett gruppe"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1983,7 +1984,7 @@ msgid "Search"
 msgstr "Søk"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Endringslogg for oppføringer"
 
@@ -2020,8 +2021,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Du har ikke tillatelse til å legge til en ny bruker."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Legg til bruker"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2067,8 +2068,8 @@ msgid "The record could not be deleted."
 msgstr "Posten kunne ikke slettes."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Sonelogger"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2149,8 +2150,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Brukerlogger"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2192,7 +2193,8 @@ msgid "User agreement accepted successfully."
 msgstr "Brukeravtalen ble akseptert."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Rediger sone"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2446,8 +2448,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Kunne ikke starte OIDC-autentisering: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Gruppelogger"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2587,7 +2589,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Lagret %d standardverdi(er); fjernet %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Sonemaler"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2595,8 +2598,8 @@ msgid "You do not have permission to create groups."
 msgstr "Du har ikke tillatelse til å opprette grupper."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Legg til gruppe"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2670,7 +2673,7 @@ msgstr "En feil oppstod under sletting av DNSSEC-nøkkelen: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Tillatelsesmaler"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2747,8 +2750,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Du har ikke tillatelse til å legge til tillatelsesmaler."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Legg til tillatelsesmal"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2844,7 +2847,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Du har ikke tillatelse til å legge til en sonemal."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Legg til sonemal"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2962,7 +2966,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Du har ikke tillatelse til å legge til poster i sonemaler."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Rediger bruker"
 
@@ -3144,8 +3148,8 @@ msgstr ""
 "kontakt administrator."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Endre passord"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3190,8 +3194,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Du har ikke tillatelse til å redigere grupper."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Rediger gruppe"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3219,7 +3223,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermasteren har blitt slettet."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Masseregistrering"
 
@@ -9755,10 +9759,6 @@ msgstr "Slett API-nøkkel"
 msgid "Permanently removes this key"
 msgstr "Fjerner denne nøkkelen permanent"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Sonemaler"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Rediger oppføring"
@@ -10019,8 +10019,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Er du sikker på at du vil fjerne DNSSEC-signeringen av sonen"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Fjern DNSSEC-signering"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10043,11 +10043,7 @@ msgstr "Legg til ny nøkkel"
 msgid "Show DS and DNSKEY"
 msgstr "Vis DS og DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Fjern DNSSEC-signering"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10098,10 +10094,6 @@ msgid ""
 msgstr ""
 "Lim inn en PEM-kodet privat nøkkel (RSA eller ECDSA). PowerDNS 4.7+ utleder "
 "nøkkelstørrelsen fra PEM-innholdet - velg passende algoritme og nøkkelrolle."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Nøkkeltype"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10173,8 +10165,8 @@ msgstr ""
 "Skriv inn e-postadressen din så sender vi deg en lenke for å tilbakestille "
 "passordet."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "E-postadresse"
 
 #: templates/modern/forgot_username.html:29
@@ -10188,14 +10180,6 @@ msgstr "Send tilbakestillingslenke"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Gruppeadministrasjon"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Gruppelogger"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Legg til gruppe"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10220,14 +10204,6 @@ msgstr "Administrer medlemmer"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Administrer soner"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Rediger gruppe"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Slett gruppe"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10261,7 +10237,7 @@ msgstr "Lagrer..."
 msgid "Update"
 msgstr "Oppdater"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Gruppenavn"
 
@@ -10578,7 +10554,7 @@ msgstr "Rediger kommentar"
 msgid "Edit comment in zone"
 msgstr "Rediger kommentar i sone"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Legg til mal"
 
@@ -10601,10 +10577,6 @@ msgstr "Global mal"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Gjør denne malen tilgjengelig for alle brukere"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Legg til sonemal"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10693,10 +10665,6 @@ msgstr "Alle hendelser"
 msgid "Logs"
 msgstr "Logger"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Sonelogger"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Viser logger for soner du eier."
@@ -10730,12 +10698,8 @@ msgstr "Domenetnavn"
 msgid "All operations"
 msgstr "Alle operasjoner"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Legg til poster i bulk"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Legg til poster i bulk"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10762,8 +10726,8 @@ msgstr "Kommentar er valgfri"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Skriv bare vertsnavn - sonenavnet legges til automatisk"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Legg til poster"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10843,12 +10807,8 @@ msgstr "Opprett post"
 msgid "Back to Wizard Selection"
 msgstr "Tilbake til veiviservalg"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Slett bruker"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Slett bruker"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10915,8 +10875,8 @@ msgstr "Lagre sone som mal"
 msgid "Source Zone"
 msgstr "Kildesone"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Malnavn"
 
 #: templates/modern/save-zone-template.html:29
@@ -11092,8 +11052,8 @@ msgstr "Passordet oppfyller ikke kravene"
 msgid "Enter your new password for"
 msgstr "Skriv inn ditt nye passord for"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Nytt passord"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11343,10 +11303,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Rediger profil"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Rediger bruker"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11372,10 +11328,6 @@ msgstr "Brukerens fulle navn for identifikasjon"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Oppgi fullt navn"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "E-postadresse"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11567,10 +11519,6 @@ msgstr "Ja, koble fra denne sonen"
 msgid "Yes, unlink these zones"
 msgstr "Ja, koble fra disse sonene"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Tillatelsesmaler"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Legg til"
@@ -11605,10 +11553,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Vennligst velg en maltype"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Legg til mal"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11955,7 +11899,7 @@ msgstr "Du"
 msgid "Add Owner"
 msgstr "Legg til eier"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Gruppeeierskap"
 
@@ -12002,10 +11946,6 @@ msgstr "Til dato"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Tøm"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12203,10 +12143,6 @@ msgstr ""
 "Tips: Skriv bare vertsnavnet (f.eks. 'www') og sonenavnet blir lagt til "
 "automatisk. Bruk '@' for soneroten."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Rediger sone"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadata"
@@ -12319,14 +12255,6 @@ msgstr "Ikke signert"
 msgid "User Management"
 msgstr "Brukeradministrasjon"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Brukerlogger"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Legg til bruker"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Autentiseringstype"
@@ -12380,7 +12308,7 @@ msgstr "Det er ingen fremover-soner å vise i denne listen."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Slett post"
 
@@ -12504,7 +12432,7 @@ msgstr "Tildel alle til meg"
 msgid "Zone ID"
 msgstr "Sone-ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Sonenavn"
 
@@ -12630,10 +12558,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Velg grupper å legge den nye brukeren til ved opprettelse."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Sonenavn"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Oppgi sonenavn"
@@ -12724,10 +12648,6 @@ msgstr "Sonemaler for"
 msgid "Search templates..."
 msgstr "Søk maler..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Malnavn"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Soner koblet"
@@ -12803,10 +12723,6 @@ msgstr ""
 "tillegg. Malendringer oppdaterer ikke soner automatisk - bruk \"Oppdater "
 "soner\"-knappen når du redigerer maler for å aktivere endringer."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Endre passord"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Nåværende passord"
@@ -12814,10 +12730,6 @@ msgstr "Nåværende passord"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Oppgi nåværende passord"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Nytt passord"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13052,11 +12964,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API-nøkkel:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Masseregistrering"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Sonetype"
 
@@ -13075,10 +12983,6 @@ msgstr "Skriv ett domene per linje"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Legg til soner"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Gruppe-eierskap"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13219,11 +13123,11 @@ msgstr "Kontoen din er nå beskyttet med flerfaktorautentisering."
 msgid "Authentication method:"
 msgstr "Autentiseringsmetode:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Autentiseringsapp"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "E-postbekreftelse"
 
@@ -13318,10 +13222,6 @@ msgstr "MFA er for øyeblikket deaktivert"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Kontoen din er ikke beskyttet med flerfaktorautentisering."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Autentiseringsapp"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13345,10 +13245,6 @@ msgstr "Enkelt å bruke"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Sett opp app-autentisering"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "E-postbekreftelse"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13912,6 +13808,7 @@ msgid "PDNS Server"
 msgstr "PDNS-server"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Tjenernavn"
 
@@ -14012,18 +13909,6 @@ msgstr "Måling"
 msgid "No detailed metrics available."
 msgstr "Ingen detaljerte målinger tilgjengelige."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Fremadsoner"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Revers-soner"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Endringslogg for oppføringer"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "List brukere"
@@ -14035,10 +13920,6 @@ msgstr "List grupper"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "List tillatelsesmaler"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Legg til tillatelsesmal"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14140,10 +14021,6 @@ msgstr "Opprett en ny DNS-post i denne sonen"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Legg til en ny post"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Legg til poster"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14319,10 +14196,6 @@ msgstr ""
 "Tillatelser er organisert i grupper nedenfor for enklere administrasjon. "
 "Bruk søkefunksjonen for raskt å finne spesifikke tillatelser."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Slett post"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Slett malpost"
@@ -14434,10 +14307,6 @@ msgstr ""
 "i medlemskap (brukere lagt til eller fjernet). Hver linje viser handlingen, "
 "den som utførte den, den berørte gruppen og et tidsstempel. Nyttig for å "
 "revidere endringer i sonetilgang som styres av gruppeeierskap."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Gruppenavn"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14613,10 +14482,6 @@ msgstr "Erstatt matchende oppføringer"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Legg til alle oppføringer"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Sonetype"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14865,10 +14730,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API-nøkkel (fra api-key-innstillingen i pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

@@ -58,7 +58,7 @@ class ListZoneTemplController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_zone_templ');
-        $this->setPageTitle(_('Zone Templates'));
+        $this->setPageTitle(_('Zone templates'));
 
         $this->showListZoneTempl();
     }

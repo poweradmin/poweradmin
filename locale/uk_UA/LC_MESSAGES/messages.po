@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -962,7 +962,8 @@ msgstr ""
 "Пробіли та переноси рядків будуть автоматично видалені."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Тип ключа"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1615,8 +1616,8 @@ msgid "Invalid group ID."
 msgstr "Недійсний ID групи."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Видалити групу"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1990,7 +1991,7 @@ msgid "Search"
 msgstr "Пошук"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Журнал змін записів"
 
@@ -2027,8 +2028,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "У вас немає дозволу на додавання нового користувача."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Додати користувача"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2074,9 +2075,9 @@ msgid "The record could not be deleted."
 msgstr "Не вдалося видалити запис."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Журнали зон"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "Журнали зони"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2156,8 +2157,8 @@ msgid "You do not have permission to view this zone."
 msgstr "У вас немає дозволу на перегляд цієї зони."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Журнали користувачів"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2201,7 +2202,8 @@ msgid "User agreement accepted successfully."
 msgstr "Угоду користувача прийнято успішно."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Редагувати зону"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2458,8 +2460,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Не вдалося ініціювати автентифікацію OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Журнали груп"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2597,7 +2599,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Збережено типових значень: %d; очищено: %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Шаблони зон"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2605,8 +2608,8 @@ msgid "You do not have permission to create groups."
 msgstr "У вас немає дозволу на створення груп."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Додати групу"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2680,7 +2683,7 @@ msgstr "Сталася помилка під час видалення ключ�
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Шаблони дозволів"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2761,8 +2764,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "У вас немає дозволу на додавання шаблонів прав доступу."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Додати шаблон дозволів"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2859,7 +2862,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "У вас немає дозволу на додавання шаблону зони."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Додати шаблон зони"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2975,7 +2979,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "У вас немає дозволу на додавання записів до шаблонів зон."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Редагувати користувача"
 
@@ -3161,8 +3165,8 @@ msgstr ""
 "Зверніться до адміністратора."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Змінити пароль"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3209,8 +3213,8 @@ msgid "You do not have permission to edit groups."
 msgstr "У вас немає дозволу на редагування груп."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Редагувати групу"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3238,7 +3242,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Сервер supermaster було успішно видалено."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Масова реєстрація"
 
@@ -9893,10 +9897,6 @@ msgstr "Видалити ключ API"
 msgid "Permanently removes this key"
 msgstr "Остаточно видаляє цей ключ"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Шаблони зон"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Редагувати запис"
@@ -10155,8 +10155,8 @@ msgstr "Ця дія видалить усі ключі DNSSEC та вимкне 
 msgid "Are you sure you want to unsign the zone"
 msgstr "Ви впевнені, що хочете скасувати підпис зони"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Скасувати підпис зони"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10180,11 +10180,7 @@ msgstr "Додати новий ключ"
 msgid "Show DS and DNSKEY"
 msgstr "Показати DS і DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Скасувати підпис зони"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10235,10 +10231,6 @@ msgid ""
 msgstr ""
 "Вставте закритий ключ у форматі PEM (RSA або ECDSA). PowerDNS 4.7+ визначає "
 "розмір ключа з вмісту PEM - виберіть відповідний алгоритм і роль ключа."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Тип ключа"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10309,8 +10301,8 @@ msgstr ""
 "Введіть свою адресу електронної пошти, і ми надішлемо вам посилання для "
 "скидання пароля."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "Адреса електронної пошти"
 
 #: templates/modern/forgot_username.html:29
@@ -10324,14 +10316,6 @@ msgstr "Надіслати посилання для скидання"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Керування групами"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Журнали груп"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Додати групу"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10356,14 +10340,6 @@ msgstr "Керувати учасниками"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Керувати зонами"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Редагувати групу"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Видалити групу"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10398,7 +10374,7 @@ msgstr "Збереження..."
 msgid "Update"
 msgstr "Оновити"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Назва групи"
 
@@ -10712,7 +10688,7 @@ msgstr "Редагувати коментар"
 msgid "Edit comment in zone"
 msgstr "Редагувати коментар у зоні"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Додати шаблон"
 
@@ -10735,10 +10711,6 @@ msgstr "Глобальний шаблон"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Зробити цей шаблон доступним для всіх користувачів"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Додати шаблон зони"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10827,10 +10799,6 @@ msgstr "Усі події"
 msgid "Logs"
 msgstr "Журнали"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Журнали зони"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Показано журнали зон, якими ви володієте."
@@ -10863,12 +10831,8 @@ msgstr "Доменне ім'я"
 msgid "All operations"
 msgstr "Усі операції"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Масове додавання записів"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Масове додавання записів"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10895,8 +10859,8 @@ msgstr "Коментар необов'язковий"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Вводьте лише імена хостів - ім'я зони буде додано автоматично"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Додати записи"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10976,12 +10940,8 @@ msgstr "Створити запис"
 msgid "Back to Wizard Selection"
 msgstr "Повернутися до вибору майстра"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Видалити користувача"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Видалити користувача"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11048,8 +11008,8 @@ msgstr "Зберегти зону як шаблон"
 msgid "Source Zone"
 msgstr "Вихідна зона"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Назва шаблону"
 
 #: templates/modern/save-zone-template.html:29
@@ -11235,8 +11195,8 @@ msgstr "Пароль не відповідає вимогам"
 msgid "Enter your new password for"
 msgstr "Введіть новий пароль для"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Новий пароль"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11485,10 +11445,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Редагувати профіль"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Редагувати користувача"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11514,10 +11470,6 @@ msgstr "Повне ім'я користувача для ідентифікац�
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Надайте повне ім'я"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Адреса електронної пошти"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11708,10 +11660,6 @@ msgstr "Так, від'єднати цю зону"
 msgid "Yes, unlink these zones"
 msgstr "Так, від'єднати ці зони"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Шаблони дозволів"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Додати"
@@ -11747,10 +11695,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Будь ласка, виберіть тип шаблону"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Додати шаблон"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12097,7 +12041,7 @@ msgstr "Ви"
 msgid "Add Owner"
 msgstr "Додати власника"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Власність групи"
 
@@ -12144,10 +12088,6 @@ msgstr "По дату"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Очистити"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Id"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12348,10 +12288,6 @@ msgstr ""
 "Підказка: введіть лише ім'я хоста (наприклад, 'www'), і ім'я зони буде "
 "додано автоматично. Використовуйте '@' для вершини/кореня зони."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Редагувати зону"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Метадані"
@@ -12464,14 +12400,6 @@ msgstr "Не підписано"
 msgid "User Management"
 msgstr "Управління користувачами"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Журнали користувачів"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Додати користувача"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Тип автентифікації"
@@ -12525,7 +12453,7 @@ msgstr "Немає прямих зон для відображення в цьо
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Видалити запис"
 
@@ -12648,7 +12576,7 @@ msgstr "Призначити всі мені"
 msgid "Zone ID"
 msgstr "ID зони"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Назва зони"
 
@@ -12776,10 +12704,6 @@ msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Виберіть групи, до яких буде додано нового користувача після створення."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Назва зони"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Надайте назву зони"
@@ -12870,10 +12794,6 @@ msgstr "Шаблони зон для"
 msgid "Search templates..."
 msgstr "Пошук шаблонів..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Назва шаблону"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Зв'язаних зон"
@@ -12950,10 +12870,6 @@ msgstr ""
 "додавання. Зміни шаблону не оновлюють зони автоматично - використовуйте "
 "кнопку \"Оновити зони\" при редагуванні шаблонів для застосування змін."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Змінити пароль"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Поточний пароль"
@@ -12961,10 +12877,6 @@ msgstr "Поточний пароль"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Надайте поточний пароль"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Новий пароль"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13201,11 +13113,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API Key:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Масова реєстрація"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Тип зони"
 
@@ -13224,10 +13132,6 @@ msgstr "Введіть один домен на рядок"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Додати зони"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Власність групою"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13367,11 +13271,11 @@ msgstr "Ваш обліковий запис тепер захищено баг�
 msgid "Authentication method:"
 msgstr "Метод автентифікації:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Програма автентифікації"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Підтвердження електронною поштою"
 
@@ -13467,10 +13371,6 @@ msgstr "MFA наразі вимкнено"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Ваш обліковий запис не захищено багатофакторною автентифікацією."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Програма автентифікації"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13494,10 +13394,6 @@ msgstr "Легко використовувати"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Налаштувати автентифікацію програми"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Підтвердження електронною поштою"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14065,6 +13961,7 @@ msgid "PDNS Server"
 msgstr "Сервер PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Назва сервера"
 
@@ -14165,18 +14062,6 @@ msgstr "Метрика"
 msgid "No detailed metrics available."
 msgstr "Детальні метрики недоступні."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Прямі зони"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Реверсні зони"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Журнал змін записів"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Список користувачів"
@@ -14188,10 +14073,6 @@ msgstr "Список груп"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Список шаблонів дозволів"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Додати шаблон дозволів"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14293,10 +14174,6 @@ msgstr "Створити новий DNS-запис у цій зоні"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Додати ще один запис"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Додати записи"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14472,10 +14349,6 @@ msgstr ""
 "Дозволи організовані в групи нижче для зручності управління. Використовуйте "
 "функцію пошуку, щоб швидко знайти конкретні дозволи."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Видалити запис"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Видалити запис шаблону"
@@ -14585,10 +14458,6 @@ msgstr ""
 "зміни членства (додавання чи вилучення користувачів). Кожен запис показує "
 "дію, її виконавця, задіяну групу й часову позначку. Корисно для перевірки "
 "змін доступу до зон, що надається через володіння групою."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Назва групи"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14765,10 +14634,6 @@ msgstr "Замінити відповідні записи"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Додати всі записи"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Тип зони"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15017,10 +14882,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Ключ API PowerDNS (з параметра api-key у pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

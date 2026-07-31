@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            {{ macros.card_header('bi-person-plus', 'Add User'|trans) }}
+            {{ macros.card_header('bi-person-plus', 'Add user'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/users/add" novalidate autocomplete="off" id="addUserForm">
                     {{ macros.csrf_field() }}
@@ -106,7 +106,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
-                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
+                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/users" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}

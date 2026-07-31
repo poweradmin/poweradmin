@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -960,8 +960,9 @@ msgstr ""
 "satırlar otomatik olarak kaldırılacak."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
-msgstr "Anahtar Türü"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
+msgstr "Anahtar tipi"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
@@ -1607,9 +1608,9 @@ msgid "Invalid group ID."
 msgstr "Geçersiz grup ID'si."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
-msgstr "Grubu Sil"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
+msgstr "Grubu sil"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -1976,7 +1977,7 @@ msgid "Search"
 msgstr "Arama"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Kayıt Değişiklik Günlüğü"
 
@@ -2013,9 +2014,9 @@ msgid "You do not have the permission to add a new user."
 msgstr "Yeni kullanıcı ekleme yetkiniz yok."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
-msgstr "Kullanıcı Ekle"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
+msgstr "Kullanıcı ekle"
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "No non-superuser permission template is available to assign."
@@ -2059,9 +2060,9 @@ msgid "The record could not be deleted."
 msgstr "Kayıt silinemedi."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Zon Kayıtları"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "Zon kayıtları"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2141,9 +2142,9 @@ msgid "You do not have permission to view this zone."
 msgstr "Bu bölgeyi görüntüleme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "Kullanıcı Kayıtları"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "Kullanıcı logları"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2184,8 +2185,9 @@ msgid "User agreement accepted successfully."
 msgstr "Kullanıcı sözleşmesi başarıyla kabul edildi."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
-msgstr "Bölgeyi Düzenle"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
+msgstr "Zonu düzenle"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
@@ -2439,9 +2441,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC kimlik doğrulama başlatılamadı: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Grup Günlükleri"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Grup günlükleri"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2579,17 +2581,18 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "%d varsayılan kaydedildi; %d temizlendi."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Bölge Şablonları"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Zon şablonları"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Grup oluşturma izniniz yok."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
-msgstr "Grup Ekle"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
+msgstr "Grup ekle"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
@@ -2662,8 +2665,8 @@ msgstr "DNSSEC anahtarı silinirken hata oluştu: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "Yetki Şablonları"
+msgid "Permission templates"
+msgstr "İzin şablonları"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2739,9 +2742,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "İzin şablonları ekleme yetkiniz yok."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Yetki Şablonu Ekle"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "İzin şablonu ekle"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2836,8 +2839,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Zon şablonu ekleme yetkiniz yok."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Bölge Şablonu Ekle"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Zon şablonu ekle"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -2956,7 +2960,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Zon şablonlarına kayıt ekleme yetkiniz yok."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Kullanıcıyı Düzenle"
 
@@ -3135,9 +3139,9 @@ msgstr ""
 "Lütfen yöneticinizle iletişime geçin."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
-msgstr "Şifre Değiştir"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
+msgstr "Şifre değiştir"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -3181,9 +3185,9 @@ msgid "You do not have permission to edit groups."
 msgstr "Grup düzenleme izniniz yok."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
-msgstr "Grubu Düzenle"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
+msgstr "Grubu düzenle"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -3210,7 +3214,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster başarıyla silindi."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Toplu Kayıt"
 
@@ -9831,10 +9835,6 @@ msgstr "API Anahtarını Sil"
 msgid "Permanently removes this key"
 msgstr "Bu anahtarı kalıcı olarak kaldırır"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Zon şablonları"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Kaydı düzenle"
@@ -10095,9 +10095,9 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Zonu imzasız yapmak istediğinizden emin misiniz"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "Zonu İmzasız Yap"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "Zonu imzasız yap"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -10119,13 +10119,9 @@ msgstr "Yeni anahtar ekle"
 msgid "Show DS and DNSKEY"
 msgstr "DS ve DNSKEY göster"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Zonu imzasız yap"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "Kimlik"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -10175,10 +10171,6 @@ msgstr ""
 "PEM ile kodlanmış bir özel anahtarı yapıştırın (RSA veya ECDSA). PowerDNS "
 "4.7+ anahtar boyutunu PEM içeriğinden çıkarır - eşleşen algoritmayı ve "
 "anahtar rolünü seçin."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Anahtar tipi"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10250,9 +10242,9 @@ msgstr ""
 "E-posta adresinizi girin, size şifrenizi sıfırlamak için bir bağlantı "
 "gönderelim."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "E-posta Adresi"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "E-posta adresi"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10265,14 +10257,6 @@ msgstr "Sıfırlama Bağlantısı Gönder"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Grup Yönetimi"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Grup günlükleri"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Grup ekle"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10297,14 +10281,6 @@ msgstr "Üyeleri yönet"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Bölgeleri yönet"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Grubu düzenle"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Grubu sil"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10340,7 +10316,7 @@ msgstr "Kaydediliyor..."
 msgid "Update"
 msgstr "Güncelle"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Grup Adı"
 
@@ -10652,7 +10628,7 @@ msgstr "Yorumu düzenle"
 msgid "Edit comment in zone"
 msgstr "Zondaki yorumu düzenle"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Şablon ekle"
 
@@ -10675,10 +10651,6 @@ msgstr "Genel şablon"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Bu şablonu tüm kullanıcılar için kullanılabilir yap"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Zon şablonu ekle"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10767,10 +10739,6 @@ msgstr "Tüm olaylar"
 msgid "Logs"
 msgstr "Günlükler"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Zon kayıtları"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Sahip olduğunuz bölgelerin günlükleri gösteriliyor."
@@ -10804,13 +10772,9 @@ msgstr "Domain adı"
 msgid "All operations"
 msgstr "Tüm işlemler"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "Toplu kayıt ekleme"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "Toplu Kayıt Ekleme"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10837,8 +10801,8 @@ msgstr "Yorum isteğe bağlı"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Sadece hostname girin - zon adı otomatik olarak eklenecek"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Kayıtları Ekle"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10918,13 +10882,9 @@ msgstr "Kayıt Oluştur"
 msgid "Back to Wizard Selection"
 msgstr "Sihirbaz Seçimine Dön"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
 msgstr "Kullanıcıyı sil"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
-msgstr "Kullanıcıyı Sil"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
 msgid "You are about to delete the user"
@@ -10990,9 +10950,9 @@ msgstr "Bölgeyi Şablon Olarak Kaydet"
 msgid "Source Zone"
 msgstr "Kaynak Bölge"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Şablon Adı"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "Şablon adı"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11172,9 +11132,9 @@ msgstr "Şifre gereksinimleri karşılamıyor"
 msgid "Enter your new password for"
 msgstr "Yeni şifrenizi girin"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "Yeni Şifre"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "Yeni şifre"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -11422,10 +11382,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Profili düzenle"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Kullanıcıyı düzenle"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11451,10 +11407,6 @@ msgstr "Tanımlama için kullanıcının tam adı"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Tam ad girin"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "E-posta adresi"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11648,10 +11600,6 @@ msgstr "Evet, bu zonu ayır"
 msgid "Yes, unlink these zones"
 msgstr "Evet, bu zonları ayır"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "İzin şablonları"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Ekle"
@@ -11687,10 +11635,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Lütfen bir şablon türü seçin"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Şablon Ekle"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12036,7 +11980,7 @@ msgstr "Siz"
 msgid "Add Owner"
 msgstr "Sahip Ekle"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Grup Sahipliği"
 
@@ -12083,10 +12027,6 @@ msgstr "Bitiş tarihi"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Temizle"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Kimlik"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12287,10 +12227,6 @@ msgstr ""
 "İpucu: Sadece hostname'i girin (örn. 'www') ve zon adı otomatik olarak "
 "eklenecektir. Zon kökü/apex için '@' kullanın."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Zonu düzenle"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Meta Veriler"
@@ -12403,14 +12339,6 @@ msgstr "İmzalanmamış"
 msgid "User Management"
 msgstr "Kullanıcı Yönetimi"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Kullanıcı logları"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Kullanıcı ekle"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Kimlik Doğrulama Türü"
@@ -12464,7 +12392,7 @@ msgstr "Bu listede gösterilecek ileri zon bulunmuyor."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Kaydı Sil"
 
@@ -12589,7 +12517,7 @@ msgstr "Tümünü bana ata"
 msgid "Zone ID"
 msgstr "Zon Kimliği"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Zon Adı"
 
@@ -12716,10 +12644,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Oluşturulduğunda yeni kullanıcının ekleneceği grupları seçin."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Zon adı"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Zon adı sağlayın"
@@ -12810,10 +12734,6 @@ msgstr "Şunun için zon şablonları:"
 msgid "Search templates..."
 msgstr "Şablon ara..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Şablon adı"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Bağlanmış zonlar"
@@ -12891,10 +12811,6 @@ msgstr ""
 "güncellemez - değişiklikleri uygulamak için şablonları düzenlerken "
 "\"Alanları Güncelle\" düğmesini kullanın."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Şifre değiştir"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Mevcut şifre"
@@ -12902,10 +12818,6 @@ msgstr "Mevcut şifre"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Mevcut şifreyi sağlayın"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Yeni şifre"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13141,11 +13053,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API Anahtarı:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Toplu kayıt"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Zon Tipi"
 
@@ -13164,10 +13072,6 @@ msgstr "Her satıra bir domain yazın"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Zonları Ekle"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Grup sahipliği"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13308,11 +13212,11 @@ msgstr "Hesabınız artık çok faktörlü kimlik doğrulama ile korunuyor."
 msgid "Authentication method:"
 msgstr "Kimlik doğrulama yöntemi:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Kimlik doğrulama uygulaması"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "E-posta doğrulama"
 
@@ -13407,10 +13311,6 @@ msgstr "MFA şu anda devre dışı"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Hesabınız çok faktörlü kimlik doğrulama ile korunmuyor."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Kimlik Doğrulama Uygulaması"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13434,10 +13334,6 @@ msgstr "Kullanımı kolay"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Uygulama kimlik doğrulamasını kur"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "E-posta Doğrulama"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13999,6 +13895,7 @@ msgid "PDNS Server"
 msgstr "PDNS Sunucusu"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Sunucu Adı"
 
@@ -14099,18 +13996,6 @@ msgstr "Metrik"
 msgid "No detailed metrics available."
 msgstr "Ayrıntılı metrik mevcut değil."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "İleri Zonlar"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Ters Zonlar"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Kayıt değişiklik günlüğü"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Kullanıcıları listele"
@@ -14122,10 +14007,6 @@ msgstr "Grupları listele"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "İzin şablonlarını listele"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "İzin şablonu ekle"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14227,10 +14108,6 @@ msgstr "Bu zonda yeni bir DNS kaydı oluştur"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Başka Bir Kayıt Ekle"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Kayıtları Ekle"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14407,10 +14284,6 @@ msgstr ""
 "Daha kolay yönetim için izinler aşağıda gruplara ayrılmıştır. Belirli "
 "izinleri hızlıca bulmak için arama özelliğini kullanın."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Kaydı Sil"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Şablon Kaydını Sil"
@@ -14522,10 +14395,6 @@ msgstr ""
 "işlemi, işlemi yapanı, etkilenen grubu ve bir zaman damgasını gösterir. Grup "
 "sahipliği üzerinden gerçekleşen bölge erişimi değişikliklerini denetlemek "
 "için kullanışlıdır."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Grup adı"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14701,10 +14570,6 @@ msgstr "Eşleşen kayıtları değiştir"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Tüm kayıtları ekle"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Bölge tipi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14951,10 +14816,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API anahtarı (pdns.conf içindeki api-key ayarından)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

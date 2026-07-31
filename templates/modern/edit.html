@@ -331,7 +331,7 @@
                         {% if iface_edit_show_id %}
                         <th>
                             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                                {% trans %}Id{% endtrans %}
+                                {% trans %}ID{% endtrans %}
                             </a>
                             {% if record_sort_by == 'id' %}
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>

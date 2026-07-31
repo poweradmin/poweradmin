@@ -99,7 +99,7 @@ class ChangePasswordController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('change_password');
-        $this->setPageTitle(_('Change Password'));
+        $this->setPageTitle(_('Change password'));
 
         $policyConfig = $this->policyService->getPolicyConfig();
 

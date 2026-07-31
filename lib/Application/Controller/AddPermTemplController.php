@@ -64,7 +64,7 @@ class AddPermTemplController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_perm_templ');
-        $this->setPageTitle(_('Add Permission Template'));
+        $this->setPageTitle(_('Add permission template'));
 
         if ($this->isPost()) {
             $this->handleFormSubmission();

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -946,7 +946,8 @@ msgstr ""
 "स्वचालित रूप से हटा दी जाएँगी।"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "कुंजी प्रकार"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1589,9 +1590,9 @@ msgid "Invalid group ID."
 msgstr "अमान्य समूह ID।"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
-msgstr "समूह हटाएँ"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
+msgstr "समूह हटाएं"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -1949,7 +1950,7 @@ msgid "Search"
 msgstr "खोज"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "रिकॉर्ड परिवर्तन लॉग"
 
@@ -1986,8 +1987,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "आपके पास एक नया उपयोगकर्ता जोड़ने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "उपयोगकर्ता जोड़ें"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2032,8 +2033,8 @@ msgid "The record could not be deleted."
 msgstr "रिकॉर्ड हटाया नहीं जा सकता।"
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "ज़ोन लॉग"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2114,8 +2115,8 @@ msgid "You do not have permission to view this zone."
 msgstr "आपको इस ज़ोन को देखने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "उपयोगकर्ता लॉग"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2157,7 +2158,8 @@ msgid "User agreement accepted successfully."
 msgstr "उपयोगकर्ता समझौते को सफलतापूर्वक स्वीकार किया गया।"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "एडिट ज़ोन"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2407,8 +2409,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC प्रमाणीकरण शुरू करने में विफल: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "समूह लॉग"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2545,16 +2547,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "सेव्ड %d डिफ़ॉल्ट(s); क्लियर %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "ज़ोन टेम्पलेट"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "ज़ोन टेम्प्लेट"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "आपको समूह बनाने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "समूह जोड़ें"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2628,8 +2631,8 @@ msgstr "DNSSEC कुंजी को हटाने के दौरान ए
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "अनुमति टेम्पलेट"
+msgid "Permission templates"
+msgstr "अनुमति टेम्पलेट्स"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2705,8 +2708,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "आपको अनुमति टेम्पलेट जोड़ने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "अनुमति टेम्पलेट जोड़ें"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2802,7 +2805,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "आपके पास एक ज़ोन टेम्पलेट जोड़ने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "ज़ोन टेम्पलेट जोड़ें"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2920,7 +2924,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "आपको ज़ोन टेम्प्लेट में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "उपयोगकर्ता संपादित करें"
 
@@ -3097,8 +3101,8 @@ msgstr ""
 "संपर्क करें।"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "पासवर्ड बदलें"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3143,8 +3147,8 @@ msgid "You do not have permission to edit groups."
 msgstr "आपको समूहों को संपादित करने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "समूह संपादित करें"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3172,7 +3176,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "supermaster को सफलतापूर्वक हटा दिया गया है।"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "थोक पंजीकरण"
 
@@ -9622,10 +9626,6 @@ msgstr "API कुंजी हटाएं"
 msgid "Permanently removes this key"
 msgstr "स्थायी रूप से इस कुंजी को हटा देता है"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "ज़ोन टेम्प्लेट"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "रिकॉर्ड संपादित करें"
@@ -9885,8 +9885,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "क्या आप वाकई ज़ोन को अनसाइन करना चाहते हैं"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "ज़ोन अनसाइन करें"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9909,13 +9909,9 @@ msgstr "नई कुंजी जोड़ें"
 msgid "Show DS and DNSKEY"
 msgstr "DS और DNSKEY दिखाएँ"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "ज़ोन अनसाइन करें"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "आईडी"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -9964,10 +9960,6 @@ msgid ""
 msgstr ""
 "एक PEM-encoded निजी कुंजी (RSA या ECDSA) पेस्ट करें। PowerDNS 4.7+ PEM सामग्री से "
 "कुंजी आकार प्राप्त करता है - मिलान एल्गोरिदम और कुंजी भूमिका का चयन करें।"
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "कुंजी प्रकार"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10036,8 +10028,8 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "अपने ईमेल पते दर्ज करें और हम आपको पासवर्ड रीसेट करने के लिए एक लिंक भेज देंगे।"
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "ईमेल पता"
 
 #: templates/modern/forgot_username.html:29
@@ -10051,14 +10043,6 @@ msgstr "रीसेट लिंक भेजें"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "समूह प्रबंधन"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "समूह लॉग"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "समूह जोड़ें"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10083,14 +10067,6 @@ msgstr "सदस्य प्रबंधित करें"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "ज़ोन प्रबंधित करें"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "समूह संपादित करें"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "समूह हटाएं"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10125,7 +10101,7 @@ msgstr "सहेजा जा रहा है..."
 msgid "Update"
 msgstr "अपडेट"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "समूह का नाम"
 
@@ -10435,7 +10411,7 @@ msgstr "टिप्पणी संपादित करें"
 msgid "Edit comment in zone"
 msgstr "ज़ोन में टिप्पणी संपादित करें"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "टेम्पलेट जोड़ें"
 
@@ -10458,10 +10434,6 @@ msgstr "ग्लोबल टेम्पलेट"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "इस टेम्पलेट को सभी उपयोगकर्ताओं के लिए उपलब्ध कराएं"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "ज़ोन टेम्पलेट जोड़ें"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10548,10 +10520,6 @@ msgstr "सभी घटनाओं"
 msgid "Logs"
 msgstr "लॉग"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "ज़ोन लॉग"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "आपके स्वामित्व वाले ज़ोन के लॉग दिखाए जा रहे हैं।"
@@ -10584,13 +10552,9 @@ msgstr "डोमेन नाम"
 msgid "All operations"
 msgstr "सभी परिचालन"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "थोक रिकॉर्ड जोड़ें"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "बल्क ऐड रिकॉर्ड्स"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10616,8 +10580,8 @@ msgstr "टिप्पणी वैकल्पिक है"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "केवल होस्टनाम दर्ज करें - ज़ोन का नाम स्वचालित रूप से जोड़ा जाएगा"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "रिकॉर्ड जोड़ें"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10698,12 +10662,8 @@ msgstr "रिकॉर्ड बनाएं"
 msgid "Back to Wizard Selection"
 msgstr "बैक टू विज़ार्ड सिलेक्शन"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "उपयोगकर्ता को हटा दें"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "उपयोगकर्ता को हटा दें"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10770,8 +10730,8 @@ msgstr "ज़ोन को टेम्पलेट के रूप में 
 msgid "Source Zone"
 msgstr "स्रोत ज़ोन"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "टेम्पलेट नाम"
 
 #: templates/modern/save-zone-template.html:29
@@ -10942,8 +10902,8 @@ msgstr "पासवर्ड आवश्यकताओं को पूरा
 msgid "Enter your new password for"
 msgstr "अपना नया पासवर्ड दर्ज करें"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "नया पासवर्ड"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11191,10 +11151,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "प्रोफ़ाइल संपादित करें"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "उपयोगकर्ता संपादित करें"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11220,10 +11176,6 @@ msgstr "पहचान के लिए उपयोगकर्ता का �
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "पूरा नाम प्रदान करें"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "ईमेल पता"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11410,10 +11362,6 @@ msgstr "हाँ, इस ज़ोन को अनलिंक करें"
 msgid "Yes, unlink these zones"
 msgstr "हाँ, इन ज़ोन को अनलिंक करें"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "अनुमति टेम्पलेट्स"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "जोड़ें"
@@ -11449,10 +11397,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "कृपया एक टेम्पलेट प्रकार का चयन करें"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "टेम्पलेट जोड़ें"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11794,7 +11738,7 @@ msgstr "आप"
 msgid "Add Owner"
 msgstr "मालिक जोड़ें"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "समूह स्वामित्व"
 
@@ -11841,10 +11785,6 @@ msgstr "तारीख तक"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "साफ़ करें"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "आईडी"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12042,10 +11982,6 @@ msgstr ""
 "टिप: सिर्फ होस्टनाम (जैसे 'www') डालें और ज़ोन नाम स्वचालित रूप से जोड़ा जाएगा। '@' का "
 "उपयोग ज़ोन एपेक्स/रूट के लिए करें।"
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "एडिट ज़ोन"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "मेटाडाटा"
@@ -12158,14 +12094,6 @@ msgstr "हस्ताक्षर नहीं"
 msgid "User Management"
 msgstr "उपयोगकर्ता प्रबंधन"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "उपयोगकर्ता लॉग"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "उपयोगकर्ता जोड़ें"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "प्रमाणीकरण प्रकार"
@@ -12219,7 +12147,7 @@ msgstr "इस सूची में दिखाने के लिए को
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "डिलीट रिकॉर्ड"
 
@@ -12342,7 +12270,7 @@ msgstr "सभी मुझे सौंपें"
 msgid "Zone ID"
 msgstr "ज़ोन आईडी"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "ज़ोन का नाम"
 
@@ -12466,10 +12394,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "नए उपयोगकर्ता को निर्माण पर जोड़ने के लिए समूहों का चयन करें।"
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "ज़ोन नाम"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "ज़ोन का नाम प्रदान करें"
@@ -12559,10 +12483,6 @@ msgstr "ज़ोन टेम्पलेट्स के लिए"
 msgid "Search templates..."
 msgstr "खोज टेम्पलेट्स..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "टेम्पलेट नाम"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "ज़ोन लिंक्ड"
@@ -12640,10 +12560,6 @@ msgstr ""
 "नहीं करते - परिवर्तन लागू करने के लिए टेम्पलेट संपादित करते समय \"अपडेट ज़ोन्स\" बटन का "
 "उपयोग करें।"
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "पासवर्ड बदलें"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "वर्तमान पासवर्ड"
@@ -12651,10 +12567,6 @@ msgstr "वर्तमान पासवर्ड"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "वर्तमान पासवर्ड प्रदान करें"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "नया पासवर्ड"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12890,11 +12802,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API कुंजी:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "थोक पंजीकरण"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "ज़ोन प्रकार"
 
@@ -12913,10 +12821,6 @@ msgstr "प्रति पंक्ति एक डोमेन टाइप �
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "ज़ोन जोड़ें"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "समूह स्वामित्व"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13055,11 +12959,11 @@ msgstr "आपका खाता अब बहु-फैक्टर प्र�
 msgid "Authentication method:"
 msgstr "प्रमाणीकरण विधि:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "प्रमाणीकरणकर्ता अनुप्रयोग"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "ईमेल सत्यापन"
 
@@ -13152,10 +13056,6 @@ msgstr "वर्तमान में MFA निष्क्रिय है"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "आपका खाता बहु-फैक्टर प्रमाणीकरण के साथ संरक्षित नहीं है।"
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "प्रमाणीकरणकर्ता ऐप"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13179,10 +13079,6 @@ msgstr "उपयोग में आसान"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "ऐप प्रमाणीकरण सेट करें"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "ईमेल सत्यापन"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13733,6 +13629,7 @@ msgid "PDNS Server"
 msgstr "PDNS सर्वर"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "सर्वर का नाम"
 
@@ -13833,18 +13730,6 @@ msgstr "मीट्रिक"
 msgid "No detailed metrics available."
 msgstr "कोई विस्तृत मीट्रिक उपलब्ध नहीं है।"
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "फॉरवर्ड ज़ोन"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "रिवर्स ज़ोन"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "रिकॉर्ड परिवर्तन लॉग"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "सूची उपयोगकर्ता"
@@ -13856,10 +13741,6 @@ msgstr "सूची समूह"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "अनुमति टेम्पलेट्स की सूची"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "अनुमति टेम्पलेट जोड़ें"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13960,10 +13841,6 @@ msgstr "इस ज़ोन में एक नया DNS रिकॉर्ड
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "अन्य रिकॉर्ड जोड़ें"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "रिकॉर्ड जोड़ें"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14139,10 +14016,6 @@ msgstr ""
 "अनुमतियों को आसान प्रबंधन के लिए नीचे समूहों में आयोजित किया जाता है। विशिष्ट अनुमतियों को "
 "जल्दी से खोजने के लिए खोज सुविधा का उपयोग करें।"
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "रिकॉर्ड हटाएं"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "टेम्पलेट रिकॉर्ड हटाएँ"
@@ -14253,10 +14126,6 @@ msgstr ""
 "(उपयोगकर्ता जोड़े या हटाए गए) रिकॉर्ड करता है। प्रत्येक प्रविष्टि कार्रवाई, कर्ता, "
 "प्रभावित समूह और टाइमस्टैम्प दिखाती है। समूह स्वामित्व के माध्यम से होने वाले ज़ोन-एक्सेस "
 "परिवर्तनों के ऑडिट के लिए उपयोगी।"
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "समूह का नाम"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14431,10 +14300,6 @@ msgstr "मिलान रिकॉर्ड बदलें"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "सभी रिकॉर्ड जोड़ें"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "ज़ोन प्रकार"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14679,10 +14544,6 @@ msgstr "API कुंजी"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API कुंजी (pdns.conf api-key सेटिंग से)।"
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "सर्वर का नाम"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

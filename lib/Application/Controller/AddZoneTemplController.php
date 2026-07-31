@@ -53,7 +53,7 @@ class AddZoneTemplController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_zone_templ');
-        $this->setPageTitle(_('Add Zone Template'));
+        $this->setPageTitle(_('Add zone template'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -939,7 +939,8 @@ msgstr ""
 "로 제거됩니다."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "키 유형"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1587,8 +1588,8 @@ msgid "Invalid group ID."
 msgstr "유효하지 않은 그룹 ID입니다."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "그룹 삭제"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1945,7 +1946,7 @@ msgid "Search"
 msgstr "검색"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "레코드 변경 로그"
 
@@ -1982,8 +1983,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "새 사용자를 추가할 권한이 없습니다."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "사용자 추가"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2028,8 +2029,8 @@ msgid "The record could not be deleted."
 msgstr "레코드를 삭제할 수 없습니다."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "존 로그"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2110,8 +2111,8 @@ msgid "You do not have permission to view this zone."
 msgstr "이 존을 볼 권한이 없습니다."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "사용자 로그"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2151,7 +2152,8 @@ msgid "User agreement accepted successfully."
 msgstr "사용자 동의가 성공적으로 수락되었습니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "존 편집"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2407,8 +2409,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC 인증 시작에 실패했습니다: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "그룹 로그"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2547,7 +2549,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "기본값 %d개를 저장하고 %d개를 삭제했습니다."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "존 템플릿"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2555,8 +2558,8 @@ msgid "You do not have permission to create groups."
 msgstr "그룹을 생성할 권한이 없습니다."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "그룹 추가"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2630,7 +2633,7 @@ msgstr "DNSSEC 키를 삭제하는 중 오류가 발생했습니다: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "권한 템플릿"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2703,8 +2706,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "권한 템플릿을 추가할 권한이 없습니다."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "권한 템플릿 추가"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2800,7 +2803,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "존 템플릿을 추가할 권한이 없습니다."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "존 템플릿 추가"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2917,7 +2921,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "존 템플릿에 레코드를 추가할 권한이 없습니다."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "사용자 편집"
 
@@ -3094,8 +3098,8 @@ msgstr ""
 "시오."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "비밀번호 변경"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3141,8 +3145,8 @@ msgid "You do not have permission to edit groups."
 msgstr "그룹을 편집할 권한이 없습니다."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "그룹 편집"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3170,7 +3174,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "supermaster가 성공적으로 삭제되었습니다."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "일괄 등록"
 
@@ -9676,10 +9680,6 @@ msgstr "API 키 삭제"
 msgid "Permanently removes this key"
 msgstr "이 키를 영구적으로 삭제합니다"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "존 템플릿"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "레코드 편집"
@@ -9936,8 +9936,8 @@ msgstr "이 작업은 모든 DNSSEC 키를 제거하고 이 존의 DNSSEC를 비
 msgid "Are you sure you want to unsign the zone"
 msgstr "정말로 다음 존의 서명을 해제하시겠습니까"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "존 서명 해제"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9960,11 +9960,7 @@ msgstr "새 키 추가"
 msgid "Show DS and DNSKEY"
 msgstr "DS 및 DNSKEY 표시"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "존 서명 해제"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10015,10 +10011,6 @@ msgid ""
 msgstr ""
 "PEM 인코딩된 개인 키를 붙여 넣으세요 (RSA 또는 ECDSA). PowerDNS 4.7+는 PEM 콘"
 "텐츠에서 키 크기를 추론합니다 - 일치하는 알고리즘과 키 역할을 선택하세요."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "키 유형"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10087,8 +10079,8 @@ msgid ""
 msgstr ""
 "이메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 링크를 보내드립니다."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "이메일 주소"
 
 #: templates/modern/forgot_username.html:29
@@ -10102,14 +10094,6 @@ msgstr "재설정 링크 보내기"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "그룹 관리"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "그룹 로그"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "그룹 추가"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10134,14 +10118,6 @@ msgstr "구성원 관리"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "존 관리"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "그룹 편집"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "그룹 삭제"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10177,7 +10153,7 @@ msgstr "저장 중..."
 msgid "Update"
 msgstr "업데이트"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "그룹 이름"
 
@@ -10490,7 +10466,7 @@ msgstr "주석 편집"
 msgid "Edit comment in zone"
 msgstr "존의 주석 편집"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "템플릿 추가"
 
@@ -10513,10 +10489,6 @@ msgstr "전역 템플릿"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "이 템플릿을 모든 사용자가 사용할 수 있도록 합니다"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "존 템플릿 추가"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10602,10 +10574,6 @@ msgstr "모든 이벤트"
 msgid "Logs"
 msgstr "로그"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "존 로그"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "소유한 존의 로그를 표시합니다."
@@ -10637,12 +10605,8 @@ msgstr "도메인 이름"
 msgid "All operations"
 msgstr "모든 작업"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "레코드 일괄 추가"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "레코드 일괄 추가"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10669,8 +10633,8 @@ msgstr "주석은 선택 사항입니다"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "호스트명만 입력하세요 - 존 이름은 자동으로 추가됩니다"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "레코드 추가"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10749,12 +10713,8 @@ msgstr "레코드 생성"
 msgid "Back to Wizard Selection"
 msgstr "마법사 선택으로 돌아가기"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "사용자 삭제"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "사용자 삭제"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10820,8 +10780,8 @@ msgstr "존을 템플릿으로 저장"
 msgid "Source Zone"
 msgstr "원본 존"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "템플릿 이름"
 
 #: templates/modern/save-zone-template.html:29
@@ -10990,8 +10950,8 @@ msgstr "비밀번호가 요구 사항을 충족하지 않습니다"
 msgid "Enter your new password for"
 msgstr "다음에 대한 새 비밀번호를 입력하세요"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "새 비밀번호"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11237,10 +11197,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "프로필 편집"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "사용자 편집"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11266,10 +11222,6 @@ msgstr "식별을 위한 사용자의 전체 이름"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "전체 이름을 입력하세요"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "이메일 주소"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11457,10 +11409,6 @@ msgstr "네, 이 존의 연결을 해제합니다"
 msgid "Yes, unlink these zones"
 msgstr "네, 이러한 존의 연결을 해제합니다"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "권한 템플릿"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "추가"
@@ -11496,10 +11444,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "템플릿 유형을 선택하세요"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "템플릿 추가"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11839,7 +11783,7 @@ msgstr "귀하"
 msgid "Add Owner"
 msgstr "소유자 추가"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "그룹 소유권"
 
@@ -11886,10 +11830,6 @@ msgstr "종료 날짜"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "지우기"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Id"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12087,10 +12027,6 @@ msgstr ""
 "팁: 호스트명만 입력하세요 (예: 'www') 그러면 존 이름이 자동으로 추가됩니다. "
 "존 apex/루트는 '@'를 사용하세요."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "존 편집"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "메타데이터"
@@ -12203,14 +12139,6 @@ msgstr "서명되지 않음"
 msgid "User Management"
 msgstr "사용자 관리"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "사용자 로그"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "사용자 추가"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "인증 유형"
@@ -12264,7 +12192,7 @@ msgstr "이 목록에 표시할 정방향 존이 없습니다."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "레코드 삭제"
 
@@ -12385,7 +12313,7 @@ msgstr "모두 나에게 할당"
 msgid "Zone ID"
 msgstr "존 ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "존 이름"
 
@@ -12509,10 +12437,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "생성 시 새 사용자를 추가할 그룹을 선택하세요."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "존 이름"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "존 이름을 입력하세요"
@@ -12603,10 +12527,6 @@ msgstr "다음에 대한 존 템플릿"
 msgid "Search templates..."
 msgstr "템플릿 검색..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "템플릿 이름"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "연결된 존"
@@ -12683,10 +12603,6 @@ msgstr ""
 "다. 템플릿 수정은 존을 자동으로 업데이트하지 않습니다 - 템플릿 편집 시 \"존 "
 "업데이트\" 버튼을 사용하여 변경 사항을 적용하세요."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "비밀번호 변경"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "현재 비밀번호"
@@ -12694,10 +12610,6 @@ msgstr "현재 비밀번호"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "현재 비밀번호를 입력하세요"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "새 비밀번호"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12932,11 +12844,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API Key:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "일괄 등록"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "존 유형"
 
@@ -12955,10 +12863,6 @@ msgstr "한 줄에 하나의 도메인 입력"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "존 추가"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "그룹 소유권"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13096,11 +13000,11 @@ msgstr "이제 다중 인증으로 계정이 보호됩니다."
 msgid "Authentication method:"
 msgstr "인증 방법:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "인증 앱"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "이메일 인증"
 
@@ -13193,10 +13097,6 @@ msgstr "MFA가 현재 비활성화되어 있습니다"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "계정이 다중 인증으로 보호되지 않습니다."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "인증 앱"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13220,10 +13120,6 @@ msgstr "사용하기 쉬움"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "앱 인증 설정"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "이메일 인증"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13774,6 +13670,7 @@ msgid "PDNS Server"
 msgstr "PDNS 서버"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "서버 이름"
 
@@ -13874,18 +13771,6 @@ msgstr "메트릭"
 msgid "No detailed metrics available."
 msgstr "상세 메트릭을 사용할 수 없습니다."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "정방향 존"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "역방향 존"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "레코드 변경 로그"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "사용자 목록"
@@ -13897,10 +13782,6 @@ msgstr "그룹 목록"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "권한 템플릿 목록"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "권한 템플릿 추가"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14001,10 +13882,6 @@ msgstr "이 존에 새 DNS 레코드 생성"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "다른 레코드 추가"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "레코드 추가"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14179,10 +14056,6 @@ msgstr ""
 "더 쉬운 관리를 위해 권한이 아래 그룹으로 구성됩니다. 검색 기능을 사용하여 특"
 "정 권한을 빠르게 찾으세요."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "레코드 삭제"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "템플릿 레코드 삭제"
@@ -14290,10 +14163,6 @@ msgstr ""
 "그룹의 수명 주기 이벤트(생성, 수정, 삭제)와 소속 변경(사용자 추가 또는 제거)"
 "을 기록합니다. 각 항목에는 작업, 수행자, 대상 그룹, 시각이 표시됩니다. 그룹 "
 "소유권을 통한 존 접근 권한 변경을 감사할 때 유용합니다."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "그룹 이름"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14467,10 +14336,6 @@ msgstr "일치하는 레코드 교체"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "모든 레코드 추가"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "존 유형"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14714,10 +14579,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API 키입니다(pdns.conf의 api-key 설정 값)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

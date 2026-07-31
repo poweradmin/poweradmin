@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -909,7 +909,8 @@ msgid ""
 msgstr "粘貼來自郵件伺服器的base64編碼公鑰。空格和換行符將自動刪除。"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "金鑰類型"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1519,8 +1520,8 @@ msgid "Invalid group ID."
 msgstr "無效的組ID。"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "刪除組"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1872,7 +1873,7 @@ msgid "Search"
 msgstr "搜尋"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "記錄變更記錄檔"
 
@@ -1909,8 +1910,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "您沒有新增新使用者的權限。"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "新增使用者"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -1955,8 +1956,8 @@ msgid "The record could not be deleted."
 msgstr "無法刪除記錄。"
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "區域記錄檔"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2037,8 +2038,8 @@ msgid "You do not have permission to view this zone."
 msgstr "您沒有權限查看此區域。"
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "使用者記錄檔"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2080,7 +2081,8 @@ msgid "User agreement accepted successfully."
 msgstr "使用者協議已成功接受。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "編輯區域"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2322,9 +2324,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "啟動 OIDC 身分驗證失敗： "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "群組記錄檔"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "組記錄檔"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2450,7 +2452,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "已儲存 %d 個預設值，清除 %d 個。"
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "區域範本"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2458,8 +2461,8 @@ msgid "You do not have permission to create groups."
 msgstr "您沒有權限建立組。"
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "新增組"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2533,7 +2536,7 @@ msgstr "刪除 DNSSEC 金鑰時發生錯誤： "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "權限範本"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2610,8 +2613,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "您沒有新增權限範本的權限。"
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "新增權限範本"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2707,7 +2710,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "您沒有新增區域範本的權限。"
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "新增區域範本"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2823,7 +2827,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "您沒有向區域範本新增記錄的權限。"
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "編輯使用者"
 
@@ -2993,8 +2997,8 @@ msgid ""
 msgstr "外部身分驗證使用者無法在此更改密碼。請聯繫管理員。"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "更改密碼"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3038,8 +3042,8 @@ msgid "You do not have permission to edit groups."
 msgstr "您沒有權限編輯組。"
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "編輯組"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3067,7 +3071,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "supermaster 已成功刪除。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "批次註冊"
 
@@ -8991,10 +8995,6 @@ msgstr "刪除 API 金鑰"
 msgid "Permanently removes this key"
 msgstr "永久刪除此金鑰"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "區域範本"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "編輯記錄"
@@ -9247,8 +9247,8 @@ msgstr "此操作將刪除所有 DNSSEC 金鑰並停用此區域的 DNSSEC。"
 msgid "Are you sure you want to unsign the zone"
 msgstr "您確定要取消區域簽名嗎"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "取消區域簽名"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9271,11 +9271,7 @@ msgstr "新增金鑰"
 msgid "Show DS and DNSKEY"
 msgstr "顯示 DS 和 DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "取消區域簽名"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -9326,10 +9322,6 @@ msgid ""
 msgstr ""
 "貼上 PEM 編碼的私鑰 (RSA 或 ECDSA)。PowerDNS 4.7+ 從 PEM 內容推導金鑰大小 - "
 "選擇相符的演算法和金鑰角色。"
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "金鑰類型"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9396,8 +9388,8 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "輸入您的電子郵件地址，我們將傳送重設密碼的連結給您。"
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "電子郵件地址"
 
 #: templates/modern/forgot_username.html:29
@@ -9411,14 +9403,6 @@ msgstr "傳送重設連結"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "組管理"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "組記錄檔"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "新增組"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -9443,14 +9427,6 @@ msgstr "管理成員"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "管理區域"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "編輯組"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "刪除組"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -9484,7 +9460,7 @@ msgstr "儲存中..."
 msgid "Update"
 msgstr "更新"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "組名"
 
@@ -9793,7 +9769,7 @@ msgstr "編輯備註"
 msgid "Edit comment in zone"
 msgstr "編輯區域中的備註"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "新增範本"
 
@@ -9816,10 +9792,6 @@ msgstr "全域範本"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "使此範本對所有使用者可用"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "新增區域範本"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -9901,10 +9873,6 @@ msgstr "所有事件"
 msgid "Logs"
 msgstr "記錄檔"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "區域記錄檔"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "正在顯示您擁有的區域的記錄檔。"
@@ -9936,12 +9904,8 @@ msgstr "網域名稱"
 msgid "All operations"
 msgstr "所有操作"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "批次新增記錄"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "批次新增記錄"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -9968,8 +9932,8 @@ msgstr "註解是可選的"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "只輸入主機名稱 - 區域名稱將自動新增"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "新增記錄"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10048,12 +10012,8 @@ msgstr "建立記錄"
 msgid "Back to Wizard Selection"
 msgstr "返回精靈選擇"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "刪除使用者"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "刪除使用者"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10118,8 +10078,8 @@ msgstr "將區域另存為範本"
 msgid "Source Zone"
 msgstr "源區域"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "範本名稱"
 
 #: templates/modern/save-zone-template.html:29
@@ -10283,8 +10243,8 @@ msgstr "密碼不符合要求"
 msgid "Enter your new password for"
 msgstr "為以下對象輸入新密碼"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "新密碼"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -10529,10 +10489,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "編輯資料"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "編輯使用者"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -10558,10 +10514,6 @@ msgstr "用於識別的使用者全名"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "請提供全名"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "電子郵件地址"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -10747,10 +10699,6 @@ msgstr "是的，取消連結此區域"
 msgid "Yes, unlink these zones"
 msgstr "是的，取消連結這些區域"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "權限範本"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "新增"
@@ -10784,10 +10732,6 @@ msgstr "使用者範本全域應用；組範本僅應用於組擁有的區域"
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "請選擇範本類型"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "新增範本"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11113,7 +11057,7 @@ msgstr "您"
 msgid "Add Owner"
 msgstr "新增所有者"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "組所有權"
 
@@ -11159,10 +11103,6 @@ msgstr "結束日期"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "清除"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -11356,10 +11296,6 @@ msgstr ""
 "提示：只輸入主機名稱（例如 'www'），區域名稱將自動新增。使用 '@' 表示區域頂"
 "點/根。"
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "編輯區域"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "元資料"
@@ -11472,14 +11408,6 @@ msgstr "未簽名"
 msgid "User Management"
 msgstr "使用者管理"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "使用者記錄檔"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "新增使用者"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "認證類型"
@@ -11533,7 +11461,7 @@ msgstr "此清單中沒有正向區域可顯示。"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "刪除記錄"
 
@@ -11654,7 +11582,7 @@ msgstr "全部指派給我"
 msgid "Zone ID"
 msgstr "區域 ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "區域名稱"
 
@@ -11778,10 +11706,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "選擇在建立時將新使用者新增到的組。"
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "區域名稱"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "提供區域名稱"
@@ -11871,10 +11795,6 @@ msgstr "區域範本"
 msgid "Search templates..."
 msgstr "搜尋範本..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "範本名稱"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "已連結區域"
@@ -11948,10 +11868,6 @@ msgstr ""
 "更改區域範本會覆蓋基於範本的記錄，但保留手動新增的記錄。範本修改不會自動更新"
 "區域 - 編輯範本時請使用\"更新區域\"按鈕來應用更改。"
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "更改密碼"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "目前密碼"
@@ -11959,10 +11875,6 @@ msgstr "目前密碼"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "提供目前密碼"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "新密碼"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12194,11 +12106,7 @@ msgstr "這是您的 API 金鑰唯一顯示的時候。請立即儲存，因為�
 msgid "API Key:"
 msgstr "API 金鑰："
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "批次註冊"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "區域類型"
 
@@ -12217,10 +12125,6 @@ msgstr "每行輸入一個網域名稱"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "新增區域"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "組所有權"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -12356,11 +12260,11 @@ msgstr "您的帳號現在受到多因素身分驗證保護。"
 msgid "Authentication method:"
 msgstr "身分驗證方法："
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "身分驗證器應用"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "電子郵件驗證"
 
@@ -12372,7 +12276,9 @@ msgstr "儲存您的復原代碼"
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
-msgstr "如果您無法存取身分驗證器裝置，可以使用復原代碼存取您的帳號。每個代碼只能使用一次。"
+msgstr ""
+"如果您無法存取身分驗證器裝置，可以使用復原代碼存取您的帳號。每個代碼只能使用"
+"一次。"
 
 #: templates/modern/mfa_recovery_codes.html:29
 msgid "Store these codes in a safe place!"
@@ -12449,10 +12355,6 @@ msgstr "MFA 目前已停用"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "您的帳號沒有受到多因素身分驗證保護。"
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "身分驗證器應用"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -12476,10 +12378,6 @@ msgstr "易於使用"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "設定應用身分驗證"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "電子郵件驗證"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13011,6 +12909,7 @@ msgid "PDNS Server"
 msgstr "PDNS伺服器"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "伺服器名稱"
 
@@ -13111,18 +13010,6 @@ msgstr "指標"
 msgid "No detailed metrics available."
 msgstr "沒有詳細指標可用。"
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "正向區域"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "反向區域"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "記錄變更記錄檔"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "列出使用者"
@@ -13134,10 +13021,6 @@ msgstr "列出組"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "列出權限範本"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "新增權限範本"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13236,10 +13119,6 @@ msgstr "在此區域中建立新的 DNS 記錄"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "新增另一條記錄"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "新增記錄"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -13405,10 +13284,6 @@ msgid ""
 "search feature to quickly find specific permissions."
 msgstr "權限已組織成下面的組以便於管理。使用搜尋功能快速查找特定權限。"
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "刪除記錄"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "刪除範本記錄"
@@ -13515,10 +13390,6 @@ msgstr ""
 "記錄組的生命週期事件 (建立、編輯、刪除) 以及成員變更 (新增或移除使用者)。每條"
 "記錄顯示操作、執行者、受影響組和時間戳記。可用於稽核透過組所有權介導的區域存"
 "取變更。"
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "組名"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -13689,10 +13560,6 @@ msgstr "替換相符的記錄"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "新增所有記錄"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "區域類型"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -13934,10 +13801,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API 金鑰（來自 pdns.conf 的 api-key 設定）。"
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

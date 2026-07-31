@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -960,7 +960,8 @@ msgstr ""
 "Presledki in prelomi vrstic bodo samodejno odstranjeni."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Vrsta ključa"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1612,8 +1613,8 @@ msgid "Invalid group ID."
 msgstr "Neveljaven ID skupine."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Zbriši skupino"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1990,7 +1991,7 @@ msgid "Search"
 msgstr "Iskanje"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Dnevnik sprememb zapisa"
 
@@ -2027,8 +2028,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nimate dovoljenja za dodajanje novega uporabnika."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Dodaj uporabnika"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2075,9 +2076,9 @@ msgid "The record could not be deleted."
 msgstr "Zapisa ni bilo moč zbrisati."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
-msgstr "Dnevniki cone"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
+msgstr "Dnevniki con"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "You do not have permission to view the users list."
@@ -2157,8 +2158,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Nimate dovoljenja za ogled te cone."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Dnevniki uporabnikov"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2204,7 +2205,8 @@ msgid "User agreement accepted successfully."
 msgstr "Uporabniška pogodba sprejeta uspešno."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Uredi cono"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2463,9 +2465,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Ni moč sprožiti overovitve OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Dnevniki skupin"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Skupinski dnevniki"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2603,16 +2605,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Shranjena privzeta(-e) %d; očiščena %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Predloge con"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Predloge območij"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Nimate dovoljenja za ustvarjanje skupin."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Dodaj skupino"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2686,7 +2689,7 @@ msgstr "Prišlo je do napake pri brisanju ključa DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Predloge dovoljenj"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2771,9 +2774,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Nimate dovoljenja za dodajanje predlog dovoljenj."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Dodaj predlogo dovoljenja"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Dodaj predlogo dovoljenj"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2869,7 +2872,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Nimate dovoljenja za dodajanje predloge cone."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Dodaj predlogo cone"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2987,7 +2991,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Nimate dovoljenja za dodajanje zapisov v predloge cone."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Uredi uporabnika"
 
@@ -3178,8 +3182,8 @@ msgstr ""
 "obrnite se na svojega skrbnika."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Spremeni geslo"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3226,8 +3230,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Nimate dovoljenja za urejanje skupin."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Uredi skupino"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3255,7 +3259,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster je bil uspešno izbrisan."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Množična registracija"
 
@@ -9856,10 +9860,6 @@ msgstr "Zbriši ključ API"
 msgid "Permanently removes this key"
 msgstr "Trajno odstrani ta ključ"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Predloge območij"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Uredi zapis"
@@ -10118,8 +10118,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Ali ste prepričani, da želite odstraniti podpis cone"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Odstrani podpis cone"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10142,11 +10142,7 @@ msgstr "Dodaj nov ključ"
 msgid "Show DS and DNSKEY"
 msgstr "Prikaži DS in DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Odstrani podpis cone"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10198,10 +10194,6 @@ msgstr ""
 "Prilepite zasebni ključ, kodiran v obliki PEM (RSA ali ECDSA). PowerDNS 4.7+ "
 "izpelje velikost ključa iz vsebine PEM - izberite ustrezen algoritem in "
 "vlogo ključa."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Vrsta ključa"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10272,8 +10264,8 @@ msgstr ""
 "Vnesite svoj e-poštni naslov in poslali vam bomo povezavo za ponastavitev "
 "gesla."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "E-poštni naslov"
 
 #: templates/modern/forgot_username.html:29
@@ -10287,14 +10279,6 @@ msgstr "Pošlji reset povezavo"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Upravljanje skupin"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Skupinski dnevniki"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Dodaj skupino"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10319,14 +10303,6 @@ msgstr "Upravljajte člane"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Upravljajte cone"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Uredi skupino"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Zbriši skupino"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10360,7 +10336,7 @@ msgstr "Shranjevanje..."
 msgid "Update"
 msgstr "Posodobi"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Ime skupine"
 
@@ -10676,7 +10652,7 @@ msgstr "Uredi komentar"
 msgid "Edit comment in zone"
 msgstr "Uredi komentar v coni"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Dodaj predlogo"
 
@@ -10699,10 +10675,6 @@ msgstr "Splošna predloga"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Naj bo ta predloga na voljo vsem uporabnikom"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Dodaj predlogo cone"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10790,10 +10762,6 @@ msgstr "Vsi dogodki"
 msgid "Logs"
 msgstr "Dnevniki"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Dnevniki con"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Prikazujem dnevnike za vaše cone."
@@ -10826,12 +10794,8 @@ msgstr "Ime domene"
 msgid "All operations"
 msgstr "Vse operacije"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Množično dodajanje zapisov"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Množično dodajanje zapisov"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10858,8 +10822,8 @@ msgstr "Komentar ni obvezen"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Samo vnesite imena gostiteljev - ime cone bo samodejno dodano"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Dodaj zapise"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10938,12 +10902,8 @@ msgstr "Ustvari zapis"
 msgid "Back to Wizard Selection"
 msgstr "Nazaj k izbiri pomočnika"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Zbriši uporabnika"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Zbriši uporabnika"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11010,8 +10970,8 @@ msgstr "Shrani cono kot predlogo"
 msgid "Source Zone"
 msgstr "Izvorna cona"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Ime predloge"
 
 #: templates/modern/save-zone-template.html:29
@@ -11188,8 +11148,8 @@ msgstr "Geslo ne izpolnjuje zahtev"
 msgid "Enter your new password for"
 msgstr "Vnesite novo geslo za"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Novo geslo"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11438,10 +11398,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Uredi profil"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Uredi uporabnika"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11467,10 +11423,6 @@ msgstr "Polno ime uporabnika za identifikacijo"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Navedite polno ime"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "E-poštni naslov"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11662,10 +11614,6 @@ msgstr "Da, odveži to cono"
 msgid "Yes, unlink these zones"
 msgstr "Da, odveži te cone"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Predloge dovoljenj"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Dodaj"
@@ -11701,10 +11649,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Prosim izberite vrsto predloge"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Dodaj predlogo"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12051,7 +11995,7 @@ msgstr "Vi"
 msgid "Add Owner"
 msgstr "Dodaj lastnika"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Lastništvo skupine"
 
@@ -12098,10 +12042,6 @@ msgstr "Do datuma"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Počisti"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Id"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12299,10 +12239,6 @@ msgstr ""
 "Nasvet: Vnesite samo ime gostitelja (npr. 'www') in ime cone bo samodejno "
 "dodano. Uporabite '@' za apeks/koren cone."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Uredi cono"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metapodatki"
@@ -12415,14 +12351,6 @@ msgstr "Ni podpisano"
 msgid "User Management"
 msgstr "Upravljanje uporabnikov"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Dnevniki uporabnikov"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Dodaj uporabnika"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Vrsta avtentikacije"
@@ -12476,7 +12404,7 @@ msgstr "Na tem seznamu ni neposrednih con za prikaz."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Zbriši zapis"
 
@@ -12599,7 +12527,7 @@ msgstr "Dodeli vse meni"
 msgid "Zone ID"
 msgstr "ID cone"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Ime cone"
 
@@ -12725,10 +12653,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Izberite skupine za dodajanje novega uporabnika ob ustvarjanju."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Ime cone"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Navedite ime cone"
@@ -12819,10 +12743,6 @@ msgstr "Predloge con za"
 msgid "Search templates..."
 msgstr "Išči predloge..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Ime predloge"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Povezane cone"
@@ -12899,10 +12819,6 @@ msgstr ""
 "ohrani ročne dodatke. Spremembe predloge ne posodobijo con samodejno - pri "
 "urejanju predloge uporabite gumb \"Posodobi cone\", da uveljavite spremembe."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Spremeni geslo"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Trenutno geslo"
@@ -12910,10 +12826,6 @@ msgstr "Trenutno geslo"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Navedite trenutno geslo"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Novo geslo"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13150,11 +13062,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API ključ:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Množična registracija"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Vrsta cone"
 
@@ -13173,10 +13081,6 @@ msgstr "Vnesite eno domeno na vrstico"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Dodaj cone"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Lastništvo skupine"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13317,11 +13221,11 @@ msgstr "Vaš račun je zdaj zaščiten z večfaktorsko avtentikacijo."
 msgid "Authentication method:"
 msgstr "Način overitve:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Aplikacija overovitelja"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Preverjanje e-pošte"
 
@@ -13414,10 +13318,6 @@ msgstr "MFA je trenutno onemogočen"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Vaš račun ni zaščiten z večfaktorsko avtentikacijo."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Overoviteljska aplikacija"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13441,10 +13341,6 @@ msgstr "Enostaven za uporabo"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Nastavi overovitev aplikacije"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Preverjanje e-pošte"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14004,6 +13900,7 @@ msgid "PDNS Server"
 msgstr "Strežnik PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Ime strežnika"
 
@@ -14104,18 +14001,6 @@ msgstr "Meritev"
 msgid "No detailed metrics available."
 msgstr "Podrobne meritve niso na voljo."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Prednje cone"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Obrnjene cone"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Dnevnik sprememb zapisa"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Seznam uporabnikov"
@@ -14127,10 +14012,6 @@ msgstr "Seznam skupin"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Seznam predlog dovoljenj"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Dodaj predlogo dovoljenj"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14232,10 +14113,6 @@ msgstr "Ustvari nov zapis DNS v tej coni"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Dodaj drug zapis"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Dodaj zapise"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14411,10 +14288,6 @@ msgstr ""
 "Dovoljenja so spodaj organizirana v skupine za lažje upravljanje. Uporabite "
 "funkcijo iskanja za hitro iskanje določenih dovoljenj."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Zbriši zapis"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Zbriši zapis predlog"
@@ -14527,10 +14400,6 @@ msgstr ""
 "vnos prikazuje dejanje, izvajalca, prizadeto skupino in časovni žig. "
 "Uporabno za revizijo sprememb dostopa do con, ki jih posreduje lastništvo "
 "skupine."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Ime skupine"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14706,10 +14575,6 @@ msgstr "Zamenjaj ujemajoče se zapise"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Dodaj vse zapise"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Vrsta cone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14955,10 +14820,6 @@ msgstr "Ključ API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API ključ (od pdns.conf api-key nastavitev)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Ime strežnika"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

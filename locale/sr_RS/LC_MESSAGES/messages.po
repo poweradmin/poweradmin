@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Serbian\n"
@@ -955,7 +955,8 @@ msgstr ""
 "и преломи редова биће аутоматски уклоњени."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Тип кључа"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1601,8 +1602,8 @@ msgid "Invalid group ID."
 msgstr "Неважећи ИД групе."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Обриши групу"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1969,7 +1970,7 @@ msgid "Search"
 msgstr "Претрага"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Дневник промена записа"
 
@@ -2006,8 +2007,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Немате дозволу за додавање новог корисника."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Додај корисника"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2054,8 +2055,8 @@ msgid "The record could not be deleted."
 msgstr "Запис није могао бити обрисан."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Дневници зоне"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2136,8 +2137,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Немате дозволу за преглед ове зоне."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Дневници корисника"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2181,7 +2182,8 @@ msgid "User agreement accepted successfully."
 msgstr "Кориснички уговор је успешно прихваћен."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Уреди зону"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2434,8 +2436,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Неуспешно покретање OIDC аутентификације: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Дневници групе"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2574,7 +2576,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Сачувано подразумеваних вредности: %d; обрисано: %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Шаблони зоне"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2582,8 +2585,8 @@ msgid "You do not have permission to create groups."
 msgstr "Немате дозволу за креирање група."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Додај групу"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2657,7 +2660,7 @@ msgstr "Дошло је до грешке при брисању DNSSEC кључ�
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Шаблони дозвола"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2738,8 +2741,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Немате дозволу за додавање шаблона дозвола."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Додај шаблон дозвола"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2836,7 +2839,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Немате дозволу за додавање шаблона зоне."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Додај шаблон зоне"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2954,7 +2958,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Немате дозволу за додавање записа у шаблоне зона."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Уреди корисника"
 
@@ -3140,8 +3144,8 @@ msgstr ""
 "администратора."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Промени лозинку"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3186,8 +3190,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Немате дозволу за уређивање група."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Уреди групу"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3215,7 +3219,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster сервер је успешно обрисан."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Групна регистрација"
 
@@ -4118,7 +4122,9 @@ msgstr "Ово изгледа као SMIMEA запис (RFC 8162) за S/MIME с
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr "SMIMEA записи користе исти формат као TLSA, али повезују S/MIME сертификате са имејл адресама."
+msgstr ""
+"SMIMEA записи користе исти формат као TLSA, али повезују S/MIME сертификате "
+"са имејл адресама."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
@@ -4326,7 +4332,9 @@ msgstr ""
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr "Вредности заставица веће од 1 резервисане су за будућу употребу. Тренутне имплементације можда неће исправно обрадити те вредности."
+msgstr ""
+"Вредности заставица веће од 1 резервисане су за будућу употребу. Тренутне "
+"имплементације можда неће исправно обрадити те вредности."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
@@ -4336,7 +4344,9 @@ msgstr "NSEC3PARAM итерације морају бити између 0 и 25
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 препоручује коришћење 0 итерација. Додатне итерације повећавају рачунарске трошкове без повећања безбедности."
+msgstr ""
+"RFC 9276 препоручује коришћење 0 итерација. Додатне итерације повећавају "
+"рачунарске трошкове без повећања безбедности."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
@@ -4386,7 +4396,9 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "LP записи треба да се користе само уз Identifier-Locator Network Protocol (ILNP)."
+msgstr ""
+"LP записи треба да се користе само уз Identifier-Locator Network Protocol "
+"(ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
@@ -4412,7 +4424,9 @@ msgstr ""
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr "Размотрите дуже TTL вредности за LP записе. За разлику од L32/L64 записа, LP записи су стабилни и имају користи од дужег кеширања (RFC 6742)."
+msgstr ""
+"Размотрите дуже TTL вредности за LP записе. За разлику од L32/L64 записа, LP "
+"записи су стабилни и имају користи од дужег кеширања (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -4818,7 +4832,9 @@ msgstr ""
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
-msgstr "Универзални/локални бит (u/l бит) постављен је на локални (1), што значи да је овај NID локално додељен и није глобално јединствен."
+msgstr ""
+"Универзални/локални бит (u/l бит) постављен је на локални (1), што значи да "
+"је овај NID локално додељен и није глобално јединствен."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
@@ -5246,7 +5262,9 @@ msgstr "TSIG other-data мора бити важећи base64 или хекс с
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
-msgstr "HMAC-MD5 се сматра слабим по савременим стандардима. RFC 8945 препоручује коришћење HMAC-SHA256 или јачих алгоритама."
+msgstr ""
+"HMAC-MD5 се сматра слабим по савременим стандардима. RFC 8945 препоручује "
+"коришћење HMAC-SHA256 или јачих алгоритама."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
@@ -5906,7 +5924,9 @@ msgstr "URI не сме бити празан."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI мора почети важећом шемом која почиње словом, иза кога следе слова, цифре, плус, тачка или цртица."
+msgstr ""
+"URI мора почети важећом шемом која почиње словом, иза кога следе слова, "
+"цифре, плус, тачка или цртица."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
@@ -6029,7 +6049,9 @@ msgstr ""
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "Коришћење \".\" (корен) за RMAILBX значи да је власник MINFO записа одговоран за себе."
+msgstr ""
+"Коришћење \".\" (корен) за RMAILBX значи да је власник MINFO записа "
+"одговоран за себе."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6138,14 +6160,18 @@ msgstr "Непознат механизам: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "SPF запис треба да има или завршни \"all\" механизам или \"redirect\" модификатор (RFC 7208, одељак 4.6.2)."
+msgstr ""
+"SPF запис треба да има или завршни \"all\" механизам или \"redirect\" "
+"модификатор (RFC 7208, одељак 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "SPF запис има и \"all\" механизам и \"redirect\" модификатор. Модификатор \"redirect\" биће игнорисан када је присутан \"all\" (RFC 7208, одељак 6.1)."
+msgstr ""
+"SPF запис има и \"all\" механизам и \"redirect\" модификатор. Модификатор "
+"\"redirect\" биће игнорисан када је присутан \"all\" (RFC 7208, одељак 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
@@ -6176,7 +6202,9 @@ msgstr "Ово није важећи запис. Већ постоји CNAME с�
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME циљ мора бити потпуно квалификовано име домена (FQDN). Имена са једном ознаком нису дозвољена."
+msgstr ""
+"CNAME циљ мора бити потпуно квалификовано име домена (FQDN). Имена са једном "
+"ознаком нису дозвољена."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6223,7 +6251,9 @@ msgstr ""
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID запис има неважећу base64 допуну. Знаци једнакости (=) треба да се појављују само на крају података."
+msgstr ""
+"DHCID запис има неважећу base64 допуну. Знаци једнакости (=) треба да се "
+"појављују само на крају података."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
@@ -6813,7 +6843,9 @@ msgstr "Поље приоритета за DNAME записе мора бити 
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "Према RFC 6672, DNAME записи морају бити јединствени за дато име власника (правило једног записа)."
+msgstr ""
+"Према RFC 6672, DNAME записи морају бити јединствени за дато име власника "
+"(правило једног записа)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -6825,7 +6857,9 @@ msgstr "DNAME и CNAME НЕ СМЕЈУ коегзистирати на исто�
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr "DNAME записи НЕ СМЕЈУ да се појаве на истом имену власника као NS записи, осим ако је то име апекс зоне."
+msgstr ""
+"DNAME записи НЕ СМЕЈУ да се појаве на истом имену власника као NS записи, "
+"осим ако је то име апекс зоне."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -6918,7 +6952,8 @@ msgstr ""
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "SHA-256 (тип сажетка 2) је ПРЕПОРУЧЕНИ алгоритам сажетка према RFC 8624."
+msgstr ""
+"SHA-256 (тип сажетка 2) је ПРЕПОРУЧЕНИ алгоритам сажетка према RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -7068,7 +7103,9 @@ msgstr ""
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "RFC 7477 захтева приступ \"све или ништа\" при обради CSYNC-а. Ако неки тип не може да се синхронизује, родитељ неће извршити никакве измене."
+msgstr ""
+"RFC 7477 захтева приступ \"све или ништа\" при обради CSYNC-а. Ако неки тип "
+"не може да се синхронизује, родитељ неће извршити никакве измене."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
@@ -7105,7 +7142,9 @@ msgstr "EUI48 изгледа у Cisco формату. Формат мора би
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 запис мора бити важећа MAC адреса у формату xx-xx-xx-xx-xx-xx (где је x хексадецимална цифра)."
+msgstr ""
+"EUI48 запис мора бити важећа MAC адреса у формату xx-xx-xx-xx-xx-xx (где је "
+"x хексадецимална цифра)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -9109,7 +9148,9 @@ msgstr "SOA формат: primary-ns hostmaster serial refresh retry expire mini
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Зона нема NS (Name Server) записа на апексу. Бар један NS запис на апексу је обавезан за DNSSEC."
+msgstr ""
+"Зона нема NS (Name Server) записа на апексу. Бар један NS запис на апексу је "
+"обавезан за DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -9506,10 +9547,6 @@ msgstr "Обриши API кључ"
 msgid "Permanently removes this key"
 msgstr "Трајно уклања овај кључ"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Шаблони зоне"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Уреди запис"
@@ -9767,8 +9804,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Да ли сте сигурни да желите да уклоните потпис зоне"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Уклони потпис зоне"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9791,13 +9828,9 @@ msgstr "Додај нови кључ"
 msgid "Show DS and DNSKEY"
 msgstr "Прикажи DS и DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Уклони потпис зоне"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "ИД"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -9847,10 +9880,6 @@ msgstr ""
 "Налепите приватни кључ кодиран PEM-ом (RSA или ECDSA). PowerDNS 4.7+ изводи "
 "величину кључа из PEM садржаја - изаберите одговарајући алгоритам и улогу "
 "кључа."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Тип кључа"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9919,8 +9948,8 @@ msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr "Унесите имејл и послаћемо вам линк за ресетовање лозинке."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "Е-адреса"
 
 #: templates/modern/forgot_username.html:29
@@ -9934,14 +9963,6 @@ msgstr "Пошаљи линк за ресетовање"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Управљање групама"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Дневници групе"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Додај групу"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -9966,14 +9987,6 @@ msgstr "Управљај члановима"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Управљај зонама"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Уреди групу"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Обриши групу"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10007,7 +10020,7 @@ msgstr "Чување..."
 msgid "Update"
 msgstr "Ажурирај"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Име групе"
 
@@ -10320,7 +10333,7 @@ msgstr "Уреди коментар"
 msgid "Edit comment in zone"
 msgstr "Уреди коментар у зони"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Додај шаблон"
 
@@ -10343,10 +10356,6 @@ msgstr "Глобални шаблон"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Учини овај шаблон доступним свим корисницима"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Додај шаблон зоне"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10433,10 +10442,6 @@ msgstr "Сви догађаји"
 msgid "Logs"
 msgstr "Дневници"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Дневници зоне"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Приказују се дневници за зоне које поседујете."
@@ -10469,12 +10474,8 @@ msgstr "Име домена"
 msgid "All operations"
 msgstr "Све операције"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Групно додавање записа"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Групно додавање записа"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10501,8 +10502,8 @@ msgstr "Коментар је опционалан"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Унесите само имена хостова - име зоне ће бити аутоматски додато"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Додај записе"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10581,12 +10582,8 @@ msgstr "Креирај запис"
 msgid "Back to Wizard Selection"
 msgstr "Назад на избор чаробњака"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Обриши корисника"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Обриши корисника"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10653,8 +10650,8 @@ msgstr "Сачувај зону као шаблон"
 msgid "Source Zone"
 msgstr "Изворна зона"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Име шаблона"
 
 #: templates/modern/save-zone-template.html:29
@@ -10825,8 +10822,8 @@ msgstr "Лозинка не испуњава захтеве"
 msgid "Enter your new password for"
 msgstr "Унесите нову лозинку за"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Нова лозинка"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11075,10 +11072,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Уреди профил"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Уреди корисника"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11104,10 +11097,6 @@ msgstr "Пуно име корисника за идентификацију"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Унесите пуно име"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Е-адреса"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11298,10 +11287,6 @@ msgstr "Да, одвежи ову зону"
 msgid "Yes, unlink these zones"
 msgstr "Да, одвежи ове зоне"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Шаблони дозвола"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Додај"
@@ -11337,10 +11322,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Изаберите тип шаблона"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Додај шаблон"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11681,7 +11662,7 @@ msgstr "Ви"
 msgid "Add Owner"
 msgstr "Додај власника"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Власништво групе"
 
@@ -11728,10 +11709,6 @@ msgstr "До датума"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Очисти"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ИД"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -11929,10 +11906,6 @@ msgstr ""
 "Савет: Унесите само име хоста (нпр. 'www') и име зоне ће бити додато "
 "аутоматски. Користите '@' за апекс/корен зоне."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Уреди зону"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Метаподаци"
@@ -12045,14 +12018,6 @@ msgstr "Није потписано"
 msgid "User Management"
 msgstr "Управљање корисницима"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Дневници корисника"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Додај корисника"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Тип аутентификације"
@@ -12106,7 +12071,7 @@ msgstr "Нема директних зона за приказ у овом сп�
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Обриши запис"
 
@@ -12229,7 +12194,7 @@ msgstr "Додели све мени"
 msgid "Zone ID"
 msgstr "ИД зоне"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Име зоне"
 
@@ -12353,10 +12318,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Изаберите групе у које ће нови корисник бити додат приликом креирања."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Име зоне"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Унесите име зоне"
@@ -12447,10 +12408,6 @@ msgstr "Шаблони зоне за"
 msgid "Search templates..."
 msgstr "Претражите шаблоне..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Име шаблона"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Повезане зоне"
@@ -12527,10 +12484,6 @@ msgstr ""
 "применили измене, употребите дугме \"Update Zones\" приликом уређивања "
 "шаблона."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Промени лозинку"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Тренутна лозинка"
@@ -12538,10 +12491,6 @@ msgstr "Тренутна лозинка"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Унесите тренутну лозинку"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Нова лозинка"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12777,11 +12726,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API кључ:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Групна регистрација"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Тип зоне"
 
@@ -12800,10 +12745,6 @@ msgstr "Унесите један домен по реду"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Додај зоне"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Власништво групе"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -12944,11 +12885,11 @@ msgstr "Ваш налог је сада заштићен вишефакторс�
 msgid "Authentication method:"
 msgstr "Метода аутентификације:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Аутентификатор апликација"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Потврда имејла"
 
@@ -13042,10 +12983,6 @@ msgstr "MFA је тренутно онемогућен"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Ваш налог није заштићен вишефакторском аутентификацијом."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Аутентификатор апликација"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13069,10 +13006,6 @@ msgstr "Лако за употребу"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Подеси аутентификацију апликације"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Потврда имејла"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13627,6 +13560,7 @@ msgid "PDNS Server"
 msgstr "PDNS сервер"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Име сервера"
 
@@ -13727,18 +13661,6 @@ msgstr "Метрика"
 msgid "No detailed metrics available."
 msgstr "Нема доступних детаљних метрика."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Директне зоне"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Обрнуте зоне"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Дневник промена записа"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Листа корисника"
@@ -13750,10 +13672,6 @@ msgstr "Листа група"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Листа шаблона дозвола"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Додај шаблон дозвола"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -13855,10 +13773,6 @@ msgstr "Креирај нови DNS запис у овој зони"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Додај још један запис"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14034,10 +13948,6 @@ msgstr ""
 "Дозволе су организоване у групе испод ради лакшег управљања. Користите "
 "претрагу да брзо пронађете одређене дозволе."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Обриши запис"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Обриши запис шаблона"
@@ -14147,10 +14057,6 @@ msgstr ""
 "промене чланства (додати или уклоњени корисници). Сваки унос приказује "
 "радњу, извршиоца, погођену групу и време. Корисно за проверу промена "
 "приступа зонама преко власништва групе."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Име групе"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14326,10 +14232,6 @@ msgstr "Замени подударне записе"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Додај све записе"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Тип зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14575,10 +14477,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API кључ (из поставке api-key у pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

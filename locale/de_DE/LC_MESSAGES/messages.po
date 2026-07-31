@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -973,7 +973,8 @@ msgstr ""
 "ein. Leerzeichen und Zeilenumbrüche werden automatisch entfernt."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Schlüsseltyp"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1648,8 +1649,8 @@ msgid "Invalid group ID."
 msgstr "Ungültige Gruppen-ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Gruppe löschen"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -2025,7 +2026,7 @@ msgid "Search"
 msgstr "Suche"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Änderungsprotokoll der Einträge"
 
@@ -2062,9 +2063,9 @@ msgid "You do not have the permission to add a new user."
 msgstr "Sie haben nicht die Berechtigung, einen neuen Benutzer hinzuzufügen."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
-msgstr "Benutzer hinzufügen"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
+msgstr "Neuer Benutzer"
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "No non-superuser permission template is available to assign."
@@ -2112,8 +2113,8 @@ msgid "The record could not be deleted."
 msgstr "Der Eintrag konnte nicht gelöscht werden."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Zonen-Logs"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2198,8 +2199,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Sie haben keine Berechtigung, diese Zone anzuzeigen."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Benutzer-Logs"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2241,7 +2242,8 @@ msgid "User agreement accepted successfully."
 msgstr "Benutzervereinbarung erfolgreich angenommen."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Zone bearbeiten"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2513,8 +2515,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC-Authentifizierung konnte nicht initiiert werden: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Gruppenprotokolle"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2655,16 +2657,17 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "%d Standardwert(e) gespeichert; %d gelöscht."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Zonenvorlagen"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Zonen Vorlagen"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Sie haben keine Berechtigung, Gruppen zu erstellen."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Gruppe hinzufügen"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2738,7 +2741,7 @@ msgstr "Ein Fehler ist beim Löschen des DNSSEC-Schlüssels aufgetreten: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Berechtigungsvorlagen"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2816,8 +2819,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Sie haben nicht die Berechtigung, Berechtigungsvorlagen hinzuzufügen."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Berechtigungsvorlage hinzufügen"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2915,8 +2918,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Sie haben nicht die Berechtigung, eine Zonen-Vorlage hinzuzufügen."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Zonenvorlage hinzufügen"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Neue Zonenvorlage"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -3039,7 +3043,7 @@ msgstr ""
 "Sie haben nicht die Berechtigung, Einträge zu Zonen-Vorlagen hinzuzufügen."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Benutzer bearbeiten"
 
@@ -3226,8 +3230,8 @@ msgstr ""
 "ändern. Bitte kontaktieren Sie Ihren Administrator."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Passwort ändern"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3275,8 +3279,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Sie haben keine Berechtigung, Gruppen zu bearbeiten."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Gruppe bearbeiten"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3304,7 +3308,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Der Supermaster wurde erfolgreich gelöscht."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Massenregistrierung"
 
@@ -10059,10 +10063,6 @@ msgstr "API-Schlüssel löschen"
 msgid "Permanently removes this key"
 msgstr "Entfernt diesen Schlüssel dauerhaft"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Zonen Vorlagen"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Eintrag bearbeiten"
@@ -10325,8 +10325,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Sind Sie sicher, dass Sie die Zone unsignieren möchten"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Zone unsignieren"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10351,11 +10351,7 @@ msgstr "Neuen Schlüssel hinzufügen"
 msgid "Show DS and DNSKEY"
 msgstr "DS und DNSKEY anzeigen"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Zone unsignieren"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10407,10 +10403,6 @@ msgstr ""
 "Fügen Sie einen PEM-kodierten privaten Schlüssel ein (RSA oder ECDSA). "
 "PowerDNS 4.7+ leitet die Schlüsselgröße aus dem PEM ab - wählen Sie den "
 "passenden Algorithmus und die Schlüsselrolle."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Schlüsseltyp"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10482,8 +10474,8 @@ msgstr ""
 "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum "
 "Zurücksetzen Ihres Passworts."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "E-Mail-Adresse"
 
 #: templates/modern/forgot_username.html:29
@@ -10497,14 +10489,6 @@ msgstr "Reset-Link senden"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Gruppenverwaltung"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Gruppenprotokolle"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Gruppe hinzufügen"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10529,14 +10513,6 @@ msgstr "Mitglieder verwalten"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Zonen verwalten"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Gruppe bearbeiten"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Gruppe löschen"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10572,7 +10548,7 @@ msgstr "Speichern..."
 msgid "Update"
 msgstr "Aktualisieren"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Gruppenname"
 
@@ -10890,7 +10866,7 @@ msgstr "Kommentar bearbeiten"
 msgid "Edit comment in zone"
 msgstr "Kommentar in Zone bearbeiten"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Vorlage hinzufügen"
 
@@ -10913,10 +10889,6 @@ msgstr "Globale Vorlage"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Vorlage für alle Benutzer verfügbar"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Neue Zonenvorlage"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11004,10 +10976,6 @@ msgstr "Alle Ereignisse"
 msgid "Logs"
 msgstr "Protokolle"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Zonen-Logs"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Anzeige der Protokolle für Zonen, die Sie besitzen."
@@ -11041,12 +11009,8 @@ msgstr "Domain-Name"
 msgid "All operations"
 msgstr "Alle Operationen"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Massenhinzufügung von Einträgen"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Massenhinzufügung von Einträgen"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -11074,8 +11038,8 @@ msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr ""
 "Geben Sie nur Hostnamen ein - der Zonenname wird automatisch hinzugefügt"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Einträge hinzufügen"
 
 #: templates/modern/bulk_record_add.html:56
@@ -11157,12 +11121,8 @@ msgstr "Eintrag erstellen"
 msgid "Back to Wizard Selection"
 msgstr "Zurück zur Assistenten-Auswahl"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Benutzer löschen"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Benutzer löschen"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11229,9 +11189,9 @@ msgstr "Zone als Vorlage speichern"
 msgid "Source Zone"
 msgstr "Quellzone"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Vorlagenname"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "Name der Zonenvorlage"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11419,8 +11379,8 @@ msgstr "Passwort erfüllt nicht die Anforderungen"
 msgid "Enter your new password for"
 msgstr "Geben Sie Ihr neues Passwort ein für"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Neues Passwort"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11670,10 +11630,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Benutzer bearbeiten"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11699,10 +11655,6 @@ msgstr "Vollständiger Name des Benutzer zur Identifizierung"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Vollständigen Namen angeben"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "E-Mail-Adresse"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11897,10 +11849,6 @@ msgstr "Ja, diese Zone trennen"
 msgid "Yes, unlink these zones"
 msgstr "Ja, diese Zonen trennen"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Berechtigungsvorlagen"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Hinzufügen"
@@ -11936,10 +11884,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Bitte wählen Sie einen Vorlagentyp"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Vorlage hinzufügen"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12289,7 +12233,7 @@ msgstr "Sie"
 msgid "Add Owner"
 msgstr "Besitzer hinzufügen"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Gruppenbesitz"
 
@@ -12337,10 +12281,6 @@ msgstr "Bis Datum"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Löschen"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12544,10 +12484,6 @@ msgstr ""
 "Tipp: Geben Sie nur den Hostnamen ein (z.B. 'www') und der Zonenname wird "
 "automatisch hinzugefügt. Verwenden Sie '@' für den Zone-Apex/Root."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Zone bearbeiten"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadaten"
@@ -12660,14 +12596,6 @@ msgstr "Nicht signiert"
 msgid "User Management"
 msgstr "Benutzerverwaltung"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Benutzer-Logs"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Neuer Benutzer"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Authentifizierungstyp"
@@ -12722,7 +12650,7 @@ msgstr ""
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Eintrag löschen"
 
@@ -12849,7 +12777,7 @@ msgstr "Alle mir zuweisen"
 msgid "Zone ID"
 msgstr "Zonen-ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Zonen Name"
 
@@ -12978,10 +12906,6 @@ msgstr ""
 "Wählen Sie Gruppen, denen der neue Benutzer bei der Erstellung hinzugefügt "
 "werden soll."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Name der Zone"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Zonennamen angeben"
@@ -13072,10 +12996,6 @@ msgstr "Zonen Vorlagen für"
 msgid "Search templates..."
 msgstr "Vorlagen suchen..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Name der Zonenvorlage"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Zonen verbunden"
@@ -13153,10 +13073,6 @@ msgstr ""
 "nicht automatisch - verwenden Sie die Schaltfläche \"Zonen aktualisieren\" "
 "beim Bearbeiten von Vorlagen, um Änderungen anzuwenden."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Passwort ändern"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Aktuelles Passwort"
@@ -13164,10 +13080,6 @@ msgstr "Aktuelles Passwort"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Aktuelles Passwort angeben"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Neues Passwort"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13405,11 +13317,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API-Schlüssel:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Massenregistrierung"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Zonentyp"
 
@@ -13428,10 +13336,6 @@ msgstr "Eine Domain pro Zeile eingeben"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Zonen hinzufügen"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Gruppen-Eigentümerschaft"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13574,11 +13478,11 @@ msgstr ""
 msgid "Authentication method:"
 msgstr "Authentifizierung Methode:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Authenticator-App"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "E-Mail Überprüfung"
 
@@ -13676,10 +13580,6 @@ msgid "Your account is not protected with multi-factor authentication."
 msgstr ""
 "Ihr Benutzerkonto ist nicht mit Multi-Factor Authentifizierung geschützt."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Authentifizierungs-App"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13703,10 +13603,6 @@ msgstr "Einfach zu benutzen"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "App Authentifizierung einrichten"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "E-Mail Überprüfung"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14280,6 +14176,7 @@ msgid "PDNS Server"
 msgstr "PDNS-Server"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Server-Name"
 
@@ -14380,18 +14277,6 @@ msgstr "Metrik"
 msgid "No detailed metrics available."
 msgstr "Keine detaillierten Metriken verfügbar."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "DNS-Zonen"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Reverse Zonen"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Änderungsprotokoll der Einträge"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Benutzer auflisten"
@@ -14403,10 +14288,6 @@ msgstr "Gruppen auflisten"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Berechtigungsvorlagen auflisten"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Berechtigungsvorlage hinzufügen"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14512,10 +14393,6 @@ msgstr "Einen neuen DNS-Eintrag in dieser Zone erstellen"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Weiteren Eintrag hinzufügen"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Einträge hinzufügen"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14694,10 +14571,6 @@ msgstr ""
 "Verwenden Sie die Suchfunktion, um spezifische Berechtigungen schnell zu "
 "finden."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Eintrag löschen"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Vorlageneintrag löschen"
@@ -14811,10 +14684,6 @@ msgstr ""
 "Eintrag zeigt die Aktion, den Akteur, die betroffene Gruppe und einen "
 "Zeitstempel. Nützlich, um Zonen-Zugriffsänderungen über Gruppenbesitz zu "
 "prüfen."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Gruppenname"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14992,10 +14861,6 @@ msgstr "Übereinstimmende Einträge ersetzen"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Alle Einträge hinzufügen"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Zonentyp"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15251,10 +15116,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS-API-Schlüssel (aus der Einstellung api-key in pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

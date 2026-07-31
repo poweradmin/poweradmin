@@ -160,7 +160,7 @@ class EditController extends BaseController
     {
         // Set the current page for navigation highlighting
         $this->setCurrentPage('edit');
-        $this->setPageTitle(_('Edit Zone'));
+        $this->setPageTitle(_('Edit zone'));
 
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -982,8 +982,9 @@ msgstr ""
 "ríomhphoist. Bainfear Spásanna agus línte nua go huathoibríoch."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
-msgstr "Cineál eochair"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
+msgstr "Cineál eochrach"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
@@ -1648,9 +1649,9 @@ msgid "Invalid group ID."
 msgstr "ID grúpa neamhbhailí."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
-msgstr "Scrios Grúpa"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
+msgstr "Scrios grúpa"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -2029,7 +2030,7 @@ msgid "Search"
 msgstr "Cuardaigh"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Loga Athruithe ar Thaifid"
 
@@ -2066,9 +2067,9 @@ msgid "You do not have the permission to add a new user."
 msgstr "Níl an cead agat úsáideoir nua a chur leis."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
-msgstr "Cuir Úsáideoir Leis"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
+msgstr "Cuir úsáideoir leis"
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "No non-superuser permission template is available to assign."
@@ -2113,8 +2114,8 @@ msgid "The record could not be deleted."
 msgstr "Níorbh fhéidir an taifead a scriosadh."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Logaí Crios"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2195,9 +2196,9 @@ msgid "You do not have permission to view this zone."
 msgstr "Níl cead agat an crios seo a fheiceáil."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
-msgstr "Logaí Úsáideoirí"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
+msgstr "Logaí úsáideora"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
 msgid "You do not have permission to unlink zones from templates."
@@ -2244,8 +2245,9 @@ msgid "User agreement accepted successfully."
 msgstr "Glacadh leis an gcomhaontú úsáideora go rathúil."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
-msgstr "Cuir Crios in Eagar"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
+msgstr "Cuir crios in eagar"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
@@ -2509,9 +2511,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Theip ar an bhfíordheimhniú OIDC a thionscnamh: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Logaí Grúpa"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Logaí grúpa"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2650,17 +2652,18 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Sábháladh %d réamhshocrú; glanadh %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Teimpléid Crios"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Teimpléid criosanna"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Níl cead agat grúpaí a chruthú."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
-msgstr "Cuir Grúpa Leis"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
+msgstr "Cuir grúpa leis"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
@@ -2733,8 +2736,8 @@ msgstr "Tharla earráid agus an eochair DNSSEC á scriosadh: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "Teimpléid Cead"
+msgid "Permission templates"
+msgstr "Teimpléid ceadanna"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2822,9 +2825,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Níl cead agat teimpléid cead a chur leis."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Cuir Teimpléad Cead Leis"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Cuir teimpléad ceadanna leis"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2921,8 +2924,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Níl an cead agat teimpléad crios a chur leis."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Cuir Teimpléad Crios Leis"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Cuir teimpléad crios"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -3043,7 +3047,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Níl cead agat taifid a chur le teimpléid crios."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Cuir Úsáideoir in Eagar"
 
@@ -3238,9 +3242,9 @@ msgstr ""
 "athrú anseo. Téigh i dteagmháil le do riarthóir."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
-msgstr "Athraigh Pasfhocal"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
+msgstr "Athraigh pasfhocal"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -3287,9 +3291,9 @@ msgid "You do not have permission to edit groups."
 msgstr "Níl cead agat grúpaí a chur in eagar."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
-msgstr "Cuir Grúpa in Eagar"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
+msgstr "Cuir grúpa in eagar"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -3316,7 +3320,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Scriosadh an supermaster go rathúil."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Clárúchán Bulc"
 
@@ -10121,10 +10125,6 @@ msgstr "Scrios Eochair API"
 msgid "Permanently removes this key"
 msgstr "Baineann sé an eochair seo go buan"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Teimpléid criosanna"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Cuir taifead in eagar"
@@ -10387,9 +10387,9 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "An bhfuil tú cinnte gur mhaith leat an crios a dhíshíniú"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "Díshínigh an Crios"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "Díshínigh an crios"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -10412,13 +10412,9 @@ msgstr "Cuir eochair nua leis"
 msgid "Show DS and DNSKEY"
 msgstr "Taispeáin DS agus DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Díshínigh an crios"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "Aitheantas"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -10468,10 +10464,6 @@ msgstr ""
 "Greamaigh eochair phríobháideach PEM-ionchódaithe (RSA nó ECDSA). Faigheann "
 "PowerDNS 4.7+ méid na heochrach ó ábhar an PEM - roghnaigh an t-algartam "
 "agus ról na heochrach a fhreagraíonn dó."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Cineál eochrach"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10543,9 +10535,9 @@ msgstr ""
 "Cuir isteach do sheoladh ríomhphoist agus cuirfimid nasc chugat chun do "
 "phasfhocal a athshocrú."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "Seoladh Ríomhphoist"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "Seoladh ríomhphoist"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10558,14 +10550,6 @@ msgstr "Seol Nasc Athshocraithe"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Bainistíocht an Ghrúpa"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Logaí grúpa"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Cuir grúpa leis"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10590,14 +10574,6 @@ msgstr "Bainistigh baill"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Bainistigh criosanna"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Cuir grúpa in eagar"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Scrios grúpa"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10633,7 +10609,7 @@ msgstr "Ag sábháil..."
 msgid "Update"
 msgstr "Nuashonraigh"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Ainm an Ghrúpa"
 
@@ -10954,7 +10930,7 @@ msgstr "Edit comment"
 msgid "Edit comment in zone"
 msgstr "Cuir trácht in eagar i gcrios"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Cuir isteach teimpléad"
 
@@ -10977,10 +10953,6 @@ msgstr "teimpléad Domhanda"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Déan an teimpléad seo ar fáil do gach úsáideoir"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Cuir teimpléad crios"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -11071,10 +11043,6 @@ msgstr "Gach imeacht"
 msgid "Logs"
 msgstr "Logaí"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Logaí Crios"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Logaí á dtaispeáint do na criosanna ar leatsa iad."
@@ -11108,13 +11076,9 @@ msgstr "ainm fearainn"
 msgid "All operations"
 msgstr "Gach oibríocht"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "Cuir taifid leis an mbulc"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "Cuir Taifid Leis an mBulc"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -11143,9 +11107,9 @@ msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr ""
 "Iontráil óstainmneacha amháin - cuirfear ainm an chrios leis go huathoibríoch"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
-msgstr "Cuir Taifid Leis"
+#: templates/modern/add_record.html:197
+msgid "Add records"
+msgstr "Cuir taifid leis"
 
 #: templates/modern/bulk_record_add.html:56
 msgid "Instructions"
@@ -11228,13 +11192,9 @@ msgstr "Cruthaigh Taifead"
 msgid "Back to Wizard Selection"
 msgstr "Ar ais chuig Roghnú an Draoi"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
 msgstr "Scrios úsáideoir"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
-msgstr "Scrios Úsáideoir"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
 msgid "You are about to delete the user"
@@ -11300,9 +11260,9 @@ msgstr "Sábháil Crios mar Teimpléad"
 msgid "Source Zone"
 msgstr "Crios Foinse"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Ainm an Teimpléid"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "Ainm an teimpléid"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11488,9 +11448,9 @@ msgstr "Ní chomhlíonann an pasfhocal na riachtanais"
 msgid "Enter your new password for"
 msgstr "Cuir isteach do phasfhocal nua le haghaidh"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "Pasfhocal nua"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "Focal faire nua"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -11740,10 +11700,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Cuir próifíl in eagar"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Cuir úsáideoir in eagar"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11769,10 +11725,6 @@ msgstr "Ainm iomlán an úsáideora le haghaidh aitheantais"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Cuir ainm iomlán ar fáil"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Seoladh ríomhphoist"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11968,10 +11920,6 @@ msgstr "Sea, dínasc an crios seo"
 msgid "Yes, unlink these zones"
 msgstr "Sea, dínasc na criosanna seo"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Teimpléid ceadanna"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Cuir leis"
@@ -12007,10 +11955,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Roghnaigh cineál teimpléid"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Cuir Teimpléad Leis"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12361,7 +12305,7 @@ msgstr "Tusa"
 msgid "Add Owner"
 msgstr "Cuir Úinéir leis"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Úinéireacht Ghrúpa"
 
@@ -12409,10 +12353,6 @@ msgstr "Go dáta"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Glan"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Aitheantas"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12612,10 +12552,6 @@ msgstr ""
 "Leid: Cuir isteach an t-óstainm amháin (m.sh. 'www') agus cuirfear ainm an "
 "chreasa leis go huathoibríoch. Bain úsáid as '@' d'apex/fhréamh an chreasa."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Cuir crios in eagar"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Meiteashonraí"
@@ -12728,14 +12664,6 @@ msgstr "Gan a bheith sínithe"
 msgid "User Management"
 msgstr "Bainistíocht Úsáideora"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Logaí úsáideora"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Cuir úsáideoir leis"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Cineál auth"
@@ -12789,7 +12717,7 @@ msgstr "Níl aon chriosanna ar aghaidh a thaispeáint sa liosta seo."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Scrios Taifead"
 
@@ -12914,7 +12842,7 @@ msgstr "Sann gach ceann domsa"
 msgid "Zone ID"
 msgstr "ID Crios"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Ainm an Chrios"
 
@@ -13044,10 +12972,6 @@ msgstr ""
 "Roghnaigh grúpaí lena gcuirfear an t-úsáideoir nua leo nuair a chruthaítear "
 "é."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Ainm an chrios"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Ainm an chrios a chur ar fáil"
@@ -13138,10 +13062,6 @@ msgstr "Teimpléid crios do"
 msgid "Search templates..."
 msgstr "Cuardaigh teimpléid..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Ainm an teimpléid"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Criosanna nasctha"
@@ -13220,10 +13140,6 @@ msgstr ""
 "\"Nuashonraigh Criosanna\" agus teimpléid á gcur in eagar chun na hathruithe "
 "a chur i bhfeidhm."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Athraigh pasfhocal"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Focal faire reatha"
@@ -13231,10 +13147,6 @@ msgstr "Focal faire reatha"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Focal faire reatha a sholáthar"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Focal faire nua"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13473,11 +13385,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API Key:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Clárú Bulc"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Cineál Crios"
 
@@ -13496,10 +13404,6 @@ msgstr "Clóscríobh fearann amháin in aghaidh na líne"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Cuir Criosanna leis"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Úinéireacht ghrúpa"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13642,11 +13546,11 @@ msgstr "Tá do chuntas cosanta anois le fíordheimhnithe il-fhachtóir."
 msgid "Authentication method:"
 msgstr "Modh fíordheimhnithe:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Aip fhíordheimhnitheora"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Fíorú ríomhphoist"
 
@@ -13742,10 +13646,6 @@ msgstr "Tá MFA díchumasaithe faoi láthair"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Níl do chuntas cosanta le fíordheimhnithe il-fachtóra."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Aip Fhíordheimhnitheora"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13769,10 +13669,6 @@ msgstr "Éasca le húsáid"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Socraigh fíordheimhniú aipe"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Fíorú Ríomhphost"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14345,6 +14241,7 @@ msgid "PDNS Server"
 msgstr "PDNS Server"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Ainm Freastalaí"
 
@@ -14445,18 +14342,6 @@ msgstr "Méadracht"
 msgid "No detailed metrics available."
 msgstr "Níl aon mhéadracht mhionsonraithe ar fáil."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Criosanna ar aghaidh"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Criosanna droim ar ais"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Loga athrú taifead"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Liostaigh úsáideoirí"
@@ -14468,10 +14353,6 @@ msgstr "Liostaigh grúpaí"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Liostaigh teimpléid ceadanna"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Cuir teimpléad ceadanna leis"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14577,10 +14458,6 @@ msgstr "Cruthaigh taifead DNS nua sa chrios seo"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Cuir taifead eile"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Cuir taifid leis"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14765,10 +14642,6 @@ msgstr ""
 "bhainistiú. Bain úsáid as an ngné chuardaigh chun ceadanna ar leith a aimsiú "
 "go tapa."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Scrios taifead"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Scrios Taifead Teimpléid"
@@ -14883,10 +14756,6 @@ msgstr ""
 "Taispeánann gach iontráil an gníomh, an duine a rinne é, an grúpa lena "
 "mbaineann, agus stampa ama. Tá sé úsáideach chun athruithe ar rochtain "
 "criosanna trí úinéireacht ghrúpa a iniúchadh."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Ainm an ghrúpa"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -15063,10 +14932,6 @@ msgstr "Athsholáthair taifid a mheaitseálann"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Cuir na taifid go léir leis"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Cineál Crios"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15320,10 +15185,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Eochair API PowerDNS (ón socrú api-key i pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Ainm an fhreastalaí"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

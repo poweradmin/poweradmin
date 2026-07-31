@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -960,7 +960,8 @@ msgstr ""
 "naujos eilutės bus automatiškai pašalinti."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Rakto tipas"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1621,8 +1622,8 @@ msgid "Invalid group ID."
 msgstr "Netinkamas grupės ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Ištrinti grupę"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1993,7 +1994,7 @@ msgid "Search"
 msgstr "Paieška"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Įrašų pakeitimų žurnalas"
 
@@ -2030,8 +2031,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Neturite leidimo pridėti naują vartotoją."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Pridėti naudotoją"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2077,8 +2078,8 @@ msgid "The record could not be deleted."
 msgstr "Įrašo ištrinti nepavyko."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Zonų žurnalai"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2159,8 +2160,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Naudotojų žurnalai"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2204,7 +2205,8 @@ msgid "User agreement accepted successfully."
 msgstr "Naudotojo sutartis sėkmingai priimta."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Redaguoti zoną"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2460,8 +2462,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nepavyko inicijuoti OIDC autentifikacijos: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Grupės žurnalai"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2600,7 +2602,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Išsaugota numatytųjų reikšmių: %d; išvalyta: %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Zonų šablonai"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2608,8 +2611,8 @@ msgid "You do not have permission to create groups."
 msgstr "Neturite leidimo kurti grupes."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Pridėti grupę"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2683,8 +2686,8 @@ msgstr "Įvyko klaida trinant DNSSEC raktą: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "Teisių šablonai"
+msgid "Permission templates"
+msgstr "Leidimų šablonai"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2764,9 +2767,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Neturite leidimo pridėti leidimų šablonų."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Pridėti teisių šabloną"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Pridėti leidimų šabloną"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2861,7 +2864,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Neturite leidimo pridėti zonos šablono."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Pridėti zonos šabloną"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2980,7 +2984,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Neturite leidimo pridėti įrašų į zonų šablonus."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Redaguoti naudotoją"
 
@@ -3164,8 +3168,8 @@ msgstr ""
 "Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Keisti slaptažodį"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3209,8 +3213,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Neturite leidimo redaguoti grupes."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Redaguoti grupę"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3238,7 +3242,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster sėkmingai ištrintas."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Masinis registravimas"
 
@@ -9865,10 +9869,6 @@ msgstr "Šalinti API raktą"
 msgid "Permanently removes this key"
 msgstr "Visam laikui pašalina šį raktą"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Zonų šablonai"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Redaguoti įrašą"
@@ -10128,8 +10128,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Ar esate tikri, kad norite atskirt zoną"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Atskirt zoną"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10152,11 +10152,7 @@ msgstr "Pridėti naują raktą"
 msgid "Show DS and DNSKEY"
 msgstr "Rodyti DS ir DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Atskirt zoną"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10208,10 +10204,6 @@ msgstr ""
 "Įklijuokite PEM formatu užkoduotą privatųjį raktą (RSA arba ECDSA). PowerDNS "
 "4.7+ rakto dydį nustato iš PEM turinio - parinkite tinkamą algoritmą ir "
 "rakto vaidmenį."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Rakto tipas"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10282,8 +10274,8 @@ msgstr ""
 "Įveskite savo el. pašto adresą ir mes atsiųsime nuorodą slaptažodžio "
 "atkūrimui."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "El. pašto adresas"
 
 #: templates/modern/forgot_username.html:29
@@ -10297,14 +10289,6 @@ msgstr "Siųsti atkūrimo nuorodą"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Grupių valdymas"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Grupės žurnalai"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Pridėti grupę"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10329,14 +10313,6 @@ msgstr "Valdyti narius"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Valdyti zonas"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Redaguoti grupę"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Ištrinti grupę"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10371,7 +10347,7 @@ msgstr "Saugoma..."
 msgid "Update"
 msgstr "Atnaujinti"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Grupės pavadinimas"
 
@@ -10685,7 +10661,7 @@ msgstr "Redaguoti komentarą"
 msgid "Edit comment in zone"
 msgstr "Redaguoti komentarą zonoje"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Pridėti šabloną"
 
@@ -10708,10 +10684,6 @@ msgstr "Globalus šablonas"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Padaryti šį šabloną prieinamą visiems naudotojams"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Pridėti zonos šabloną"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10801,10 +10773,6 @@ msgstr "Visi įvykiai"
 msgid "Logs"
 msgstr "Žurnalai"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Zonų žurnalai"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Rodomi jūsų valdomų zonų žurnalai."
@@ -10837,12 +10805,8 @@ msgstr "Domeno pavadinimas"
 msgid "All operations"
 msgstr "Visos operacijos"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Masiškai pridėti įrašus"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Masiškai pridėti įrašus"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10871,8 +10835,8 @@ msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr ""
 "Įveskite tik serverių vardus - zonos pavadinimas bus pridėtas automatiškai"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Pridėti įrašus"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10951,12 +10915,8 @@ msgstr "Sukurti įrašą"
 msgid "Back to Wizard Selection"
 msgstr "Grįžti į vedlio pasirinkimą"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Pašalinti naudotoją"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Pašalinti naudotoją"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -11023,8 +10983,8 @@ msgstr "Išsaugoti zoną kaip šabloną"
 msgid "Source Zone"
 msgstr "Šaltinio zona"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Šablono pavadinimas"
 
 #: templates/modern/save-zone-template.html:29
@@ -11196,8 +11156,8 @@ msgstr "Slaptažodis neatitinka reikalavimų"
 msgid "Enter your new password for"
 msgstr "Įveskite naują slaptažodį"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Naujas slaptažodis"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11447,10 +11407,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Redaguoti profilį"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Redaguoti naudotoją"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11476,10 +11432,6 @@ msgstr "Naudotojo pilnas vardas identifikavimui"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Nurodykite pilną vardą"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "El. pašto adresas"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11670,10 +11622,6 @@ msgstr "Taip, atjungti šią zoną"
 msgid "Yes, unlink these zones"
 msgstr "Taip, atjungti šias zonas"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Leidimų šablonai"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Pridėti"
@@ -11709,10 +11657,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Pasirinkite šablono tipą"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Pridėti šabloną"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12059,7 +12003,7 @@ msgstr "Jūs"
 msgid "Add Owner"
 msgstr "Pridėti savininką"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Grupės nuosavybė"
 
@@ -12106,10 +12050,6 @@ msgstr "Iki datos"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Išvalyti"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12307,10 +12247,6 @@ msgstr ""
 "Patarimas: Įveskite tik serverio vardą (pvz., 'www'), o zonos pavadinimas "
 "bus pridėtas automatiškai. Naudokite '@' zonos viršūnei/šakniai."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Redaguoti zoną"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metaduomenys"
@@ -12423,14 +12359,6 @@ msgstr "Nepasirašyta"
 msgid "User Management"
 msgstr "Vartotojų valdymas"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Naudotojų žurnalai"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Pridėti naudotoją"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Autentifikavimo tipas"
@@ -12484,7 +12412,7 @@ msgstr "Šiame sąraše nėra tiesioginių zonų, kurias būtų galima rodyti."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Pašalinti įrašą"
 
@@ -12607,7 +12535,7 @@ msgstr "Priskirti visas man"
 msgid "Zone ID"
 msgstr "Zonos ID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Zonos pavadinimas"
 
@@ -12734,10 +12662,6 @@ msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Pasirinkite grupes, į kurias bus pridėtas naujas vartotojas sukūrimo metu."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Zonos pavadinimas"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Pateikite zonos pavadinimą"
@@ -12828,10 +12752,6 @@ msgstr "Zonų šablonai"
 msgid "Search templates..."
 msgstr "Ieškoti šablonų..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Šablono pavadinimas"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Susietos zonos"
@@ -12909,10 +12829,6 @@ msgstr ""
 "naudokite \"Atnaujinti zonas\" mygtuką redaguojant šablonus pakeitimams "
 "pritaikyti."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Keisti slaptažodį"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Dabartinis slaptažodis"
@@ -12920,10 +12836,6 @@ msgstr "Dabartinis slaptažodis"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Pateikite dabartinį slaptažodį"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Naujas slaptažodis"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13160,11 +13072,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API raktas:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Masinis registravimas"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Zonos tipas"
 
@@ -13183,10 +13091,6 @@ msgstr "Įveskite po vieną domeną eilutėje"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Pridėti zonas"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Grupės nuosavybė"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13325,11 +13229,11 @@ msgstr "Jūsų paskyra dabar apsaugota dviejų veiksnių autentifikavimu."
 msgid "Authentication method:"
 msgstr "Autentifikavimo metodas:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Autentifikavimo programa"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "El. pašto patvirtinimas"
 
@@ -13425,10 +13329,6 @@ msgstr "MFA šiuo metu išjungta"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Jūsų paskyra nėra apsaugota dviejų veiksnių autentifikavimu."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Autentifikavimo programa"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13452,10 +13352,6 @@ msgstr "Lengva naudoti"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Nustatyti programos autentifikavimą"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "El. pašto patvirtinimas"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14016,6 +13912,7 @@ msgid "PDNS Server"
 msgstr "PDNS serveris"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Serverio pavadinimas"
 
@@ -14116,18 +14013,6 @@ msgstr "Metrika"
 msgid "No detailed metrics available."
 msgstr "Išsamios metrikos neprieinamos."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Tiesioginės zonos"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Atvirkštinės zonos"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Įrašų pakeitimų žurnalas"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Vartotojų sąrašas"
@@ -14139,10 +14024,6 @@ msgstr "Grupių sąrašas"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Rodyti leidimų šablonus"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Pridėti leidimų šabloną"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14246,10 +14127,6 @@ msgstr "Sukurti naują DNS įrašą šioje zonoje"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Pridėti kitą įrašą"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Pridėti įrašus"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14425,10 +14302,6 @@ msgstr ""
 "Leidimai žemiau suskirstyti į grupes lengvesniam valdymui. Naudokite "
 "paieškos funkciją greitam konkrečių leidimų suradimui."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Ištrinti įrašą"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Ištrinti šablono įrašą"
@@ -14541,10 +14414,6 @@ msgstr ""
 "narystės pakeitimus (pridėtus arba pašalintus naudotojus). Kiekviename įraše "
 "nurodomas veiksmas, jį atlikęs asmuo, susijusi grupė ir laiko žyma. Naudinga "
 "tikrinant prieigos prie zonų pakeitimus, kylančius iš grupinės nuosavybės."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Grupės pavadinimas"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14720,10 +14589,6 @@ msgstr "Pakeisti sutampančius įrašus"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Pridėti visus įrašus"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Zonos tipas"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14970,10 +14835,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API raktas (iš pdns.conf api-key nustatymo)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

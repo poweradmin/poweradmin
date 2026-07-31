@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -968,8 +968,9 @@ msgstr ""
 "baharu akan dibuang secara automatik."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
-msgstr "Jenis Kunci"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
+msgstr "Jenis Kekunci"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
@@ -1630,9 +1631,9 @@ msgid "Invalid group ID."
 msgstr "ID kumpulan tidak sah."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
-msgstr "Padam Kumpulan"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
+msgstr "Padam kumpulan"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
 msgid "Group deletion cancelled."
@@ -2000,7 +2001,7 @@ msgid "Search"
 msgstr "Cari"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Log Perubahan Rekod"
 
@@ -2037,9 +2038,9 @@ msgid "You do not have the permission to add a new user."
 msgstr "Anda tidak mempunyai kebenaran untuk menambah pengguna baharu."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
-msgstr "Tambah Pengguna"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
+msgstr "Tambah pengguna"
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "No non-superuser permission template is available to assign."
@@ -2084,8 +2085,8 @@ msgid "The record could not be deleted."
 msgstr "Rekod tidak dapat dipadam."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Log Zon"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2166,8 +2167,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Anda tidak mempunyai kebenaran untuk melihat zon ini."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Log Pengguna"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2207,8 +2208,9 @@ msgid "User agreement accepted successfully."
 msgstr "Perjanjian pengguna telah berjaya diterima."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
-msgstr "Sunting Zon"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
+msgstr "Edit zon"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
@@ -2461,9 +2463,9 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Gagal memulakan pengesahan OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
-msgstr "Log Kumpulan"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
+msgstr "Log kumpulan"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
 msgid "PEM key export requires PowerDNS 4.7 or newer."
@@ -2602,17 +2604,18 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "%d nilai lalai disimpan; %d dikosongkan."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
-msgstr "Templat Zon"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
+msgstr "Templat Zone"
 
 #: lib/Application/Controller/AddGroupController.php:74
 msgid "You do not have permission to create groups."
 msgstr "Anda tidak mempunyai kebenaran untuk membuat kumpulan."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
-msgstr "Tambah Kumpulan"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
+msgstr "Tambah kumpulan"
 
 #: lib/Application/Controller/EditGroupController.php:120
 msgid "Invalid permission template: must be a group template"
@@ -2685,8 +2688,8 @@ msgstr "Ralat berlaku semasa memadam kunci DNSSEC: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "Templat Kebenaran"
+msgid "Permission templates"
+msgstr "Templat kebenaran"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2759,9 +2762,9 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Anda tidak mempunyai kebenaran untuk menambahkan templat kebenaran."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
-msgstr "Tambah Templat Kebenaran"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
+msgstr "Tambah templat kebenaran"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
 msgid "The permission template has been added successfully."
@@ -2857,8 +2860,9 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Anda tidak mempunyai kebenaran untuk menambah templat zon."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
-msgstr "Tambah Templat Zon"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
+msgstr "Tambah templat zon"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
 msgid "Zone template has been added successfully."
@@ -2977,7 +2981,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Anda tidak mempunyai kebenaran untuk menambah rekod ke templat zon."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Sunting Pengguna"
 
@@ -3156,9 +3160,9 @@ msgstr ""
 "Sila hubungi pentadbir anda."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
-msgstr "Tukar Kata Laluan"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
+msgstr "Tukar kata laluan"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -3204,9 +3208,9 @@ msgid "You do not have permission to edit groups."
 msgstr "Anda tidak mempunyai kebenaran untuk mengedit kumpulan."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
-msgstr "Edit Kumpulan"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
+msgstr "Edit kumpulan"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -3233,7 +3237,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster telah berjaya dipadam."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Pendaftaran Pukal"
 
@@ -9897,10 +9901,6 @@ msgstr "Padam Kunci API"
 msgid "Permanently removes this key"
 msgstr "secara kekal membuang kunci ini"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Templat Zone"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Edit rekod"
@@ -10162,9 +10162,9 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "Adakah anda pasti mahu unsign zon"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
-msgstr "Zon Unsign"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
+msgstr "zon unsign"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
@@ -10186,11 +10186,7 @@ msgstr "Tambah kunci baru"
 msgid "Show DS and DNSKEY"
 msgstr "Tampilkan DS dan DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "zon unsign"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10242,10 +10238,6 @@ msgstr ""
 "Tampal kunci persendirian berkod-PEM (RSA atau ECDSA). PowerDNS 4.7+ "
 "memperoleh saiz kunci daripada kandungan PEM - pilih algoritma dan peranan "
 "kunci yang sepadan."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Jenis Kekunci"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10319,9 +10311,9 @@ msgstr ""
 "Masukkan alamat e-mel anda dan kami akan menghantar pautan untuk menetapkan "
 "semula kata laluan anda."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
-msgstr "Alamat E-mel"
+#: templates/modern/add_user.html:29
+msgid "Email address"
+msgstr "Alamat e-mel"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10334,14 +10326,6 @@ msgstr "Hantar Pautan Tetapan Semula"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Pengurusan Kumpulan"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Log kumpulan"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Tambah kumpulan"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10366,14 +10350,6 @@ msgstr "Urus ahli"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Urus zon"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Edit kumpulan"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Padam kumpulan"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10408,7 +10384,7 @@ msgstr "Menyimpan..."
 msgid "Update"
 msgstr "Update"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Nama Kumpulan"
 
@@ -10728,7 +10704,7 @@ msgstr "Edit komen"
 msgid "Edit comment in zone"
 msgstr "edit komen di zon"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Tambah templat"
 
@@ -10751,10 +10727,6 @@ msgstr "Templat global"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Buatkan templat ini tersedia untuk semua pengguna"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Tambah templat zon"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10843,10 +10815,6 @@ msgstr "Semua peristiwa"
 msgid "Logs"
 msgstr "Logs"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Log Zon"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Memaparkan log untuk zon yang anda miliki."
@@ -10879,13 +10847,9 @@ msgstr "Nama Domain"
 msgid "All operations"
 msgstr "Semua operasi"
 
-#: templates/modern/bulk_record_add.html:5
+#: templates/modern/bulk_record_add.html:15
 msgid "Bulk add records"
 msgstr "Tambah rekod secara pukal"
-
-#: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
-msgstr "Tambah Rekod Secara Pukal"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
@@ -10911,9 +10875,9 @@ msgstr "Komen adalah pilihan"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Hanya masukkan nama host - nama zon akan ditambah secara automatik"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
-msgstr "Tambah Rekod"
+#: templates/modern/add_record.html:197
+msgid "Add records"
+msgstr "Tambah rekod"
 
 #: templates/modern/bulk_record_add.html:56
 msgid "Instructions"
@@ -10992,13 +10956,9 @@ msgstr "Buat Rekod"
 msgid "Back to Wizard Selection"
 msgstr "Kembali ke Pemilihan Wizard"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
 msgstr "Padam pengguna"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
-msgstr "Padam Pengguna"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
 msgid "You are about to delete the user"
@@ -11064,9 +11024,9 @@ msgstr "Simpan Zon sebagai Templat"
 msgid "Source Zone"
 msgstr "Zon Sumber"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
-msgstr "Nama Templat"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
+msgstr "Nama templat"
 
 #: templates/modern/save-zone-template.html:29
 msgid "Provide template name"
@@ -11250,9 +11210,9 @@ msgstr "Kata laluan tidak memenuhi keperluan"
 msgid "Enter your new password for"
 msgstr "Masukkan kata laluan baru anda untuk"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "Kata Laluan Baru"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "Kata laluan baharu"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -11501,10 +11461,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Sunting profil"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Sunting pengguna"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11530,10 +11486,6 @@ msgstr "Nama lengkap pengguna untuk identifikasi"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Berikan nama lengkap"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "Alamat e-mel"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11724,10 +11676,6 @@ msgstr "Ya, nyahpaut zon ini"
 msgid "Yes, unlink these zones"
 msgstr "Ya, nyahpaut zon-zon ini"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Templat kebenaran"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Tambah"
@@ -11763,10 +11711,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Sila pilih jenis templat"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Tambah Templat"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12113,7 +12057,7 @@ msgstr "Anda"
 msgid "Add Owner"
 msgstr "Tambah Pemilik"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Pemilikan Kumpulan"
 
@@ -12160,10 +12104,6 @@ msgstr "Hingga tarikh"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Kosongkan"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "Id"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12362,10 +12302,6 @@ msgstr ""
 "Petua: Masukkan hanya nama host (contohnya 'www') dan nama zon akan ditambah "
 "secara automatik. Gunakan '@' untuk zon apex/root."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Edit zon"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadata"
@@ -12478,14 +12414,6 @@ msgstr "Tidak ditandatangani"
 msgid "User Management"
 msgstr "Pengurusan Pengguna"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Log Pengguna"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Tambah pengguna"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Jenis Auth"
@@ -12539,7 +12467,7 @@ msgstr "Tiada zon hadapan untuk dipaparkan dalam senarai ini."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Padam Rekod"
 
@@ -12662,7 +12590,7 @@ msgstr "Tugaskan semua kepada saya"
 msgid "Zone ID"
 msgstr "ID Zon"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Nama Zon"
 
@@ -12789,10 +12717,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Pilih kumpulan untuk menambah pengguna baharu semasa penciptaan."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Nama zon"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Sediakan nama zon"
@@ -12883,10 +12807,6 @@ msgstr "Templat zon untuk"
 msgid "Search templates..."
 msgstr "Cari templat..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Nama templat"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Zon-zon yang dihubungkan"
@@ -12964,10 +12884,6 @@ msgstr ""
 "kini zon - gunakan butang \"Update Zones\" semasa menyunting templat untuk "
 "melaksanakan perubahan."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Tukar kata laluan"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Kata laluan semasa"
@@ -12975,10 +12891,6 @@ msgstr "Kata laluan semasa"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Sediakan kata laluan semasa"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Kata laluan baharu"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13215,11 +13127,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "Kunci API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Pendaftaran pukal"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Jenis Zon"
 
@@ -13238,10 +13146,6 @@ msgstr "Taip satu domain per baris"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Tambah Zon"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "pemilikan kumpulan"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13381,11 +13285,11 @@ msgstr "Akaun anda sekarang dilindungi dengan pengesahan multi-faktor."
 msgid "Authentication method:"
 msgstr "Kaedah pengesahan:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Aplikasi pengesah"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Pengesahan e-mel"
 
@@ -13481,10 +13385,6 @@ msgstr "MFA kini dilumpuhkan"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Akaun anda tidak dilindungi dengan pengesahan multi-faktor."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Aplikasi Pengesah"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13508,10 +13408,6 @@ msgstr "Mudah digunakan"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Sediakan pengesahan aplikasi"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Pengesahan E-mel"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -14073,6 +13969,7 @@ msgid "PDNS Server"
 msgstr "Server PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Nama Server"
 
@@ -14173,18 +14070,6 @@ msgstr "Metrik"
 msgid "No detailed metrics available."
 msgstr "Tidak ada metrik terperinci yang tersedia."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Zon hadapan"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Zon songsang"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Log perubahan rekod"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Senarai pengguna"
@@ -14196,10 +14081,6 @@ msgstr "Senarai kumpulan"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Senarai templat kebenaran"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Tambah templat kebenaran"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14302,10 +14183,6 @@ msgstr "Buat rekod DNS baru di zon ini"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Tambah rekod lain"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Tambah rekod"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14481,10 +14358,6 @@ msgstr ""
 "Kebenaran disusun dalam kumpulan di bawah ini untuk pengurusan yang lebih "
 "mudah. Guna ciri carian untuk segera mencari kebenaran tertentu."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Delete record"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Padam Rekod Templat"
@@ -14598,10 +14471,6 @@ msgstr ""
 "perubahan keahlian (pengguna ditambah atau dibuang). Setiap entri "
 "menunjukkan tindakan, aktor, kumpulan yang terjejas, dan cap masa. Berguna "
 "untuk audit perubahan akses zon yang dimediasi oleh pemilikan kumpulan."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Nama kumpulan"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14778,10 +14647,6 @@ msgstr "Gantikan rekod yang sepadan"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Tambah semua rekod"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Jenis zon"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -15029,10 +14894,6 @@ msgstr "Kunci API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Kunci API PowerDNS (dari pdns.conf setting api-key)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Nama server"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

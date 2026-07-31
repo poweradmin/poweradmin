@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            {{ macros.card_header('bi-plus-circle', 'Bulk Add Records'|trans) }}
+            {{ macros.card_header('bi-plus-circle', 'Bulk add records'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" novalidate>
                     {{ macros.csrf_field() }}
@@ -38,7 +38,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-                                <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Records{% endtrans %}
+                                <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add records{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}

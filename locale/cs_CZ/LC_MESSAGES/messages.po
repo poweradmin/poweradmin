@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -955,7 +955,8 @@ msgstr ""
 "a konce řádků budou automaticky odstraněny."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "Typ klíče"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1610,8 +1611,8 @@ msgid "Invalid group ID."
 msgstr "Neplatné ID skupiny."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "Smazat skupinu"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1980,7 +1981,7 @@ msgid "Search"
 msgstr "Hledat"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "Protokol změn záznamů"
 
@@ -2017,8 +2018,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nemáte oprávnění přidat nového uživatele."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "Přidat uživatele"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2065,8 +2066,8 @@ msgid "The record could not be deleted."
 msgstr "Záznam nemohl být smazán."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "Protokoly zón"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2147,8 +2148,8 @@ msgid "You do not have permission to view this zone."
 msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "Protokoly uživatelů"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2192,7 +2193,8 @@ msgid "User agreement accepted successfully."
 msgstr "Uživatelská smlouva byla úspěšně přijata."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "Upravit zónu"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2447,8 +2449,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nepodařilo se spustit OIDC ověření: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "Protokoly skupin"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2586,7 +2588,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "Uloženo %d výchozích hodnot, smazáno %d."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "Šablony zón"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2594,8 +2597,8 @@ msgid "You do not have permission to create groups."
 msgstr "Nemáte oprávnění vytvářet skupiny."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "Přidat skupinu"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2669,7 +2672,7 @@ msgstr "Při mazání DNSSEC klíče došlo k chybě: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "Šablony oprávnění"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2750,8 +2753,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "Nemáte oprávnění přidávat šablony oprávnění."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "Přidat šablonu oprávnění"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2848,7 +2851,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "Nemáte oprávnění přidat šablonu zóny."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "Přidat šablonu zóny"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2966,7 +2970,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "Nemáte oprávnění přidávat záznamy do šablon zón."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Upravit uživatele"
 
@@ -3152,8 +3156,8 @@ msgstr ""
 "prosím svého administrátora."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "Změnit heslo"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3199,8 +3203,8 @@ msgid "You do not have permission to edit groups."
 msgstr "Nemáte oprávnění upravovat skupiny."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "Upravit skupinu"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3228,7 +3232,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster byl úspěšně smazán."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "Hromadná registrace"
 
@@ -9791,10 +9795,6 @@ msgstr "Smazat API klíč"
 msgid "Permanently removes this key"
 msgstr "Trvale odstraní tento klíč"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "Šablony zón"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "Upravit záznam"
@@ -10052,8 +10052,8 @@ msgstr "Tato akce odstraní všechny DNSSEC klíče a zakáže DNSSEC pro tuto z
 msgid "Are you sure you want to unsign the zone"
 msgstr "Jste si jisti, že chcete nepodepsat zónu"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "Nepodepsat zónu"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10076,11 +10076,7 @@ msgstr "Přidat nový klíč"
 msgid "Show DS and DNSKEY"
 msgstr "Zobrazit DS a DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "Nepodepsat zónu"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10131,10 +10127,6 @@ msgid ""
 msgstr ""
 "Vložte soukromý klíč zakódovaný v PEM (RSA nebo ECDSA). PowerDNS 4.7+ určí "
 "velikost klíče z obsahu PEM - vyberte odpovídající algoritmus a roli klíče."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "Typ klíče"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10205,8 +10197,8 @@ msgid ""
 msgstr ""
 "Zadejte svou e-mailovou adresu a pošleme vám odkaz pro resetování hesla."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "E-mailová adresa"
 
 #: templates/modern/forgot_username.html:29
@@ -10220,14 +10212,6 @@ msgstr "Odeslat odkaz pro reset"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "Správa skupin"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "Protokoly skupin"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "Přidat skupinu"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10252,14 +10236,6 @@ msgstr "Spravovat členy"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "Spravovat zóny"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "Upravit skupinu"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "Smazat skupinu"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10294,7 +10270,7 @@ msgstr "Ukládání..."
 msgid "Update"
 msgstr "Aktualizovat"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "Název skupiny"
 
@@ -10608,7 +10584,7 @@ msgstr "Upravit komentář"
 msgid "Edit comment in zone"
 msgstr "Upravit komentář v zóně"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "Přidat šablonu"
 
@@ -10631,10 +10607,6 @@ msgstr "Globální šablona"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "Zpřístupnit tuto šablonu všem uživatelům"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "Přidat šablonu zóny"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10721,10 +10693,6 @@ msgstr "Všechny události"
 msgid "Logs"
 msgstr "Protokoly"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "Protokoly zón"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Zobrazují se protokoly zón, které vlastníte."
@@ -10757,12 +10725,8 @@ msgstr "Název domény"
 msgid "All operations"
 msgstr "Všechny operace"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "Hromadné přidání záznamů"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "Hromadné přidání záznamů"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10789,8 +10753,8 @@ msgstr "Komentář je volitelný"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Zadejte pouze názvy hostů - název zóny bude přidán automaticky"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "Přidat záznamy"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10869,12 +10833,8 @@ msgstr "Vytvořit záznam"
 msgid "Back to Wizard Selection"
 msgstr "Zpět na výběr průvodce"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "Smazat uživatele"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "Smazat uživatele"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10941,8 +10901,8 @@ msgstr "Uložit zónu jako šablonu"
 msgid "Source Zone"
 msgstr "Zdrojová zóna"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "Název šablony"
 
 #: templates/modern/save-zone-template.html:29
@@ -11120,8 +11080,8 @@ msgstr "Heslo nesplňuje požadavky"
 msgid "Enter your new password for"
 msgstr "Zadejte nové heslo pro"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "Nové heslo"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11370,10 +11330,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "Upravit profil"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "Upravit uživatele"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11399,10 +11355,6 @@ msgstr "Celé jméno uživatele pro identifikaci"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "Zadejte plné jméno"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "E-mailová adresa"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11594,10 +11546,6 @@ msgstr "Ano, odpojit tuto zónu"
 msgid "Yes, unlink these zones"
 msgstr "Ano, odpojit tyto zóny"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "Šablony oprávnění"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "Přidat"
@@ -11633,10 +11581,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "Vyberte prosím typ šablony"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "Přidat šablonu"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11984,7 +11928,7 @@ msgstr "Vy"
 msgid "Add Owner"
 msgstr "Přidat vlastníka"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "Vlastnictví skupiny"
 
@@ -12031,10 +11975,6 @@ msgstr "Do data"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "Vymazat"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12233,10 +12173,6 @@ msgstr ""
 "Tip: Zadejte pouze název hostitele (např. 'www') a název zóny bude přidán "
 "automaticky. Použijte '@' pro vrchol/kořen zóny."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "Upravit zónu"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "Metadata"
@@ -12349,14 +12285,6 @@ msgstr "Nepodepsáno"
 msgid "User Management"
 msgstr "Správa uživatelů"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "Protokoly uživatelů"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "Přidat uživatele"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "Typ ověření"
@@ -12410,7 +12338,7 @@ msgstr "V tomto seznamu nejsou žádné přímé zóny k zobrazení."
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "Smazat záznam"
 
@@ -12533,7 +12461,7 @@ msgstr "Přiřadit vše mně"
 msgid "Zone ID"
 msgstr "ID zóny"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "Název zóny"
 
@@ -12659,10 +12587,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "Vyberte skupiny, do kterých má být nový uživatel přidán po vytvoření."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "Název zóny"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "Zadejte název zóny"
@@ -12753,10 +12677,6 @@ msgstr "Šablony zón pro"
 msgid "Search templates..."
 msgstr "Hledat šablony..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "Název šablony"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "Propojené zóny"
@@ -12832,10 +12752,6 @@ msgstr ""
 "doplňky. Úpravy šablon automaticky neaktualizují zóny - použijte tlačítko "
 "\"Aktualizovat zóny\" při úpravě šablon pro aplikaci změn."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "Změnit heslo"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "Současné heslo"
@@ -12843,10 +12759,6 @@ msgstr "Současné heslo"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "Zadejte současné heslo"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "Nové heslo"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13082,11 +12994,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "API klíč:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "Hromadná registrace"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "Typ zóny"
 
@@ -13105,10 +13013,6 @@ msgstr "Zadejte jednu doménu na řádek"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "Přidat zóny"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "Vlastnictví skupinou"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13249,11 +13153,11 @@ msgstr "Váš účet je nyní chráněn vícefaktorovým ověřením."
 msgid "Authentication method:"
 msgstr "Metoda ověření:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "Autentifikační aplikace"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "Ověření e-mailem"
 
@@ -13346,10 +13250,6 @@ msgstr "MFA je aktuálně zakázáno"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "Váš účet není chráněn vícefaktorovým ověřením."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "Autentifikační aplikace"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13373,10 +13273,6 @@ msgstr "Snadné použití"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "Nastavit ověření aplikací"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "Ověření e-mailu"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13934,6 +13830,7 @@ msgid "PDNS Server"
 msgstr "Server PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "Název serveru"
 
@@ -14034,18 +13931,6 @@ msgstr "Metrika"
 msgid "No detailed metrics available."
 msgstr "Nejsou dostupné podrobné metriky."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "Přímé zóny"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "Reverzní zóny"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "Protokol změn záznamů"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "Seznam uživatelů"
@@ -14057,10 +13942,6 @@ msgstr "Seznam skupin"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "Seznam šablon oprávnění"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "Přidat šablonu oprávnění"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14164,10 +14045,6 @@ msgstr "Vytvořit nový DNS záznam v této zóně"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "Přidat další záznam"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "Přidat záznamy"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14343,10 +14220,6 @@ msgstr ""
 "Oprávnění jsou pro snadnější správu uspořádána do skupin níže. Použijte "
 "funkci vyhledávání k rychlému nalezení konkrétních oprávnění."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "Smazat záznam"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "Smazat záznam šablony"
@@ -14458,10 +14331,6 @@ msgstr ""
 "změny členství (přidání nebo odebrání uživatelů). Každá položka ukazuje "
 "akci, kdo ji provedl, dotčenou skupinu a čas. Užitečné pro audit změn "
 "přístupu k zónám, které vyplývají z vlastnictví skupinou."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "Název skupiny"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14637,10 +14506,6 @@ msgstr "Nahradit odpovídající záznamy"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "Přidat všechny záznamy"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "Typ zóny"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14887,10 +14752,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "Klíč API PowerDNS (z nastavení api-key v pdns.conf)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

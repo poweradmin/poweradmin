@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -952,7 +952,8 @@ msgstr ""
 "は自動的に削除されます。"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "キータイプ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1605,8 +1606,8 @@ msgid "Invalid group ID."
 msgstr "無効なグループIDです。"
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "グループを削除"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1963,7 +1964,7 @@ msgid "Search"
 msgstr "検索"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "レコード変更履歴"
 
@@ -2000,8 +2001,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "新しいユーザーを追加する権限がありません。"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "ユーザーを追加"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2047,8 +2048,8 @@ msgid "The record could not be deleted."
 msgstr "レコードを削除できませんでした。"
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "ゾーンログ"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2130,8 +2131,8 @@ msgid "You do not have permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "ユーザーログ"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2171,7 +2172,8 @@ msgid "User agreement accepted successfully."
 msgstr "ユーザー規約が正常に承諾されました。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "ゾーンの編集"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2428,8 +2430,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC認証の開始に失敗しました: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "グループログ"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2568,7 +2570,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "デフォルト値を %d 件保存し、%d 件を消去しました。"
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "ゾーンテンプレート"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2576,8 +2579,8 @@ msgid "You do not have permission to create groups."
 msgstr "グループを作成する権限がありません。"
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "グループを追加"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2651,7 +2654,7 @@ msgstr "DNSSECキーの削除中にエラーが発生しました： "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
+msgid "Permission templates"
 msgstr "権限テンプレート"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
@@ -2724,8 +2727,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "権限テンプレートを追加する権限がありません。"
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "権限テンプレートを追加"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2821,7 +2824,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "ゾーンテンプレートを追加する権限がありません。"
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "ゾーンテンプレートを追加"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2941,7 +2945,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "ゾーンテンプレートにレコードを追加する権限がありません。"
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "ユーザーを編集"
 
@@ -3119,9 +3123,9 @@ msgstr ""
 "い。"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
-msgstr "パスワードの変更"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
+msgstr "パスワードを変更"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -3168,8 +3172,8 @@ msgid "You do not have permission to edit groups."
 msgstr "グループを編集する権限がありません。"
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "グループを編集"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3197,7 +3201,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "supermasterが正常に削除されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "一括登録"
 
@@ -9821,10 +9825,6 @@ msgstr "APIキーを削除"
 msgid "Permanently removes this key"
 msgstr "このキーを完全に削除します"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "ゾーンテンプレート"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "レコードを編集"
@@ -10084,8 +10084,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "本当にゾーンの署名を解除しますか"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "ゾーンの署名を解除"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -10108,11 +10108,7 @@ msgstr "新しいキーを追加"
 msgid "Show DS and DNSKEY"
 msgstr "DSとDNSKEYを表示"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "ゾーンの署名を解除"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
 msgstr "ID"
 
@@ -10164,10 +10160,6 @@ msgstr ""
 "PEM エンコードされた秘密鍵 (RSA または ECDSA) を貼り付けてください。PowerDNS "
 "4.7 以降は PEM の内容から鍵サイズを導出します - 対応するアルゴリズムと鍵の役"
 "割を選択してください。"
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "キータイプ"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10239,8 +10231,8 @@ msgid ""
 msgstr ""
 "メールアドレスを入力すると、パスワードリセット用のリンクをお送りします。"
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "メールアドレス"
 
 #: templates/modern/forgot_username.html:29
@@ -10254,14 +10246,6 @@ msgstr "リセットリンクを送信"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "グループ管理"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "グループログ"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "グループを追加"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10286,14 +10270,6 @@ msgstr "メンバーを管理"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "ゾーンを管理"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "グループを編集"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "グループを削除"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10328,7 +10304,7 @@ msgstr "保存中..."
 msgid "Update"
 msgstr "更新"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "グループ名"
 
@@ -10644,7 +10620,7 @@ msgstr "コメントを編集"
 msgid "Edit comment in zone"
 msgstr "ゾーンのコメントを編集"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "テンプレートを追加"
 
@@ -10667,10 +10643,6 @@ msgstr "グローバルテンプレート"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "このテンプレートをすべてのユーザーが利用できるようにする"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "ゾーンテンプレートを追加"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10756,10 +10728,6 @@ msgstr "すべてのイベント"
 msgid "Logs"
 msgstr "ログ"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "ゾーンログ"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "あなたが所有するゾーンのログを表示しています。"
@@ -10792,12 +10760,8 @@ msgstr "ドメイン名"
 msgid "All operations"
 msgstr "すべての操作"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "レコードの一括追加"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "レコードの一括追加"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10824,8 +10788,8 @@ msgstr "コメントはオプションです"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "ホスト名のみを入力してください - ゾーン名は自動的に追加されます"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "レコードを追加"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10905,12 +10869,8 @@ msgstr "レコードを作成"
 msgid "Back to Wizard Selection"
 msgstr "ウィザード選択に戻る"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
-msgstr "ユーザーを削除"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
 msgstr "ユーザーを削除"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
@@ -10977,8 +10937,8 @@ msgstr "ゾーンをテンプレートとして保存"
 msgid "Source Zone"
 msgstr "ソースゾーン"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "テンプレート名"
 
 #: templates/modern/save-zone-template.html:29
@@ -11150,8 +11110,8 @@ msgstr "パスワードが要件を満たしていません"
 msgid "Enter your new password for"
 msgstr "新しいパスワードを入力してください："
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
+#: templates/modern/change_password.html:25
+msgid "New password"
 msgstr "新しいパスワード"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
@@ -11398,10 +11358,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "プロフィールを編集"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "ユーザーを編集"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11427,10 +11383,6 @@ msgstr "識別用のユーザーの氏名"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "フルネームを入力してください"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "メールアドレス"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11621,10 +11573,6 @@ msgstr "はい、このゾーンのリンクを解除します"
 msgid "Yes, unlink these zones"
 msgstr "はい、これらのゾーンのリンクを解除します"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "権限テンプレート"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "追加"
@@ -11660,10 +11608,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "テンプレートタイプを選択してください"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "テンプレートを追加"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -12009,7 +11953,7 @@ msgstr "あなた"
 msgid "Add Owner"
 msgstr "所有者を追加"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "グループ所有権"
 
@@ -12056,10 +12000,6 @@ msgstr "終了日"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "クリア"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "ID"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12259,10 +12199,6 @@ msgstr ""
 "ヒント：ホスト名のみ（例：'www'）を入力すると、ゾーン名が自動的に追加されま"
 "す。ゾーンの頂点/ルートには '@' を使用してください。"
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "ゾーンの編集"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "メタデータ"
@@ -12375,14 +12311,6 @@ msgstr "署名なし"
 msgid "User Management"
 msgstr "ユーザー管理"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "ユーザーログ"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "ユーザーを追加"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "認証タイプ"
@@ -12436,7 +12364,7 @@ msgstr "この一覧に表示する正引きゾーンがありません。"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "レコードの削除"
 
@@ -12558,7 +12486,7 @@ msgstr "すべてを自分に割り当てる"
 msgid "Zone ID"
 msgstr "ゾーンID"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "ゾーン名"
 
@@ -12684,10 +12612,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "作成時に新しいユーザーを追加するグループを選択します。"
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "ゾーン名"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "ゾーン名を入力"
@@ -12778,10 +12702,6 @@ msgstr "ゾーンテンプレート："
 msgid "Search templates..."
 msgstr "テンプレートを検索..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "テンプレート名"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "リンクされたゾーン"
@@ -12859,10 +12779,6 @@ msgstr ""
 "ンを更新しません - テンプレート編集時に「ゾーンを更新」ボタンを使用して変更を"
 "適用してください。"
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "パスワードを変更"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "現在のパスワード"
@@ -12870,10 +12786,6 @@ msgstr "現在のパスワード"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "現在のパスワードを入力"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "新しいパスワード"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13110,11 +13022,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "APIキー："
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "一括登録"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "ゾーンタイプ"
 
@@ -13133,10 +13041,6 @@ msgstr "1行に1つのドメインを入力"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "ゾーンを追加"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "グループ所有"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13274,11 +13178,11 @@ msgstr "アカウントが多要素認証で保護されました。"
 msgid "Authentication method:"
 msgstr "認証方法："
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "認証アプリ"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "メール認証"
 
@@ -13372,10 +13276,6 @@ msgstr "MFAは現在無効になっています"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "お客様のアカウントは多要素認証により保護されていません。"
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "認証アプリ"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13399,10 +13299,6 @@ msgstr "使いやすい"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "アプリ認証を設定"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "メール認証"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13957,6 +13853,7 @@ msgid "PDNS Server"
 msgstr "PDNSサーバー"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "サーバー名"
 
@@ -14057,18 +13954,6 @@ msgstr "メトリック"
 msgid "No detailed metrics available."
 msgstr "詳細なメトリックは利用できません。"
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "正引きゾーン"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "逆引きゾーン"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "レコード変更履歴"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "ユーザーをリスト"
@@ -14080,10 +13965,6 @@ msgstr "グループをリスト"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "権限テンプレートを一覧表示"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "権限テンプレートを追加"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14186,10 +14067,6 @@ msgstr "このゾーンに新しいDNSレコードを作成"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "別のレコードを追加"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "レコードを追加"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14367,10 +14244,6 @@ msgstr ""
 "権限は管理しやすいように以下のグループに整理されています。検索機能を使用して"
 "特定の権限を素早く見つけてください。"
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "レコードを削除"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "テンプレートレコードを削除"
@@ -14483,10 +14356,6 @@ msgstr ""
 "更 (ユーザーの追加・削除) を記録します。各エントリには操作、実行者、対象グ"
 "ループ、タイムスタンプが表示されます。グループ所有を介したゾーンアクセス変更"
 "の監査に役立ちます。"
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "グループ名"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14661,10 +14530,6 @@ msgstr "一致するレコードを置換"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "すべてのレコードを追加"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "ゾーンタイプ"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14909,10 +14774,6 @@ msgstr "API Key"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API キー (pdns.conf の api-key 設定の値)。"
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."

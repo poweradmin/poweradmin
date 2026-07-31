@@ -3,7 +3,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-shield-lock me-2"></i>{% if show_user_access_templates %}{% trans %}Permission Templates{% endtrans %}{% else %}{% trans %}Group Templates{% endtrans %}{% endif %}</strong>
+        <strong><i class="bi bi-shield-lock me-2"></i>{% if show_user_access_templates %}{% trans %}Permission templates{% endtrans %}{% else %}{% trans %}Group Templates{% endtrans %}{% endif %}</strong>
         {% if templ_perm_add %}
         <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/permissions/templates/add">
             <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add permission template{% endtrans %}

@@ -86,7 +86,7 @@ class DeleteGroupController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('delete_group');
-        $this->setPageTitle(_('Delete Group'));
+        $this->setPageTitle(_('Delete group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

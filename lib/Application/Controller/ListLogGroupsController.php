@@ -70,7 +70,7 @@ class ListLogGroupsController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_groups');
-        $this->setPageTitle(_('Group Logs'));
+        $this->setPageTitle(_('Group logs'));
 
         $this->showListLogGroups();
     }

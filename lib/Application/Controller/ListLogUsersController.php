@@ -65,7 +65,7 @@ class ListLogUsersController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_users');
-        $this->setPageTitle(_('User Logs'));
+        $this->setPageTitle(_('User logs'));
 
         $this->showListLogUsers();
     }

@@ -119,11 +119,11 @@
             {% else %}
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="zone_name" class="form-label">{% trans %}Zone name{% endtrans %}</label>
+                    <label for="zone_name" class="form-label">{% trans %}Zone Name{% endtrans %}</label>
                     <input type="text" class="form-control form-control-sm" id="zone_name" name="zone_name" value="{{ origin }}" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="zone_type" class="form-label">{% trans %}Zone type{% endtrans %}</label>
+                    <label for="zone_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
                     <select class="form-select form-select-sm" id="zone_type" name="zone_type">
                         <option value="MASTER">{% trans %}Master{% endtrans %}</option>
                         <option value="NATIVE">{% trans %}Native{% endtrans %}</option>
@@ -133,7 +133,7 @@
             {% if group_owner_allowed is defined and group_owner_allowed and available_groups is defined and available_groups is not empty %}
             <div class="mb-3">
                 <label class="form-label">
-                    {% trans %}Group ownership{% endtrans %}
+                    {% trans %}Group Ownership{% endtrans %}
                     {% if user_owner_allowed is defined and not user_owner_allowed %} <span class="text-danger">*</span>{% endif %}
                 </label>
                 <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">

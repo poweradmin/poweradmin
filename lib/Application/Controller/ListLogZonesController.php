@@ -69,7 +69,7 @@ class ListLogZonesController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_zones');
-        $this->setPageTitle(_('Zone Logs'));
+        $this->setPageTitle(_('Zone logs'));
 
         // Owner-only filter applies when the user may see their own zones' logs but
         // not others'. "all" holders (ueberuser or zone_logs_view_others) see everything.

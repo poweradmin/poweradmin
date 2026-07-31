@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-31 18:19+0300\n"
+"POT-Creation-Date: 2026-07-31 20:07+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -956,7 +956,8 @@ msgstr ""
 "خطوط جدید به طور خودکار حذف خواهند شد."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
-msgid "Key Type"
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
+msgid "Key type"
 msgstr "نوع کلید"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
@@ -1603,8 +1604,8 @@ msgid "Invalid group ID."
 msgstr "شناسه گروه نامعتبر است."
 
 #: lib/Application/Controller/DeleteGroupController.php:89
-#: templates/default/delete_group.html:8 templates/modern/delete_group.html:8
-msgid "Delete Group"
+#: templates/modern/delete_group.html:4 templates/modern/delete_group.html:8
+msgid "Delete group"
 msgstr "حذف گروه"
 
 #: lib/Application/Controller/DeleteGroupController.php:104
@@ -1963,7 +1964,7 @@ msgid "Search"
 msgstr "جستجو"
 
 #: lib/Application/Controller/ListRecordChangesController.php:63
-#: templates/modern/list_record_changes.html:9
+#: templates/modern/list_record_changes.html:9 templates/modern/header.html:195
 msgid "Record Change Log"
 msgstr "گزارش تغییرات رکورد"
 
@@ -2000,8 +2001,8 @@ msgid "You do not have the permission to add a new user."
 msgstr "شما اجازه اضافه کردن یک کاربر جدید را ندارید."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:10 templates/modern/add_user.html:109
-msgid "Add User"
+#: templates/modern/add_user.html:109 templates/modern/header.html:223
+msgid "Add user"
 msgstr "افزودن کاربر"
 
 #: lib/Application/Controller/AddUserController.php:128
@@ -2046,8 +2047,8 @@ msgid "The record could not be deleted."
 msgstr "رکورد را نمی توان حذف کرد."
 
 #: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:246 templates/modern/index.html:246
-msgid "Zone Logs"
+#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
+msgid "Zone logs"
 msgstr "گزارش‌های منطقه"
 
 #: lib/Application/Controller/UsersController.php:61
@@ -2129,8 +2130,8 @@ msgid "You do not have permission to view this zone."
 msgstr "شما اجازه ندارید که این منطقه را ببینید."
 
 #: lib/Application/Controller/ListLogUsersController.php:68
-#: templates/default/index.html:256 templates/modern/index.html:256
-msgid "User Logs"
+#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
+msgid "User logs"
 msgstr "گزارش‌های کاربر"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:46
@@ -2172,7 +2173,8 @@ msgid "User agreement accepted successfully."
 msgstr "توافق کاربری با موفقیت پذیرفته شد."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:68
-msgid "Edit Zone"
+#: lib/Module/ZoneImportExport/templates/import.html:40
+msgid "Edit zone"
 msgstr "ویرایش منطقه"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:85
@@ -2425,8 +2427,8 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "شکست در شروع احراز هویت OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:73
-#: templates/default/index.html:266 templates/modern/index.html:266
-msgid "Group Logs"
+#: templates/modern/header.html:262 templates/modern/list_log_groups.html:4
+msgid "Group logs"
 msgstr "گزارش‌های گروه"
 
 #: lib/Application/Controller/DnssecKeyExportController.php:72
@@ -2563,7 +2565,8 @@ msgid "Saved %d default(s); cleared %d."
 msgstr "%d مقدار پیش‌فرض ذخیره شد؛ %d پاک شد."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
-msgid "Zone Templates"
+#: templates/modern/delete_zone_templ_record.html:4
+msgid "Zone templates"
 msgstr "قالب های منطقه"
 
 #: lib/Application/Controller/AddGroupController.php:74
@@ -2571,8 +2574,8 @@ msgid "You do not have permission to create groups."
 msgstr "شما اجازه ایجاد گروه ها را ندارید."
 
 #: lib/Application/Controller/AddGroupController.php:81
-#: templates/modern/add_group.html:10
-msgid "Add Group"
+#: templates/modern/add_group.html:4 templates/modern/add_group.html:10
+msgid "Add group"
 msgstr "افزودن گروه"
 
 #: lib/Application/Controller/EditGroupController.php:120
@@ -2646,8 +2649,8 @@ msgstr "خطا در هنگام حذف کلید DNSSEC رخ داد: "
 
 #: lib/Application/Controller/ListPermTemplController.php:45
 #: templates/modern/list_perm_templ.html:6
-msgid "Permission Templates"
-msgstr "قالب های مجوز"
+msgid "Permission templates"
+msgstr "قالب‌های مجوز"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "SAML authentication is not enabled"
@@ -2723,8 +2726,8 @@ msgid "You do not have the permission to add permission templates."
 msgstr "شما اجازه اضافه کردن قالب های مجوز را ندارید."
 
 #: lib/Application/Controller/AddPermTemplController.php:67
-#: templates/modern/add_perm_templ.html:16
-msgid "Add Permission Template"
+#: templates/modern/list_perm_templ.html:9
+msgid "Add permission template"
 msgstr "افزودن قالب مجوز"
 
 #: lib/Application/Controller/AddPermTemplController.php:99
@@ -2820,7 +2823,8 @@ msgid "You do not have the permission to add a zone template."
 msgstr "شما اجازه اضافه کردن یک قالب منطقه را ندارید."
 
 #: lib/Application/Controller/AddZoneTemplController.php:56
-msgid "Add Zone Template"
+#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
+msgid "Add zone template"
 msgstr "افزودن قالب منطقه"
 
 #: lib/Application/Controller/AddZoneTemplController.php:99
@@ -2938,7 +2942,7 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr "شما اجازه اضافه کردن رکوردها به قالب های منطقه را ندارید."
 
 #: lib/Application/Controller/EditUserController.php:83
-#: templates/default/edit_user.html:15 templates/modern/edit_user.html:15
+#: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "ویرایش کاربر"
 
@@ -3119,8 +3123,8 @@ msgstr ""
 "لطفا با مدیر خود تماس بگیرید."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
-#: templates/modern/change_password.html:11
-msgid "Change Password"
+#: templates/modern/change_password.html:43 templates/modern/header.html:395
+msgid "Change password"
 msgstr "تغییر رمز عبور"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:132
@@ -3164,8 +3168,8 @@ msgid "You do not have permission to edit groups."
 msgstr "شما اجازه ویرایش گروه ها را ندارید."
 
 #: lib/Application/Controller/EditGroupController.php:97
-#: templates/default/edit_group.html:11 templates/modern/edit_group.html:11
-msgid "Edit Group"
+#: templates/modern/edit_group.html:4 templates/modern/edit_group.html:11
+msgid "Edit group"
 msgstr "ویرایش گروه"
 
 #: lib/Application/Controller/EditGroupController.php:181
@@ -3193,7 +3197,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "supermaster با موفقیت حذف شده است."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
-#: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
+#: templates/modern/bulk_registration.html:17 templates/modern/header.html:175
 msgid "Bulk Registration"
 msgstr "ثبت انبوه"
 
@@ -9710,10 +9714,6 @@ msgstr "حذف کلید API"
 msgid "Permanently removes this key"
 msgstr "این کلید را برای همیشه حذف می‌کند"
 
-#: templates/modern/delete_zone_templ_record.html:4
-msgid "Zone templates"
-msgstr "قالب های منطقه"
-
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
 msgstr "ویرایش رکورد"
@@ -9974,8 +9974,8 @@ msgstr ""
 msgid "Are you sure you want to unsign the zone"
 msgstr "آیا مطمئن هستید که می‌خواهید امضای منطقه را حذف کنید"
 
-#: templates/default/dnssec.html:24 templates/modern/dnssec.html:24
-msgid "Unsign Zone"
+#: templates/modern/dnssec.html:24 templates/modern/dnssec.html:69
+msgid "Unsign zone"
 msgstr "حذف امضای منطقه"
 
 #: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
@@ -9998,13 +9998,9 @@ msgstr "اضافه کردن کلید جدید"
 msgid "Show DS and DNSKEY"
 msgstr "نمایش DS و DNSKEY"
 
-#: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
-msgid "Unsign zone"
-msgstr "حذف امضای منطقه"
-
-#: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
+#: templates/modern/edit.html:334
 msgid "ID"
-msgstr "ID"
+msgstr "شناسه"
 
 #: templates/modern/api_keys.html:33 templates/modern/list_perm_templ.html:30
 msgid "Actions"
@@ -10054,10 +10050,6 @@ msgstr ""
 "یک کلید خصوصی با کدگذاری PEM را جای‌گذاری کنید (RSA یا ECDSA). PowerDNS 4.7+ "
 "اندازه کلید را از محتوای PEM استخراج می‌کند - الگوریتم منطبق و نقش کلید را "
 "انتخاب کنید."
-
-#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
-msgid "Key type"
-msgstr "نوع کلید"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -10129,8 +10121,8 @@ msgstr ""
 "آدرس ایمیل خود را وارد کنید و ما یک لینک برای تنظیم رمز عبور شما ارسال "
 "خواهیم کرد."
 
-#: templates/modern/forgot_username.html:27
-msgid "Email Address"
+#: templates/modern/add_user.html:29
+msgid "Email address"
 msgstr "آدرس ایمیل"
 
 #: templates/modern/forgot_username.html:29
@@ -10144,14 +10136,6 @@ msgstr "ارسال پیوند بازنشانی"
 #: templates/default/list_groups.html:6 templates/modern/list_groups.html:6
 msgid "Group Management"
 msgstr "مدیریت گروه"
-
-#: templates/modern/list_log_groups.html:4
-msgid "Group logs"
-msgstr "گزارش‌های گروه"
-
-#: templates/modern/header.html:255 templates/modern/add_group.html:4
-msgid "Add group"
-msgstr "افزودن گروه"
 
 #: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
 msgid "No groups found"
@@ -10176,14 +10160,6 @@ msgstr "مدیریت اعضا"
 #: templates/modern/manage_group_zones.html:5
 msgid "Manage zones"
 msgstr "مدیریت مناطق"
-
-#: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
-msgid "Edit group"
-msgstr "ویرایش گروه"
-
-#: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
-msgid "Delete group"
-msgstr "حذف گروه"
 
 #: templates/modern/edit_record.html:13 templates/modern/edit_record.html:15
 msgid "Edit record in zone"
@@ -10217,7 +10193,7 @@ msgstr "در حال ذخیره..."
 msgid "Update"
 msgstr "به‌روزرسانی"
 
-#: templates/modern/edit_group.html:21 templates/modern/add_group.html:16
+#: templates/modern/list_log_groups.html:19
 msgid "Group Name"
 msgstr "نام گروه"
 
@@ -10532,7 +10508,7 @@ msgstr "ویرایش نظر"
 msgid "Edit comment in zone"
 msgstr "ویرایش نظر در منطقه"
 
-#: templates/modern/add_zone_templ.html:5
+#: templates/modern/add_perm_templ.html:50
 msgid "Add template"
 msgstr "افزودن قالب"
 
@@ -10555,10 +10531,6 @@ msgstr "الگوی جهانی"
 #: templates/modern/edit_zone_templ.html:148
 msgid "Make this template available to all users"
 msgstr "این قالب را در دسترس همه کاربران قرار دهید"
-
-#: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
-msgid "Add zone template"
-msgstr "افزودن قالب منطقه"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10645,10 +10617,6 @@ msgstr "همه اتفاقات"
 msgid "Logs"
 msgstr "گزارش‌ها"
 
-#: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
-msgid "Zone logs"
-msgstr "گزارش‌های منطقه"
-
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "نمایش گزارش‌ها برای مناطقی که مالک آن‌ها هستید."
@@ -10681,12 +10649,8 @@ msgstr "نام دامنه"
 msgid "All operations"
 msgstr "همه عملیات"
 
-#: templates/modern/bulk_record_add.html:5
-msgid "Bulk add records"
-msgstr "افزودن گروهی رکوردها"
-
 #: templates/modern/bulk_record_add.html:15
-msgid "Bulk Add Records"
+msgid "Bulk add records"
 msgstr "افزودن گروهی رکوردها"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
@@ -10713,8 +10677,8 @@ msgstr "توضیحات اختیاری"
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "نام های میزبان را وارد کنید – نام منطقه به طور خودکار اضافه خواهد شد"
 
-#: templates/modern/bulk_record_add.html:41
-msgid "Add Records"
+#: templates/modern/add_record.html:197
+msgid "Add records"
 msgstr "افزودن رکوردها"
 
 #: templates/modern/bulk_record_add.html:56
@@ -10794,13 +10758,9 @@ msgstr "ایجاد رکورد"
 msgid "Back to Wizard Selection"
 msgstr "بازگشت به انتخاب دستیار"
 
-#: templates/default/delete_user.html:4 templates/modern/delete_user.html:4
+#: templates/modern/delete_user.html:4 templates/modern/delete_user.html:8
 msgid "Delete user"
 msgstr "حذف کاربر"
-
-#: templates/default/delete_user.html:8 templates/modern/delete_user.html:8
-msgid "Delete User"
-msgstr "حذف User"
 
 #: templates/default/delete_user.html:12 templates/modern/delete_user.html:12
 msgid "You are about to delete the user"
@@ -10864,8 +10824,8 @@ msgstr "ذخیره منطقه به‌عنوان قالب"
 msgid "Source Zone"
 msgstr "منطقه منبع"
 
-#: templates/modern/save-zone-template.html:26
-msgid "Template Name"
+#: templates/modern/edit_zone_templ.html:127
+msgid "Template name"
 msgstr "نام الگو"
 
 #: templates/modern/save-zone-template.html:29
@@ -11040,9 +11000,9 @@ msgstr "رمز عبور الزامات را برآورده نمی کند"
 msgid "Enter your new password for"
 msgstr "رمز عبور جدید خود را وارد کنید"
 
-#: templates/modern/reset_password.html:45
-msgid "New Password"
-msgstr "پسورد جدید"
+#: templates/modern/change_password.html:25
+msgid "New password"
+msgstr "رمز عبور جدید"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
@@ -11290,10 +11250,6 @@ msgstr ""
 msgid "Edit profile"
 msgstr "ویرایش پروفایل"
 
-#: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
-msgid "Edit user"
-msgstr "ویرایش کاربر"
-
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
 msgid "Username"
@@ -11319,10 +11275,6 @@ msgstr "نام کامل کاربر برای شناسایی"
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:25
 msgid "Provide full name"
 msgstr "ارائه نام کامل"
-
-#: templates/modern/users.html:45 templates/modern/add_user.html:29
-msgid "Email address"
-msgstr "آدرس ایمیل"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -11512,10 +11464,6 @@ msgstr "بله، پیوند این منطقه را لغو کن"
 msgid "Yes, unlink these zones"
 msgstr "بله، پیوند این مناطق را لغو کن"
 
-#: templates/modern/list_perm_templ.html:2
-msgid "Permission templates"
-msgstr "قالب‌های مجوز"
-
 #: templates/modern/add_perm_templ.html:5 templates/modern/list_views.html:64
 msgid "Add"
 msgstr "افزودن"
@@ -11551,10 +11499,6 @@ msgstr ""
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
 msgstr "لطفا نوع قالب را انتخاب کنید"
-
-#: templates/modern/add_perm_templ.html:50
-msgid "Add Template"
-msgstr "افزودن قالب"
 
 #: templates/modern/add_perm_templ.html:66
 msgid "About Permission Templates"
@@ -11900,7 +11844,7 @@ msgstr "شما"
 msgid "Add Owner"
 msgstr "اضافه کردن مالک"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:188
+#: lib/Module/ZoneImportExport/templates/import.html:136
 msgid "Group Ownership"
 msgstr "مالکیت گروه"
 
@@ -11947,10 +11891,6 @@ msgstr "تا تاریخ"
 #: templates/modern/list_record_changes.html:59
 msgid "Clear"
 msgstr "پاک کردن"
-
-#: templates/modern/_partials/log_list.html:62 templates/modern/edit.html:334
-msgid "Id"
-msgstr "شناسه"
 
 #: templates/modern/_partials/log_list.html:65
 msgid "Event"
@@ -12150,10 +12090,6 @@ msgstr ""
 "نکته: فقط نام میزبان (به عنوان مثال www) را وارد کنید و نام منطقه به طور "
 "خودکار اضافه خواهد شد. از \"@\" برای منطقه apex / ریشه استفاده کنید."
 
-#: lib/Module/ZoneImportExport/templates/import.html:40
-msgid "Edit zone"
-msgstr "ویرایش منطقه"
-
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
 msgstr "متادیتا"
@@ -12266,14 +12202,6 @@ msgstr "امضا نشده"
 msgid "User Management"
 msgstr "مدیریت کاربران"
 
-#: templates/modern/list_log_users.html:4 templates/modern/header.html:230
-msgid "User logs"
-msgstr "گزارش‌های کاربر"
-
-#: templates/modern/add_user.html:4 templates/modern/header.html:223
-msgid "Add user"
-msgstr "افزودن کاربر"
-
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
 msgstr "نوع احراز هویت"
@@ -12327,7 +12255,7 @@ msgstr "هیچ منطقه مستقیمی برای نمایش در این لیس�
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/modern/delete_record.html:9
+#: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete Record"
 msgstr "حذف رکورد"
 
@@ -12451,7 +12379,7 @@ msgstr "همه را به من اختصاص بده"
 msgid "Zone ID"
 msgstr "شناسه منطقه"
 
-#: templates/modern/manage_group_zones.html:98
+#: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone Name"
 msgstr "نام منطقه"
 
@@ -12577,10 +12505,6 @@ msgstr ""
 msgid "Select groups to add the new user to upon creation."
 msgstr "گروه‌هایی را انتخاب کنید که کاربر جدید هنگام ایجاد به آن‌ها افزوده شود."
 
-#: lib/Module/ZoneImportExport/templates/import.html:122
-msgid "Zone name"
-msgstr "نام منطقه"
-
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
 msgstr "ارائه نام منطقه"
@@ -12671,10 +12595,6 @@ msgstr "قالب های منطقه ای برای"
 msgid "Search templates..."
 msgstr "جستجوی قالب‌ها ..."
 
-#: templates/modern/edit_zone_templ.html:127
-msgid "Template name"
-msgstr "نام الگو"
-
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
 msgstr "مناطق مرتبط"
@@ -12751,10 +12671,6 @@ msgstr ""
 "دستی را حفظ می کند. تغییرات قالب به طور خودکار مناطق را به روز نمی کنند - "
 "استفاده از دکمه \"به روز رسانی منطقه\" هنگام ویرایش قالب برای اعمال تغییرات."
 
-#: templates/modern/change_password.html:43 templates/modern/header.html:395
-msgid "Change password"
-msgstr "تغییر رمز عبور"
-
 #: templates/modern/change_password.html:17
 msgid "Current password"
 msgstr "پسورد فعلی"
@@ -12762,10 +12678,6 @@ msgstr "پسورد فعلی"
 #: templates/modern/change_password.html:21
 msgid "Provide current password"
 msgstr "ارائه رمز عبور فعلی"
-
-#: templates/modern/change_password.html:25
-msgid "New password"
-msgstr "رمز عبور جدید"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13001,11 +12913,7 @@ msgstr ""
 msgid "API Key:"
 msgstr "کلید API:"
 
-#: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
-msgid "Bulk registration"
-msgstr "ثبت نام انبوه"
-
-#: templates/modern/bulk_registration.html:20
+#: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone Type"
 msgstr "نوع منطقه"
 
@@ -13024,10 +12932,6 @@ msgstr "در هر خط یک دامنه تایپ کنید"
 #: templates/modern/bulk_registration.html:54
 msgid "Add Zones"
 msgstr "افزودن مناطق"
-
-#: lib/Module/ZoneImportExport/templates/import.html:136
-msgid "Group ownership"
-msgstr "مالکیت گروه"
 
 #: templates/modern/bulk_registration.html:115
 msgid "Bulk Registration Report"
@@ -13167,11 +13071,11 @@ msgstr "حساب شما در حال حاضر با احراز هویت چند ع�
 msgid "Authentication method:"
 msgstr "روش تأیید اعتبار:"
 
-#: templates/modern/mfa_setup.html:28
+#: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:68
 msgid "Authenticator app"
 msgstr "برنامه Authenticator"
 
-#: templates/modern/mfa_setup.html:30
+#: templates/modern/mfa_verify_email.html:4
 msgid "Email verification"
 msgstr "تأیید ایمیل"
 
@@ -13265,10 +13169,6 @@ msgstr "MFA در حال حاضر غیرفعال است"
 msgid "Your account is not protected with multi-factor authentication."
 msgstr "حساب شما با احراز هویت چند عاملی محافظت نمی شود."
 
-#: templates/default/mfa_setup.html:68 templates/modern/mfa_setup.html:68
-msgid "Authenticator App"
-msgstr "برنامه Authenticator"
-
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
@@ -13292,10 +13192,6 @@ msgstr "آسان برای استفاده"
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Set up app authentication"
 msgstr "راه‌اندازی احراز هویت با برنامه"
-
-#: templates/modern/mfa_verify_email.html:4
-msgid "Email Verification"
-msgstr "تأیید ایمیل"
 
 #: templates/default/mfa_setup.html:91 templates/modern/mfa_setup.html:91
 msgid "Receive a verification code via email when you log in."
@@ -13850,6 +13746,7 @@ msgid "PDNS Server"
 msgstr "سرور PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
+#: install/templates/step4.html.twig:71
 msgid "Server Name"
 msgstr "نام سرور"
 
@@ -13950,18 +13847,6 @@ msgstr "متریک"
 msgid "No detailed metrics available."
 msgstr "هیچ معیار دقیقی در دسترس نیست."
 
-#: templates/default/header.html:109 templates/modern/header.html:149
-msgid "Forward zones"
-msgstr "مناطق مستقیم"
-
-#: templates/default/header.html:110 templates/modern/header.html:154
-msgid "Reverse zones"
-msgstr "مناطق معکوس"
-
-#: templates/default/header.html:139 templates/modern/header.html:195
-msgid "Record change log"
-msgstr "گزارش تغییرات رکورد"
-
 #: templates/default/header.html:153 templates/modern/header.html:216
 msgid "List users"
 msgstr "لیست کاربران"
@@ -13973,10 +13858,6 @@ msgstr "فهرست گروه‌ها"
 #: templates/default/header.html:197 templates/modern/header.html:281
 msgid "List permission templates"
 msgstr "فهرست قالب‌های مجوز"
-
-#: templates/modern/header.html:287 templates/modern/list_perm_templ.html:9
-msgid "Add permission template"
-msgstr "افزودن قالب مجوز"
 
 #: templates/default/header.html:214 templates/modern/header.html:306
 msgid "List zone templates"
@@ -14080,10 +13961,6 @@ msgstr "ایجاد یک رکورد جدید DNS در این منطقه"
 #: templates/default/add_record.html:182 templates/modern/add_record.html:182
 msgid "Add another record"
 msgstr "اضافه کردن رکورد دیگر"
-
-#: templates/default/add_record.html:197 templates/modern/add_record.html:197
-msgid "Add records"
-msgstr "افزودن رکوردها"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
@@ -14260,10 +14137,6 @@ msgstr ""
 "مجوز ها به گروه های زیر برای مدیریت آسان تر سازماندهی می شوند. از ویژگی "
 "جستجو برای پیدا کردن اجازه های خاص استفاده کنید."
 
-#: templates/modern/delete_zone_templ_record.html:6
-msgid "Delete record"
-msgstr "حذف رکورد"
-
 #: templates/modern/delete_zone_templ_record.html:10
 msgid "Delete Template Record"
 msgstr "حذف رکورد قالب"
@@ -14376,10 +14249,6 @@ msgstr ""
 "کاربران) را ثبت می‌کند. هر ورودی عملیات، کاربر انجام‌دهنده، گروه مربوطه و زمان "
 "را نشان می‌دهد. برای بررسی تغییرات دسترسی به مناطق که از طریق مالکیت گروهی "
 "انجام می‌شود مفید است."
-
-#: templates/modern/list_log_groups.html:19
-msgid "Group name"
-msgstr "نام گروه"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14554,10 +14423,6 @@ msgstr "جایگزین کردن رکوردهای منطبق"
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Add all records"
 msgstr "اضافه کردن تمام رکوردها"
-
-#: lib/Module/ZoneImportExport/templates/import.html:126
-msgid "Zone type"
-msgstr "نوع منطقه"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -14806,10 +14671,6 @@ msgstr "کلید API"
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "کلید API PowerDNS (از pdns.conf api-key settings)"
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "نام سرور"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
