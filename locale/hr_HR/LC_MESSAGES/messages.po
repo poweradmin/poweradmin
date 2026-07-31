@@ -3537,9 +3537,7 @@ msgstr "Ne, zadrži ovaj supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Prikazuje se stanje povezanosti za autoprimary servere konfigurirane u "
-"tablici ispod."
+msgstr "Prikazuje se stanje povezanosti za autoprimary poslužitelje konfigurirane u tablici ispod."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
@@ -8816,7 +8814,7 @@ msgstr "Trajno uklanja ovaj ključ"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
-msgstr "predlošci zona"
+msgstr "Predlošci zona"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
@@ -9003,7 +9001,7 @@ msgstr "Unesite IP adresu glavnog nameservera"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
-msgstr "unesite IP adresu"
+msgstr "Unesite IP adresu"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -9090,7 +9088,7 @@ msgstr "Prikaži DS i DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
-msgstr "ukloni potpis zone"
+msgstr "Ukloni potpis zone"
 
 #: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
 msgid "ID"
@@ -9147,7 +9145,7 @@ msgstr ""
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
-msgstr "vrsta ključa"
+msgstr "Vrsta ključa"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9235,7 +9233,7 @@ msgstr "Upravljanje grupama"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
-msgstr "zapisnici grupe"
+msgstr "Zapisnici grupe"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
@@ -9617,7 +9615,7 @@ msgstr "Uredi komentar u zoni"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "dodaj predložak"
+msgstr "Dodaj predložak"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
@@ -9641,7 +9639,7 @@ msgstr "Učini ovaj predložak dostupnim svim korisnicima"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "dodaj predložak zone"
+msgstr "Dodaj predložak zone"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -9727,7 +9725,7 @@ msgstr "Zapisnici"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "zapisnici zone"
+msgstr "Zapisnici zone"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -9764,7 +9762,7 @@ msgstr "Sve operacije"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "skupno dodavanje zapisa"
+msgstr "Skupno dodavanje zapisa"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
@@ -10386,7 +10384,7 @@ msgstr "Unesite puno ime"
 
 #: templates/modern/users.html:45 templates/modern/add_user.html:29
 msgid "Email address"
-msgstr "adresa e-pošte"
+msgstr "Adresa e-pošte"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -10698,7 +10696,7 @@ msgstr "Supermaster je PowerDNS autoritativni poslužitelj koji automatski gura 
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
-msgstr "kako radi"
+msgstr "Kako radi"
 
 #: templates/modern/add_supermaster.html:74
 msgid ""
@@ -11296,7 +11294,7 @@ msgstr "Upravljanje korisnicima"
 
 #: templates/modern/list_log_users.html:4 templates/modern/header.html:230
 msgid "User logs"
-msgstr "zapisnici korisnika"
+msgstr "Zapisnici korisnika"
 
 #: templates/modern/add_user.html:4 templates/modern/header.html:223
 msgid "Add user"
@@ -11601,7 +11599,7 @@ msgstr "Odaberite grupe u koje će novi korisnik biti dodan prilikom izrade."
 
 #: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone name"
-msgstr "naziv zone"
+msgstr "Naziv zone"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
@@ -11695,7 +11693,7 @@ msgstr "Pretraži predloške..."
 
 #: templates/modern/edit_zone_templ.html:127
 msgid "Template name"
-msgstr "naziv predloška"
+msgstr "Naziv predloška"
 
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
@@ -11784,7 +11782,7 @@ msgstr "Unesite trenutnu lozinku"
 
 #: templates/modern/change_password.html:25
 msgid "New password"
-msgstr "nova lozinka"
+msgstr "Nova lozinka"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12014,7 +12012,7 @@ msgstr "API ključ:"
 
 #: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
 msgid "Bulk registration"
-msgstr "skupna registracija"
+msgstr "Skupna registracija"
 
 #: templates/modern/bulk_registration.html:20
 msgid "Zone Type"
@@ -12179,11 +12177,11 @@ msgstr "Metoda autentifikacije:"
 
 #: templates/modern/mfa_setup.html:28
 msgid "Authenticator app"
-msgstr "autentifikacijska aplikacija"
+msgstr "Autentifikacijska aplikacija"
 
 #: templates/modern/mfa_setup.html:30
 msgid "Email verification"
-msgstr "provjera e-pošte"
+msgstr "Provjera e-pošte"
 
 #: templates/modern/mfa_recovery_codes.html:27
 msgid "Save Your Recovery Codes"
@@ -12625,12 +12623,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
-"Bilježi događaje korisničkih računa kao što su prijave, promjene zaporki, "
-"izmjene članstva u grupama i administratorske radnje nad korisničkim "
-"zapisima. Svaki unos prikazuje radnju, izvršitelja, zahvaćenog korisnika i "
-"vremensku oznaku. Filtrirajte po operaciji ili korisniku za nadzor promjena "
-"pristupa."
+msgstr "Bilježi događaje korisničkih računa kao što su prijave, promjene lozinki, izmjene članstva u grupama i administratorske radnje nad korisničkim zapisima. Svaki unos prikazuje radnju, izvršitelja, zahvaćenog korisnika i vremensku oznaku. Filtrirajte po operaciji ili korisniku za nadzor promjena pristupa."
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
@@ -12928,7 +12921,7 @@ msgstr "Izravne zone"
 
 #: templates/default/header.html:110 templates/modern/header.html:154
 msgid "Reverse zones"
-msgstr "obrnute zone"
+msgstr "Obrnute zone"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
@@ -12983,10 +12976,7 @@ msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS je odbio zahtjev. Uzrok potražite u zapisniku PowerDNS servera - "
-"nakon uvoza zona izravno u PowerDNS bazu podataka čest je uzrok pojedini "
-"neispravno oblikovan zapis zbog kojeg serijalizacija zone ne uspije."
+msgstr "PowerDNS je odbio zahtjev. Uzrok potražite u zapisniku PowerDNS poslužitelja - nakon uvoza zona izravno u PowerDNS bazu podataka čest je uzrok pojedini neispravno oblikovan zapis zbog kojeg serijalizacija zone ne uspije."
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
@@ -13335,7 +13325,7 @@ msgstr ""
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
-msgstr "naziv grupe"
+msgstr "Naziv grupe"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -13518,7 +13508,7 @@ msgstr "Dodaj sve zapise"
 
 #: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone type"
-msgstr "vrsta zone"
+msgstr "Vrsta zone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."
@@ -13775,7 +13765,7 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "Naziv PowerDNS servera za API pozive (obično \"localhost\")."
+msgstr "Naziv PowerDNS poslužitelja za API pozive (obično \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -13819,7 +13809,7 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
-msgstr "Vrsta servera baze podataka."
+msgstr "Vrsta poslužitelja baze podataka."
 
 #: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide the user name"
@@ -13831,7 +13821,7 @@ msgstr "Korisničko ime baze podataka s pravima za stvaranje tablica."
 
 #: install/templates/step4.html.twig:134
 msgid "Password for this database user."
-msgstr "Zaporka za ovog korisnika baze podataka."
+msgstr "Lozinka za ovog korisnika baze podataka."
 
 #: install/templates/step4.html.twig:135 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
@@ -13843,7 +13833,7 @@ msgstr "Navedite ime hosta"
 
 #: install/templates/step4.html.twig:146
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Ime hosta servera baze podataka (obično \"localhost\")."
+msgstr "Ime hosta poslužitelja baze podataka (obično \"localhost\")."
 
 #: install/templates/step4.html.twig:151
 msgid "DB Port"
@@ -13855,7 +13845,7 @@ msgstr "Navedite port baze podataka"
 
 #: install/templates/step4.html.twig:157
 msgid "Database server port."
-msgstr "Port servera baze podataka."
+msgstr "Port poslužitelja baze podataka."
 
 #: install/templates/step4.html.twig:165
 msgid "Provide the name of the database"
@@ -13871,9 +13861,7 @@ msgstr "Puna putanja do SQLite datoteke baze podataka"
 
 #: install/templates/step4.html.twig:173
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr ""
-"Datoteka mora postojati i web server mora imati pravo čitanja i pisanja. "
-"Koristite apsolutnu putanju."
+msgstr "Datoteka mora postojati i web poslužitelj mora imati pravo čitanja i pisanja. Koristite apsolutnu putanju."
 
 #: install/templates/step4.html.twig:181
 msgid "DB charset"
@@ -13940,7 +13928,7 @@ msgstr "Fiksno postavljeno za početni administratorski račun."
 
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
-msgstr "Navedite zaporku"
+msgstr "Navedite lozinku"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14001,7 +13989,7 @@ msgstr ""
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Provjerite je li prepisivanje URL-ova konfigurirano za vaš web server"
+msgstr "Provjerite je li prepisivanje URL-ova konfigurirano za vaš web poslužitelj"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -14059,11 +14047,11 @@ msgstr ""
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Navedite zaporku korisnika"
+msgstr "Navedite lozinku korisnika"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "Zaporka za ovo korisničko ime."
+msgstr "Lozinka za ovo korisničko ime."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -14162,7 +14150,7 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Uklonite direktorij \"install/\" sa svog servera"
+msgstr "Uklonite direktorij \"install/\" sa svog poslužitelja"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -14197,8 +14185,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr ""
-"Podatke za prijavu na bazu podataka (ime hosta, korisničko ime, zaporka)"
+msgstr "Podatke za prijavu na bazu podataka (ime hosta, korisničko ime, lozinka)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -14275,9 +14262,7 @@ msgstr "Provjerite postoji li SQLite datoteka baze podataka"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
-"Provjerite ima li web server dozvole za čitanje i pisanje datoteke baze "
-"podataka"
+msgstr "Provjerite ima li web poslužitelj dozvole za čitanje i pisanje datoteke baze podataka"
 
 #: install/helpers/InstallStepHandler.php:238
 msgid "Verify the full path to the database file is correct and accessible"
@@ -14294,7 +14279,7 @@ msgstr "Provjerite ima li korisnik baze podataka dovoljne privilegije"
 
 #: install/helpers/InstallStepHandler.php:246
 msgid "Ensure the database server is running and accessible"
-msgstr "Provjerite je li server baze podataka pokrenut i dostupan"
+msgstr "Provjerite je li poslužitelj baze podataka pokrenut i dostupan"
 
 #: install/helpers/InstallStepHandler.php:251
 msgid "Database Error"
