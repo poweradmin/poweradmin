@@ -2707,7 +2707,7 @@ msgstr "區域範本已成功新增。"
 
 #: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
-msgstr "儀錶板"
+msgstr "儀表板"
 
 #: lib/Application/Controller/EditUserController.php:505
 msgid "You do not have permission to manage group memberships."
@@ -3053,7 +3053,7 @@ msgstr "NS 名稱無效。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:115
 msgid "Super master does not exist."
-msgstr "超級主機不存在。"
+msgstr "Supermaster 不存在。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
@@ -4229,7 +4229,7 @@ msgstr "注意：LOC 記錄類型在 RFC 1876 中定義為實驗性通訊協定�
 msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
-msgstr "LOC 記錄很少使用，但對資源的地理映射很有說明。"
+msgstr "LOC 記錄很少使用，但對資源的地理映射很有幫助。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
@@ -4267,7 +4267,7 @@ msgstr "經度度數必須在 0 到 180 之間。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:184
 msgid "Minutes must be between 0 and 59."
-msgstr "分鐘必須在 0 到 59 之間。"
+msgstr "分必須在 0 到 59 之間。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:191
 msgid "Seconds must be between 0 and 59.999."
@@ -4281,7 +4281,7 @@ msgstr "海拔必須在 -100000 到 42849672.95 米之間。"
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr "無效的大小、水準精度或垂直精度值。這些值必須在 0 到 90000000 米之間。"
+msgstr "無效的大小、水平精度或垂直精度值。這些值必須在 0 到 90000000 米之間。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
@@ -5467,7 +5467,7 @@ msgstr ""
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL 值（%d）超過推薦的最大值 %d 秒（1 周）。高 TTL 值會延遲 DNS 更新。"
+msgstr "TTL 值（%d）超過推薦的最大值 %d 秒（1 週）。高 TTL 值會延遲 DNS 更新。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -7702,7 +7702,7 @@ msgstr "DMARC 記錄未指定任何報告 URI（rua 或 ruf）。這可能會限
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr "這是透過 TXT 記錄類型處理的 DMARC 記錄。DMARC 記錄應使用以 \\\"v=DMARC1\\\" 開頭的 TXT 記錄類型。"
+msgstr "這是透過 TXT 記錄類型處理的 DMARC 記錄。DMARC 記錄應使用以 \"v=DMARC1\" 開頭的 TXT 記錄類型。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -7710,7 +7710,7 @@ msgstr "TXT 記錄內容必須用引號括起來。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "在 TXT 內容中，所有引號 (\\\") 前必須加反斜槓"
+msgstr "在 TXT 內容中，所有引號 (\") 前必須加反斜槓"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:197
 #, php-format
@@ -7891,14 +7891,14 @@ msgstr "SRV 記錄中的通訊協定值無效。通訊協定必須以底線開�
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "服務名稱 \\\"%s\\\" 不在已知服務清單中。這是允許的，但不常見。"
+msgstr "服務名稱 \"%s\" 不在已知服務清單中。這是允許的，但不常見。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "通訊協定 \\\"%s\\\" 不在已知通訊協定清單中。常見通訊協定是 _tcp 和 _udp。"
+msgstr "通訊協定 \"%s\" 不在已知通訊協定清單中。常見通訊協定是 _tcp 和 _udp。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7932,7 +7932,7 @@ msgstr "SRV 目標不能為空。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "當目標為 \\\".\\\"（無服務）時，埠和權重都應為 0。"
+msgstr "當目標為 \".\"（無服務）時，埠和權重都應為 0。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -7963,7 +7963,7 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "NSEC3 記錄所有者名稱通常應為 Base32hex 編碼的雜湊值，後跟區域名稱（例如，\\\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\\\"）。"
+msgstr "NSEC3 記錄所有者名稱通常應為 Base32hex 編碼的雜湊值，後跟區域名稱（例如，\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\"）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8134,11 +8134,11 @@ msgstr "NAPTR 記錄正規表示式必須是帶引號的字串。"
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR 記錄替換必須是 \\\".\\\" 或有效的完全限定網域名稱。"
+msgstr "NAPTR 記錄替換必須是 \".\" 或有效的完全限定網域名稱。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "帶有正則表達式的 NAPTR 記錄必須將 \\\".\\\" 作為替換。"
+msgstr "帶有正則表達式的 NAPTR 記錄必須將 \".\" 作為替換。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -8151,8 +8151,7 @@ msgstr "NAPTR 服務必須遵循格式：[protocol][+rs][+rs]...，其中 protoc
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr ""
-"終端標誌 \\\"S\\\"、\\\"A\\\"、\\\"U\\\" 和 \\\"P\\\" 不應與其他標誌組合。"
+msgstr "終端標誌 \"S\"、\"A\"、\"U\" 和 \"P\" 不應與其他標誌組合。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
@@ -8168,7 +8167,7 @@ msgstr "NAPTR 正則表達式必須具有格式：分隔符+模式+分隔符+替
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR 正則表達式標誌（第三個分隔符之後）應僅包含 \\\"i\\\" 或為空。"
+msgstr "NAPTR 正則表達式標誌（第三個分隔符之後）應僅包含 \"i\" 或為空。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8179,7 +8178,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "ENUM 記錄應具有 \\\"U\\\" 標誌以指示 URI 輸出。"
+msgstr "ENUM 記錄應具有 \"U\" 標誌以指示 URI 輸出。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
@@ -8422,7 +8421,7 @@ msgstr "%s 沒有相符的反向區域。"
 #: lib/Domain/Service/ReverseRecordCreator.php:110
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "指向 %s 的 %s 的 PTR 記錄已存在。"
+msgstr "%s 指向 %s 的 PTR 記錄已存在。"
 
 #: lib/Domain/Service/ReverseRecordCreator.php:123
 #, php-format
@@ -8784,7 +8783,7 @@ msgstr "提醒"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "編輯此記錄後，請記住透過在範本頁面上點選\\\"更新區域\\\"來更新使用此範本的區域。"
+msgstr "編輯此記錄後，請記住透過在範本頁面上點選\"更新區域\"來更新使用此範本的區域。"
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -9518,7 +9517,7 @@ msgstr "首選項"
 
 #: templates/modern/header.html:453
 msgid "Logout"
-msgstr "註銷"
+msgstr "登出"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
@@ -9630,7 +9629,7 @@ msgstr "提示和示例"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "為不同類型的網站建立不同的範本（例如，\\\"基本網站\\\"、\\\"郵件伺服器\\\"）"
+msgstr "為不同類型的網站建立不同的範本（例如，\"基本網站\"、\"郵件伺服器\"）"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -10817,7 +10816,7 @@ msgstr "使用網路前綴旁邊的下拉按鈕從現有反向區域中選擇"
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr "使用\\\"僅為現有 A/AAAA 記錄建立 PTR\\\"根據您的正向區域填充 PTR"
+msgstr "使用\"僅為現有 A/AAAA 記錄建立 PTR\"根據您的正向區域填充 PTR"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -10829,7 +10828,7 @@ msgstr "建立所有 IP 時，使用主機前綴欄位為所有主機名稱新�
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "選中\\\"建立正向 A/AAAA 記錄\\\"以自動建立相符的正向記錄（使用比對模式時被停用）"
+msgstr "選中\"建立正向 A/AAAA 記錄\"以自動建立相符的正向記錄（使用比對模式時被停用）"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -10879,7 +10878,7 @@ msgstr "新增記錄"
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "新增此記錄後，記住透過在範本頁面上點選\\\"更新區域\\\"來更新使用此範本的區域。"
+msgstr "新增此記錄後，記住透過在範本頁面上點選\"更新區域\"來更新使用此範本的區域。"
 
 #: templates/modern/add_zone_templ_record.html:23
 msgid "Add record to zone template"
@@ -12131,7 +12130,7 @@ msgstr "停用 MFA"
 
 #: templates/modern/mfa_recovery_codes.html:69
 msgid "Continue to Dashboard"
-msgstr "繼續到儀錶板"
+msgstr "繼續到儀表板"
 
 #: templates/modern/mfa_recovery_codes.html:98
 msgid "Poweradmin MFA Recovery Codes"
