@@ -80,7 +80,7 @@ class RemoveUserGroupController extends BaseController
         $groupId = isset($this->requestData['group_id']) ? (int)$this->requestData['group_id'] : 0;
 
         if ($targetUserId <= 0 || $groupId <= 0) {
-            $this->setMessage('edit_user', 'error', _('Invalid user or group ID.'));
+            $this->setMessage('edit_user', 'error', _('Invalid group or user ID.'));
             $this->redirect('/users');
             return;
         }

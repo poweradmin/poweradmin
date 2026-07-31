@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "รหัสโซนไม่ถูกต้อง"
 msgid "Zone not found."
 msgstr "ไม่พบโซน"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดในโซนนี้"
 
@@ -181,7 +181,9 @@ msgstr "ใบรับรองต้องตรงกันทุกประ
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "วิธีตรวจสอบความถูกต้องของใบรับรอง ประเภท 3 พบบ่อยที่สุดสำหรับใบรับรองแบบ self-signed หรือ CA ที่กำหนดเอง"
+msgstr ""
+"วิธีตรวจสอบความถูกต้องของใบรับรอง ประเภท 3 พบบ่อยที่สุดสำหรับใบรับรองแบบ self-signed "
+"หรือ CA ที่กำหนดเอง"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -207,7 +209,8 @@ msgstr "ใช้เฉพาะข้อมูลคีย์สาธารณ
 msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
-msgstr "ส่วนใดของใบรับรองที่จะนำมาเทียบ ชนิดที่ 1 (กุญแจสาธารณะ) ยังคงใช้ได้หลังการต่ออายุใบรับรอง"
+msgstr ""
+"ส่วนใดของใบรับรองที่จะนำมาเทียบ ชนิดที่ 1 (กุญแจสาธารณะ) ยังคงใช้ได้หลังการต่ออายุใบรับรอง"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:138
 msgid "Matching Type"
@@ -256,7 +259,10 @@ msgid ""
 "Hexadecimal hash or full certificate data (depending on matching type). For "
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
-msgstr "แฮชเลขฐานสิบหกหรือข้อมูลใบรับรองแบบเต็ม (ขึ้นอยู่กับชนิดของการจับคู่) สำหรับ SHA-256: ใช้ \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+msgstr ""
+"แฮชเลขฐานสิบหกหรือข้อมูลใบรับรองแบบเต็ม (ขึ้นอยู่กับชนิดของการจับคู่) สำหรับ SHA-256: ใช้ "
+"\"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform "
+"DER | openssl dgst -sha256\""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -315,7 +321,7 @@ msgid ""
 msgstr "ข้อมูลใบรับรองแบบเต็มดูสั้นเกินไป โปรดตรวจสอบว่าคุณได้ระบุใบรับรองฉบับสมบูรณ์แล้ว"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "รูปแบบชื่อโฮสต์ไม่ถูกต้อง"
 
@@ -411,7 +417,9 @@ msgstr "เปอร์เซ็นต์การบังคับใช้น
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "เปอร์เซ็นต์ของข้อความที่จะใช้นโยบายนี้ (100 = ทุกข้อความ) ใช้ค่าที่ต่ำกว่าในระหว่างการทยอยบังคับใช้นโยบาย"
+msgstr ""
+"เปอร์เซ็นต์ของข้อความที่จะใช้นโยบายนี้ (100 = ทุกข้อความ) "
+"ใช้ค่าที่ต่ำกว่าในระหว่างการทยอยบังคับใช้นโยบาย"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -540,7 +548,9 @@ msgstr "ยังไม่ได้กำหนดที่อยู่อีเ
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
-msgstr "การใช้ \"p=none\" เป็นการเฝ้าติดตามเท่านั้น พิจารณาใช้นโยบายที่เข้มงวดขึ้น (quarantine/reject) เมื่อคุณตรวจสอบรายงานแล้ว"
+msgstr ""
+"การใช้ \"p=none\" เป็นการเฝ้าติดตามเท่านั้น พิจารณาใช้นโยบายที่เข้มงวดขึ้น (quarantine/"
+"reject) เมื่อคุณตรวจสอบรายงานแล้ว"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:48
 msgid "SPF Record"
@@ -840,7 +850,9 @@ msgstr "รูปแบบโดเมนของ CA ไม่ถูกต้�
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr "การใช้ \";\" จะอนุญาตให้ผู้ออกใบรับรองทั้งหมดสามารถออกใบรับรองได้ ซึ่งทำลายวัตถุประสงค์ของเรกคอร์ด CAA"
+msgstr ""
+"การใช้ \";\" จะอนุญาตให้ผู้ออกใบรับรองทั้งหมดสามารถออกใบรับรองได้ "
+"ซึ่งทำลายวัตถุประสงค์ของเรกคอร์ด CAA"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
@@ -859,7 +871,9 @@ msgstr "แฟล็กต้องเป็น 0 หรือ 128"
 msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
-msgstr "มีการตั้งค่าแฟล็ก Critical (128) ระบบที่ไม่เข้าใจเรกคอร์ด CAA จะปฏิเสธการดำเนินการ ใช้ 0 เว้นแต่คุณมีข้อกำหนดเฉพาะ"
+msgstr ""
+"มีการตั้งค่าแฟล็ก Critical (128) ระบบที่ไม่เข้าใจเรกคอร์ด CAA จะปฏิเสธการดำเนินการ ใช้ 0 "
+"เว้นแต่คุณมีข้อกำหนดเฉพาะ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
@@ -894,7 +908,10 @@ msgid ""
 "Selector to identify the DKIM key (commonly \"default\", timestamp like "
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
-msgstr "ตัวเลือก (selector) สำหรับระบุกุญแจ DKIM (โดยทั่วไปคือ \"default\", ประทับเวลาเช่น \"202501\" หรือชื่อบริการเช่น \"google\") อนุญาตเฉพาะตัวอักษรและตัวเลข ยัติภังค์ และขีดล่างเท่านั้น"
+msgstr ""
+"ตัวเลือก (selector) สำหรับระบุกุญแจ DKIM (โดยทั่วไปคือ \"default\", ประทับเวลาเช่น "
+"\"202501\" หรือชื่อบริการเช่น \"google\") อนุญาตเฉพาะตัวอักษรและตัวเลข ยัติภังค์ "
+"และขีดล่างเท่านั้น"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
 msgid "Public Key"
@@ -904,7 +921,9 @@ msgstr "กุญแจสาธารณะ"
 msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
-msgstr "วางกุญแจสาธารณะที่เข้ารหัส base64 จากเซิร์ฟเวอร์อีเมลของคุณ ช่องว่างและการขึ้นบรรทัดใหม่จะถูกลบออกโดยอัตโนมัติ"
+msgstr ""
+"วางกุญแจสาธารณะที่เข้ารหัส base64 จากเซิร์ฟเวอร์อีเมลของคุณ "
+"ช่องว่างและการขึ้นบรรทัดใหม่จะถูกลบออกโดยอัตโนมัติ"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
 msgid "Key Type"
@@ -963,7 +982,9 @@ msgstr "กุญแจสาธารณะต้องเป็นข้อม
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr "กุญแจสาธารณะดูเหมือนจะสั้นผิดปกติ โปรดตรวจสอบว่าคุณคัดลอกกุญแจทั้งหมดจากเซิร์ฟเวอร์อีเมลของคุณแล้ว"
+msgstr ""
+"กุญแจสาธารณะดูเหมือนจะสั้นผิดปกติ "
+"โปรดตรวจสอบว่าคุณคัดลอกกุญแจทั้งหมดจากเซิร์ฟเวอร์อีเมลของคุณแล้ว"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
@@ -985,7 +1006,8 @@ msgstr ""
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
-msgstr "เปิดใช้งานโหมดทดสอบอยู่ (t=y) ลายเซ็น DKIM จะไม่ถูกบังคับใช้ ปิดโหมดนี้เมื่อการทดสอบเสร็จสิ้น"
+msgstr ""
+"เปิดใช้งานโหมดทดสอบอยู่ (t=y) ลายเซ็น DKIM จะไม่ถูกบังคับใช้ ปิดโหมดนี้เมื่อการทดสอบเสร็จสิ้น"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
@@ -1073,7 +1095,9 @@ msgstr "ลำดับความสำคัญ"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "ค่าที่ต่ำกว่ามีลำดับความสำคัญสูงกว่า (10 เป็นค่าปริยายที่ดี) ไคลเอ็นต์จะลองเซิร์ฟเวอร์ตามลำดับความสำคัญ"
+msgstr ""
+"ค่าที่ต่ำกว่ามีลำดับความสำคัญสูงกว่า (10 เป็นค่าปริยายที่ดี) "
+"ไคลเอ็นต์จะลองเซิร์ฟเวอร์ตามลำดับความสำคัญ"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1083,7 +1107,9 @@ msgstr "น้ำหนัก"
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
-msgstr "สำหรับการกระจายโหลดระหว่างเซิร์ฟเวอร์ที่มีลำดับความสำคัญเท่ากัน น้ำหนักสูงกว่า = ทราฟฟิกมากกว่า 0 = ไม่มีการกระจายโหลด"
+msgstr ""
+"สำหรับการกระจายโหลดระหว่างเซิร์ฟเวอร์ที่มีลำดับความสำคัญเท่ากัน น้ำหนักสูงกว่า = "
+"ทราฟฟิกมากกว่า 0 = ไม่มีการกระจายโหลด"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:261
 msgid "Service is required"
@@ -1152,7 +1178,9 @@ msgstr "โหมดความเป็นเจ้าของโซนคื
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before importing zones."
-msgstr "โหมดความเป็นเจ้าของโซนคือ groups_only แต่คุณไม่ได้เป็นสมาชิกของกลุ่มใด ขอให้ผู้ดูแลระบบเพิ่มคุณเข้ากลุ่มก่อนนำเข้าโซน"
+msgstr ""
+"โหมดความเป็นเจ้าของโซนคือ groups_only แต่คุณไม่ได้เป็นสมาชิกของกลุ่มใด "
+"ขอให้ผู้ดูแลระบบเพิ่มคุณเข้ากลุ่มก่อนนำเข้าโซน"
 
 #: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php:155
 msgid "Zone name and primary server address are required."
@@ -1283,7 +1311,9 @@ msgstr "มีโซนที่มีชื่อนี้อยู่แล้
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr "ไม่สามารถสร้างโซนใหม่ผ่านการนำเข้าได้: เลือกอย่างน้อยหนึ่งกลุ่ม หรือไม่ต้องติ๊ก \"ไม่มีเจ้าของที่เป็นผู้ใช้\""
+msgstr ""
+"ไม่สามารถสร้างโซนใหม่ผ่านการนำเข้าได้: เลือกอย่างน้อยหนึ่งกลุ่ม หรือไม่ต้องติ๊ก "
+"\"ไม่มีเจ้าของที่เป็นผู้ใช้\""
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:376
 msgid "Failed to create zone."
@@ -1448,19 +1478,25 @@ msgstr "ไม่พบบันทึก"
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr "เรกคอร์ดและเรกคอร์ด PTR และ A/AAAA ที่เกี่ยวข้องถูกลบแล้ว แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
+msgstr ""
+"เรกคอร์ดและเรกคอร์ด PTR และ A/AAAA ที่เกี่ยวข้องถูกลบแล้ว "
+"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
-msgstr "เรกคอร์ดและเรกคอร์ด PTR ที่เกี่ยวข้องถูกลบแล้ว แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
+msgstr ""
+"เรกคอร์ดและเรกคอร์ด PTR ที่เกี่ยวข้องถูกลบแล้ว "
+"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
 
 #: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr "เรกคอร์ดและเรกคอร์ด A/AAAA ที่เกี่ยวข้องถูกลบแล้ว แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
+msgstr ""
+"เรกคอร์ดและเรกคอร์ด A/AAAA ที่เกี่ยวข้องถูกลบแล้ว "
+"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
@@ -1684,7 +1720,7 @@ msgstr "คุณไม่ได้รับอนุญาตให้ดู su
 msgid "You do not have the permission to view zone metadata."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูเมทาดาทาของโซน"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "คุณไม่มีสิทธิ์แก้ไขเมทาดาทาของโซน"
 
@@ -1796,12 +1832,9 @@ msgstr "เปิดการใช้งาน"
 msgid "API key %s successfully."
 msgstr "คีย์ API %s สำเร็จ"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "คุณไม่มีสิทธิ์เพิ่มเรกคอร์ดในโซนนี้"
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
 msgstr "โปรดระบุเรกคอร์ดอย่างน้อยหนึ่งรายการ"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
@@ -1812,7 +1845,7 @@ msgstr "ชนิดของเรกคอร์ดไม่ถูกต้อ
 msgid "Record could not be added."
 msgstr "ไม่สามารถเพิ่มเรกคอร์ดได้"
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "เพิ่มเรกคอร์ด %d รายการสำเร็จ"
@@ -1889,7 +1922,7 @@ msgstr "หมายเลขหน้าเกินจำนวนหน้า
 msgid "Invalid request method."
 msgstr "วิธีการร้องขอไม่ถูกต้อง"
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "กลุ่มหรือหมายเลขผู้ใช้ไม่ถูกต้อง"
 
@@ -2013,7 +2046,7 @@ msgstr "โปรดป้อนชื่ออื่นเมื่อใช้
 msgid "Zone template has been copied successfully."
 msgstr "คัดลอกเทมเพลตโซนเรียบร้อยแล้ว"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูเทมเพลตโซน"
 
@@ -2029,7 +2062,7 @@ msgstr "หมายเลขแม่แบบไม่ถูกต้อง"
 msgid "Template does not exist."
 msgstr "ไม่มีแม่แบบอยู่"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูโซนนี้"
 
@@ -2082,10 +2115,6 @@ msgstr "แก้ไขโซน"
 msgid "You do not have permission to access this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้เข้าถึงโซนนี้"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "คุณไม่มีสิทธิ์ดูโซนนี้"
-
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการ DNSSEC สำหรับโซนนี้"
@@ -2117,7 +2146,9 @@ msgstr "ร้องขอการลงนามโซนสำเร็จแ
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr "ล้มเหลวในการลงนามโซน การตรวจสอบโซนผ่านแล้ว แต่ PowerDNS API ส่งคืนข้อผิดพลาด ตรวจสอบบันทึกของ PowerDNS เพื่อดูรายละเอียด"
+msgstr ""
+"ล้มเหลวในการลงนามโซน การตรวจสอบโซนผ่านแล้ว แต่ PowerDNS API ส่งคืนข้อผิดพลาด "
+"ตรวจสอบบันทึกของ PowerDNS เพื่อดูรายละเอียด"
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -2250,11 +2281,6 @@ msgstr "เพิ่มเรกคอร์ดเรียบร้อยแล
 msgid "No records were provided."
 msgstr "ไม่มีการระบุเรกคอร์ด"
 
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "เพิ่มเรกคอร์ด %d รายการสำเร็จ"
-
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
@@ -2368,7 +2394,9 @@ msgstr ""
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "ป้อนเครือข่ายในรูปแบบ CIDR (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) หรือชื่อโซนย้อนกลับที่ลงท้ายด้วย in-addr.arpa หรือ ip6.arpa"
+msgstr ""
+"ป้อนเครือข่ายในรูปแบบ CIDR (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) "
+"หรือชื่อโซนย้อนกลับที่ลงท้ายด้วย in-addr.arpa หรือ ip6.arpa"
 
 #: lib/Application/Controller/AddZoneMasterController.php:252
 msgid ""
@@ -2448,10 +2476,6 @@ msgstr "บันทึกค่าเริ่มต้น %d รายกา�
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "บันทึกค่าเริ่มต้น %d รายการ; ล้าง %d รายการ"
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "คุณไม่ได้รับอนุญาตให้ดูแม่แบบโซน"
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2722,10 +2746,6 @@ msgstr "แดชบอร์ด"
 msgid "You do not have permission to manage group memberships."
 msgstr "คุณไม่ได้รับอนุญาตให้จัดการสมาชิกกลุ่ม"
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "ผู้ใช้หรือหมายเลขกลุ่มไม่ถูกต้อง"
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "ผู้ใช้เอาออกจากกลุ่มสำเร็จแล้ว"
@@ -2932,7 +2952,9 @@ msgstr ""
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr "คุณสมบัติ PowerDNS API ไม่ได้รับการปรับแต่ง โปรดตั้งค่าที่อยู่ URL และกุญแจ API ในการปรับแต่งของระบบ"
+msgstr ""
+"คุณสมบัติ PowerDNS API ไม่ได้รับการปรับแต่ง โปรดตั้งค่าที่อยู่ URL และกุญแจ API "
+"ในการปรับแต่งของระบบ"
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
@@ -2966,7 +2988,7 @@ msgstr "การออกจากระบบเสร็จสมบูรณ
 msgid "You do not have permission to view this record."
 msgstr "คุณไม่ได้รับอนุญาตให้ดูบันทึกนี้"
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "คุณไม่ได้รับอนุญาตให้แก้ไขบันทึกนี้"
 
@@ -2985,13 +3007,16 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr "ผู้ใช้ที่ยืนยันตัวตนผ่าน Single Sign-On ไม่สามารถเปลี่ยนรหัสผ่านที่นี่ได้ โปรดติดต่อผู้ดูแลระบบ หรือเปลี่ยนรหัสผ่านของคุณผ่านทางผู้ให้บริการตัวตนของคุณ"
+msgstr ""
+"ผู้ใช้ที่ยืนยันตัวตนผ่าน Single Sign-On ไม่สามารถเปลี่ยนรหัสผ่านที่นี่ได้ โปรดติดต่อผู้ดูแลระบบ "
+"หรือเปลี่ยนรหัสผ่านของคุณผ่านทางผู้ให้บริการตัวตนของคุณ"
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr "ผู้ใช้การตรวจสอบสิทธิ์ภายนอกไม่สามารถเปลี่ยนแปลงรหัสผ่านได้ที่นี่ กรุณาติดต่อผู้ดูแลระบบของคุณ"
+msgstr ""
+"ผู้ใช้การตรวจสอบสิทธิ์ภายนอกไม่สามารถเปลี่ยนแปลงรหัสผ่านได้ที่นี่ กรุณาติดต่อผู้ดูแลระบบของคุณ"
 
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:11
@@ -3081,7 +3106,7 @@ msgid "Failed to add zone."
 msgstr "ไม่สามารถเพิ่มโซนได้"
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "เพิ่มโซนเรียบร้อยแล้ว"
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3229,12 +3254,12 @@ msgstr "ต้องระบุฟิลด์ %s"
 msgid "The %s field must be a number."
 msgstr "ฟิลด์ %s ต้องเป็นตัวเลข"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "ใช่"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "ไม่"
@@ -3495,12 +3520,12 @@ msgid ""
 "below."
 msgstr "แสดงสถานะการเชื่อมต่อสำหรับ Supermasters ที่ถูกปรับแต่งไว้ในตารางด้านล่างนี้"
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "ไดเรกทอรี install/ มีอยู่ คุณต้องลบออกก่อนจึงจะดำเนินการต่อได้"
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3607,10 +3632,6 @@ msgstr "ช่องเนื้อหาของคุณมีค่าที
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "ความสำคัญสำหรับบันทึก MX/SRV ต้องเป็นเลขระหว่าง 0 กับ 65535"
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "คุณไม่มีสิทธิ์แก้ไขบันทึกนี้"
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -3762,7 +3783,9 @@ msgstr "ช่องลำดับความสำคัญสำหรับ
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr "ควรใช้เรกคอร์ด IPSECKEY ร่วมกับ DNSSEC เพื่อให้แน่ใจว่าการส่งข้อมูลคีย์มีความปลอดภัย (RFC 4025 หัวข้อ 4)"
+msgstr ""
+"ควรใช้เรกคอร์ด IPSECKEY ร่วมกับ DNSSEC เพื่อให้แน่ใจว่าการส่งข้อมูลคีย์มีความปลอดภัย (RFC "
+"4025 หัวข้อ 4)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -3859,7 +3882,9 @@ msgstr "ลำดับความสำคัญต้องเป็น 0 ส
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr "คุณไม่สามารถชี้เรกคอร์ด NS หรือ MX ไปยังเรกคอร์ด CNAME ได้ ให้ลบหรือเปลี่ยนชื่อเรกคอร์ด CNAME ก่อน หรือใช้ชื่ออื่น"
+msgstr ""
+"คุณไม่สามารถชี้เรกคอร์ด NS หรือ MX ไปยังเรกคอร์ด CNAME ได้ ให้ลบหรือเปลี่ยนชื่อเรกคอร์ด "
+"CNAME ก่อน หรือใช้ชื่ออื่น"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
@@ -3869,7 +3894,8 @@ msgstr "อักขระไม่ถูกต้องในชื่อโฮ
 msgid ""
 "Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), "
 "ensure:"
-msgstr "ชื่อดูเหมือนจะอยู่ในรูปแบบเรกคอร์ด SRV สำหรับ TLSA ที่ใช้กับ SRV (RFC 7673) ให้ตรวจสอบว่า:"
+msgstr ""
+"ชื่อดูเหมือนจะอยู่ในรูปแบบเรกคอร์ด SRV สำหรับ TLSA ที่ใช้กับ SRV (RFC 7673) ให้ตรวจสอบว่า:"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
@@ -3879,7 +3905,9 @@ msgstr "1. ห่วงโซ่ทั้งหมดของการค้น
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. ควรพบเรกคอร์ด TLSA ที่ _$port._$protocol.$hostname โดยที่ $port, $protocol และ $hostname มาจากเป้าหมายของการค้นหา SRV"
+msgstr ""
+"2. ควรพบเรกคอร์ด TLSA ที่ _$port._$protocol.$hostname โดยที่ $port, $protocol และ "
+"$hostname มาจากเป้าหมายของการค้นหา SRV"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -3904,19 +3932,25 @@ msgstr "เรกคอร์ด TLSA ใช้โพรโทคอลที่
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr "นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ SMTP ตรวจสอบให้แน่ใจว่าเรกคอร์ด MX ถูกตั้งค่าอย่างถูกต้องด้วย"
+msgstr ""
+"นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ SMTP ตรวจสอบให้แน่ใจว่าเรกคอร์ด MX "
+"ถูกตั้งค่าอย่างถูกต้องด้วย"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr "นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ HTTPS ตรวจสอบให้แน่ใจว่าใบรับรองตรงกับโดเมนในเรกคอร์ด TLSA"
+msgstr ""
+"นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ HTTPS "
+"ตรวจสอบให้แน่ใจว่าใบรับรองตรงกับโดเมนในเรกคอร์ด TLSA"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr "นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ DNS over TLS ตรวจสอบให้แน่ใจว่าเซิร์ฟเวอร์ DNS ของคุณถูกตั้งค่าสำหรับ DoT อย่างถูกต้อง"
+msgstr ""
+"นี่ดูเหมือนจะเป็นเรกคอร์ด TLSA สำหรับ DNS over TLS ตรวจสอบให้แน่ใจว่าเซิร์ฟเวอร์ DNS "
+"ของคุณถูกตั้งค่าสำหรับ DoT อย่างถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -3967,7 +4001,9 @@ msgstr "ค่าระดับความสำคัญไม่ถูกต
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "เรกคอร์ด TLSA ต้องประกอบด้วย usage, selector, matching-type และ certificate-data คั่นด้วยช่องว่าง"
+msgstr ""
+"เรกคอร์ด TLSA ต้องประกอบด้วย usage, selector, matching-type และ certificate-"
+"data คั่นด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -3985,7 +4021,9 @@ msgstr ""
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
-msgstr "การใช้งานแบบ 1 (PKIX-EE) ขึ้นอยู่กับทั้ง DANE และการตรวจสอบ PKIX แบบดั้งเดิม อาจใช้งานไม่ได้เมื่อใบรับรองหมดอายุ"
+msgstr ""
+"การใช้งานแบบ 1 (PKIX-EE) ขึ้นอยู่กับทั้ง DANE และการตรวจสอบ PKIX แบบดั้งเดิม "
+"อาจใช้งานไม่ได้เมื่อใบรับรองหมดอายุ"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
@@ -4014,7 +4052,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr "ช่อง selector ของ TLSA ต้องเป็น 0 (ใบรับรองแบบเต็ม) หรือ 1 (SubjectPublicKeyInfo)."
+msgstr ""
+"ช่อง selector ของ TLSA ต้องเป็น 0 (ใบรับรองแบบเต็ม) หรือ 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4028,13 +4067,17 @@ msgstr ""
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "ช่อง matching type ของ TLSA ต้องเป็น 0 (ตรงกันทั้งหมด), 1 (SHA-256) หรือ 2 (SHA-512)."
+msgstr ""
+"ช่อง matching type ของ TLSA ต้องเป็น 0 (ตรงกันทั้งหมด), 1 (SHA-256) หรือ 2 "
+"(SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "ไม่แนะนำให้ใช้ matching-type 0 (ตรงกันทั้งหมด) SHA-256 (1) ให้ความเข้ากันได้และความปลอดภัยที่ดีกว่า"
+msgstr ""
+"ไม่แนะนำให้ใช้ matching-type 0 (ตรงกันทั้งหมด) SHA-256 (1) "
+"ให้ความเข้ากันได้และความปลอดภัยที่ดีกว่า"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4133,7 +4176,9 @@ msgstr ""
 msgid ""
 "RFC 9276 recommends using Opt-Out only for very large and sparsely signed "
 "zones where the majority of records are insecure delegations."
-msgstr "RFC 9276 แนะนำให้ใช้ Opt-Out เฉพาะกับโซนขนาดใหญ่มากที่มีการลงนามแบบเบาบาง ซึ่งบันทึกส่วนใหญ่เป็นการมอบหมายที่ไม่ปลอดภัย"
+msgstr ""
+"RFC 9276 แนะนำให้ใช้ Opt-Out เฉพาะกับโซนขนาดใหญ่มากที่มีการลงนามแบบเบาบาง "
+"ซึ่งบันทึกส่วนใหญ่เป็นการมอบหมายที่ไม่ปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
@@ -4151,19 +4196,25 @@ msgstr "จำนวนรอบของ NSEC3PARAM ต้องอยู่ร
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 แนะนำให้ใช้จำนวนรอบเป็น 0 การเพิ่มจำนวนรอบทำให้สิ้นเปลืองการคำนวณมากขึ้นโดยไม่ได้เพิ่มความปลอดภัย"
+msgstr ""
+"RFC 9276 แนะนำให้ใช้จำนวนรอบเป็น 0 "
+"การเพิ่มจำนวนรอบทำให้สิ้นเปลืองการคำนวณมากขึ้นโดยไม่ได้เพิ่มความปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr "ค่าจำนวนรอบที่สูง (>100) อาจทำให้รีโซลเวอร์ที่ตรวจสอบความถูกต้องปฏิเสธโซนของคุณ RFC 9276 แนะนำอย่างยิ่งให้ใช้จำนวนรอบเป็น 0"
+msgstr ""
+"ค่าจำนวนรอบที่สูง (>100) อาจทำให้รีโซลเวอร์ที่ตรวจสอบความถูกต้องปฏิเสธโซนของคุณ RFC 9276 "
+"แนะนำอย่างยิ่งให้ใช้จำนวนรอบเป็น 0"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
 "Iteration values >10 create unnecessary computational load without security "
 "benefits. RFC 9276 recommends using 0 iterations."
-msgstr "ค่าจำนวนรอบที่มากกว่า 10 สร้างภาระการคำนวณที่ไม่จำเป็นโดยไม่ได้ประโยชน์ด้านความปลอดภัย RFC 9276 แนะนำให้ใช้จำนวนรอบเป็น 0"
+msgstr ""
+"ค่าจำนวนรอบที่มากกว่า 10 สร้างภาระการคำนวณที่ไม่จำเป็นโดยไม่ได้ประโยชน์ด้านความปลอดภัย RFC "
+"9276 แนะนำให้ใช้จำนวนรอบเป็น 0"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
@@ -4173,13 +4224,16 @@ msgstr "salt ของ NSEC3PARAM ต้องเป็น - (สำหรับ
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr "RFC 9276 แนะนำให้ไม่ใช้ salt (ระบุด้วย \"-\") เพื่อให้การทำงานง่ายขึ้นโดยไม่ลดความปลอดภัย"
+msgstr ""
+"RFC 9276 แนะนำให้ไม่ใช้ salt (ระบุด้วย \"-\") เพื่อให้การทำงานง่ายขึ้นโดยไม่ลดความปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
-msgstr "salt ที่ยาวไม่ได้ให้ประโยชน์ด้านความปลอดภัยเพิ่มเติม ควรพิจารณาใช้ salt ที่สั้นลงหรือไม่ใช้ salt เลย (-)"
+msgstr ""
+"salt ที่ยาวไม่ได้ให้ประโยชน์ด้านความปลอดภัยเพิ่มเติม ควรพิจารณาใช้ salt ที่สั้นลงหรือไม่ใช้ salt "
+"เลย (-)"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
@@ -4211,13 +4265,17 @@ msgstr "คำเตือน: FQDN ในบันทึก LP ไม่คว�
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr "ขอแนะนำให้ลงท้ายค่า FQDN ด้วยจุดท้าย เพื่อให้แน่ใจว่าจะถูกตีความเป็นชื่อโดเมนแบบสัมบูรณ์ ไม่ใช่แบบสัมพัทธ์"
+msgstr ""
+"ขอแนะนำให้ลงท้ายค่า FQDN ด้วยจุดท้าย เพื่อให้แน่ใจว่าจะถูกตีความเป็นชื่อโดเมนแบบสัมบูรณ์ "
+"ไม่ใช่แบบสัมพัทธ์"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr "พิจารณาใช้ค่า TTL ที่ยาวขึ้นสำหรับบันทึก LP ไม่เหมือนกับบันทึก L32/L64 บันทึก LP มีเสถียรภาพและได้ประโยชน์จากเวลาแคชที่ยาวขึ้น (RFC 6742)"
+msgstr ""
+"พิจารณาใช้ค่า TTL ที่ยาวขึ้นสำหรับบันทึก LP ไม่เหมือนกับบันทึก L32/L64 บันทึก LP "
+"มีเสถียรภาพและได้ประโยชน์จากเวลาแคชที่ยาวขึ้น (RFC 6742)"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -4235,7 +4293,8 @@ msgstr "LP FQDN ต้องเป็นชื่อโดเมนแบบเ�
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "บันทึก AFSDB ถูกเลิกใช้ตาม RFC 5864 โดยให้ใช้บันทึก SRV แทนสำหรับการระบุตำแหน่งบริการ AFS"
+msgstr ""
+"บันทึก AFSDB ถูกเลิกใช้ตาม RFC 5864 โดยให้ใช้บันทึก SRV แทนสำหรับการระบุตำแหน่งบริการ AFS"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4287,13 +4346,16 @@ msgstr "ตรวจพบละติจูด 90 องศาเหนือ (
 msgid ""
 "Zero latitude detected (the Equator). If this is intentional, it is fine; "
 "otherwise, please verify your coordinates."
-msgstr "ตรวจพบละติจูดเป็นศูนย์ (เส้นศูนย์สูตร) หากตั้งใจเช่นนี้ก็ไม่มีปัญหา มิฉะนั้นโปรดตรวจสอบพิกัดของคุณ"
+msgstr ""
+"ตรวจพบละติจูดเป็นศูนย์ (เส้นศูนย์สูตร) หากตั้งใจเช่นนี้ก็ไม่มีปัญหา มิฉะนั้นโปรดตรวจสอบพิกัดของคุณ"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
 "Default precision values detected (1m size, 10000m horizontal precision, 10m "
 "vertical precision). Consider using more accurate values if you have them."
-msgstr "ตรวจพบค่าความละเอียดปริยาย (ขนาด 1 เมตร, ความละเอียดทางแนวนอน 10000 เมตร, ความละเอียดทางแนวตั้ง 10 เมตร) ควรพิจารณาใช้ค่าที่แม่นยำกว่านี้หากคุณมี"
+msgstr ""
+"ตรวจพบค่าความละเอียดปริยาย (ขนาด 1 เมตร, ความละเอียดทางแนวนอน 10000 เมตร, "
+"ความละเอียดทางแนวตั้ง 10 เมตร) ควรพิจารณาใช้ค่าที่แม่นยำกว่านี้หากคุณมี"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
@@ -4327,13 +4389,17 @@ msgstr "ความสูงต้องอยู่ระหว่าง -1000
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr "ค่าขนาด ความละเอียดทางแนวนอน หรือความละเอียดทางแนวตั้งไม่ถูกต้อง ค่าเหล่านี้ต้องอยู่ระหว่าง 0 ถึง 90000000 เมตร"
+msgstr ""
+"ค่าขนาด ความละเอียดทางแนวนอน หรือความละเอียดทางแนวตั้งไม่ถูกต้อง ค่าเหล่านี้ต้องอยู่ระหว่าง 0 "
+"ถึง 90000000 เมตร"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรเป็น: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรเป็น: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
+"{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4351,7 +4417,9 @@ msgstr "ช่องลำดับความสำคัญสำหรับ
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr "ควรใช้บันทึก RKEY ด้วยความระมัดระวัง เนื่องจากยังไม่ได้รับการรองรับอย่างกว้างขวางจากเซิร์ฟเวอร์และรีโซลเวอร์ DNS"
+msgstr ""
+"ควรใช้บันทึก RKEY ด้วยความระมัดระวัง "
+"เนื่องจากยังไม่ได้รับการรองรับอย่างกว้างขวางจากเซิร์ฟเวอร์และรีโซลเวอร์ DNS"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4382,7 +4450,9 @@ msgstr "บิต 7 (แฟล็ก Zone Key) ถูกตั้งค่าใ
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr "บิต 0 (แฟล็ก SEP) ถูกตั้งค่าในช่องแฟล็ก ซึ่งระบุว่านี่เป็นจุดเข้าใช้งานที่ปลอดภัย (secure entry point)"
+msgstr ""
+"บิต 0 (แฟล็ก SEP) ถูกตั้งค่าในช่องแฟล็ก ซึ่งระบุว่านี่เป็นจุดเข้าใช้งานที่ปลอดภัย (secure entry "
+"point)"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
@@ -4437,25 +4507,33 @@ msgstr "อัลกอริทึม 10 (RSA/SHA-512) ให้ความป
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr "อัลกอริทึม 13 (ECDSA Curve P-256 กับ SHA-256) ให้ความปลอดภัยที่ดีด้วยลายเซ็นที่มีขนาดเล็กกว่า RSA"
+msgstr ""
+"อัลกอริทึม 13 (ECDSA Curve P-256 กับ SHA-256) "
+"ให้ความปลอดภัยที่ดีด้วยลายเซ็นที่มีขนาดเล็กกว่า RSA"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "อัลกอริทึม 14 (ECDSA Curve P-384 กับ SHA-384) ให้ความปลอดภัยที่แข็งแกร่งด้วยลายเซ็นที่มีขนาดเล็กกว่า RSA"
+msgstr ""
+"อัลกอริทึม 14 (ECDSA Curve P-384 กับ SHA-384) "
+"ให้ความปลอดภัยที่แข็งแกร่งด้วยลายเซ็นที่มีขนาดเล็กกว่า RSA"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr "อัลกอริทึม 15 (Ed25519) ให้ความปลอดภัยที่ทันสมัย แต่อาจมีปัญหาความเข้ากันได้กับตัวตรวจสอบความถูกต้องรุ่นเก่า"
+msgstr ""
+"อัลกอริทึม 15 (Ed25519) ให้ความปลอดภัยที่ทันสมัย "
+"แต่อาจมีปัญหาความเข้ากันได้กับตัวตรวจสอบความถูกต้องรุ่นเก่า"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
-msgstr "อัลกอริทึม 16 (Ed448) ให้ความปลอดภัยที่ทันสมัยและแข็งแกร่ง แต่อาจมีปัญหาความเข้ากันได้กับตัวตรวจสอบความถูกต้องรุ่นเก่า"
+msgstr ""
+"อัลกอริทึม 16 (Ed448) ให้ความปลอดภัยที่ทันสมัยและแข็งแกร่ง "
+"แต่อาจมีปัญหาความเข้ากันได้กับตัวตรวจสอบความถูกต้องรุ่นเก่า"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
@@ -4475,7 +4553,9 @@ msgstr "ข้อมูลกุญแจสาธารณะควรเข้
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr "บันทึก RKEY ไม่เคยถูกกำหนดเป็นมาตรฐานอย่างเป็นทางการใน RFC มีเพียงข้อเสนอใน draft-reid-dnsext-rkey-00"
+msgstr ""
+"บันทึก RKEY ไม่เคยถูกกำหนดเป็นมาตรฐานอย่างเป็นทางการใน RFC มีเพียงข้อเสนอใน draft-reid-"
+"dnsext-rkey-00"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -4499,7 +4579,8 @@ msgstr "RFC 3123 แนะนำว่าไม่ควรมี octet ศู�
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr "RFC 3123 ระบุข้อพิจารณาด้านความปลอดภัยเมื่อใช้บันทึก APL สำหรับรายการควบคุมการเข้าถึง"
+msgstr ""
+"RFC 3123 ระบุข้อพิจารณาด้านความปลอดภัยเมื่อใช้บันทึก APL สำหรับรายการควบคุมการเข้าถึง"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -4543,7 +4624,8 @@ msgstr ""
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr "หมายเหตุ: บันทึก NID ใช้กับโปรโตคอล ILNP ซึ่งเป็นโปรโตคอลเชิงทดลอง (RFC 6740, 6742)"
+msgstr ""
+"หมายเหตุ: บันทึก NID ใช้กับโปรโตคอล ILNP ซึ่งเป็นโปรโตคอลเชิงทดลอง (RFC 6740, 6742)"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -4553,7 +4635,9 @@ msgstr "เนื้อหาบันทึกของ NID ไม่สาม�
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "เนื้อหาบันทึก NID ต้องอยู่ในรูปแบบ xxxx:xxxx:xxxx:xxxx โดยมีเลขฐานสิบหก 4 หลัก จำนวน 4 กลุ่ม"
+msgstr ""
+"เนื้อหาบันทึก NID ต้องอยู่ในรูปแบบ xxxx:xxxx:xxxx:xxxx โดยมีเลขฐานสิบหก 4 หลัก จำนวน 4 "
+"กลุ่ม"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4563,25 +4647,33 @@ msgstr "เนื้อหาบันทึกของ NID ต้องมี�
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr "เนื้อหาบันทึก NID ต้องเป็นค่าเลขฐานสิบหกขนาด 64 บิต (16 ตัวอักษรฐานสิบหก หรือรูปแบบ xxxx:xxxx:xxxx:xxxx)"
+msgstr ""
+"เนื้อหาบันทึก NID ต้องเป็นค่าเลขฐานสิบหกขนาด 64 บิต (16 ตัวอักษรฐานสิบหก หรือรูปแบบ "
+"xxxx:xxxx:xxxx:xxxx)"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr "บันทึก NID ควรใช้รูปแบบการนำเสนอตาม RFC 6742 (xxxx:xxxx:xxxx:xxxx) โดยใช้เครื่องหมายทวิภาคเพื่อให้อ่านง่ายขึ้น"
+msgstr ""
+"บันทึก NID ควรใช้รูปแบบการนำเสนอตาม RFC 6742 (xxxx:xxxx:xxxx:xxxx) "
+"โดยใช้เครื่องหมายทวิภาคเพื่อให้อ่านง่ายขึ้น"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr "บันทึก NID ไม่ถูกต้อง: บิตกลุ่ม (g bit ซึ่งเป็นบิตที่มีนัยสำคัญน้อยที่สุดของไบต์แรก) ต้องเป็น 0 ใน ILNP ตามที่กำหนดไว้ใน RFC 6742"
+msgstr ""
+"บันทึก NID ไม่ถูกต้อง: บิตกลุ่ม (g bit ซึ่งเป็นบิตที่มีนัยสำคัญน้อยที่สุดของไบต์แรก) ต้องเป็น 0 ใน "
+"ILNP ตามที่กำหนดไว้ใน RFC 6742"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
-msgstr "บิต universal/local (u/l bit) ถูกตั้งค่าเป็น universal (0) ซึ่งระบุว่า NID นี้อ้างอิงจากตัวระบุที่ไม่ซ้ำกันทั่วโลก"
+msgstr ""
+"บิต universal/local (u/l bit) ถูกตั้งค่าเป็น universal (0) ซึ่งระบุว่า NID "
+"นี้อ้างอิงจากตัวระบุที่ไม่ซ้ำกันทั่วโลก"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
@@ -4690,7 +4782,10 @@ msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr "ช่องชื่อโดเมนถัดไปต้องเป็นชื่อเจ้าของถัดไปตามการเรียงลำดับแบบ canonical ของโซน การเรียงลำดับแบบ canonical ไม่คำนึงถึงตัวพิมพ์ใหญ่-เล็ก และเรียงตามป้ายชื่อ (label) จากขวาไปซ้าย"
+msgstr ""
+"ช่องชื่อโดเมนถัดไปต้องเป็นชื่อเจ้าของถัดไปตามการเรียงลำดับแบบ canonical ของโซน "
+"การเรียงลำดับแบบ canonical ไม่คำนึงถึงตัวพิมพ์ใหญ่-เล็ก และเรียงตามป้ายชื่อ (label) "
+"จากขวาไปซ้าย"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4739,7 +4834,8 @@ msgstr ""
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "บันทึก NSEC นี้มีทั้งชนิด SOA และ NS ซึ่งบ่งชี้ว่าอาจเป็นบันทึกสำหรับจุดยอดของโซน (zone apex)"
+msgstr ""
+"บันทึก NSEC นี้มีทั้งชนิด SOA และ NS ซึ่งบ่งชี้ว่าอาจเป็นบันทึกสำหรับจุดยอดของโซน (zone apex)"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -4759,7 +4855,9 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr "โดยปกติบันทึก OPENPGPKEY ควรถูกสร้างด้วยเครื่องมือเฉพาะ เช่น GnuPG พร้อมตัวเลือก --print-dane-records แทนที่จะสร้างด้วยตนเอง"
+msgstr ""
+"โดยปกติบันทึก OPENPGPKEY ควรถูกสร้างด้วยเครื่องมือเฉพาะ เช่น GnuPG พร้อมตัวเลือก --print-"
+"dane-records แทนที่จะสร้างด้วยตนเอง"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -4782,7 +4880,9 @@ msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr "บันทึก OPENPGPKEY มีขนาดเกิน 4KB RFC 7929 แนะนำให้เก็บบันทึก DNS ให้เล็กที่สุดเท่าที่จะทำได้เพื่อให้การส่งข้อมูลเชื่อถือได้ ควรพิจารณาใช้รูปแบบการส่งออกกุญแจแบบย่อ"
+msgstr ""
+"บันทึก OPENPGPKEY มีขนาดเกิน 4KB RFC 7929 แนะนำให้เก็บบันทึก DNS "
+"ให้เล็กที่สุดเท่าที่จะทำได้เพื่อให้การส่งข้อมูลเชื่อถือได้ ควรพิจารณาใช้รูปแบบการส่งออกกุญแจแบบย่อ"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4794,13 +4894,17 @@ msgstr "บันทึก OPENPGPKEY มีขนาดเล็กผิดป
 msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
-msgstr "เนื้อหาที่ถอดรหัสแล้วดูเหมือนจะไม่ใช่แพ็กเก็ต OpenPGP ที่ถูกต้อง แพ็กเก็ต OpenPGP ต้องเริ่มต้นด้วยไบต์ที่มีการตั้งบิตสูง (RFC 9580)"
+msgstr ""
+"เนื้อหาที่ถอดรหัสแล้วดูเหมือนจะไม่ใช่แพ็กเก็ต OpenPGP ที่ถูกต้อง แพ็กเก็ต OpenPGP "
+"ต้องเริ่มต้นด้วยไบต์ที่มีการตั้งบิตสูง (RFC 9580)"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
-msgstr "เนื้อหาที่ถอดรหัสแล้วดูเหมือนจะไม่มีแพ็กเก็ตกุญแจสาธารณะ (tag 6) หรือแพ็กเก็ตกุญแจย่อยสาธารณะ (tag 14) เป็นแพ็กเก็ตแรก"
+msgstr ""
+"เนื้อหาที่ถอดรหัสแล้วดูเหมือนจะไม่มีแพ็กเก็ตกุญแจสาธารณะ (tag 6) หรือแพ็กเก็ตกุญแจย่อยสาธารณะ "
+"(tag 14) เป็นแพ็กเก็ตแรก"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
@@ -4822,13 +4926,17 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr "บันทึก OPENPGPKEY ไม่ได้ใช้แทน OpenPGP Web of Trust ยังคงแนะนำให้ใช้วิธีการตรวจสอบเพิ่มเติม"
+msgstr ""
+"บันทึก OPENPGPKEY ไม่ได้ใช้แทน OpenPGP Web of Trust "
+"ยังคงแนะนำให้ใช้วิธีการตรวจสอบเพิ่มเติม"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
-msgstr "ในการสร้างบันทึก OPENPGPKEY ให้ใช้เครื่องมือเฉพาะ เช่น GnuPG พร้อมตัวเลือก --print-dane-records เพื่อให้ได้รูปแบบและเนื้อหาที่ถูกต้อง"
+msgstr ""
+"ในการสร้างบันทึก OPENPGPKEY ให้ใช้เครื่องมือเฉพาะ เช่น GnuPG พร้อมตัวเลือก --print-dane-"
+"records เพื่อให้ได้รูปแบบและเนื้อหาที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
@@ -4840,7 +4948,9 @@ msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr "คำเตือน: บันทึก HINFO เปิดเผยข้อมูลที่อาจมีความอ่อนไหวเกี่ยวกับฮาร์ดแวร์และซอฟต์แวร์ของโฮสต์ ซึ่งอาจเป็นประโยชน์ต่อผู้โจมตี ควรพิจารณาผลกระทบด้านความปลอดภัยก่อนใช้ใน DNS ที่เปิดสู่สาธารณะ"
+msgstr ""
+"คำเตือน: บันทึก HINFO เปิดเผยข้อมูลที่อาจมีความอ่อนไหวเกี่ยวกับฮาร์ดแวร์และซอฟต์แวร์ของโฮสต์ "
+"ซึ่งอาจเป็นประโยชน์ต่อผู้โจมตี ควรพิจารณาผลกระทบด้านความปลอดภัยก่อนใช้ใน DNS ที่เปิดสู่สาธารณะ"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -4884,7 +4994,9 @@ msgstr ""
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr "การประทับเวลาของ TSIG เก่ากว่า 24 ชั่วโมง ซึ่งอาจบ่งชี้ถึงการโจมตีแบบเล่นซ้ำ (replay attack) หรือปัญหาการซิงโครไนซ์นาฬิกา"
+msgstr ""
+"การประทับเวลาของ TSIG เก่ากว่า 24 ชั่วโมง ซึ่งอาจบ่งชี้ถึงการโจมตีแบบเล่นซ้ำ (replay "
+"attack) หรือปัญหาการซิงโครไนซ์นาฬิกา"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
@@ -4900,7 +5012,9 @@ msgstr "ควรหมุนเวียนคีย์ TSIG เป็นระ
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr "TSIG ให้การพิสูจน์ตัวตนของทรานแซกชัน แต่ไม่ได้ให้ความถูกต้องครบถ้วนของข้อมูล ควรพิจารณาใช้ DNSSEC ร่วมกับ TSIG"
+msgstr ""
+"TSIG ให้การพิสูจน์ตัวตนของทรานแซกชัน แต่ไม่ได้ให้ความถูกต้องครบถ้วนของข้อมูล ควรพิจารณาใช้ "
+"DNSSEC ร่วมกับ TSIG"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
@@ -4913,7 +5027,9 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr "บันทึก TSIG ต้องมีอย่างน้อย algorithm-name, timestamp, fudge, mac, original-id, error และ other-len คั่นด้วยช่องว่าง"
+msgstr ""
+"บันทึก TSIG ต้องมีอย่างน้อย algorithm-name, timestamp, fudge, mac, original-id, "
+"error และ other-len คั่นด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -4951,13 +5067,17 @@ msgstr "ข้อผิดพลาดของ TSIG ต้องเป็นห
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
-msgstr "รหัสข้อผิดพลาด TSIG 16 (BADSIG) บ่งชี้ว่าลายเซ็นในบันทึก TSIG ไม่ถูกต้อง ตรวจสอบกุญแจและการตั้งค่าการเข้ารหัส"
+msgstr ""
+"รหัสข้อผิดพลาด TSIG 16 (BADSIG) บ่งชี้ว่าลายเซ็นในบันทึก TSIG ไม่ถูกต้อง "
+"ตรวจสอบกุญแจและการตั้งค่าการเข้ารหัส"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr "รหัสข้อผิดพลาด TSIG 17 (BADKEY) บ่งชี้ว่ากุญแจที่ใช้ในบันทึก TSIG ไม่ถูกต้อง ตรวจสอบว่ากุญแจถูกตั้งค่าไว้บนเซิร์ฟเวอร์ DNS ทั้งสองฝั่ง"
+msgstr ""
+"รหัสข้อผิดพลาด TSIG 17 (BADKEY) บ่งชี้ว่ากุญแจที่ใช้ในบันทึก TSIG ไม่ถูกต้อง "
+"ตรวจสอบว่ากุญแจถูกตั้งค่าไว้บนเซิร์ฟเวอร์ DNS ทั้งสองฝั่ง"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
@@ -4982,7 +5102,8 @@ msgstr "ค่า other-len ของ TSIG ต้องเป็นจำนว�
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr "ค่า other-data ของ TSIG ต้องเป็นข้อความที่เข้ารหัส base64 ที่ถูกต้อง หรือข้อความเลขฐานสิบหก"
+msgstr ""
+"ค่า other-data ของ TSIG ต้องเป็นข้อความที่เข้ารหัส base64 ที่ถูกต้อง หรือข้อความเลขฐานสิบหก"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -4996,7 +5117,8 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr "RFC 8945 แนะนำให้ใช้ HMAC-SHA256 เป็นอัลกอริทึม TSIG ที่ควรเลือกใช้สำหรับการใช้งานส่วนใหญ่"
+msgstr ""
+"RFC 8945 แนะนำให้ใช้ HMAC-SHA256 เป็นอัลกอริทึม TSIG ที่ควรเลือกใช้สำหรับการใช้งานส่วนใหญ่"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -5019,7 +5141,8 @@ msgstr "RFC 8945 แนะนำให้ใช้ HMAC-SHA256 เป็นอ�
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "ZONEMD ถูกกำหนดไว้ใน RFC 8976 (กุมภาพันธ์ 2021) และอาจไม่รองรับในเซิร์ฟเวอร์ DNS ทุกตัว"
+msgstr ""
+"ZONEMD ถูกกำหนดไว้ใน RFC 8976 (กุมภาพันธ์ 2021) และอาจไม่รองรับในเซิร์ฟเวอร์ DNS ทุกตัว"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -5041,7 +5164,8 @@ msgstr "หมายเลขซีเรียลในบันทึก ZONEM
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ค่า scheme ของ ZONEMD 240-255 ถูกสงวนไว้สำหรับการใช้งานส่วนตัว และอาจใช้งานร่วมกันไม่ได้"
+msgstr ""
+"ค่า scheme ของ ZONEMD 240-255 ถูกสงวนไว้สำหรับการใช้งานส่วนตัว และอาจใช้งานร่วมกันไม่ได้"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5052,13 +5176,17 @@ msgstr "SHA-384 (algorithm 1) เป็นอัลกอริทึมแฮ�
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr "SHA-512 (algorithm 2) ให้ความปลอดภัยที่แข็งแกร่งกว่า แต่ต้องใช้ทรัพยากรในการประมวลผลมากกว่า SHA-384"
+msgstr ""
+"SHA-512 (algorithm 2) ให้ความปลอดภัยที่แข็งแกร่งกว่า "
+"แต่ต้องใช้ทรัพยากรในการประมวลผลมากกว่า SHA-384"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr "ค่าอัลกอริทึมแฮชของ ZONEMD 240-255 ถูกสงวนไว้สำหรับการใช้งานส่วนตัว และอาจใช้งานร่วมกันไม่ได้"
+msgstr ""
+"ค่าอัลกอริทึมแฮชของ ZONEMD 240-255 ถูกสงวนไว้สำหรับการใช้งานส่วนตัว "
+"และอาจใช้งานร่วมกันไม่ได้"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5070,7 +5198,9 @@ msgstr "บันทึก ZONEMD ต้องมี serial, scheme, hash-algori
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "ค่า serial ของ ZONEMD ต้องเป็นตัวเลขระหว่าง 0 ถึง 4294967295 (จำนวนเต็มไม่มีเครื่องหมายขนาด 32 บิต)"
+msgstr ""
+"ค่า serial ของ ZONEMD ต้องเป็นตัวเลขระหว่าง 0 ถึง 4294967295 "
+"(จำนวนเต็มไม่มีเครื่องหมายขนาด 32 บิต)"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -5080,7 +5210,9 @@ msgstr "ค่า scheme ของ ZONEMD ต้องเป็นตัวเ�
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr "ค่า scheme ของ ZONEMD ต้องเป็น 1 (Simple ZONEMD scheme) สำหรับการใช้งานมาตรฐาน ค่าอื่น ๆ ถูกสงวนไว้หรือยังไม่ได้กำหนด"
+msgstr ""
+"ค่า scheme ของ ZONEMD ต้องเป็น 1 (Simple ZONEMD scheme) สำหรับการใช้งานมาตรฐาน "
+"ค่าอื่น ๆ ถูกสงวนไว้หรือยังไม่ได้กำหนด"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
@@ -5106,7 +5238,9 @@ msgstr "ค่า digest ของ ZONEMD ต้องมีอักขระ�
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr "ค่า digest ของ ZONEMD สำหรับ SHA-384 (algorithm 1) ต้องมีอักขระเลขฐานสิบหก 96 ตัวพอดี (48 octets)"
+msgstr ""
+"ค่า digest ของ ZONEMD สำหรับ SHA-384 (algorithm 1) ต้องมีอักขระเลขฐานสิบหก 96 "
+"ตัวพอดี (48 octets)"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5154,7 +5288,9 @@ msgstr ""
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr "ชนิดของใบรับรองที่อ้างอิง URL (IPKIX, ISPKI, IPGP, IACPKIX) ทำให้เกิดการอ้างอิงทางอ้อมเพิ่มขึ้นและอาจมีข้อกังวลด้านความปลอดภัย"
+msgstr ""
+"ชนิดของใบรับรองที่อ้างอิง URL (IPKIX, ISPKI, IPGP, IACPKIX) "
+"ทำให้เกิดการอ้างอิงทางอ้อมเพิ่มขึ้นและอาจมีข้อกังวลด้านความปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -5229,7 +5365,9 @@ msgstr ""
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr "ชื่อนี้ดูเหมือนอยู่ในโดเมนสำหรับค้นหา DLV โปรดทราบว่า dlv.isc.org ซึ่งเป็นรีจิสทรี DLV หลัก ถูกยกเลิกไปในปี 2017"
+msgstr ""
+"ชื่อนี้ดูเหมือนอยู่ในโดเมนสำหรับค้นหา DLV โปรดทราบว่า dlv.isc.org ซึ่งเป็นรีจิสทรี DLV หลัก "
+"ถูกยกเลิกไปในปี 2017"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
@@ -5247,7 +5385,8 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "รูปแบบบันทึก DLV ไม่ถูกต้อง ต้องเป็น: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"รูปแบบบันทึก DLV ไม่ถูกต้อง ต้องเป็น: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5261,7 +5400,9 @@ msgstr "แท็กคีย์ไม่ถูกต้อง ต้องเ�
 msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
-msgstr "ช่อง key tag ไม่ได้ระบุ DNSKEY อย่างเฉพาะเจาะจง กุญแจมากกว่าหนึ่งดอกสามารถมี key tag เดียวกันได้"
+msgstr ""
+"ช่อง key tag ไม่ได้ระบุ DNSKEY อย่างเฉพาะเจาะจง กุญแจมากกว่าหนึ่งดอกสามารถมี key tag "
+"เดียวกันได้"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -5275,7 +5416,9 @@ msgstr "ชนิดของ digest ไม่ถูกต้อง ต้อง
 msgid ""
 "SHA-1 (digest type 1) is considered weak for cryptographic use. Consider "
 "using SHA-256 (type 2) or SHA-384 (type 4) instead."
-msgstr "SHA-1 (digest type 1) ถือว่าอ่อนแอสำหรับการใช้งานด้านการเข้ารหัส ควรพิจารณาใช้ SHA-256 (type 2) หรือ SHA-384 (type 4) แทน"
+msgstr ""
+"SHA-1 (digest type 1) ถือว่าอ่อนแอสำหรับการใช้งานด้านการเข้ารหัส ควรพิจารณาใช้ SHA-256 "
+"(type 2) หรือ SHA-384 (type 4) แทน"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
@@ -5327,7 +5470,8 @@ msgstr "ค่าในช่องลำดับความสำคัญข
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "ไม่ควรใช้ช่องลำดับความสำคัญสำหรับบันทึก HTTPS เนื่องจากลำดับความสำคัญเป็นส่วนหนึ่งของเนื้อหา"
+msgstr ""
+"ไม่ควรใช้ช่องลำดับความสำคัญสำหรับบันทึก HTTPS เนื่องจากลำดับความสำคัญเป็นส่วนหนึ่งของเนื้อหา"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
@@ -5401,7 +5545,9 @@ msgstr "พารามิเตอร์ \"%s\" ถูกทำเครื่�
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr "RFC 2930 กำหนดให้เรกคอร์ด TKEY มี TTL=0 เพื่อป้องกันการแคช ค่า TTL ที่ไม่ใช่ศูนย์ในปัจจุบันอาจทำให้เกิดปัญหากับการใช้งาน DNS รุ่นเก่า"
+msgstr ""
+"RFC 2930 กำหนดให้เรกคอร์ด TKEY มี TTL=0 เพื่อป้องกันการแคช ค่า TTL "
+"ที่ไม่ใช่ศูนย์ในปัจจุบันอาจทำให้เกิดปัญหากับการใช้งาน DNS รุ่นเก่า"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -5423,7 +5569,9 @@ msgstr "อักขระไม่ถูกต้องในเนื้อห
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "เรกคอร์ด TKEY ต้องประกอบด้วย algorithm-name, inception-time, expiration-time, mode, error และ key-data คั่นด้วยช่องว่าง"
+msgstr ""
+"เรกคอร์ด TKEY ต้องประกอบด้วย algorithm-name, inception-time, expiration-time, "
+"mode, error และ key-data คั่นด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -5434,19 +5582,24 @@ msgstr "ชื่ออัลกอริทึมของ TKEY ต้องเ
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "เวลาเริ่มต้นของ TKEY ต้องเป็น Unix timestamp ที่ถูกต้อง หรืออยู่ในรูปแบบ YYYYMMDDHHmmSS"
+msgstr ""
+"เวลาเริ่มต้นของ TKEY ต้องเป็น Unix timestamp ที่ถูกต้อง หรืออยู่ในรูปแบบ YYYYMMDDHHmmSS"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "เวลาหมดอายุของ TKEY ต้องเป็น Unix timestamp ที่ถูกต้อง หรืออยู่ในรูปแบบ YYYYMMDDHHmmSS"
+msgstr ""
+"เวลาหมดอายุของ TKEY ต้องเป็น Unix timestamp ที่ถูกต้อง หรืออยู่ในรูปแบบ YYYYMMDDHHmmSS"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr "โหมดของ TKEY ต้องเป็นตัวเลขระหว่าง 1 ถึง 5 (1: การกำหนดโดยเซิร์ฟเวอร์, 2: การแลกเปลี่ยนแบบ Diffie-Hellman, 3: การเจรจา GSS-API, 4: การกำหนดโดยรีโซลเวอร์, 5: การลบกุญแจ)"
+msgstr ""
+"โหมดของ TKEY ต้องเป็นตัวเลขระหว่าง 1 ถึง 5 (1: การกำหนดโดยเซิร์ฟเวอร์, 2: "
+"การแลกเปลี่ยนแบบ Diffie-Hellman, 3: การเจรจา GSS-API, 4: การกำหนดโดยรีโซลเวอร์, "
+"5: การลบกุญแจ)"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
@@ -5460,7 +5613,9 @@ msgstr "โหมด GSS-API ต้องการให้ข้อมูลค
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr "โหมด Diffie-Hellman ควรได้รับการตรวจสอบสิทธิ์โดยใช้ TSIG หรือ SIG(0) เพื่อป้องกันการโจมตีแบบคนกลาง"
+msgstr ""
+"โหมด Diffie-Hellman ควรได้รับการตรวจสอบสิทธิ์โดยใช้ TSIG หรือ SIG(0) "
+"เพื่อป้องกันการโจมตีแบบคนกลาง"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -5486,7 +5641,8 @@ msgstr "คีย์ที่สร้างขึ้นด้วย TKEY จะ
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "การแลกเปลี่ยนเรกคอร์ด TKEY ควรมีการรักษาความปลอดภัย - การตรวจสอบสิทธิ์ขึ้นอยู่กับโหมดที่ใช้"
+msgstr ""
+"การแลกเปลี่ยนเรกคอร์ด TKEY ควรมีการรักษาความปลอดภัย - การตรวจสอบสิทธิ์ขึ้นอยู่กับโหมดที่ใช้"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
@@ -5506,7 +5662,9 @@ msgstr ""
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr "ตรวจพบชื่ออัลกอริทึมที่กำหนดเอง ขอแนะนำให้ใช้ชื่ออัลกอริทึมมาตรฐาน เช่น \"hmac-sha256.\" เพื่อความเข้ากันได้ที่ดีขึ้น"
+msgstr ""
+"ตรวจพบชื่ออัลกอริทึมที่กำหนดเอง ขอแนะนำให้ใช้ชื่ออัลกอริทึมมาตรฐาน เช่น \"hmac-sha256.\" "
+"เพื่อความเข้ากันได้ที่ดีขึ้น"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -5568,7 +5726,8 @@ msgstr "FTP ถือว่าปลอดภัยน้อยกว่าท�
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "ลองพิจารณาใช้ LDAPS (LDAP over SSL/TLS) เพื่อรักษาความปลอดภัยของการเชื่อมต่อ LDAP"
+msgstr ""
+"ลองพิจารณาใช้ LDAPS (LDAP over SSL/TLS) เพื่อรักษาความปลอดภัยของการเชื่อมต่อ LDAP"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -5578,7 +5737,9 @@ msgstr "รูปแบบ URI (scheme) ที่เกี่ยวข้อง�
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "รูปแบบ URI แบบ \"file\" อาจก่อให้เกิดความเสี่ยงด้านความปลอดภัย และไม่แนะนำให้ใช้กับเรกคอร์ด DNS สาธารณะ"
+msgstr ""
+"รูปแบบ URI แบบ \"file\" อาจก่อให้เกิดความเสี่ยงด้านความปลอดภัย "
+"และไม่แนะนำให้ใช้กับเรกคอร์ด DNS สาธารณะ"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -5600,7 +5761,9 @@ msgstr "URI ต้องไม่ว่างเปล่า"
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI ต้องเริ่มต้นด้วยสคีมที่ถูกต้อง ซึ่งขึ้นต้นด้วยตัวอักษร ตามด้วยตัวอักษร ตัวเลข เครื่องหมายบวก จุด หรือขีดกลาง"
+msgstr ""
+"URI ต้องเริ่มต้นด้วยสคีมที่ถูกต้อง ซึ่งขึ้นต้นด้วยตัวอักษร ตามด้วยตัวอักษร ตัวเลข เครื่องหมายบวก จุด "
+"หรือขีดกลาง"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
@@ -5654,7 +5817,9 @@ msgstr "ชื่อโฮสต์ของตัวแลกเปลี่ย
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr "สำคัญ: RFC 2230 กำหนดให้เรกคอร์ด KX ต้องถูกเซ็นด้วย DNSSEC เรกคอร์ด KX ที่ไม่ได้เซ็นจะต้องถูกละเว้นด้วยเหตุผลด้านความปลอดภัย"
+msgstr ""
+"สำคัญ: RFC 2230 กำหนดให้เรกคอร์ด KX ต้องถูกเซ็นด้วย DNSSEC เรกคอร์ด KX "
+"ที่ไม่ได้เซ็นจะต้องถูกละเว้นด้วยเหตุผลด้านความปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
@@ -5666,7 +5831,9 @@ msgstr "ระบบที่ไม่มีความปลอดภัย DN
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "ตรวจสอบให้แน่ใจว่าโฮสต์ที่ใช้แลกเปลี่ยนกุญแจมีการตั้งค่าเรกคอร์ด DNS แบบ forward และ reverse อย่างเหมาะสม"
+msgstr ""
+"ตรวจสอบให้แน่ใจว่าโฮสต์ที่ใช้แลกเปลี่ยนกุญแจมีการตั้งค่าเรกคอร์ด DNS แบบ forward และ "
+"reverse อย่างเหมาะสม"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -5706,7 +5873,9 @@ msgstr "ชื่อโฮสต์ของกล่องจดหมายท
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "RFC 1035 ระบุว่ารายชื่อจดหมายเวียนจำนวนมากใช้กล่องจดหมาย \"list-name-request\" สำหรับช่องกล่องจดหมายที่รับผิดชอบ"
+msgstr ""
+"RFC 1035 ระบุว่ารายชื่อจดหมายเวียนจำนวนมากใช้กล่องจดหมาย \"list-name-request\" "
+"สำหรับช่องกล่องจดหมายที่รับผิดชอบ"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -5728,13 +5897,17 @@ msgstr "การใช้ \".\" (ราก) สำหรับ EMAILBX ระ�
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "กล่องจดหมายที่รับผิดชอบและกล่องจดหมายข้อผิดพลาดเหมือนกัน ลองพิจารณาใช้กล่องจดหมายที่ต่างกันสำหรับหน้าที่เหล่านี้"
+msgstr ""
+"กล่องจดหมายที่รับผิดชอบและกล่องจดหมายข้อผิดพลาดเหมือนกัน "
+"ลองพิจารณาใช้กล่องจดหมายที่ต่างกันสำหรับหน้าที่เหล่านี้"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "ช่องลำดับความสำคัญสำหรับเรกคอร์ด MINFO ต้องเป็น 0 หรือว่างเปล่า MINFO ไม่ใช้ค่าลำดับความสำคัญตาม RFC 1035"
+msgstr ""
+"ช่องลำดับความสำคัญสำหรับเรกคอร์ด MINFO ต้องเป็น 0 หรือว่างเปล่า MINFO "
+"ไม่ใช้ค่าลำดับความสำคัญตาม RFC 1035"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -5815,14 +5988,18 @@ msgstr "กลไกที่ไม่รู้จัก: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "เรกคอร์ด SPF ควรมีกลไก \"all\" ปิดท้าย หรือมีตัวปรับแต่ง \"redirect\" (RFC 7208 มาตรา 4.6.2)"
+msgstr ""
+"เรกคอร์ด SPF ควรมีกลไก \"all\" ปิดท้าย หรือมีตัวปรับแต่ง \"redirect\" (RFC 7208 มาตรา "
+"4.6.2)"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "เรกคอร์ด SPF มีทั้งกลไก \"all\" และตัวปรับแต่ง \"redirect\" ตัวปรับแต่ง \"redirect\" จะถูกละเว้นเมื่อมี \"all\" อยู่ (RFC 7208 มาตรา 6.1)"
+msgstr ""
+"เรกคอร์ด SPF มีทั้งกลไก \"all\" และตัวปรับแต่ง \"redirect\" ตัวปรับแต่ง \"redirect\" "
+"จะถูกละเว้นเมื่อมี \"all\" อยู่ (RFC 7208 มาตรา 6.1)"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
@@ -5869,7 +6046,9 @@ msgstr "อักขระไม่ถูกต้องในเนื้อห
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "ตาม RFC 4701 และ RFC 4703 ควรวางเรกคอร์ด DHCID ไว้ที่ชื่อเดียวกับเรกคอร์ด A หรือ AAAA ที่สอดคล้องกัน"
+msgstr ""
+"ตาม RFC 4701 และ RFC 4703 ควรวางเรกคอร์ด DHCID ไว้ที่ชื่อเดียวกับเรกคอร์ด A หรือ AAAA "
+"ที่สอดคล้องกัน"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -5880,25 +6059,32 @@ msgid ""
 "Per RFC 4703, DHCID records are used for collision detection when multiple "
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
-msgstr "ตาม RFC 4703 เรกคอร์ด DHCID ใช้สำหรับตรวจจับการชนกันเมื่อไคลเอนต์ DHCP หลายตัวอ้างสิทธิ์ในชื่อเดียวกัน การมีเรกคอร์ด DHCID แสดงว่าชื่อนั้นถูกใช้งานอยู่โดยไคลเอนต์ DHCP"
+msgstr ""
+"ตาม RFC 4703 เรกคอร์ด DHCID ใช้สำหรับตรวจจับการชนกันเมื่อไคลเอนต์ DHCP "
+"หลายตัวอ้างสิทธิ์ในชื่อเดียวกัน การมีเรกคอร์ด DHCID แสดงว่าชื่อนั้นถูกใช้งานอยู่โดยไคลเอนต์ DHCP"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "เรกคอร์ด DHCID ต้องประกอบด้วยอักขระ base64 ที่ถูกต้องเท่านั้น (A-Z, a-z, 0-9, +, /, =)"
+msgstr ""
+"เรกคอร์ด DHCID ต้องประกอบด้วยอักขระ base64 ที่ถูกต้องเท่านั้น (A-Z, a-z, 0-9, +, /, =)"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "เรกคอร์ด DHCID มีการเติม (padding) แบบ base64 ไม่ถูกต้อง เครื่องหมายเท่ากับ (=) ควรปรากฏที่ท้ายข้อมูลเท่านั้น"
+msgstr ""
+"เรกคอร์ด DHCID มีการเติม (padding) แบบ base64 ไม่ถูกต้อง เครื่องหมายเท่ากับ (=) "
+"ควรปรากฏที่ท้ายข้อมูลเท่านั้น"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "เรกคอร์ด DHCID มีความยาว base64 ไม่ถูกต้อง ข้อมูล base64 ต้องมีจำนวนอักขระเป็นจำนวนเท่าของ 4 (รวมการเติม padding)"
+msgstr ""
+"เรกคอร์ด DHCID มีความยาว base64 ไม่ถูกต้อง ข้อมูล base64 "
+"ต้องมีจำนวนอักขระเป็นจำนวนเท่าของ 4 (รวมการเติม padding)"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -5908,27 +6094,33 @@ msgstr "เรกคอร์ด DHCID ต้องมีข้อมูลท�
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "เรกคอร์ด DHCID สั้นเกินไป ข้อมูลที่ถอดรหัสแล้วต้องมีอย่างน้อย 3 ไบต์ (รหัสชนิดและไดเจสต์)"
+msgstr ""
+"เรกคอร์ด DHCID สั้นเกินไป ข้อมูลที่ถอดรหัสแล้วต้องมีอย่างน้อย 3 ไบต์ (รหัสชนิดและไดเจสต์)"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "ชนิดตัวระบุ DHCID 0x%04X ไม่ใช่ชนิดมาตรฐานที่กำหนดไว้ใน RFC 4701 (0x0000, 0x0001, 0x0002)"
+msgstr ""
+"ชนิดตัวระบุ DHCID 0x%04X ไม่ใช่ชนิดมาตรฐานที่กำหนดไว้ใน RFC 4701 (0x0000, 0x0001, "
+"0x0002)"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "ชนิดไดเจสต์ DHCID %d ไม่ใช่ชนิดมาตรฐาน (1 สำหรับ SHA-256) ที่กำหนดไว้ใน RFC 4701"
+msgstr ""
+"ชนิดไดเจสต์ DHCID %d ไม่ใช่ชนิดมาตรฐาน (1 สำหรับ SHA-256) ที่กำหนดไว้ใน RFC 4701"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr "เรกคอร์ด DHCID ที่ใช้ไดเจสต์ SHA-256 (ชนิด 1) ต้องมีอย่างน้อย 35 ไบต์เมื่อถอดรหัส (2 สำหรับชนิดตัวระบุ, 1 สำหรับชนิดไดเจสต์, 32 สำหรับไดเจสต์ SHA-256)"
+msgstr ""
+"เรกคอร์ด DHCID ที่ใช้ไดเจสต์ SHA-256 (ชนิด 1) ต้องมีอย่างน้อย 35 ไบต์เมื่อถอดรหัส (2 "
+"สำหรับชนิดตัวระบุ, 1 สำหรับชนิดไดเจสต์, 32 สำหรับไดเจสต์ SHA-256)"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -5966,7 +6158,9 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "การหมุนเวียนกุญแจเป็นประจำเป็นแนวปฏิบัติด้านความปลอดภัยที่แนะนำ: ZSK ทุก 1-3 เดือน, KSK ทุก 1-2 ปี"
+msgstr ""
+"การหมุนเวียนกุญแจเป็นประจำเป็นแนวปฏิบัติด้านความปลอดภัยที่แนะนำ: ZSK ทุก 1-3 เดือน, KSK ทุก "
+"1-2 ปี"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -5980,7 +6174,9 @@ msgstr "เรกคอร์ด RRSIG มีอักขระที่ไม�
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr "เรกคอร์ด RRSIG ต้องประกอบด้วยชนิดที่ครอบคลุม, อัลกอริทึม, เลเบล, TTL เดิม, เวลาหมดอายุ, เวลาเริ่มต้น, คีย์แท็ก, ชื่อผู้เซ็น และลายเซ็น"
+msgstr ""
+"เรกคอร์ด RRSIG ต้องประกอบด้วยชนิดที่ครอบคลุม, อัลกอริทึม, เลเบล, TTL เดิม, เวลาหมดอายุ, "
+"เวลาเริ่มต้น, คีย์แท็ก, ชื่อผู้เซ็น และลายเซ็น"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -6020,19 +6216,24 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr "อัลกอริทึม 10 (RSA/SHA-512) ให้ความปลอดภัยที่แข็งแกร่ง แต่อาจมีปัญหาการทำงานร่วมกันกับตัวตรวจสอบบางตัว"
+msgstr ""
+"อัลกอริทึม 10 (RSA/SHA-512) ให้ความปลอดภัยที่แข็งแกร่ง "
+"แต่อาจมีปัญหาการทำงานร่วมกันกับตัวตรวจสอบบางตัว"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "อัลกอริทึม 13 (ECDSA P-256 พร้อม SHA-256) ให้ความปลอดภัยที่ดีด้วยลายเซ็นที่เล็กกว่า RSA"
+msgstr ""
+"อัลกอริทึม 13 (ECDSA P-256 พร้อม SHA-256) ให้ความปลอดภัยที่ดีด้วยลายเซ็นที่เล็กกว่า RSA"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "อัลกอริทึม 14 (ECDSA P-384 พร้อม SHA-384) ให้ความปลอดภัยที่แข็งแกร่งด้วยลายเซ็นที่เล็กกว่า RSA"
+msgstr ""
+"อัลกอริทึม 14 (ECDSA P-384 พร้อม SHA-384) ให้ความปลอดภัยที่แข็งแกร่งด้วยลายเซ็นที่เล็กกว่า "
+"RSA"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -6075,7 +6276,9 @@ msgstr "TTL เดิมของ RRSIG ต้องเป็นจำนวน�
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr "TTL เดิมมากกว่า 1 วัน (86400) สำหรับบันทึก DNSSEC โดยทั่วไปแนะนำให้ใช้ TTL ที่สั้นกว่า เพื่อให้กู้คืนได้เร็วขึ้นในกรณีที่คีย์ถูกเจาะ"
+msgstr ""
+"TTL เดิมมากกว่า 1 วัน (86400) สำหรับบันทึก DNSSEC โดยทั่วไปแนะนำให้ใช้ TTL ที่สั้นกว่า "
+"เพื่อให้กู้คืนได้เร็วขึ้นในกรณีที่คีย์ถูกเจาะ"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -6121,7 +6324,9 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr "ระยะเวลาที่ลายเซ็นมีผลนานเกิน 90 วัน ซึ่งนานกว่าแนวปฏิบัติที่แนะนำ ระยะเวลาที่ยาวนานทำให้มีความเสี่ยงเพิ่มขึ้นในกรณีที่คีย์ถูกเจาะ"
+msgstr ""
+"ระยะเวลาที่ลายเซ็นมีผลนานเกิน 90 วัน ซึ่งนานกว่าแนวปฏิบัติที่แนะนำ "
+"ระยะเวลาที่ยาวนานทำให้มีความเสี่ยงเพิ่มขึ้นในกรณีที่คีย์ถูกเจาะ"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -6205,13 +6410,16 @@ msgstr "บันทึก RP มีอักขระที่ไม่ถู�
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "บันทึก RP ต้องมีโดเมนกล่องจดหมาย (mbox-dname) และโดเมนของเรกคอร์ด txt (txt-dname)"
+msgstr ""
+"บันทึก RP ต้องมีโดเมนกล่องจดหมาย (mbox-dname) และโดเมนของเรกคอร์ด txt (txt-dname)"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "บันทึก RP เปิดเผยข้อมูลการติดต่อใน DNS ซึ่งอาจก่อให้เกิดข้อกังวลด้านความเป็นส่วนตัวและความปลอดภัย"
+msgstr ""
+"บันทึก RP เปิดเผยข้อมูลการติดต่อใน DNS "
+"ซึ่งอาจก่อให้เกิดข้อกังวลด้านความเป็นส่วนตัวและความปลอดภัย"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -6223,13 +6431,16 @@ msgstr "บันทึก RP ถูกใช้น้อยลงในปั�
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "ตรวจสอบให้แน่ใจว่ามีบันทึก TXT ที่สอดคล้องกันสำหรับช่องข้อมูล txt-dname หากไม่ได้ใช้จุด (.)"
+msgstr ""
+"ตรวจสอบให้แน่ใจว่ามีบันทึก TXT ที่สอดคล้องกันสำหรับช่องข้อมูล txt-dname หากไม่ได้ใช้จุด (.)"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr "การใช้ \".\" สำหรับโดเมนกล่องจดหมาย แสดงว่าไม่ได้ระบุผู้รับผิดชอบ ซึ่งไม่แนะนำสำหรับโดเมนที่ใช้งานจริง"
+msgstr ""
+"การใช้ \".\" สำหรับโดเมนกล่องจดหมาย แสดงว่าไม่ได้ระบุผู้รับผิดชอบ "
+"ซึ่งไม่แนะนำสำหรับโดเมนที่ใช้งานจริง"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
@@ -6336,7 +6547,9 @@ msgstr "นี่ดูเหมือนจะเป็นที่อยู่
 msgid ""
 "This appears to be an IPv6 interface identifier (has the universal/local bit "
 "flipped compared to standard EUI-64)."
-msgstr "นี่ดูเหมือนจะเป็นตัวระบุอินเทอร์เฟซ IPv6 (มีการพลิกบิต universal/local เมื่อเทียบกับ EUI-64 มาตรฐาน)"
+msgstr ""
+"นี่ดูเหมือนจะเป็นตัวระบุอินเทอร์เฟซ IPv6 (มีการพลิกบิต universal/local เมื่อเทียบกับ EUI-64 "
+"มาตรฐาน)"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
@@ -6354,25 +6567,32 @@ msgstr ""
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "บันทึก EUI64 ใช้ตัวคั่นเป็นเครื่องหมายทวิภาค (xx:xx:xx:xx:xx:xx:xx:xx) แต่ต้องใช้ตัวคั่นเป็นเครื่องหมายยัติภังค์ (xx-xx-xx-xx-xx-xx-xx-xx)"
+msgstr ""
+"บันทึก EUI64 ใช้ตัวคั่นเป็นเครื่องหมายทวิภาค (xx:xx:xx:xx:xx:xx:xx:xx) "
+"แต่ต้องใช้ตัวคั่นเป็นเครื่องหมายยัติภังค์ (xx-xx-xx-xx-xx-xx-xx-xx)"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "บันทึก EUI64 ไม่มีตัวคั่น รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx-xx-xx โดยมีเครื่องหมายยัติภังค์คั่นระหว่างออกเท็ต"
+msgstr ""
+"บันทึก EUI64 ไม่มีตัวคั่น รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx-xx-xx "
+"โดยมีเครื่องหมายยัติภังค์คั่นระหว่างออกเท็ต"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "บันทึก EUI64 ดูเหมือนจะอยู่ในรูปแบบที่คั่นด้วยจุด รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx-xx-xx"
+msgstr ""
+"บันทึก EUI64 ดูเหมือนจะอยู่ในรูปแบบที่คั่นด้วยจุด รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx-xx-xx"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "บันทึก EUI64 ต้องเป็นที่อยู่ EUI-64 ที่ถูกต้องในรูปแบบ xx-xx-xx-xx-xx-xx-xx-xx (โดยที่ x คือเลขฐานสิบหก)"
+msgstr ""
+"บันทึก EUI64 ต้องเป็นที่อยู่ EUI-64 ที่ถูกต้องในรูปแบบ xx-xx-xx-xx-xx-xx-xx-xx (โดยที่ x "
+"คือเลขฐานสิบหก)"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6384,7 +6604,9 @@ msgstr "นี่ดูเหมือนจะเป็นที่อยู่
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr "นี่ดูเหมือนจะเป็นที่อยู่ที่กำหนดขึ้นภายในเครือข่ายเอง (บิตที่มีนัยสำคัญน้อยที่สุดลำดับที่สองของออกเท็ตแรกถูกตั้งเป็น 1)"
+msgstr ""
+"นี่ดูเหมือนจะเป็นที่อยู่ที่กำหนดขึ้นภายในเครือข่ายเอง "
+"(บิตที่มีนัยสำคัญน้อยที่สุดลำดับที่สองของออกเท็ตแรกถูกตั้งเป็น 1)"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -6398,7 +6620,9 @@ msgstr "นี่ดูเหมือนจะเป็นที่อยู่
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr "บันทึก DNAME นี้ดูเหมือนจะอยู่ที่จุดสูงสุด (apex) ของโซน ตาม RFC 6672 การใช้ DNAME ที่จุดสูงสุดของโซนต้องมีการจัดการพิเศษสำหรับบันทึก NS และบันทึกที่เกี่ยวข้อง"
+msgstr ""
+"บันทึก DNAME นี้ดูเหมือนจะอยู่ที่จุดสูงสุด (apex) ของโซน ตาม RFC 6672 การใช้ DNAME "
+"ที่จุดสูงสุดของโซนต้องมีการจัดการพิเศษสำหรับบันทึก NS และบันทึกที่เกี่ยวข้อง"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
@@ -6412,7 +6636,9 @@ msgstr "บันทึก DNAME ไม่สามารถชี้ไปย�
 msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
-msgstr "เป้าหมายของ DNAME ดูเหมือนจะเป็นโดเมนย่อยของชื่อเจ้าของ ซึ่งอาจสร้างการอ้างอิงแบบวนซ้ำที่เป็นปัญหาเมื่อทำการเรโซลฟ์โดเมนย่อย"
+msgstr ""
+"เป้าหมายของ DNAME ดูเหมือนจะเป็นโดเมนย่อยของชื่อเจ้าของ "
+"ซึ่งอาจสร้างการอ้างอิงแบบวนซ้ำที่เป็นปัญหาเมื่อทำการเรโซลฟ์โดเมนย่อย"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -6422,13 +6648,16 @@ msgstr "ช่องข้อมูลลำดับความสำคัญ
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "ตาม RFC 6672 บันทึก DNAME ต้องมีเพียงรายการเดียวที่ชื่อเจ้าของหนึ่ง ๆ (กฎ singleton)"
+msgstr ""
+"ตาม RFC 6672 บันทึก DNAME ต้องมีเพียงรายการเดียวที่ชื่อเจ้าของหนึ่ง ๆ (กฎ singleton)"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "บันทึก DNAME และ CNAME ต้องไม่ (MUST NOT) อยู่ร่วมกันที่ชื่อเจ้าของเดียวกัน (RFC 6672 มาตรา 2.3)"
+msgstr ""
+"บันทึก DNAME และ CNAME ต้องไม่ (MUST NOT) อยู่ร่วมกันที่ชื่อเจ้าของเดียวกัน (RFC 6672 มาตรา "
+"2.3)"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -6442,13 +6671,17 @@ msgstr ""
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr "DNAME สร้างนามแฝงสังเคราะห์สำหรับโดเมนย่อยทั้งหมดของชื่อเจ้าของ พิจารณาเรื่องนี้อย่างรอบคอบเมื่อวางแผนโครงสร้างโซนของคุณ"
+msgstr ""
+"DNAME สร้างนามแฝงสังเคราะห์สำหรับโดเมนย่อยทั้งหมดของชื่อเจ้าของ "
+"พิจารณาเรื่องนี้อย่างรอบคอบเมื่อวางแผนโครงสร้างโซนของคุณ"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr "โดยทั่วไปบันทึก DS ควรวางไว้ที่จุดมอบสิทธิ์ (delegation) ไม่ใช่ที่จุดสูงสุดของโซน ตรวจสอบว่านี่เป็นความตั้งใจหรือไม่"
+msgstr ""
+"โดยทั่วไปบันทึก DS ควรวางไว้ที่จุดมอบสิทธิ์ (delegation) ไม่ใช่ที่จุดสูงสุดของโซน "
+"ตรวจสอบว่านี่เป็นความตั้งใจหรือไม่"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
@@ -6514,7 +6747,9 @@ msgstr "ประเภท digest ต้องเป็นหนึ่งใน:
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr "SHA-1 (digest ประเภท 1) ไม่แนะนำให้ใช้ตาม RFC 8624 โดย SHA-256 (digest ประเภท 2) เป็นอัลกอริทึม digest ที่แนะนำ"
+msgstr ""
+"SHA-1 (digest ประเภท 1) ไม่แนะนำให้ใช้ตาม RFC 8624 โดย SHA-256 (digest ประเภท "
+"2) เป็นอัลกอริทึม digest ที่แนะนำ"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
@@ -6527,7 +6762,9 @@ msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr "SHA-384 (digest ประเภท 4) เป็นตัวเลือกที่ดีสำหรับความต้องการด้านความปลอดภัยที่สูงขึ้น แต่ SHA-256 (digest ประเภท 2) ก็เพียงพอสำหรับการใช้งานส่วนใหญ่และได้รับการสนับสนุนที่กว้างกว่า"
+msgstr ""
+"SHA-384 (digest ประเภท 4) เป็นตัวเลือกที่ดีสำหรับความต้องการด้านความปลอดภัยที่สูงขึ้น แต่ "
+"SHA-256 (digest ประเภท 2) ก็เพียงพอสำหรับการใช้งานส่วนใหญ่และได้รับการสนับสนุนที่กว้างกว่า"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -6554,7 +6791,9 @@ msgstr ""
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr "บันทึก CSYNC ควรวางไว้ที่จุดสูงสุด (apex) ของโซนเท่านั้น (RFC 7477) บันทึกนี้อาจไม่ถูกประมวลผลโดยตัวแทนของโซนแม่"
+msgstr ""
+"บันทึก CSYNC ควรวางไว้ที่จุดสูงสุด (apex) ของโซนเท่านั้น (RFC 7477) "
+"บันทึกนี้อาจไม่ถูกประมวลผลโดยตัวแทนของโซนแม่"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
@@ -6568,7 +6807,9 @@ msgstr ""
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "ควรมีบันทึก CSYNC เพียงรายการเดียวต่อโซน (RFC 7477) การมีหลายรายการอาจทำให้เกิดพฤติกรรมที่ไม่คาดคิด"
+msgstr ""
+"ควรมีบันทึก CSYNC เพียงรายการเดียวต่อโซน (RFC 7477) "
+"การมีหลายรายการอาจทำให้เกิดพฤติกรรมที่ไม่คาดคิด"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
@@ -6580,13 +6821,17 @@ msgstr "ไม่มีการตั้งค่าแฟล็กในบั
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "แฟล็ก \"immediate\" (0x0001) ยังไม่ได้ตั้งค่า ตัวแทนของโซนแม่อาจหน่วงเวลาการประมวลผลบันทึกนี้"
+msgstr ""
+"แฟล็ก \"immediate\" (0x0001) ยังไม่ได้ตั้งค่า "
+"ตัวแทนของโซนแม่อาจหน่วงเวลาการประมวลผลบันทึกนี้"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "แฟล็ก \"soaminimum\" (0x0002) ยังไม่ได้ตั้งค่า การตรวจสอบหมายเลขซีเรียลของ SOA อาจไม่ถูกบังคับใช้"
+msgstr ""
+"แฟล็ก \"soaminimum\" (0x0002) ยังไม่ได้ตั้งค่า การตรวจสอบหมายเลขซีเรียลของ SOA "
+"อาจไม่ถูกบังคับใช้"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -6598,7 +6843,9 @@ msgstr "ค่าของช่องข้อมูลลำดับควา
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "ซีเรียล SOA ในบันทึก CSYNC ไม่ถูกต้อง ต้องเป็นจำนวนเต็มไม่มีเครื่องหมายขนาด 32 บิต (0-4294967295)"
+msgstr ""
+"ซีเรียล SOA ในบันทึก CSYNC ไม่ถูกต้อง ต้องเป็นจำนวนเต็มไม่มีเครื่องหมายขนาด 32 บิต "
+"(0-4294967295)"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6636,20 +6883,26 @@ msgstr "ชนิดซ้ำกัน \""
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
-msgstr "การซิงโครไนซ์บันทึก NS ต้องพิจารณาอย่างรอบคอบ โซนแม่อาจมีนโยบายเกี่ยวกับบันทึก NS ที่ทำให้การซิงโครไนซ์ไม่สำเร็จ"
+msgstr ""
+"การซิงโครไนซ์บันทึก NS ต้องพิจารณาอย่างรอบคอบ โซนแม่อาจมีนโยบายเกี่ยวกับบันทึก NS "
+"ที่ทำให้การซิงโครไนซ์ไม่สำเร็จ"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
 "Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section "
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
-msgstr "หมายเหตุ: wire format ที่แท้จริงของ Type Bit Map ใน CSYNC เป็นไปตามรูปแบบใน RFC 4034 มาตรา 4.1.2 Poweradmin ใช้รูปแบบอย่างง่ายโดยคั่นประเภทเรกคอร์ดด้วยช่องว่าง"
+msgstr ""
+"หมายเหตุ: wire format ที่แท้จริงของ Type Bit Map ใน CSYNC เป็นไปตามรูปแบบใน RFC "
+"4034 มาตรา 4.1.2 Poweradmin ใช้รูปแบบอย่างง่ายโดยคั่นประเภทเรกคอร์ดด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr "RFC 7477 กำหนดให้ใช้แนวทางแบบ \"ทั้งหมดหรือไม่ทำเลย\" ในการประมวลผล CSYNC หากมีประเภทใดที่ไม่สามารถซิงโครไนซ์ได้ โซนแม่จะไม่ทำการเปลี่ยนแปลงใด ๆ"
+msgstr ""
+"RFC 7477 กำหนดให้ใช้แนวทางแบบ \"ทั้งหมดหรือไม่ทำเลย\" ในการประมวลผล CSYNC "
+"หากมีประเภทใดที่ไม่สามารถซิงโครไนซ์ได้ โซนแม่จะไม่ทำการเปลี่ยนแปลงใด ๆ"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
@@ -6667,13 +6920,17 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "บันทึก EUI48 ใช้ตัวคั่นเป็นเครื่องหมายทวิภาค (xx:xx:xx:xx:xx:xx) แต่ต้องใช้ตัวคั่นเป็นเครื่องหมายยัติภังค์ (xx-xx-xx-xx-xx-xx)"
+msgstr ""
+"บันทึก EUI48 ใช้ตัวคั่นเป็นเครื่องหมายทวิภาค (xx:xx:xx:xx:xx:xx) "
+"แต่ต้องใช้ตัวคั่นเป็นเครื่องหมายยัติภังค์ (xx-xx-xx-xx-xx-xx)"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "บันทึก EUI48 ไม่มีตัวคั่น รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx โดยมีเครื่องหมายยัติภังค์คั่นระหว่างออกเท็ต"
+msgstr ""
+"บันทึก EUI48 ไม่มีตัวคั่น รูปแบบต้องเป็น xx-xx-xx-xx-xx-xx "
+"โดยมีเครื่องหมายยัติภังค์คั่นระหว่างออกเท็ต"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
@@ -6684,7 +6941,9 @@ msgstr "บันทึก EUI48 ดูเหมือนจะอยู่ใ�
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "บันทึก EUI48 ต้องเป็นที่อยู่ MAC ที่ถูกต้องในรูปแบบ xx-xx-xx-xx-xx-xx (โดยที่ x คือเลขฐานสิบหก)"
+msgstr ""
+"บันทึก EUI48 ต้องเป็นที่อยู่ MAC ที่ถูกต้องในรูปแบบ xx-xx-xx-xx-xx-xx (โดยที่ x "
+"คือเลขฐานสิบหก)"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -6696,7 +6955,9 @@ msgstr "นี่คือที่อยู่บรอดคาสต์ (บ�
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr "ชื่อเรกคอร์ดนี้ดูเหมือนจะไม่ใช่ชื่อโซน reverse DNS มาตรฐาน (ควรลงท้ายด้วย .in-addr.arpa สำหรับ IPv4 หรือ .ip6.arpa สำหรับ IPv6)"
+msgstr ""
+"ชื่อเรกคอร์ดนี้ดูเหมือนจะไม่ใช่ชื่อโซน reverse DNS มาตรฐาน (ควรลงท้ายด้วย .in-addr.arpa "
+"สำหรับ IPv4 หรือ .ip6.arpa สำหรับ IPv6)"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -6716,7 +6977,8 @@ msgstr ""
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "เซิร์ฟเวอร์อีเมลมักต้องการให้ตั้งค่า reverse DNS อย่างถูกต้อง เพื่อรับอีเมลจากเซิร์ฟเวอร์ของคุณ"
+msgstr ""
+"เซิร์ฟเวอร์อีเมลมักต้องการให้ตั้งค่า reverse DNS อย่างถูกต้อง เพื่อรับอีเมลจากเซิร์ฟเวอร์ของคุณ"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -6835,7 +7097,9 @@ msgstr "ค่า contactemail ต้องเป็นที่อยู่อ�
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr "ค่า contactphone ต้องมีเฉพาะตัวเลข ช่องว่าง และเครื่องหมายวรรคตอนที่ใช้กับหมายเลขโทรศัพท์ทั่วไป"
+msgstr ""
+"ค่า contactphone ต้องมีเฉพาะตัวเลข ช่องว่าง "
+"และเครื่องหมายวรรคตอนที่ใช้กับหมายเลขโทรศัพท์ทั่วไป"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
@@ -6902,7 +7166,9 @@ msgstr "ความยาวนำหน้าไม่ถูกต้องใ
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "ความยาวคำนำหน้า IPv4 สำหรับ RFC 2317 ไม่ถูกต้อง โดยทั่วไปคือ 24-32 (การมอบสิทธิ์แบบ classless มักเป็น 25-31)"
+msgstr ""
+"ความยาวคำนำหน้า IPv4 สำหรับ RFC 2317 ไม่ถูกต้อง โดยทั่วไปคือ 24-32 (การมอบสิทธิ์แบบ "
+"classless มักเป็น 25-31)"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -6929,7 +7195,9 @@ msgstr "คุณกำลังใช้โดเมนของระดับ
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "ไม่ได้ตั้งค่าพารามิเตอร์การตรวจสอบ SOA เรียก setSOAParams() ก่อน หรือส่งค่าเหล่านั้นเป็นอาร์กิวเมนต์"
+msgstr ""
+"ไม่ได้ตั้งค่าพารามิเตอร์การตรวจสอบ SOA เรียก setSOAParams() ก่อน "
+"หรือส่งค่าเหล่านั้นเป็นอาร์กิวเมนต์"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -6947,7 +7215,9 @@ msgstr "เรกคอร์ด SOA ต้องมีฟิลด์ระห�
 msgid ""
 "SOA contains the template placeholder %s. Use literal values; placeholders "
 "are only expanded when creating a zone from a template."
-msgstr "SOA มีตัวยึดตำแหน่งของเทมเพลต %s ใช้ค่าตามตัวอักษร ตัวยึดตำแหน่งจะถูกแทนที่เฉพาะเมื่อสร้างโซนจากเทมเพลตเท่านั้น"
+msgstr ""
+"SOA มีตัวยึดตำแหน่งของเทมเพลต %s ใช้ค่าตามตัวอักษร "
+"ตัวยึดตำแหน่งจะถูกแทนที่เฉพาะเมื่อสร้างโซนจากเทมเพลตเท่านั้น"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:195
 msgid "Invalid primary nameserver in SOA record."
@@ -6979,7 +7249,9 @@ msgstr "หมายเลขซีเรียลดูเหมือนจะ
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr "เรกคอร์ด SOA ต้องมีฟิลด์ 7 ฟิลด์พอดี (primary NS, email, serial, refresh, retry, expire, minimum)"
+msgstr ""
+"เรกคอร์ด SOA ต้องมีฟิลด์ 7 ฟิลด์พอดี (primary NS, email, serial, refresh, retry, "
+"expire, minimum)"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -7008,7 +7280,9 @@ msgstr "ค่า retry ของ SOA ควรน้อยกว่าค่า
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "ค่า minimum ของ SOA (negative caching) เกิน 24 ชั่วโมง (86400) ซึ่งอาจมากเกินไปตาม RFC 2308"
+msgstr ""
+"ค่า minimum ของ SOA (negative caching) เกิน 24 ชั่วโมง (86400) ซึ่งอาจมากเกินไปตาม "
+"RFC 2308"
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7054,7 +7328,9 @@ msgstr "ในโหมด Alias (priority = 0) ไม่อนุญาตใ�
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
-msgstr "ในโหมด Service (priority > 0) ที่มีเป้าหมายเป็น \".\" ต้องมี SvcParam อย่างน้อยหนึ่งรายการ"
+msgstr ""
+"ในโหมด Service (priority > 0) ที่มีเป้าหมายเป็น \".\" ต้องมี SvcParam "
+"อย่างน้อยหนึ่งรายการ"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -7088,7 +7364,9 @@ msgstr ""
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr "เรกคอร์ดนี้ขัดแย้งกับเรกคอร์ด CNAME ที่มีอยู่ซึ่งใช้ชื่อเดียวกัน เรกคอร์ด CNAME ไม่สามารถอยู่ร่วมกับเรกคอร์ดประเภทอื่นได้"
+msgstr ""
+"เรกคอร์ดนี้ขัดแย้งกับเรกคอร์ด CNAME ที่มีอยู่ซึ่งใช้ชื่อเดียวกัน เรกคอร์ด CNAME "
+"ไม่สามารถอยู่ร่วมกับเรกคอร์ดประเภทอื่นได้"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -7161,7 +7439,10 @@ msgstr ""
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr "การใช้งาน PKIX-EE (1) กำหนดให้ต้องตรวจสอบใบรับรองของเอนทิตีปลายทางด้วยกฎการตรวจสอบแบบ PKIX ตรวจสอบให้แน่ใจว่ามีใบรับรองระดับกลางที่เหมาะสมพร้อมใช้งาน"
+msgstr ""
+"การใช้งาน PKIX-EE (1) "
+"กำหนดให้ต้องตรวจสอบใบรับรองของเอนทิตีปลายทางด้วยกฎการตรวจสอบแบบ PKIX "
+"ตรวจสอบให้แน่ใจว่ามีใบรับรองระดับกลางที่เหมาะสมพร้อมใช้งาน"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
@@ -7177,27 +7458,35 @@ msgstr ""
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr "แนะนำให้ใช้ DANE-EE (3) เนื่องจากให้การติดตั้งใช้งานที่ง่ายที่สุดโดยใช้ใบรับรองโดยตรงและไม่ต้องมีการตรวจสอบเพิ่มเติม"
+msgstr ""
+"แนะนำให้ใช้ DANE-EE (3) "
+"เนื่องจากให้การติดตั้งใช้งานที่ง่ายที่สุดโดยใช้ใบรับรองโดยตรงและไม่ต้องมีการตรวจสอบเพิ่มเติม"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "ช่อง selector ของ SMIMEA ต้องเป็น 0 (ใบรับรองแบบเต็ม) หรือ 1 (SubjectPublicKeyInfo)"
+msgstr ""
+"ช่อง selector ของ SMIMEA ต้องเป็น 0 (ใบรับรองแบบเต็ม) หรือ 1 (SubjectPublicKeyInfo)"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
 "Selector 0 (Full certificate) means the entire certificate is matched. Using "
 "selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
-msgstr "Selector 0 (ใบรับรองแบบเต็ม) หมายความว่าจะจับคู่กับใบรับรองทั้งฉบับ แนะนำให้ใช้ selector 1 (SubjectPublicKeyInfo) เนื่องจากมีความยืดหยุ่นมากกว่าสำหรับการต่ออายุใบรับรอง"
+msgstr ""
+"Selector 0 (ใบรับรองแบบเต็ม) หมายความว่าจะจับคู่กับใบรับรองทั้งฉบับ แนะนำให้ใช้ selector "
+"1 (SubjectPublicKeyInfo) เนื่องจากมีความยืดหยุ่นมากกว่าสำหรับการต่ออายุใบรับรอง"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:233
 msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr "แนะนำให้ใช้ selector 1 (SubjectPublicKeyInfo) เนื่องจากช่วยให้ต่ออายุใบรับรองได้โดยไม่ต้องปรับปรุงเรกคอร์ด SMIMEA ตราบใดที่คีย์สาธารณะยังคงเดิม"
+msgstr ""
+"แนะนำให้ใช้ selector 1 (SubjectPublicKeyInfo) "
+"เนื่องจากช่วยให้ต่ออายุใบรับรองได้โดยไม่ต้องปรับปรุงเรกคอร์ด SMIMEA "
+"ตราบใดที่คีย์สาธารณะยังคงเดิม"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -7211,7 +7500,9 @@ msgstr ""
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr "Matching type 0 (ตรงกันทุกประการ) ใช้ข้อมูลใบรับรองดิบ แนะนำให้ใช้ SHA-256 (type 1) เพื่อประสิทธิภาพและความเข้ากันได้ที่ดีกว่า"
+msgstr ""
+"Matching type 0 (ตรงกันทุกประการ) ใช้ข้อมูลใบรับรองดิบ แนะนำให้ใช้ SHA-256 (type 1) "
+"เพื่อประสิทธิภาพและความเข้ากันได้ที่ดีกว่า"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -7222,7 +7513,9 @@ msgstr "Matching type 1 (SHA-256) ให้ความสมดุลที่�
 msgid ""
 "Matching type 2 (SHA-512) provides the highest security but may have "
 "compatibility issues with some implementations."
-msgstr "Matching type 2 (SHA-512) ให้ความปลอดภัยสูงสุด แต่อาจมีปัญหาความเข้ากันได้กับการนำไปใช้งานบางระบบ"
+msgstr ""
+"Matching type 2 (SHA-512) ให้ความปลอดภัยสูงสุด "
+"แต่อาจมีปัญหาความเข้ากันได้กับการนำไปใช้งานบางระบบ"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
@@ -7248,7 +7541,9 @@ msgstr ""
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "คำเตือน: SMIMEA (RFC 8162) ปัจจุบันเป็นโปรโตคอลแบบทดลอง (EXPERIMENTAL) และอาจยังไม่รองรับอย่างแพร่หลาย"
+msgstr ""
+"คำเตือน: SMIMEA (RFC 8162) ปัจจุบันเป็นโปรโตคอลแบบทดลอง (EXPERIMENTAL) "
+"และอาจยังไม่รองรับอย่างแพร่หลาย"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7284,14 +7579,19 @@ msgstr ""
 msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742 แนะนำให้ใช้ค่า TTL ต่ำมากสำหรับเรกคอร์ด L64 ของโหนดแบบเคลื่อนที่หรือแบบ multihomed เนื่องจากค่า locator อาจเปลี่ยนแปลงบ่อยครั้ง"
+msgstr ""
+"RFC 6742 แนะนำให้ใช้ค่า TTL ต่ำมากสำหรับเรกคอร์ด L64 ของโหนดแบบเคลื่อนที่หรือแบบ "
+"multihomed เนื่องจากค่า locator อาจเปลี่ยนแปลงบ่อยครั้ง"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr "เรกคอร์ด L64 สำหรับเครือข่ายย่อย (ใช้รายการ DNS แบบไวลด์การ์ด) โดยทั่วไปใช้เมื่อเครือข่ายย่อยที่ระบุชื่อนั้นเป็น เคยเป็น หรืออาจกลายเป็นแบบเคลื่อนที่ (RFC 6742 มาตรา 3.2)"
+msgstr ""
+"เรกคอร์ด L64 สำหรับเครือข่ายย่อย (ใช้รายการ DNS แบบไวลด์การ์ด) "
+"โดยทั่วไปใช้เมื่อเครือข่ายย่อยที่ระบุชื่อนั้นเป็น เคยเป็น หรืออาจกลายเป็นแบบเคลื่อนที่ (RFC 6742 "
+"มาตรา 3.2)"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
@@ -7305,14 +7605,18 @@ msgstr "ค่า preference ของ L64 ต้องเป็นตัวเ�
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
-msgstr "locator ของ L64 ต้องเป็นส่วนของที่อยู่ IPv6 เลขฐานสิบหกขนาด 64 บิตที่ถูกต้อง ประกอบด้วยเลขฐานสิบหก 4 กลุ่มพอดี (เช่น 2001:0db8:1140:1000)"
+msgstr ""
+"locator ของ L64 ต้องเป็นส่วนของที่อยู่ IPv6 เลขฐานสิบหกขนาด 64 บิตที่ถูกต้อง "
+"ประกอบด้วยเลขฐานสิบหก 4 กลุ่มพอดี (เช่น 2001:0db8:1140:1000)"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
 "L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
-msgstr "locator ของ L64 ไม่ควรใช้ที่อยู่แบบ unspecified (0000:0000:0000:0000) หรือแบบ all-ones (ffff:ffff:ffff:ffff) เนื่องจากอาจไม่เหมาะกับ locator ของ ILNP"
+msgstr ""
+"locator ของ L64 ไม่ควรใช้ที่อยู่แบบ unspecified (0000:0000:0000:0000) หรือแบบ all-"
+"ones (ffff:ffff:ffff:ffff) เนื่องจากอาจไม่เหมาะกับ locator ของ ILNP"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
@@ -7366,7 +7670,9 @@ msgstr "มีอักขระที่ไม่ถูกต้องในเ
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "กำลังใช้รูปแบบ \"0 3 0 0\" จาก erratum ของ RFC 8078 พิจารณาใช้รูปแบบมาตรฐาน \"0 3 0 AA==\" แทน"
+msgstr ""
+"กำลังใช้รูปแบบ \"0 3 0 0\" จาก erratum ของ RFC 8078 พิจารณาใช้รูปแบบมาตรฐาน \"0 3 "
+"0 AA==\" แทน"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
@@ -7441,25 +7747,32 @@ msgstr "ช่องลำดับความสำคัญสำหรับ
 msgid ""
 "WARNING: This LUA record contains potentially unsafe file or system "
 "operations. These may be blocked by PowerDNS security mechanisms."
-msgstr "คำเตือน: บันทึก LUA นี้มีการดำเนินการกับไฟล์หรือระบบที่อาจไม่ปลอดภัย การดำเนินการเหล่านี้อาจถูกขัดขวางด้วยกลไกความปลอดภัยของ PowerDNS"
+msgstr ""
+"คำเตือน: บันทึก LUA นี้มีการดำเนินการกับไฟล์หรือระบบที่อาจไม่ปลอดภัย "
+"การดำเนินการเหล่านี้อาจถูกขัดขวางด้วยกลไกความปลอดภัยของ PowerDNS"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr "บันทึก LUA นี้ใช้โหมดส่งกลับแบบชัดแจ้ง (เริ่มด้วยเครื่องหมายอัฒภาค) ตรวจสอบให้แน่ใจว่าสคริปต์ Lua ของคุณคืนค่าที่เหมาะสมอย่างชัดเจน"
+msgstr ""
+"บันทึก LUA นี้ใช้โหมดส่งกลับแบบชัดแจ้ง (เริ่มด้วยเครื่องหมายอัฒภาค) ตรวจสอบให้แน่ใจว่าสคริปต์ "
+"Lua ของคุณคืนค่าที่เหมาะสมอย่างชัดเจน"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr "บันทึก LUA นี้ดูเหมือนจะไม่ได้ใช้ฟังก์ชัน Lua ทั่วไปของ PowerDNS ตรวจสอบให้แน่ใจว่าบันทึกนี้คืนค่าที่เหมาะสมสำหรับชนิดของบันทึก"
+msgstr ""
+"บันทึก LUA นี้ดูเหมือนจะไม่ได้ใช้ฟังก์ชัน Lua ทั่วไปของ PowerDNS "
+"ตรวจสอบให้แน่ใจว่าบันทึกนี้คืนค่าที่เหมาะสมสำหรับชนิดของบันทึก"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "คำเตือน: บันทึก LUA นี้ดูเหมือนจะมีเครื่องหมายคำพูดไม่สมดุล ซึ่งอาจทำให้เกิดข้อผิดพลาดทางไวยากรณ์"
+msgstr ""
+"คำเตือน: บันทึก LUA นี้ดูเหมือนจะมีเครื่องหมายคำพูดไม่สมดุล ซึ่งอาจทำให้เกิดข้อผิดพลาดทางไวยากรณ์"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -7473,19 +7786,25 @@ msgstr "บันทึก LUA มีวงเล็บปีกกาที่�
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "บันทึก LUA ในโหมดส่งกลับแบบชัดแจ้ง (เริ่มด้วยเครื่องหมายอัฒภาค) ต้องมีคำสั่ง \"return\" อย่างน้อยหนึ่งคำสั่ง"
+msgstr ""
+"บันทึก LUA ในโหมดส่งกลับแบบชัดแจ้ง (เริ่มด้วยเครื่องหมายอัฒภาค) ต้องมีคำสั่ง \"return\" "
+"อย่างน้อยหนึ่งคำสั่ง"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
-msgstr "บันทึก LUA ในโหมดส่งกลับโดยนัยควรเป็นการเรียกฟังก์ชันหรือการนิยามฟังก์ชันที่ถูกต้องด้วยคำสำคัญ \"function\" และ \"end\""
+msgstr ""
+"บันทึก LUA ในโหมดส่งกลับโดยนัยควรเป็นการเรียกฟังก์ชันหรือการนิยามฟังก์ชันที่ถูกต้องด้วยคำสำคัญ "
+"\"function\" และ \"end\""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
-msgstr "บันทึก LUA มีฟังก์ชันเข้าถึงระบบที่อาจเป็นอันตราย ฟังก์ชันเหล่านี้น่าจะถูกปิดกั้นด้วยข้อจำกัดด้านความปลอดภัยของ PowerDNS"
+msgstr ""
+"บันทึก LUA มีฟังก์ชันเข้าถึงระบบที่อาจเป็นอันตราย "
+"ฟังก์ชันเหล่านี้น่าจะถูกปิดกั้นด้วยข้อจำกัดด้านความปลอดภัยของ PowerDNS"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
@@ -7495,13 +7814,16 @@ msgstr "ช่องลำดับความสำคัญสำหรับ
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "บันทึก SSHFP สามารถสร้างได้ด้วยคำสั่ง \"ssh-keygen -r hostname\" บนระบบที่มี OpenSSH"
+msgstr ""
+"บันทึก SSHFP สามารถสร้างได้ด้วยคำสั่ง \"ssh-keygen -r hostname\" บนระบบที่มี OpenSSH"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
-msgstr "เพื่อความปลอดภัยสูงสุด ให้เผยแพร่ลายนิ้วมือทั้ง SHA-1 และ SHA-256 เพื่อความเข้ากันได้ แต่ควรเลือกใช้ SHA-256 ในไคลเอนต์"
+msgstr ""
+"เพื่อความปลอดภัยสูงสุด ให้เผยแพร่ลายนิ้วมือทั้ง SHA-1 และ SHA-256 เพื่อความเข้ากันได้ "
+"แต่ควรเลือกใช้ SHA-256 ในไคลเอนต์"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
@@ -7522,7 +7844,9 @@ msgstr ""
 msgid ""
 "DSA keys are considered weak and are deprecated in many SSH implementations. "
 "Consider using RSA, Ed25519, or Ed448 instead."
-msgstr "คีย์ DSA ถือว่าอ่อนแอและถูกเลิกใช้ในการใช้งาน SSH หลายรูปแบบ ควรพิจารณาใช้ RSA, Ed25519 หรือ Ed448 แทน"
+msgstr ""
+"คีย์ DSA ถือว่าอ่อนแอและถูกเลิกใช้ในการใช้งาน SSH หลายรูปแบบ ควรพิจารณาใช้ RSA, Ed25519 "
+"หรือ Ed448 แทน"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
@@ -7544,7 +7868,9 @@ msgstr "ประเภทลายนิ้วมือของ SSHFP ต้�
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "ลายนิ้วมือ SHA-1 ถูกเลิกใช้แล้ว RFC 6594 แนะนำให้ใช้ลายนิ้วมือ SHA-256 (ชนิด 2) เพื่อความปลอดภัยที่ดีขึ้น"
+msgstr ""
+"ลายนิ้วมือ SHA-1 ถูกเลิกใช้แล้ว RFC 6594 แนะนำให้ใช้ลายนิ้วมือ SHA-256 (ชนิด 2) "
+"เพื่อความปลอดภัยที่ดีขึ้น"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
@@ -7607,7 +7933,8 @@ msgstr "เนื้อหาบันทึก MR (กล่องจดหม�
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr "กล่องจดหมายใหม่เหมือนกับกล่องจดหมายเก่า บันทึก MR มีไว้สำหรับเปลี่ยนเส้นทางไปยังกล่องจดหมายอื่น"
+msgstr ""
+"กล่องจดหมายใหม่เหมือนกับกล่องจดหมายเก่า บันทึก MR มีไว้สำหรับเปลี่ยนเส้นทางไปยังกล่องจดหมายอื่น"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -7675,7 +8002,8 @@ msgstr "flags ของ KEY ต้องเป็นตัวเลขระห�
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr "ค่า flag ที่ไม่ปกติ ค่าทั่วไปคือ 0 (ห้ามการยืนยันตัวตน), 256 (คีย์ผู้ใช้) หรือ 257 (คีย์โซน)"
+msgstr ""
+"ค่า flag ที่ไม่ปกติ ค่าทั่วไปคือ 0 (ห้ามการยืนยันตัวตน), 256 (คีย์ผู้ใช้) หรือ 257 (คีย์โซน)"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
@@ -7694,7 +8022,9 @@ msgstr "อัลกอริธึม KEY ต้องเป็นตัวเ�
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr "ค่าอัลกอริทึมที่ไม่ปกติ ค่าทั่วไปคือ 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)"
+msgstr ""
+"ค่าอัลกอริทึมที่ไม่ปกติ ค่าทั่วไปคือ 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 (RSA/SHA-1), 8 (RSA/"
+"SHA-256)"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
@@ -7730,7 +8060,9 @@ msgstr "บันทึก DMARC ต้องเริ่มต้นด้ว�
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "บันทึก DMARC เกินขีดจำกัด 255 ตัวอักษร สำหรับนโยบายที่ซับซ้อน โปรดพิจารณาการลดรูปหรือใช้การอ้างอิง URI"
+msgstr ""
+"บันทึก DMARC เกินขีดจำกัด 255 ตัวอักษร สำหรับนโยบายที่ซับซ้อน "
+"โปรดพิจารณาการลดรูปหรือใช้การอ้างอิง URI"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -7745,7 +8077,9 @@ msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr "การใช้ \"p=none\" ทำให้มองเห็นผลการยืนยันตัวตนของอีเมลโดยไม่ส่งผลกระทบต่อการนำส่ง ควรพิจารณานโยบายที่เข้มงวดขึ้นเมื่อคุณได้ตรวจสอบรายงานแล้ว"
+msgstr ""
+"การใช้ \"p=none\" ทำให้มองเห็นผลการยืนยันตัวตนของอีเมลโดยไม่ส่งผลกระทบต่อการนำส่ง "
+"ควรพิจารณานโยบายที่เข้มงวดขึ้นเมื่อคุณได้ตรวจสอบรายงานแล้ว"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
@@ -7754,7 +8088,8 @@ msgstr "แท็กนโยบายซับโดเมนของ DMARC (s
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "แท็กการจัดตำแหน่ง DKIM ของ DMARC (adkim) ต้องเป็น r (relaxed) หรือ s (strict)"
+msgstr ""
+"แท็กการจัดตำแหน่ง DKIM ของ DMARC (adkim) ต้องเป็น r (relaxed) หรือ s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
@@ -7780,7 +8115,9 @@ msgstr "แท็กช่วงเวลาการรายงานของ
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "แท็กตัวเลือกการรายงานความล้มเหลวของ DMARC (fo) ต้องมีเพียง 0, 1, d, s หรือชุดค่าผสมที่คั่นด้วยเครื่องหมายทวิภาค"
+msgstr ""
+"แท็กตัวเลือกการรายงานความล้มเหลวของ DMARC (fo) ต้องมีเพียง 0, 1, d, s "
+"หรือชุดค่าผสมที่คั่นด้วยเครื่องหมายทวิภาค"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -7810,7 +8147,9 @@ msgstr "ขาดแท็ก DMARC ที่จำเป็น: %s"
 msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
-msgstr "บันทึก DMARC ไม่ได้ระบุ URI สำหรับการรายงานใด ๆ (rua หรือ ruf) ซึ่งอาจจำกัดความสามารถในการตรวจสอบผลการยืนยันตัวตนของคุณ"
+msgstr ""
+"บันทึก DMARC ไม่ได้ระบุ URI สำหรับการรายงานใด ๆ (rua หรือ ruf) "
+"ซึ่งอาจจำกัดความสามารถในการตรวจสอบผลการยืนยันตัวตนของคุณ"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:109
 msgid ""
@@ -7887,7 +8226,9 @@ msgstr "อักขระไม่ถูกต้องในเนื้อห
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr "นี่คือบันทึกการลบ CDS ตามที่นิยามไว้ใน RFC 8078 ซึ่งเป็นสัญญาณว่าควรลบบันทึก DS ที่ตรงกันออกจากโซนแม่"
+msgstr ""
+"นี่คือบันทึกการลบ CDS ตามที่นิยามไว้ใน RFC 8078 ซึ่งเป็นสัญญาณว่าควรลบบันทึก DS "
+"ที่ตรงกันออกจากโซนแม่"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -7911,7 +8252,9 @@ msgstr "ประเภทไดเจสต์ของ CDS ต้องเป�
 msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
-msgstr "SHA-1 (ไดเจสต์ประเภท 1) ถูกเลิกใช้ด้วยเหตุผลด้านความปลอดภัย ควรพิจารณาใช้ SHA-256 (ไดเจสต์ประเภท 2) หรือ SHA-384 (ไดเจสต์ประเภท 4) แทน"
+msgstr ""
+"SHA-1 (ไดเจสต์ประเภท 1) ถูกเลิกใช้ด้วยเหตุผลด้านความปลอดภัย ควรพิจารณาใช้ SHA-256 "
+"(ไดเจสต์ประเภท 2) หรือ SHA-384 (ไดเจสต์ประเภท 4) แทน"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
@@ -7948,13 +8291,17 @@ msgstr "บันทึก L32 ควรใช้กับ Identifier-Locator Ne
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "การใช้ที่อยู่ IP ส่วนตัว (RFC 1918) เป็นตัวระบุตำแหน่ง L32 อาจจำกัดความสามารถในการเข้าถึงในการใช้งาน ILNP"
+msgstr ""
+"การใช้ที่อยู่ IP ส่วนตัว (RFC 1918) เป็นตัวระบุตำแหน่ง L32 "
+"อาจจำกัดความสามารถในการเข้าถึงในการใช้งาน ILNP"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr "RFC 6742 แนะนำค่า TTL ที่ต่ำมากสำหรับบันทึก L32 ของโหนดแบบเคลื่อนที่หรือแบบมัลติโฮม เนื่องจากค่าตัวระบุตำแหน่งอาจเปลี่ยนแปลงบ่อยครั้ง"
+msgstr ""
+"RFC 6742 แนะนำค่า TTL ที่ต่ำมากสำหรับบันทึก L32 ของโหนดแบบเคลื่อนที่หรือแบบมัลติโฮม "
+"เนื่องจากค่าตัวระบุตำแหน่งอาจเปลี่ยนแปลงบ่อยครั้ง"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
@@ -7976,7 +8323,9 @@ msgstr "ตัวระบุตำแหน่ง (locator) ของ L32 ต�
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "ตัวระบุตำแหน่ง (locator) ของ L32 ไม่สามารถใช้ที่อยู่แบบบรอดแคสต์หรือที่อยู่ที่ไม่ระบุได้ (0.0.0.0 หรือ 255.255.255.255)"
+msgstr ""
+"ตัวระบุตำแหน่ง (locator) ของ L32 ไม่สามารถใช้ที่อยู่แบบบรอดแคสต์หรือที่อยู่ที่ไม่ระบุได้ "
+"(0.0.0.0 หรือ 255.255.255.255)"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -7993,13 +8342,16 @@ msgstr "ชื่อเรกคอร์ด SRV ต้องอยู่ใน�
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
-msgstr "ค่าบริการไม่ถูกต้องในบันทึก SRV ชื่อบริการต้องขึ้นต้นด้วยเครื่องหมายขีดล่างตามด้วยตัวอักษรและตัวเลข"
+msgstr ""
+"ค่าบริการไม่ถูกต้องในบันทึก SRV ชื่อบริการต้องขึ้นต้นด้วยเครื่องหมายขีดล่างตามด้วยตัวอักษรและตัวเลข"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr "ค่าโปรโตคอลไม่ถูกต้องในบันทึก SRV โปรโตคอลต้องขึ้นต้นด้วยเครื่องหมายขีดล่างตามด้วยตัวอักษรและตัวเลข"
+msgstr ""
+"ค่าโปรโตคอลไม่ถูกต้องในบันทึก SRV "
+"โปรโตคอลต้องขึ้นต้นด้วยเครื่องหมายขีดล่างตามด้วยตัวอักษรและตัวเลข"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
@@ -8023,7 +8375,9 @@ msgstr "ชื่อโดเมนไม่ถูกต้องในบัน
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr "เนื้อหาบันทึก SRV ต้องมี weight, port และ target (3 ช่องข้อมูล) ส่วนลำดับความสำคัญควรอยู่ในช่องลำดับความสำคัญ"
+msgstr ""
+"เนื้อหาบันทึก SRV ต้องมี weight, port และ target (3 ช่องข้อมูล) "
+"ส่วนลำดับความสำคัญควรอยู่ในช่องลำดับความสำคัญ"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -8123,7 +8477,9 @@ msgstr ""
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "บันทึก NSEC3 ต้องมีอย่างน้อย hash algorithm, flags, iterations, salt และ next hashed owner name"
+msgstr ""
+"บันทึก NSEC3 ต้องมีอย่างน้อย hash algorithm, flags, iterations, salt และ next "
+"hashed owner name"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -8145,7 +8501,9 @@ msgstr "salt ของ NSEC3 ต้องเป็น - (สำหรับค�
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "ชื่อเจ้าของที่ถูกแฮชถัดไปของ NSEC3 ต้องเป็นค่าที่เข้ารหัสแบบ Base32hex ที่ถูกต้อง (ใช้อักขระ 0-9 และ A-V)"
+msgstr ""
+"ชื่อเจ้าของที่ถูกแฮชถัดไปของ NSEC3 ต้องเป็นค่าที่เข้ารหัสแบบ Base32hex ที่ถูกต้อง (ใช้อักขระ 0-9 "
+"และ A-V)"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
@@ -8199,7 +8557,9 @@ msgstr "รูปแบบชื่อโดเมนไม่ถูกต้อ
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "นี่ดูเหมือนจะเป็นโดเมน ENUM บันทึก NAPTR ควรใช้ช่อง service แบบ E2U และเป็นไปตาม RFC 6116"
+msgstr ""
+"นี่ดูเหมือนจะเป็นโดเมน ENUM บันทึก NAPTR ควรใช้ช่อง service แบบ E2U และเป็นไปตาม RFC "
+"6116"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
@@ -8258,7 +8618,8 @@ msgstr "regexp ของบันทึก NAPTR ต้องเป็นข้�
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "ค่า replacement ของบันทึก NAPTR ต้องเป็น \".\" หรือชื่อโดเมนแบบเต็ม (FQDN) ที่ถูกต้อง"
+msgstr ""
+"ค่า replacement ของบันทึก NAPTR ต้องเป็น \".\" หรือชื่อโดเมนแบบเต็ม (FQDN) ที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -8269,7 +8630,10 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "service ของ NAPTR ต้องเป็นไปตามรูปแบบ: [protocol][+rs][+rs]... โดยที่ protocol และ rs ต้องขึ้นต้นด้วยตัวอักษร และประกอบด้วยอักขระตัวอักษรและตัวเลข ยัติภังค์ ทวิภาค หรือเครื่องหมายบวก (ยาวได้สูงสุดส่วนละ 32 อักขระ)"
+msgstr ""
+"service ของ NAPTR ต้องเป็นไปตามรูปแบบ: [protocol][+rs][+rs]... โดยที่ protocol "
+"และ rs ต้องขึ้นต้นด้วยตัวอักษร และประกอบด้วยอักขระตัวอักษรและตัวเลข ยัติภังค์ ทวิภาค "
+"หรือเครื่องหมายบวก (ยาวได้สูงสุดส่วนละ 32 อักขระ)"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8285,19 +8649,24 @@ msgstr "regexp ของ NAPTR ต้องขึ้นต้นด้วยอ�
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "regexp ของ NAPTR ต้องมีรูปแบบ delimiter+pattern+delimiter+replacement+delimiter+flags"
+msgstr ""
+"regexp ของ NAPTR ต้องมีรูปแบบ "
+"delimiter+pattern+delimiter+replacement+delimiter+flags"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "flags ของ regexp ใน NAPTR (หลังตัวคั่นตัวที่สาม) ควรมีเฉพาะ \"i\" หรือปล่อยว่างเท่านั้น"
+msgstr ""
+"flags ของ regexp ใน NAPTR (หลังตัวคั่นตัวที่สาม) ควรมีเฉพาะ \"i\" หรือปล่อยว่างเท่านั้น"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr "นี่ดูเหมือนจะเป็นบันทึก NAPTR แบบ ENUM (RFC 6116) โปรดตรวจสอบให้แน่ใจว่าโดเมนอยู่ภายใต้ e164.arpa หรือทรี ENUM แบบส่วนตัว"
+msgstr ""
+"นี่ดูเหมือนจะเป็นบันทึก NAPTR แบบ ENUM (RFC 6116) โปรดตรวจสอบให้แน่ใจว่าโดเมนอยู่ภายใต้ "
+"e164.arpa หรือทรี ENUM แบบส่วนตัว"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -8498,7 +8867,8 @@ msgstr "บันทึก SOA มีรูปแบบเนื้อหาไ�
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "รูปแบบ SOA ควรเป็น: primary-ns hostmaster serial refresh retry expire minimum"
+msgstr ""
+"รูปแบบ SOA ควรเป็น: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -8510,7 +8880,8 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
-msgstr "เพิ่มบันทึก NS ที่จุดสูงสุด (apex) ของโซนสำหรับเนมเซิร์ฟเวอร์ที่มีสิทธิ์ (authoritative) ของคุณ"
+msgstr ""
+"เพิ่มบันทึก NS ที่จุดสูงสุด (apex) ของโซนสำหรับเนมเซิร์ฟเวอร์ที่มีสิทธิ์ (authoritative) ของคุณ"
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
@@ -8536,7 +8907,9 @@ msgstr "รูปแบบไม่ถูกต้อง ต้องมีอ�
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "รูปแบบ SRV ไม่ถูกต้อง ใช้: name,SRV,\"weight port target\",priority,ttl หรือ name,SRV,target,weight,port,ttl"
+msgstr ""
+"รูปแบบ SRV ไม่ถูกต้อง ใช้: name,SRV,\"weight port target\",priority,ttl หรือ "
+"name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -8626,10 +8999,6 @@ msgstr "ไม่สามารถล้างเมตาดาต้าขอ
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "ไม่สามารถลบเมตาดาต้าของโซน: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "คุณไม่มีสิทธิ์ในการเปลี่ยนแปลงเมตาดาต้าของโซน"
 
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
@@ -8747,7 +9116,8 @@ msgstr "คุณกำลังจะปิดใช้งานคีย์ DN
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "การปิดใช้งานคีย์ที่ใช้งานอยู่จะมีผลต่อความปลอดภัยของโซนของคุณ และอาจทำให้การตรวจสอบล้มเหลว"
+msgstr ""
+"การปิดใช้งานคีย์ที่ใช้งานอยู่จะมีผลต่อความปลอดภัยของโซนของคุณ และอาจทำให้การตรวจสอบล้มเหลว"
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
@@ -8803,9 +9173,9 @@ msgstr "แก้ไขคีย์ API"
 msgid "Name"
 msgstr "ชื่อ"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "โปรดตั้งชื่อกุญแจ API นี้"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "ตั้งชื่อกุญแจ API นี้"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -8982,7 +9352,7 @@ msgstr ""
 msgid "Update record"
 msgstr "ปรับปรุงบันทึก"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "ตั้งค่าใหม่"
 
@@ -9093,8 +9463,8 @@ msgstr "TXT สำหรับ SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>
 msgid "Enter the IP address of the master nameserver"
 msgstr "ป้อนที่อยู่ IP ของเนมเซิร์ฟเวอร์หลัก"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
 msgstr "ให้ที่อยู่ IP"
 
 #: templates/modern/delete_supermaster.html:23
@@ -9113,7 +9483,7 @@ msgstr "ให้ชื่อโฮสต์"
 msgid "Account"
 msgstr "บัญชี"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "จัดเก็บการเปลี่ยนแปลง"
 
@@ -9133,7 +9503,9 @@ msgstr "สำคัญ"
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr "ตรวจสอบให้แน่ใจว่าชื่อโฮสต์ตรงกับที่ปรากฏในบันทึก NS ทุกประการ มิฉะนั้นการสร้างโซนสำรอง (slave) อาจล้มเหลว"
+msgstr ""
+"ตรวจสอบให้แน่ใจว่าชื่อโฮสต์ตรงกับที่ปรากฏในบันทึก NS ทุกประการ มิฉะนั้นการสร้างโซนสำรอง "
+"(slave) อาจล้มเหลว"
 
 #: templates/modern/edit_supermaster.html:81
 msgid "Validation"
@@ -9160,11 +9532,11 @@ msgstr "คุณแน่ใจหรือว่าต้องการจะ
 msgid "Unsign Zone"
 msgstr "ยกเลิกการเซ็นโซน"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "ซีเรียลตามที่ PowerDNS ให้บริการ โดยใช้ SOA-EDIT แล้ว"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "ซีเรียลที่เซ็นแล้ว"
 
@@ -9176,7 +9548,7 @@ msgstr "คีย์ DNSSEC สำหรับโซน"
 msgid "Add new key"
 msgstr "เพิ่มคีย์ใหม่"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "แสดง DS และ DNSKEY"
 
@@ -9232,7 +9604,9 @@ msgstr "นำเข้ากุญแจจาก PEM"
 msgid ""
 "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
 "key size from the PEM contents - select the matching algorithm and key role."
-msgstr "วางกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (RSA หรือ ECDSA) PowerDNS 4.7+ จะหาขนาดกุญแจจากเนื้อหา PEM - เลือกอัลกอริทึมและบทบาทของกุญแจให้ตรงกัน"
+msgstr ""
+"วางกุญแจส่วนตัวที่เข้ารหัสแบบ PEM (RSA หรือ ECDSA) PowerDNS 4.7+ "
+"จะหาขนาดกุญแจจากเนื้อหา PEM - เลือกอัลกอริทึมและบทบาทของกุญแจให้ตรงกัน"
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
@@ -9257,7 +9631,11 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr "แต่ละเครือข่าย (บล็อก CIDR) จับคู่กับมุมมองได้เพียงหนึ่งมุมมองเท่านั้น รีโซลเวอร์ในเครือข่ายนั้นจะได้รับเฉพาะโซนรูปแบบที่กำหนดให้กับมุมมองที่จับคู่ไว้ PowerDNS จะประเมินเครือข่ายโดยเรียงจากคำนำหน้าที่ยาวที่สุดก่อน ดังนั้นซับเน็ตที่เจาะจงกว่า (ตัวอย่างเช่น 10.0.1.0/24) จะมีผลเหนือช่วงที่กว้างกว่า (10.0.0.0/8) เมื่อทั้งคู่ตรงกับไคลเอนต์"
+msgstr ""
+"แต่ละเครือข่าย (บล็อก CIDR) จับคู่กับมุมมองได้เพียงหนึ่งมุมมองเท่านั้น "
+"รีโซลเวอร์ในเครือข่ายนั้นจะได้รับเฉพาะโซนรูปแบบที่กำหนดให้กับมุมมองที่จับคู่ไว้ PowerDNS "
+"จะประเมินเครือข่ายโดยเรียงจากคำนำหน้าที่ยาวที่สุดก่อน ดังนั้นซับเน็ตที่เจาะจงกว่า (ตัวอย่างเช่น "
+"10.0.1.0/24) จะมีผลเหนือช่วงที่กว้างกว่า (10.0.0.0/8) เมื่อทั้งคู่ตรงกับไคลเอนต์"
 
 #: templates/modern/list_networks.html:15
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9425,7 +9803,7 @@ msgstr "ปรับปรุงกลุ่ม"
 msgid "Manage"
 msgstr "จัดการ"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "ยังไม่มีคนในกลุ่มนี้"
 
@@ -9445,7 +9823,7 @@ msgstr "และ"
 msgid "more..."
 msgstr "เพิ่มเติม..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "กลุ่มนี้ยังไม่มีโซนเลย"
 
@@ -9528,7 +9906,9 @@ msgstr "บันทึกย่อที่สำคัญ"
 msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
-msgstr "สมาชิกจะเสียสิทธิ์ในการเข้าถึงโซนทั้งหมดที่กลุ่มนี้เป็นเจ้าของ โซนที่ไม่มีเจ้าของเหลืออยู่จะยังคงมีอยู่ แต่ผู้ใช้ทั่วไปจะไม่สามารถเข้าถึงได้"
+msgstr ""
+"สมาชิกจะเสียสิทธิ์ในการเข้าถึงโซนทั้งหมดที่กลุ่มนี้เป็นเจ้าของ โซนที่ไม่มีเจ้าของเหลืออยู่จะยังคงมีอยู่ "
+"แต่ผู้ใช้ทั่วไปจะไม่สามารถเข้าถึงได้"
 
 #: templates/default/delete_group.html:80 templates/modern/delete_group.html:80
 msgid "Yes, delete this group"
@@ -9679,13 +10059,15 @@ msgstr "บันทึกค่าปริยาย"
 msgid ""
 "When a record is created without an explicit TTL, Poweradmin looks up the "
 "record type here first. Leave a field empty to fall back to"
-msgstr "เมื่อมีการสร้างบันทึกโดยไม่ได้ระบุ TTL ไว้ Poweradmin จะค้นหาชนิดของบันทึกที่นี่ก่อน ปล่อยช่องให้ว่างไว้เพื่อย้อนกลับไปใช้"
+msgstr ""
+"เมื่อมีการสร้างบันทึกโดยไม่ได้ระบุ TTL ไว้ Poweradmin จะค้นหาชนิดของบันทึกที่นี่ก่อน "
+"ปล่อยช่องให้ว่างไว้เพื่อย้อนกลับไปใช้"
 
 #: templates/modern/record_type_defaults.html:56
 msgid "(for PTRs in reverse zones) or"
 msgstr "(สำหรับ PTR ในโซนย้อนกลับ) หรือ"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "แก้ไขหมายเหตุ"
 
@@ -9733,7 +10115,9 @@ msgstr "เกี่ยวกับต้นแบบ"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "แม่แบบโซนช่วยให้คุณสร้างชุดบันทึก DNS ที่กำหนดไว้ล่วงหน้า ซึ่งสามารถนำไปใช้ได้อย่างรวดเร็วเมื่อสร้างโซนใหม่"
+msgstr ""
+"แม่แบบโซนช่วยให้คุณสร้างชุดบันทึก DNS ที่กำหนดไว้ล่วงหน้า "
+"ซึ่งสามารถนำไปใช้ได้อย่างรวดเร็วเมื่อสร้างโซนใหม่"
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -9763,7 +10147,9 @@ msgstr "คำแนะนำและตัวอย่างต่าง ๆ"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "สร้างแม่แบบที่แตกต่างกันสำหรับเว็บไซต์ประเภทต่าง ๆ (เช่น \"Basic Website\", \"Email Server\")"
+msgstr ""
+"สร้างแม่แบบที่แตกต่างกันสำหรับเว็บไซต์ประเภทต่าง ๆ (เช่น \"Basic Website\", \"Email "
+"Server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -9784,7 +10170,11 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr "บันทึกเหตุการณ์ในวงจรชีวิตของคีย์ API (การสร้าง, การสร้างใหม่, การเพิกถอน, การเปลี่ยนแปลงสิทธิ์) และคำขอ API ที่ผ่านการยืนยันตัวตน กรองตามผู้ใช้หรือการดำเนินการเพื่อตรวจสอบกิจกรรมการเชื่อมต่อจากภายนอก ค่าที่ละเอียดอ่อน (คีย์, โทเคน) จะไม่ถูกเขียนลงในปูมบันทึกนี้"
+msgstr ""
+"บันทึกเหตุการณ์ในวงจรชีวิตของคีย์ API (การสร้าง, การสร้างใหม่, การเพิกถอน, "
+"การเปลี่ยนแปลงสิทธิ์) และคำขอ API ที่ผ่านการยืนยันตัวตน "
+"กรองตามผู้ใช้หรือการดำเนินการเพื่อตรวจสอบกิจกรรมการเชื่อมต่อจากภายนอก ค่าที่ละเอียดอ่อน (คีย์, "
+"โทเคน) จะไม่ถูกเขียนลงในปูมบันทึกนี้"
 
 #: templates/modern/list_log_users.html:19
 msgid "All users"
@@ -9794,7 +10184,7 @@ msgstr "ผู้ใช้ทั้งหมด"
 msgid "All events"
 msgstr "เหตุการณ์ทั้งหมด"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "ปูมบันทึก"
 
@@ -9845,10 +10235,6 @@ msgstr "เพิ่มเรกคอร์ดจำนวนมาก"
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
 msgstr "บันทึก"
-
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "โปรดระบุเรกคอร์ดอย่างน้อยหนึ่งรายการ"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -10092,7 +10478,10 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "แม้เราจะพยายามรักษาความพร้อมใช้งานของระบบ แต่เราไม่สามารถรับประกันเวลาทำงาน 100% ได้ ผู้ใช้ไม่ควรพึ่งพาระบบนี้เพียงอย่างเดียวสำหรับการดำเนินการ DNS ที่สำคัญ โดยไม่มีการสำรองข้อมูลและการเฝ้าติดตามที่เหมาะสม"
+msgstr ""
+"แม้เราจะพยายามรักษาความพร้อมใช้งานของระบบ แต่เราไม่สามารถรับประกันเวลาทำงาน 100% ได้ "
+"ผู้ใช้ไม่ควรพึ่งพาระบบนี้เพียงอย่างเดียวสำหรับการดำเนินการ DNS ที่สำคัญ "
+"โดยไม่มีการสำรองข้อมูลและการเฝ้าติดตามที่เหมาะสม"
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10103,7 +10492,9 @@ msgid ""
 "This system is provided \"as is\" without any warranties. The administrators "
 "are not liable for any damages or losses resulting from the use of this "
 "system."
-msgstr "ระบบนี้ให้บริการ \"ตามสภาพที่เป็นอยู่\" โดยไม่มีการรับประกันใด ๆ ผู้ดูแลระบบไม่ต้องรับผิดต่อความเสียหายหรือการสูญเสียใด ๆ ที่เกิดจากการใช้ระบบนี้"
+msgstr ""
+"ระบบนี้ให้บริการ \"ตามสภาพที่เป็นอยู่\" โดยไม่มีการรับประกันใด ๆ "
+"ผู้ดูแลระบบไม่ต้องรับผิดต่อความเสียหายหรือการสูญเสียใด ๆ ที่เกิดจากการใช้ระบบนี้"
 
 #: templates/modern/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -10113,7 +10504,9 @@ msgstr "การเปลี่ยนแปลงข้อตกลง"
 msgid ""
 "These terms may be updated from time to time. Users will be required to "
 "accept any changes before continuing to use the system."
-msgstr "เงื่อนไขเหล่านี้อาจมีการปรับปรุงเป็นครั้งคราว ผู้ใช้จำเป็นต้องยอมรับการเปลี่ยนแปลงใด ๆ ก่อนจะใช้ระบบต่อไป"
+msgstr ""
+"เงื่อนไขเหล่านี้อาจมีการปรับปรุงเป็นครั้งคราว ผู้ใช้จำเป็นต้องยอมรับการเปลี่ยนแปลงใด ๆ "
+"ก่อนจะใช้ระบบต่อไป"
 
 #: templates/modern/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -10186,8 +10579,9 @@ msgid "New Password"
 msgstr "รหัสผ่านใหม่"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "โปรดป้อนรหัสผ่าน"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "การตั้งค่ารหัสผ่าน"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -10355,7 +10749,9 @@ msgstr "ตรวจพบ PowerDNS รุ่นเก่า"
 msgid ""
 "This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
 "by default. Pick KSK or ZSK explicitly to add a key here."
-msgstr "เซิร์ฟเวอร์นี้เก่ากว่า PowerDNS 4.0 และไม่ได้สร้าง Combined Signing Key โดยปริยาย เลือก KSK หรือ ZSK โดยตรงเพื่อเพิ่มคีย์ที่นี่"
+msgstr ""
+"เซิร์ฟเวอร์นี้เก่ากว่า PowerDNS 4.0 และไม่ได้สร้าง Combined Signing Key โดยปริยาย เลือก "
+"KSK หรือ ZSK โดยตรงเพื่อเพิ่มคีย์ที่นี่"
 
 #: templates/modern/dnssec_add_key.html:46
 msgid "Select key type"
@@ -10398,7 +10794,8 @@ msgstr "ชนิดของกุญแจอธิบาย"
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
-msgstr "กุญแจสำหรับเซ็นรวม - ทำหน้าที่ทั้งแบบ KSK และ ZSK (แนะนำให้ใช้สำหรับ PowerDNS 4.0+)"
+msgstr ""
+"กุญแจสำหรับเซ็นรวม - ทำหน้าที่ทั้งแบบ KSK และ ZSK (แนะนำให้ใช้สำหรับ PowerDNS 4.0+)"
 
 #: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
@@ -10416,7 +10813,9 @@ msgstr "ตั้งค่าแนะนำ"
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
-msgstr "สำหรับการติดตั้งใช้งานสมัยใหม่ ECDSA (อัลกอริทึม 13, ECDSAP256SHA256) ที่ 256 บิต ให้ความปลอดภัยที่แข็งแกร่งพร้อมประสิทธิภาพที่ดีกว่า"
+msgstr ""
+"สำหรับการติดตั้งใช้งานสมัยใหม่ ECDSA (อัลกอริทึม 13, ECDSAP256SHA256) ที่ 256 บิต "
+"ให้ความปลอดภัยที่แข็งแกร่งพร้อมประสิทธิภาพที่ดีกว่า"
 
 #: templates/modern/edit_user.html:3 templates/modern/header.html:383
 msgid "Edit profile"
@@ -10436,6 +10835,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "ชื่อผู้ใช้ของคุณสามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "โปรดระบุชื่อผู้ใช้"
 
@@ -10628,7 +11028,9 @@ msgstr "โซนที่จะยกเลิกการเชื่อมโ
 msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
-msgstr "การยกเลิกการเชื่อมโยงโซนออกจากแม่แบบจะไม่ลบเรกคอร์ดใด ๆ โซนจะไม่ได้รับการอัปเดตอีกเมื่อมีการแก้ไขแม่แบบ"
+msgstr ""
+"การยกเลิกการเชื่อมโยงโซนออกจากแม่แบบจะไม่ลบเรกคอร์ดใด ๆ "
+"โซนจะไม่ได้รับการอัปเดตอีกเมื่อมีการแก้ไขแม่แบบ"
 
 #: templates/modern/confirm_unlink_zones_templ.html:66
 msgid "Yes, unlink this zone"
@@ -10705,7 +11107,9 @@ msgstr "วิธีใช้แม่แบบ"
 msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
-msgstr "หลังจากสร้างแม่แบบแล้ว คุณสามารถกำหนดให้ผู้ใช้หรือกลุ่มได้ วิธีนี้ช่วยให้ผู้ใช้และกลุ่มที่มีบทบาทคล้ายกันได้รับสิทธิ์ที่สอดคล้องกัน"
+msgstr ""
+"หลังจากสร้างแม่แบบแล้ว คุณสามารถกำหนดให้ผู้ใช้หรือกลุ่มได้ "
+"วิธีนี้ช่วยให้ผู้ใช้และกลุ่มที่มีบทบาทคล้ายกันได้รับสิทธิ์ที่สอดคล้องกัน"
 
 #: templates/modern/edit_perm_templ.html:93
 msgid "Available Permissions"
@@ -10759,7 +11163,9 @@ msgstr "กลับไป"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "Supermaster คือเซิร์ฟเวอร์ PowerDNS แบบ authoritative ที่ส่งโซนใหม่ไปยังเซิร์ฟเวอร์ทาสโดยอัตโนมัติ"
+msgstr ""
+"Supermaster คือเซิร์ฟเวอร์ PowerDNS แบบ authoritative "
+"ที่ส่งโซนใหม่ไปยังเซิร์ฟเวอร์ทาสโดยอัตโนมัติ"
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10769,7 +11175,9 @@ msgstr "มันทำงานอย่างไร"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "เมื่อทาสได้รับการแจ้งเตือนจาก supermaster มันจะเพิ่มโดเมน และตั้งค่าที่อยู่ IP ของ supermaster เป็นที่อยู่หลัก"
+msgstr ""
+"เมื่อทาสได้รับการแจ้งเตือนจาก supermaster มันจะเพิ่มโดเมน และตั้งค่าที่อยู่ IP ของ "
+"supermaster เป็นที่อยู่หลัก"
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -10783,7 +11191,9 @@ msgstr "ชื่อโฮสต์ต้องตรงกับที่ปร
 #: templates/modern/add_supermaster.html:80
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
-msgstr "ตรวจสอบให้แน่ใจว่าไฟร์วอลล์ของคุณอนุญาตการแจ้งเตือน DNS ระหว่างเซิร์ฟเวอร์หลักและเซิร์ฟเวอร์ทาส"
+msgstr ""
+"ตรวจสอบให้แน่ใจว่าไฟร์วอลล์ของคุณอนุญาตการแจ้งเตือน DNS "
+"ระหว่างเซิร์ฟเวอร์หลักและเซิร์ฟเวอร์ทาส"
 
 #: templates/modern/login.html:12 templates/modern/login.html:43
 msgid "Log in"
@@ -10939,7 +11349,9 @@ msgstr "สำหรับเครือข่าย 192.168.1.0/24, คุณ�
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr "สำหรับเครือข่ายขนาดใหญ่ คุณต้องใช้โซนย้อนกลับที่สอดคล้องกัน (เช่น 168.192.in-addr.arpa สำหรับเครือข่าย /16)"
+msgstr ""
+"สำหรับเครือข่ายขนาดใหญ่ คุณต้องใช้โซนย้อนกลับที่สอดคล้องกัน (เช่น 168.192.in-addr.arpa "
+"สำหรับเครือข่าย /16)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"
@@ -10955,7 +11367,9 @@ msgstr "ใช้ปุ่มดรอปดาวน์ถัดจาก Netwo
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr "ใช้ \"สร้างบันทึก PTR เฉพาะสำหรับบันทึก A/AAAA ที่มีอยู่แล้ว\" เพื่อเพิ่มข้อมูล PTR โดยอิงจากโซนไปข้างหน้าของคุณ"
+msgstr ""
+"ใช้ \"สร้างบันทึก PTR เฉพาะสำหรับบันทึก A/AAAA ที่มีอยู่แล้ว\" เพื่อเพิ่มข้อมูล PTR "
+"โดยอิงจากโซนไปข้างหน้าของคุณ"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -10967,7 +11381,9 @@ msgstr "ใช้ช่องข้อมูลค่านำหน้าโฮ
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "กาเลือก \"สร้างบันทึกการส่งต่อ A/AAAA\" เพื่อสร้างบันทึกการส่งต่อที่ตรงกันโดยอัตโนมัติ (ถูกปิดใช้งานเมื่อใช้โหมดจับคู่)"
+msgstr ""
+"กาเลือก \"สร้างบันทึกการส่งต่อ A/AAAA\" เพื่อสร้างบันทึกการส่งต่อที่ตรงกันโดยอัตโนมัติ "
+"(ถูกปิดใช้งานเมื่อใช้โหมดจับคู่)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -11017,7 +11433,8 @@ msgstr "เพิ่มบันทึก"
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "หลังจากเพิ่มบันทึกนี้แล้ว อย่าลืมอัปเดตโซนที่ใช้ต้นแบบนี้ โดยคลิกที่ \"อัปเดตโซน\" ในหน้าต้นแบบ"
+msgstr ""
+"หลังจากเพิ่มบันทึกนี้แล้ว อย่าลืมอัปเดตโซนที่ใช้ต้นแบบนี้ โดยคลิกที่ \"อัปเดตโซน\" ในหน้าต้นแบบ"
 
 #: templates/modern/add_zone_templ_record.html:23
 msgid "Add record to zone template"
@@ -11148,10 +11565,6 @@ msgstr "เพิ่มคีย์ API"
 msgid "My application"
 msgstr "โปรแกรมของฉัน"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "ตั้งชื่อกุญแจ API นี้"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "สร้างกุญแจ API"
@@ -11172,75 +11585,77 @@ msgstr "ถ้าคุณทำกุญแจหาย คุณต้อง�
 msgid "Edit"
 msgstr "แก้ไข"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "เพิ่มบันทึกใหม่"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "ตัวช่วยนำทางสำหรับ DMARC, SPF, DKIM, CAA, TLSA, และบันทึก SRV"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "โหมดบันทึกหลายแบบ"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "เพิ่มจำนวนมาก"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "ล้มเหลวในการเพิ่ม"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "บันทึก กรุณาตรวจสอบรูปแบบบันทึก"
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "ล้มเหลวในการเพิ่มรายการ กรุณาตรวจสอบรูปแบบบันทึก"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "การตรวจสอบเนื้อหาล้มเหลว:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "ค่าสำหรับชนิดบันทึกไม่ถูกต้อง"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "โปรดให้ข้อมูลที่จำเป็นทั้งหมด"
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "เพิ่ม PTR"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "เพิ่ม A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "มีบันทึกนี้อยู่แล้ว"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "ระดับความสำคัญไม่ถูกต้อง"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "ค่า TTL ไม่ถูกต้อง"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "ระบุ TTL"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
-msgstr "เคล็ดลับ: ป้อนเฉพาะชื่อโฮสต์ (เช่น 'www') และชื่อโซนจะถูกเพิ่มโดยอัตโนมัติ ใช้เครื่องหมาย '@' สำหรับ apex/root ของโซน"
+msgstr ""
+"เคล็ดลับ: ป้อนเฉพาะชื่อโฮสต์ (เช่น 'www') และชื่อโซนจะถูกเพิ่มโดยอัตโนมัติ ใช้เครื่องหมาย '@' "
+"สำหรับ apex/root ของโซน"
 
 #: lib/Module/ZoneImportExport/templates/import.html:40
 msgid "Edit zone"
@@ -11298,59 +11713,59 @@ msgstr "บันทึกทั้งหมด"
 msgid "Last modified"
 msgstr "แก้ไขล่าสุด"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "แก้ไขล่าสุดโดย %account% เมื่อ %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "แก้ไขที่เลือกไว้"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "ลบบันทึก"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "หมายเหตุ"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "นำเข้า"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "สร้าง PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "การปรับแต่งโซน"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "เปลี่ยน"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "ที่อยู่ IP ของ NS หลัก"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "จัดการ DNSSEC"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "คีย์ DNSSEC ถูกจัดการที่เซิร์ฟเวอร์หลัก"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "ลงนามล่วงหน้า"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "ลงนามโซน"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "ยังไม่ได้เซ็น"
 
@@ -11623,7 +12038,7 @@ msgid "Send Username"
 msgstr "ส่งชื่อผู้ใช้"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "ตั้งค่ารหัสผ่านของผู้ใช้"
 
@@ -11676,7 +12091,9 @@ msgstr "ระบุชื่อโซน"
 msgid ""
 "Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
 "name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "ป้อนเครือข่าย (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) หรือชื่อโซนย้อนกลับ (เช่น 1.168.192.in-addr.arpa)"
+msgstr ""
+"ป้อนเครือข่าย (เช่น 192.168.1.0/24 หรือ 2001:db8::/48) หรือชื่อโซนย้อนกลับ (เช่น "
+"1.168.192.in-addr.arpa)"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
@@ -11829,7 +12246,10 @@ msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
-msgstr "การเปลี่ยนแม่แบบของโซนจะเขียนทับบันทึกที่มาจากแม่แบบ แต่จะคงการเพิ่มเติมด้วยตนเองไว้ การแก้ไขแม่แบบจะไม่ปรับปรุงโซนโดยอัตโนมัติ - ใช้ปุ่ม \"Update Zones\" เมื่อทำการแก้ไขแม่แบบ เพื่อปรับใช้การเปลี่ยนแปลง"
+msgstr ""
+"การเปลี่ยนแม่แบบของโซนจะเขียนทับบันทึกที่มาจากแม่แบบ แต่จะคงการเพิ่มเติมด้วยตนเองไว้ "
+"การแก้ไขแม่แบบจะไม่ปรับปรุงโซนโดยอัตโนมัติ - ใช้ปุ่ม \"Update Zones\" เมื่อทำการแก้ไขแม่แบบ "
+"เพื่อปรับใช้การเปลี่ยนแปลง"
 
 #: templates/modern/change_password.html:43 templates/modern/header.html:395
 msgid "Change password"
@@ -12172,7 +12592,11 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr "ทุกการเพิ่ม/แก้ไข/ลบบันทึก และการสร้าง/ลบโซน/แก้ไขข้อมูลกำกับ จะเก็บสถานะก่อน/หลังไว้ที่นี่ พร้อมกับผู้ใช้และเวลา บันทึกจะไม่หมดอายุโดยอัตโนมัติ - ให้ลบแถวเก่าด้วยตนเองหากตารางมีขนาดใหญ่ขึ้น ใช้ปุ่มลัดช่วงเวลาเพื่อดูกิจกรรมล่าสุด หรือส่งออกเป็น CSV/JSON เพื่อป้อนให้ระบบตรวจสอบภายนอก"
+msgstr ""
+"ทุกการเพิ่ม/แก้ไข/ลบบันทึก และการสร้าง/ลบโซน/แก้ไขข้อมูลกำกับ จะเก็บสถานะก่อน/หลังไว้ที่นี่ "
+"พร้อมกับผู้ใช้และเวลา บันทึกจะไม่หมดอายุโดยอัตโนมัติ - "
+"ให้ลบแถวเก่าด้วยตนเองหากตารางมีขนาดใหญ่ขึ้น ใช้ปุ่มลัดช่วงเวลาเพื่อดูกิจกรรมล่าสุด หรือส่งออกเป็น "
+"CSV/JSON เพื่อป้อนให้ระบบตรวจสอบภายนอก"
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
@@ -12254,7 +12678,9 @@ msgstr "บันทึกรหัสการกู้คืนของคุ
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
-msgstr "รหัสกู้คืนสามารถใช้เข้าถึงบัญชีของคุณได้ หากคุณไม่สามารถเข้าถึงอุปกรณ์ตรวจสอบสิทธิ์ของคุณ แต่ละรหัสใช้ได้เพียงครั้งเดียว"
+msgstr ""
+"รหัสกู้คืนสามารถใช้เข้าถึงบัญชีของคุณได้ หากคุณไม่สามารถเข้าถึงอุปกรณ์ตรวจสอบสิทธิ์ของคุณ "
+"แต่ละรหัสใช้ได้เพียงครั้งเดียว"
 
 #: templates/modern/mfa_recovery_codes.html:29
 msgid "Store these codes in a safe place!"
@@ -12292,7 +12718,9 @@ msgstr "รหัสกู้คืน MFA ของ Poweradmin"
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
-msgstr "เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัย แต่ละรหัสใช้เข้าสู่ระบบได้หนึ่งครั้ง หากคุณไม่สามารถเข้าถึงอุปกรณ์ตรวจสอบสิทธิ์ของคุณ"
+msgstr ""
+"เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัย แต่ละรหัสใช้เข้าสู่ระบบได้หนึ่งครั้ง "
+"หากคุณไม่สามารถเข้าถึงอุปกรณ์ตรวจสอบสิทธิ์ของคุณ"
 
 #: templates/default/mfa_setup.html:10 templates/modern/mfa_setup.html:10
 msgid "MFA Setup Required"
@@ -12337,7 +12765,9 @@ msgstr "โปรแกรมตรวจสอบสิทธิ์"
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
-msgstr "ใช้โปรแกรมตรวจสอบสิทธิ์ เช่น Google Authenticator, Microsoft Authenticator หรือ Authy"
+msgstr ""
+"ใช้โปรแกรมตรวจสอบสิทธิ์ เช่น Google Authenticator, Microsoft Authenticator หรือ "
+"Authy"
 
 #: templates/default/mfa_setup.html:73 templates/modern/mfa_setup.html:73
 msgid "Works offline"
@@ -12449,7 +12879,10 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "คุณกำลังจะลบโซนแบบ slave ที่เนมเซิร์ฟเวอร์หลักเป็น supermaster การลบโซนตอนนี้จะเป็นการลบชั่วคราวเท่านั้น เมื่อใดก็ตามที่ supermaster ส่งการแจ้งเตือนสำหรับโซนนี้ โซนจะถูกเพิ่มกลับมาอีกครั้ง!"
+msgstr ""
+"คุณกำลังจะลบโซนแบบ slave ที่เนมเซิร์ฟเวอร์หลักเป็น supermaster "
+"การลบโซนตอนนี้จะเป็นการลบชั่วคราวเท่านั้น เมื่อใดก็ตามที่ supermaster "
+"ส่งการแจ้งเตือนสำหรับโซนนี้ โซนจะถูกเพิ่มกลับมาอีกครั้ง!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -12495,7 +12928,9 @@ msgstr "เมือง"
 msgid ""
 "Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
 "the global server timezone."
-msgstr "ใช้สำหรับการประทับเวลาในอีเมลที่ส่งถึงคุณ (เช่น รหัส MFA) หากเว้นว่างไว้ จะสืบทอดเขตเวลาของเซิร์ฟเวอร์ส่วนกลาง"
+msgstr ""
+"ใช้สำหรับการประทับเวลาในอีเมลที่ส่งถึงคุณ (เช่น รหัส MFA) หากเว้นว่างไว้ "
+"จะสืบทอดเขตเวลาของเซิร์ฟเวอร์ส่วนกลาง"
 
 #: templates/modern/user_preferences.html:98
 msgid "Zone Options"
@@ -12606,7 +13041,9 @@ msgstr "กลับด้าน"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr "ไวยากรณ์ตัวกรอง: type:txt content:spf ไวลด์การ์ดเพิ่ม % ในการค้นหา Reverse แปลง IP เป็นรูปแบบ PTR (เช่น 192.168.1.1 เป็น 1.1.168.192.in-addr.arpa)"
+msgstr ""
+"ไวยากรณ์ตัวกรอง: type:txt content:spf ไวลด์การ์ดเพิ่ม % ในการค้นหา Reverse แปลง IP "
+"เป็นรูปแบบ PTR (เช่น 192.168.1.1 เป็น 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:116 templates/modern/search.html:116
 msgid "Zones found"
@@ -12682,15 +13119,15 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr "บันทึกเหตุการณ์เกี่ยวกับบัญชีผู้ใช้ เช่น การเข้าสู่ระบบ การเปลี่ยนรหัสผ่าน การปรับปรุงสมาชิกกลุ่ม และการกระทำของผู้ดูแลระบบต่อเรกคอร์ดผู้ใช้ แต่ละรายการแสดงการกระทำ ผู้กระทำ ผู้ใช้ที่ได้รับผลกระทบ และเวลาที่เกิดขึ้น กรองตามปฏิบัติการหรือผู้ใช้เพื่อตรวจสอบการเปลี่ยนแปลงสิทธิ์การเข้าถึง"
+msgstr ""
+"บันทึกเหตุการณ์เกี่ยวกับบัญชีผู้ใช้ เช่น การเข้าสู่ระบบ การเปลี่ยนรหัสผ่าน การปรับปรุงสมาชิกกลุ่ม "
+"และการกระทำของผู้ดูแลระบบต่อเรกคอร์ดผู้ใช้ แต่ละรายการแสดงการกระทำ ผู้กระทำ "
+"ผู้ใช้ที่ได้รับผลกระทบ และเวลาที่เกิดขึ้น "
+"กรองตามปฏิบัติการหรือผู้ใช้เพื่อตรวจสอบการเปลี่ยนแปลงสิทธิ์การเข้าถึง"
 
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
 msgstr "การตั้งค่าโซนแบบ slave"
-
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "ให้ที่อยู่ IP"
 
 #: templates/modern/add_zone_slave.html:33
 msgid ""
@@ -12728,7 +13165,12 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "มุมมองให้บริการโซนรูปแบบต่าง ๆ แก่ไคลเอนต์ที่ต่างกัน โดยขึ้นอยู่กับเครือข่ายที่สอบถามมายังรีโซลเวอร์ แต่ละรูปแบบมีชื่อว่า zone..variant (ตัวอย่างเช่น example.com..trusted) และต้องมีอยู่เป็นโซนแยกต่างหากใน PowerDNS ก่อนจึงจะกำหนดที่นี่ได้ รูปแบบต่าง ๆ ใช้ชื่อร่วมกันแต่ตอบกลับต่างกันในแต่ละมุมมอง ดังนั้นชื่อโฮสต์เดียวกันจึงตอบด้วย IP ที่ต่างกันได้ ขึ้นอยู่กับเครือข่ายของไคลเอนต์"
+msgstr ""
+"มุมมองให้บริการโซนรูปแบบต่าง ๆ แก่ไคลเอนต์ที่ต่างกัน "
+"โดยขึ้นอยู่กับเครือข่ายที่สอบถามมายังรีโซลเวอร์ แต่ละรูปแบบมีชื่อว่า zone..variant (ตัวอย่างเช่น "
+"example.com..trusted) และต้องมีอยู่เป็นโซนแยกต่างหากใน PowerDNS ก่อนจึงจะกำหนดที่นี่ได้ "
+"รูปแบบต่าง ๆ ใช้ชื่อร่วมกันแต่ตอบกลับต่างกันในแต่ละมุมมอง ดังนั้นชื่อโฮสต์เดียวกันจึงตอบด้วย IP "
+"ที่ต่างกันได้ ขึ้นอยู่กับเครือข่ายของไคลเอนต์"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -12759,7 +13201,9 @@ msgid ""
 "Preview how email templates will appear to users in both light and dark "
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
-msgstr "แสดงตัวอย่างว่าแม่แบบอีเมลจะปรากฏต่อผู้ใช้อย่างไร ทั้งในโหมดสว่างและโหมดมืด ตัวอย่างเหล่านี้ใช้ข้อมูลตัวอย่างเพื่อสาธิตการจัดรูปแบบและสไตล์ของอีเมล"
+msgstr ""
+"แสดงตัวอย่างว่าแม่แบบอีเมลจะปรากฏต่อผู้ใช้อย่างไร ทั้งในโหมดสว่างและโหมดมืด "
+"ตัวอย่างเหล่านี้ใช้ข้อมูลตัวอย่างเพื่อสาธิตการจัดรูปแบบและสไตล์ของอีเมล"
 
 #: templates/modern/email_previews.html:18
 msgid "Active Email Templates"
@@ -12773,7 +13217,8 @@ msgstr "มาตรฐาน"
 msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
-msgstr "แม่แบบที่กำหนดเองกำลังทำงานอยู่ และแทนที่แม่แบบปริยาย นี่คือแม่แบบที่ใช้อยู่ในปัจจุบันเมื่อมีการส่งอีเมล"
+msgstr ""
+"แม่แบบที่กำหนดเองกำลังทำงานอยู่ และแทนที่แม่แบบปริยาย นี่คือแม่แบบที่ใช้อยู่ในปัจจุบันเมื่อมีการส่งอีเมล"
 
 #: templates/modern/email_previews.html:31
 msgid ""
@@ -12811,7 +13256,9 @@ msgstr "ใช้ต้นแบบกำหนดเอง"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "เพื่อกลับไปใช้แม่แบบมาตรฐาน ให้ลบหรือเปลี่ยนชื่อไฟล์แม่แบบที่กำหนดเองใน <code>templates/emails/custom/</code>."
+msgstr ""
+"เพื่อกลับไปใช้แม่แบบมาตรฐาน ให้ลบหรือเปลี่ยนชื่อไฟล์แม่แบบที่กำหนดเองใน <code>templates/"
+"emails/custom/</code>."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
@@ -12822,7 +13269,9 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "คุณสามารถสร้างแม่แบบอีเมลที่กำหนดเองได้ โดยวางไว้ใน <code>templates/emails/custom/</code> เพื่อแทนที่แม่แบบมาตรฐานเหล่านี้ด้วยรูปแบบของคุณเอง"
+msgstr ""
+"คุณสามารถสร้างแม่แบบอีเมลที่กำหนดเองได้ โดยวางไว้ใน <code>templates/emails/custom/</"
+"code> เพื่อแทนที่แม่แบบมาตรฐานเหล่านี้ด้วยรูปแบบของคุณเอง"
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -12857,7 +13306,8 @@ msgstr "ปรับปรุงสถานะใหม่"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "ยังไม่ได้ตั้งค่า PowerDNS API โปรดตั้งค่า URL และคีย์ของ PowerDNS API ในการตั้งค่าของคุณ"
+msgstr ""
+"ยังไม่ได้ตั้งค่า PowerDNS API โปรดตั้งค่า URL และคีย์ของ PowerDNS API ในการตั้งค่าของคุณ"
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13020,26 +13470,34 @@ msgstr "PowerDNS API ผิดพลาด"
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
-msgstr "ตรวจสอบว่า pdns_api.key ใน config/settings.php ตรงกับคีย์ API ที่ตั้งค่าไว้ใน PowerDNS"
+msgstr ""
+"ตรวจสอบว่า pdns_api.key ใน config/settings.php ตรงกับคีย์ API ที่ตั้งค่าไว้ใน PowerDNS"
 
 #: templates/default/header.html:333 templates/modern/header.html:506
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
-msgstr "ตรวจสอบว่า pdns_api.server_name ตรงกับสิ่งที่ PowerDNS รายงาน (ค่าปริยายคือ 'localhost')"
+msgstr ""
+"ตรวจสอบว่า pdns_api.server_name ตรงกับสิ่งที่ PowerDNS รายงาน (ค่าปริยายคือ "
+"'localhost')"
 
 #: templates/default/header.html:335 templates/modern/header.html:508
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
-msgstr "PowerDNS ปฏิเสธคำขอ ตรวจสอบปูมบันทึกของเซิร์ฟเวอร์ PowerDNS เพื่อหาสาเหตุ - สาเหตุที่พบบ่อยหลังจากนำเข้าโซนเข้าสู่ฐานข้อมูล PowerDNS โดยตรง คือมีเรกคอร์ดที่มีรูปแบบไม่ถูกต้องเพียงรายการเดียว ซึ่งทำให้การสร้างข้อมูลโซนล้มเหลว"
+msgstr ""
+"PowerDNS ปฏิเสธคำขอ ตรวจสอบปูมบันทึกของเซิร์ฟเวอร์ PowerDNS เพื่อหาสาเหตุ - "
+"สาเหตุที่พบบ่อยหลังจากนำเข้าโซนเข้าสู่ฐานข้อมูล PowerDNS โดยตรง "
+"คือมีเรกคอร์ดที่มีรูปแบบไม่ถูกต้องเพียงรายการเดียว ซึ่งทำให้การสร้างข้อมูลโซนล้มเหลว"
 
 #: templates/default/header.html:337 templates/modern/header.html:510
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr "บางคุณสมบัติอาจไม่สามารถใช้งานได้ จนกว่าจะเข้าถึง API ได้อีกครั้ง ตรวจสอบปูมบันทึกของเซิร์ฟเวอร์ PowerDNS ของคุณสำหรับรายละเอียด"
+msgstr ""
+"บางคุณสมบัติอาจไม่สามารถใช้งานได้ จนกว่าจะเข้าถึง API ได้อีกครั้ง "
+"ตรวจสอบปูมบันทึกของเซิร์ฟเวอร์ PowerDNS ของคุณสำหรับรายละเอียด"
 
 #: templates/modern/dnssec_ds_dnskey.html:9
 msgid "DS and DNS keys"
@@ -13106,10 +13564,6 @@ msgstr "กลับไปยังกลุ่ม"
 #: templates/modern/manage_group_zones.html:18
 msgid "Owned Zones"
 msgstr "โซนที่เป็นเจ้าของ"
-
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "กลุ่มนี้ยังไม่มีเขตไหนเลย"
 
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
@@ -13201,7 +13655,11 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr "กุญแจ API เปิดให้โปรแกรมภายนอกเข้าถึง Poweradmin API แต่ละกุญแจจะเชื่อมโยงกับบัญชีผู้ใช้ของคุณ และสืบทอดสิทธิ์ของคุณ ดังนั้นการเพิกถอนบัญชีของคุณจะเป็นการเพิกถอนกุญแจทั้งหมดของบัญชีนั้นด้วย ปฏิบัติต่อกุญแจเสมือนเป็นความลับ เพราะกุญแจให้สิทธิ์เข้าถึงเทียบเท่ากับการเข้าสู่ระบบในฐานะคุณ"
+msgstr ""
+"กุญแจ API เปิดให้โปรแกรมภายนอกเข้าถึง Poweradmin API "
+"แต่ละกุญแจจะเชื่อมโยงกับบัญชีผู้ใช้ของคุณ และสืบทอดสิทธิ์ของคุณ "
+"ดังนั้นการเพิกถอนบัญชีของคุณจะเป็นการเพิกถอนกุญแจทั้งหมดของบัญชีนั้นด้วย "
+"ปฏิบัติต่อกุญแจเสมือนเป็นความลับ เพราะกุญแจให้สิทธิ์เข้าถึงเทียบเท่ากับการเข้าสู่ระบบในฐานะคุณ"
 
 #: templates/modern/api_key_delete.html:13
 msgid "You are about to delete the API key"
@@ -13252,7 +13710,8 @@ msgstr "เมื่อกำหนดให้กับ<strong>ผู้ใช�
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "เมื่อกำหนดให้กับ<strong>กลุ่ม</strong>: สิทธิ์จะมีผลเฉพาะกับโซนที่กลุ่มนั้นเป็นเจ้าของเท่านั้น"
+msgstr ""
+"เมื่อกำหนดให้กับ<strong>กลุ่ม</strong>: สิทธิ์จะมีผลเฉพาะกับโซนที่กลุ่มนั้นเป็นเจ้าของเท่านั้น"
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"
@@ -13262,7 +13721,9 @@ msgstr "กลุ่มสิทธิ์"
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
-msgstr "สิทธิ์ต่าง ๆ ถูกจัดระเบียบเป็นกลุ่มด้านล่างเพื่อให้จัดการได้ง่ายขึ้น ใช้คุณสมบัติการค้นหาเพื่อค้นหาสิทธิ์ที่ต้องการได้อย่างรวดเร็ว"
+msgstr ""
+"สิทธิ์ต่าง ๆ ถูกจัดระเบียบเป็นกลุ่มด้านล่างเพื่อให้จัดการได้ง่ายขึ้น "
+"ใช้คุณสมบัติการค้นหาเพื่อค้นหาสิทธิ์ที่ต้องการได้อย่างรวดเร็ว"
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"
@@ -13292,7 +13753,9 @@ msgstr "คุณกำลังจะลบคีย์ DNSSEC ที่ใช�
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "การลบคีย์ที่ใช้งานอยู่จะมีผลต่อความปลอดภัยของโซนของคุณ และอาจทำให้การตรวจสอบความถูกต้องล้มเหลว"
+msgstr ""
+"การลบคีย์ที่ใช้งานอยู่จะมีผลต่อความปลอดภัยของโซนของคุณ "
+"และอาจทำให้การตรวจสอบความถูกต้องล้มเหลว"
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"
@@ -13320,7 +13783,9 @@ msgstr "กลุ่มคืออะไร?"
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
-msgstr "กลุ่มช่วยให้คุณจัดระเบียบผู้ใช้และจัดการการเข้าถึงโซนร่วมกันได้ สมาชิกจะสืบทอดสิทธิ์ของกลุ่มสำหรับโซนทั้งหมดที่กลุ่มเป็นเจ้าของ"
+msgstr ""
+"กลุ่มช่วยให้คุณจัดระเบียบผู้ใช้และจัดการการเข้าถึงโซนร่วมกันได้ "
+"สมาชิกจะสืบทอดสิทธิ์ของกลุ่มสำหรับโซนทั้งหมดที่กลุ่มเป็นเจ้าของ"
 
 #: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid "How to Use Groups"
@@ -13330,7 +13795,9 @@ msgstr "วิธีใช้กลุ่ม"
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
-msgstr "หลังจากสร้างกลุ่มแล้ว คุณสามารถเพิ่มสมาชิก และกำหนดโซนให้มัน สมาชิกทุกคนจะได้รับสิทธิ์ในการเข้าสู่โซนของกลุ่มโดยอัตโนมัติ"
+msgstr ""
+"หลังจากสร้างกลุ่มแล้ว คุณสามารถเพิ่มสมาชิก และกำหนดโซนให้มัน "
+"สมาชิกทุกคนจะได้รับสิทธิ์ในการเข้าสู่โซนของกลุ่มโดยอัตโนมัติ"
 
 #: templates/modern/list_perm_templ.html:6
 msgid "Group Templates"
@@ -13366,7 +13833,10 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr "บันทึกเหตุการณ์ในวงจรชีวิตของกลุ่ม (สร้าง แก้ไข ลบ) และการเปลี่ยนแปลงสมาชิก (เพิ่มหรือนำผู้ใช้ออก) แต่ละรายการแสดงการกระทำ ผู้กระทำ กลุ่มที่ได้รับผลกระทบ และเวลา มีประโยชน์สำหรับการตรวจสอบการเปลี่ยนแปลงสิทธิ์การเข้าถึงโซนที่เกิดจากความเป็นเจ้าของของกลุ่ม"
+msgstr ""
+"บันทึกเหตุการณ์ในวงจรชีวิตของกลุ่ม (สร้าง แก้ไข ลบ) และการเปลี่ยนแปลงสมาชิก "
+"(เพิ่มหรือนำผู้ใช้ออก) แต่ละรายการแสดงการกระทำ ผู้กระทำ กลุ่มที่ได้รับผลกระทบ และเวลา "
+"มีประโยชน์สำหรับการตรวจสอบการเปลี่ยนแปลงสิทธิ์การเข้าถึงโซนที่เกิดจากความเป็นเจ้าของของกลุ่ม"
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
@@ -13375,10 +13845,6 @@ msgstr "ชื่อกลุ่ม"
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
 msgstr "สมาชิกปัจจุบัน"
-
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "ยังไม่มีสมาชิกในกลุ่มนี้"
 
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
@@ -13404,13 +13870,17 @@ msgstr "สร้างโซนสำรองแล้ว"
 msgid ""
 "A transfer from the primary server was requested. PowerDNS pulls the zone in "
 "the background; once the records arrive you can convert it to a primary zone."
-msgstr "มีการร้องขอการถ่ายโอนจากเซิร์ฟเวอร์หลัก PowerDNS จะดึงโซนในเบื้องหลัง เมื่อเรกคอร์ดมาถึงแล้วคุณสามารถแปลงเป็นโซนหลักได้"
+msgstr ""
+"มีการร้องขอการถ่ายโอนจากเซิร์ฟเวอร์หลัก PowerDNS จะดึงโซนในเบื้องหลัง "
+"เมื่อเรกคอร์ดมาถึงแล้วคุณสามารถแปลงเป็นโซนหลักได้"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:27
 msgid ""
 "The zone was created, but the transfer request was not accepted. The primary "
 "may refuse AXFR, or PowerDNS will retry on its own refresh schedule."
-msgstr "สร้างโซนแล้ว แต่คำขอถ่ายโอนไม่ได้รับการยอมรับ เซิร์ฟเวอร์หลักอาจปฏิเสธ AXFR หรือ PowerDNS จะลองใหม่ตามกำหนดการรีเฟรชของตนเอง"
+msgstr ""
+"สร้างโซนแล้ว แต่คำขอถ่ายโอนไม่ได้รับการยอมรับ เซิร์ฟเวอร์หลักอาจปฏิเสธ AXFR หรือ PowerDNS "
+"จะลองใหม่ตามกำหนดการรีเฟรชของตนเอง"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:40
 msgid "Convert to primary zone"
@@ -13428,7 +13898,9 @@ msgstr "นำเข้าอีกรายการ"
 msgid ""
 "Converting to a primary zone keeps the transferred records and stops "
 "Poweradmin from treating the zone as a replica."
-msgstr "การแปลงเป็นโซนหลักจะเก็บเรกคอร์ดที่ถ่ายโอนมาไว้ และทำให้ Poweradmin หยุดปฏิบัติต่อโซนนี้เสมือนเป็นแบบจำลอง"
+msgstr ""
+"การแปลงเป็นโซนหลักจะเก็บเรกคอร์ดที่ถ่ายโอนมาไว้ และทำให้ Poweradmin "
+"หยุดปฏิบัติต่อโซนนี้เสมือนเป็นแบบจำลอง"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:56
 msgid "records received - ready to convert."
@@ -13449,7 +13921,9 @@ msgid ""
 "Creates a secondary zone pointing at the primary server below and asks "
 "PowerDNS to transfer it over AXFR. After the records arrive you can convert "
 "it to a primary zone."
-msgstr "สร้างโซนที่สองที่ชี้ไปยังเซิร์ฟเวอร์หลักด้านล่าง และขอให้ PowerDNS ถ่ายโอนผ่าน AXFR หลังจากเรกคอร์ดมาถึงแล้วคุณสามารถแปลงเป็นโซนหลักได้"
+msgstr ""
+"สร้างโซนที่สองที่ชี้ไปยังเซิร์ฟเวอร์หลักด้านล่าง และขอให้ PowerDNS ถ่ายโอนผ่าน AXFR "
+"หลังจากเรกคอร์ดมาถึงแล้วคุณสามารถแปลงเป็นโซนหลักได้"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:126
 msgid "Primary server IP address"
@@ -13639,17 +14113,13 @@ msgstr "ผล RDAP สำหรับ"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "กรุณาป้อนชื่อโดเมนเพื่อค้นหาข้อมูล RDAP."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "สร้างผู้ใช้สิทธิ์แบบจำกัด"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "สร้างผู้ใช้สิทธิจำกัด"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "ขั้นตอน"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "สร้างผู้ใช้สิทธิจำกัด"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -13668,7 +14138,9 @@ msgstr ""
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr "สร้างผู้ใช้ฐานข้อมูลที่มีสิทธิ์จำกัด (select, insert, update, delete) สำหรับให้ Poweradmin เข้าถึงตาราง PowerDNS"
+msgstr ""
+"สร้างผู้ใช้ฐานข้อมูลที่มีสิทธิ์จำกัด (select, insert, update, delete) สำหรับให้ Poweradmin "
+"เข้าถึงตาราง PowerDNS"
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13814,7 +14286,9 @@ msgstr ""
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr "ปรับแต่งการเชื่อมต่อฐานข้อมูลสำหรับตาราง Poweradmin (users, permissions, zones) ไม่จำเป็นต้องมีตาราง PowerDNS"
+msgstr ""
+"ปรับแต่งการเชื่อมต่อฐานข้อมูลสำหรับตาราง Poweradmin (users, permissions, zones) "
+"ไม่จำเป็นต้องมีตาราง PowerDNS"
 
 #: install/templates/step4.html.twig:96
 msgid ""
@@ -13822,7 +14296,10 @@ msgid ""
 "Poweradmin to connect to the database. They are NOT the credentials you will "
 "use to log in to the Poweradmin web interface - that account is configured "
 "below."
-msgstr "นี่คือข้อมูลรับรองของเซิร์ฟเวอร์ฐานข้อมูลของคุณ (MySQL/PostgreSQL) ที่ Poweradmin ใช้เพื่อเชื่อมต่อกับฐานข้อมูล ไม่ใช่ข้อมูลรับรองที่คุณจะใช้ล็อกอินเข้าส่วนติดต่อผู้ใช้เว็บของ Poweradmin - บัญชีดังกล่าวถูกปรับแต่งไว้ด้านล่างนี้"
+msgstr ""
+"นี่คือข้อมูลรับรองของเซิร์ฟเวอร์ฐานข้อมูลของคุณ (MySQL/PostgreSQL) ที่ Poweradmin "
+"ใช้เพื่อเชื่อมต่อกับฐานข้อมูล ไม่ใช่ข้อมูลรับรองที่คุณจะใช้ล็อกอินเข้าส่วนติดต่อผู้ใช้เว็บของ Poweradmin "
+"- บัญชีดังกล่าวถูกปรับแต่งไว้ด้านล่างนี้"
 
 #: install/templates/step4.html.twig:100
 msgid "Database type"
@@ -13831,10 +14308,6 @@ msgstr "ชนิดของฐานข้อมูล"
 #: install/templates/step4.html.twig:109
 msgid "Database server type."
 msgstr "ประเภทเซิร์ฟเวอร์ฐานข้อมูล"
-
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "ระบุชื่อผู้ใช้"
 
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
@@ -13934,15 +14407,13 @@ msgid ""
 "This is the account you will use to sign in to Poweradmin. The username is "
 "fixed as \"admin\" during installation; you can create additional users from "
 "the web interface after logging in."
-msgstr "นี่คือบัญชีที่คุณจะใช้ลงชื่อเข้าใช้ Poweradmin ชื่อผู้ใช้ถูกกำหนดตายตัวเป็น \"admin\" ระหว่างการติดตั้ง คุณสามารถสร้างผู้ใช้เพิ่มเติมจากส่วนติดต่อผู้ใช้เว็บได้หลังจากที่ล็อกอินแล้ว"
+msgstr ""
+"นี่คือบัญชีที่คุณจะใช้ลงชื่อเข้าใช้ Poweradmin ชื่อผู้ใช้ถูกกำหนดตายตัวเป็น \"admin\" "
+"ระหว่างการติดตั้ง คุณสามารถสร้างผู้ใช้เพิ่มเติมจากส่วนติดต่อผู้ใช้เว็บได้หลังจากที่ล็อกอินแล้ว"
 
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "กำหนดตายตัวสำหรับบัญชีผู้ดูแลระบบเริ่มต้น"
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "การตั้งค่ารหัสผ่าน"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14045,16 +14516,15 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin เก็บตารางของตัวเอง (users, permissions, zone metadata) ไว้ในฐานข้อมูลที่ปรับแต่งไว้ แม้ว่าจะเลือกใช้แบ็กเอนด์ PowerDNS API ก็ตาม ข้อมูลรับรองเหล่านี้ใช้สำหรับฐานข้อมูลนั้น ไม่ใช่สำหรับ PowerDNS"
+msgstr ""
+"Poweradmin เก็บตารางของตัวเอง (users, permissions, zone metadata) "
+"ไว้ในฐานข้อมูลที่ปรับแต่งไว้ แม้ว่าจะเลือกใช้แบ็กเอนด์ PowerDNS API ก็ตาม "
+"ข้อมูลรับรองเหล่านี้ใช้สำหรับฐานข้อมูลนั้น ไม่ใช่สำหรับ PowerDNS"
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr "ชื่อผู้ใช้ฐานข้อมูล Poweradmin ที่มีการจำกัดการใช้งาน ไม่ใช่สำหรับล็อกอินเว็บยูไอ"
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "การตั้งค่ารหัสผ่านของผู้ใช้"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -14321,7 +14791,9 @@ msgstr "ไม่พบแฟ้มปรับแต่ง โปรดสร�
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr "การแยกฐานข้อมูล PowerDNS รองรับเฉพาะ MySQL เท่านั้น สำหรับ PostgreSQL และ SQLite โปรดใช้ฐานข้อมูลเดียวกัน"
+msgstr ""
+"การแยกฐานข้อมูล PowerDNS รองรับเฉพาะ MySQL เท่านั้น สำหรับ PostgreSQL และ SQLite "
+"โปรดใช้ฐานข้อมูลเดียวกัน"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
@@ -14343,13 +14815,6 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "รูปแบบบันทึก LOC ไม่ถูกต้อง รูปแบบควรเป็น: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 "
-# OBSOLETE: "[s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 
 

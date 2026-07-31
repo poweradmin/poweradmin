@@ -746,7 +746,7 @@ class ZoneTemplate
     public function editZoneTemplRecord(array $record, int $zone_templ_id): bool
     {
         if (!($this->currentUserHasPermission('zone_templ_edit'))) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+            $this->messageService->addSystemError(_("You do not have permission to edit this record."));
             return false;
         }
 

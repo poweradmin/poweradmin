@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -39,7 +39,7 @@ msgstr "Érvénytelen zóna azonosító."
 msgid "Zone not found."
 msgstr "Zóna nem található."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "Nincs jogosultsága rekordok hozzáadására ehhez a zónához."
 
@@ -59,7 +59,9 @@ msgstr "Rekord generálás sikertelen:"
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
-msgstr "A rekord érvénytelen volt, ezért nem sikerült hozzáadni. Lehet, hogy már létezik, vagy érvénytelen adatokat tartalmaz."
+msgstr ""
+"A rekord érvénytelen volt, ezért nem sikerült hozzáadni. Lehet, hogy már "
+"létezik, vagy érvénytelen adatokat tartalmaz."
 
 #: lib/Application/Controller/AddRecordController.php:280
 msgid "The record was successfully added."
@@ -133,7 +135,9 @@ msgstr "Gazdagépnév"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "A szolgáltatás hosztneve (a zóna csúcsához, azaz @ esetén hagyja üresen). A rekord a _port._protocol.hostname néven jön létre"
+msgstr ""
+"A szolgáltatás hosztneve (a zóna csúcsához, azaz @ esetén hagyja üresen). A "
+"rekord a _port._protocol.hostname néven jön létre"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
@@ -179,7 +183,9 @@ msgstr "A tanúsítványnak pontosan egyeznie kell, PKI nélkül (DANE-EE)"
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "Meghatározza, hogyan kell a tanúsítványt ellenőrizni. A 3-as típus a leggyakoribb saját aláírású vagy egyedi hitelesítésszolgáltatók (CA) esetén."
+msgstr ""
+"Meghatározza, hogyan kell a tanúsítványt ellenőrizni. A 3-as típus a "
+"leggyakoribb saját aláírású vagy egyedi hitelesítésszolgáltatók (CA) esetén."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -239,7 +245,9 @@ msgstr "SHA-512 hash (biztonságosabb de hosszabb)"
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
-msgstr "Meghatározza, hogyan kell a tanúsítvány adatait kódolni. A SHA-256 (1-es típus) jó egyensúlyt teremt a biztonság és a hossz között."
+msgstr ""
+"Meghatározza, hogyan kell a tanúsítvány adatait kódolni. A SHA-256 (1-es "
+"típus) jó egyensúlyt teremt a biztonság és a hossz között."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:152
 msgid "Certificate Data"
@@ -317,10 +325,12 @@ msgstr ""
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
-msgstr "A teljes tanúsítvány adatai túl rövidnek tűnnek. Ellenőrizze, hogy a teljes tanúsítványt adta-e meg."
+msgstr ""
+"A teljes tanúsítvány adatai túl rövidnek tűnnek. Ellenőrizze, hogy a teljes "
+"tanúsítványt adta-e meg."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Érvénytelen gazdanév formátum"
 
@@ -416,7 +426,9 @@ msgstr "Házirend alkalmazási százalék"
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "Az üzenetek hány százalékára vonatkozzon a házirend (100 = az összes üzenet). A házirend bevezetése idején használjon alacsonyabb értéket."
+msgstr ""
+"Az üzenetek hány százalékára vonatkozzon a házirend (100 = az összes "
+"üzenet). A házirend bevezetése idején használjon alacsonyabb értéket."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -710,13 +722,17 @@ msgstr "Érvénytelen bevont tartomány: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
-msgstr "Nincs kiválasztott mechanizmus. Ez az SPF rekord csak az alapértelmezett műveletet fogja tartalmazni."
+msgstr ""
+"Nincs kiválasztott mechanizmus. Ez az SPF rekord csak az alapértelmezett "
+"műveletet fogja tartalmazni."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr "A \"+all\" használatával bárki küldhet e-mailt az Ön domainje nevében. Ez erősen ellenjavallt."
+msgstr ""
+"A \"+all\" használatával bárki küldhet e-mailt az Ön domainje nevében. Ez "
+"erősen ellenjavallt."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -742,7 +758,9 @@ msgstr "CA szolgáltató"
 msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
-msgstr "Válassza ki azt a hitelesítésszolgáltatót, amely jogosult tanúsítványt kiállítani ehhez a domainhez"
+msgstr ""
+"Válassza ki azt a hitelesítésszolgáltatót, amely jogosult tanúsítványt "
+"kiállítani ehhez a domainhez"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:87
 msgid "CA Domain (Custom)"
@@ -826,7 +844,9 @@ msgstr "Elutasítás ha nem érthető - szigorú kikényszerítés"
 msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
-msgstr "A nem kritikus érték (0) jobb kompatibilitást biztosít. A kritikus érték (128) szigorú CAA-feldolgozást kényszerít ki."
+msgstr ""
+"A nem kritikus érték (0) jobb kompatibilitást biztosít. A kritikus érték "
+"(128) szigorú CAA-feldolgozást kényszerít ki."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
@@ -921,7 +941,9 @@ msgstr "Nyilvános kulcs"
 msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
-msgstr "Illessze be a levelezőszerver base64 kódolású publikus kulcsát. A szóközök és a sortörések automatikusan eltávolításra kerülnek."
+msgstr ""
+"Illessze be a levelezőszerver base64 kódolású publikus kulcsát. A szóközök "
+"és a sortörések automatikusan eltávolításra kerülnek."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:90
 msgid "Key Type"
@@ -947,7 +969,9 @@ msgstr "Tesztelési mód"
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr "Teszt mód bekapcsolása (t=y). A DKIM aláírások jelen lesznek, de nem lesznek kikényszerítve. A bevezetés kezdeti szakaszában használja."
+msgstr ""
+"Teszt mód bekapcsolása (t=y). A DKIM aláírások jelen lesznek, de nem lesznek "
+"kikényszerítve. A bevezetés kezdeti szakaszában használja."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
@@ -987,19 +1011,25 @@ msgstr ""
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr "PRIVÁT KULCSOT illesztett be. A DNS-be csak a PUBLIKUS KULCS kerülhet. Soha ne ossza meg a privát kulcsát!"
+msgstr ""
+"PRIVÁT KULCSOT illesztett be. A DNS-be csak a PUBLIKUS KULCS kerülhet. Soha "
+"ne ossza meg a privát kulcsát!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "A publikus kulcs PEM fejléceket (BEGIN/END) tartalmaz. Csak a fejlécek közötti base64 tartalomra van szükség."
+msgstr ""
+"A publikus kulcs PEM fejléceket (BEGIN/END) tartalmaz. Csak a fejlécek "
+"közötti base64 tartalomra van szükség."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
-msgstr "A teszt mód be van kapcsolva (t=y). A DKIM aláírások nem lesznek kikényszerítve. Kapcsolja ki, ha a tesztelés befejeződött."
+msgstr ""
+"A teszt mód be van kapcsolva (t=y). A DKIM aláírások nem lesznek "
+"kikényszerítve. Kapcsolja ki, ha a tesztelés befejeződött."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
@@ -1089,7 +1119,9 @@ msgstr "Prioritás"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "Az alacsonyabb érték magasabb prioritást jelent (a 10 jó alapértelmezés). A kliensek prioritási sorrendben próbálják a szervereket."
+msgstr ""
+"Az alacsonyabb érték magasabb prioritást jelent (a 10 jó alapértelmezés). A "
+"kliensek prioritási sorrendben próbálják a szervereket."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1411,7 +1443,9 @@ msgstr ""
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
-msgstr "%d rekord sikeresen törölve. A hozzájuk tartozó PTR rekordok is eltávolításra kerültek."
+msgstr ""
+"%d rekord sikeresen törölve. A hozzájuk tartozó PTR rekordok is "
+"eltávolításra kerültek."
 
 #: lib/Application/Controller/DeleteRecordsController.php:222
 msgid "No records could be deleted. Please check permissions."
@@ -1484,31 +1518,41 @@ msgstr "Rekord nem található."
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr "A rekord, valamint a hozzá tartozó PTR és A/AAAA rekordok törölve lettek, de a megjegyzés megmaradt, mert hasonló rekordok is léteznek."
+msgstr ""
+"A rekord, valamint a hozzá tartozó PTR és A/AAAA rekordok törölve lettek, de "
+"a megjegyzés megmaradt, mert hasonló rekordok is léteznek."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
-msgstr "A rekord és a hozzá tartozó PTR rekord törölve lett, de a megjegyzés megmaradt, mert hasonló rekordok is léteznek."
+msgstr ""
+"A rekord és a hozzá tartozó PTR rekord törölve lett, de a megjegyzés "
+"megmaradt, mert hasonló rekordok is léteznek."
 
 #: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
-msgstr "A rekord és a hozzá tartozó A/AAAA rekord törölve lett, de a megjegyzés megmaradt, mert hasonló rekordok is léteznek."
+msgstr ""
+"A rekord és a hozzá tartozó A/AAAA rekord törölve lett, de a megjegyzés "
+"megmaradt, mert hasonló rekordok is léteznek."
 
 #: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
-msgstr "A rekord törölve lett, de a megjegyzés megmaradt, mert hasonló rekordok is léteznek."
+msgstr ""
+"A rekord törölve lett, de a megjegyzés megmaradt, mert hasonló rekordok is "
+"léteznek."
 
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr "A rekord, valamint a hozzá tartozó PTR és A/AAAA rekordok sikeresen törölve lettek."
+msgstr ""
+"A rekord, valamint a hozzá tartozó PTR és A/AAAA rekordok sikeresen törölve "
+"lettek."
 
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
@@ -1530,7 +1574,8 @@ msgstr "Rekord törölve. Nem található megfelelő PTR."
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "A rekord sikeresen törölve lett. Nem található hozzá tartozó A/AAAA rekord."
+msgstr ""
+"A rekord sikeresen törölve lett. Nem található hozzá tartozó A/AAAA rekord."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:85
 msgid "The record has been deleted successfully."
@@ -1672,7 +1717,9 @@ msgstr "E-mail nem elérhető. Frissítse a profilban."
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr "Az e-mailes ellenőrzési mód nem érhető el, mert a levelezési szolgáltatás nincs engedélyezve ezen a rendszeren."
+msgstr ""
+"Az e-mailes ellenőrzési mód nem érhető el, mert a levelezési szolgáltatás "
+"nincs engedélyezve ezen a rendszeren."
 
 #: lib/Application/Controller/MfaSetupController.php:206
 msgid "Email verification method is not enabled on this system."
@@ -1682,7 +1729,9 @@ msgstr "Az e-mail ellenőrzés módszer nincs engedélyezve."
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
-msgstr "Az ellenőrző kód elküldése nem sikerült. Próbálja újra később, vagy használjon alkalmazás alapú hitelesítést."
+msgstr ""
+"Az ellenőrző kód elküldése nem sikerült. Próbálja újra később, vagy "
+"használjon alkalmazás alapú hitelesítést."
 
 #: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been enabled with email verification."
@@ -1693,7 +1742,9 @@ msgstr "Az MFA engedélyezve e-mail ellenőrzéssel."
 msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
-msgstr "Az MFA használatát a szervezete biztonsági házirendje írja elő, ezért nem kapcsolható ki."
+msgstr ""
+"Az MFA használatát a szervezete biztonsági házirendje írja elő, ezért nem "
+"kapcsolható ki."
 
 #: lib/Application/Controller/MfaSetupController.php:314
 msgid "MFA is not enabled."
@@ -1724,7 +1775,7 @@ msgstr "Nincs jogosultsága supermasterek megtekintésére."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Nincs jogosultsága a zóna metaadatok megtekintésére."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Nincs jogosultsága a zóna metaadatok szerkesztésére."
 
@@ -1750,7 +1801,9 @@ msgstr "Zóna metaadatok"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "A(z) %s metaadattípus csak egyetlen értéket fogad el. Ebből a típusból csak egy sort vegyen fel."
+msgstr ""
+"A(z) %s metaadattípus csak egyetlen értéket fogad el. Ebből a típusból csak "
+"egy sort vegyen fel."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1836,13 +1889,10 @@ msgstr "engedélyezve"
 msgid "API key %s successfully."
 msgstr "API-kulcs %s sikeresen."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "Nincs jogosultsága rekordok hozzáadására ebben a zónában."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Adjon meg legalább egy rekordot."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Adjon meg legalább egy rekordot"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1852,7 +1902,7 @@ msgstr "Érvénytelen rekord típus."
 msgid "Record could not be added."
 msgstr "A rekord nem adható hozzá."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekord sikeresen hozzáadva."
@@ -1933,7 +1983,7 @@ msgstr "Az oldalszám meghaladja az elérhető oldalakat."
 msgid "Invalid request method."
 msgstr "Érvénytelen kérési módszer."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Érvénytelen csoport vagy felhasználó ID."
 
@@ -2058,7 +2108,7 @@ msgstr "Adjon meg más nevet Mentés másként használatakor."
 msgid "Zone template has been copied successfully."
 msgstr "A zóna sablon sikeresen másolva."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "Nincs jogosultsága zóna sablonok megtekintésére."
 
@@ -2074,7 +2124,7 @@ msgstr "Érvénytelen sablon azonosító."
 msgid "Template does not exist."
 msgstr "A sablon nem létezik."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "Nincs jogosultsága a zóna megtekintésére."
 
@@ -2129,10 +2179,6 @@ msgstr "Zóna szerkesztése"
 msgid "You do not have permission to access this zone."
 msgstr "Nincs jogosultsága a zóna eléréséhez."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "Nincs jogosultsága a zóna megtekintésére."
-
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nincs jogosultsága DNSSEC kezelésre ehhez a zónához."
@@ -2159,13 +2205,17 @@ msgstr "A zóna sikeresen alá lett írva."
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
-msgstr "Zóna aláírása kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC kulcsokat."
+msgstr ""
+"Zóna aláírása kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC "
+"kulcsokat."
 
 #: lib/Application/Controller/EditController.php:371
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr "A zóna aláírása nem sikerült. A zóna ellenőrzése rendben lefutott, de a PowerDNS API hibát adott vissza. A részletekért nézze meg a PowerDNS naplóit."
+msgstr ""
+"A zóna aláírása nem sikerült. A zóna ellenőrzése rendben lefutott, de a "
+"PowerDNS API hibát adott vissza. A részletekért nézze meg a PowerDNS naplóit."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -2225,7 +2275,9 @@ msgstr "A zóna sikeresen frissítve."
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
-msgstr "A zóna sikeresen mentve. A rekordok nem változtak, de a SOA sorozatszám növelve lett."
+msgstr ""
+"A zóna sikeresen mentve. A rekordok nem változtak, de a SOA sorozatszám "
+"növelve lett."
 
 #: lib/Application/Controller/EditController.php:904
 msgid "Zone has not been updated successfully."
@@ -2271,7 +2323,9 @@ msgstr "Hiba történt. Kérjük próbálja újra."
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
-msgstr "Az e-mailes ellenőrzés nem érhető el, mert a levelezési szolgáltatás ki van kapcsolva. Használjon helyreállítási kódot."
+msgstr ""
+"Az e-mailes ellenőrzés nem érhető el, mert a levelezési szolgáltatás ki van "
+"kapcsolva. Használjon helyreállítási kódot."
 
 #: lib/Application/Controller/MfaVerifyController.php:354
 msgid "A new verification code has been sent to your email."
@@ -2299,11 +2353,6 @@ msgstr "Rekord sikeresen hozzáadva."
 msgid "No records were provided."
 msgstr "Nem adtak meg rekordokat."
 
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d rekord sikeresen hozzáadva."
-
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
@@ -2318,7 +2367,9 @@ msgstr "%d rekord hozzáadása sikertelen."
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
-msgstr "Néhány rekordot nem sikerült hozzáadni. Lehet, hogy már léteznek, vagy érvénytelen adatokat tartalmaznak."
+msgstr ""
+"Néhány rekordot nem sikerült hozzáadni. Lehet, hogy már léteznek, vagy "
+"érvénytelen adatokat tartalmaznak."
 
 #: lib/Application/Controller/AddRecordController.php:554
 msgid "Failed to add any records. They may contain invalid data."
@@ -2431,7 +2482,9 @@ msgstr ""
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr "A zóna sikeresen létrejött, de a DNSSEC aláírás ellenőrzési hibák miatt kimaradt:"
+msgstr ""
+"A zóna sikeresen létrejött, de a DNSSEC aláírás ellenőrzési hibák miatt "
+"kimaradt:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:264
 msgid ""
@@ -2450,7 +2503,9 @@ msgstr "A zóna sikeresen létrehozva és DNSSEC-kel aláírva."
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr "Zóna létrehozva, aláírás kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC kulcsokat."
+msgstr ""
+"Zóna létrehozva, aláírás kérve, de az ellenőrzés sikertelen. Ellenőrizze a "
+"DNSSEC kulcsokat."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:233
 msgid "Zone has been added successfully."
@@ -2509,10 +2564,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "%d alapérték mentve, %d törölve."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "Nincs jogosultsága zóna sablonok megtekintésére."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2788,10 +2839,6 @@ msgstr "Irányítópult"
 msgid "You do not have permission to manage group memberships."
 msgstr "Nincs jogosultsága csoport tagságok kezelésére."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Érvénytelen felhasználó- vagy csoport-azonosító."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "A felhasználó sikeresen eltávolítva a csoportból."
@@ -2935,8 +2982,12 @@ msgstr[1] "A felhasználó sikeresen hozzáadva %d csoporthoz."
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] "A felhasználó hozzáadása %d csoporthoz sikertelen (már tag, vagy a csoport nem található)."
-msgstr[1] "A felhasználó hozzáadása %d csoporthoz sikertelen (már tag, vagy a csoport nem található)."
+msgstr[0] ""
+"A felhasználó hozzáadása %d csoporthoz sikertelen (már tag, vagy a csoport "
+"nem található)."
+msgstr[1] ""
+"A felhasználó hozzáadása %d csoporthoz sikertelen (már tag, vagy a csoport "
+"nem található)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
@@ -3007,7 +3058,9 @@ msgstr ""
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr "A PowerDNS API funkció nincs beállítva. Adja meg az API URL-t és az API kulcsot a rendszerbeállításokban."
+msgstr ""
+"A PowerDNS API funkció nincs beállítva. Adja meg az API URL-t és az API "
+"kulcsot a rendszerbeállításokban."
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
@@ -3041,7 +3094,7 @@ msgstr "Kijelentkezés befejezve (figyelmeztetésekkel): "
 msgid "You do not have permission to view this record."
 msgstr "Nincs jogosultsága a rekord megtekintésére."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "Nincs jogosultsága a rekord szerkesztésére."
 
@@ -3069,7 +3122,9 @@ msgstr ""
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr "A külső hitelesítést használó felhasználók itt nem tudják megváltoztatni a jelszavukat. Forduljon a rendszergazdához."
+msgstr ""
+"A külső hitelesítést használó felhasználók itt nem tudják megváltoztatni a "
+"jelszavukat. Forduljon a rendszergazdához."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:11
@@ -3159,7 +3214,7 @@ msgid "Failed to add zone."
 msgstr "Nem sikerült hozzáadni a zónát."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "A zónák sikeresen hozzáadva."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3319,12 +3374,12 @@ msgstr "A %s mező kötelező."
 msgid "The %s field must be a number."
 msgstr "A %s mező száma kell legyen."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Igen"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Nem"
@@ -3590,13 +3645,13 @@ msgid ""
 msgstr ""
 "Az alábbi táblázatban beállított supermaster kiszolgálók kapcsolati állapota."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "Az install/ könyvtár létezik, a folytatás előtt előbb el kell távolítania."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3619,7 +3674,9 @@ msgstr "Az LDAP hitelesítés le van tiltva"
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
-msgstr "Adatbázishiba: a felhasználó hitelesítése nem ellenőrizhető. Ellenőrizze az adatbázis beállításait."
+msgstr ""
+"Adatbázishiba: a felhasználó hitelesítése nem ellenőrizhető. Ellenőrizze az "
+"adatbázis beállításait."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 msgid "You do not have the permission to change the permission template."
@@ -3705,11 +3762,8 @@ msgstr "A tartalom mező nem tartalmaz érvényes értéket."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "Az MX/SRV rekordok prioritásának 0 és 65535 közötti számnak kell lennie."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "Nincs jogosultsága a rekord szerkesztésére."
+msgstr ""
+"Az MX/SRV rekordok prioritásának 0 és 65535 közötti számnak kell lennie."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -3864,19 +3918,26 @@ msgstr "Az IPSECKEY rekord prioritás mezője 0 vagy üres legyen"
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
-msgstr "Az IPSECKEY rekordokat DNSSEC-kel együtt érdemes használni, hogy a kulcsanyag átvitele biztonságos legyen (RFC 4025, 4. szakasz)."
+msgstr ""
+"Az IPSECKEY rekordokat DNSSEC-kel együtt érdemes használni, hogy a "
+"kulcsanyag átvitele biztonságos legyen (RFC 4025, 4. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr "Az IPSECKEY rekordokban szereplő publikus kulcsot a nagyobb biztonság érdekében rendszeresen cserélni kell."
+msgstr ""
+"Az IPSECKEY rekordokban szereplő publikus kulcsot a nagyobb biztonság "
+"érdekében rendszeresen cserélni kell."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
-msgstr "Domainnév típusú átjárók használatakor gondoskodjon róla, hogy a forward és a reverz DNS rekordok is létezzenek, és DNSSEC-kel megfelelően védve legyenek."
+msgstr ""
+"Domainnév típusú átjárók használatakor gondoskodjon róla, hogy a forward és "
+"a reverz DNS rekordok is létezzenek, és DNSSEC-kel megfelelően védve "
+"legyenek."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -3904,7 +3965,9 @@ msgstr ""
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
-msgstr "Az IPSECKEY algoritmus értéke 0 (nincs kulcs), 1 (RSA), 2 (DSA), 3 (ECDSA) vagy 4 (Ed25519) lehet."
+msgstr ""
+"Az IPSECKEY algoritmus értéke 0 (nincs kulcs), 1 (RSA), 2 (DSA), 3 (ECDSA) "
+"vagy 4 (Ed25519) lehet."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -3969,7 +4032,9 @@ msgstr "Érvénytelen karakterek a gazdanévben."
 msgid ""
 "Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), "
 "ensure:"
-msgstr "A név SRV rekord formátumúnak tűnik. TLSA és SRV együttes használatakor (RFC 7673) ügyeljen a következőkre:"
+msgstr ""
+"A név SRV rekord formátumúnak tűnik. TLSA és SRV együttes használatakor (RFC "
+"7673) ügyeljen a következőkre:"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
@@ -4000,13 +4065,17 @@ msgstr ""
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr "A TLSA rekord nem szabványos protokollt használ. A gyakori protokollok a tcp, az udp és az sctp."
+msgstr ""
+"A TLSA rekord nem szabványos protokollt használ. A gyakori protokollok a "
+"tcp, az udp és az sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr "Ez SMTP-hez tartozó TLSA rekordnak tűnik. Gondoskodjon róla, hogy az MX rekordok is helyesen legyenek beállítva."
+msgstr ""
+"Ez SMTP-hez tartozó TLSA rekordnak tűnik. Gondoskodjon róla, hogy az MX "
+"rekordok is helyesen legyenek beállítva."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -4037,7 +4106,9 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr "Ha CNAME rekordokat használ, a TLSA helyes működéséhez a teljes CNAME láncnak DNSSEC-kel aláírtnak kell lennie (RFC 7671)."
+msgstr ""
+"Ha CNAME rekordokat használ, a TLSA helyes működéséhez a teljes CNAME "
+"láncnak DNSSEC-kel aláírtnak kell lennie (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -4047,13 +4118,17 @@ msgstr "Ez SMIMEA rekordnak tűnik (RFC 8162) S/MIME tanúsítványokhoz."
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr "Az SMIMEA rekordok formátuma megegyezik a TLSA rekordokéval, de S/MIME tanúsítványokat rendelnek e-mail címekhez."
+msgstr ""
+"Az SMIMEA rekordok formátuma megegyezik a TLSA rekordokéval, de S/MIME "
+"tanúsítványokat rendelnek e-mail címekhez."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "Az e-mail cím helyi részéből SHA-256 hash készül, amely a _smimecert.<domain> elé kerül"
+msgstr ""
+"Az e-mail cím helyi részéből SHA-256 hash készül, amely a _smimecert."
+"<domain> elé kerül"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -4074,7 +4149,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "A TLSA rekordnak szóközzel elválasztva tartalmaznia kell a usage, selector, matching-type és certificate-data mezőket."
+msgstr ""
+"A TLSA rekordnak szóközzel elválasztva tartalmaznia kell a usage, selector, "
+"matching-type és certificate-data mezőket."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4123,7 +4200,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr "A TLSA selector mező értéke csak 0 (teljes tanúsítvány) vagy 1 (SubjectPublicKeyInfo) lehet."
+msgstr ""
+"A TLSA selector mező értéke csak 0 (teljes tanúsítvány) vagy 1 "
+"(SubjectPublicKeyInfo) lehet."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4138,13 +4217,17 @@ msgstr ""
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "A TLSA matching type mező értéke csak 0 (pontos egyezés), 1 (SHA-256) vagy 2 (SHA-512) lehet."
+msgstr ""
+"A TLSA matching type mező értéke csak 0 (pontos egyezés), 1 (SHA-256) vagy 2 "
+"(SHA-512) lehet."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "A 0-s matching-type (pontos egyezés) nem ajánlott. A SHA-256 (1) jobb kompatibilitást és nagyobb biztonságot nyújt."
+msgstr ""
+"A 0-s matching-type (pontos egyezés) nem ajánlott. A SHA-256 (1) jobb "
+"kompatibilitást és nagyobb biztonságot nyújt."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4166,7 +4249,9 @@ msgstr "TLSA pontos egyezés adatok túl rövidnek tűnnek."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM rekord KIZÁRÓLAG a zóna csúcsán szerepelhet (a gyökérdomainen, aldomainen nem)."
+msgstr ""
+"NSEC3PARAM rekord KIZÁRÓLAG a zóna csúcsán szerepelhet (a gyökérdomainen, "
+"aldomainen nem)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4180,7 +4265,9 @@ msgstr "Az NSEC3PARAM rekord érvénytelen karaktereket tartalmaz."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr "Az RFC 5155 és az RFC 9077 szerint az NSEC3PARAM rekordok TTL értékének meg kell egyeznie a SOA minimum TTL mezőjének értékével."
+msgstr ""
+"Az RFC 5155 és az RFC 9077 szerint az NSEC3PARAM rekordok TTL értékének meg "
+"kell egyeznie a SOA minimum TTL mezőjének értékével."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -4211,7 +4298,9 @@ msgstr ""
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr "Az NSEC3 paraméterek módosításakor az NSEC3 és az NSEC3PARAM rekordokat is újra kell generálni, ugyanazokkal a paraméterekkel."
+msgstr ""
+"Az NSEC3 paraméterek módosításakor az NSEC3 és az NSEC3PARAM rekordokat is "
+"újra kell generálni, ugyanazokkal a paraméterekkel."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
@@ -4289,7 +4378,9 @@ msgstr "Az NSEC3PARAM só - (üres) vagy hex."
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr "Az RFC 9276 azt javasolja, hogy NE használjon sót (ezt a \"-\" jelöli), így az üzemeltetés egyszerűbb lesz a biztonság csökkenése nélkül."
+msgstr ""
+"Az RFC 9276 azt javasolja, hogy NE használjon sót (ezt a \"-\" jelöli), így "
+"az üzemeltetés egyszerűbb lesz a biztonság csökkenése nélkül."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -4319,13 +4410,17 @@ msgstr ""
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr "LP rekord NEM szerepelhet olyan csomópontokhoz, amelyek nem ILNP-képesek (RFC 6742, 3.4. szakasz)."
+msgstr ""
+"LP rekord NEM szerepelhet olyan csomópontokhoz, amelyek nem ILNP-képesek "
+"(RFC 6742, 3.4. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr "Figyelem: az LP rekordban szereplő FQDN NE egyezzen meg a tulajdonos névvel (RFC 6742)."
+msgstr ""
+"Figyelem: az LP rekordban szereplő FQDN NE egyezzen meg a tulajdonos névvel "
+"(RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
@@ -4360,7 +4455,9 @@ msgstr "Az LP FQDN érvényes teljesen minősített tartománynév legyen."
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "Az AFSDB rekordokat az RFC 5864 elavulttá nyilvánította; az AFS szolgáltatás megtalálásához SRV rekordokat kell használni helyettük."
+msgstr ""
+"Az AFSDB rekordokat az RFC 5864 elavulttá nyilvánította; az AFS szolgáltatás "
+"megtalálásához SRV rekordokat kell használni helyettük."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4368,13 +4465,17 @@ msgstr "Érvénytelen AFSDB gazdanév."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "Az AFSDB szerver hosztnevének teljesen minősített domainnévnek (FQDN) kell lennie."
+msgstr ""
+"Az AFSDB szerver hosztnevének teljesen minősített domainnévnek (FQDN) kell "
+"lennie."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
-msgstr "Az AFSDB szerver hosztnevének legalább két részből álló, teljesen minősített domainnévnek kell lennie."
+msgstr ""
+"Az AFSDB szerver hosztnevének legalább két részből álló, teljesen minősített "
+"domainnévnek kell lennie."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:160
 msgid ""
@@ -4400,7 +4501,9 @@ msgstr ""
 msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
-msgstr "A LOC rekordokat ritkán használják, de hasznosak lehetnek az erőforrások földrajzi elhelyezéséhez."
+msgstr ""
+"A LOC rekordokat ritkán használják, de hasznosak lehetnek az erőforrások "
+"földrajzi elhelyezéséhez."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
@@ -4467,7 +4570,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Érvénytelen LOC rekord formátum. A formátum a következő legyen: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Érvénytelen LOC rekord formátum. A formátum a következő legyen: d1 [m1 [s1]] "
+"{\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -4485,7 +4591,9 @@ msgstr "Az RKEY rekord prioritás mezője 0 vagy üres legyen."
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr "Az RKEY rekordokat óvatosan használja, mert a DNS szerverek és feloldók nem támogatják széles körben."
+msgstr ""
+"Az RKEY rekordokat óvatosan használja, mert a DNS szerverek és feloldók nem "
+"támogatják széles körben."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4504,7 +4612,9 @@ msgstr "A RKEY jelzők mezőnek számnak kell lennie."
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr "Szokatlan flags érték. A gyakori értékek: 0, 256 (Zone Key) vagy 257 (Zone Key + SEP)."
+msgstr ""
+"Szokatlan flags érték. A gyakori értékek: 0, 256 (Zone Key) vagy 257 (Zone "
+"Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
@@ -4516,7 +4626,9 @@ msgstr "Bit 7 (Zone Key) beállítva, ez zóna kulcs."
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr "A flags mezőben a 0. bit (SEP jelző) be van állítva, ami azt jelzi, hogy ez egy biztonságos belépési pont."
+msgstr ""
+"A flags mezőben a 0. bit (SEP jelző) be van állítva, ami azt jelzi, hogy ez "
+"egy biztonságos belépési pont."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
@@ -4526,7 +4638,9 @@ msgstr "Az RKEY protokoll mezőnek számnak kell lennie."
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
-msgstr "A protocol mező értéke 3 legyen, hogy megfeleljen a DNSKEY formátumon alapuló szabványoknak."
+msgstr ""
+"A protocol mező értéke 3 legyen, hogy megfeleljen a DNSKEY formátumon "
+"alapuló szabványoknak."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
@@ -4544,13 +4658,17 @@ msgstr "Az 1 (RSA/MD5) elavult (RFC 6725), NE használja."
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "A 3-as algoritmus (DSA/SHA1) nem tekinthető biztonságosnak, ezért erősebb algoritmusra kell cserélni."
+msgstr ""
+"A 3-as algoritmus (DSA/SHA1) nem tekinthető biztonságosnak, ezért erősebb "
+"algoritmusra kell cserélni."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "Az 5-ös algoritmus (RSA/SHA-1) nem tekinthető biztonságosnak, ezért erősebb algoritmusra kell cserélni."
+msgstr ""
+"Az 5-ös algoritmus (RSA/SHA-1) nem tekinthető biztonságosnak, ezért erősebb "
+"algoritmusra kell cserélni."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -4587,7 +4705,9 @@ msgstr ""
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr "A 15-ös algoritmus (Ed25519) korszerű biztonságot nyújt, de a régebbi validátorokkal kompatibilitási gondok adódhatnak."
+msgstr ""
+"A 15-ös algoritmus (Ed25519) korszerű biztonságot nyújt, de a régebbi "
+"validátorokkal kompatibilitási gondok adódhatnak."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
@@ -4601,7 +4721,9 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr "KRITIKUS: Nem biztonságos algoritmus. Használjon 8-as (RSA/SHA-256) vagy újabb algoritmust."
+msgstr ""
+"KRITIKUS: Nem biztonságos algoritmus. Használjon 8-as (RSA/SHA-256) vagy "
+"újabb algoritmust."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -4635,13 +4757,17 @@ msgstr "Az üres APL rekord üres címelőtag listát jelent."
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr "Az RFC 3123 azt javasolja, hogy az APL címrészek végén ne szerepeljenek nulla oktettek."
+msgstr ""
+"Az RFC 3123 azt javasolja, hogy az APL címrészek végén ne szerepeljenek "
+"nulla oktettek."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr "Az RFC 3123 biztonsági megfontolásokat említ arra az esetre, ha APL rekordokat használ hozzáférés-vezérlési listákhoz."
+msgstr ""
+"Az RFC 3123 biztonsági megfontolásokat említ arra az esetre, ha APL "
+"rekordokat használ hozzáférés-vezérlési listákhoz."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -4700,7 +4826,9 @@ msgstr "A NID rekord tartalma nem lehet üres."
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "A NID rekord tartalmának xxxx:xxxx:xxxx:xxxx formátumúnak kell lennie, vagyis 4 csoportban 4-4 hexadecimális számjegyből kell állnia."
+msgstr ""
+"A NID rekord tartalmának xxxx:xxxx:xxxx:xxxx formátumúnak kell lennie, "
+"vagyis 4 csoportban 4-4 hexadecimális számjegyből kell állnia."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4797,7 +4925,9 @@ msgstr "Az NSEC rekord érvénytelen karaktereket tartalmaz."
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr "Az RFC 4034 szerint az NSEC rekordok TTL értékének meg kell egyeznie a SOA minimum TTL mezőjének értékével."
+msgstr ""
+"Az RFC 4034 szerint az NSEC rekordok TTL értékének meg kell egyeznie a SOA "
+"minimum TTL mezőjének értékével."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
@@ -4903,7 +5033,9 @@ msgstr ""
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "Ez az NSEC rekord SOA és NS típust is tartalmaz, ami arra utal, hogy a zóna csúcsához tartozhat."
+msgstr ""
+"Ez az NSEC rekord SOA és NS típust is tartalmaz, ami arra utal, hogy a zóna "
+"csúcsához tartozhat."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -4992,13 +5124,17 @@ msgstr ""
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr "Az OPENPGPKEY rekordok az RFC 7929 szerint KÍSÉRLETI jellegűek, és nem minden levelezőkliens vagy OpenPGP implementáció támogatja őket."
+msgstr ""
+"Az OPENPGPKEY rekordok az RFC 7929 szerint KÍSÉRLETI jellegűek, és nem "
+"minden levelezőkliens vagy OpenPGP implementáció támogatja őket."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr "Az OPENPGPKEY rekordok nem helyettesítik az OpenPGP Web of Trust rendszerét. Továbbra is ajánlott további ellenőrzési módszereket alkalmazni."
+msgstr ""
+"Az OPENPGPKEY rekordok nem helyettesítik az OpenPGP Web of Trust rendszerét. "
+"Továbbra is ajánlott további ellenőrzési módszereket alkalmazni."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
@@ -5079,7 +5215,8 @@ msgstr ""
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr "A TSIG időbélyeg a jövőben van. Ez óraszinkronizációs problémára utalhat."
+msgstr ""
+"A TSIG időbélyeg a jövőben van. Ez óraszinkronizációs problémára utalhat."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
@@ -5097,7 +5234,9 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr "A TSIG helyes működéséhez a kliensen és a szerveren is pontos rendszeróra szükséges."
+msgstr ""
+"A TSIG helyes működéséhez a kliensen és a szerveren is pontos rendszeróra "
+"szükséges."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -5125,13 +5264,17 @@ msgstr "A TSIG fudge nem negatív egész szám kell legyen."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "A TSIG MAC értékének érvényes base64 kódolású vagy hexadecimális karakterláncnak kell lennie."
+msgstr ""
+"A TSIG MAC értékének érvényes base64 kódolású vagy hexadecimális "
+"karakterláncnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
-msgstr "A TSIG MAC túl rövid. Az RFC 8945 biztonsági okokból legalább 16 oktettet javasol."
+msgstr ""
+"A TSIG MAC túl rövid. Az RFC 8945 biztonsági okokból legalább 16 oktettet "
+"javasol."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
@@ -5183,7 +5326,9 @@ msgstr "A TSIG other-len nem negatív egész szám kell legyen."
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr "A TSIG other-data értékének érvényes base64 kódolású vagy hexadecimális karakterláncnak kell lennie."
+msgstr ""
+"A TSIG other-data értékének érvényes base64 kódolású vagy hexadecimális "
+"karakterláncnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
@@ -5197,7 +5342,9 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr "Az RFC 8945 a HMAC-SHA256 algoritmust ajánlja a legtöbb környezetben előnyben részesített TSIG algoritmusként."
+msgstr ""
+"Az RFC 8945 a HMAC-SHA256 algoritmust ajánlja a legtöbb környezetben "
+"előnyben részesített TSIG algoritmusként."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -5214,13 +5361,17 @@ msgstr "Nem szabványos TSIG algoritmus. Lehet, nem támogatott."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "Az RFC 8945 a HMAC-SHA256 használatát javasolja szabványos TSIG algoritmusként."
+msgstr ""
+"Az RFC 8945 a HMAC-SHA256 használatát javasolja szabványos TSIG "
+"algoritmusként."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "A ZONEMD definícióját az RFC 8976 (2021. február) tartalmazza, és nem minden DNS szerver támogatja."
+msgstr ""
+"A ZONEMD definícióját az RFC 8976 (2021. február) tartalmazza, és nem minden "
+"DNS szerver támogatja."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -5230,30 +5381,39 @@ msgstr "ZONEMD a zóna csúcsán (mint az SOA)."
 msgid ""
 "For proper security, zones with ZONEMD records should also be signed with "
 "DNSSEC."
-msgstr "A megfelelő biztonság érdekében a ZONEMD rekordot tartalmazó zónákat DNSSEC-kel is alá kell írni."
+msgstr ""
+"A megfelelő biztonság érdekében a ZONEMD rekordot tartalmazó zónákat DNSSEC-"
+"kel is alá kell írni."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:113
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr "A ZONEMD rekordban szereplő sorozatszámnak meg kell egyeznie a zóna SOA sorozatszámával."
+msgstr ""
+"A ZONEMD rekordban szereplő sorozatszámnak meg kell egyeznie a zóna SOA "
+"sorozatszámával."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "A ZONEMD 240-255 közötti scheme értékei privát használatra vannak fenntartva, és nem feltétlenül átjárhatók."
+msgstr ""
+"A ZONEMD 240-255 közötti scheme értékei privát használatra vannak "
+"fenntartva, és nem feltétlenül átjárhatók."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr "A ZONEMD rekordokhoz ajánlott hash algoritmus a SHA-384 (1-es algoritmus)."
+msgstr ""
+"A ZONEMD rekordokhoz ajánlott hash algoritmus a SHA-384 (1-es algoritmus)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr "A SHA-512 (2-es algoritmus) erősebb biztonságot nyújt, de több feldolgozási erőforrást igényel, mint a SHA-384."
+msgstr ""
+"A SHA-512 (2-es algoritmus) erősebb biztonságot nyújt, de több feldolgozási "
+"erőforrást igényel, mint a SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -5267,13 +5427,17 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "A ZONEMD rekordnak szóközzel elválasztva tartalmaznia kell a serial, scheme, hash-algorithm és digest mezőket."
+msgstr ""
+"A ZONEMD rekordnak szóközzel elválasztva tartalmaznia kell a serial, scheme, "
+"hash-algorithm és digest mezőket."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "A ZONEMD serial értékének 0 és 4294967295 közötti számnak kell lennie (32 bites előjel nélküli egész)."
+msgstr ""
+"A ZONEMD serial értékének 0 és 4294967295 közötti számnak kell lennie (32 "
+"bites előjel nélküli egész)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -5311,7 +5475,9 @@ msgstr "ZONEMD digest min. 24 hex (12 oktet)."
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr "A SHA-384 (1-es algoritmus) esetén a ZONEMD digest pontosan 96 hexadecimális karakterből (48 oktett) állhat."
+msgstr ""
+"A SHA-384 (1-es algoritmus) esetén a ZONEMD digest pontosan 96 hexadecimális "
+"karakterből (48 oktett) állhat."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5338,11 +5504,15 @@ msgstr "Érvénytelen karakterek a CERT rekord tartalmában."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "A CERT rekordnak szóközzel elválasztva tartalmaznia kell a type, key-tag, algorithm és certificate-data mezőket."
+msgstr ""
+"A CERT rekordnak szóközzel elválasztva tartalmaznia kell a type, key-tag, "
+"algorithm és certificate-data mezőket."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr "A CERT type értékének 0 és 65535 közötti számnak vagy érvényes rövidítésnek kell lennie."
+msgstr ""
+"A CERT type értékének 0 és 65535 közötti számnak vagy érvényes rövidítésnek "
+"kell lennie."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
@@ -5352,7 +5522,9 @@ msgstr "CERT típus érték "
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr "A CERT type értékének 0 és 65535 közötti számnak vagy érvényes rövidítésnek kell lennie (PKIX, SPKI, PGP stb.)."
+msgstr ""
+"A CERT type értékének 0 és 65535 közötti számnak vagy érvényes rövidítésnek "
+"kell lennie (PKIX, SPKI, PGP stb.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -5374,7 +5546,9 @@ msgstr "CERT algoritmus 0-255 vagy mnemonic."
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr "A CERT algorithm értékének 0 és 255 közötti számnak vagy érvényes rövidítésnek kell lennie (RSASHA1, DSA stb.)."
+msgstr ""
+"A CERT algorithm értékének 0 és 255 közötti számnak vagy érvényes "
+"rövidítésnek kell lennie (RSASHA1, DSA stb.)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5435,7 +5609,9 @@ msgstr ""
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr "Ez a név DLV keresési domainbe tartozik. Ne feledje, hogy a dlv.isc.org, a fő DLV nyilvántartás, 2017-ben megszűnt."
+msgstr ""
+"Ez a név DLV keresési domainbe tartozik. Ne feledje, hogy a dlv.isc.org, a "
+"fő DLV nyilvántartás, 2017-ben megszűnt."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
@@ -5478,7 +5654,8 @@ msgstr "Érvénytelen algoritmus. DNSSEC (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Érvénytelen digest típus. Csak 1 (SHA-1), 2 (SHA-256) vagy 4 (SHA-384) lehet."
+msgstr ""
+"Érvénytelen digest típus. Csak 1 (SHA-1), 2 (SHA-256) vagy 4 (SHA-384) lehet."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5490,15 +5667,21 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "Érvénytelen digest hossz SHA-1 esetén. 40 hexadecimális karakterből kell állnia."
+msgstr ""
+"Érvénytelen digest hossz SHA-1 esetén. 40 hexadecimális karakterből kell "
+"állnia."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr "Érvénytelen digest hossz SHA-256 esetén. 64 hexadecimális karakterből kell állnia."
+msgstr ""
+"Érvénytelen digest hossz SHA-256 esetén. 64 hexadecimális karakterből kell "
+"állnia."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr "Érvénytelen digest hossz SHA-384 esetén. 96 hexadecimális karakterből kell állnia."
+msgstr ""
+"Érvénytelen digest hossz SHA-384 esetén. 96 hexadecimális karakterből kell "
+"állnia."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
@@ -5512,7 +5695,9 @@ msgstr "Null MX rekord (.) prioritása 0 legyen (RFC 7505)."
 msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
-msgstr "Ez egy null MX rekord (RFC 7505), amely azt jelzi, hogy ez a domain nem fogad e-mailt."
+msgstr ""
+"Ez egy null MX rekord (RFC 7505), amely azt jelzi, hogy ez a domain nem "
+"fogad e-mailt."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
@@ -5538,7 +5723,9 @@ msgstr "Érvénytelen MX prioritás érték. 0-65535 között."
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr "A prioritás mezőt HTTPS rekordoknál nem kell használni, mert a prioritás a rekord tartalmának része."
+msgstr ""
+"A prioritás mezőt HTTPS rekordoknál nem kell használni, mert a prioritás a "
+"rekord tartalmának része."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
@@ -5552,13 +5739,17 @@ msgstr "A HTTPS rekord prioritás 0-65535 közötti szám."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "A HTTPS rekord céljának vagy \".\" értéknek, vagy érvényes, teljesen minősített domainnévnek kell lennie."
+msgstr ""
+"A HTTPS rekord céljának vagy \".\" értéknek, vagy érvényes, teljesen "
+"minősített domainnévnek kell lennie."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr "Az RFC 9460 szerint az AliasMode-ban (priority=0) lévő, \".\" célú HTTPS rekordnak nem lehetnek paraméterei."
+msgstr ""
+"Az RFC 9460 szerint az AliasMode-ban (priority=0) lévő, \".\" célú HTTPS "
+"rekordnak nem lehetnek paraméterei."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
@@ -5604,7 +5795,9 @@ msgstr "A DoH útvonalnak perjellel (/) kell kezdődnie."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr "A(z) \"%s\" paraméter kötelezőként van megjelölve, de nem szerepel a rekordban."
+msgstr ""
+"A(z) \"%s\" paraméter kötelezőként van megjelölve, de nem szerepel a "
+"rekordban."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -5623,7 +5816,9 @@ msgstr "A TKEY rekord prioritás mezője 0 vagy üres legyen"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "A TKEY rekordok nem DNS adatok hitelesítésére szolgálnak, hanem a DNS szerverek/feloldók közötti kulcsegyeztetésre."
+msgstr ""
+"A TKEY rekordok nem DNS adatok hitelesítésére szolgálnak, hanem a DNS "
+"szerverek/feloldók közötti kulcsegyeztetésre."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5648,12 +5843,16 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "A TKEY kezdési idejének érvényes Unix időbélyegnek vagy YYYYMMDDHHmmSS formátumúnak kell lennie."
+msgstr ""
+"A TKEY kezdési idejének érvényes Unix időbélyegnek vagy YYYYMMDDHHmmSS "
+"formátumúnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "A TKEY lejárati idejének érvényes Unix időbélyegnek vagy YYYYMMDDHHmmSS formátumúnak kell lennie."
+msgstr ""
+"A TKEY lejárati idejének érvényes Unix időbélyegnek vagy YYYYMMDDHHmmSS "
+"formátumúnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
@@ -5685,7 +5884,9 @@ msgstr ""
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr "A kulcstörlési műveleteket KÖTELEZŐ TSIG-gel hitelesíteni, mégpedig azzal a kulccsal, amelyet töröl."
+msgstr ""
+"A kulcstörlési műveleteket KÖTELEZŐ TSIG-gel hitelesíteni, mégpedig azzal a "
+"kulccsal, amelyet töröl."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -5694,7 +5895,9 @@ msgstr "A TKEY hiba érvényes DNS RCODE 0-23."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr "A TKEY kulcsadatnak érvényes base64 kódolású adatnak vagy hexadecimális karakterláncnak kell lennie."
+msgstr ""
+"A TKEY kulcsadatnak érvényes base64 kódolású adatnak vagy hexadecimális "
+"karakterláncnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
@@ -5705,13 +5908,16 @@ msgstr "TKEY kulcsok DNS szerverekhez, nem zónákhoz."
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "A TKEY rekordok cseréjét védeni kell - a hitelesítés a használt módtól függ."
+msgstr ""
+"A TKEY rekordok cseréjét védeni kell - a hitelesítés a használt módtól függ."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "A HMAC-MD5 a mai szabványok szerint gyengének számít. HMAC-SHA256 vagy erősebb algoritmus ajánlott."
+msgstr ""
+"A HMAC-MD5 a mai szabványok szerint gyengének számít. HMAC-SHA256 vagy "
+"erősebb algoritmus ajánlott."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5723,7 +5929,9 @@ msgstr "Régi algoritmus, HMAC-SHA256 vagy erősebb ajánlott."
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr "Egyedi algoritmusnevet észleltünk. A jobb kompatibilitás érdekében szabványos algoritmusnevek, például a \"hmac-sha256.\" használata ajánlott."
+msgstr ""
+"Egyedi algoritmusnevet észleltünk. A jobb kompatibilitás érdekében "
+"szabványos algoritmusnevek, például a \"hmac-sha256.\" használata ajánlott."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -5775,7 +5983,9 @@ msgstr "SOA TTL (%d) alatta az ajánlott %d sec (1 óra)."
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "Az URI rekordokat DNSSEC-kel érdemes védeni, hogy a támadók ne tudják módosítani őket."
+msgstr ""
+"Az URI rekordokat DNSSEC-kel érdemes védeni, hogy a támadók ne tudják "
+"módosítani őket."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5797,7 +6007,9 @@ msgstr "Telefonos URI-k érzékeny adatokat tartalmazhatnak."
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "A \"file\" URI séma biztonsági kockázatot jelenthet, és nyilvános DNS rekordokhoz nem ajánlott."
+msgstr ""
+"A \"file\" URI séma biztonsági kockázatot jelenthet, és nyilvános DNS "
+"rekordokhoz nem ajánlott."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -5827,7 +6039,9 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "Az URI szokatlan protokollt használ. A jobb kompatibilitás érdekében érdemes szabványos URI sémát választani."
+msgstr ""
+"Az URI szokatlan protokollt használ. A jobb kompatibilitás érdekében érdemes "
+"szabványos URI sémát választani."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -5859,7 +6073,9 @@ msgstr "URI \"..\" szekvenciák, directory traversal."
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "Az URI olyan százalékjeleket tartalmaz, amelyek nem szabályos percent-encoding részei."
+msgstr ""
+"Az URI olyan százalékjeleket tartalmaz, amelyek nem szabályos percent-"
+"encoding részei."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
@@ -5873,7 +6089,9 @@ msgstr ""
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr "Érvénytelen kulcscserélő hosztnév. Az exchanger mezőnek érvényes domainnevet kell tartalmaznia."
+msgstr ""
+"Érvénytelen kulcscserélő hosztnév. Az exchanger mezőnek érvényes domainnevet "
+"kell tartalmaznia."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
@@ -5888,13 +6106,17 @@ msgstr ""
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "Az RFC 2230 szerint azoknak a rendszereknek, amelyek nem valósítják meg a Secure DNS-t, teljesen figyelmen kívül kell hagyniuk a KX rekordokat."
+msgstr ""
+"Az RFC 2230 szerint azoknak a rendszereknek, amelyek nem valósítják meg a "
+"Secure DNS-t, teljesen figyelmen kívül kell hagyniuk a KX rekordokat."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "Gondoskodjon róla, hogy a kulcscserélő géphez megfelelő forward és reverz DNS rekordok legyenek beállítva."
+msgstr ""
+"Gondoskodjon róla, hogy a kulcscserélő géphez megfelelő forward és reverz "
+"DNS rekordok legyenek beállítva."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -5912,7 +6134,9 @@ msgstr "Érvénytelen KX preferencia. 0-65535."
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "MEGJEGYZÉS: a MINFO rekordtípust az RFC 1035 KÍSÉRLETI jelöléssel látta el. Előfordulhat, hogy nem mindenhol támogatott."
+msgstr ""
+"MEGJEGYZÉS: a MINFO rekordtípust az RFC 1035 KÍSÉRLETI jelöléssel látta el. "
+"Előfordulhat, hogy nem mindenhol támogatott."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -5934,7 +6158,9 @@ msgstr "Érvénytelen felelős postafiók gazdanév (RMAILBX)."
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr "Az RFC 1035 megjegyzi, hogy számos levelezőlista a \"list-name-request\" postafiókot használja a felelős postafiók mezőben."
+msgstr ""
+"Az RFC 1035 megjegyzi, hogy számos levelezőlista a \"list-name-request\" "
+"postafiókot használja a felelős postafiók mezőben."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -5952,13 +6178,17 @@ msgstr "Érvénytelen hiba postafiók gazdanév (EMAILBX)."
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "Ha az EMAILBX értéke \".\" (gyökér), az azt jelzi, hogy a hibákat az üzenet feladójának kell visszaküldeni."
+msgstr ""
+"Ha az EMAILBX értéke \".\" (gyökér), az azt jelzi, hogy a hibákat az üzenet "
+"feladójának kell visszaküldeni."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "A felelős postafiók és a hibapostafiók azonos. Érdemes külön postafiókot használni a két feladatra."
+msgstr ""
+"A felelős postafiók és a hibapostafiók azonos. Érdemes külön postafiókot "
+"használni a két feladatra."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
@@ -6017,13 +6247,17 @@ msgstr "Érvénytelen CIDR hossz a mechanizmusban."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "A ptr mechanizmus használata teljesítménybeli problémák miatt nem ajánlott (RFC 7208, 5.5. szakasz)."
+msgstr ""
+"A ptr mechanizmus használata teljesítménybeli problémák miatt nem ajánlott "
+"(RFC 7208, 5.5. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "Az \"all\" mechanizmusnak a rekord utolsó mechanizmusának kell lennie (RFC 7208, 5.1. szakasz)."
+msgstr ""
+"Az \"all\" mechanizmusnak a rekord utolsó mechanizmusának kell lennie (RFC "
+"7208, 5.1. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -6056,7 +6290,10 @@ msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr "Az SPF rekord egyszerre tartalmaz \"all\" mechanizmust és \"redirect\" módosítót. Ha az \"all\" jelen van, a \"redirect\" módosító figyelmen kívül marad (RFC 7208, 6.1. szakasz)."
+msgstr ""
+"Az SPF rekord egyszerre tartalmaz \"all\" mechanizmust és \"redirect\" "
+"módosítót. Ha az \"all\" jelen van, a \"redirect\" módosító figyelmen kívül "
+"marad (RFC 7208, 6.1. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
@@ -6089,13 +6326,17 @@ msgstr "Nem érvényes rekord. Már van CNAME ezzel a névvel."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "A CNAME céljának teljesen minősített domainnévnek (FQDN) kell lennie. Az egycímkés nevek nem megengedettek."
+msgstr ""
+"A CNAME céljának teljesen minősített domainnévnek (FQDN) kell lennie. Az "
+"egycímkés nevek nem megengedettek."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "A CNAME céljának teljesen minősített domainnévnek (FQDN) kell lennie, érvényes legfelső szintű domainnel."
+msgstr ""
+"A CNAME céljának teljesen minősített domainnévnek (FQDN) kell lennie, "
+"érvényes legfelső szintű domainnel."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -6135,13 +6376,17 @@ msgstr ""
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "A DHCID rekord base64 kitöltése érvénytelen. Az egyenlőségjelek (=) csak az adat végén szerepelhetnek."
+msgstr ""
+"A DHCID rekord base64 kitöltése érvénytelen. Az egyenlőségjelek (=) csak az "
+"adat végén szerepelhetnek."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "A DHCID rekord base64 hossza érvénytelen. A base64 adat hosszának 4 karakter többszörösének kell lennie (a kitöltéssel együtt)."
+msgstr ""
+"A DHCID rekord base64 hossza érvénytelen. A base64 adat hosszának 4 karakter "
+"többszörösének kell lennie (a kitöltéssel együtt)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6169,7 +6414,9 @@ msgstr ""
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "A(z) %d DHCID digest típus nem az RFC 4701-ben meghatározott szabványos típus (SHA-256 esetén 1)."
+msgstr ""
+"A(z) %d DHCID digest típus nem az RFC 4701-ben meghatározott szabványos "
+"típus (SHA-256 esetén 1)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6217,7 +6464,9 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "A rendszeres kulcscsere ajánlott biztonsági gyakorlat: a ZSK 1-3 havonta, a KSK 1-2 évente cserélendő."
+msgstr ""
+"A rendszeres kulcscsere ajánlott biztonsági gyakorlat: a ZSK 1-3 havonta, a "
+"KSK 1-2 évente cserélendő."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6248,25 +6497,34 @@ msgstr "A RRSIG algoritmus mezőnek számnak kell lennie."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "Az 1-es algoritmus (RSA/MD5) elavult, és kriptográfiai gyengeségei miatt NEM szabad használni."
+msgstr ""
+"Az 1-es algoritmus (RSA/MD5) elavult, és kriptográfiai gyengeségei miatt NEM "
+"szabad használni."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "A 3-as algoritmus (DSA/SHA1) nem tekinthető biztonságosnak, ezért erősebb algoritmusokra kell cserélni."
+msgstr ""
+"A 3-as algoritmus (DSA/SHA1) nem tekinthető biztonságosnak, ezért erősebb "
+"algoritmusokra kell cserélni."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Az 5-ös algoritmus (RSA/SHA-1) nem tekinthető biztonságosnak, ezért erősebb algoritmusokra kell cserélni."
+msgstr ""
+"Az 5-ös algoritmus (RSA/SHA-1) nem tekinthető biztonságosnak, ezért erősebb "
+"algoritmusokra kell cserélni."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr "A 7-es algoritmus (RSASHA1-NSEC3-SHA1) SHA-1-et használ, amely már nem tekinthető biztonságosnak. Érdemes RSA/SHA-256 vagy újabb algoritmusra váltani."
+msgstr ""
+"A 7-es algoritmus (RSASHA1-NSEC3-SHA1) SHA-1-et használ, amely már nem "
+"tekinthető biztonságosnak. Érdemes RSA/SHA-256 vagy újabb algoritmusra "
+"váltani."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
@@ -6280,13 +6538,17 @@ msgstr ""
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "A 13-as algoritmus (ECDSA P-256 SHA-256-tal) jó biztonságot nyújt, és az RSA-nál kisebb aláírásokat eredményez."
+msgstr ""
+"A 13-as algoritmus (ECDSA P-256 SHA-256-tal) jó biztonságot nyújt, és az RSA-"
+"nál kisebb aláírásokat eredményez."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "A 14-es algoritmus (ECDSA P-384 SHA-384-gyel) erős biztonságot nyújt, és az RSA-nál kisebb aláírásokat eredményez."
+msgstr ""
+"A 14-es algoritmus (ECDSA P-384 SHA-384-gyel) erős biztonságot nyújt, és az "
+"RSA-nál kisebb aláírásokat eredményez."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -6354,13 +6616,16 @@ msgstr ""
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr "KRITIKUS: ez az aláírás már lejárt. A DNSSEC feloldók nem fogják érvényesíteni."
+msgstr ""
+"KRITIKUS: ez az aláírás már lejárt. A DNSSEC feloldók nem fogják "
+"érvényesíteni."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "FIGYELEM: ez az aláírás 7 napon belül lejár. Érdemes mielőbb megújítani."
+msgstr ""
+"FIGYELEM: ez az aláírás 7 napon belül lejár. Érdemes mielőbb megújítani."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
@@ -6399,7 +6664,9 @@ msgstr "Az RRSIG kulcs címke érvényes 0-65535 érték."
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "Az RRSIG aláíró nevének teljesen minősített domainnévnek kell lennie (ponttal a végén)."
+msgstr ""
+"Az RRSIG aláíró nevének teljesen minősített domainnévnek kell lennie "
+"(ponttal a végén)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
@@ -6430,7 +6697,9 @@ msgstr ""
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr "Ne feledje, hogy az RRSIG rekordokat a lejárati idejük előtt újra kell generálni, különben a DNSSEC érvényesítés megszakad."
+msgstr ""
+"Ne feledje, hogy az RRSIG rekordokat a lejárati idejük előtt újra kell "
+"generálni, különben a DNSSEC érvényesítés megszakad."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -6440,13 +6709,16 @@ msgstr "Az RP rekord prioritás mezője 0 vagy üres kell legyen"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "Az RP rekordokat az RFC 1183 (1990) definiálta, és a mai DNS beállításokban ritkán használják őket."
+msgstr ""
+"Az RP rekordokat az RFC 1183 (1990) definiálta, és a mai DNS beállításokban "
+"ritkán használják őket."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr "Kritikus domainekhez az RP rekordok mellett más kontakt módok is legyenek."
+msgstr ""
+"Kritikus domainekhez az RP rekordok mellett más kontakt módok is legyenek."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -6464,13 +6736,17 @@ msgstr "Az RP rekord érvénytelen karaktereket tartalmaz."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "Az RP rekordnak tartalmaznia kell a postafiók domaint (mbox-dname) és a TXT rekord domaint (txt-dname)."
+msgstr ""
+"Az RP rekordnak tartalmaznia kell a postafiók domaint (mbox-dname) és a TXT "
+"rekord domaint (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "Az RP rekordok kapcsolattartási adatokat tesznek közzé a DNS-ben, ami adatvédelmi és biztonsági kockázatot jelenthet."
+msgstr ""
+"Az RP rekordok kapcsolattartási adatokat tesznek közzé a DNS-ben, ami "
+"adatvédelmi és biztonsági kockázatot jelenthet."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -6497,7 +6773,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "Az RP postafiók domainnek teljesen minősített domainnévnek kell lennie (ponttal a végén)."
+msgstr ""
+"Az RP postafiók domainnek teljesen minősített domainnévnek kell lennie "
+"(ponttal a végén)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -6516,7 +6794,9 @@ msgstr "A postafiók tartomány az e-mail címet jelenti: %s"
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr "Az RP postafiók domain része aláhúzásjelet tartalmaz, ami domainnevekben nem megengedett."
+msgstr ""
+"Az RP postafiók domain része aláhúzásjelet tartalmaz, ami domainnevekben nem "
+"megengedett."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
@@ -6528,7 +6808,8 @@ msgstr "Az RP postafiók tartománya üres címkét tartalmaz."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "Az RP postafiók domain címkéje meghaladja a 63 karakteres maximális hosszt."
+msgstr ""
+"Az RP postafiók domain címkéje meghaladja a 63 karakteres maximális hosszt."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -6560,7 +6841,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "Az RP TXT domainnek teljesen minősített domainnévnek kell lennie (ponttal a végén)."
+msgstr ""
+"Az RP TXT domainnek teljesen minősített domainnévnek kell lennie (ponttal a "
+"végén)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6599,7 +6882,9 @@ msgstr "TXT rekordot kell létrehoznia ezen a tartományon: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr "Ez EUI-48 címből származtatott EUI-64 címnek tűnik (a közepén FF-FE szerepel)."
+msgstr ""
+"Ez EUI-48 címből származtatott EUI-64 címnek tűnik (a közepén FF-FE "
+"szerepel)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -6625,25 +6910,33 @@ msgstr ""
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "Az EUI64 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx:xx:xx), pedig kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx-xx-xx)."
+msgstr ""
+"Az EUI64 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx:xx:xx), "
+"pedig kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "Az EUI64 rekordból hiányoznak az elválasztók. A formátumnak xx-xx-xx-xx-xx-xx-xx-xx alakúnak kell lennie, az oktettek között kötőjelekkel."
+msgstr ""
+"Az EUI64 rekordból hiányoznak az elválasztók. A formátumnak xx-xx-xx-xx-xx-"
+"xx-xx-xx alakúnak kell lennie, az oktettek között kötőjelekkel."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "Az EUI64 rekord pontokkal tagolt formátumúnak tűnik. A formátumnak xx-xx-xx-xx-xx-xx-xx-xx alakúnak kell lennie."
+msgstr ""
+"Az EUI64 rekord pontokkal tagolt formátumúnak tűnik. A formátumnak xx-xx-xx-"
+"xx-xx-xx-xx-xx alakúnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "Az EUI64 rekordnak érvényes EUI-64 címnek kell lennie xx-xx-xx-xx-xx-xx-xx-xx formátumban (ahol x egy hexadecimális számjegy)."
+msgstr ""
+"Az EUI64 rekordnak érvényes EUI-64 címnek kell lennie xx-xx-xx-xx-xx-xx-xx-"
+"xx formátumban (ahol x egy hexadecimális számjegy)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6702,13 +6995,17 @@ msgstr "A DNAME rekord prioritás mezője 0 vagy üres legyen."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "Az RFC 6672 szerint egy adott tulajdonos névnél a DNAME rekordnak egyedinek kell lennie (singleton szabály)."
+msgstr ""
+"Az RFC 6672 szerint egy adott tulajdonos névnél a DNAME rekordnak egyedinek "
+"kell lennie (singleton szabály)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr "DNAME és CNAME rekord NEM szerepelhet együtt ugyanazon a tulajdonos néven (RFC 6672, 2.3. szakasz)."
+msgstr ""
+"DNAME és CNAME rekord NEM szerepelhet együtt ugyanazon a tulajdonos néven "
+"(RFC 6672, 2.3. szakasz)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -6775,7 +7072,9 @@ msgstr "%s (%d) AJÁNLOTT algoritmus (RFC 8624)."
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "A(z) %s (%d. algoritmus) elterjedten használt, de az újabb algoritmusok, például az ECDSAP256SHA256 (13) vagy az ED25519 (15) előnyösebbek."
+msgstr ""
+"A(z) %s (%d. algoritmus) elterjedten használt, de az újabb algoritmusok, "
+"például az ECDSAP256SHA256 (13) vagy az ED25519 (15) előnyösebbek."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
@@ -6793,7 +7092,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "A digest típusnak a következők egyikének kell lennie: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr ""
+"A digest típusnak a következők egyikének kell lennie: 1 (SHA-1), 2 "
+"(SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -6807,7 +7108,9 @@ msgstr ""
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "Az RFC 8624 szerint a SHA-256 (2-es digest típus) az AJÁNLOTT digest algoritmus."
+msgstr ""
+"Az RFC 8624 szerint a SHA-256 (2-es digest típus) az AJÁNLOTT digest "
+"algoritmus."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -6862,7 +7165,9 @@ msgstr ""
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr "Zónánként csak egy CSYNC rekord lehet (RFC 7477). Több rekord váratlan működést okozhat."
+msgstr ""
+"Zónánként csak egy CSYNC rekord lehet (RFC 7477). Több rekord váratlan "
+"működést okozhat."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
@@ -6876,13 +7181,17 @@ msgstr ""
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr "Az \"immediate\" jelző (0x0001) nincs beállítva. A szülőoldali ügynökök késleltethetik a rekord feldolgozását."
+msgstr ""
+"Az \"immediate\" jelző (0x0001) nincs beállítva. A szülőoldali ügynökök "
+"késleltethetik a rekord feldolgozását."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr "A \"soaminimum\" jelző (0x0002) nincs beállítva. Előfordulhat, hogy a SOA sorozatszám ellenőrzése nem lesz kikényszerítve."
+msgstr ""
+"A \"soaminimum\" jelző (0x0002) nincs beállítva. Előfordulhat, hogy a SOA "
+"sorozatszám ellenőrzése nem lesz kikényszerítve."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -6896,7 +7205,9 @@ msgstr ""
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Érvénytelen SOA sorozatszám a CSYNC rekordban. 32 bites előjel nélküli egész számnak kell lennie (0-4294967295)."
+msgstr ""
+"Érvénytelen SOA sorozatszám a CSYNC rekordban. 32 bites előjel nélküli egész "
+"számnak kell lennie (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6917,7 +7228,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
 "CSYNC record must specify at least one record type in the Type Bit Map field."
-msgstr "A CSYNC rekordnak legalább egy rekordtípust meg kell adnia a Type Bit Map mezőben."
+msgstr ""
+"A CSYNC rekordnak legalább egy rekordtípust meg kell adnia a Type Bit Map "
+"mezőben."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
@@ -6975,13 +7288,17 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "Az EUI48 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx), pedig kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx)."
+msgstr ""
+"Az EUI48 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx), pedig "
+"kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "Az EUI48 rekordból hiányoznak az elválasztók. A formátumnak xx-xx-xx-xx-xx-xx alakúnak kell lennie, az oktettek között kötőjelekkel."
+msgstr ""
+"Az EUI48 rekordból hiányoznak az elválasztók. A formátumnak xx-xx-xx-xx-xx-"
+"xx alakúnak kell lennie, az oktettek között kötőjelekkel."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
@@ -6992,13 +7309,16 @@ msgstr "EUI48 Cisco. Formátum: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "Az EUI48 rekordnak érvényes MAC címnek kell lennie xx-xx-xx-xx-xx-xx formátumban (ahol x egy hexadecimális számjegy)."
+msgstr ""
+"Az EUI48 rekordnak érvényes MAC címnek kell lennie xx-xx-xx-xx-xx-xx "
+"formátumban (ahol x egy hexadecimális számjegy)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Ez a broadcast cím (csupa egyes), amely nem minden környezetben érvényes."
+msgstr ""
+"Ez a broadcast cím (csupa egyes), amely nem minden környezetben érvényes."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
@@ -7028,7 +7348,9 @@ msgstr ""
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "A levelezőszerverek gyakran csak megfelelően beállított reverz DNS esetén fogadják el a szerveréről érkező leveleket."
+msgstr ""
+"A levelezőszerverek gyakran csak megfelelően beállított reverz DNS esetén "
+"fogadják el a szerveréről érkező leveleket."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -7108,7 +7430,9 @@ msgstr "A CAA címke csak ASCII betűket és számokat tartalmazhat."
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "A kritikus jelző be van állítva az ismeretlen \"%s\" címkéhez. Ez a tanúsítvány kiállításának meghiúsulását okozhatja."
+msgstr ""
+"A kritikus jelző be van állítva az ismeretlen \"%s\" címkéhez. Ez a "
+"tanúsítvány kiállításának meghiúsulását okozhatja."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -7200,7 +7524,9 @@ msgstr "Érvénytelen alhálózat RFC 2317-ben. IPv4 esetén 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Érvénytelen alhálózat az RFC 2317 jelölésben. IPv6 esetén hexadecimálisnak kell lennie (0-9, a-f)."
+msgstr ""
+"Érvénytelen alhálózat az RFC 2317 jelölésben. IPv6 esetén hexadecimálisnak "
+"kell lennie (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7214,7 +7540,9 @@ msgstr "Érvénytelen előtag hossz RFC 2317-ben. Szám legyen."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Érvénytelen IPv4 prefixhossz az RFC 2317-hez. Általában 24-32 (osztály nélküli delegálásnál rendszerint 25-31)."
+msgstr ""
+"Érvénytelen IPv4 prefixhossz az RFC 2317-hez. Általában 24-32 (osztály "
+"nélküli delegálásnál rendszerint 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7242,7 +7570,9 @@ msgstr "Érvénytelen legfelső szintű tartományt használ."
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "A SOA ellenőrzési paraméterek nincsenek beállítva. Előbb hívja meg a setSOAParams() metódust, vagy adja meg őket argumentumként."
+msgstr ""
+"A SOA ellenőrzési paraméterek nincsenek beállítva. Előbb hívja meg a "
+"setSOAParams() metódust, vagy adja meg őket argumentumként."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -7318,7 +7648,9 @@ msgstr "A %s SOA mezőnek pozitív egésznek kell lennie."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "A SOA %s értéke (%d) az RFC 2308 által ajánlott minimum (%d) alatt van. Ez megengedett, de nem javasolt."
+msgstr ""
+"A SOA %s értéke (%d) az RFC 2308 által ajánlott minimum (%d) alatt van. Ez "
+"megengedett, de nem javasolt."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
 msgid ""
@@ -7356,7 +7688,9 @@ msgstr "A prioritásnak 0-nak kell lennie RESINFO rekordoknál."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "Az SVCB rekordnak prioritással és céllal kell kezdődnie: <priority> <target> [<params>...]"
+msgstr ""
+"Az SVCB rekordnak prioritással és céllal kell kezdődnie: <priority> <target> "
+"[<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -7378,7 +7712,9 @@ msgstr "Alias módban (prioritás = 0) nincs SvcParams."
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
-msgstr "Service Mode-ban (priority > 0), \".\" céllal legalább egy SvcParam megadása kötelező."
+msgstr ""
+"Service Mode-ban (priority > 0), \".\" céllal legalább egy SvcParam megadása "
+"kötelező."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -7398,14 +7734,18 @@ msgstr "Duplikált SVCB kulcs: \"%s\". Csak egyszer szerepelhet."
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Több CNAME rekord nem szerepelhet ugyanazzal a névvel. Ez a DNS szabályainak megsértését jelentené."
+msgstr ""
+"Több CNAME rekord nem szerepelhet ugyanazzal a névvel. Ez a DNS szabályainak "
+"megsértését jelentené."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "A CNAME rekord nem szerepelhet együtt más rekordtípusokkal ugyanazon a néven. Már létezik %s rekord."
+msgstr ""
+"A CNAME rekord nem szerepelhet együtt más rekordtípusokkal ugyanazon a "
+"néven. Már létezik %s rekord."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7429,7 +7769,9 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Az SMIMEA rekord neve a következő formátumú: SHA256(local-part)._smimecert.domain.tld, például a(z) %s típusú e-mail címekhez"
+msgstr ""
+"Az SMIMEA rekord neve a következő formátumú: SHA256(local-"
+"part)._smimecert.domain.tld, például a(z) %s típusú e-mail címekhez"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7468,7 +7810,9 @@ msgstr "Az SMIMEA rekord érvénytelen karaktereket tartalmaz."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Az SMIMEA rekordnak szóközzel elválasztva tartalmaznia kell a usage, selector, matching-type és certificate-data mezőket."
+msgstr ""
+"Az SMIMEA rekordnak szóközzel elválasztva tartalmaznia kell a usage, "
+"selector, matching-type és certificate-data mezőket."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7514,7 +7858,9 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "Az SMIMEA selector mező értéke csak 0 (teljes tanúsítvány) vagy 1 (SubjectPublicKeyInfo) lehet."
+msgstr ""
+"Az SMIMEA selector mező értéke csak 0 (teljes tanúsítvány) vagy 1 "
+"(SubjectPublicKeyInfo) lehet."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7540,7 +7886,9 @@ msgstr ""
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "Az SMIMEA matching type mező értéke csak 0 (pontos egyezés), 1 (SHA-256) vagy 2 (SHA-512) lehet."
+msgstr ""
+"Az SMIMEA matching type mező értéke csak 0 (pontos egyezés), 1 (SHA-256) "
+"vagy 2 (SHA-512) lehet."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -7554,7 +7902,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
 "Matching type 1 (SHA-256) provides a good balance of security and efficiency."
-msgstr "Az 1-es matching type (SHA-256) jó egyensúlyt teremt a biztonság és a hatékonyság között."
+msgstr ""
+"Az 1-es matching type (SHA-256) jó egyensúlyt teremt a biztonság és a "
+"hatékonyság között."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
 msgid ""
@@ -7588,7 +7938,9 @@ msgstr ""
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "FIGYELEM: az SMIMEA (RFC 8162) jelenleg KÍSÉRLETI protokoll, ezért lehet, hogy nem támogatott széles körben."
+msgstr ""
+"FIGYELEM: az SMIMEA (RFC 8162) jelenleg KÍSÉRLETI protokoll, ezért lehet, "
+"hogy nem támogatott széles körben."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7699,7 +8051,8 @@ msgstr "A prioritásnak 0-nak kell lennie WALLET rekordoknál."
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "A CDNSKEY rekordokat általában a zóna csúcsán teszik közzé, nem aldomaineken."
+msgstr ""
+"A CDNSKEY rekordokat általában a zóna csúcsán teszik közzé, nem aldomaineken."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -7721,13 +8074,17 @@ msgstr "Érvénytelen karakterek a CDNSKEY rekord tartalmában."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "Jelenleg az RFC 8078 erratumában szereplő \"0 3 0 0\" formátumot használja; érdemes a szabványos \"0 3 0 AA==\" formátumra váltani."
+msgstr ""
+"Jelenleg az RFC 8078 erratumában szereplő \"0 3 0 0\" formátumot használja; "
+"érdemes a szabványos \"0 3 0 AA==\" formátumra váltani."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "A CDNSKEY rekordnak szóközzel elválasztva tartalmaznia kell a flags, protocol, algorithm és public-key mezőket."
+msgstr ""
+"A CDNSKEY rekordnak szóközzel elválasztva tartalmaznia kell a flags, "
+"protocol, algorithm és public-key mezőket."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -7761,7 +8118,9 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "A 10-es algoritmus (RSASHA512) aláíráshoz NEM AJÁNLOTT, bár az érvényesítéshez támogatni kell."
+msgstr ""
+"A 10-es algoritmus (RSASHA512) aláíráshoz NEM AJÁNLOTT, bár az "
+"érvényesítéshez támogatni kell."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -7822,21 +8181,27 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "FIGYELEM: úgy tűnik, ebben a LUA rekordban páratlanul állnak az idézőjelek, ami szintaktikai hibát okozhat."
+msgstr ""
+"FIGYELEM: úgy tűnik, ebben a LUA rekordban páratlanul állnak az idézőjelek, "
+"ami szintaktikai hibát okozhat."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "A LUA rekordban nem illeszkedő kerek zárójelek. Ellenőrizze a szintaxist."
+msgstr ""
+"A LUA rekordban nem illeszkedő kerek zárójelek. Ellenőrizze a szintaxist."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "A LUA rekordban nem illeszkedő kapcsos zárójelek. Ellenőrizze a szintaxist."
+msgstr ""
+"A LUA rekordban nem illeszkedő kapcsos zárójelek. Ellenőrizze a szintaxist."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "Az explicit return módban lévő LUA rekordnak (amely pontosvesszővel kezdődik) legalább egy \"return\" utasítást tartalmaznia kell."
+msgstr ""
+"Az explicit return módban lévő LUA rekordnak (amely pontosvesszővel "
+"kezdődik) legalább egy \"return\" utasítást tartalmaznia kell."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -7863,7 +8228,9 @@ msgstr "Az SSHFP rekord prioritás mezője 0 vagy üres legyen"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "Az SSHFP rekordok az OpenSSH-t futtató rendszereken az \"ssh-keygen -r hostname\" paranccsal generálhatók."
+msgstr ""
+"Az SSHFP rekordok az OpenSSH-t futtató rendszereken az \"ssh-keygen -r "
+"hostname\" paranccsal generálhatók."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -7878,13 +8245,17 @@ msgstr ""
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr "Az SSHFP rekordnak szóközzel elválasztva tartalmaznia kell az algorithm, fingerprint-type és fingerprint mezőket."
+msgstr ""
+"Az SSHFP rekordnak szóközzel elválasztva tartalmaznia kell az algorithm, "
+"fingerprint-type és fingerprint mezőket."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "Az SSHFP algoritmus értéke 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) vagy 6 (Ed448) lehet."
+msgstr ""
+"Az SSHFP algoritmus értéke 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) vagy 6 "
+"(Ed448) lehet."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
@@ -7899,7 +8270,9 @@ msgstr ""
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "A modern SSH implementációkhoz az Ed25519 kulcsok ajánlottak, mert jó biztonságot és teljesítményt nyújtanak."
+msgstr ""
+"A modern SSH implementációkhoz az Ed25519 kulcsok ajánlottak, mert jó "
+"biztonságot és teljesítményt nyújtanak."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -7915,13 +8288,17 @@ msgstr "Az SSHFP ujjlenyomat típusa 1 (SHA-1) vagy 2 (SHA-256)."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "A SHA-1 ujjlenyomatok elavultak. Az RFC 6594 a nagyobb biztonság érdekében SHA-256 ujjlenyomatok (2-es típus) használatát javasolja."
+msgstr ""
+"A SHA-1 ujjlenyomatok elavultak. Az RFC 6594 a nagyobb biztonság érdekében "
+"SHA-256 ujjlenyomatok (2-es típus) használatát javasolja."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr "A SHA-256 ujjlenyomatokat az RFC 6594 javasolja, és nagyobb biztonságot nyújtanak, mint a SHA-1."
+msgstr ""
+"A SHA-256 ujjlenyomatokat az RFC 6594 javasolja, és nagyobb biztonságot "
+"nyújtanak, mint a SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -7949,7 +8326,9 @@ msgstr ""
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "Állítsa be az SSH klienseken a \"VerifyHostKeyDNS yes\" beállítást, hogy a szerver ellenőrzéséhez az SSHFP rekordokat használják."
+msgstr ""
+"Állítsa be az SSH klienseken a \"VerifyHostKeyDNS yes\" beállítást, hogy a "
+"szerver ellenőrzéséhez az SSHFP rekordokat használják."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -7979,7 +8358,9 @@ msgstr ""
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr "Az új postafiók megegyezik a régivel. Az MR rekordok célja az átirányítás egy másik postafiókra."
+msgstr ""
+"Az új postafiók megegyezik a régivel. Az MR rekordok célja az átirányítás "
+"egy másik postafiókra."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -7989,7 +8370,9 @@ msgstr "Az MR rekord prioritás mezője 0 vagy üres legyen."
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "Az MR rekordokat az RFC 1035 KÍSÉRLETI jelöléssel látta el, és a modern levelezőrendszerekben ritkán használják őket."
+msgstr ""
+"Az MR rekordokat az RFC 1035 KÍSÉRLETI jelöléssel látta el, és a modern "
+"levelezőrendszerekben ritkán használják őket."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -8000,7 +8383,9 @@ msgstr "Fontolja meg szabványos mail továbbítást MR helyett."
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr "Az MR rekord azt jelzi, hogy a levelezési felhasználó a régi postafiókról az új postafiókra költözött."
+msgstr ""
+"Az MR rekord azt jelzi, hogy a levelezési felhasználó a régi postafiókról az "
+"új postafiókra költözött."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
@@ -8010,7 +8395,9 @@ msgstr "A KEY rekord prioritás mezője 0 vagy üres legyen"
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "A KEY rekordokat az RFC 4034 elavulttá tette. DNSSEC esetén használjon helyettük DNSKEY rekordokat."
+msgstr ""
+"A KEY rekordokat az RFC 4034 elavulttá tette. DNSSEC esetén használjon "
+"helyettük DNSKEY rekordokat."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
@@ -8020,13 +8407,17 @@ msgstr "KEY rekordokat nem minden DNS szerver támogatja."
 msgid ""
 "Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
 "used."
-msgstr "Az 1-es algoritmus (RSA/MD5) kriptográfiailag gyengének számít, ezért nem szabad használni."
+msgstr ""
+"Az 1-es algoritmus (RSA/MD5) kriptográfiailag gyengének számít, ezért nem "
+"szabad használni."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "DNSSEC zónakulcsokhoz (flags=257, protocol=3) KEY rekordok helyett DNSKEY rekordokat kell használni."
+msgstr ""
+"DNSSEC zónakulcsokhoz (flags=257, protocol=3) KEY rekordok helyett DNSKEY "
+"rekordokat kell használni."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -8131,7 +8522,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr "A DMARC aldomain házirend címkéjének (sp) a következők egyikének kell lennie: none, quarantine, reject"
+msgstr ""
+"A DMARC aldomain házirend címkéjének (sp) a következők egyikének kell "
+"lennie: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
@@ -8139,7 +8532,9 @@ msgstr "DMARC DKIM adkim r (rugalmas) vagy s (szigorú)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "A DMARC SPF igazítási címkéjének (aspf) értéke r (relaxed) vagy s (strict) lehet"
+msgstr ""
+"A DMARC SPF igazítási címkéjének (aspf) értéke r (relaxed) vagy s (strict) "
+"lehet"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8150,7 +8545,9 @@ msgstr "A DMARC százalék (pct) 0-100 között legyen"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "A DMARC házirend az üzenetek mindössze %d%%-ára vonatkozik. Ezt csak a házirend bevezetése idején szabad használni."
+msgstr ""
+"A DMARC házirend az üzenetek mindössze %d%%-ára vonatkozik. Ezt csak a "
+"házirend bevezetése idején szabad használni."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8160,7 +8557,9 @@ msgstr "A DMARC jelentési intervallum (ri) pozitív egész."
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "A DMARC hibajelentési beállítások címkéje (fo) csak 0, 1, d, s értéket vagy ezek kettősponttal elválasztott kombinációit tartalmazhatja"
+msgstr ""
+"A DMARC hibajelentési beállítások címkéje (fo) csak 0, 1, d, s értéket vagy "
+"ezek kettősponttal elválasztott kombinációit tartalmazhatja"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8251,13 +8650,17 @@ msgstr "Érvénytelen IPv4 cím formátum."
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Érvénytelen érték a prioritás mezőben. Az A rekordok prioritásának 0-nak kell lennie."
+msgstr ""
+"Érvénytelen érték a prioritás mezőben. Az A rekordok prioritásának 0-nak "
+"kell lennie."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr "A CDS rekordokat az RFC 7344 előírása szerint csak a zóna csúcsán szabad elhelyezni, aldomaineken nem."
+msgstr ""
+"A CDS rekordokat az RFC 7344 előírása szerint csak a zóna csúcsán szabad "
+"elhelyezni, aldomaineken nem."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -8287,7 +8690,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "A CDS rekordnak szóközzel elválasztva tartalmaznia kell a key-tag, algorithm, digest-type és digest mezőket."
+msgstr ""
+"A CDS rekordnak szóközzel elválasztva tartalmaznia kell a key-tag, "
+"algorithm, digest-type és digest mezőket."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -8299,7 +8704,9 @@ msgstr "A CDS algoritmus 1-16 közötti szám kell legyen."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "A CDS digest típusának 1 (SHA-1), 2 (SHA-256) vagy 4 (SHA-384) értékűnek kell lennie."
+msgstr ""
+"A CDS digest típusának 1 (SHA-1), 2 (SHA-256) vagy 4 (SHA-384) értékűnek "
+"kell lennie."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -8315,13 +8722,17 @@ msgstr ""
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "A CDS digest értékének a kiválasztott digest típushoz tartozó, %d hosszúságú, érvényes hexadecimális karakterláncnak kell lennie."
+msgstr ""
+"A CDS digest értékének a kiválasztott digest típushoz tartozó, %d "
+"hosszúságú, érvényes hexadecimális karakterláncnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "A CDS rekordokhoz az RFC 7344 ajánlása szerint hozzájuk illő CDNSKEY rekordoknak is tartozniuk kell."
+msgstr ""
+"A CDS rekordokhoz az RFC 7344 ajánlása szerint hozzájuk illő CDNSKEY "
+"rekordoknak is tartozniuk kell."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -8347,7 +8758,9 @@ msgstr ""
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "Ha privát IP címeket (RFC 1918) használ L32 lokátorként, az ILNP környezetben korlátozhatja az elérhetőséget."
+msgstr ""
+"Ha privát IP címeket (RFC 1918) használ L32 lokátorként, az ILNP "
+"környezetben korlátozhatja az elérhetőséget."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
@@ -8378,13 +8791,17 @@ msgstr "Az L32 helymeghatározónak teljesen megadott IPv4 címnek kell lennie."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "Az L32 lokátor nem használhat broadcast vagy meghatározatlan címet (0.0.0.0 vagy 255.255.255.255)."
+msgstr ""
+"Az L32 lokátor nem használhat broadcast vagy meghatározatlan címet (0.0.0.0 "
+"vagy 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr "A 0 prioritás érvényes, de szokatlan. Az SRV rekordok általában 10-es vagy magasabb prioritással kezdődnek."
+msgstr ""
+"A 0 prioritás érvényes, de szokatlan. Az SRV rekordok általában 10-es vagy "
+"magasabb prioritással kezdődnek."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
@@ -8411,14 +8828,18 @@ msgstr ""
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "A(z) \"%s\" szolgáltatásnév nem szerepel a jól ismert szolgáltatások listáján. Ez megengedett, de szokatlan."
+msgstr ""
+"A(z) \"%s\" szolgáltatásnév nem szerepel a jól ismert szolgáltatások "
+"listáján. Ez megengedett, de szokatlan."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "A(z) \"%s\" protokoll nem szerepel a jól ismert protokollok listáján. A gyakori protokollok a _tcp és az _udp."
+msgstr ""
+"A(z) \"%s\" protokoll nem szerepel a jól ismert protokollok listáján. A "
+"gyakori protokollok a _tcp és az _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8434,7 +8855,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Érvénytelen érték az SRV rekord weight mezőjében. 0 és 65535 között kell lennie."
+msgstr ""
+"Érvénytelen érték az SRV rekord weight mezőjében. 0 és 65535 között kell "
+"lennie."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -8445,7 +8868,9 @@ msgstr "Érvénytelen SRV port érték. 1-65535."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "A(z) %d port eltér a szabványos %d porttól a(z) %s szolgáltatásnál. Ez megengedett, de szokatlan."
+msgstr ""
+"A(z) %d port eltér a szabványos %d porttól a(z) %s szolgáltatásnál. Ez "
+"megengedett, de szokatlan."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -8467,12 +8892,16 @@ msgstr "Érvénytelen érték az SRV rekord prioritás mezőjében."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "A meghatározatlan (::) és a loopback (::1) IPv6 címeket nem szabad AAAA rekordokban használni."
+msgstr ""
+"A meghatározatlan (::) és a loopback (::1) IPv6 címeket nem szabad AAAA "
+"rekordokban használni."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "A site-local IPv6 címek (fec0::/10) elavultak, ezért nem szabad használni őket."
+msgstr ""
+"A site-local IPv6 címek (fec0::/10) elavultak, ezért nem szabad használni "
+"őket."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
@@ -8503,7 +8932,9 @@ msgstr "Az NSEC3 rekord érvénytelen karaktereket tartalmaz."
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr "Az RFC 5155 és az RFC 9077 szerint az NSEC3 rekordok TTL értékének meg kell egyeznie a SOA minimum TTL mezőjének értékével."
+msgstr ""
+"Az RFC 5155 és az RFC 9077 szerint az NSEC3 rekordok TTL értékének meg kell "
+"egyeznie a SOA minimum TTL mezőjének értékével."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -8533,7 +8964,9 @@ msgstr ""
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr "Az NSEC3 rekordnak legalább a hash algoritmust, a flags mezőt, az iterációk számát, a sót és a következő hashelt tulajdonos nevet tartalmaznia kell."
+msgstr ""
+"Az NSEC3 rekordnak legalább a hash algoritmust, a flags mezőt, az iterációk "
+"számát, a sót és a következő hashelt tulajdonos nevet tartalmaznia kell."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -8555,13 +8988,17 @@ msgstr "Az NSEC3 só - (üres) vagy hexadecimális."
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "Az NSEC3 következő hashelt tulajdonos nevének érvényes Base32hex kódolású értéknek kell lennie (a 0-9 és A-V karakterek használatával)."
+msgstr ""
+"Az NSEC3 következő hashelt tulajdonos nevének érvényes Base32hex kódolású "
+"értéknek kell lennie (a 0-9 és A-V karakterek használatával)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "A type bit map mezőnek jelen kell lennie, hogy jelezze, mely RR típusok léteznek az eredeti tulajdonos néven."
+msgstr ""
+"A type bit map mezőnek jelen kell lennie, hogy jelezze, mely RR típusok "
+"léteznek az eredeti tulajdonos néven."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8588,7 +9025,9 @@ msgstr ""
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "NSEC3-at használó zóna csúcsán általában a DNSKEY mellett az NSEC3PARAM típusnak is szerepelnie kell."
+msgstr ""
+"NSEC3-at használó zóna csúcsán általában a DNSKEY mellett az NSEC3PARAM "
+"típusnak is szerepelnie kell."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8610,7 +9049,9 @@ msgstr "Érvénytelen tartománynév formátum."
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr "Ez ENUM domainnek tűnik. A NAPTR rekordoknak E2U szolgáltatásmezőt kell használniuk, és követniük kell az RFC 6116 előírásait."
+msgstr ""
+"Ez ENUM domainnek tűnik. A NAPTR rekordoknak E2U szolgáltatásmezőt kell "
+"használniuk, és követniük kell az RFC 6116 előírásait."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
@@ -8622,7 +9063,9 @@ msgstr "Összetett NAPTR regexp-ek nehezen karbantarthatók."
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr "Ez a rekord az RFC 3403 szerinti. Vegye figyelembe, hogy egyes DNS szerverek nem támogatják teljes körűen az összes NAPTR funkciót."
+msgstr ""
+"Ez a rekord az RFC 3403 szerinti. Vegye figyelembe, hogy egyes DNS szerverek "
+"nem támogatják teljes körűen az összes NAPTR funkciót."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -8666,7 +9109,9 @@ msgstr "A NAPTR regexp idézőjelbe tett sztring kell legyen."
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "A NAPTR rekord replacement mezőjének vagy \".\" értéknek, vagy érvényes, teljesen minősített domainnévnek kell lennie."
+msgstr ""
+"A NAPTR rekord replacement mezőjének vagy \".\" értéknek, vagy érvényes, "
+"teljesen minősített domainnévnek kell lennie."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -8703,7 +9148,9 @@ msgstr "NAPTR formátum: delim+pattern+delim+replace+delim+flags."
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "A NAPTR regexp jelzői (a harmadik elválasztó után) csak \"i\" betűt tartalmazhatnak, vagy üresek lehetnek."
+msgstr ""
+"A NAPTR regexp jelzői (a harmadik elválasztó után) csak \"i\" betűt "
+"tartalmazhatnak, vagy üresek lehetnek."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8741,7 +9188,9 @@ msgstr "A DNSKEY rekord prioritás mezője 0 vagy üres legyen."
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr "A DNSKEY rekordnak szóközzel elválasztva tartalmaznia kell a flags, protocol, algorithm és public-key mezőket."
+msgstr ""
+"A DNSKEY rekordnak szóközzel elválasztva tartalmaznia kell a flags, "
+"protocol, algorithm és public-key mezőket."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -8767,7 +9216,9 @@ msgstr ""
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr "A 257-es flag érték azt jelzi, hogy ez kulcsaláíró kulcs (KSK), amelynél a Zone Key és a SEP bit is be van állítva."
+msgstr ""
+"A 257-es flag érték azt jelzi, hogy ez kulcsaláíró kulcs (KSK), amelynél a "
+"Zone Key és a SEP bit is be van állítva."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
@@ -8781,7 +9232,9 @@ msgstr "A DNSKEY algoritmus 1-16 közötti szám legyen."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "Az RFC 8624 szerint az ECDSAP256SHA256 (13-as algoritmus) az AJÁNLOTT algoritmus a DNSSEC aláíráshoz."
+msgstr ""
+"Az RFC 8624 szerint az ECDSAP256SHA256 (13-as algoritmus) az AJÁNLOTT "
+"algoritmus a DNSSEC aláíráshoz."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8792,21 +9245,27 @@ msgstr "%s (%d) MUST algoritmus (RFC 8624)."
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "A(z) %s (%d. algoritmus) megvalósítását az RFC 8624 opcionálisként határozza meg."
+msgstr ""
+"A(z) %s (%d. algoritmus) megvalósítását az RFC 8624 opcionálisként határozza "
+"meg."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "A(z) %s (%d. algoritmus) az RFC 8624 szerint ELAVULT. Új rendszerekben ne használja ezt az algoritmust."
+msgstr ""
+"A(z) %s (%d. algoritmus) az RFC 8624 szerint ELAVULT. Új rendszerekben ne "
+"használja ezt az algoritmust."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Az RFC 8624 szerint a(z) %d. algoritmust TILOS megvalósítani. Ezt az értéket nem szabad használni."
+msgstr ""
+"Az RFC 8624 szerint a(z) %d. algoritmust TILOS megvalósítani. Ezt az értéket "
+"nem szabad használni."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -9044,10 +9503,6 @@ msgstr "Nem sikerült kitakarítani a zóna metaadatait: %s"
 msgid "Failed to delete zone metadata: %s"
 msgstr "Nem sikerült törölni a zóna metaadatait: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "Nincs jogosultsága a zóna metaadatainak módosítására."
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nem sikerült frissíteni a zóna típust a DNS backendben."
@@ -9165,7 +9620,9 @@ msgstr "Hamarosan inaktivál egy DNSSEC kulcsot (ID"
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr "Egy aktív kulcs deaktiválása befolyásolja a zóna biztonságát, és érvényesítési hibákat okozhat."
+msgstr ""
+"Egy aktív kulcs deaktiválása befolyásolja a zóna biztonságát, és "
+"érvényesítési hibákat okozhat."
 
 #: templates/modern/dnssec_edit_key.html:32
 msgid "Are you sure you want to proceed?"
@@ -9179,7 +9636,8 @@ msgstr "Hamarosan aktivál egy DNSSEC kulcsot (ID"
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "A kulcs aktiválásával az a zóna aktív DNSSEC aláírási láncának részévé válik."
+msgstr ""
+"A kulcs aktiválásával az a zóna aktív DNSSEC aláírási láncának részévé válik."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
@@ -9221,8 +9679,8 @@ msgstr "API-kulcs szerkesztése"
 msgid "Name"
 msgstr "Név"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
 msgstr "Adjon nevet ennek az API-kulcsnak"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
@@ -9334,7 +9792,9 @@ msgstr "Emlékeztető"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr "A rekord szerkesztése után ne feledje frissíteni a sablont használó zónákat: kattintson az \"Update zones\" gombra a sablon oldalán."
+msgstr ""
+"A rekord szerkesztése után ne feledje frissíteni a sablont használó zónákat: "
+"kattintson az \"Update zones\" gombra a sablon oldalán."
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -9401,7 +9861,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Update record"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Visszaállítás"
 
@@ -9511,9 +9971,9 @@ msgstr "TXT SPF-hez: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Adja meg az elsődleges névszerver IP címét"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
-msgstr "adjon meg IP címet"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
+msgstr "Adjon meg IP címet"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -9531,7 +9991,7 @@ msgstr "Adja meg a gazdanevet"
 msgid "Account"
 msgstr "Fiók"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Módosítások mentése"
 
@@ -9580,11 +10040,11 @@ msgstr "Biztosan eltávolítja a zóna aláírását"
 msgid "Unsign Zone"
 msgstr "Zóna aláírás törlése"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "A PowerDNS által kiszolgált sorszám, alkalmazott SOA-EDIT-tel"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Aláírt sorszám"
 
@@ -9596,7 +10056,7 @@ msgstr "DNSSEC kulcsok a zónához"
 msgid "Add new key"
 msgstr "Új kulcs hozzáadása"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "DS és DNSKEY megjelenítése"
 
@@ -9856,7 +10316,7 @@ msgstr "Csoport frissítése"
 msgid "Manage"
 msgstr "Kezelés"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Nincsenek még tagok ebben a csoportban."
 
@@ -9876,7 +10336,7 @@ msgstr "és"
 msgid "more..."
 msgstr "több..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Ez a csoport még nem birtokol zónákat."
 
@@ -10124,7 +10584,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(a fordított zónákban lévő PTR rekordokhoz) vagy"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Megjegyzés szerkesztése"
 
@@ -10172,7 +10632,9 @@ msgstr "Sablonokról"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "A zónasablonokkal előre meghatározott DNS rekordkészleteket hozhat létre, amelyek új zónák létrehozásakor gyorsan alkalmazhatók."
+msgstr ""
+"A zónasablonokkal előre meghatározott DNS rekordkészleteket hozhat létre, "
+"amelyek új zónák létrehozásakor gyorsan alkalmazhatók."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -10240,7 +10702,7 @@ msgstr "Minden felhasználó"
 msgid "All events"
 msgstr "Összes esemény"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Naplók"
 
@@ -10293,13 +10755,10 @@ msgstr "Rekordok tömeges hozzáadása"
 msgid "Records"
 msgstr "Rekordok"
 
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Adjon meg legalább egy rekordot"
-
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formátum: name,type,content,priority,ttl,comment (soronként egy rekord)"
+msgstr ""
+"Formátum: name,type,content,priority,ttl,comment (soronként egy rekord)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -10518,7 +10977,9 @@ msgstr "Adatvédelem"
 msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
-msgstr "A bejelentkezési tevékenységét és a DNS kezelési műveleteit biztonsági és auditálási célból naplózhatja a rendszer"
+msgstr ""
+"A bejelentkezési tevékenységét és a DNS kezelési műveleteit biztonsági és "
+"auditálási célból naplózhatja a rendszer"
 
 #: templates/modern/user_agreement_content.html:15
 msgid ""
@@ -10604,7 +11065,9 @@ msgstr ""
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr "Az új kulcs az újragenerálás után csak egyszer jelenik meg, ezért készüljön fel a mentésére."
+msgstr ""
+"Az új kulcs az újragenerálás után csak egyszer jelenik meg, ezért készüljön "
+"fel a mentésére."
 
 #: templates/modern/api_key_delete.html:20
 msgid "API Key Details"
@@ -10643,8 +11106,9 @@ msgid "New Password"
 msgstr "Új jelszó"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Adjon meg jelszót"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Adjon meg egy jelszót"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -10860,7 +11324,9 @@ msgstr "Kulcstípusok magyarázata"
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
-msgstr "Kombinált aláíró kulcs - egyszerre szolgál KSK-ként és ZSK-ként (PowerDNS 4.0+ esetén ajánlott)"
+msgstr ""
+"Kombinált aláíró kulcs - egyszerre szolgál KSK-ként és ZSK-ként (PowerDNS "
+"4.0+ esetén ajánlott)"
 
 #: templates/modern/dnssec_add_key.html:178
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
@@ -10900,6 +11366,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "A felhasználónevét csak rendszergazda módosíthatja"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Adja meg a felhasználónevet"
 
@@ -10931,7 +11398,9 @@ msgstr "Hagyja üresen a jelszó megtartásához"
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
-msgstr "A sablonban szereplő jogosultságok globálisan, a teljes rendszerre érvényesek lesznek erre a felhasználóra"
+msgstr ""
+"A sablonban szereplő jogosultságok globálisan, a teljes rendszerre "
+"érvényesek lesznek erre a felhasználóra"
 
 #: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
 msgid "Optional information about this user"
@@ -11230,7 +11699,9 @@ msgstr "Vissza"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "A supermaster olyan PowerDNS authoritative szerver, amely automatikusan továbbítja az új zónákat a slave szervereinek."
+msgstr ""
+"A supermaster olyan PowerDNS authoritative szerver, amely automatikusan "
+"továbbítja az új zónákat a slave szervereinek."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11240,7 +11711,9 @@ msgstr "hogyan működik"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "Amikor egy másodlagos szerver értesítést kap egy supermastertől, felveszi a tartományt, és a supermaster IP címét állítja be elsődleges címként."
+msgstr ""
+"Amikor egy másodlagos szerver értesítést kap egy supermastertől, felveszi a "
+"tartományt, és a supermaster IP címét állítja be elsődleges címként."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -11345,7 +11818,9 @@ msgstr "PTR-ek létrehozása csak meglévő A/AAAA rekordokhoz"
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr "Bejelölve a PTR rekordok csak azokhoz az IP címekhez jönnek létre, amelyekhez a megadott domainben tartozik A/AAAA rekord"
+msgstr ""
+"Bejelölve a PTR rekordok csak azokhoz az IP címekhez jönnek létre, "
+"amelyekhez a megadott domainben tartozik A/AAAA rekord"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
@@ -11393,7 +11868,9 @@ msgstr "Követelmények"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr "A funkció használata előtt a megfelelő reverz zónának már léteznie kell a PowerDNS-ben."
+msgstr ""
+"A funkció használata előtt a megfelelő reverz zónának már léteznie kell a "
+"PowerDNS-ben."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -11433,13 +11910,18 @@ msgstr "\"Create PTRs only for existing A/AAAA records\" használata."
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
-msgstr "A Host Prefix mezővel adhat előtagot az összes hosztnévhez, amikor az összes IP címet létrehozza"
+msgstr ""
+"A Host Prefix mezővel adhat előtagot az összes hosztnévhez, amikor az összes "
+"IP címet létrehozza"
 
 #: templates/modern/batch_ptr_record.html:166
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr "Jelölje be a \"Create forward A/AAAA records\" lehetőséget, hogy a hozzájuk tartozó forward rekordok automatikusan létrejöjjenek (illesztési mód használatakor nem érhető el)"
+msgstr ""
+"Jelölje be a \"Create forward A/AAAA records\" lehetőséget, hogy a hozzájuk "
+"tartozó forward rekordok automatikusan létrejöjjenek (illesztési mód "
+"használatakor nem érhető el)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -11597,13 +12079,17 @@ msgstr "DNS rekord varázsló"
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr "Válasszon varázslót, amely vezetett űrlapokkal segít összetett DNS rekordokat létrehozni kézi szövegbevitel helyett."
+msgstr ""
+"Válasszon varázslót, amely vezetett űrlapokkal segít összetett DNS "
+"rekordokat létrehozni kézi szövegbevitel helyett."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr "A DNS varázslók forward zónákhoz készültek, ezért reverz zónákhoz nem feltétlenül alkalmasak."
+msgstr ""
+"A DNS varázslók forward zónákhoz készültek, ezért reverz zónákhoz nem "
+"feltétlenül alkalmasak."
 
 #: templates/modern/dns_wizard_select.html:57
 msgid "Recommended"
@@ -11620,10 +12106,6 @@ msgstr "API-kulcs hozzáadása"
 #: templates/default/api_key_add.html:19 templates/modern/api_key_add.html:20
 msgid "My application"
 msgstr "Saját alkalmazás"
-
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Adjon nevet ennek az API-kulcsnak"
 
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
@@ -11645,75 +12127,77 @@ msgstr "Ha elveszíti a kulcsot, újra kell generálnia."
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Új rekord hozzáadása"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vezetett varázslók DMARC, SPF, DKIM, CAA, TLSA és SRV rekordokhoz"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Többrekordos mód"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Tömeges hozzáadás"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Sikertelen hozzáadás"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "rekord. Ellenőrizze a rekord formátumát."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Nem sikerült hozzáadni a rekordokat. Ellenőrizze a formátumot."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Tartalom ellenőrzés sikertelen:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Érvénytelen érték a rekord típushoz"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Kérjük, adja meg az összes szükséges információt."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "PTR hozzáadása"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "A/AAAA hozzáadása"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Ez a rekord már létezik"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Érvénytelen prioritás"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Érvénytelen TTL érték"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "TTL megadása"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
-msgstr "Tipp: elég csak a hosztnevet megadni (például 'www'), a zóna neve automatikusan hozzáadódik. A zóna csúcsához/gyökeréhez használja a '@' jelet."
+msgstr ""
+"Tipp: elég csak a hosztnevet megadni (például 'www'), a zóna neve "
+"automatikusan hozzáadódik. A zóna csúcsához/gyökeréhez használja a '@' jelet."
 
 #: lib/Module/ZoneImportExport/templates/import.html:40
 msgid "Edit zone"
@@ -11771,59 +12255,59 @@ msgstr "total records"
 msgid "Last modified"
 msgstr "Utolsó módosítás"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Utoljára szerkesztette: %account%, ekkor: %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Kiválasztott szerkesztése"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Rekord(ok) törlése"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Megjegyzések"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Importálás"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "PTR generálása"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Zóna konfiguráció"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Módosítás"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "A fő NS IP címe"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "DNSSEC kezelés"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "A DNSSEC kulcsokat az elsődleges szerveren kezelik"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Előre aláírt"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Zóna aláírása"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Nincs aláírva"
 
@@ -12096,7 +12580,7 @@ msgid "Send Username"
 msgstr "Felhasználónév küldése"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Adja meg a jelszót"
 
@@ -12482,7 +12966,9 @@ msgstr "A zóna sablonnak nincs SOA rekordja."
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr "A DNS zónák megfelelő működéséhez általában SOA rekord szükséges, és enélkül a DNSSEC aláírás is meghiúsulhat."
+msgstr ""
+"A DNS zónák megfelelő működéséhez általában SOA rekord szükséges, és enélkül "
+"a DNSSEC aláírás is meghiúsulhat."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
@@ -12782,7 +13268,10 @@ msgstr "Poweradmin MFA helyreállítási kódok"
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
-msgstr "Tárolja ezeket a kódokat biztonságos helyen. Mindegyik kód egyszer használható a bejelentkezéshez, ha elveszíti a hozzáférést a hitelesítő eszközéhez."
+msgstr ""
+"Tárolja ezeket a kódokat biztonságos helyen. Mindegyik kód egyszer "
+"használható a bejelentkezéshez, ha elveszíti a hozzáférést a hitelesítő "
+"eszközéhez."
 
 #: templates/default/mfa_setup.html:10 templates/modern/mfa_setup.html:10
 msgid "MFA Setup Required"
@@ -12877,13 +13366,17 @@ msgstr "Az e-mailes ellenőrzés nem érhető el, mert a rendszergazda letiltott
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
-msgstr "Az e-mailes ellenőrzés nem érhető el, mert a levelezési szolgáltatás nincs engedélyezve ezen a rendszeren."
+msgstr ""
+"Az e-mailes ellenőrzés nem érhető el, mert a levelezési szolgáltatás nincs "
+"engedélyezve ezen a rendszeren."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
-msgstr "Az e-mailes ellenőrzés használata előtt be kell állítania az e-mail címét a profiljában."
+msgstr ""
+"Az e-mailes ellenőrzés használata előtt be kell állítania az e-mail címét a "
+"profiljában."
 
 #: templates/default/mfa_setup.html:113 templates/modern/mfa_setup.html:113
 msgid "Set up email verification"
@@ -12941,7 +13434,10 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Olyan másodlagos zónát készül törölni, amelynek elsődleges névszervere supermaster. A zóna törlése most csak ideiglenes eltávolítást jelent. Amint a supermaster értesítést küld erről a zónáról, a zóna újra létrejön!"
+msgstr ""
+"Olyan másodlagos zónát készül törölni, amelynek elsődleges névszervere "
+"supermaster. A zóna törlése most csak ideiglenes eltávolítást jelent. Amint "
+"a supermaster értesítést küld erről a zónáról, a zóna újra létrejön!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13087,7 +13583,9 @@ msgstr "DNS keresés"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr "Adjon meg tartományt, gazdanevet vagy IP-t (pl. example.com type:txt content:spf)"
+msgstr ""
+"Adjon meg tartományt, gazdanevet vagy IP-t (pl. example.com type:txt "
+"content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -13192,15 +13690,13 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Másodlagos zóna konfiguráció"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Adjon meg IP címet"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
-msgstr "A master névszerver IP címe (IPv4 és IPv6 is támogatott, több IP cím vesszővel elválasztva)"
+msgstr ""
+"A master névszerver IP címe (IPv4 és IPv6 is támogatott, több IP cím "
+"vesszővel elválasztva)"
 
 #: templates/modern/delete_zone_templ.html:5
 msgid "Delete template"
@@ -13293,7 +13789,9 @@ msgstr ""
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
-msgstr "A szabványos sablonok aktívak. Ezeket az alapértelmezett sablonokat használja a rendszer az e-mailek küldésekor."
+msgstr ""
+"A szabványos sablonok aktívak. Ezeket az alapértelmezett sablonokat "
+"használja a rendszer az e-mailek küldésekor."
 
 #: templates/modern/email_previews.html:51
 msgid "Subject:"
@@ -13336,7 +13834,10 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Saját e-mail sablonokat is létrehozhat: helyezze őket a <code>templates/emails/custom/</code> könyvtárba, így a szabványos sablonokat a saját kialakításúakra cserélheti."
+msgstr ""
+"Saját e-mail sablonokat is létrehozhat: helyezze őket a <code>templates/"
+"emails/custom/</code> könyvtárba, így a szabványos sablonokat a saját "
+"kialakításúakra cserélheti."
 
 #: templates/modern/email_previews.html:90
 msgid "About Email Previews"
@@ -13371,7 +13872,9 @@ msgstr "Állapot frissítése"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "A PowerDNS API nincs beállítva. Adja meg a PowerDNS API URL-t és az API kulcsot a beállításokban."
+msgstr ""
+"A PowerDNS API nincs beállítva. Adja meg a PowerDNS API URL-t és az API "
+"kulcsot a beállításokban."
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13631,10 +14134,6 @@ msgstr "Vissza a csoporthoz"
 msgid "Owned Zones"
 msgstr "Tulajdonolt zónák"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Ez a csoport még nem birtokol zónákat"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Kijelöltek eltávolítása"
@@ -13740,7 +14239,9 @@ msgstr "Hamarosan törli az API-kulcsot"
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
-msgstr "Ha törli ezt az API kulcsot, az azt használó alkalmazások többé nem tudnak hitelesíteni."
+msgstr ""
+"Ha törli ezt az API kulcsot, az azt használó alkalmazások többé nem tudnak "
+"hitelesíteni."
 
 #: templates/modern/api_key_delete.html:66
 msgid "Yes, delete this API key"
@@ -13783,7 +14284,9 @@ msgstr "<strong>Felhasználóknál</strong>: globális jogok."
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "<strong>Csoportokhoz</strong> rendelve: a jogosultságok csak az adott csoport tulajdonában lévő zónákra vonatkoznak."
+msgstr ""
+"<strong>Csoportokhoz</strong> rendelve: a jogosultságok csak az adott "
+"csoport tulajdonában lévő zónákra vonatkoznak."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"
@@ -13793,7 +14296,10 @@ msgstr "Engedély csoportok"
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
-msgstr "Az egyszerűbb kezelés érdekében a jogosultságok az alábbi csoportokba vannak rendezve. A keresés használatával gyorsan megtalálhatja az egyes jogosultságokat."
+msgstr ""
+"Az egyszerűbb kezelés érdekében a jogosultságok az alábbi csoportokba vannak "
+"rendezve. A keresés használatával gyorsan megtalálhatja az egyes "
+"jogosultságokat."
 
 #: templates/modern/delete_zone_templ_record.html:6
 msgid "Delete record"
@@ -13823,7 +14329,9 @@ msgstr "Hamarosan aktív DNSSEC kulcsot töröl (ID"
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "Egy aktív kulcs törlése befolyásolja a zóna biztonságát, és érvényesítési hibákat okozhat."
+msgstr ""
+"Egy aktív kulcs törlése befolyásolja a zóna biztonságát, és érvényesítési "
+"hibákat okozhat."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"
@@ -13833,7 +14341,9 @@ msgstr "Hamarosan töröl egy DNSSEC kulcsot (ID"
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
-msgstr "A csoport minden tagja örökli ezeket a jogosultságokat a csoport tulajdonában lévő zónákra"
+msgstr ""
+"A csoport minden tagja örökli ezeket a jogosultságokat a csoport "
+"tulajdonában lévő zónákra"
 
 #: templates/default/add_group.html:42 templates/modern/add_group.html:42
 msgid "Create Group"
@@ -13916,10 +14426,6 @@ msgstr "csoport neve"
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
 msgstr "Jelenlegi tagok"
-
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Nincsenek még tagok ebben a csoportban"
 
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
@@ -14193,17 +14699,13 @@ msgstr "RDAP eredmények"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Adjon meg egy domainnevet az RDAP-lekérdezés végrehajtásához."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
 msgstr "Korlátozott jogú felhasználó létrehozása"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Korlátozott jogú felhasználó létrehozása"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -14398,10 +14900,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Az adatbázis-kiszolgáló típusa."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Adja meg a felhasználónevet"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Táblakészítési joggal rendelkező adatbázis-felhasználó neve."
@@ -14513,10 +15011,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "Rögzítve a kezdeti rendszergazdai fiókhoz."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Adjon meg egy jelszót"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -14634,10 +15128,6 @@ msgid ""
 msgstr ""
 "Korlátozott hozzáférésű Poweradmin adatbázis-felhasználó neve. Nem a webes "
 "felületre való bejelentkezéshez."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Adja meg a felhasználó jelszavát"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -14957,14 +15447,6 @@ msgstr ""
 "A területi beállítás alkalmazása nem sikerült. A kiválasztott területi "
 "beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a "
 "kapcsolatot a rendszergazdával."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Érvénytelen LOC rekord formátum. A formátum a következő legyen: d1 [m1 "
-# OBSOLETE: "[s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] "
-# OBSOLETE: "[hp[\"m\"] [vp[\"m\"]]]."
 
 
 

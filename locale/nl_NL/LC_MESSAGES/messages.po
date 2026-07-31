@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "Ongeldig zone-ID."
 msgid "Zone not found."
 msgstr "Zone niet gevonden."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "U heeft geen toestemming om records toe te voegen aan deze zone."
 
@@ -333,7 +333,7 @@ msgstr ""
 "certificaat heeft opgegeven."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Ongeldig hostnaam formaat"
 
@@ -1807,7 +1807,7 @@ msgstr "U hebt geen toestemming om supermasters te bekijken."
 msgid "You do not have the permission to view zone metadata."
 msgstr "U heeft geen toestemming om zone-metadata te bekijken."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "U heeft geen toestemming om zone-metadata te bewerken."
 
@@ -1925,13 +1925,10 @@ msgstr "ingeschakeld"
 msgid "API key %s successfully."
 msgstr "API-sleutel %s succesvol."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "U hebt geen toestemming om records toe te voegen aan deze zone."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Geef ten minste één record op."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Geef minstens één record op"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1941,7 +1938,7 @@ msgstr "Ongeldig recordtype."
 msgid "Record could not be added."
 msgstr "Record kon niet worden toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d record(s) zijn succesvol toegevoegd."
@@ -2022,7 +2019,7 @@ msgstr "Paginanummer overschrijdt beschikbare pagina's."
 msgid "Invalid request method."
 msgstr "Ongeldige verzoeksmethode."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Ongeldige groeps- of gebruikers-ID."
 
@@ -2150,7 +2147,7 @@ msgstr "Voer een andere naam in bij het gebruik van Opslaan Als."
 msgid "Zone template has been copied successfully."
 msgstr "Zonesjabloon is succesvol gekopieerd."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "U hebt geen toestemming om zonesjablonen te bekijken."
 
@@ -2166,7 +2163,7 @@ msgstr "Ongeldig sjabloon-ID."
 msgid "Template does not exist."
 msgstr "Sjabloon bestaat niet."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "U heeft geen toestemming om deze zone te bekijken."
 
@@ -2220,10 +2217,6 @@ msgstr "Zone bewerken"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "U heeft geen toestemming om deze zone te benaderen."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "U hebt geen toestemming om deze zone te bekijken."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2404,11 +2397,6 @@ msgstr "Record toegevoegd."
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "Geen records opgegeven."
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d record(s) zijn succesvol toegevoegd."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2620,10 +2608,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "%d standaardwaarde(n) opgeslagen; %d gewist."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "U hebt geen toestemming om zonesjablonen te bekijken."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2901,10 +2885,6 @@ msgstr "Dashboard"
 msgid "You do not have permission to manage group memberships."
 msgstr "U heeft geen toestemming om groepslidmaatschappen te beheren."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Ongeldige gebruikers- of groeps-ID."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Gebruiker verwijderd uit groep."
@@ -3160,7 +3140,7 @@ msgstr "Uitloggen voltooid (met waarschuwingen): "
 msgid "You do not have permission to view this record."
 msgstr "U heeft geen toestemming om dit record te bekijken."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "U heeft geen toestemming om dit record te bewerken."
 
@@ -3284,7 +3264,7 @@ msgid "Failed to add zone."
 msgstr "Kan zone niet toevoegen."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "Zones zijn succesvol toegevoegd."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3447,12 +3427,12 @@ msgstr "Het veld %s is verplicht."
 msgid "The %s field must be a number."
 msgstr "Het veld %s moet een getal zijn."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Nee"
@@ -3718,13 +3698,13 @@ msgid ""
 "below."
 msgstr "Verbindingsstatus van de hieronder geconfigureerde supermasters."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "De map install/ bestaat; u moet deze eerst verwijderen voordat u verdergaat."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3839,10 +3819,6 @@ msgstr "Uw inhoudsveld heeft geen geldige waarde."
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioriteit voor MX/SRV-records moet tussen 0 en 65535 liggen."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "U hebt geen toestemming om dit record te bewerken."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4232,7 +4208,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA-record moet usage, selector, matching-type en certificate-data gescheiden door spaties bevatten."
+msgstr ""
+"TLSA-record moet usage, selector, matching-type en certificate-data "
+"gescheiden door spaties bevatten."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4652,7 +4630,9 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Ongeldig LOC record formaat. Formaat moet zijn: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Ongeldig LOC record formaat. Formaat moet zijn: d1 [m1 [s1]] {\"N\"|\"S\"} "
+"d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5858,7 +5838,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr "HTTPS record parameters moeten in key=value formaat zijn gescheiden door spaties."
+msgstr ""
+"HTTPS record parameters moeten in key=value formaat zijn gescheiden door "
+"spaties."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -7880,7 +7862,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters moeten in key=value formaat zijn gescheiden door spaties."
+msgstr ""
+"SVCB parameters moeten in key=value formaat zijn gescheiden door spaties."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -9680,10 +9663,6 @@ msgstr "Kan zonemetadata niet opschonen: %s"
 msgid "Failed to delete zone metadata: %s"
 msgstr "Kan zonemetadata niet verwijderen: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "U hebt geen toestemming om zone-metadata te wijzigen."
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "Kan zonetype niet bijwerken in DNS-backend."
@@ -9861,9 +9840,9 @@ msgstr "API Sleutel Bewerken"
 msgid "Name"
 msgstr "Naam"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "Geef een naam op voor deze API sleutel"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "Geef een naam voor deze API sleutel"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -10045,7 +10024,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Record bijwerken"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Resetten"
 
@@ -10156,8 +10135,8 @@ msgstr "TXT voor SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Voer het IP adres van de master nameserver in"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
 msgstr "Geef IP adres op"
 
 #: templates/modern/delete_supermaster.html:23
@@ -10176,7 +10155,7 @@ msgstr "Geef hostnaam op"
 msgid "Account"
 msgstr "Account"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Wijzigingen opslaan"
 
@@ -10228,11 +10207,11 @@ msgstr "Weet u zeker dat u de zone wilt onthandtekenen"
 msgid "Unsign Zone"
 msgstr "Zone Onthandtekenen"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "Serienummer zoals geleverd door PowerDNS, met SOA-EDIT toegepast"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Ondertekend serienummer"
 
@@ -10244,7 +10223,7 @@ msgstr "DNSSEC sleutels voor zone"
 msgid "Add new key"
 msgstr "Nieuwe sleutel toevoegen"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "Toon DS en DNSKEY"
 
@@ -10506,7 +10485,7 @@ msgstr "Groep bijwerken"
 msgid "Manage"
 msgstr "Beheren"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Nog geen leden in deze groep."
 
@@ -10526,7 +10505,7 @@ msgstr "en"
 msgid "more..."
 msgstr "meer..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Deze groep bezit nog geen zones."
 
@@ -10780,7 +10759,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(voor PTR's in reverse zones) of"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Opmerking bewerken"
 
@@ -10900,7 +10879,7 @@ msgstr "Alle gebruikers"
 msgid "All events"
 msgstr "Alle gebeurtenissen"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Logboeken"
 
@@ -10951,10 +10930,6 @@ msgstr "Bulk Records Toevoegen"
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
 msgstr "Records"
-
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Geef minstens één record op"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -11322,7 +11297,8 @@ msgid "New Password"
 msgstr "Nieuw Wachtwoord"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
 msgstr "Geef een wachtwoord op"
 
 #: templates/modern/reset_password.html:54
@@ -11580,6 +11556,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Uw gebruikersnaam kan alleen door een beheerder worden gewijzigd"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Geef gebruikersnaam op"
 
@@ -12341,10 +12318,6 @@ msgstr "API Sleutel Toevoegen"
 msgid "My application"
 msgstr "Mijn applicatie"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Geef een naam voor deze API sleutel"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "API Sleutel Aanmaken"
@@ -12366,71 +12339,71 @@ msgstr "Als u de sleutel kwijtraakt, moet u deze regenereren."
 msgid "Edit"
 msgstr "Bewerken"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Nieuw record toevoegen"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Begeleide wizards voor DMARC, SPF, DKIM, CAA, TLSA en SRV-records"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Multi-record modus"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Bulk toevoegen"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Toevoegen mislukt"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "record(s). Controleer het record formaat."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Records toevoegen mislukt. Controleer het record formaat."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Inhoud validatie mislukt:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Ongeldige waarde voor record type"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Geef alle vereiste informatie op."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "PTR Toevoegen"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "A/AAAA Toevoegen"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Dit record bestaat al"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Ongeldige prioriteit"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Ongeldige TTL waarde"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "Geef TTL op"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12494,59 +12467,59 @@ msgstr "totaal records"
 msgid "Last modified"
 msgstr "Laatst gewijzigd"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Laatst bewerkt door %account% op %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Geselecteerde bewerken"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Record(s) verwijderen"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Importeren"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "Genereer PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Zoneconfiguratie"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Wijzigen"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "IP adres van master NS"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "DNSSEC beheren"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC-sleutels worden beheerd op de primaire server"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Presigned"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Zone ondertekenen"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Niet ondertekend"
 
@@ -12825,7 +12798,7 @@ msgid "Send Username"
 msgstr "Gebruikersnaam verzenden"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Geef het gebruikerswachtwoord op"
 
@@ -13844,7 +13817,8 @@ msgstr "DNS Zoeken"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr "Voer domeinnaam, hostnaam of IP in (bijv. example.com type:txt content:spf)"
+msgstr ""
+"Voer domeinnaam, hostnaam of IP in (bijv. example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -13949,10 +13923,6 @@ msgstr ""
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
 msgstr "Slave-zoneconfiguratie"
-
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Geef IP adres op"
 
 #: templates/modern/add_zone_slave.html:33
 msgid ""
@@ -14412,10 +14382,6 @@ msgstr "Terug naar groep"
 msgid "Owned Zones"
 msgstr "Zones in eigendom"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Deze groep bezit nog geen zones"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Geselecteerde verwijderen"
@@ -14709,10 +14675,6 @@ msgstr "Groepsnaam"
 msgid "Current Members"
 msgstr "Huidige leden"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Nog geen leden in deze groep"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "Beschikbare gebruikers"
@@ -14960,7 +14922,9 @@ msgstr "Opzoeken"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr "Voer een domeinnaam in (bijv. example.com) om de WHOIS informatie op te zoeken"
+msgstr ""
+"Voer een domeinnaam in (bijv. example.com) om de WHOIS informatie op te "
+"zoeken"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -14976,7 +14940,8 @@ msgstr "RDAP Opzoeken"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Voer een domeinnaam in (bijv. example.com) om de RDAP informatie op te zoeken"
+msgstr ""
+"Voer een domeinnaam in (bijv. example.com) om de RDAP informatie op te zoeken"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"
@@ -14986,17 +14951,13 @@ msgstr "RDAP resultaten voor"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Voer een domeinnaam in om een RDAP-opzoeking uit te voeren."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
 msgstr "Gebruiker met beperkte rechten aanmaken"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Gebruiker met beperkte rechten aanmaken"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -15192,10 +15153,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Type databaseserver."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Geef de gebruikersnaam op"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Databasegebruikersnaam met rechten om tabellen aan te maken."
@@ -15308,10 +15265,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "Vastgezet voor het oorspronkelijke administratoraccount."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Geef een wachtwoord op"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15428,10 +15381,6 @@ msgid ""
 msgstr ""
 "Poweradmin-databasegebruikersnaam met beperkte toegang. Niet voor inloggen "
 "op de web-UI."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Geef het gebruikerswachtwoord op"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15746,14 +15695,6 @@ msgid ""
 msgstr ""
 "Het instellen van de locale is mislukt. De geselecteerde locale wordt "
 "mogelijk niet ondersteund op dit systeem. Neem contact op met uw beheerder."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ongeldig LOC record formaat. Formaat moet zijn: d1 [m1 [s1]] {\"N\"|"
-# OBSOLETE: "\"Z\"} d2 [m2 [s2]] {\"O\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-# OBSOLETE: "[vp[\"m\"]]]."
 
 
 

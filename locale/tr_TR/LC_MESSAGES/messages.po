@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -39,7 +39,7 @@ msgstr "Geçersiz zon kimliği."
 msgid "Zone not found."
 msgstr "Bölge bulunamadı."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "Bu bölgeye kayıt ekleme izniniz yok."
 
@@ -336,7 +336,7 @@ msgstr ""
 "emin olun."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Geçersiz sunucu adı formatı"
 
@@ -1788,7 +1788,7 @@ msgstr "Supermaster'ları görüntüleme yetkiniz yok."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Bölge meta verilerini görüntüleme izniniz yok."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Alan meta verilerini düzenleme izniniz yok."
 
@@ -1903,13 +1903,10 @@ msgstr "etkin"
 msgid "API key %s successfully."
 msgstr "API anahtarı başarıyla %s."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Lütfen en az bir kayıt sağlayın."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "En az bir kayıt sağlayın"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1919,7 +1916,7 @@ msgstr "Geçersiz kayıt tipi."
 msgid "Record could not be added."
 msgstr "Kayıt eklenemedi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kayıt başarıyla eklendi."
@@ -1999,7 +1996,7 @@ msgstr "Sayfa numarası mevcut sayfaları aşıyor."
 msgid "Invalid request method."
 msgstr "Geçersiz istek yöntemi."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Geçersiz grup veya kullanıcı ID'si."
 
@@ -2123,7 +2120,7 @@ msgstr "Farklı Kaydet kullanırken lütfen farklı bir ad girin."
 msgid "Zone template has been copied successfully."
 msgstr "Zon şablonu başarıyla kopyalandı."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "Zon şablonlarını görüntüleme yetkiniz yok."
 
@@ -2139,7 +2136,7 @@ msgstr "Geçersiz şablon ID."
 msgid "Template does not exist."
 msgstr "Şablon mevcut değil."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "Bu bölgeyi görüntüleme izniniz bulunmamaktadır."
 
@@ -2193,10 +2190,6 @@ msgstr "Bölgeyi Düzenle"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "Bu bölgeye erişim izniniz bulunmamaktadır."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "Bu zonu görüntüleme yetkiniz yok."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2374,11 +2367,6 @@ msgstr "Kayıt başarıyla eklendi."
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "Kayıt sağlanmadı."
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d kayıt başarıyla eklendi."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2589,10 +2577,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "%d varsayılan kaydedildi; %d temizlendi."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "Zon şablonlarını görüntüleme yetkiniz yok."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2867,10 +2851,6 @@ msgstr "Pano"
 msgid "You do not have permission to manage group memberships."
 msgstr "Grup üyeliklerini yönetme izniniz yok."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Geçersiz kullanıcı veya grup ID'si."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Kullanıcı gruptan başarıyla çıkarıldı."
@@ -3120,7 +3100,7 @@ msgstr "Oturum kapatma tamamlandı (uyarılarla): "
 msgid "You do not have permission to view this record."
 msgstr "Bu kaydı görüntüleme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "Bu kaydı düzenleme izniniz bulunmamaktadır."
 
@@ -3243,7 +3223,7 @@ msgid "Failed to add zone."
 msgstr "Bölge eklenemedi."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "Zonlar başarıyla eklendi."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3401,12 +3381,12 @@ msgstr "%s alanı zorunludur."
 msgid "The %s field must be a number."
 msgstr "%s alanı bir sayı olmalıdır."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Evet"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Hayır"
@@ -3625,7 +3605,8 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Bu supermaster için IP adresi, hostname veya hesabı değiştirebilirsiniz."
+msgstr ""
+"Bu supermaster için IP adresi, hostname veya hesabı değiştirebilirsiniz."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3675,12 +3656,12 @@ msgstr ""
 "Aşağıdaki tabloda yapılandırılmış supermaster sunucuların bağlantı durumu "
 "gösteriliyor."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "install/ dizini mevcut, devam etmeden önce onu kaldırmalısınız."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3793,10 +3774,6 @@ msgstr "İçerik alanınız geçerli bir değere sahip değil."
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV kayıtları için öncelik 0 ile 65535 arasında bir sayı olmalıdır."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "Bu kaydı düzenleme yetkiniz yok."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4186,7 +4163,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA kaydı boşluklarla ayrılmış usage, selector, matching-type ve certificate-data içermelidir."
+msgstr ""
+"TLSA kaydı boşluklarla ayrılmış usage, selector, matching-type ve "
+"certificate-data içermelidir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4258,7 +4237,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve güvenlik sağlar."
+msgstr ""
+"Matching-type 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve "
+"güvenlik sağlar."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4599,7 +4580,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Geçersiz LOC kayıt formatı. Format şöyle olmalıdır: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Geçersiz LOC kayıt formatı. Format şöyle olmalıdır: d1 [m1 [s1]] {\"N\"|"
+"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -7873,7 +7857,9 @@ msgstr "SMIMEA kaydı geçersiz karakterler içeriyor."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA kaydı boşluklarla ayrılmış usage, selector, matching-type ve certificate-data içermelidir."
+msgstr ""
+"SMIMEA kaydı boşluklarla ayrılmış usage, selector, matching-type ve "
+"certificate-data içermelidir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -9572,10 +9558,6 @@ msgstr "Bölge meta verileri temizlenemedi: %s"
 msgid "Failed to delete zone metadata: %s"
 msgstr "Bölge meta verileri silinemedi: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "Bölge meta verilerini değiştirme izniniz yok."
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "DNS arka ucunda bölge türü güncellenemedi."
@@ -9753,9 +9735,9 @@ msgstr "API Anahtarını Düzenle"
 msgid "Name"
 msgstr "Ad"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "Lütfen bu API anahtarı için bir ad sağlayın"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "Bu API anahtarı için bir ad sağlayın"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -9934,7 +9916,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Kaydı güncelle"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -10045,8 +10027,8 @@ msgstr "SPF için TXT: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Master ad sunucusunun IP adresini girin"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
 msgstr "IP adresi sağlayın"
 
 #: templates/modern/delete_supermaster.html:23
@@ -10065,7 +10047,7 @@ msgstr "Host adı sağlayın"
 msgid "Account"
 msgstr "Hesap"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
@@ -10117,11 +10099,11 @@ msgstr "Zonu imzasız yapmak istediğinizden emin misiniz"
 msgid "Unsign Zone"
 msgstr "Zonu İmzasız Yap"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "PowerDNS tarafından sunulduğu şekliyle, SOA-EDIT uygulanmış seri"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "İmzalı seri"
 
@@ -10133,7 +10115,7 @@ msgstr "Zon için DNSSEC anahtarları"
 msgid "Add new key"
 msgstr "Yeni anahtar ekle"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "DS ve DNSKEY göster"
 
@@ -10395,7 +10377,7 @@ msgstr "Grubu Güncelle"
 msgid "Manage"
 msgstr "Yönet"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Bu grupta henüz üye yok."
 
@@ -10415,7 +10397,7 @@ msgstr "ve"
 msgid "more..."
 msgstr "daha fazla..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Bu grup henüz hiçbir bölgeye sahip değil."
 
@@ -10662,7 +10644,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(ters bölgelerdeki PTR kayıtları için) veya"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Yorumu düzenle"
 
@@ -10781,7 +10763,7 @@ msgstr "Tüm kullanıcılar"
 msgid "All events"
 msgstr "Tüm olaylar"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Günlükler"
 
@@ -10834,13 +10816,10 @@ msgstr "Toplu Kayıt Ekleme"
 msgid "Records"
 msgstr "Kayıtlar"
 
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "En az bir kayıt sağlayın"
-
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: name,type,content,priority,ttl,comment (satır başına bir kayıt)"
+msgstr ""
+"Format: name,type,content,priority,ttl,comment (satır başına bir kayıt)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11198,8 +11177,9 @@ msgid "New Password"
 msgstr "Yeni Şifre"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Lütfen bir şifre sağlayın"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Bir parola girin"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -11456,6 +11436,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Kullanıcı adınız yalnızca bir yönetici tarafından değiştirilebilir"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Kullanıcı adı sağlayın"
 
@@ -12212,10 +12193,6 @@ msgstr "API Anahtarı Ekle"
 msgid "My application"
 msgstr "Uygulamam"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Bu API anahtarı için bir ad sağlayın"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "API Anahtarı Oluştur"
@@ -12237,72 +12214,72 @@ msgstr "Anahtarı kaybederseniz, yeniden oluşturmanız gerekecektir."
 msgid "Edit"
 msgstr "Düzenle"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Yeni kayıt ekle"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr ""
 "DMARC, SPF, DKIM, CAA, TLSA ve SRV kayıtları için yönlendirmeli sihirbazlar"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Çoklu kayıt kipi"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Toplu ekleme"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Ekleme başarısız"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "kayıt(lar). Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Kayıt ekleme başarısız. Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "İçerik doğrulama başarısız:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Kayıt tipi için geçersiz değer"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Lütfen tüm gerekli bilgileri sağlayın."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "PTR Ekle"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "A/AAAA Ekle"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Bu kayıt zaten mevcut"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Geçersiz öncelik"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Geçersiz TTL değeri"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "TTL sağlayın"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12366,59 +12343,59 @@ msgstr "toplam kayıt"
 msgid "Last modified"
 msgstr "Son değişiklik"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "En son %date% tarihinde %account% tarafından düzenlendi"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Seçileni düzenle"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Kayıt(ları) sil"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "İçe Aktar"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "PTR Oluştur"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Bölge Yapılandırması"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Değiştir"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "Ana NS'nin IP adresi"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "DNSSEC Yönet"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC anahtarları birincil sunucuda yönetilir"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Önceden imzalı"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Zonu imzala"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "İmzalanmamış"
 
@@ -12697,7 +12674,7 @@ msgid "Send Username"
 msgstr "Kullanıcı Adını Gönder"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Kullanıcı şifresini girin"
 
@@ -13814,10 +13791,6 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Slave Bölge Yapılandırması"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "IP adresi sağlayın"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
@@ -14267,10 +14240,6 @@ msgstr "Gruba Dön"
 msgid "Owned Zones"
 msgstr "Sahip Olunan Bölgeler"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Bu grup henüz hiçbir bölgeye sahip değil"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Seçilenleri Çıkar"
@@ -14562,10 +14531,6 @@ msgstr "Grup adı"
 msgid "Current Members"
 msgstr "Mevcut Üyeler"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Bu grupta henüz üye yok"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "Mevcut Kullanıcılar"
@@ -14839,17 +14804,13 @@ msgstr "Şunun için RDAP sonuçları:"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP sorgusu yapmak için bir alan adı girin."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Sınırlı haklara sahip kullanıcı oluştur"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "Sınırlı haklı kullanıcı oluştur"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Sınırlı haklı kullanıcı oluştur"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -15043,10 +15004,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Veritabanı sunucusu türü."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Kullanıcı adını girin"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Tablo oluşturma haklarına sahip veritabanı kullanıcı adı."
@@ -15158,10 +15115,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "İlk yönetici hesabı için sabit."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Bir parola girin"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15276,10 +15229,6 @@ msgid ""
 msgstr ""
 "Kısıtlı erişime sahip Poweradmin veritabanı kullanıcı adı. Web arayüzünde "
 "oturum açmak için değildir."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Kullanıcı parolasını girin"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15590,14 +15539,6 @@ msgid ""
 msgstr ""
 "Yerel ayar uygulanamadı. Seçilen yerel ayar bu sistemde desteklenmiyor "
 "olabilir. Lütfen yöneticinizle iletişime geçin."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Geçersiz LOC kayıt formatı. Format şöyle olmalıdır: d1 [m1 [s1]] {\"N\"|"
-# OBSOLETE: "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-# OBSOLETE: "[vp[\"m\"]]]."
 
 
 

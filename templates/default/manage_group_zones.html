@@ -22,7 +22,7 @@
                 {% if owned_zones is empty %}
                 <p class="text-muted text-center py-4">
                     <i class="bi bi-inbox fs-1"></i><br>
-                    {% trans %}This group doesn't own any zones yet{% endtrans %}
+                    {% trans %}This group doesn't own any zones yet.{% endtrans %}
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/zones" id="remove-form">

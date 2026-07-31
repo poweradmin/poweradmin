@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "ID de zona inválido."
 msgid "Zone not found."
 msgstr "Zona não encontrada."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "Você não tem permissão para adicionar registros a esta zona."
 
@@ -335,7 +335,7 @@ msgstr ""
 "forneceu o certificado completo."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Formato de nome de host inválido"
 
@@ -1817,7 +1817,7 @@ msgstr "Você não tem permissão para ver supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Você não tem permissão para ver os metadados da zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Nao tem permissao para editar os metadados da zona."
 
@@ -1933,13 +1933,10 @@ msgstr "ativada"
 msgid "API key %s successfully."
 msgstr "Chave API %s com sucesso."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "Você não tem permissão para adicionar registros a esta zona."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Forneça pelo menos um registro."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Forneça pelo menos um registro"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1949,7 +1946,7 @@ msgstr "Tipo de registro inválido."
 msgid "Record could not be added."
 msgstr "O registro não pôde ser adicionado."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d registro(s) foram adicionados com sucesso."
@@ -2030,7 +2027,7 @@ msgstr "Número de página excede as páginas disponíveis."
 msgid "Invalid request method."
 msgstr "Método de pedido inválido."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "ID de grupo ou usuário inválido."
 
@@ -2156,7 +2153,7 @@ msgstr "Introduza um nome diferente ao usar Salvar Como."
 msgid "Zone template has been copied successfully."
 msgstr "O modelo de zona foi copiado com sucesso."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "Você não tem permissão para ver modelos de zona."
 
@@ -2172,7 +2169,7 @@ msgstr "ID de modelo inválido."
 msgid "Template does not exist."
 msgstr "O modelo não existe."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "Você não tem permissão para ver esta zona."
 
@@ -2226,10 +2223,6 @@ msgstr "Editar Zona"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "Você não tem permissão para aceder a esta zona."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "Você não tem permissão para ver esta zona."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2417,11 +2410,6 @@ msgstr "Registro adicionado com sucesso."
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "Nenhum registro foi fornecido."
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d registro(s) foram adicionados com sucesso."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2635,10 +2623,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "%d padrão(ões) salvo(s); %d removido(s)."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "Você não tem permissão para ver modelos de zona."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2915,10 +2899,6 @@ msgstr "Painel"
 msgid "You do not have permission to manage group memberships."
 msgstr "Você não tem permissão para gerenciar membros de grupo."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "ID de usuário ou grupo inválido."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Usuário removido do grupo com sucesso."
@@ -3176,7 +3156,7 @@ msgstr "Logout concluído (com avisos): "
 msgid "You do not have permission to view this record."
 msgstr "Você não tem permissão para ver este registro."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "Você não tem permissão para editar este registro."
 
@@ -3298,7 +3278,7 @@ msgid "Failed to add zone."
 msgstr "Falha ao adicionar zona."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "As zonas foram adicionadas com sucesso."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3462,12 +3442,12 @@ msgstr "O campo %s é obrigatório."
 msgid "The %s field must be a number."
 msgstr "O campo %s deve ser um número."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Sim"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Não"
@@ -3736,12 +3716,12 @@ msgid ""
 msgstr ""
 "Estado de conectividade dos supermasters configurados na tabela abaixo."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "O diretório install/ existe, você deve removê-lo antes de prosseguir."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3857,10 +3837,6 @@ msgstr "O seu campo de conteúdo não tem um valor válido."
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "A prioridade para registros MX/SRV deve ser um número entre 0 e 65535."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "Você não tem permissão para editar este registro."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4253,7 +4229,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "O registro TLSA deve conter usage, selector, matching-type e certificate-data separados por espaços."
+msgstr ""
+"O registro TLSA deve conter usage, selector, matching-type e certificate-"
+"data separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4295,7 +4273,9 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr "A RFC 7671 recomenda usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) como a configuração mais robusta."
+msgstr ""
+"A RFC 7671 recomenda usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
+"(SHA-256) como a configuração mais robusta."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4324,7 +4304,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0 (Correspondência exacta) não é recomendado. SHA-256 (1) fornece melhor compatibilidade e segurança."
+msgstr ""
+"Matching-type 0 (Correspondência exacta) não é recomendado. SHA-256 (1) "
+"fornece melhor compatibilidade e segurança."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4672,7 +4654,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Formato de registro LOC inválido. O formato deve ser: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Formato de registro LOC inválido. O formato deve ser: d1 [m1 [s1]] {\"N\"|"
+"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5548,7 +5533,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "O registro ZONEMD deve conter serial, scheme, hash-algorithm e digest separados por espaços."
+msgstr ""
+"O registro ZONEMD deve conter serial, scheme, hash-algorithm e digest "
+"separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5624,7 +5611,9 @@ msgstr "Caracteres inválidos no conteúdo do registro CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "O registro CERT deve conter type, key-tag, algorithm e certificate-data separados por espaços."
+msgstr ""
+"O registro CERT deve conter type, key-tag, algorithm e certificate-data "
+"separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5750,7 +5739,9 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "Formato de registro DLV inválido. Esperado: <key-tag> <algorithm> <digest-type> <digest>."
+msgstr ""
+"Formato de registro DLV inválido. Esperado: <key-tag> <algorithm> <digest-"
+"type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5877,7 +5868,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr "Os parâmetros do registro HTTPS devem estar no formato key=value separados por espaços."
+msgstr ""
+"Os parâmetros do registro HTTPS devem estar no formato key=value separados "
+"por espaços."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -7215,7 +7208,9 @@ msgstr "O campo de prioridade para registros DS deve ser 0 ou vazio."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "O registro DS deve estar no formato: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"O registro DS deve estar no formato: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7899,7 +7894,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "Os parâmetros SVCB devem estar no formato key=value separados por espaços."
+msgstr ""
+"Os parâmetros SVCB devem estar no formato key=value separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7992,7 +7988,9 @@ msgstr "O registro SMIMEA contém caracteres inválidos."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "O registro SMIMEA deve conter usage, selector, matching-type e certificate-data separados por espaços."
+msgstr ""
+"O registro SMIMEA deve conter usage, selector, matching-type e certificate-"
+"data separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8114,7 +8112,9 @@ msgstr ""
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "A configuração SMIMEA recomendada é usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) e matching-type=1 (SHA-256)."
+msgstr ""
+"A configuração SMIMEA recomendada é usage=3 (DANE-EE), selector=1 "
+"(SubjectPublicKeyInfo) e matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8886,7 +8886,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "O registro CDS deve conter key-tag, algorithm, digest-type e digest separados por espaços."
+msgstr ""
+"O registro CDS deve conter key-tag, algorithm, digest-type e digest "
+"separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9113,7 +9115,10 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr "Os nomes de proprietário de registro NSEC3 devem tipicamente ser um hash codificado em Base32hex seguido do nome da zona (ex: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+msgstr ""
+"Os nomes de proprietário de registro NSEC3 devem tipicamente ser um hash "
+"codificado em Base32hex seguido do nome da zona (ex: "
+"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -9720,10 +9725,6 @@ msgstr "Falha ao limpar metadados da zona: %s"
 msgid "Failed to delete zone metadata: %s"
 msgstr "Falha ao excluir metadados da zona: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "Você não tem permissão para alterar os metadados da zona."
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "Falha ao atualizar tipo de zona no backend DNS."
@@ -9901,9 +9902,9 @@ msgstr "Editar Chave API"
 msgid "Name"
 msgstr "Nome"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "Por favor forneça um nome para esta chave API"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "Forneça um nome para esta chave API"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -10084,7 +10085,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Actualizar registro"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Repor"
 
@@ -10195,9 +10196,9 @@ msgstr "TXT para SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Introduza o endereço IP do servidor de nomes principal"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
-msgstr "Forneça o endereço IP"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
+msgstr "Fornecer endereço IP"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -10215,7 +10216,7 @@ msgstr "Forneça o nome de anfitrião"
 msgid "Account"
 msgstr "Conta"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Salvar alterações"
 
@@ -10266,11 +10267,11 @@ msgstr "Tem a certeza de que deseja anular a assinatura da zona"
 msgid "Unsign Zone"
 msgstr "Anular Assinatura da Zona"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "Série conforme fornecida pelo PowerDNS, com SOA-EDIT aplicado"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Série assinada"
 
@@ -10282,7 +10283,7 @@ msgstr "Chaves DNSSEC para a zona"
 msgid "Add new key"
 msgstr "Adicionar nova chave"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "Mostrar DS e DNSKEY"
 
@@ -10546,7 +10547,7 @@ msgstr "Atualizar Grupo"
 msgid "Manage"
 msgstr "Gerenciar"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Ainda não há membros neste grupo."
 
@@ -10566,7 +10567,7 @@ msgstr "e"
 msgid "more..."
 msgstr "mais..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Este grupo ainda não possui zonas."
 
@@ -10818,7 +10819,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(para PTRs em zonas reversas) ou"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Editar comentário"
 
@@ -10937,7 +10938,7 @@ msgstr "Todos os usuários"
 msgid "All events"
 msgstr "Todos os eventos"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Registros"
 
@@ -10990,13 +10991,10 @@ msgstr "Adicionar Registros em Massa"
 msgid "Records"
 msgstr "Registros"
 
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Forneça pelo menos um registro"
-
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formato: name,type,content,priority,ttl,comment (um registro por linha)"
+msgstr ""
+"Formato: name,type,content,priority,ttl,comment (um registro por linha)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11354,8 +11352,9 @@ msgid "New Password"
 msgstr "Nova Senha"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Por favor forneça uma senha"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Informe uma senha"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -11613,6 +11612,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Seu nome de usuário só pode ser alterado por um administrador"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Forneça o nome de usuário"
 
@@ -11951,7 +11951,9 @@ msgstr "Voltar"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "Um supermaster é um servidor autoritativo PowerDNS que envia automaticamente novas zonas para os seus secundários."
+msgstr ""
+"Um supermaster é um servidor autoritativo PowerDNS que envia automaticamente "
+"novas zonas para os seus secundários."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11961,7 +11963,9 @@ msgstr "Como funciona"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "Quando um secundário recebe uma notificação de um supermaster, adiciona o domínio e define o endereço IP do supermaster como o endereço mestre."
+msgstr ""
+"Quando um secundário recebe uma notificação de um supermaster, adiciona o "
+"domínio e define o endereço IP do supermaster como o endereço mestre."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12369,10 +12373,6 @@ msgstr "Adicionar Chave API"
 msgid "My application"
 msgstr "Nome da aplicação"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Forneça um nome para esta chave API"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "Criar Chave API"
@@ -12394,72 +12394,72 @@ msgstr "Se perder a chave, terá de a regenerar."
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Adicionar novo registro"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Assistentes guiados para registros DMARC, SPF, DKIM, CAA, TLSA e SRV"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Modo multi-registro"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Adição em lote"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Falha ao adicionar"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "registro(s). Por favor, verifique o formato do registro."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 "Falha ao adicionar registros. Por favor, verifique o formato do registro."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Falha na validação do conteúdo:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Valor inválido para o tipo de registro"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Por favor, forneça toda a informação obrigatória."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "Adicionar PTR"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "Adicionar A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Este registro já existe"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Prioridade inválida"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Valor TTL inválido"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "Forneça TTL"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12523,59 +12523,59 @@ msgstr "registros totais"
 msgid "Last modified"
 msgstr "Última alteração"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Editado pela última vez por %account% em %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Editar selecionado"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Excluir registro(s)"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Comentários"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Importar"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "Gerar PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Configuração de Zona"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Alterar"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "Endereço IP do NS mestre"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "Gerenciar DNSSEC"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "As chaves DNSSEC são gerenciadas no servidor primário"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Presigned"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Assinar zona"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Não assinado"
 
@@ -12853,7 +12853,7 @@ msgid "Send Username"
 msgstr "Enviar Nome de Usuário"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Forneça a senha do usuário"
 
@@ -13721,7 +13721,11 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Está prestes a excluir uma zona secundária cujo servidor de nomes mestre é um supermaster. Excluir a zona agora resultará apenas numa remoção temporária. Sempre que o supermaster enviar uma notificação para esta zona, ela será adicionada novamente!"
+msgstr ""
+"Está prestes a excluir uma zona secundária cujo servidor de nomes mestre é "
+"um supermaster. Excluir a zona agora resultará apenas numa remoção "
+"temporária. Sempre que o supermaster enviar uma notificação para esta zona, "
+"ela será adicionada novamente!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13973,10 +13977,6 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Configuração de Zona Slave"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Fornecer endereço IP"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
@@ -14013,7 +14013,13 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "As views servem variantes de zona diferentes a clientes diferentes consoante a rede que consultou o resolver. Cada variante chama-se zone..variant (por exemplo, example.com..trusted) e tem de existir como zona separada no PowerDNS antes de poder ser atribuída aqui. As variantes partilham nome mas resolvem de forma diferente por view: o mesmo hostname pode responder com IPs diferentes consoante a rede do cliente."
+msgstr ""
+"As views servem variantes de zona diferentes a clientes diferentes consoante "
+"a rede que consultou o resolver. Cada variante chama-se zone..variant (por "
+"exemplo, example.com..trusted) e tem de existir como zona separada no "
+"PowerDNS antes de poder ser atribuída aqui. As variantes partilham nome mas "
+"resolvem de forma diferente por view: o mesmo hostname pode responder com "
+"IPs diferentes consoante a rede do cliente."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14427,10 +14433,6 @@ msgstr "Voltar ao Grupo"
 msgid "Owned Zones"
 msgstr "Zonas Possuídas"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Este grupo ainda não possui zonas"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Remover Selecionados"
@@ -14723,10 +14725,6 @@ msgstr "Nome do grupo"
 msgid "Current Members"
 msgstr "Membros Atuais"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Ainda não há membros neste grupo"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "Usuários Disponíveis"
@@ -14975,7 +14973,9 @@ msgstr "Consultar"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr "Introduza um nome de domínio (por exemplo, example.com) para consultar as suas informações WHOIS"
+msgstr ""
+"Introduza um nome de domínio (por exemplo, example.com) para consultar as "
+"suas informações WHOIS"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -14992,7 +14992,9 @@ msgstr "Consulta RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Introduza um nome de domínio (por exemplo, example.com) para consultar a sua informação RDAP"
+msgstr ""
+"Introduza um nome de domínio (por exemplo, example.com) para consultar a sua "
+"informação RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"
@@ -15002,17 +15004,13 @@ msgstr "Resultados RDAP para"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Informe um nome de domínio para realizar uma consulta RDAP."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Criar usuário com direitos limitados"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "Criar usuário de direitos limitados"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Criar usuário de direitos limitados"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -15209,10 +15207,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Tipo de servidor de banco de dados."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Informe o nome de usuário"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Usuário do banco de dados com direitos para criar tabelas."
@@ -15325,10 +15319,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "Fixo para a conta de administrador inicial."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Informe uma senha"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15447,10 +15437,6 @@ msgid ""
 msgstr ""
 "Nome de usuário da base de dados do Poweradmin com acesso restrito. Não é "
 "para fazer login na interface web."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Informe a senha do usuário"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15767,14 +15753,6 @@ msgid ""
 msgstr ""
 "Falha ao definir o locale. O locale selecionado pode não ser compatível com "
 "este sistema. Entre em contato com o administrador."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Formato de registro LOC inválido. O formato deve ser: d1 [m1 [s1]] {\"N\"|"
-# OBSOLETE: "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-# OBSOLETE: "[vp[\"m\"]]]."
 
 
 

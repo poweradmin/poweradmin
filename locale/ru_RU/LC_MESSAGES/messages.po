@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2025-06-05 21:30+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -39,7 +39,7 @@ msgstr "Недопустимый ID зоны."
 msgid "Zone not found."
 msgstr "Зона не найдена."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "У вас нет прав на добавление записей в эту зону."
 
@@ -332,7 +332,7 @@ msgstr ""
 "предоставили полный сертификат."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Недопустимый формат имени хоста"
 
@@ -1808,7 +1808,7 @@ msgstr "У вас нет разрешения на просмотр supermasters
 msgid "You do not have the permission to view zone metadata."
 msgstr "У вас нет прав для просмотра метаданных зоны."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "У вас нет прав для редактирования метаданных зоны."
 
@@ -1924,13 +1924,10 @@ msgstr "включён"
 msgid "API key %s successfully."
 msgstr "API ключ успешно %s."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "У вас нет разрешения на добавление записей в эту зону."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Пожалуйста, укажите хотя бы одну запись."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Укажите хотя бы одну запись"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1940,7 +1937,7 @@ msgstr "Неверный тип записи."
 msgid "Record could not be added."
 msgstr "Запись не может быть добавлена."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d запись(и) успешно добавлены."
@@ -2020,7 +2017,7 @@ msgstr "Номер страницы превышает доступные стр
 msgid "Invalid request method."
 msgstr "Неверный метод запроса."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Неверный ID группы или пользователя."
 
@@ -2145,7 +2142,7 @@ msgstr "Пожалуйста, введите другое имя при испо
 msgid "Zone template has been copied successfully."
 msgstr "Шаблон зоны успешно скопирован."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "У вас нет разрешения на просмотр шаблонов зон."
 
@@ -2161,7 +2158,7 @@ msgstr "Неверный ID шаблона."
 msgid "Template does not exist."
 msgstr "Шаблон не существует."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "У вас нет разрешения на просмотр этой зоны."
 
@@ -2217,10 +2214,6 @@ msgstr "Редактировать зону"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "У вас нет разрешения на доступ к этой зоне."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "У вас нет разрешения на просмотр этой зоны."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2401,11 +2394,6 @@ msgstr "Запись успешно добавлена."
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "Записи не предоставлены."
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d запись(ей) успешно добавлено."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2618,10 +2606,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "Сохранено значений по умолчанию: %d; очищено: %d."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "У вас нет разрешения на просмотр шаблонов зон."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2901,10 +2885,6 @@ msgstr "Панель управления"
 msgid "You do not have permission to manage group memberships."
 msgstr "У вас нет прав на управление членством в группах."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Неверный ID пользователя или группы."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Пользователь успешно удален из группы."
@@ -3163,7 +3143,7 @@ msgstr "Выход завершен (с предупреждениями): "
 msgid "You do not have permission to view this record."
 msgstr "У вас нет разрешения на просмотр этой записи."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "У вас нет разрешения на редактирование этой записи."
 
@@ -3289,7 +3269,7 @@ msgid "Failed to add zone."
 msgstr "Не удалось добавить зону."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "Зоны были успешно добавлены."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3444,12 +3424,12 @@ msgstr "Поле %s обязательно для заполнения."
 msgid "The %s field must be a number."
 msgstr "Поле %s должно быть числом."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Да"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Нет"
@@ -3667,7 +3647,9 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Вы можете изменить IP адрес, имя хоста или аккаунт для этого сервера supermaster."
+msgstr ""
+"Вы можете изменить IP адрес, имя хоста или аккаунт для этого сервера "
+"supermaster."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3715,14 +3697,14 @@ msgid ""
 msgstr ""
 "Состояние подключения supermaster-серверов, настроенных в таблице ниже."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "Каталог install/ существует, необходимо сначала удалить его, прежде чем "
 "продолжить."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3835,10 +3817,6 @@ msgstr "Поле содержимого не имеет допустимого �
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Приоритет для записей MX/SRV должен быть числом от 0 до 65535."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "У вас нет разрешения на редактирование этой записи."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4223,7 +4201,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA запись должна содержать usage, selector, matching-type и certificate-data, разделенные пробелами."
+msgstr ""
+"TLSA запись должна содержать usage, selector, matching-type и certificate-"
+"data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4296,7 +4276,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0 (Точное соответствие) не рекомендуется. SHA-256 (1) обеспечивает лучшую совместимость и безопасность."
+msgstr ""
+"Matching-type 0 (Точное соответствие) не рекомендуется. SHA-256 (1) "
+"обеспечивает лучшую совместимость и безопасность."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4646,7 +4628,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|"
+"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5525,7 +5510,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "Запись ZONEMD должна содержать serial, scheme, hash-algorithm и digest, разделенные пробелами."
+msgstr ""
+"Запись ZONEMD должна содержать serial, scheme, hash-algorithm и digest, "
+"разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5606,7 +5593,9 @@ msgstr "Недопустимые символы в содержимом запи
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "Запись CERT должна содержать type, key-tag, algorithm и certificate-data, разделенные пробелами."
+msgstr ""
+"Запись CERT должна содержать type, key-tag, algorithm и certificate-data, "
+"разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5735,7 +5724,9 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "Недопустимый формат записи DLV. Ожидается: <key-tag> <algorithm> <digest-type> <digest>."
+msgstr ""
+"Недопустимый формат записи DLV. Ожидается: <key-tag> <algorithm> <digest-"
+"type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5864,7 +5855,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr "Параметры записи HTTPS должны быть в формате key=value, разделенными пробелами."
+msgstr ""
+"Параметры записи HTTPS должны быть в формате key=value, разделенными "
+"пробелами."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5941,7 +5934,9 @@ msgstr "Недопустимые символы в содержимом запи
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "Запись TKEY должна содержать algorithm-name, inception-time, expiration-time, mode, error и key-data, разделенные пробелами."
+msgstr ""
+"Запись TKEY должна содержать algorithm-name, inception-time, expiration-"
+"time, mode, error и key-data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7195,7 +7190,8 @@ msgstr "Поле приоритета для DS записей должно бы
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "DS запись должна быть в формате: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"DS запись должна быть в формате: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7980,7 +7976,9 @@ msgstr "Запись SMIMEA содержит недопустимые симво
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Запись SMIMEA должна содержать usage, selector, matching-type и certificate-data, разделенные пробелами."
+msgstr ""
+"Запись SMIMEA должна содержать usage, selector, matching-type и certificate-"
+"data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8099,7 +8097,9 @@ msgstr "Данные сертификата SMIMEA SHA-512 должны соде
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "Рекомендуемая конфигурация SMIMEA: usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) и matching-type=1 (SHA-256)."
+msgstr ""
+"Рекомендуемая конфигурация SMIMEA: usage=3 (DANE-EE), selector=1 "
+"(SubjectPublicKeyInfo) и matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8859,7 +8859,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS запись должна содержать key-tag, algorithm, digest-type и digest, разделенные пробелами."
+msgstr ""
+"CDS запись должна содержать key-tag, algorithm, digest-type и digest, "
+"разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9680,10 +9682,6 @@ msgstr "Не удалось очистить метаданные зоны: %s"
 msgid "Failed to delete zone metadata: %s"
 msgstr "Не удалось удалить метаданные зоны: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "У вас нет разрешения на изменение метаданных зоны."
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "Не удалось обновить тип зоны в DNS бэкенде."
@@ -9861,9 +9859,9 @@ msgstr "Редактировать API Ключ"
 msgid "Name"
 msgstr "Имя"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "Пожалуйста, укажите имя для этого API ключа"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "Укажите имя для этого API ключа"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -10042,7 +10040,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Обновить запись"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Сбросить"
 
@@ -10152,9 +10150,9 @@ msgstr "TXT для SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Введите IP адрес главного сервера имен"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
-msgstr "Укажите IP адрес"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
+msgstr "Укажите IP-адрес"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -10172,7 +10170,7 @@ msgstr "Укажите имя хоста"
 msgid "Account"
 msgstr "Аккаунт"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
@@ -10223,11 +10221,11 @@ msgstr "Вы уверены, что хотите отменить подпись
 msgid "Unsign Zone"
 msgstr "Отменить Подпись Зоны"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "Серийный номер, выдаваемый PowerDNS, с применением SOA-EDIT"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Подписанный серийный номер"
 
@@ -10239,7 +10237,7 @@ msgstr "DNSSEC ключи для зоны"
 msgid "Add new key"
 msgstr "Добавить новый ключ"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "Показать DS и DNSKEY"
 
@@ -10500,7 +10498,7 @@ msgstr "Обновить группу"
 msgid "Manage"
 msgstr "Управление"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Пока нет членов в этой группе."
 
@@ -10520,7 +10518,7 @@ msgstr "и"
 msgid "more..."
 msgstr "больше..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Эта группа пока не владеет зонами."
 
@@ -10769,7 +10767,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(для записей PTR в обратных зонах) или"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Редактировать комментарий"
 
@@ -10889,7 +10887,7 @@ msgstr "Все пользователи"
 msgid "All events"
 msgstr "Все события"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Журналы"
 
@@ -10940,10 +10938,6 @@ msgstr "Массовое Добавление Записей"
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
 msgstr "Записи"
-
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Укажите хотя бы одну запись"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -11310,8 +11304,9 @@ msgid "New Password"
 msgstr "Новый Пароль"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Пожалуйста, укажите пароль"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Укажите пароль"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -11568,6 +11563,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Ваше имя пользователя может быть изменено только администратором"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Укажите имя пользователя"
 
@@ -11904,7 +11900,9 @@ msgstr "Вернуться Назад"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "Supermaster - это авторитативный сервер PowerDNS, который автоматически передает новые зоны своим подчиненным серверам."
+msgstr ""
+"Supermaster - это авторитативный сервер PowerDNS, который автоматически "
+"передает новые зоны своим подчиненным серверам."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11914,7 +11912,10 @@ msgstr "Как это работает"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "Когда подчиненный сервер получает уведомление от сервера supermaster, он добавляет домен и устанавливает IP-адрес этого сервера supermaster в качестве главного адреса."
+msgstr ""
+"Когда подчиненный сервер получает уведомление от сервера supermaster, он "
+"добавляет домен и устанавливает IP-адрес этого сервера supermaster в "
+"качестве главного адреса."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12319,10 +12320,6 @@ msgstr "Добавить API Ключ"
 msgid "My application"
 msgstr "Мое приложение"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Укажите имя для этого API ключа"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "Создать API Ключ"
@@ -12344,71 +12341,71 @@ msgstr "Если вы потеряете ключ, вам нужно будет 
 msgid "Edit"
 msgstr "Редактировать"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Добавить новую запись"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Управляемые мастера для записей DMARC, SPF, DKIM, CAA, TLSA и SRV"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Режим множественных записей"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Массовое добавление"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Не удалось добавить"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "запись(и). Пожалуйста, проверьте формат записи."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Не удалось добавить записи. Пожалуйста, проверьте формат записи."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Проверка содержимого не удалась:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Недопустимое значение для типа записи"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Пожалуйста, предоставьте всю необходимую информацию."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "Добавить PTR"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "Добавить A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Эта запись уже существует"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Недопустимый приоритет"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Недопустимое значение TTL"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "Укажите TTL"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12472,59 +12469,59 @@ msgstr "всего записей"
 msgid "Last modified"
 msgstr "Изменено"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Последнее изменение: %account%, %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Редактировать выбранное"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Удалить запись(и)"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Комментарии"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Импорт"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "Генерировать PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Конфигурация зоны"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Изменить"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "IP адрес главного NS"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "Управление DNSSEC"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "Ключи DNSSEC управляются на основном сервере"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Предварительно подписана"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Подписать зону"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Не подписано"
 
@@ -12801,7 +12798,7 @@ msgid "Send Username"
 msgstr "Отправить имя пользователя"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Укажите пароль пользователя"
 
@@ -13665,7 +13662,11 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "Вы собираетесь удалить вторичную зону, основной сервер имен которой является сервером supermaster. Удаление зоны сейчас приведет только к временному удалению. Всякий раз, когда сервер supermaster отправляет уведомление для этой зоны, она будет добавлена снова!"
+msgstr ""
+"Вы собираетесь удалить вторичную зону, основной сервер имен которой является "
+"сервером supermaster. Удаление зоны сейчас приведет только к временному "
+"удалению. Всякий раз, когда сервер supermaster отправляет уведомление для "
+"этой зоны, она будет добавлена снова!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13917,10 +13918,6 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Конфигурация вторичной зоны"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Укажите IP-адрес"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
@@ -13957,7 +13954,13 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Views отдают разные варианты зон разным клиентам в зависимости от сети, из которой пришёл запрос. Каждый вариант называется zone..variant (например, example.com..trusted) и должен существовать в PowerDNS как отдельная зона, прежде чем его можно назначить здесь. Варианты используют общее имя, но разрешаются по-разному в каждом view: один и тот же hostname может отвечать разными IP в зависимости от сети клиента."
+msgstr ""
+"Views отдают разные варианты зон разным клиентам в зависимости от сети, из "
+"которой пришёл запрос. Каждый вариант называется zone..variant (например, "
+"example.com..trusted) и должен существовать в PowerDNS как отдельная зона, "
+"прежде чем его можно назначить здесь. Варианты используют общее имя, но "
+"разрешаются по-разному в каждом view: один и тот же hostname может отвечать "
+"разными IP в зависимости от сети клиента."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14369,10 +14372,6 @@ msgstr "Вернуться к группе"
 msgid "Owned Zones"
 msgstr "Зоны в собственности"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Эта группа пока не владеет ни одной зоной"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Удалить выбранные"
@@ -14663,10 +14662,6 @@ msgstr "Название группы"
 msgid "Current Members"
 msgstr "Текущие участники"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "В этой группе пока нет участников"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "Доступные пользователи"
@@ -14940,17 +14935,13 @@ msgstr "Результаты RDAP для"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Введите доменное имя, чтобы выполнить запрос RDAP."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
 msgstr "Создать пользователя с ограниченными правами"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Создать пользователя с ограниченными правами"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -15143,10 +15134,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Тип сервера базы данных."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Укажите имя пользователя"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Имя пользователя базы данных с правами на создание таблиц."
@@ -15260,10 +15247,6 @@ msgstr ""
 msgid "Hard-coded for the initial administrator account."
 msgstr "Зафиксировано для исходной учётной записи администратора."
 
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Укажите пароль"
-
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
 msgstr "Пароль для учётной записи \"admin\"."
@@ -15376,10 +15359,6 @@ msgid ""
 msgstr ""
 "Имя пользователя БД Poweradmin с ограниченным доступом. Не для входа в веб-"
 "интерфейс."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Укажите пароль пользователя"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15689,14 +15668,6 @@ msgid ""
 msgstr ""
 "Не удалось установить локаль. Выбранная локаль может не поддерживаться в "
 "этой системе. Обратитесь к администратору."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|"
-# OBSOLETE: "\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
-# OBSOLETE: "[vp[\"m\"]]]."
 
 
 

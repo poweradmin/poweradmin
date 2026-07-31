@@ -308,7 +308,7 @@ class EditController extends BaseController
         $ownership_view = $perm_ownership_view === 'all' || ($perm_ownership_view === 'own' && $user_is_zone_owner == "1");
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+            $this->showError(_("You do not have permission to view this zone."));
         }
 
         if (!$this->zoneRepository->zoneIdExists($zone_id)) {

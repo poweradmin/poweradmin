@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -38,7 +38,7 @@ msgstr "Ogiltigt zon-ID."
 msgid "Zone not found."
 msgstr "Zonen hittades inte."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "Du har inte behörighet att lägga till poster i denna zon."
 
@@ -331,7 +331,7 @@ msgstr ""
 "certifikatet."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Ogiltigt värdnamnsformat"
 
@@ -1785,7 +1785,7 @@ msgstr "Du har inte behörighet att visa supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Du har inte behörighet att visa zonens metadata."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Du har inte behörighet att redigera zonmetadata."
 
@@ -1811,7 +1811,9 @@ msgstr "Zonmetadata"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "Metadatatypen %s accepterar bara ett enda värde. Lägg bara till en rad för denna typ."
+msgstr ""
+"Metadatatypen %s accepterar bara ett enda värde. Lägg bara till en rad för "
+"denna typ."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1899,13 +1901,10 @@ msgstr "aktiverad"
 msgid "API key %s successfully."
 msgstr "API-nyckel %s."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "Du har inte behörighet att lägga till poster i denna zon."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Ange minst en post."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Ange minst en post"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1915,7 +1914,7 @@ msgstr "Ogiltig posttyp."
 msgid "Record could not be added."
 msgstr "Posten kunde inte läggas till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har lagts till."
@@ -1996,7 +1995,7 @@ msgstr "Sidnummer överskrider tillgängliga sidor."
 msgid "Invalid request method."
 msgstr "Ogiltig förfrågningsmetod."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Ogiltigt grupp- eller användar-ID."
 
@@ -2121,7 +2120,7 @@ msgstr "Ange ett annat namn när du använder Spara som."
 msgid "Zone template has been copied successfully."
 msgstr "Zonmallen har kopierats."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "Du har inte behörighet att visa zonmallar."
 
@@ -2137,7 +2136,7 @@ msgstr "Ogiltigt mall-ID."
 msgid "Template does not exist."
 msgstr "Mallen finns inte."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "Du har inte behörighet att visa denna zon."
 
@@ -2191,10 +2190,6 @@ msgstr "Redigera zon"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "Du har inte behörighet att komma åt denna zon."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "Du har inte behörighet att visa denna zon."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2371,11 +2366,6 @@ msgstr "Posten lades till."
 msgid "No records were provided."
 msgstr "Inga poster angavs."
 
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d post(er) lades till."
-
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
 msgid "%d matching record(s) were also created."
@@ -2495,7 +2485,10 @@ msgstr ""
 msgid ""
 "Enter a network in CIDR notation (for example 192.168.1.0/24 or "
 "2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Ange ett nätverk i CIDR-notation (till exempel 192.168.1.0/24 eller 2001:db8::/48) eller ett namn på en omvänd zon som slutar på in-addr.arpa eller ip6.arpa."
+msgstr ""
+"Ange ett nätverk i CIDR-notation (till exempel 192.168.1.0/24 eller "
+"2001:db8::/48) eller ett namn på en omvänd zon som slutar på in-addr.arpa "
+"eller ip6.arpa."
 
 #: lib/Application/Controller/AddZoneMasterController.php:252
 msgid ""
@@ -2580,10 +2573,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "Sparade %d standardvärde(n); rensade %d."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "Du har inte behörighet att visa zonmallar."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2858,10 +2847,6 @@ msgstr "Instrumentpanel"
 msgid "You do not have permission to manage group memberships."
 msgstr "Du har inte behörighet att hantera gruppmedlemskap."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Ogiltigt användar- eller grupp-ID."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Användare borttagen från gruppen."
@@ -3115,7 +3100,7 @@ msgstr "Utloggning slutförd (med varningar): "
 msgid "You do not have permission to view this record."
 msgstr "Du har inte behörighet att visa denna post."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "Du har inte behörighet att redigera denna post."
 
@@ -3238,7 +3223,7 @@ msgid "Failed to add zone."
 msgstr "Det gick inte att lägga till zonen."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "Zonerna har lagts till."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3395,12 +3380,12 @@ msgstr "Fältet %s är obligatoriskt."
 msgid "The %s field must be a number."
 msgstr "Fältet %s måste vara ett nummer."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Nej"
@@ -3666,12 +3651,12 @@ msgstr ""
 "Visar anslutningsstatus för de supermasters som är konfigurerade i tabellen "
 "nedan."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr "Katalogen install/ finns, du måste ta bort den innan du fortsätter."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3784,10 +3769,6 @@ msgstr "Ditt innehållsfält har inte ett giltigt värde."
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritet för MX/SRV-poster måste vara ett nummer mellan 0 och 65535."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "Du har inte behörighet att redigera denna post."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4068,7 +4049,9 @@ msgstr "1. Hela kedjan av SRV-uppslagningar måste vara DNSSEC-signerade"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr "2. TLSA-poster bör finnas på _$port._$protocol.$hostname där $port, $protocol och $hostname kommer från SRV-uppslagningens mål"
+msgstr ""
+"2. TLSA-poster bör finnas på _$port._$protocol.$hostname där $port, "
+"$protocol och $hostname kommer från SRV-uppslagningens mål"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -4170,7 +4153,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA-posten måste innehålla usage, selector, matching-type och certificate-data separerade med mellanslag."
+msgstr ""
+"TLSA-posten måste innehålla usage, selector, matching-type och certificate-"
+"data separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4212,7 +4197,9 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr "RFC 7671 rekommenderar usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) som den mest robusta konfigurationen."
+msgstr ""
+"RFC 7671 rekommenderar usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
+"(SHA-256) som den mest robusta konfigurationen."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4241,7 +4228,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0 (Exakt matchning) rekommenderas inte. SHA-256 (1) ger bättre kompatibilitet och säkerhet."
+msgstr ""
+"Matching-type 0 (Exakt matchning) rekommenderas inte. SHA-256 (1) ger bättre "
+"kompatibilitet och säkerhet."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4583,7 +4572,9 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
+"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5255,7 +5246,9 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr "TSIG-posten måste innehålla minst algorithm-name, timestamp, fudge, mac, original-id, error och other-len separerade med mellanslag."
+msgstr ""
+"TSIG-posten måste innehålla minst algorithm-name, timestamp, fudge, mac, "
+"original-id, error och other-len separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5432,7 +5425,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMD-posten måste innehålla serial, scheme, hash-algorithm och digest separerade med mellanslag."
+msgstr ""
+"ZONEMD-posten måste innehålla serial, scheme, hash-algorithm och digest "
+"separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5508,7 +5503,9 @@ msgstr "Ogiltiga tecken i CERT-postens innehåll."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERT-posten måste innehålla type, key-tag, algorithm och certificate-data separerade med mellanslag."
+msgstr ""
+"CERT-posten måste innehålla type, key-tag, algorithm och certificate-data "
+"separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5632,7 +5629,9 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "Ogiltigt DLV-postformat. Förväntat: <key-tag> <algorithm> <digest-type> <digest>."
+msgstr ""
+"Ogiltigt DLV-postformat. Förväntat: <key-tag> <algorithm> <digest-type> "
+"<digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5774,7 +5773,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr "ALPN-värdet måste vara en kommaseparerad lista med protokollidentifierare."
+msgstr ""
+"ALPN-värdet måste vara en kommaseparerad lista med protokollidentifierare."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
@@ -5832,7 +5832,9 @@ msgstr "Ogiltiga tecken i TKEY-postens innehåll."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY-posten måste innehålla algorithm-name, inception-time, expiration-time, mode, error och key-data separerade med mellanslag."
+msgstr ""
+"TKEY-posten måste innehålla algorithm-name, inception-time, expiration-time, "
+"mode, error och key-data separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -5903,7 +5905,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr "Nycklar som etablerats med TKEY är kopplade till DNS-servrar/resolvrar, inte zoner."
+msgstr ""
+"Nycklar som etablerats med TKEY är kopplade till DNS-servrar/resolvrar, inte "
+"zoner."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -5917,24 +5921,32 @@ msgstr ""
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "HMAC-MD5 anses svag enligt moderna standarder. HMAC-SHA256 eller starkare rekommenderas."
+msgstr ""
+"HMAC-MD5 anses svag enligt moderna standarder. HMAC-SHA256 eller starkare "
+"rekommenderas."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "Föråldrad algoritm upptäckt. HMAC-SHA256 eller starkare rekommenderas för bättre säkerhet."
+msgstr ""
+"Föråldrad algoritm upptäckt. HMAC-SHA256 eller starkare rekommenderas för "
+"bättre säkerhet."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr "Anpassat algoritmnamn upptäckt. Standardiserade algoritmnamn som \"hmac-sha256.\" rekommenderas för bättre kompatibilitet."
+msgstr ""
+"Anpassat algoritmnamn upptäckt. Standardiserade algoritmnamn som \"hmac-"
+"sha256.\" rekommenderas för bättre kompatibilitet."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr "Ogiltigt värde för standard-TTL. Det måste vara ett nummer mellan 0 och 2147483647."
+msgstr ""
+"Ogiltigt värde för standard-TTL. Det måste vara ett nummer mellan 0 och "
+"2147483647."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
@@ -5997,17 +6009,22 @@ msgstr "FTP anses vara mindre säkert än alternativ som SFTP eller HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "Överväg att använda LDAPS (LDAP över SSL/TLS) för att säkra LDAP-anslutningar."
+msgstr ""
+"Överväg att använda LDAPS (LDAP över SSL/TLS) för att säkra LDAP-"
+"anslutningar."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Telefonrelaterade URI-scheman kan innehålla känslig personlig information."
+msgstr ""
+"Telefonrelaterade URI-scheman kan innehålla känslig personlig information."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr "URI-schemat \"file\" kan medföra säkerhetsrisker och rekommenderas inte för publika DNS-poster."
+msgstr ""
+"URI-schemat \"file\" kan medföra säkerhetsrisker och rekommenderas inte för "
+"publika DNS-poster."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -6030,13 +6047,17 @@ msgstr "URI får inte vara tom."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI måste börja med ett giltigt schema som inleds med en bokstav följd av bokstäver, siffror, plus, punkt eller bindestreck."
+msgstr ""
+"URI måste börja med ett giltigt schema som inleds med en bokstav följd av "
+"bokstäver, siffror, plus, punkt eller bindestreck."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI använder ett ovanligt protokoll. Överväg att använda ett standardiserat URI-schema för bättre kompatibilitet."
+msgstr ""
+"URI använder ett ovanligt protokoll. Överväg att använda ett standardiserat "
+"URI-schema för bättre kompatibilitet."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -6054,31 +6075,40 @@ msgstr "URI får inte innehålla kontrolltecken."
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "URI innehåller omvända snedstreck, vilket kan tolkas olika i olika system."
+msgstr ""
+"URI innehåller omvända snedstreck, vilket kan tolkas olika i olika system."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr "URI innehåller \"..\"-sekvenser, som kan användas för katalogtraverseringsattacker."
+msgstr ""
+"URI innehåller \"..\"-sekvenser, som kan användas för "
+"katalogtraverseringsattacker."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "URI innehåller procenttecken som inte används för korrekt formaterad procentkodning."
+msgstr ""
+"URI innehåller procenttecken som inte används för korrekt formaterad "
+"procentkodning."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "URI innehåller icke-ASCII-tecken i värdnamnet. Överväg att använda Punycode för internationella domännamn."
+msgstr ""
+"URI innehåller icke-ASCII-tecken i värdnamnet. Överväg att använda Punycode "
+"för internationella domännamn."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr "Ogiltigt värdnamn för nyckelutväxlaren. Exchanger-fältet måste vara ett giltigt domännamn."
+msgstr ""
+"Ogiltigt värdnamn för nyckelutväxlaren. Exchanger-fältet måste vara ett "
+"giltigt domännamn."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
@@ -6092,19 +6122,25 @@ msgstr ""
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "System som inte implementerar Secure DNS bör ignorera KX-poster helt enligt RFC 2230."
+msgstr ""
+"System som inte implementerar Secure DNS bör ignorera KX-poster helt enligt "
+"RFC 2230."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "Se till att värden för nyckelutväxlaren har lämpliga framåt- och bakåtriktade DNS-poster konfigurerade."
+msgstr ""
+"Se till att värden för nyckelutväxlaren har lämpliga framåt- och "
+"bakåtriktade DNS-poster konfigurerade."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr "Värden för nyckelutväxlaren bör ha lämpliga A/AAAA-poster för behandling av tilläggssektionen av typ A/AAAA."
+msgstr ""
+"Värden för nyckelutväxlaren bör ha lämpliga A/AAAA-poster för behandling av "
+"tilläggssektionen av typ A/AAAA."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
@@ -6114,7 +6150,9 @@ msgstr "Ogiltigt värde för KX-preferensfältet. Måste vara mellan 0 och 65535
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "OBS: Posttypen MINFO är markerad som EXPERIMENTELL i RFC 1035. Den stöds kanske inte överallt."
+msgstr ""
+"OBS: Posttypen MINFO är markerad som EXPERIMENTELL i RFC 1035. Den stöds "
+"kanske inte överallt."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -6156,13 +6194,17 @@ msgstr "Ogiltigt värdnamn för felbrevlåda (EMAILBX)."
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr "Att använda \".\" (roten) för EMAILBX anger att fel ska returneras till avsändaren av meddelandet."
+msgstr ""
+"Att använda \".\" (roten) för EMAILBX anger att fel ska returneras till "
+"avsändaren av meddelandet."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "Den ansvariga brevlådan och felbrevlådan är identiska. Överväg att använda olika brevlådor för dessa funktioner."
+msgstr ""
+"Den ansvariga brevlådan och felbrevlådan är identiska. Överväg att använda "
+"olika brevlådor för dessa funktioner."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
@@ -6225,13 +6267,17 @@ msgstr "Ogiltig CIDR-längd i mekanismen."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr "ptr-mekanismen rekommenderas inte på grund av prestandaproblem (RFC 7208 avsnitt 5.5)."
+msgstr ""
+"ptr-mekanismen rekommenderas inte på grund av prestandaproblem (RFC 7208 "
+"avsnitt 5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\"-mekanismen bör vara den sista mekanismen i posten (RFC 7208 avsnitt 5.1)."
+msgstr ""
+"\"all\"-mekanismen bör vara den sista mekanismen i posten (RFC 7208 avsnitt "
+"5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -6502,7 +6548,9 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr "Algoritm 10 (RSA/SHA-512) ger stark säkerhet men kan ha interoperabilitetsproblem med vissa validerare."
+msgstr ""
+"Algoritm 10 (RSA/SHA-512) ger stark säkerhet men kan ha "
+"interoperabilitetsproblem med vissa validerare."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
@@ -6539,7 +6587,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
-msgstr "Okänt algoritmvärde. Endast algoritmer som definieras i RFC:er bör användas."
+msgstr ""
+"Okänt algoritmvärde. Endast algoritmer som definieras i RFC:er bör användas."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
@@ -6594,11 +6643,14 @@ msgstr ""
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "VARNING: Den här signaturen går ut inom de närmaste 7 dagarna. Överväg att förnya den snart."
+msgstr ""
+"VARNING: Den här signaturen går ut inom de närmaste 7 dagarna. Överväg att "
+"förnya den snart."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "Den här signaturen går ut inom de närmaste 30 dagarna. Planera för förnyelse."
+msgstr ""
+"Den här signaturen går ut inom de närmaste 30 dagarna. Planera för förnyelse."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
@@ -6620,7 +6672,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
-msgstr "Kunde inte tolka signaturens tidsstämplar för att kontrollera giltighetstiden."
+msgstr ""
+"Kunde inte tolka signaturens tidsstämplar för att kontrollera "
+"giltighetstiden."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
@@ -6677,7 +6731,9 @@ msgstr "Prioritetsfältet för RP-poster måste vara 0 eller tomt"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "RP-poster definierades i RFC 1183 (1990) och används inte i någon större utsträckning i moderna DNS-konfigurationer."
+msgstr ""
+"RP-poster definierades i RFC 1183 (1990) och används inte i någon större "
+"utsträckning i moderna DNS-konfigurationer."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6709,7 +6765,9 @@ msgstr ""
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "RP-poster exponerar kontaktinformation i DNS, vilket kan skapa problem med integritet och säkerhet."
+msgstr ""
+"RP-poster exponerar kontaktinformation i DNS, vilket kan skapa problem med "
+"integritet och säkerhet."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -6846,7 +6904,9 @@ msgstr "Du bör skapa en TXT-post för domänen: %s"
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr "Detta ser ut att vara en EUI-64-adress som härletts från en EUI-48-adress (innehåller FF-FE i mitten)."
+msgstr ""
+"Detta ser ut att vara en EUI-64-adress som härletts från en EUI-48-adress "
+"(innehåller FF-FE i mitten)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -6918,7 +6978,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "Detta är adressen med enbart nollor, vilket kanske inte är giltigt i alla sammanhang."
+msgstr ""
+"Detta är adressen med enbart nollor, vilket kanske inte är giltigt i alla "
+"sammanhang."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
@@ -7021,7 +7083,8 @@ msgstr "Nyckeltaggen måste vara ett tal mellan 1 och 65535"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr "Algoritmen måste vara en av: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
+msgstr ""
+"Algoritmen måste vara en av: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
@@ -7069,7 +7132,8 @@ msgstr ""
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "SHA-256 (digesttyp 2) är den REKOMMENDERADE digestalgoritmen enligt RFC 8624."
+msgstr ""
+"SHA-256 (digesttyp 2) är den REKOMMENDERADE digestalgoritmen enligt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -7233,7 +7297,9 @@ msgstr "Prioriteten måste vara 0 för EUI48-poster."
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 avråder från att publicera EUI-48-adresser i publik DNS på grund av möjliga konsekvenser för integriteten."
+msgstr ""
+"RFC 7043 avråder från att publicera EUI-48-adresser i publik DNS på grund av "
+"möjliga konsekvenser för integriteten."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
@@ -7270,7 +7336,9 @@ msgstr ""
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Detta är broadcast-adressen (enbart ettor), som kanske inte är giltig i alla sammanhang."
+msgstr ""
+"Detta är broadcast-adressen (enbart ettor), som kanske inte är giltig i alla "
+"sammanhang."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
@@ -7434,7 +7502,8 @@ msgstr "Värdet måste omslutas av dubbla citattecken."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:314
 msgid "Backslashes must precede all quotes (\") in value content."
-msgstr "Omvänt snedstreck måste föregå alla citattecken (\") i värdets innehåll."
+msgstr ""
+"Omvänt snedstreck måste föregå alla citattecken (\") i värdets innehåll."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:320
 msgid "CAA property value exceeds maximum length of 512 characters."
@@ -7462,7 +7531,9 @@ msgstr "Ett värdnamn får inte börja eller sluta med bindestreck."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:105
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "Det angivna värdnamnet eller någon av etiketterna är för kort eller för långt."
+msgstr ""
+"Det angivna värdnamnet eller någon av etiketterna är för kort eller för "
+"långt."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:129
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
@@ -7479,11 +7550,14 @@ msgstr "Ogiltigt subnätsnummer i RFC 2317-notation. Måste vara 0-255 för IPv4
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Ogiltigt subnät i RFC 2317-notation. Måste vara hexadecimalt (0-9, a-f) för IPv6."
+msgstr ""
+"Ogiltigt subnät i RFC 2317-notation. Måste vara hexadecimalt (0-9, a-f) för "
+"IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr "Ogiltigt subnät i RFC 2317-notation. Måste vara numeriskt eller hexadecimalt."
+msgstr ""
+"Ogiltigt subnät i RFC 2317-notation. Måste vara numeriskt eller hexadecimalt."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:173
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
@@ -7617,7 +7691,9 @@ msgstr ""
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA-värdet minimum (negativ cachning) överskrider 24 timmar (86400), vilket kan vara för mycket enligt RFC 2308."
+msgstr ""
+"SOA-värdet minimum (negativ cachning) överskrider 24 timmar (86400), vilket "
+"kan vara för mycket enligt RFC 2308."
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7639,7 +7715,9 @@ msgstr "Prioritet måste vara 0 för RESINFO-poster."
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr "SVCB-posten måste börja med en prioritet och ett mål: <priority> <target> [<params>...]"
+msgstr ""
+"SVCB-posten måste börja med en prioritet och ett mål: <priority> <target> "
+"[<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
@@ -7850,7 +7928,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
 "Matching type 1 (SHA-256) provides a good balance of security and efficiency."
-msgstr "Matchningstyp 1 (SHA-256) ger en bra balans mellan säkerhet och effektivitet."
+msgstr ""
+"Matchningstyp 1 (SHA-256) ger en bra balans mellan säkerhet och effektivitet."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
 msgid ""
@@ -7996,7 +8075,8 @@ msgstr "Prioritet måste vara 0 för WALLET-poster."
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "CDNSKEY-poster publiceras vanligtvis i zonens apex, inte i underdomäner."
+msgstr ""
+"CDNSKEY-poster publiceras vanligtvis i zonens apex, inte i underdomäner."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -8062,13 +8142,16 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "Algoritm 10 (RSASHA512) REKOMMENDERAS INTE för signering, även om den måste stödjas för validering."
+msgstr ""
+"Algoritm 10 (RSASHA512) REKOMMENDERAS INTE för signering, även om den måste "
+"stödjas för validering."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "Base64-kodad data bör fyllas ut till en multipel av 4 byte med \"=\"-tecken."
+msgstr ""
+"Base64-kodad data bör fyllas ut till en multipel av 4 byte med \"=\"-tecken."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
@@ -8118,7 +8201,9 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "VARNING: Denna LUA-post verkar ha obalanserade citattecken, vilket kan orsaka syntaxfel."
+msgstr ""
+"VARNING: Denna LUA-post verkar ha obalanserade citattecken, vilket kan "
+"orsaka syntaxfel."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -8132,7 +8217,9 @@ msgstr "LUA-posten har obalanserade klammerparenteser. Kontrollera syntaxen."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "En LUA-post i explicit returläge (börjar med semikolon) måste innehålla minst en \"return\"-sats."
+msgstr ""
+"En LUA-post i explicit returläge (börjar med semikolon) måste innehålla "
+"minst en \"return\"-sats."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -8146,7 +8233,9 @@ msgstr ""
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
-msgstr "LUA-posten innehåller potentiellt farliga funktioner för systemåtkomst. Dessa blockeras sannolikt av PowerDNS säkerhetsbegränsningar."
+msgstr ""
+"LUA-posten innehåller potentiellt farliga funktioner för systemåtkomst. "
+"Dessa blockeras sannolikt av PowerDNS säkerhetsbegränsningar."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
@@ -8156,7 +8245,9 @@ msgstr "Prioritetsfältet för SSHFP-poster måste vara 0 eller tomt"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "SSHFP-poster kan genereras med kommandot \"ssh-keygen -r hostname\" på system med OpenSSH."
+msgstr ""
+"SSHFP-poster kan genereras med kommandot \"ssh-keygen -r hostname\" på "
+"system med OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -8194,13 +8285,17 @@ msgstr ""
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Ed25519-nycklar rekommenderas för god säkerhet och prestanda med moderna SSH-implementationer."
+msgstr ""
+"Ed25519-nycklar rekommenderas för god säkerhet och prestanda med moderna SSH-"
+"implementationer."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr "Ed448-nycklar ger mycket hög säkerhet men stöds kanske inte av alla SSH-implementationer."
+msgstr ""
+"Ed448-nycklar ger mycket hög säkerhet men stöds kanske inte av alla SSH-"
+"implementationer."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
@@ -8210,13 +8305,17 @@ msgstr "SSHFP-fingeravtryckstyp måste vara 1 (SHA-1) eller 2 (SHA-256)."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "SHA-1-fingeravtryck är föråldrade. RFC 6594 rekommenderar SHA-256-fingeravtryck (typ 2) för bättre säkerhet."
+msgstr ""
+"SHA-1-fingeravtryck är föråldrade. RFC 6594 rekommenderar SHA-256-"
+"fingeravtryck (typ 2) för bättre säkerhet."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr "SHA-256-fingeravtryck rekommenderas av RFC 6594 och ger bättre säkerhet än SHA-1."
+msgstr ""
+"SHA-256-fingeravtryck rekommenderas av RFC 6594 och ger bättre säkerhet än "
+"SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -8268,7 +8367,9 @@ msgstr "Innehållet i MR-posten måste vara ett giltigt domännamn."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "Innehållet i MR-posten (den nya brevlådan) bör vara ett fullständigt kvalificerat domännamn (avslutas med punkt)."
+msgstr ""
+"Innehållet i MR-posten (den nya brevlådan) bör vara ett fullständigt "
+"kvalificerat domännamn (avslutas med punkt)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -8293,7 +8394,9 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
 "Consider using standard mail forwarding mechanisms instead of MR records."
-msgstr "Överväg att använda vanliga mekanismer för vidarebefordran av e-post i stället för MR-poster."
+msgstr ""
+"Överväg att använda vanliga mekanismer för vidarebefordran av e-post i "
+"stället för MR-poster."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
@@ -8311,7 +8414,9 @@ msgstr "Prioritetsfältet för KEY-poster måste vara 0 eller tomt"
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr "KEY-poster har gjorts obsoleta av RFC 4034. Använd DNSKEY-poster för DNSSEC i stället."
+msgstr ""
+"KEY-poster har gjorts obsoleta av RFC 4034. Använd DNSKEY-poster för DNSSEC "
+"i stället."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
@@ -8599,7 +8704,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "En CDS-post måste innehålla key-tag, algorithm, digest-type och digest separerade med mellanslag."
+msgstr ""
+"En CDS-post måste innehålla key-tag, algorithm, digest-type och digest "
+"separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -8662,7 +8769,9 @@ msgstr ""
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "Att använda privata IP-adresser (RFC 1918) som L32-locatorer kan begränsa nåbarheten i ILNP-driftsättningar."
+msgstr ""
+"Att använda privata IP-adresser (RFC 1918) som L32-locatorer kan begränsa "
+"nåbarheten i ILNP-driftsättningar."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
@@ -8792,12 +8901,15 @@ msgstr "Ogiltigt värde i prioritetsfältet för SRV-posten."
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr "Ospecificerade (::) eller loopback-adresser (::1) i IPv6 bör inte användas i AAAA-poster."
+msgstr ""
+"Ospecificerade (::) eller loopback-adresser (::1) i IPv6 bör inte användas i "
+"AAAA-poster."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "Site-local IPv6-adresser (fec0::/10) är föråldrade och bör inte användas."
+msgstr ""
+"Site-local IPv6-adresser (fec0::/10) är föråldrade och bör inte användas."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
@@ -8890,7 +9002,9 @@ msgstr ""
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "Typbitkartor bör finnas med för att ange vilka RR-typer som finns för det ursprungliga ägarnamnet."
+msgstr ""
+"Typbitkartor bör finnas med för att ange vilka RR-typer som finns för det "
+"ursprungliga ägarnamnet."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -9027,7 +9141,9 @@ msgstr ""
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr "Terminalflaggorna \"S\", \"A\", \"U\" och \"P\" bör inte kombineras med andra flaggor."
+msgstr ""
+"Terminalflaggorna \"S\", \"A\", \"U\" och \"P\" bör inte kombineras med "
+"andra flaggor."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
@@ -9037,13 +9153,17 @@ msgstr "NAPTR-regexp måste börja med ett avgränsningstecken."
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr "NAPTR-regexp måste ha formatet avgränsare+mönster+avgränsare+ersättning+avgränsare+flaggor."
+msgstr ""
+"NAPTR-regexp måste ha formatet "
+"avgränsare+mönster+avgränsare+ersättning+avgränsare+flaggor."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "Flaggorna i NAPTR-regexp (efter den tredje avgränsaren) får endast innehålla \"i\" eller vara tomma."
+msgstr ""
+"Flaggorna i NAPTR-regexp (efter den tredje avgränsaren) får endast innehålla "
+"\"i\" eller vara tomma."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -9101,7 +9221,9 @@ msgstr ""
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr "Flaggvärdet 256 anger att detta är en Zone Signing Key (ZSK) med Zone Key-biten satt och SEP-biten inte satt."
+msgstr ""
+"Flaggvärdet 256 anger att detta är en Zone Signing Key (ZSK) med Zone Key-"
+"biten satt och SEP-biten inte satt."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
@@ -9275,7 +9397,8 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
-msgstr "Lägg till NS-poster vid zonens apex för dina auktoritativa namnservrar."
+msgstr ""
+"Lägg till NS-poster vid zonens apex för dina auktoritativa namnservrar."
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
@@ -9393,10 +9516,6 @@ msgstr "Kunde inte rensa zonmetadata: %s"
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Kunde inte radera zonmetadata: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "Du har inte behörighet att ändra zonmetadata."
 
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
@@ -9575,8 +9694,8 @@ msgstr "Redigera API-nyckel"
 msgid "Name"
 msgstr "Namn"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
 msgstr "Ange ett namn för denna API-nyckel"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
@@ -9708,7 +9827,8 @@ msgstr "Ange ett namn för din post"
 #: templates/modern/add_zone_templ_record.html:36
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr "Exempel: [ZONE] för själva zonen, eller subdomain.[ZONE] för en underdomän"
+msgstr ""
+"Exempel: [ZONE] för själva zonen, eller subdomain.[ZONE] för en underdomän"
 
 #: templates/modern/add_zone_templ_record.html:54
 msgid "Valid range: 0-65535"
@@ -9758,7 +9878,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Uppdatera post"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Återställ"
 
@@ -9868,8 +9988,8 @@ msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Ange IP-adressen till master-namnservern"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
 msgstr "Ange IP-adress"
 
 #: templates/modern/delete_supermaster.html:23
@@ -9888,7 +10008,7 @@ msgstr "Ange värdnamn"
 msgid "Account"
 msgstr "Konto"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Spara ändringar"
 
@@ -9908,7 +10028,9 @@ msgstr "Viktigt"
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr "Se till att värdnamnet exakt matchar det som står i NS-posterna, annars kan skapandet av slavzonen misslyckas."
+msgstr ""
+"Se till att värdnamnet exakt matchar det som står i NS-posterna, annars kan "
+"skapandet av slavzonen misslyckas."
 
 #: templates/modern/edit_supermaster.html:81
 msgid "Validation"
@@ -9916,7 +10038,8 @@ msgstr "Validering"
 
 #: templates/modern/edit_supermaster.html:82
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "Alla fält valideras för att säkerställa att de innehåller giltiga värden."
+msgstr ""
+"Alla fält valideras för att säkerställa att de innehåller giltiga värden."
 
 #: templates/default/dnssec.html:9 templates/modern/dnssec.html:9
 msgid "Confirm Unsign Zone"
@@ -9937,11 +10060,11 @@ msgstr "Är du säker på att du vill osignera zonen"
 msgid "Unsign Zone"
 msgstr "Osignera zon"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "Serienummer som det levereras av PowerDNS, med SOA-EDIT tillämpat"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Signerat serienummer"
 
@@ -9953,7 +10076,7 @@ msgstr "DNSSEC-nycklar för zon"
 msgid "Add new key"
 msgstr "Lägg till ny nyckel"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "Visa DS och DNSKEY"
 
@@ -10197,7 +10320,9 @@ msgstr "Behörighetsmall"
 #: templates/default/edit_group.html:45 templates/modern/edit_group.html:45
 msgid ""
 "Group members inherit these permissions only for zones owned by this group"
-msgstr "Gruppmedlemmar ärver dessa behörigheter endast för zoner som ägs av denna grupp"
+msgstr ""
+"Gruppmedlemmar ärver dessa behörigheter endast för zoner som ägs av denna "
+"grupp"
 
 #: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
 msgid "Select a permission template"
@@ -10211,7 +10336,7 @@ msgstr "Uppdatera grupp"
 msgid "Manage"
 msgstr "Hantera"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Inga medlemmar i denna grupp än."
 
@@ -10231,7 +10356,7 @@ msgstr "och"
 msgid "more..."
 msgstr "fler..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Denna grupp äger inga zoner än."
 
@@ -10264,7 +10389,8 @@ msgstr "Är du säker på att du vill ta bort zonen"
 msgid ""
 "The zone will remain in the system but this group will no longer have "
 "ownership."
-msgstr "Zonen finns kvar i systemet men denna grupp kommer inte längre att äga den."
+msgstr ""
+"Zonen finns kvar i systemet men denna grupp kommer inte längre att äga den."
 
 #: templates/default/delete_group.html:12 templates/modern/delete_group.html:12
 msgid "You are about to delete the group"
@@ -10479,7 +10605,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(för PTR:er i omvända zoner) eller"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Redigera kommentar"
 
@@ -10559,12 +10685,16 @@ msgstr "Tips och exempel"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Skapa olika mallar för olika typer av webbplatser (t.ex. \"Enkel webbplats\", \"E-postserver\")"
+msgstr ""
+"Skapa olika mallar för olika typer av webbplatser (t.ex. \"Enkel "
+"webbplats\", \"E-postserver\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr "Använd beskrivande namn och beskrivningar för att göra mallar lätta att känna igen"
+msgstr ""
+"Använd beskrivande namn och beskrivningar för att göra mallar lätta att "
+"känna igen"
 
 #: templates/default/list_log_api.html:8 templates/modern/list_log_api.html:8
 msgid "API Activity Logs"
@@ -10594,7 +10724,7 @@ msgstr "Alla användare"
 msgid "All events"
 msgstr "Alla händelser"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Loggar"
 
@@ -10645,10 +10775,6 @@ msgstr "Massinlägg av poster"
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
 msgstr "Poster"
-
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Ange minst en post"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -11013,8 +11139,9 @@ msgid "New Password"
 msgstr "Nytt lösenord"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Vänligen ange ett lösenord"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Ange ett lösenord"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -11272,6 +11399,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Ditt användarnamn kan endast ändras av en administratör"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Ange användarnamn"
 
@@ -11782,7 +11910,9 @@ msgstr "Krav"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr "Du måste redan ha skapat lämplig omvänd zon i PowerDNS innan du använder denna funktion."
+msgstr ""
+"Du måste redan ha skapat lämplig omvänd zon i PowerDNS innan du använder "
+"denna funktion."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -11792,13 +11922,17 @@ msgstr "Till exempel:"
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
-msgstr "För nätverk 192.168.1.0/24 behöver du en omvänd zon för 1.168.192.in-addr.arpa"
+msgstr ""
+"För nätverk 192.168.1.0/24 behöver du en omvänd zon för 1.168.192.in-"
+"addr.arpa"
 
 #: templates/modern/batch_ptr_record.html:150
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr "För större nätverk behöver du motsvarande omvända zoner (t.ex. 168.192.in-addr.arpa för ett /16-nätverk)"
+msgstr ""
+"För större nätverk behöver du motsvarande omvända zoner (t.ex. 168.192.in-"
+"addr.arpa för ett /16-nätverk)"
 
 #: templates/modern/batch_ptr_record.html:158
 msgid "Quick Tips"
@@ -11808,7 +11942,9 @@ msgstr "Snabbtips"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr "Använd rullgardinsknappen bredvid Nätverksprefix för att välja från befintliga omvända zoner"
+msgstr ""
+"Använd rullgardinsknappen bredvid Nätverksprefix för att välja från "
+"befintliga omvända zoner"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
@@ -11998,7 +12134,9 @@ msgstr ""
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr "DNS-guider är utformade för forward-zoner och kanske inte är lämpliga för omvända zoner."
+msgstr ""
+"DNS-guider är utformade för forward-zoner och kanske inte är lämpliga för "
+"omvända zoner."
 
 #: templates/modern/dns_wizard_select.html:57
 msgid "Recommended"
@@ -12015,10 +12153,6 @@ msgstr "Lägg till API-nyckel"
 #: templates/default/api_key_add.html:19 templates/modern/api_key_add.html:20
 msgid "My application"
 msgstr "Min applikation"
-
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Ange ett namn för denna API-nyckel"
 
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
@@ -12041,71 +12175,71 @@ msgstr "Om du förlorar nyckeln måste du generera om den."
 msgid "Edit"
 msgstr "Redigera"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Lägg till ny post"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Guidade guider för DMARC, SPF, DKIM, CAA, TLSA och SRV-poster"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Flerpostsläge"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Massinlägg"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Misslyckades att lägga till"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "post(er). Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Misslyckades att lägga till poster. Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Innehållsvalidering misslyckades:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Ogiltigt värde för posttyp"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Vänligen ange all nödvändig information."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "Lägg till PTR"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "Lägg till A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Denna post finns redan"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Ogiltig prioritet"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Ogiltigt TTL-värde"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "Ange TTL"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12169,59 +12303,59 @@ msgstr "totalt antal poster"
 msgid "Last modified"
 msgstr "Senast ändrad"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Senast redigerad av %account% den %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Redigera valda"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Ta bort post(er)"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Importera"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "Generera PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Zonkonfiguration"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Ändra"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "IP-adress för master NS"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "Hantera DNSSEC"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC-nycklar hanteras på den primära servern"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Försignerad"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Signera zon"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Inte signerad"
 
@@ -12498,7 +12632,7 @@ msgid "Send Username"
 msgstr "Skicka användarnamn"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Ange användarlösenord"
 
@@ -12551,7 +12685,9 @@ msgstr "Ange zonnamn"
 msgid ""
 "Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
 "name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Ange ett nätverk (t.ex. 192.168.1.0/24 eller 2001:db8::/48) eller ett namn på en omvänd zon (t.ex. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Ange ett nätverk (t.ex. 192.168.1.0/24 eller 2001:db8::/48) eller ett namn "
+"på en omvänd zon (t.ex. 1.168.192.in-addr.arpa)."
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
@@ -12906,7 +13042,9 @@ msgstr "Flera värden"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "För metadata som ALLOW-AXFR-FROM, lägg till flera rader med samma typ. Varje värde lagras separat, en rad per värde."
+msgstr ""
+"För metadata som ALLOW-AXFR-FROM, lägg till flera rader med samma typ. Varje "
+"värde lagras separat, en rad per värde."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -13611,10 +13749,6 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Slavzonkonfiguration"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Ange IP-adress"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
@@ -13651,7 +13785,13 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Vyer levererar olika zonvarianter till olika klienter beroende på vilket nätverk som frågade resolvern. Varje variant heter zone..variant (till exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, så samma värdnamn kan svara med olika IP-adresser beroende på klientens nätverk."
+msgstr ""
+"Vyer levererar olika zonvarianter till olika klienter beroende på vilket "
+"nätverk som frågade resolvern. Varje variant heter zone..variant (till "
+"exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS "
+"innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, "
+"så samma värdnamn kan svara med olika IP-adresser beroende på klientens "
+"nätverk."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14061,10 +14201,6 @@ msgstr "Tillbaka till grupp"
 msgid "Owned Zones"
 msgstr "Ägda zoner"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Denna grupp äger inga zoner ännu"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Ta bort valda"
@@ -14303,7 +14439,9 @@ msgstr "Hur man använder grupper"
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
-msgstr "Efter att ha skapat gruppen kan du lägga till medlemmar och tilldela zoner till den. Alla medlemmar får automatiskt åtkomst till gruppens zoner."
+msgstr ""
+"Efter att ha skapat gruppen kan du lägga till medlemmar och tilldela zoner "
+"till den. Alla medlemmar får automatiskt åtkomst till gruppens zoner."
 
 #: templates/modern/list_perm_templ.html:6
 msgid "Group Templates"
@@ -14352,10 +14490,6 @@ msgstr "Gruppnamn"
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
 msgstr "Aktuella medlemmar"
-
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Inga medlemmar i denna grupp ännu"
 
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
@@ -14631,17 +14765,13 @@ msgstr "RDAP-resultat för"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Ange ett domännamn för att göra en RDAP-sökning."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Skapa användare med begränsade rättigheter"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "Skapa användare med begränsad behörighet"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Skapa användare med begränsad behörighet"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -14836,10 +14966,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Typ av databasserver."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Ange användarnamnet"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Databasanvändare med rättigheter att skapa tabeller."
@@ -14951,10 +15077,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "Fast värde för det första administratörskontot."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Ange ett lösenord"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15068,10 +15190,6 @@ msgid ""
 msgstr ""
 "Poweradmins databasanvändare med begränsad åtkomst. Används inte för "
 "inloggning i webbgränssnittet."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Ange användarens lösenord"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15383,13 +15501,6 @@ msgid ""
 msgstr ""
 "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
 "detta system. Kontakta din administratör."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ogiltigt LOC-postformat. Formatet ska vara: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-# OBSOLETE: "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 
 

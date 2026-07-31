@@ -760,7 +760,7 @@ class DomainManager implements DomainManagerInterface
     public function changeZoneType(string $type, int $id): bool
     {
         if (!$this->userCanEditZoneMetadata($id)) {
-            $this->messageService->addSystemError(_('You do not have the permission to change zone metadata.'));
+            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
             return false;
         }
 
@@ -790,7 +790,7 @@ class DomainManager implements DomainManagerInterface
     public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
         if (!$this->userCanEditZoneMetadata($zone_id)) {
-            $this->messageService->addSystemError(_('You do not have the permission to change zone metadata.'));
+            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
             return false;
         }
 

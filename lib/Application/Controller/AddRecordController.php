@@ -515,7 +515,7 @@ class AddRecordController extends BaseController
         }
 
         if ($successCount > 0) {
-            $message = sprintf(_('%d record(s) were successfully added.'), $successCount);
+            $message = sprintf(_('%d record(s) have been added successfully.'), $successCount);
             if ($matchingRecordCount > 0) {
                 $message .= ' ' . sprintf(_('%d matching record(s) were also created.'), $matchingRecordCount);
             }

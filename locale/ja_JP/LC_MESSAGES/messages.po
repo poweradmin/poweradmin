@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "無効なゾーンIDです。"
 msgid "Zone not found."
 msgstr "ゾーンが見つかりません。"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
@@ -328,7 +328,7 @@ msgstr ""
 "ださい。"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "ホスト名の形式が無効です"
 
@@ -1778,7 +1778,7 @@ msgstr "supermasters を表示する権限がありません。"
 msgid "You do not have the permission to view zone metadata."
 msgstr "ゾーンメタデータを表示する権限がありません。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "ゾーンメタデータを編集する権限がありません。"
 
@@ -1893,13 +1893,10 @@ msgstr "有効"
 msgid "API key %s successfully."
 msgstr "APIキーが正常に%sされました。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "このゾーンにレコードを追加する権限がありません。"
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "少なくとも1つのレコードを提供してください。"
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "少なくとも1つのレコードを入力してください"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1909,7 +1906,7 @@ msgstr "無効なレコードタイプです。"
 msgid "Record could not be added."
 msgstr "レコードを追加できませんでした。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d件のレコードが正常に追加されました。"
@@ -1986,7 +1983,7 @@ msgstr "ページ番号が利用可能なページを超えています。"
 msgid "Invalid request method."
 msgstr "無効なリクエストメソッドです。"
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "無効なグループまたはユーザーIDです。"
 
@@ -2112,7 +2109,7 @@ msgstr "名前を付けて保存を使用する場合は、異なる名前を入
 msgid "Zone template has been copied successfully."
 msgstr "ゾーンテンプレートが正常にコピーされました。"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "ゾーンテンプレートを表示する権限がありません。"
 
@@ -2128,7 +2125,7 @@ msgstr "無効なテンプレートIDです。"
 msgid "Template does not exist."
 msgstr "テンプレートが存在しません。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
@@ -2180,10 +2177,6 @@ msgstr "ゾーンの編集"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "このゾーンにアクセスする権限がありません。"
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "このゾーンを表示する権限がありません。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2362,11 +2355,6 @@ msgstr "レコードが正常に追加されました。"
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "レコードが提供されていません。"
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d件のレコードが正常に追加されました。"
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2578,10 +2566,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "デフォルト値を %d 件保存し、%d 件を消去しました。"
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "ゾーンテンプレートを表示する権限がありません。"
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2852,10 +2836,6 @@ msgstr "ダッシュボード"
 msgid "You do not have permission to manage group memberships."
 msgstr "グループメンバーシップを管理する権限がありません。"
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "無効なユーザーまたはグループIDです。"
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "ユーザーがグループから正常に削除されました。"
@@ -3105,7 +3085,7 @@ msgstr "ログアウトが完了しました(警告あり): "
 msgid "You do not have permission to view this record."
 msgstr "このレコードを表示する権限がありません。"
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
@@ -3230,7 +3210,7 @@ msgid "Failed to add zone."
 msgstr "ゾーンの追加に失敗しました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3385,12 +3365,12 @@ msgstr "%sフィールドは必須です。"
 msgid "The %s field must be a number."
 msgstr "%sフィールドは数値である必要があります。"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "いいえ"
@@ -3608,7 +3588,8 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "このsupermasterのIPアドレス、ホスト名、またはアカウントを変更できます。"
+msgstr ""
+"このsupermasterのIPアドレス、ホスト名、またはアカウントを変更できます。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3654,13 +3635,13 @@ msgid ""
 "below."
 msgstr "下の表で設定されている supermaster への接続状態を表示します。"
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "install/ ディレクトリが存在します。続行する前にまず削除する必要があります。"
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3771,10 +3752,6 @@ msgstr "コンテンツフィールドに有効な値がありません。"
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRVレコードの優先度は0から65535の間の数値である必要があります。"
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "このレコードを編集する権限がありません。"
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4171,7 +4148,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSAレコードには、スペースで区切られたusage、selector、matching-type、certificate-dataが含まれている必要があります。"
+msgstr ""
+"TLSAレコードには、スペースで区切られたusage、selector、matching-type、"
+"certificate-dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4213,7 +4192,9 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr "RFC 7671では、最も堅牢な設定としてusage=3（DANE-EE）、selector=1（SPKI）、matching-type=1（SHA-256）を推奨しています。"
+msgstr ""
+"RFC 7671では、最も堅牢な設定としてusage=3（DANE-EE）、selector=1（SPKI）、"
+"matching-type=1（SHA-256）を推奨しています。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4242,7 +4223,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Matching-type 0（完全一致）は推奨されません。SHA-256（1）がより良い互換性とセキュリティを提供します。"
+msgstr ""
+"Matching-type 0（完全一致）は推奨されません。SHA-256（1）がより良い互換性とセ"
+"キュリティを提供します。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4584,7 +4567,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 [s1]] "
+"{\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5263,7 +5249,9 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr "TSIGレコードには少なくとも、スペースで区切られたalgorithm-name、timestamp、fudge、mac、original-id、error、other-lenが含まれている必要があります。"
+msgstr ""
+"TSIGレコードには少なくとも、スペースで区切られたalgorithm-name、timestamp、"
+"fudge、mac、original-id、error、other-lenが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5448,7 +5436,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMDレコードには、スペースで区切られたserial、scheme、hash-algorithm、digestが含まれている必要があります。"
+msgstr ""
+"ZONEMDレコードには、スペースで区切られたserial、scheme、hash-algorithm、"
+"digestが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5524,7 +5514,9 @@ msgstr "CERTレコードの内容に無効な文字があります。"
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERTレコードには、スペースで区切られたtype、key-tag、algorithm、certificate-dataが含まれている必要があります。"
+msgstr ""
+"CERTレコードには、スペースで区切られたtype、key-tag、algorithm、certificate-"
+"dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5852,7 +5844,9 @@ msgstr "TKEYレコードの内容に無効な文字があります。"
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEYレコードには、スペースで区切られたalgorithm-name、inception-time、expiration-time、mode、error、key-dataが含まれている必要があります。"
+msgstr ""
+"TKEYレコードには、スペースで区切られたalgorithm-name、inception-time、"
+"expiration-time、mode、error、key-dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7073,7 +7067,9 @@ msgstr "DSレコードの優先度フィールドは0または空である必要
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "DSレコードは次の形式である必要があります：<key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"DSレコードは次の形式である必要があります：<key-tag> <algorithm> <digest-"
+"type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7848,7 +7844,9 @@ msgstr "SMIMEAレコードに無効な文字が含まれています。"
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEAレコードはスペースで区切られたusage、selector、matching-type、certificate-dataを含む必要があります。"
+msgstr ""
+"SMIMEAレコードはスペースで区切られたusage、selector、matching-type、"
+"certificate-dataを含む必要があります。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8722,7 +8720,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDSレコードには、スペースで区切られたkey-tag、algorithm、digest-type、およびdigestを含める必要があります。"
+msgstr ""
+"CDSレコードには、スペースで区切られたkey-tag、algorithm、digest-type、および"
+"digestを含める必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9548,10 +9548,6 @@ msgstr "ゾーンメタデータのクリーンアップに失敗しました: %
 msgid "Failed to delete zone metadata: %s"
 msgstr "ゾーンメタデータの削除に失敗しました: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "ゾーンメタデータを変更する権限がありません。"
-
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
 msgstr "DNSバックエンドでのゾーンタイプの更新に失敗しました。"
@@ -9729,8 +9725,8 @@ msgstr "APIキーを編集"
 msgid "Name"
 msgstr "名前"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
 msgstr "このAPIキーの名前を入力してください"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
@@ -9910,7 +9906,7 @@ msgstr ""
 msgid "Update record"
 msgstr "レコードを更新"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "リセット"
 
@@ -10020,9 +10016,9 @@ msgstr "SPFのTXT：<code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "マスターネームサーバーのIPアドレスを入力してください"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
-msgstr "IPアドレスを入力してください"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
+msgstr "IPアドレスを入力"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -10040,7 +10036,7 @@ msgstr "ホスト名を入力してください"
 msgid "Account"
 msgstr "アカウント"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "変更を保存"
 
@@ -10092,11 +10088,11 @@ msgstr "本当にゾーンの署名を解除しますか"
 msgid "Unsign Zone"
 msgstr "ゾーンの署名を解除"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "SOA-EDIT を適用した、PowerDNS が提供するシリアル"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "署名済みシリアル"
 
@@ -10108,7 +10104,7 @@ msgstr "ゾーンのDNSSECキー"
 msgid "Add new key"
 msgstr "新しいキーを追加"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "DSとDNSKEYを表示"
 
@@ -10371,7 +10367,7 @@ msgstr "グループを更新"
 msgid "Manage"
 msgstr "管理"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "このグループにはまだメンバーがいません。"
 
@@ -10391,7 +10387,7 @@ msgstr "および"
 msgid "more..."
 msgstr "さらに..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "このグループはまだゾーンを所有していません。"
 
@@ -10640,7 +10636,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(逆引きゾーンの PTR 用) または"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "コメントを編集"
 
@@ -10756,7 +10752,7 @@ msgstr "すべてのユーザー"
 msgid "All events"
 msgstr "すべてのイベント"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "ログ"
 
@@ -10807,10 +10803,6 @@ msgstr "レコードの一括追加"
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
 msgstr "レコード"
-
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "少なくとも1つのレコードを入力してください"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -11163,7 +11155,8 @@ msgid "New Password"
 msgstr "新しいパスワード"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
 msgstr "パスワードを入力してください"
 
 #: templates/modern/reset_password.html:54
@@ -11419,6 +11412,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "ユーザー名は管理者のみが変更できます"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "ユーザー名を入力してください"
 
@@ -11754,7 +11748,9 @@ msgstr "戻る"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "supermasterは、新しいゾーンを自動的にスレーブサーバーにプッシュするPowerDNS権威サーバーです。"
+msgstr ""
+"supermasterは、新しいゾーンを自動的にスレーブサーバーにプッシュするPowerDNS権"
+"威サーバーです。"
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11764,7 +11760,9 @@ msgstr "動作原理"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "スレーブがsupermasterから通知を受信すると、ドメインを追加し、supermasterのIPアドレスをマスターアドレスとして設定します。"
+msgstr ""
+"スレーブがsupermasterから通知を受信すると、ドメインを追加し、supermasterのIP"
+"アドレスをマスターアドレスとして設定します。"
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12169,10 +12167,6 @@ msgstr "APIキーを追加"
 msgid "My application"
 msgstr "マイアプリケーション"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "このAPIキーの名前を入力してください"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "APIキーを作成"
@@ -12193,71 +12187,71 @@ msgstr "キーを紛失した場合は、再生成する必要があります。
 msgid "Edit"
 msgstr "編集"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "新しいレコードを追加"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA、SRVレコード用のガイド付きウィザード"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "マルチレコードモード"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "追加に失敗しました"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "レコード。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "レコードの追加に失敗しました。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "内容の検証に失敗しました："
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "レコードタイプの値が無効です"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "必要な情報をすべて入力してください。"
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "PTRを追加"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "A/AAAAを追加"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "このレコードは既に存在します"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "優先度が無効です"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "TTL値が無効です"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "TTLを入力してください"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12321,59 +12315,59 @@ msgstr "レコードの合計"
 msgid "Last modified"
 msgstr "最終更新"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "最終編集: %account% (%date%)"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "選択項目を編集"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "レコードを削除"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "コメント"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "インポート"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "PTRを生成"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "ゾーン構成"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "変更"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "マスターNSのIPアドレス"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "DNSSECを管理"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC キーはプライマリサーバーで管理されます"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "署名済み"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "ゾーンの署名"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "署名なし"
 
@@ -12649,7 +12643,7 @@ msgid "Send Username"
 msgstr "ユーザー名を送信"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "ユーザーパスワードを提供してください"
 
@@ -13503,7 +13497,10 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "マスターネームサーバーがsupermasterであるスレーブゾーンを削除しようとしています。今ゾーンを削除すると、一時的な削除のみになります。supermasterがこのゾーンの通知を送信するたびに、再び追加されます！"
+msgstr ""
+"マスターネームサーバーがsupermasterであるスレーブゾーンを削除しようとしていま"
+"す。今ゾーンを削除すると、一時的な削除のみになります。supermasterがこのゾーン"
+"の通知を送信するたびに、再び追加されます！"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13750,10 +13747,6 @@ msgstr ""
 #: templates/modern/add_zone_slave.html:16
 msgid "Slave Zone Configuration"
 msgstr "スレーブゾーン構成"
-
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "IPアドレスを入力"
 
 #: templates/modern/add_zone_slave.html:33
 msgid ""
@@ -14206,10 +14199,6 @@ msgstr "グループに戻る"
 msgid "Owned Zones"
 msgstr "所有ゾーン"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "このグループはまだゾーンを所有していません"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "選択項目を削除"
@@ -14503,10 +14492,6 @@ msgstr "グループ名"
 msgid "Current Members"
 msgstr "現在のメンバー"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "このグループにはまだメンバーがいません"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "利用可能なユーザー"
@@ -14777,17 +14762,13 @@ msgstr "のRDAP結果"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP 検索を実行するドメイン名を入力してください。"
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
 msgstr "権限を制限したユーザーの作成"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "権限を制限したユーザーの作成"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -14981,10 +14962,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "データベースサーバーの種類。"
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "ユーザー名を入力してください"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "テーブル作成権限を持つデータベースのユーザー名。"
@@ -15097,10 +15074,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "初期管理者アカウント用に固定。"
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "パスワードを入力してください"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15217,10 +15190,6 @@ msgid ""
 msgstr ""
 "アクセスを制限した Poweradmin データベースユーザー名。Web UI へのログインには"
 "使用しません。"
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "ユーザーのパスワードを入力してください"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15534,14 +15503,6 @@ msgid ""
 msgstr ""
 "ロケールを設定できませんでした。選択したロケールはこのシステムでサポートされ"
 "ていない可能性があります。管理者にお問い合わせください。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "無効なLOCレコード形式です。形式は次のようにする必要があります：d1 [m1 "
-# OBSOLETE: "[s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] "
-# OBSOLETE: "[hp[\"m\"] [vp[\"m\"]]。"
 
 
 

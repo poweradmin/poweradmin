@@ -471,7 +471,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $perm_view = Permission::getViewPermission($this->db);
 
         if ($perm_view == "none") {
-            $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
+            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
 

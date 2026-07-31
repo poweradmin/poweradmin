@@ -103,7 +103,7 @@ class BulkRecordAddController extends BaseController
 
         $this->checkCondition(
             ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
-            _('You do not have the permission to add records to this zone.')
+            _('You do not have permission to add records to this zone.')
         );
 
         if ($this->isPost()) {
@@ -118,7 +118,7 @@ class BulkRecordAddController extends BaseController
     {
         $constraints = [
             'records' => [
-                new Assert\NotBlank(message: _('Please provide at least one record.'))
+                new Assert\NotBlank(message: _('Provide at least one record'))
             ]
         ];
 

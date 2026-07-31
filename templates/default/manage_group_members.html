@@ -22,7 +22,7 @@
                 {% if current_members is empty %}
                 <p class="text-muted text-center py-4">
                     <i class="bi bi-inbox fs-1"></i><br>
-                    {% trans %}No members in this group yet{% endtrans %}
+                    {% trans %}No members in this group yet.{% endtrans %}
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/members" id="remove-form">

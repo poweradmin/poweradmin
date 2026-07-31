@@ -111,7 +111,7 @@ class BatchPtrRecordController extends BaseController
 
             $this->checkCondition(
                 ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
-                _("You do not have the permission to add records to this zone.")
+                _("You do not have permission to add records to this zone.")
             );
         }
 

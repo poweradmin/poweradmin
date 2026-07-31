@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-07-30 17:49+0300\n"
+"POT-Creation-Date: 2026-07-31 18:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Neteisingas zonos ID."
 msgid "Zone not found."
 msgstr "Zona nerasta."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:81
+#: lib/Application/Controller/BatchPtrRecordController.php:114
 msgid "You do not have permission to add records to this zone."
 msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 
@@ -332,7 +332,7 @@ msgstr ""
 "visą sertifikatą."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:679
+#: templates/modern/edit.html:79 templates/modern/edit.html:681
 msgid "Invalid hostname format"
 msgstr "Neteisingas serverio vardo formatas"
 
@@ -1803,7 +1803,7 @@ msgstr "Neturite leidimo peržiūrėti supermasters."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Neturite teisės peržiūrėti zonos metaduomenų."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Neturite teisės redaguoti zonos metaduomenų."
 
@@ -1919,13 +1919,10 @@ msgstr "įjungtas"
 msgid "API key %s successfully."
 msgstr "API raktas %s sėkmingai."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:114
-msgid "You do not have the permission to add records to this zone."
-msgstr "Neturite leidimo pridėti įrašų į šią zoną."
-
 #: lib/Application/Controller/BulkRecordAddController.php:121
-msgid "Please provide at least one record."
-msgstr "Prašome pateikti bent vieną įrašą."
+#: templates/modern/bulk_record_add.html:28
+msgid "Provide at least one record"
+msgstr "Pateikite bent vieną įrašą"
 
 #: lib/Application/Controller/BulkRecordAddController.php:188
 msgid "Invalid record type."
@@ -1935,7 +1932,7 @@ msgstr "Neteisingas įrašo tipas."
 msgid "Record could not be added."
 msgstr "Įrašo pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/AddRecordController.php:518
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
@@ -2016,7 +2013,7 @@ msgstr "Puslapio numeris viršija turimus puslapius."
 msgid "Invalid request method."
 msgstr "Neteisingas užklausos metodas."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:80
+#: lib/Application/Controller/RemoveUserGroupController.php:83
 msgid "Invalid group or user ID."
 msgstr "Netinkamas grupės arba vartotojo ID."
 
@@ -2141,7 +2138,7 @@ msgstr "Prašome įvesti kitą pavadinimą naudojant 'Išsaugoti kaip'."
 msgid "Zone template has been copied successfully."
 msgstr "Zonos šablonas sėkmingai nukopijuotas."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:39
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have permission to view zone templates."
 msgstr "Neturite leidimo peržiūrėti zonų šablonų."
 
@@ -2157,7 +2154,7 @@ msgstr "Neteisingas šablono ID."
 msgid "Template does not exist."
 msgstr "Šablonas neegzistuoja."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
 msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
@@ -2213,10 +2210,6 @@ msgstr "Redaguoti zoną"
 #: lib/Application/Controller/ZoneOwnershipController.php:85
 msgid "You do not have permission to access this zone."
 msgstr "Jūs neturite leidimo prisijungti prie šios zonos."
-
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:474
-msgid "You do not have the permission to view this zone."
-msgstr "Neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:76
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -2395,11 +2388,6 @@ msgstr "Įrašas sėkmingai pridėtas."
 #: lib/Application/Controller/AddRecordController.php:461
 msgid "No records were provided."
 msgstr "Nebuvo pateikta įrašų."
-
-#: lib/Application/Controller/AddRecordController.php:518
-#, php-format
-msgid "%d record(s) were successfully added."
-msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
 #: lib/Application/Controller/AddRecordController.php:520
 #, php-format
@@ -2610,10 +2598,6 @@ msgstr ""
 #, php-format
 msgid "Saved %d default(s); cleared %d."
 msgstr "Išsaugota numatytųjų reikšmių: %d; išvalyta: %d."
-
-#: lib/Application/Controller/ListZoneTemplController.php:57
-msgid "You do not have the permission to view zone templates."
-msgstr "Neturite leidimo peržiūrėti zonų šablonų."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -2892,10 +2876,6 @@ msgstr "Prietaisų skydelis"
 msgid "You do not have permission to manage group memberships."
 msgstr "Neturite leidimo valdyti grupės narystes."
 
-#: lib/Application/Controller/RemoveUserGroupController.php:83
-msgid "Invalid user or group ID."
-msgstr "Netinkamas vartotojo arba grupės ID."
-
 #: lib/Application/Controller/RemoveUserGroupController.php:104
 msgid "User removed from group successfully."
 msgstr "Vartotojas sėkmingai pašalintas iš grupės."
@@ -3149,7 +3129,7 @@ msgstr "Atsijungimas užbaigtas (su įspėjimais): "
 msgid "You do not have permission to view this record."
 msgstr "Jūs neturite leidimo peržiūrėti šio įrašo."
 
-#: lib/Application/Controller/EditRecordController.php:130
+#: lib/Domain/Service/Dns/RecordManager.php:423
 msgid "You do not have permission to edit this record."
 msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
@@ -3271,7 +3251,7 @@ msgid "Failed to add zone."
 msgstr "Nepavyko pridėti zonos."
 
 #: lib/Application/Controller/BulkRegistrationController.php:219
-msgid "Zones has been added successfully."
+msgid "Zones have been added successfully."
 msgstr "Zonos sėkmingai pridėtos."
 
 #: lib/Application/Controller/BulkRegistrationController.php:222
@@ -3429,12 +3409,12 @@ msgstr "Laukas %s yra privalomas."
 msgid "The %s field must be a number."
 msgstr "Laukas %s turi būti skaičius."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:196
 msgid "Yes"
 msgstr "Taip"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:430
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:432
 #: templates/modern/users.html:198
 msgid "No"
 msgstr "Ne"
@@ -3702,13 +3682,13 @@ msgstr ""
 "Rodoma toliau esančioje lentelėje sukonfigūruotų supermaster serverių ryšio "
 "būsena."
 
-#: lib/Infrastructure/Web/PageRenderer.php:191
+#: lib/Infrastructure/Web/PageRenderer.php:224
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "Katalogas install/ egzistuoja, prieš tęsdami pirmiausia jį pašalinkite."
 
-#: lib/Infrastructure/Web/PageRenderer.php:231
+#: lib/Infrastructure/Web/PageRenderer.php:264
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -3821,10 +3801,6 @@ msgstr "Jūsų turinio laukas neturi teisingo reikšmės."
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV įrašų prioritetas turi būti skaičius tarp 0 ir 65535."
-
-#: lib/Domain/Service/Dns/RecordManager.php:423
-msgid "You do not have the permission to edit this record."
-msgstr "Neturite leidimo redaguoti šį įrašą."
 
 #: lib/Domain/Model/ZoneTemplate.php:756 lib/Domain/Model/ZoneTemplate.php:841
 msgid "The record does not belong to this zone template."
@@ -4215,7 +4191,9 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA įrašas turi turėti usage, selector, matching-type ir certificate-data laukus, atskirtus tarpais."
+msgstr ""
+"TLSA įrašas turi turėti usage, selector, matching-type ir certificate-data "
+"laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4257,7 +4235,9 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr "RFC 7671 rekomenduoja usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) kaip patikimiausią konfigūraciją."
+msgstr ""
+"RFC 7671 rekomenduoja usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
+"(SHA-256) kaip patikimiausią konfigūraciją."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4286,7 +4266,9 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Reikšmė matching-type 0 (tikslus atitikimas) nerekomenduojama. SHA-256 (1) teikia geresnį suderinamumą ir saugumą."
+msgstr ""
+"Reikšmė matching-type 0 (tikslus atitikimas) nerekomenduojama. SHA-256 (1) "
+"teikia geresnį suderinamumą ir saugumą."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4628,7 +4610,10 @@ msgstr ""
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
-msgstr "Neteisingas LOC įrašo formatas. Formatas turėtų būti: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+msgstr ""
+"Neteisingas LOC įrašo formatas. Formatas turėtų būti: d1 [m1 [s1]] {\"N\"|"
+"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"[vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
@@ -5311,7 +5296,9 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr "TSIG įrašas turi turėti bent algorithm-name, timestamp, fudge, mac, original-id, error ir other-len laukus, atskirtus tarpais."
+msgstr ""
+"TSIG įrašas turi turėti bent algorithm-name, timestamp, fudge, mac, original-"
+"id, error ir other-len laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5493,7 +5480,9 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMD įrašas turi turėti serial, scheme, hash-algorithm ir digest laukus, atskirtus tarpais."
+msgstr ""
+"ZONEMD įrašas turi turėti serial, scheme, hash-algorithm ir digest laukus, "
+"atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5570,7 +5559,9 @@ msgstr "CERT įrašo turinyje yra neteisingi simboliai."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERT įrašas turi turėti type, key-tag, algorithm ir certificate-data laukus, atskirtus tarpais."
+msgstr ""
+"CERT įrašas turi turėti type, key-tag, algorithm ir certificate-data laukus, "
+"atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5692,7 +5683,9 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "Neteisingas DLV įrašo formatas. Tikėtasi: <key-tag> <algorithm> <digest-type> <digest>."
+msgstr ""
+"Neteisingas DLV įrašo formatas. Tikėtasi: <key-tag> <algorithm> <digest-"
+"type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5895,7 +5888,9 @@ msgstr "TKEY įrašo turinyje yra neteisingi simboliai."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "TKEY įrašas turi turėti algorithm-name, inception-time, expiration-time, mode, error ir key-data laukus, atskirtus tarpais."
+msgstr ""
+"TKEY įrašas turi turėti algorithm-name, inception-time, expiration-time, "
+"mode, error ir key-data laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7127,7 +7122,8 @@ msgstr "DS įrašų prioriteto laukas turi būti 0 arba tuščias."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr "DS įrašas turi būti formatu: <key-tag> <algorithm> <digest-type> <digest>"
+msgstr ""
+"DS įrašas turi būti formatu: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7900,7 +7896,9 @@ msgstr "SMIMEA įrašas turi neteisingų simbolių."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA įrašas turi turėti usage, selector, matching-type ir certificate-data laukus, atskirtus tarpais."
+msgstr ""
+"SMIMEA įrašas turi turėti usage, selector, matching-type ir certificate-data "
+"laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8016,7 +8014,9 @@ msgstr "SMIMEA SHA-512 sertifikato duomenys turi būti 128 simbolių ilgio."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr "Rekomenduojama SMIMEA konfigūracija yra usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) ir matching-type=1 (SHA-256)."
+msgstr ""
+"Rekomenduojama SMIMEA konfigūracija yra usage=3 (DANE-EE), selector=1 "
+"(SubjectPublicKeyInfo) ir matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8771,7 +8771,9 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS įrašas turi turėti key-tag, algorithm, digest-type ir digest laukus, atskirtus tarpais."
+msgstr ""
+"CDS įrašas turi turėti key-tag, algorithm, digest-type ir digest laukus, "
+"atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9454,7 +9456,9 @@ msgstr "SOA įrašas turi netinkamą turinio formatą."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr "SOA formatas turėtų būti: primary-ns hostmaster serial refresh retry expire minimum"
+msgstr ""
+"SOA formatas turėtų būti: primary-ns hostmaster serial refresh retry expire "
+"minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9586,10 +9590,6 @@ msgstr "Nepavyko išvalyti zonos metaduomenų: %s"
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Nepavyko ištrinti zonos metaduomenų: %s"
-
-#: lib/Domain/Service/Dns/DomainManager.php:793
-msgid "You do not have the permission to change zone metadata."
-msgstr "Neturite leidimo keisti zonos metaduomenų."
 
 #: lib/Domain/Service/Dns/DomainManager.php:770
 msgid "Failed to update zone type in DNS backend."
@@ -9768,9 +9768,9 @@ msgstr "Redaguoti API raktą"
 msgid "Name"
 msgstr "Vardas"
 
-#: templates/default/api_key_edit.html:20 templates/modern/api_key_edit.html:21
-msgid "Please provide a name for this API key"
-msgstr "Pateikite šio API rakto vardą"
+#: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
+msgid "Provide a name for this API key"
+msgstr "Pateikite šio API rakto pavadinimą"
 
 #: templates/modern/api_key_edit.html:22 templates/modern/api_key_add.html:22
 msgid "A descriptive name to help you identify this key"
@@ -9950,7 +9950,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Atnaujinti įrašą"
 
-#: templates/modern/edit.html:556 templates/modern/users.html:222
+#: templates/modern/edit.html:558 templates/modern/users.html:222
 msgid "Reset"
 msgstr "Atkurti"
 
@@ -10060,8 +10060,8 @@ msgstr "TXT SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgid "Enter the IP address of the master nameserver"
 msgstr "Įveskite pagrindinio vardų serverio IP adresą"
 
-#: templates/modern/add_supermaster.html:19
-msgid "Provide ip address"
+#: lib/Module/SecondaryZoneImport/templates/import.html:128
+msgid "Provide IP address"
 msgstr "Pateikite IP adresą"
 
 #: templates/modern/delete_supermaster.html:23
@@ -10080,7 +10080,7 @@ msgstr "Pateikite serverio vardą"
 msgid "Account"
 msgstr "Paskyra"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:553
+#: templates/modern/edit.html:176 templates/modern/edit.html:555
 msgid "Save changes"
 msgstr "Išsaugoti pakeitimus"
 
@@ -10132,11 +10132,11 @@ msgstr "Ar esate tikri, kad norite atskirt zoną"
 msgid "Unsign Zone"
 msgstr "Atskirt zoną"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "Serijos numeris, kaip jį pateikia PowerDNS, pritaikius SOA-EDIT"
 
-#: templates/modern/edit.html:873 templates/modern/list_forward_zones.html:127
+#: templates/modern/edit.html:875 templates/modern/list_forward_zones.html:127
 msgid "Signed serial"
 msgstr "Pasirašytas serijos numeris"
 
@@ -10148,7 +10148,7 @@ msgstr "DNSSEC raktai zonai"
 msgid "Add new key"
 msgstr "Pridėti naują raktą"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:866
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:868
 msgid "Show DS and DNSKEY"
 msgstr "Rodyti DS ir DNSKEY"
 
@@ -10409,7 +10409,7 @@ msgstr "Atnaujinti grupę"
 msgid "Manage"
 msgstr "Valdyti"
 
-#: templates/default/edit_group.html:79 templates/modern/edit_group.html:79
+#: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
 msgstr "Šioje grupėje dar nėra narių."
 
@@ -10429,7 +10429,7 @@ msgstr "ir"
 msgid "more..."
 msgstr "daugiau..."
 
-#: templates/default/edit_group.html:123 templates/modern/edit_group.html:123
+#: templates/modern/manage_group_zones.html:25
 msgid "This group doesn't own any zones yet."
 msgstr "Ši grupė dar nevaldo jokių zonų."
 
@@ -10677,7 +10677,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(PTR įrašams atvirkštinėse zonose) arba"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:538
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
 msgstr "Redaguoti komentarą"
 
@@ -10797,7 +10797,7 @@ msgstr "Visi naudotojai"
 msgid "All events"
 msgstr "Visi įvykiai"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:590
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
 msgstr "Žurnalai"
 
@@ -10849,13 +10849,10 @@ msgstr "Masiškai pridėti įrašus"
 msgid "Records"
 msgstr "Įrašai"
 
-#: templates/modern/bulk_record_add.html:28
-msgid "Provide at least one record"
-msgstr "Pateikite bent vieną įrašą"
-
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formatas: name,type,content,priority,ttl,comment (vienas įrašas eilutėje)"
+msgstr ""
+"Formatas: name,type,content,priority,ttl,comment (vienas įrašas eilutėje)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11204,8 +11201,9 @@ msgid "New Password"
 msgstr "Naujas slaptažodis"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
-msgid "Please provide a password"
-msgstr "Pateikite slaptažodį"
+#: install/templates/step4.html.twig:250
+msgid "Provide a password"
+msgstr "Nurodykite slaptažodį"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -11463,6 +11461,7 @@ msgid "Your username can only be changed by an administrator"
 msgstr "Jūsų vartotojo vardą gali keisti tik administratorius"
 
 #: templates/modern/edit_user.html:28 templates/modern/add_user.html:18
+#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
 msgid "Provide user name"
 msgstr "Pateikite naudotojo vardą"
 
@@ -12216,10 +12215,6 @@ msgstr "Pridėti API raktą"
 msgid "My application"
 msgstr "Mano programa"
 
-#: templates/default/api_key_add.html:20 templates/modern/api_key_add.html:21
-msgid "Provide a name for this API key"
-msgstr "Pateikite šio API rakto pavadinimą"
-
 #: templates/default/api_key_add.html:62 templates/modern/api_key_add.html:63
 msgid "Create API Key"
 msgstr "Sukurti API raktą"
@@ -12240,71 +12235,71 @@ msgstr "Jei prarasite raktą, turėsite jį generuoti iš naujo."
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:610
+#: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:614
+#: templates/modern/edit.html:189 templates/modern/edit.html:616
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:620
+#: templates/modern/edit.html:21 templates/modern/edit.html:622
 msgid "Multi-record mode"
 msgstr "Kelių įrašų režimas"
 
-#: templates/modern/edit.html:563 templates/modern/edit.html:623
+#: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
 msgstr "Masiškai pridėti"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
 msgstr "Nepavyko pridėti"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:635
+#: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "record(s). Please check the record format."
 msgstr "įrašų. Patikrinkite įrašo formatą."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:637
+#: templates/modern/edit.html:38 templates/modern/edit.html:639
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepavyko pridėti įrašų. Patikrinkite įrašų formatą."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Content validation failed:"
 msgstr "Turinio tikrinimas nepavyko:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:640
+#: templates/modern/edit.html:41 templates/modern/edit.html:642
 msgid "Invalid value for record type"
 msgstr "Neteisinga reikšmė įrašo tipui"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:642
+#: templates/modern/edit.html:43 templates/modern/edit.html:644
 msgid "Please provide all required information."
 msgstr "Pateikite visą reikalingą informaciją."
 
-#: templates/modern/edit.html:665 templates/modern/add_record.html:58
+#: templates/modern/edit.html:667 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "Pridėti PTR"
 
-#: templates/modern/edit.html:668 templates/modern/add_record.html:61
+#: templates/modern/edit.html:670 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "Pridėti A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:707
+#: templates/modern/edit.html:107 templates/modern/edit.html:709
 msgid "This record already exists"
 msgstr "Šis įrašas jau egzistuoja"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:719
+#: templates/modern/edit.html:119 templates/modern/edit.html:721
 msgid "Invalid priority"
 msgstr "Neteisingas prioritetas"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:726
+#: templates/modern/edit.html:126 templates/modern/edit.html:728
 msgid "Invalid TTL value"
 msgstr "Neteisinga TTL reikšmė"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:728
+#: templates/modern/edit.html:128 templates/modern/edit.html:730
 msgid "Provide TTL"
 msgstr "Pateikite TTL"
 
-#: templates/modern/edit.html:754 templates/modern/add_record.html:193
+#: templates/modern/edit.html:756 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12368,59 +12363,59 @@ msgstr "iš viso įrašų"
 msgid "Last modified"
 msgstr "Paskutinis pakeitimas"
 
-#: templates/modern/edit.html:426 templates/modern/edit.html:466
+#: templates/modern/edit.html:428 templates/modern/edit.html:468
 msgid "Last edited by %account% on %date%"
 msgstr "Paskutinį kartą redagavo %account% %date%"
 
-#: templates/default/edit.html:521 templates/modern/edit.html:521
+#: templates/default/edit.html:523 templates/modern/edit.html:523
 msgid "Edit selected"
 msgstr "Redaguoti pasirinktus"
 
-#: templates/modern/edit.html:525 templates/modern/search.html:487
+#: templates/modern/edit.html:527 templates/modern/search.html:487
 msgid "Delete record(s)"
 msgstr "Pašalinti įrašą(us)"
 
-#: templates/modern/edit.html:533 templates/modern/search.html:89
+#: templates/modern/edit.html:535 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Komentarai"
 
-#: templates/default/edit.html:567 templates/modern/edit.html:567
+#: templates/default/edit.html:569 templates/modern/edit.html:569
 msgid "Import"
 msgstr "Importuoti"
 
-#: templates/default/edit.html:584 templates/modern/edit.html:584
+#: templates/default/edit.html:586 templates/modern/edit.html:586
 msgid "Generate PTR"
 msgstr "Generuoti PTR"
 
-#: templates/modern/edit.html:769 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:771 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Zonos konfigūracija"
 
-#: templates/modern/edit.html:810 templates/modern/edit.html:839
+#: templates/modern/edit.html:812 templates/modern/edit.html:841
 msgid "Change"
 msgstr "Keisti"
 
-#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:30
+#: templates/modern/edit.html:805 templates/modern/add_zone_slave.html:30
 msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:864 templates/modern/edit.html:864
 msgid "Manage DNSSEC"
 msgstr "Valdyti DNSSEC"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC raktai valdomi pirminiame serveryje"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:872 templates/modern/edit.html:872
 msgid "Presigned"
 msgstr "Iš anksto pasirašyta"
 
-#: templates/default/edit.html:880 templates/modern/edit.html:880
+#: templates/default/edit.html:882 templates/modern/edit.html:882
 msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
-#: templates/default/edit.html:884 templates/modern/edit.html:884
+#: templates/default/edit.html:886 templates/modern/edit.html:886
 msgid "Not signed"
 msgstr "Nepasirašyta"
 
@@ -12697,7 +12692,7 @@ msgid "Send Username"
 msgstr "Siųsti vartotojo vardą"
 
 #: templates/default/add_user.html:39 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:130
+#: install/templates/step4.html.twig:130 install/templates/step5.html.twig:77
 msgid "Provide user password"
 msgstr "Nurodykite vartotojo slaptažodį"
 
@@ -13812,10 +13807,6 @@ msgstr ""
 msgid "Slave Zone Configuration"
 msgstr "Pavaldžios zonos konfigūracija"
 
-#: lib/Module/SecondaryZoneImport/templates/import.html:128
-msgid "Provide IP address"
-msgstr "Pateikite IP adresą"
-
 #: templates/modern/add_zone_slave.html:33
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
@@ -13852,7 +13843,14 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr "Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas vadinamas zone..variant (pavyzdžiui, example.com..trusted) ir prieš priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento tinklą."
+msgstr ""
+"Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal "
+"tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas "
+"vadinamas zone..variant (pavyzdžiui, example.com..trusted) ir prieš "
+"priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą "
+"patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats "
+"kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento "
+"tinklą."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14261,10 +14259,6 @@ msgstr "Grįžti į grupę"
 msgid "Owned Zones"
 msgstr "Priklausančios zonos"
 
-#: templates/modern/manage_group_zones.html:25
-msgid "This group doesn't own any zones yet"
-msgstr "Ši grupė dar nevaldo jokių zonų"
-
 #: templates/modern/manage_group_members.html:56
 msgid "Remove Selected"
 msgstr "Pašalinti pasirinktus"
@@ -14556,10 +14550,6 @@ msgstr "Grupės pavadinimas"
 msgid "Current Members"
 msgstr "Dabartiniai nariai"
 
-#: templates/modern/manage_group_members.html:25
-msgid "No members in this group yet"
-msgstr "Šioje grupėje dar nėra narių"
-
 #: templates/modern/manage_group_members.html:68
 msgid "Available Users"
 msgstr "Prieinami vartotojai"
@@ -14834,17 +14824,13 @@ msgstr "RDAP rezultatai"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Įveskite domeno vardą, kad atliktumėte RDAP paiešką."
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
+#: install/templates/step6.html.twig:3 install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
 msgstr "Sukurti apribotų teisių naudotoją"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
 msgstr "Step"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Sukurti apribotų teisių naudotoją"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -15037,10 +15023,6 @@ msgstr "Database type"
 msgid "Database server type."
 msgstr "Duomenų bazės serverio tipas."
 
-#: install/templates/step4.html.twig:117 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Nurodykite naudotojo vardą"
-
 #: install/templates/step4.html.twig:120
 msgid "Database username with rights to create tables."
 msgstr "Duomenų bazės naudotojo vardas su teisėmis kurti lenteles."
@@ -15153,10 +15135,6 @@ msgstr ""
 #: install/templates/step4.html.twig:240
 msgid "Hard-coded for the initial administrator account."
 msgstr "Fiksuota pradinei administratoriaus paskyrai."
-
-#: install/templates/step4.html.twig:250
-msgid "Provide a password"
-msgstr "Nurodykite slaptažodį"
 
 #: install/templates/step4.html.twig:255
 msgid "Password for the \"admin\" account."
@@ -15272,10 +15250,6 @@ msgid ""
 msgstr ""
 "Poweradmin duomenų bazės naudotojo vardas su apribota prieiga. Ne "
 "prisijungimui prie žiniatinklio sąsajos."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Nurodykite naudotojo slaptažodį"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -15589,14 +15563,6 @@ msgid ""
 msgstr ""
 "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
 "nepalaikoma. Kreipkitės į savo administratorių."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} "
-# OBSOLETE: "d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Neteisingas LOC įrašo formatas. Formatas turėtų būti: l1 [m1 [s1]] {\"Š\"|"
-# OBSOLETE: "\"P\"} l2 [m2 [s2]] {\"R\"|\"V\"} aukš[\"m\"] [dyd[\"m\"] [ht[\"m\"] "
-# OBSOLETE: "[vt[\"m\"]]]."
 
 
 
