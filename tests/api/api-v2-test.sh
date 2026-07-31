@@ -494,6 +494,10 @@ test_ptr_update() {
     }'
     api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/records/$PTR_UPD_RECORD_ID" "$update_change_ip" 200 "Update A record IP with update_ptr=true"
 
+    # On the API backend a record id encodes its content, so changing the IP
+    # retires the old id. Take the one the update reports back.
+    PTR_UPD_RECORD_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+
     increment_test
     if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_updated\":true" ]]; then
         print_pass "ptr_updated flag is true in response"
@@ -677,7 +681,14 @@ test_bulk_operations() {
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
 
     increment_test
-    if [[ ! "$LAST_RESPONSE_BODY" =~ "192.0.2.20" ]]; then
+    if [[ "${DNS_BACKEND:-sql}" == "api" ]]; then
+        # Writes go straight to PowerDNS over REST, which no PDO transaction can
+        # undo, so the controller deliberately skips one (ZonesRecordsBulkController
+        # sets $useTransaction = !isApiBackend()). A partial batch is expected here.
+        print_info "Atomic rollback is not available on the API backend - skipping"
+    # Match the full field: a bare 192.0.2.20 is also a prefix of the
+    # 192.0.2.20x addresses the PTR tests leave in this same zone
+    elif [[ ! "$LAST_RESPONSE_BODY" =~ \"content\":\"192\.0\.2\.20\" ]]; then
         print_pass "Transaction rolled back correctly (no partial records)"
     else
         print_fail "Rollback failed - found record that should have been rolled back"
