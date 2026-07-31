@@ -317,21 +317,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('delete-zones-form');
 
     if (deleteBtn && form) {
-        // Function to update delete button state
-        function updateDeleteButtonState() {
-            const checkedBoxes = form.querySelectorAll('input[type="checkbox"][name="zone_id[]"]:checked');
-            deleteBtn.disabled = checkedBoxes.length === 0;
-        }
+        const refreshDeleteButton = () => updateDeleteButtonState(
+            'delete-zones-btn',
+            form.querySelectorAll('input[type="checkbox"][name="zone_id[]"]')
+        );
 
-        // Listen for checkbox changes
         form.addEventListener('change', function(e) {
             if (e.target.type === 'checkbox') {
-                updateDeleteButtonState();
+                refreshDeleteButton();
             }
         });
 
-        // Initial state check
-        updateDeleteButtonState();
+        refreshDeleteButton();
     }
 });
 </script>
