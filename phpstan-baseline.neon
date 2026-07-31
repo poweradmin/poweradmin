@@ -907,7 +907,7 @@ parameters:
 			path: lib/Infrastructure/Api/HttpClient.php
 
 		-
-			message: '#^Class cognitive complexity is 151, keep it under 60$#'
+			message: '#^Class cognitive complexity is 154, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Infrastructure/Api/PowerdnsApiClient.php

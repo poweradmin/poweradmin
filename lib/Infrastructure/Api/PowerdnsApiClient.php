@@ -37,6 +37,9 @@ class PowerdnsApiClient
     /** One save reads about five distinct narrowed endpoints for a single name, so this covers it with room for a second name */
     private const MAX_CACHED_READS = 8;
 
+    /** Filtered zone reads only return disabled records from this version on */
+    private const RRSET_FILTER_MIN_VERSION = '5.0.0';
+
     private HttpClient $httpClient;
     private string $serverName;
     private LoggerInterface $logger;
@@ -53,11 +56,26 @@ class PowerdnsApiClient
     /** @var array<string, array> Search responses keyed by endpoint, capped the same way; validation repeats the same query once per record */
     private array $searchCache = [];
 
-    public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
-    {
+    /** @var bool|null Whether this server's filtered reads keep disabled records; probed once per request */
+    private ?bool $rrsetFilterIsSafe = null;
+
+    /** @var string|null PowerDNS version, when the caller supplied one instead of leaving it to be probed */
+    private ?string $serverVersion = null;
+
+    /**
+     * @param string|null $serverVersion Skips the capability probe when the caller
+     *        already knows the PowerDNS version
+     */
+    public function __construct(
+        HttpClient $httpClient,
+        string $serverName,
+        ?LoggerInterface $logger = null,
+        ?string $serverVersion = null
+    ) {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
         $this->logger = $logger ?? new NullLogger();
+        $this->serverVersion = $serverVersion;
     }
 
     /**
@@ -710,12 +728,35 @@ class PowerdnsApiClient
      */
     public function getZoneRrset(string $zoneName, string $rrsetName, ?string $rrsetType = null): ?array
     {
+        // Before 5.0 the filter is served by the resolver lookup, which never
+        // yields disabled records. Narrowing there would hide them from callers,
+        // and an RRset rebuilt from that answer would drop them.
+        if (!$this->rrsetFilterKeepsDisabledRecords()) {
+            return $this->getZone($zoneName);
+        }
+
         $filters = ['rrset_name' => $rrsetName];
         if ($rrsetType !== null) {
             $filters['rrset_type'] = $rrsetType;
         }
 
         return $this->getZone($zoneName, true, $filters);
+    }
+
+    /**
+     * PowerDNS 5.0 routes filtered zone reads through APILookup, which returns
+     * disabled records; older servers use the resolver lookup, which does not.
+     */
+    private function rrsetFilterKeepsDisabledRecords(): bool
+    {
+        if ($this->rrsetFilterIsSafe === null) {
+            $version = $this->serverVersion ?? (string)($this->getServerInfo()['version'] ?? '');
+            // An unreadable version means assume the older, lossy behaviour
+            $this->rrsetFilterIsSafe = $version !== ''
+                && version_compare($version, self::RRSET_FILTER_MIN_VERSION, '>=');
+        }
+
+        return $this->rrsetFilterIsSafe;
     }
 
     /**
