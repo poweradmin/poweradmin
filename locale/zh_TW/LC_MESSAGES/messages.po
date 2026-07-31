@@ -8057,11 +8057,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 記錄必須包含由空格分隔的首選項和定位符。"
+msgstr "L32 記錄必須包含由空格分隔的優先級和定位符。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "L32 首選項必須是 0 到 65535 之間的數字。"
+msgstr "L32 優先級必須是 0 到 65535 之間的數字。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
@@ -8325,7 +8325,7 @@ msgstr ""
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
-msgstr "NAPTR 記錄必須包含順序、首選項、標誌、服務、正則表達式和替換值。"
+msgstr "NAPTR 記錄必須包含順序、優先級、標誌、服務、正則表達式和替換值。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
@@ -8333,7 +8333,7 @@ msgstr "NAPTR 記錄順序必須是 0 到 65535 之間的數字。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "NAPTR 記錄首選項必須是 0 到 65535 之間的數字。"
+msgstr "NAPTR 記錄優先級必須是 0 到 65535 之間的數字。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -11905,7 +11905,7 @@ msgstr "私有"
 
 #: templates/modern/list_zone_templ.html:84
 msgid "global"
-msgstr "全局"
+msgstr "全域"
 
 #: templates/modern/list_zone_templ.html:92
 msgid "Zones need updating"
@@ -12338,7 +12338,7 @@ msgstr "請嘗試其他篩選條件或時間範圍"
 
 #: templates/modern/mfa_recovery_codes.html:34
 msgid "Recovery Codes"
-msgstr "復原碼"
+msgstr "復原代碼"
 
 #: templates/modern/mfa_recovery_codes.html:12
 msgid "MFA Setup Complete"
@@ -12366,15 +12366,13 @@ msgstr "電子郵件驗證"
 
 #: templates/modern/mfa_recovery_codes.html:27
 msgid "Save Your Recovery Codes"
-msgstr "儲存您的復原碼"
+msgstr "儲存您的復原代碼"
 
 #: templates/modern/mfa_recovery_codes.html:28
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
-msgstr ""
-"如果您無法存取身分驗證器裝置，可以使用復原碼存取您的帳號。每個代碼只能使用一"
-"次。"
+msgstr "如果您無法存取身分驗證器裝置，可以使用復原代碼存取您的帳號。每個代碼只能使用一次。"
 
 #: templates/modern/mfa_recovery_codes.html:29
 msgid "Store these codes in a safe place!"
@@ -12406,7 +12404,7 @@ msgstr "繼續到儀表板"
 
 #: templates/modern/mfa_recovery_codes.html:98
 msgid "Poweradmin MFA Recovery Codes"
-msgstr "Poweradmin MFA 復原碼"
+msgstr "Poweradmin MFA 復原代碼"
 
 #: templates/modern/mfa_recovery_codes.html:112
 msgid ""
@@ -12441,7 +12439,7 @@ msgstr "您的帳號受到多因素身分驗證保護。"
 
 #: templates/default/mfa_setup.html:41 templates/modern/mfa_setup.html:41
 msgid "Regenerate Recovery Codes"
-msgstr "重新產生復原碼"
+msgstr "重新產生復原代碼"
 
 #: templates/default/mfa_setup.html:56 templates/modern/mfa_setup.html:56
 msgid "MFA is currently disabled"
@@ -13389,7 +13387,7 @@ msgstr "使用者與組"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr "分配給<strong>使用者</strong>時：權限在整個系統中全局應用。"
+msgstr "分配給<strong>使用者</strong>時：權限在整個系統中全域套用。"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
