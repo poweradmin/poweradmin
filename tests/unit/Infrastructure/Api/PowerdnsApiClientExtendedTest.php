@@ -16,7 +16,9 @@ class PowerdnsApiClientExtendedTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(HttpClient::class);
-        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+        // Narrowed reads only keep disabled records from PowerDNS 5.0, so declare a
+        // server that supports them rather than letting the client probe
+        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '5.0.0');
     }
 
     // ---------------------------------------------------------------
@@ -74,6 +76,30 @@ class PowerdnsApiClientExtendedTest extends TestCase
 
         $this->assertNotNull($result);
         $this->assertCount(1, $result['rrsets']);
+    }
+
+    public function testAnOlderServerIsNotAskedToFilterBecauseItHidesDisabledRecords(): void
+    {
+        // Before 5.0 the filter runs through the resolver lookup, which omits
+        // disabled records. Rebuilding an RRset from that answer would drop them.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [
+                    ['name' => 'www.example.com.', 'type' => 'A', 'records' => [
+                        ['content' => '192.0.2.1', 'disabled' => true],
+                    ]],
+                ],
+            ]]);
+
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '4.9.12');
+        $zone = $client->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertSame('192.0.2.1', $zone['rrsets'][0]['records'][0]['content']);
+        $this->assertTrue($zone['rrsets'][0]['records'][0]['disabled']);
     }
 
     public function testGetZoneRrsetReturnsNullOnNotFound(): void

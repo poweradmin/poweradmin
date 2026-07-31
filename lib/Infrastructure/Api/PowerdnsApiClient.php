@@ -37,11 +37,45 @@ class PowerdnsApiClient
     private string $serverName;
     private LoggerInterface $logger;
 
-    public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
-    {
+    /** Filtered zone reads only return disabled records from this version on */
+    private const RRSET_FILTER_MIN_VERSION = '5.0.0';
+
+    /** @var bool|null Whether this server's filtered reads keep disabled records; probed once per request */
+    private ?bool $rrsetFilterIsSafe = null;
+
+    /** @var string|null PowerDNS version, when the caller supplied one instead of leaving it to be probed */
+    private ?string $serverVersion = null;
+
+    /**
+     * @param string|null $serverVersion Skips the capability probe when the caller
+     *        already knows the PowerDNS version
+     */
+    public function __construct(
+        HttpClient $httpClient,
+        string $serverName,
+        ?LoggerInterface $logger = null,
+        ?string $serverVersion = null
+    ) {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
         $this->logger = $logger ?? new NullLogger();
+        $this->serverVersion = $serverVersion;
+    }
+
+    /**
+     * PowerDNS 5.0 routes filtered zone reads through APILookup, which returns
+     * disabled records; older servers use the resolver lookup, which does not.
+     */
+    private function rrsetFilterKeepsDisabledRecords(): bool
+    {
+        if ($this->rrsetFilterIsSafe === null) {
+            $version = $this->serverVersion ?? (string)($this->getServerInfo()['version'] ?? '');
+            // An unreadable version means assume the older, lossy behaviour
+            $this->rrsetFilterIsSafe = $version !== ''
+                && version_compare($version, self::RRSET_FILTER_MIN_VERSION, '>=');
+        }
+
+        return $this->rrsetFilterIsSafe;
     }
 
     private function buildEndpoint(string $path): string
@@ -624,6 +658,13 @@ class PowerdnsApiClient
      */
     public function getZoneRrset(string $zoneName, string $rrsetName, string $rrsetType): ?array
     {
+        // Before 5.0 the filter is served by the resolver lookup, which never
+        // yields disabled records. Narrowing there would hide them from callers,
+        // and an RRset rebuilt from that answer would drop them.
+        if (!$this->rrsetFilterKeepsDisabledRecords()) {
+            return $this->getZone($zoneName);
+        }
+
         try {
             $query = http_build_query(['rrset_name' => $rrsetName, 'rrset_type' => $rrsetType]);
             $endpoint = $this->buildZoneEndpoint($zoneName, '?' . $query);
