@@ -3457,7 +3457,7 @@ msgstr "Uredi autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "uredi supermaster"
+msgstr "Uredi supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3465,7 +3465,7 @@ msgstr "Obriši autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "obriši supermastera"
+msgstr "Obriši supermastera"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -9009,7 +9009,7 @@ msgstr "Trajno uklanja ovaj ključ"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
-msgstr "predlošci zona"
+msgstr "Predlošci zona"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
@@ -9197,7 +9197,7 @@ msgstr "Unesite IP adresu glavnog nameservera"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
-msgstr "unesite IP adresu"
+msgstr "Unesite IP adresu"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -9284,7 +9284,7 @@ msgstr "Prikaži DS i DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
-msgstr "ukloni potpis zone"
+msgstr "Ukloni potpis zone"
 
 #: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
 msgid "ID"
@@ -9341,7 +9341,7 @@ msgstr ""
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
-msgstr "vrsta ključa"
+msgstr "Vrsta ključa"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9429,7 +9429,7 @@ msgstr "Upravljanje grupama"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
-msgstr "zapisnici grupe"
+msgstr "Zapisnici grupe"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
@@ -9813,7 +9813,7 @@ msgstr "Uredi komentar u zoni"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "dodaj predložak"
+msgstr "Dodaj predložak"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
@@ -9837,7 +9837,7 @@ msgstr "Učini ovaj predložak dostupnim svim korisnicima"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "dodaj predložak zone"
+msgstr "Dodaj predložak zone"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -9924,7 +9924,7 @@ msgstr "Zapisnici"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "zapisnici zone"
+msgstr "Zapisnici zone"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -9961,7 +9961,7 @@ msgstr "Sve operacije"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "skupno dodavanje zapisa"
+msgstr "Skupno dodavanje zapisa"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
@@ -10595,7 +10595,7 @@ msgstr "Unesite puno ime"
 
 #: templates/modern/users.html:45 templates/modern/add_user.html:29
 msgid "Email address"
-msgstr "adresa e-pošte"
+msgstr "Adresa e-pošte"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -10910,7 +10910,7 @@ msgstr ""
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
-msgstr "kako radi"
+msgstr "Kako radi"
 
 #: templates/modern/add_supermaster.html:74
 msgid ""
@@ -11518,7 +11518,7 @@ msgstr "Upravljanje korisnicima"
 
 #: templates/modern/list_log_users.html:4 templates/modern/header.html:230
 msgid "User logs"
-msgstr "zapisnici korisnika"
+msgstr "Zapisnici korisnika"
 
 #: templates/modern/add_user.html:4 templates/modern/header.html:223
 msgid "Add user"
@@ -11825,7 +11825,7 @@ msgstr "Odaberite grupe za novog korisnika."
 
 #: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone name"
-msgstr "naziv zone"
+msgstr "Naziv zone"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
@@ -11919,7 +11919,7 @@ msgstr "Pretraži predloške..."
 
 #: templates/modern/edit_zone_templ.html:127
 msgid "Template name"
-msgstr "naziv predloška"
+msgstr "Naziv predloška"
 
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
@@ -12008,7 +12008,7 @@ msgstr "Unesite trenutnu lozinku"
 
 #: templates/modern/change_password.html:25
 msgid "New password"
-msgstr "nova lozinka"
+msgstr "Nova lozinka"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -12240,7 +12240,7 @@ msgstr "API ključ:"
 
 #: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
 msgid "Bulk registration"
-msgstr "skupna registracija"
+msgstr "Skupna registracija"
 
 #: templates/modern/bulk_registration.html:20
 msgid "Zone Type"
@@ -12406,11 +12406,11 @@ msgstr "Metoda autentifikacije:"
 
 #: templates/modern/mfa_setup.html:28
 msgid "Authenticator app"
-msgstr "autentifikacijska aplikacija"
+msgstr "Autentifikacijska aplikacija"
 
 #: templates/modern/mfa_setup.html:30
 msgid "Email verification"
-msgstr "provjera e-pošte"
+msgstr "Provjera e-pošte"
 
 #: templates/modern/mfa_recovery_codes.html:27
 msgid "Save Your Recovery Codes"
@@ -13159,11 +13159,11 @@ msgstr "Nema dostupnih detaljnih metrika."
 
 #: templates/default/header.html:109 templates/modern/header.html:149
 msgid "Forward zones"
-msgstr "zone prosljeđivanja"
+msgstr "Zone prosljeđivanja"
 
 #: templates/default/header.html:110 templates/modern/header.html:154
 msgid "Reverse zones"
-msgstr "obrnute zone"
+msgstr "Obrnute zone"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
@@ -13575,7 +13575,7 @@ msgstr ""
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
-msgstr "naziv grupe"
+msgstr "Naziv grupe"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -13758,7 +13758,7 @@ msgstr "Dodaj sve zapise"
 
 #: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone type"
-msgstr "vrsta zone"
+msgstr "Vrsta zone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."

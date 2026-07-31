@@ -8805,7 +8805,7 @@ msgstr "Трајно уклања овај кључ"
 
 #: templates/modern/delete_zone_templ_record.html:4
 msgid "Zone templates"
-msgstr "шаблони зоне"
+msgstr "Шаблони зоне"
 
 #: templates/modern/edit_record.html:5
 msgid "Edit record"
@@ -8992,7 +8992,7 @@ msgstr "Унесите IP адресу главног сервера имена"
 
 #: templates/modern/add_supermaster.html:19
 msgid "Provide ip address"
-msgstr "унесите IP адресу"
+msgstr "Унесите IP адресу"
 
 #: templates/modern/delete_supermaster.html:23
 msgid "Hostname in NS record"
@@ -9080,7 +9080,7 @@ msgstr "Прикажи DS и DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
-msgstr "уклони потпис зоне"
+msgstr "Уклони потпис зоне"
 
 #: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
 msgid "ID"
@@ -9137,7 +9137,7 @@ msgstr ""
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:39
 msgid "Key type"
-msgstr "тип кључа"
+msgstr "Тип кључа"
 
 #: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
 msgid "PEM private key"
@@ -9224,7 +9224,7 @@ msgstr "Управљање групама"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
-msgstr "дневници групе"
+msgstr "Дневници групе"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
@@ -9606,7 +9606,7 @@ msgstr "Уреди коментар у зони"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "додај шаблон"
+msgstr "Додај шаблон"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
@@ -9630,7 +9630,7 @@ msgstr "Учини овај шаблон доступним свим корис�
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "додај шаблон зоне"
+msgstr "Додај шаблон зоне"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -9715,7 +9715,7 @@ msgstr "Дневници"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "дневници зоне"
+msgstr "Дневници зоне"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -9751,7 +9751,7 @@ msgstr "Све операције"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "групно додавање записа"
+msgstr "Групно додавање записа"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
@@ -10370,7 +10370,7 @@ msgstr "Унесите пуно име"
 
 #: templates/modern/users.html:45 templates/modern/add_user.html:29
 msgid "Email address"
-msgstr "е-адреса"
+msgstr "Е-адреса"
 
 #: templates/modern/edit_user.html:48 templates/modern/add_user.html:31
 msgid "Provide email"
@@ -10682,7 +10682,7 @@ msgstr "Supermaster је PowerDNS ауторитативни сервер кој
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
-msgstr "како ради"
+msgstr "Како ради"
 
 #: templates/modern/add_supermaster.html:74
 msgid ""
@@ -11586,7 +11586,7 @@ msgstr "Изаберите групе у које ће нови корисник
 
 #: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone name"
-msgstr "име зоне"
+msgstr "Име зоне"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
@@ -11680,7 +11680,7 @@ msgstr "Претражите шаблоне..."
 
 #: templates/modern/edit_zone_templ.html:127
 msgid "Template name"
-msgstr "име шаблона"
+msgstr "Име шаблона"
 
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
@@ -11768,7 +11768,7 @@ msgstr "Унесите тренутну лозинку"
 
 #: templates/modern/change_password.html:25
 msgid "New password"
-msgstr "нова лозинка"
+msgstr "Нова лозинка"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -11998,7 +11998,7 @@ msgstr "API кључ:"
 
 #: templates/modern/bulk_registration.html:4 templates/modern/header.html:175
 msgid "Bulk registration"
-msgstr "групна регистрација"
+msgstr "Групна регистрација"
 
 #: templates/modern/bulk_registration.html:20
 msgid "Zone Type"
@@ -12165,11 +12165,11 @@ msgstr "Метода аутентификације:"
 
 #: templates/modern/mfa_setup.html:28
 msgid "Authenticator app"
-msgstr "аутентификатор апликација"
+msgstr "Аутентификатор апликација"
 
 #: templates/modern/mfa_setup.html:30
 msgid "Email verification"
-msgstr "потврда имејла"
+msgstr "Потврда имејла"
 
 #: templates/modern/mfa_recovery_codes.html:27
 msgid "Save Your Recovery Codes"
@@ -12915,11 +12915,11 @@ msgstr "Нема доступних детаљних метрика."
 
 #: templates/default/header.html:109 templates/modern/header.html:149
 msgid "Forward zones"
-msgstr "директне зоне"
+msgstr "Директне зоне"
 
 #: templates/default/header.html:110 templates/modern/header.html:154
 msgid "Reverse zones"
-msgstr "обрнуте зоне"
+msgstr "Обрнуте зоне"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
@@ -13323,7 +13323,7 @@ msgstr ""
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
-msgstr "име групе"
+msgstr "Име групе"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -13506,7 +13506,7 @@ msgstr "Додај све записе"
 
 #: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone type"
-msgstr "тип зоне"
+msgstr "Тип зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."

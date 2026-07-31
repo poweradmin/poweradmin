@@ -10258,7 +10258,7 @@ msgstr "Administrare grupuri"
 
 #: templates/modern/list_log_groups.html:4
 msgid "Group logs"
-msgstr "jurnale grup"
+msgstr "Jurnale grup"
 
 #: templates/modern/header.html:255 templates/modern/add_group.html:4
 msgid "Add group"
@@ -10648,7 +10648,7 @@ msgstr "Editează comentariu în zonă"
 
 #: templates/modern/add_zone_templ.html:5
 msgid "Add template"
-msgstr "adaugă șablon"
+msgstr "Adaugă șablon"
 
 #: templates/modern/add_zone_templ.html:16
 msgid "Add zone template for"
@@ -10672,7 +10672,7 @@ msgstr "Face acest șablon disponibil tuturor utilizatorilor"
 
 #: templates/modern/list_zone_templ.html:9 templates/modern/header.html:312
 msgid "Add zone template"
-msgstr "adaugă șablon zonă"
+msgstr "Adaugă șablon zonă"
 
 #: templates/modern/add_zone_templ.html:59
 msgid "Template Information"
@@ -10764,7 +10764,7 @@ msgstr "Jurnale"
 
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
-msgstr "jurnale zonă"
+msgstr "Jurnale zonă"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -10796,7 +10796,7 @@ msgstr "Toate operațiile"
 
 #: templates/modern/bulk_record_add.html:5
 msgid "Bulk add records"
-msgstr "adăugare masivă înregistrări"
+msgstr "Adăugare masivă înregistrări"
 
 #: templates/modern/bulk_record_add.html:15
 msgid "Bulk Add Records"
@@ -12378,7 +12378,7 @@ msgstr "Administrare utilizatori"
 
 #: templates/modern/list_log_users.html:4 templates/modern/header.html:230
 msgid "User logs"
-msgstr "jurnale utilizator"
+msgstr "Jurnale utilizator"
 
 #: templates/modern/add_user.html:4 templates/modern/header.html:223
 msgid "Add user"
@@ -12687,7 +12687,7 @@ msgstr "Selectați grupurile în care va fi adăugat noul utilizator la creare."
 
 #: lib/Module/ZoneImportExport/templates/import.html:122
 msgid "Zone name"
-msgstr "nume zonă"
+msgstr "Nume zonă"
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:121
 msgid "Provide zone name"
@@ -12781,7 +12781,7 @@ msgstr "Caută șabloane..."
 
 #: templates/modern/edit_zone_templ.html:127
 msgid "Template name"
-msgstr "nume șablon"
+msgstr "Nume șablon"
 
 #: templates/modern/list_zone_templ.html:32
 msgid "Zones linked"
@@ -12874,7 +12874,7 @@ msgstr "Furnizați parola curentă"
 
 #: templates/modern/change_password.html:25
 msgid "New password"
-msgstr "parolă nouă"
+msgstr "Parolă nouă"
 
 #: templates/modern/change_password.html:37
 msgid "Provide new password"
@@ -13287,7 +13287,7 @@ msgstr "Aplicație de autentificare"
 
 #: templates/modern/mfa_setup.html:30
 msgid "Email verification"
-msgstr "verificare email"
+msgstr "Verificare email"
 
 #: templates/modern/mfa_recovery_codes.html:27
 msgid "Save Your Recovery Codes"
@@ -14075,11 +14075,11 @@ msgstr "Nu sunt metrici detaliate disponibile."
 
 #: templates/default/header.html:109 templates/modern/header.html:149
 msgid "Forward zones"
-msgstr "zone directe"
+msgstr "Zone directe"
 
 #: templates/default/header.html:110 templates/modern/header.html:154
 msgid "Reverse zones"
-msgstr "zone inverse"
+msgstr "Zone inverse"
 
 #: templates/default/header.html:139 templates/modern/header.html:195
 msgid "Record change log"
@@ -14503,7 +14503,7 @@ msgstr ""
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group name"
-msgstr "nume grup"
+msgstr "Nume grup"
 
 #: templates/modern/manage_group_members.html:18
 msgid "Current Members"
@@ -14687,7 +14687,7 @@ msgstr "Adaugă toate înregistrările"
 
 #: lib/Module/ZoneImportExport/templates/import.html:126
 msgid "Zone type"
-msgstr "tip zonă"
+msgstr "Tip zonă"
 
 #: lib/Module/ZoneImportExport/templates/import.html:151
 msgid "Required: select at least one group."

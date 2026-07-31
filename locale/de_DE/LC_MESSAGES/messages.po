@@ -10177,19 +10177,19 @@ msgstr "Beschreibung"
 
 #: templates/modern/edit_zone_templ.html:187
 msgid "Substituted with current zone name"
-msgstr "ersetzt durch aktuellen Zonennamen"
+msgstr "Ersetzt durch aktuellen Zonennamen"
 
 #: templates/modern/edit_zone_templ.html:191
 msgid "Substituted with domain name without TLD"
-msgstr "ersetzt durch Domainnamen ohne TLD"
+msgstr "Ersetzt durch Domainnamen ohne TLD"
 
 #: templates/modern/edit_zone_templ.html:195
 msgid "Substituted with top-level domain"
-msgstr "ersetzt durch Top-Level Domain"
+msgstr "Ersetzt durch Top-Level Domain"
 
 #: templates/modern/edit_zone_templ.html:199
 msgid "Substituted with current date and 2 numbers"
-msgstr "ersetzt durch aktuelles Datum und 2 Ziffern"
+msgstr "Ersetzt durch aktuelles Datum und 2 Ziffern"
 
 #: templates/modern/edit_zone_templ.html:203
 msgid "Substituted with current UNIX timestamp"
@@ -10201,23 +10201,23 @@ msgstr "Wird durch den anfänglichen Zählerwert ersetzt"
 
 #: templates/modern/edit_zone_templ.html:211
 msgid "Substituted with 1st name server"
-msgstr "ersetzt durch 1sten Nameserver"
+msgstr "Ersetzt durch 1sten Nameserver"
 
 #: templates/modern/edit_zone_templ.html:215
 msgid "Substituted with 2nd name server"
-msgstr "ersetzt durch 2ten Nameserver"
+msgstr "Ersetzt durch 2ten Nameserver"
 
 #: templates/modern/edit_zone_templ.html:219
 msgid "Substituted with 3rd name server"
-msgstr "ersetzt durch 3ten Nameserver"
+msgstr "Ersetzt durch 3ten Nameserver"
 
 #: templates/modern/edit_zone_templ.html:223
 msgid "Substituted with 4th name server"
-msgstr "ersetzt durch 4ten Nameserver"
+msgstr "Ersetzt durch 4ten Nameserver"
 
 #: templates/modern/edit_zone_templ.html:227
 msgid "Substituted with hostmaster"
-msgstr "ersetzt durch Hostmaster"
+msgstr "Ersetzt durch Hostmaster"
 
 #: templates/modern/add_zone_templ_record.html:158
 msgid "Example Records"
