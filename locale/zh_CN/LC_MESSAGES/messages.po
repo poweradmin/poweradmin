@@ -7908,9 +7908,7 @@ msgstr ""
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr ""
-"这是通过 TXT 记录类型处理的 DMARC 记录。DMARC 记录应使用以 \\\"v=DMARC1\\\" "
-"开头的 TXT 记录类型。"
+msgstr "这是通过 TXT 记录类型处理的 DMARC 记录。DMARC 记录应使用以 \"v=DMARC1\" 开头的 TXT 记录类型。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -7918,7 +7916,7 @@ msgstr "TXT 记录内容必须用引号括起来。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "在 TXT 内容中，所有引号 (\\\") 前必须加反斜杠"
+msgstr "在 TXT 内容中，所有引号 (\") 前必须加反斜杠"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:197
 #, php-format
@@ -8101,14 +8099,14 @@ msgstr "SRV 记录中的协议值无效。协议必须以下划线开头，后�
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "服务名称 \\\"%s\\\" 不在已知服务列表中。这是允许的，但不常见。"
+msgstr "服务名称 \"%s\" 不在已知服务列表中。这是允许的，但不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "协议 \\\"%s\\\" 不在已知协议列表中。常见协议是 _tcp 和 _udp。"
+msgstr "协议 \"%s\" 不在已知协议列表中。常见协议是 _tcp 和 _udp。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8142,7 +8140,7 @@ msgstr "SRV 目标不能为空。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "当目标为 \\\".\\\"（无服务）时，端口和权重都应为 0。"
+msgstr "当目标为 \".\"（无服务）时，端口和权重都应为 0。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -8173,9 +8171,7 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr ""
-"NSEC3 记录所有者名称通常应为 Base32hex 编码的哈希值，后跟区域名称（例如，\\"
-"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\\\"）。"
+msgstr "NSEC3 记录所有者名称通常应为 Base32hex 编码的哈希值，后跟区域名称（例如，\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\"）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -8351,11 +8347,11 @@ msgstr "NAPTR 记录正则表达式必须是带引号的字符串。"
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR 记录替换必须是 \\\".\\\" 或有效的完全限定域名。"
+msgstr "NAPTR 记录替换必须是 \".\" 或有效的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "带有正则表达式的 NAPTR 记录必须将 \\\".\\\" 作为替换。"
+msgstr "带有正则表达式的 NAPTR 记录必须将 \".\" 作为替换。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -8370,8 +8366,7 @@ msgstr ""
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr ""
-"终端标志 \\\"S\\\"、\\\"A\\\"、\\\"U\\\" 和 \\\"P\\\" 不应与其他标志组合。"
+msgstr "终端标志 \"S\"、\"A\"、\"U\" 和 \"P\" 不应与其他标志组合。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
@@ -8387,7 +8382,7 @@ msgstr "NAPTR 正则表达式必须具有格式：分隔符+模式+分隔符+替
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR 正则表达式标志（第三个分隔符之后）应仅包含 \\\"i\\\" 或为空。"
+msgstr "NAPTR 正则表达式标志（第三个分隔符之后）应仅包含 \"i\" 或为空。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8398,7 +8393,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "ENUM 记录应具有 \\\"U\\\" 标志以指示 URI 输出。"
+msgstr "ENUM 记录应具有 \"U\" 标志以指示 URI 输出。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
@@ -9007,9 +9002,7 @@ msgstr "提醒"
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
-"编辑此记录后，请记住通过在模板页面上点击\\\"更新区域\\\"来更新使用此模板的区"
-"域。"
+msgstr "编辑此记录后，请记住通过在模板页面上点击\"更新区域\"来更新使用此模板的区域。"
 
 #: templates/modern/edit_zone_templ_record.html:23
 msgid "Edit record in zone template"
@@ -9864,8 +9857,7 @@ msgstr "提示和示例"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr ""
-"为不同类型的网站创建不同的模板（例如，\\\"基本网站\\\"、\\\"邮件服务器\\\"）"
+msgstr "为不同类型的网站创建不同的模板（例如，\"基本网站\"、\"邮件服务器\"）"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -11071,7 +11063,7 @@ msgstr "使用网络前缀旁边的下拉按钮从现有反向区域中选择"
 msgid ""
 "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
 "on your forward zone"
-msgstr "使用\\\"仅为现有 A/AAAA 记录创建 PTR\\\"根据您的正向区域填充 PTR"
+msgstr "使用\"仅为现有 A/AAAA 记录创建 PTR\"根据您的正向区域填充 PTR"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid ""
@@ -11083,9 +11075,7 @@ msgstr "创建所有 IP 时，使用主机前缀字段为所有主机名添加�
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
-"选中\\\"创建正向 A/AAAA 记录\\\"以自动创建匹配的正向记录（使用匹配模式时被禁"
-"用）"
+msgstr "选中\"创建正向 A/AAAA 记录\"以自动创建匹配的正向记录（使用匹配模式时被禁用）"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -11135,9 +11125,7 @@ msgstr "添加记录"
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
-"添加此记录后，记住通过在模板页面上点击\\\"更新区域\\\"来更新使用此模板的区"
-"域。"
+msgstr "添加此记录后，记住通过在模板页面上点击\"更新区域\"来更新使用此模板的区域。"
 
 #: templates/modern/add_zone_templ_record.html:23
 msgid "Add record to zone template"
