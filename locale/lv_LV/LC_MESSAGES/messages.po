@@ -1588,33 +1588,33 @@ msgstr "Atlasiet vismaz vienu lietotāju."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
-msgstr[2] "%d users added to group."
+msgstr[0] "%d lietotājs pievienots grupai."
+msgstr[1] "%d lietotāji pievienoti grupai."
+msgstr[2] "%d lietotāju pievienoti grupai."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
-msgstr[2] "%d users could not be added."
+msgstr[0] "%d lietotāju nevarēja pievienot."
+msgstr[1] "%d lietotājus nevarēja pievienot."
+msgstr[2] "%d lietotāju nevarēja pievienot."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
-msgstr[2] "%d users removed from group."
+msgstr[0] "%d lietotājs noņemts no grupas."
+msgstr[1] "%d lietotāji noņemti no grupas."
+msgstr[2] "%d lietotāju noņemti no grupas."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
-msgstr[2] "%d users could not be removed."
+msgstr[0] "%d lietotāju nevarēja noņemt."
+msgstr[1] "%d lietotājus nevarēja noņemt."
+msgstr[2] "%d lietotāju nevarēja noņemt."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2081,17 +2081,17 @@ msgstr "Nav atlasītu zonu."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
-msgstr[2] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d zona veiksmīgi atsaistīta no veidnes."
+msgstr[1] "%d zonas veiksmīgi atsaistītas no veidnes."
+msgstr[2] "%d zonu veiksmīgi atsaistītas no veidnes."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
-msgstr[2] "%d zones could not be unlinked."
+msgstr[0] "%d zonu nevarēja atsaistīt."
+msgstr[1] "%d zonas nevarēja atsaistīt."
+msgstr[2] "%d zonu nevarēja atsaistīt."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2638,33 +2638,33 @@ msgstr "Atlasiet vismaz vienu zonu."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
+msgstr[0] "%d zona pievienota grupai."
+msgstr[1] "%d zonas pievienotas grupai."
+msgstr[2] "%d zonu pievienotas grupai."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
-msgstr[2] "%d zones could not be added."
+msgstr[0] "%d zonu nevarēja pievienot."
+msgstr[1] "%d zonas nevarēja pievienot."
+msgstr[2] "%d zonu nevarēja pievienot."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
-msgstr[2] "%d zones removed from group."
+msgstr[0] "%d zona noņemta no grupas."
+msgstr[1] "%d zonas noņemtas no grupas."
+msgstr[2] "%d zonu noņemtas no grupas."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
-msgstr[2] "%d zones could not be removed."
+msgstr[0] "%d zonu nevarēja noņemt."
+msgstr[1] "%d zonas nevarēja noņemt."
+msgstr[2] "%d zonu nevarēja noņemt."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2919,21 +2919,18 @@ msgstr "Atlasiet vismaz vienu grupu."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
-msgstr[2] "User added to %d groups successfully."
+msgstr[0] "Lietotājs veiksmīgi pievienots %d grupai."
+msgstr[1] "Lietotājs veiksmīgi pievienots %d grupām."
+msgstr[2] "Lietotājs veiksmīgi pievienots %d grupu."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
-msgstr[2] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Neizdevās pievienot lietotāju %d grupai (jau ir dalībnieks vai grupa nav atrasta)."
+msgstr[1] "Neizdevās pievienot lietotāju %d grupām (jau ir dalībnieks vai grupas nav atrastas)."
+msgstr[2] "Neizdevās pievienot lietotāju %d grupu (jau ir dalībnieks vai grupas nav atrastas)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

@@ -1587,29 +1587,29 @@ msgstr "Valitse vähintään yksi käyttäjä."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
+msgstr[0] "%d käyttäjä lisätty ryhmään."
+msgstr[1] "%d käyttäjää lisätty ryhmään."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
+msgstr[0] "%d käyttäjän lisäys epäonnistui."
+msgstr[1] "%d käyttäjän lisäys epäonnistui."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
+msgstr[0] "%d käyttäjä poistettu ryhmästä."
+msgstr[1] "%d käyttäjää poistettu ryhmästä."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
+msgstr[0] "%d käyttäjän poisto epäonnistui."
+msgstr[1] "%d käyttäjän poisto epäonnistui."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2075,15 +2075,15 @@ msgstr "Alueita ei ole valittu."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d alueen linkitys mallista poistettu onnistuneesti."
+msgstr[1] "%d alueen linkitys mallista poistettu onnistuneesti."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
+msgstr[0] "%d alueen linkityksen poisto epäonnistui."
+msgstr[1] "%d alueen linkityksen poisto epäonnistui."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2626,29 +2626,29 @@ msgstr "Valitse vähintään yksi alue."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
+msgstr[0] "%d alue lisätty ryhmään."
+msgstr[1] "%d aluetta lisätty ryhmään."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
+msgstr[0] "%d alueen lisäys epäonnistui."
+msgstr[1] "%d alueen lisäys epäonnistui."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
+msgstr[0] "%d alue poistettu ryhmästä."
+msgstr[1] "%d aluetta poistettu ryhmästä."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
+msgstr[0] "%d alueen poisto epäonnistui."
+msgstr[1] "%d alueen poisto epäonnistui."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2903,18 +2903,16 @@ msgstr "Valitse vähintään yksi ryhmä."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
+msgstr[0] "Käyttäjä lisätty %d ryhmään onnistuneesti."
+msgstr[1] "Käyttäjä lisätty %d ryhmään onnistuneesti."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Käyttäjän lisääminen %d ryhmään epäonnistui (on jo jäsen tai ryhmää ei löytynyt)."
+msgstr[1] "Käyttäjän lisääminen %d ryhmään epäonnistui (on jo jäsen tai ryhmää ei löytynyt)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

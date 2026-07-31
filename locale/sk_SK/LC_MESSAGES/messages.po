@@ -1642,33 +1642,33 @@ msgstr "Vyberte aspoň jedného používateľa."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
-msgstr[2] "%d users added to group."
+msgstr[0] "%d používateľ bol pridaný do skupiny."
+msgstr[1] "%d používatelia boli pridaní do skupiny."
+msgstr[2] "%d používateľov bolo pridaných do skupiny."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
-msgstr[2] "%d users could not be added."
+msgstr[0] "%d používateľa sa nepodarilo pridať."
+msgstr[1] "%d používateľov sa nepodarilo pridať."
+msgstr[2] "%d používateľov sa nepodarilo pridať."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
-msgstr[2] "%d users removed from group."
+msgstr[0] "%d používateľ bol odstránený zo skupiny."
+msgstr[1] "%d používatelia boli odstránení zo skupiny."
+msgstr[2] "%d používateľov bolo odstránených zo skupiny."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
-msgstr[2] "%d users could not be removed."
+msgstr[0] "%d používateľa sa nepodarilo odstrániť."
+msgstr[1] "%d používateľov sa nepodarilo odstrániť."
+msgstr[2] "%d používateľov sa nepodarilo odstrániť."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2136,17 +2136,17 @@ msgstr "Nie sú vybraté zóny."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
-msgstr[2] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d zóna bola úspešne odpojená od šablóny."
+msgstr[1] "%d zóny boli úspešne odpojené od šablóny."
+msgstr[2] "%d zón bolo úspešne odpojených od šablóny."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
-msgstr[2] "%d zones could not be unlinked."
+msgstr[0] "%d zónu sa nepodarilo odpojiť."
+msgstr[1] "%d zóny sa nepodarilo odpojiť."
+msgstr[2] "%d zón sa nepodarilo odpojiť."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2697,33 +2697,33 @@ msgstr "Vyberte aspoň jednu zónu."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
+msgstr[0] "%d zóna bola pridaná do skupiny."
+msgstr[1] "%d zóny boli pridané do skupiny."
+msgstr[2] "%d zón bolo pridaných do skupiny."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
-msgstr[2] "%d zones could not be added."
+msgstr[0] "%d zónu sa nepodarilo pridať."
+msgstr[1] "%d zóny sa nepodarilo pridať."
+msgstr[2] "%d zón sa nepodarilo pridať."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
-msgstr[2] "%d zones removed from group."
+msgstr[0] "%d zóna bola odstránená zo skupiny."
+msgstr[1] "%d zóny boli odstránené zo skupiny."
+msgstr[2] "%d zón bolo odstránených zo skupiny."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
-msgstr[2] "%d zones could not be removed."
+msgstr[0] "%d zónu sa nepodarilo odstrániť."
+msgstr[1] "%d zóny sa nepodarilo odstrániť."
+msgstr[2] "%d zón sa nepodarilo odstrániť."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2979,21 +2979,18 @@ msgstr "Vyberte aspoň jednu skupinu."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
-msgstr[2] "User added to %d groups successfully."
+msgstr[0] "Používateľ bol úspešne pridaný do %d skupiny."
+msgstr[1] "Používateľ bol úspešne pridaný do %d skupín."
+msgstr[2] "Používateľ bol úspešne pridaný do %d skupín."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
-msgstr[2] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Nepodarilo sa pridať používateľa do %d skupiny (už je členom alebo skupina sa nenašla)."
+msgstr[1] "Nepodarilo sa pridať používateľa do %d skupín (už je členom alebo skupiny sa nenašli)."
+msgstr[2] "Nepodarilo sa pridať používateľa do %d skupín (už je členom alebo skupiny sa nenašli)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

@@ -1564,33 +1564,33 @@ msgstr "Odaberite barem jednog korisnika."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
-msgstr[2] "%d users added to group."
+msgstr[0] "%d korisnik je dodan u grupu."
+msgstr[1] "%d korisnika su dodana u grupu."
+msgstr[2] "%d korisnika je dodano u grupu."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
-msgstr[2] "%d users could not be added."
+msgstr[0] "%d korisnik se nije mogao dodati."
+msgstr[1] "%d korisnika se nisu mogla dodati."
+msgstr[2] "%d korisnika se nije moglo dodati."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
-msgstr[2] "%d users removed from group."
+msgstr[0] "%d korisnik je uklonjen iz grupe."
+msgstr[1] "%d korisnika su uklonjena iz grupe."
+msgstr[2] "%d korisnika je uklonjeno iz grupe."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
-msgstr[2] "%d users could not be removed."
+msgstr[0] "%d korisnik se nije mogao ukloniti."
+msgstr[1] "%d korisnika se nisu mogla ukloniti."
+msgstr[2] "%d korisnika se nije moglo ukloniti."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2056,17 +2056,17 @@ msgstr "Nema odabranih zona."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
-msgstr[2] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d zona je uspješno odspojena od predloška."
+msgstr[1] "%d zone su uspješno odspojene od predloška."
+msgstr[2] "%d zona je uspješno odspojeno od predloška."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
-msgstr[2] "%d zones could not be unlinked."
+msgstr[0] "%d zona se nije mogla odspojiti."
+msgstr[1] "%d zone se nisu mogle odspojiti."
+msgstr[2] "%d zona se nije moglo odspojiti."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2609,33 +2609,33 @@ msgstr "Odaberite barem jednu zonu."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
+msgstr[0] "%d zona je dodana u grupu."
+msgstr[1] "%d zone su dodane u grupu."
+msgstr[2] "%d zona je dodano u grupu."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
-msgstr[2] "%d zones could not be added."
+msgstr[0] "%d zona se nije mogla dodati."
+msgstr[1] "%d zone se nisu mogle dodati."
+msgstr[2] "%d zona se nije moglo dodati."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
-msgstr[2] "%d zones removed from group."
+msgstr[0] "%d zona je uklonjena iz grupe."
+msgstr[1] "%d zone su uklonjene iz grupe."
+msgstr[2] "%d zona je uklonjeno iz grupe."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
-msgstr[2] "%d zones could not be removed."
+msgstr[0] "%d zona se nije mogla ukloniti."
+msgstr[1] "%d zone se nisu mogle ukloniti."
+msgstr[2] "%d zona se nije moglo ukloniti."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2890,21 +2890,18 @@ msgstr "Odaberite barem jednu grupu."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
-msgstr[2] "User added to %d groups successfully."
+msgstr[0] "Korisnik je uspješno dodan u %d grupu."
+msgstr[1] "Korisnik je uspješno dodan u %d grupe."
+msgstr[2] "Korisnik je uspješno dodan u %d grupa."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
-msgstr[2] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Nije uspjelo dodavanje korisnika u %d grupu (već je član ili grupa nije pronađena)."
+msgstr[1] "Nije uspjelo dodavanje korisnika u %d grupe (već je član ili grupe nisu pronađene)."
+msgstr[2] "Nije uspjelo dodavanje korisnika u %d grupa (već je član ili grupe nisu pronađene)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

@@ -1683,28 +1683,28 @@ msgstr "Silakan pilih setidaknya satu pengguna."
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
 msgstr[0] "%d pengguna ditambahkan ke grup."
-msgstr[1] "%d users added to group."
+msgstr[1] "%d pengguna ditambahkan ke grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
 msgstr[0] "%d pengguna tidak dapat ditambahkan."
-msgstr[1] "%d users could not be added."
+msgstr[1] "%d pengguna tidak dapat ditambahkan."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
 msgstr[0] "%d pengguna dihapus dari grup."
-msgstr[1] "%d users removed from group."
+msgstr[1] "%d pengguna dihapus dari grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
 msgstr[0] "%d pengguna tidak dapat dihapus."
-msgstr[1] "%d users could not be removed."
+msgstr[1] "%d pengguna tidak dapat dihapus."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2187,7 +2187,7 @@ msgstr[1] "%d zona berhasil dilepas dari templat."
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] "%d zona tidak dapat dilepas."
-msgstr[1] "%d zones could not be unlinked."
+msgstr[1] "%d zona tidak dapat dilepas."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2747,28 +2747,28 @@ msgstr "Silakan pilih setidaknya satu zona."
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d zona ditambahkan ke grup."
-msgstr[1] "%d zones added to group."
+msgstr[1] "%d zona ditambahkan ke grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d zona tidak dapat ditambahkan."
-msgstr[1] "%d zones could not be added."
+msgstr[1] "%d zona tidak dapat ditambahkan."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d zona dihapus dari grup."
-msgstr[1] "%d zones removed from group."
+msgstr[1] "%d zona dihapus dari grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d zona tidak dapat dihapus."
-msgstr[1] "%d zones could not be removed."
+msgstr[1] "%d zona tidak dapat dihapus."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -3025,18 +3025,15 @@ msgstr "Silakan pilih setidaknya satu grup."
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "Pengguna berhasil ditambahkan ke %d grup."
-msgstr[1] "User added to %d groups successfully."
+msgstr[1] "Pengguna berhasil ditambahkan ke %d grup."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Gagal menambahkan pengguna ke %d grup (sudah menjadi anggota atau grup tidak "
-"ditemukan)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Gagal menambahkan pengguna ke %d grup (sudah menjadi anggota atau grup tidak ditemukan)."
+msgstr[1] "Gagal menambahkan pengguna ke %d grup (sudah menjadi anggota atau grup tidak ditemukan)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

@@ -1567,33 +1567,33 @@ msgstr "Изаберите бар једног корисника."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
-msgstr[2] "%d users added to group."
+msgstr[0] "%d корисник је додат у групу."
+msgstr[1] "%d корисника су додата у групу."
+msgstr[2] "%d корисника је додато у групу."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
-msgstr[2] "%d users could not be added."
+msgstr[0] "%d корисник није могао бити додат."
+msgstr[1] "%d корисника нису могла бити додата."
+msgstr[2] "%d корисника није могло бити додато."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
-msgstr[2] "%d users removed from group."
+msgstr[0] "%d корисник је уклоњен из групе."
+msgstr[1] "%d корисника су уклоњена из групе."
+msgstr[2] "%d корисника је уклоњено из групе."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
-msgstr[2] "%d users could not be removed."
+msgstr[0] "%d корисник није могао бити уклоњен."
+msgstr[1] "%d корисника нису могла бити уклоњена."
+msgstr[2] "%d корисника није могло бити уклоњено."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2058,17 +2058,17 @@ msgstr "Нема изабраних зона."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
-msgstr[2] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d зона је успешно одвезана од шаблона."
+msgstr[1] "%d зоне су успешно одвезане од шаблона."
+msgstr[2] "%d зона је успешно одвезано од шаблона."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
-msgstr[2] "%d zones could not be unlinked."
+msgstr[0] "%d зона није могла бити одвезана."
+msgstr[1] "%d зоне нису могле бити одвезане."
+msgstr[2] "%d зона није могло бити одвезано."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2609,33 +2609,33 @@ msgstr "Изаберите бар једну зону."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
+msgstr[0] "%d зона је додата у групу."
+msgstr[1] "%d зоне су додате у групу."
+msgstr[2] "%d зона је додато у групу."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
-msgstr[2] "%d zones could not be added."
+msgstr[0] "%d зона није могла бити додата."
+msgstr[1] "%d зоне нису могле бити додате."
+msgstr[2] "%d зона није могло бити додато."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
-msgstr[2] "%d zones removed from group."
+msgstr[0] "%d зона је уклоњена из групе."
+msgstr[1] "%d зоне су уклоњене из групе."
+msgstr[2] "%d зона је уклоњено из групе."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
-msgstr[2] "%d zones could not be removed."
+msgstr[0] "%d зона није могла бити уклоњена."
+msgstr[1] "%d зоне нису могле бити уклоњене."
+msgstr[2] "%d зона није могло бити уклоњено."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2890,21 +2890,18 @@ msgstr "Изаберите бар једну групу."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
-msgstr[2] "User added to %d groups successfully."
+msgstr[0] "Корисник је успешно додат у %d групу."
+msgstr[1] "Корисник је успешно додат у %d групе."
+msgstr[2] "Корисник је успешно додат у %d група."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
-msgstr[2] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Неуспешно додавање корисника у %d групу (већ је члан или група није пронађена)."
+msgstr[1] "Неуспешно додавање корисника у %d групе (већ је члан или групе нису пронађене)."
+msgstr[2] "Неуспешно додавање корисника у %d група (већ је члан или групе нису пронађене)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."

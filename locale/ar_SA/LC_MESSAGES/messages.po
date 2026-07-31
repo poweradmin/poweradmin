@@ -2711,12 +2711,12 @@ msgstr "يرجى اختيار منطقة واحدة على الأقل."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d) أضيفت إلى المجموعة)"
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
-msgstr[3] "%d zones added to group."
-msgstr[4] "%d zones added to group."
-msgstr[5] "%d zones added to group."
+msgstr[0] "تمت إضافة %d منطقة إلى المجموعة."
+msgstr[1] "تمت إضافة %d منطقة إلى المجموعة."
+msgstr[2] "تمت إضافة %d منطقتين إلى المجموعة."
+msgstr[3] "تمت إضافة %d مناطق إلى المجموعة."
+msgstr[4] "تمت إضافة %d منطقة إلى المجموعة."
+msgstr[5] "تمت إضافة %d منطقة إلى المجموعة."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format

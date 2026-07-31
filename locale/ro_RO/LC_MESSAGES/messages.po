@@ -1665,33 +1665,33 @@ msgstr "Selectați cel puțin un utilizator."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d user added to group."
-msgstr[1] "%d users added to group."
-msgstr[2] "%d users added to group."
+msgstr[0] "%d utilizator adăugat în grup."
+msgstr[1] "%d utilizatori adăugați în grup."
+msgstr[2] "%d de utilizatori adăugați în grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d user could not be added."
-msgstr[1] "%d users could not be added."
-msgstr[2] "%d users could not be added."
+msgstr[0] "%d utilizator nu a putut fi adăugat."
+msgstr[1] "%d utilizatori nu au putut fi adăugați."
+msgstr[2] "%d de utilizatori nu au putut fi adăugați."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "%d user removed from group."
-msgstr[1] "%d users removed from group."
-msgstr[2] "%d users removed from group."
+msgstr[0] "%d utilizator eliminat din grup."
+msgstr[1] "%d utilizatori eliminați din grup."
+msgstr[2] "%d de utilizatori eliminați din grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "%d user could not be removed."
-msgstr[1] "%d users could not be removed."
-msgstr[2] "%d users could not be removed."
+msgstr[0] "%d utilizator nu a putut fi eliminat."
+msgstr[1] "%d utilizatori nu au putut fi eliminați."
+msgstr[2] "%d de utilizatori nu au putut fi eliminați."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2168,17 +2168,17 @@ msgstr "Nu sunt zone selectate."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zone has been unlinked from template successfully."
-msgstr[1] "%d zones have been unlinked from template successfully."
-msgstr[2] "%d zones have been unlinked from template successfully."
+msgstr[0] "%d zonă a fost deconectată cu succes de la șablon."
+msgstr[1] "%d zone au fost deconectate cu succes de la șablon."
+msgstr[2] "%d de zone au fost deconectate cu succes de la șablon."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zone could not be unlinked."
-msgstr[1] "%d zones could not be unlinked."
-msgstr[2] "%d zones could not be unlinked."
+msgstr[0] "%d zonă nu a putut fi deconectată."
+msgstr[1] "%d zone nu au putut fi deconectate."
+msgstr[2] "%d de zone nu au putut fi deconectate."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2728,33 +2728,33 @@ msgstr "Selectați cel puțin o zonă."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d zone added to group."
-msgstr[1] "%d zones added to group."
-msgstr[2] "%d zones added to group."
+msgstr[0] "%d zonă adăugată în grup."
+msgstr[1] "%d zone adăugate în grup."
+msgstr[2] "%d de zone adăugate în grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d zone could not be added."
-msgstr[1] "%d zones could not be added."
-msgstr[2] "%d zones could not be added."
+msgstr[0] "%d zonă nu a putut fi adăugată."
+msgstr[1] "%d zone nu au putut fi adăugate."
+msgstr[2] "%d de zone nu au putut fi adăugate."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "%d zone removed from group."
-msgstr[1] "%d zones removed from group."
-msgstr[2] "%d zones removed from group."
+msgstr[0] "%d zonă eliminată din grup."
+msgstr[1] "%d zone eliminate din grup."
+msgstr[2] "%d de zone eliminate din grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "%d zone could not be removed."
-msgstr[1] "%d zones could not be removed."
-msgstr[2] "%d zones could not be removed."
+msgstr[0] "%d zonă nu a putut fi eliminată."
+msgstr[1] "%d zone nu au putut fi eliminate."
+msgstr[2] "%d de zone nu au putut fi eliminate."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -3013,21 +3013,18 @@ msgstr "Selectați cel puțin un grup."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "User added to %d group successfully."
-msgstr[1] "User added to %d groups successfully."
-msgstr[2] "User added to %d groups successfully."
+msgstr[0] "Utilizator adăugat cu succes în %d grup."
+msgstr[1] "Utilizator adăugat cu succes în %d grupuri."
+msgstr[2] "Utilizator adăugat cu succes în %d de grupuri."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Failed to add user to %d group (already a member or group not found)."
-msgstr[1] ""
-"Failed to add user to %d groups (already a member or groups not found)."
-msgstr[2] ""
-"Failed to add user to %d groups (already a member or groups not found)."
+msgstr[0] "Adăugarea utilizatorului în %d grup a eșuat (este deja membru sau grupul nu a fost găsit)."
+msgstr[1] "Adăugarea utilizatorului în %d grupuri a eșuat (este deja membru sau grupurile nu au fost găsite)."
+msgstr[2] "Adăugarea utilizatorului în %d de grupuri a eșuat (este deja membru sau grupurile nu au fost găsite)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
