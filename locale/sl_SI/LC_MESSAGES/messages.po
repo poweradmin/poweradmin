@@ -9951,7 +9951,7 @@ msgstr "Nadomestne oznake v predlogi"
 
 #: templates/modern/edit_zone_templ.html:180
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "Ograda"
 
 #: templates/modern/list_perm_templ.html:28
 msgid "Description"
@@ -12537,7 +12537,7 @@ msgstr "Dodeli lastnika"
 
 #: templates/modern/database_consistency.html:284
 msgid "Fix"
-msgstr "Fix"
+msgstr "Popravi"
 
 #: templates/modern/database_consistency.html:104
 msgid "Slave Zones Without Master IP Addresses"
@@ -13971,7 +13971,7 @@ msgstr "Poizvedbe UDP"
 
 #: templates/default/pdns_status.html:256 templates/modern/pdns_status.html:256
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "Poizvedbe TCP"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
@@ -14073,7 +14073,7 @@ msgstr "Nazaj na ključe DNSSEC"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "Zapisi DNSKEY"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
@@ -14085,7 +14085,7 @@ msgstr "Kopiraj ta zapis"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
-msgstr "DS Records"
+msgstr "Zapisi DS"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"

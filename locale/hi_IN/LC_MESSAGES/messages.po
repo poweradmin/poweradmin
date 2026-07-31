@@ -500,7 +500,7 @@ msgstr "DKIM डोमेन From: डोमेन का सबडोमेन 
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "Strict"
-msgstr "Strict"
+msgstr "सख्त"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:146
 msgid "DKIM domain must exactly match From: domain"
@@ -1219,7 +1219,7 @@ msgstr "ज़ोन नाम और प्राथमिक सर्वर �
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:318
 msgid "Invalid hostname."
-msgstr "Invalid hostname."
+msgstr "अमान्य होस्टनाम।"
 
 #: lib/Application/Controller/BulkRegistrationController.php:199
 msgid "There is already a zone with this name."
@@ -9436,7 +9436,7 @@ msgstr "API कुंजी पर लौटें"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "कॉपी किया गया!"
 
 #: templates/modern/dnssec_delete_key.html:5
 msgid "DNSSEC"
@@ -11824,7 +11824,7 @@ msgstr "बंद"
 
 #: templates/modern/dnssec_ds_dnskey.html:83
 msgid "Copied"
-msgstr "Copied"
+msgstr "कॉपी किया गया"
 
 #: templates/modern/_partials/log_list.html:212
 msgid "No logs found"
@@ -12024,7 +12024,7 @@ msgstr "दिखा रहे हैं"
 
 #: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "of"
-msgstr "of"
+msgstr "का"
 
 #: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "total records"
@@ -12848,7 +12848,7 @@ msgstr "जारी रखने के लिए आपको समझौत�
 
 #: templates/modern/user_agreement.html:40
 msgid "Decline & Logout"
-msgstr "Decline & Logout"
+msgstr "अस्वीकार करें और लॉग आउट करें"
 
 #: templates/modern/user_agreement.html:44
 msgid "Accept & Continue"
@@ -13696,7 +13696,7 @@ msgstr "क्वेरी सांख्यिकी"
 
 #: templates/default/pdns_status.html:239 templates/modern/pdns_status.html:239
 msgid "UDP Queries"
-msgstr "UDP Queries"
+msgstr "UDP क्वेरी"
 
 #: templates/default/pdns_status.html:256 templates/modern/pdns_status.html:256
 msgid "TCP Queries"
@@ -13712,7 +13712,7 @@ msgstr "कैश मिस"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
-msgstr "Toggle View"
+msgstr "दृश्य बदलें"
 
 #: templates/default/pdns_status.html:332 templates/modern/pdns_status.html:332
 msgid "Refresh"

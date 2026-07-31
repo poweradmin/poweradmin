@@ -769,7 +769,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
-msgstr "CAA Record"
+msgstr "Taifead CAA"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:44
 msgid "Certificate authority authorization"
@@ -1830,7 +1830,7 @@ msgstr "Athghineadh na cóid aisghabhála. Sábháil in áit shábháilte iad."
 #: lib/Application/Controller/ListLogApiController.php:52
 #: templates/modern/list_log_api.html:2 templates/modern/header.html:340
 msgid "API Logs"
-msgstr "API Logs"
+msgstr "Logaí API"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
@@ -1917,7 +1917,7 @@ msgstr "Níl cead agat eochracha API a bhainistiú."
 #: lib/Application/Controller/ApiKeysController.php:101
 #: templates/modern/api_key_delete.html:4
 msgid "API Keys"
-msgstr "API Keys"
+msgstr "Eochracha API"
 
 #: lib/Application/Controller/ApiKeysController.php:255
 msgid "API key name is required."
@@ -9935,7 +9935,7 @@ msgstr "Fill ar ais chuig Eochracha API"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "Cóipeáilte!"
 
 #: templates/modern/dnssec_delete_key.html:5
 msgid "DNSSEC"
@@ -10585,7 +10585,7 @@ msgstr "Athraigh airíonna an taifid DNS"
 
 #: templates/modern/add_record.html:55
 msgid "Comment"
-msgstr "Comment"
+msgstr "Nóta"
 
 #: templates/modern/add_record.html:80 templates/modern/add_record.html:132
 msgid "deprecated"
@@ -10924,7 +10924,7 @@ msgstr "(do PTRs i gcriosanna droim ar ais) nó"
 
 #: templates/modern/edit_comment.html:5 templates/modern/edit.html:540
 msgid "Edit comment"
-msgstr "Edit comment"
+msgstr "Cuir nóta in eagar"
 
 #: templates/modern/edit_comment.html:9 templates/modern/edit_comment.html:11
 msgid "Edit comment in zone"
@@ -12393,7 +12393,7 @@ msgstr "Dún"
 
 #: templates/modern/dnssec_ds_dnskey.html:83
 msgid "Copied"
-msgstr "Copied"
+msgstr "Cóipeáilte"
 
 #: templates/modern/_partials/log_list.html:212
 msgid "No logs found"
@@ -12884,7 +12884,7 @@ msgstr "Criosanna le Taifid SOA Dhúbailte"
 
 #: templates/modern/database_consistency.html:218
 msgid "SOA Count"
-msgstr "SOA Count"
+msgstr "Líon SOA"
 
 #: templates/modern/database_consistency.html:234
 msgid "Keep first SOA, delete duplicates"
@@ -13106,7 +13106,7 @@ msgstr "Tá gach crios sioncronaithe"
 
 #: templates/modern/list_zone_templ.html:97
 msgid "Synced"
-msgstr "Synced"
+msgstr "Sioncronaithe"
 
 #: templates/modern/list_zone_templ.html:112
 msgid "Unset as default"
@@ -13318,7 +13318,7 @@ msgstr "Lean ar aghaidh gan SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Cuir Meiteashonraí in Eagar"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
@@ -14238,7 +14238,7 @@ msgstr "Eolas Freastalaí"
 
 #: templates/default/pdns_status.html:54 templates/modern/pdns_status.html:54
 msgid "PDNS Server"
-msgstr "PDNS Server"
+msgstr "Freastalaí PDNS"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:58
 #: install/templates/step4.html.twig:71
@@ -14312,7 +14312,7 @@ msgstr "Ceisteanna UDP"
 
 #: templates/default/pdns_status.html:256 templates/modern/pdns_status.html:256
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "Iarratais TCP"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
@@ -14320,11 +14320,11 @@ msgstr "Amais Taisce"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Caillteanais Taisce"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
-msgstr "Toggle View"
+msgstr "Scoránaigh an tAmharc"
 
 #: templates/default/pdns_status.html:332 templates/modern/pdns_status.html:332
 msgid "Refresh"
@@ -14427,7 +14427,7 @@ msgstr "Cóipeáil an taifead seo"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
-msgstr "DS Records"
+msgstr "Taifid DS"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
@@ -15019,7 +15019,7 @@ msgstr "Cuir isteach ainm fearainn le cuardach WHOIS a dhéanamh."
 
 #: lib/Module/Rdap/templates/rdap.html:4 lib/Module/Rdap/templates/rdap.html:9
 msgid "RDAP Lookup"
-msgstr "RDAP Lookup"
+msgstr "Cuardach RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"

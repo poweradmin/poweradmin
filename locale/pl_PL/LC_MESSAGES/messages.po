@@ -9774,7 +9774,7 @@ msgstr "Aktywuj klucz DNSSEC"
 
 #: templates/modern/dnssec_delete_key.html:13
 msgid "Warning"
-msgstr "Warning"
+msgstr "Ostrzeżenie"
 
 #: templates/modern/dnssec_edit_key.html:23
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -11448,7 +11448,7 @@ msgstr "Zalecana długość dla"
 #: lib/Module/ZoneImportExport/templates/import.html:31
 #: install/helpers/InstallStepHandler.php:193
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Ostrzeżenie:"
 
 #: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
@@ -14053,7 +14053,7 @@ msgstr "Nieosiągalny"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
 msgid "Error"
-msgstr "Error"
+msgstr "Błąd"
 
 #: templates/default/pdns_status.html:156 templates/modern/pdns_status.html:156
 msgid "Server Statistics"

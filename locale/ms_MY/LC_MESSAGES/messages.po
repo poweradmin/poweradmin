@@ -72,7 +72,7 @@ msgstr "Rekod berjaya dicipta"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
-msgstr "TLSA Record"
+msgstr "Rekod TLSA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
@@ -230,7 +230,7 @@ msgstr "Data kunci/sijil penuh (rekod sangat panjang)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr "1 - SHA-256 Hash"
+msgstr "1 - Hash SHA-256"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
@@ -238,7 +238,7 @@ msgstr "Hash SHA-256 bagi sijil/kunci"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "2 - SHA-512 Hash"
+msgstr "2 - Hash SHA-512"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -407,7 +407,7 @@ msgstr "Gunakan dasar yang sama seperti domain utama"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "None"
-msgstr "None"
+msgstr "Tiada"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "Monitor only for subdomains"
@@ -510,7 +510,7 @@ msgstr "Domain DKIM boleh menjadi subdomain bagi domain From:"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:157
 msgid "Strict"
-msgstr "Strict"
+msgstr "Ketat"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:146
 msgid "DKIM domain must exactly match From: domain"
@@ -594,7 +594,7 @@ msgstr "Pilih mekanisme biasa untuk membenarkan penghantaran e-mel"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:66
 msgid "MX Records"
-msgstr "MX Records"
+msgstr "Rekod MX"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:69
 msgid "Authorize all servers listed in MX records for this domain"
@@ -1115,7 +1115,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
-msgstr "Target Server"
+msgstr "Pelayan Sasaran"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:140
 msgid "Target Hostname"
@@ -1872,7 +1872,7 @@ msgstr "Berbilang"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:662
 msgid "Single"
-msgstr "Single"
+msgstr "Tunggal"
 
 #: lib/Application/Controller/ApiKeysController.php:86
 msgid "The API feature is disabled in the system configuration."
@@ -3059,7 +3059,7 @@ msgstr "Gagal membuang pemetaan rangkaian."
 #: lib/Application/Controller/ListNetworksController.php:101
 #: templates/modern/list_networks.html:5
 msgid "Network views"
-msgstr "Network views"
+msgstr "Paparan rangkaian"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
@@ -3551,11 +3551,11 @@ msgstr "Tambah supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Edit autoprimary"
+msgstr "Sunting autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Edit supermaster"
+msgstr "Sunting supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -9702,7 +9702,7 @@ msgstr "Luput"
 
 #: templates/modern/dnssec_delete_key.html:91
 msgid "Active"
-msgstr "Active"
+msgstr "Aktif"
 
 #: templates/modern/api_key_created.html:58
 msgid "Return to API Keys"
@@ -9710,7 +9710,7 @@ msgstr "Kembali ke Kunci API"
 
 #: templates/modern/api_key_created.html:71
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "Disalin!"
 
 #: templates/modern/dnssec_delete_key.html:5
 msgid "DNSSEC"
@@ -10382,7 +10382,7 @@ msgstr "Menyimpan..."
 
 #: templates/modern/edit_perm_templ.html:50
 msgid "Update"
-msgstr "Update"
+msgstr "Kemas kini"
 
 #: templates/modern/list_log_groups.html:19
 msgid "Group Name"
@@ -10421,7 +10421,7 @@ msgstr "Kemas kini kumpulan"
 
 #: templates/modern/edit_group.html:72 templates/modern/edit_group.html:116
 msgid "Manage"
-msgstr "Manage"
+msgstr "Urus"
 
 #: templates/modern/manage_group_members.html:25
 msgid "No members in this group yet."
@@ -10550,11 +10550,11 @@ msgstr "Selamat Datang"
 
 #: templates/modern/list_views.html:22
 msgid "zones"
-msgstr "zones"
+msgstr "zon"
 
 #: lib/Module/ZoneImportExport/templates/import.html:53
 msgid "records"
-msgstr "records"
+msgstr "rekod"
 
 #: templates/modern/index.html:7 templates/modern/delete_perm_templ.html:19
 msgid "users"
@@ -10562,7 +10562,7 @@ msgstr "Pengguna"
 
 #: templates/default/index.html:8 templates/modern/index.html:8
 msgid "groups"
-msgstr "groups"
+msgstr "kumpulan"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
@@ -10608,7 +10608,7 @@ msgstr "Template"
 
 #: templates/default/index.html:124 templates/modern/index.html:124
 msgid "Networks"
-msgstr "Networks"
+msgstr "Rangkaian"
 
 #: templates/default/index.html:139 templates/modern/index.html:139
 msgid "Zone Operations"
@@ -10620,7 +10620,7 @@ msgstr "Zon Master"
 
 #: templates/modern/index.html:160 templates/modern/index.html:464
 msgid "Slave Zone"
-msgstr "Slave Zone"
+msgstr "Zon Slave"
 
 #: templates/modern/index.html:190 templates/modern/index.html:494
 msgid "PTR Records"
@@ -10628,7 +10628,7 @@ msgstr "Rekod PTR"
 
 #: templates/default/index.html:205 templates/modern/index.html:205
 msgid "Administration"
-msgstr "Administration"
+msgstr "Pentadbiran"
 
 #: templates/default/index.html:276 templates/modern/index.html:276
 msgid "Record Changes"
@@ -10641,7 +10641,7 @@ msgstr "Peralatan"
 #: templates/default/index.html:302 templates/modern/index.html:302
 #: install/templates/step4.html.twig:162
 msgid "Database"
-msgstr "Database"
+msgstr "Pangkalan data"
 
 #: templates/default/index.html:312 templates/modern/index.html:312
 msgid "TTL defaults"
@@ -10813,7 +10813,7 @@ msgstr "Semua peristiwa"
 
 #: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
-msgstr "Logs"
+msgstr "Log"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -10978,7 +10978,7 @@ msgstr ""
 
 #: templates/modern/list_record_changes.html:76
 msgid "Zone"
-msgstr "Zone"
+msgstr "Zon"
 
 #: templates/default/delete_user.html:35 templates/modern/delete_user.html:35
 msgid "Leave"
@@ -11325,11 +11325,11 @@ msgstr "Zon Maju Berkaitan"
 
 #: templates/modern/list_forward_zones.html:123
 msgid "Serial"
-msgstr "Serial"
+msgstr "Siri"
 
 #: templates/modern/bulk_registration.html:34
 msgid "Template"
-msgstr "Template"
+msgstr "Templat"
 
 #: templates/modern/list_forward_zones.html:157
 msgid "SOA record is disabled, the zone will not be served"
@@ -12143,7 +12143,7 @@ msgstr "Tutup"
 
 #: templates/modern/dnssec_ds_dnskey.html:83
 msgid "Copied"
-msgstr "Copied"
+msgstr "Disalin"
 
 #: templates/modern/_partials/log_list.html:212
 msgid "No logs found"
@@ -12228,7 +12228,7 @@ msgstr "Jika anda kehilangan kunci itu, anda perlu menjananya semula."
 
 #: templates/modern/list_perm_templ.html:53
 msgid "Edit"
-msgstr "Edit"
+msgstr "Sunting"
 
 #: templates/modern/edit.html:11 templates/modern/edit.html:612
 msgid "Add new record"
@@ -12600,7 +12600,7 @@ msgstr "Umpukkan pemilik"
 
 #: templates/modern/database_consistency.html:284
 msgid "Fix"
-msgstr "Fix"
+msgstr "Betulkan"
 
 #: templates/modern/database_consistency.html:104
 msgid "Slave Zones Without Master IP Addresses"
@@ -12739,7 +12739,7 @@ msgstr "Jenis zon (biasanya NATIVE)"
 
 #: templates/modern/list_zone_templ.html:50
 msgid "default"
-msgstr "default"
+msgstr "lalai"
 
 #: templates/modern/add_zone_master.html:53
 msgid "Optional: Apply predefined records from a template"
@@ -13987,7 +13987,7 @@ msgstr "Jenis Daemon"
 
 #: templates/modern/pdns_status.html:77 templates/modern/pdns_status.html:178
 msgid "Uptime"
-msgstr "Uptime"
+msgstr "Masa operasi"
 
 #: templates/default/pdns_status.html:86 templates/modern/pdns_status.html:86
 msgid "Server information is not available."
@@ -14012,7 +14012,7 @@ msgstr "Tak Tercapai"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
 msgid "Error"
-msgstr "Error"
+msgstr "Ralat"
 
 #: templates/default/pdns_status.html:156 templates/modern/pdns_status.html:156
 msgid "Server Statistics"
@@ -14036,11 +14036,11 @@ msgstr "Statistik Pertanyaan"
 
 #: templates/default/pdns_status.html:239 templates/modern/pdns_status.html:239
 msgid "UDP Queries"
-msgstr "UDP Queries"
+msgstr "Pertanyaan UDP"
 
 #: templates/default/pdns_status.html:256 templates/modern/pdns_status.html:256
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "Pertanyaan TCP"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
@@ -14048,7 +14048,7 @@ msgstr "Hit Cache"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Cache Terlepas"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
@@ -14626,7 +14626,7 @@ msgstr "Fail:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "Zone:"
-msgstr "Zone:"
+msgstr "Zon:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:198
 msgid "Target zone"

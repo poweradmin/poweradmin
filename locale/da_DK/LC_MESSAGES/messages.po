@@ -72,7 +72,7 @@ msgstr "Record oprettet med succes"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
-msgstr "TLSA Record"
+msgstr "TLSA-post"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
@@ -229,7 +229,7 @@ msgstr "Fuld certifikat / nøgledata (meget lang record)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr "1 - SHA-256 Hash"
+msgstr "1 - SHA-256-hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
@@ -237,7 +237,7 @@ msgstr "SHA-256 hash af certifikat/nøgle"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "2 - SHA-512 Hash"
+msgstr "2 - SHA-512-hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -346,7 +346,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
-msgstr "DMARC Record"
+msgstr "DMARC-post"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
@@ -495,7 +495,7 @@ msgstr "Avancerede indstillinger for SPF- og DKIM-justeringstilstande"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
-msgstr "DKIM Alignment Mode"
+msgstr "DKIM-justeringstilstand"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:156
 msgid "Relaxed"
@@ -575,7 +575,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:48
 msgid "SPF Record"
-msgstr "SPF Record"
+msgstr "SPF-post"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:49
 msgid "Authorized mail server configuration"
@@ -591,7 +591,7 @@ msgstr "Vælg almindelige mekanismer til at tillade e-mail-afsendelse"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:66
 msgid "MX Records"
-msgstr "MX Records"
+msgstr "MX-poster"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:69
 msgid "Authorize all servers listed in MX records for this domain"
@@ -599,7 +599,7 @@ msgstr "Godkend alle servere, der er opført i MX-records for dette domæne"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AAAA Records"
+msgstr "A/AAAA-poster"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -751,7 +751,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
-msgstr "CAA Record"
+msgstr "CAA-post"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:44
 msgid "Certificate authority authorization"
@@ -767,7 +767,7 @@ msgstr "Certifikatmyndighed"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:78
 msgid "CA Provider"
-msgstr "CA Provider"
+msgstr "CA-udbyder"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:83
 msgid ""
@@ -913,7 +913,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
-msgstr "DKIM Record"
+msgstr "DKIM-post"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:47
 msgid "Email signature verification public key"
@@ -1055,7 +1055,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
-msgstr "SRV Record"
+msgstr "SRV-post"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:69
 msgid "Service location (hostname and port)"
@@ -9925,7 +9925,7 @@ msgstr "Skabelonpladsholdere"
 
 #: templates/modern/edit_zone_templ.html:180
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "Pladsholder"
 
 #: templates/modern/list_perm_templ.html:28
 msgid "Description"
@@ -10482,7 +10482,7 @@ msgstr "zoner"
 
 #: lib/Module/ZoneImportExport/templates/import.html:53
 msgid "records"
-msgstr "records"
+msgstr "poster"
 
 #: templates/modern/index.html:7 templates/modern/delete_perm_templ.html:19
 msgid "users"
@@ -10552,7 +10552,7 @@ msgstr "Slavezone"
 
 #: templates/modern/index.html:190 templates/modern/index.html:494
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR-poster"
 
 #: templates/default/index.html:205 templates/modern/index.html:205
 msgid "Administration"
@@ -10590,7 +10590,7 @@ msgstr "Indstillinger"
 
 #: templates/modern/header.html:453
 msgid "Logout"
-msgstr "Logout"
+msgstr "Log ud"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
@@ -10783,7 +10783,7 @@ msgstr "Bulk tilføje records"
 
 #: templates/modern/search.html:160 templates/modern/search.html:166
 msgid "Records"
-msgstr "Records"
+msgstr "Poster"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -10871,7 +10871,7 @@ msgstr "DNS-guide"
 
 #: templates/modern/dns_wizard_form.html:13
 msgid "Wizard"
-msgstr "Wizard"
+msgstr "Guide"
 
 #: templates/modern/dns_wizard_form.html:24
 msgid "Warning: Please Review Before Proceeding"
@@ -11401,7 +11401,7 @@ msgstr "Angiv brugernavn"
 
 #: templates/modern/users.html:44 templates/modern/add_user.html:22
 msgid "Fullname"
-msgstr "Fullname"
+msgstr "Fulde navn"
 
 #: templates/modern/edit_user.html:37 templates/modern/add_user.html:24
 msgid "User's full name for identification"
@@ -12167,7 +12167,7 @@ msgstr "Multi-record-tilstand"
 
 #: templates/modern/edit.html:565 templates/modern/edit.html:625
 msgid "Bulk add"
-msgstr "Bulk add"
+msgstr "Tilføj flere"
 
 #: templates/modern/edit.html:36 templates/modern/edit.html:637
 msgid "Failed to add"
@@ -12525,7 +12525,7 @@ msgstr "Tildel ejer"
 
 #: templates/modern/database_consistency.html:284
 msgid "Fix"
-msgstr "Fix"
+msgstr "Ret"
 
 #: templates/modern/database_consistency.html:104
 msgid "Slave Zones Without Master IP Addresses"
@@ -12545,7 +12545,7 @@ msgstr "Records der ikke tilhører nogen zone"
 
 #: templates/modern/database_consistency.html:165
 msgid "Record ID"
-msgstr "Record ID"
+msgstr "Post-ID"
 
 #: templates/modern/database_consistency.html:189
 msgid "Delete orphaned record"
@@ -13008,7 +13008,7 @@ msgstr "Enkelt værdi"
 
 #: templates/modern/edit_zone_metadata.html:39
 msgid "Kind"
-msgstr "Kind"
+msgstr "Slags"
 
 #: templates/modern/edit_zone_metadata.html:114
 msgid "requires"
@@ -13243,7 +13243,7 @@ msgstr "Kopiér alle"
 
 #: templates/modern/mfa_recovery_codes.html:53
 msgid "Download"
-msgstr "Download"
+msgstr "Hent"
 
 #: templates/modern/mfa_recovery_codes.html:60
 msgid "Back to MFA Settings"
@@ -13584,7 +13584,7 @@ msgstr ""
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
-msgstr "Wildcards"
+msgstr "Jokertegn"
 
 #: templates/default/search.html:80 templates/modern/search.html:80
 msgid "Reverse"
@@ -13969,11 +13969,11 @@ msgstr "TCP-forespørgsler"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
-msgstr "Cache Hits"
+msgstr "Cache-træffere"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Cache-forbiere"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
@@ -13989,7 +13989,7 @@ msgstr "Bytes"
 
 #: templates/default/pdns_status.html:406 templates/modern/pdns_status.html:406
 msgid "Metric"
-msgstr "Metric"
+msgstr "Måling"
 
 #: templates/default/pdns_status.html:461 templates/modern/pdns_status.html:461
 msgid "No detailed metrics available."
@@ -14067,7 +14067,7 @@ msgstr "Tilbage til DNSSEC-nøgler"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "DNSKEY-poster"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
@@ -14079,7 +14079,7 @@ msgstr "Kopiér denne record"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
-msgstr "DS Records"
+msgstr "DS-poster"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
@@ -14629,7 +14629,7 @@ msgstr "IDN-domænenavne"
 
 #: lib/Module/Whois/templates/whois.html:9
 msgid "WHOIS Lookup"
-msgstr "WHOIS Lookup"
+msgstr "WHOIS-opslag"
 
 #: lib/Module/Rdap/templates/rdap.html:19
 msgid "Enter domain name"
@@ -14655,7 +14655,7 @@ msgstr "Indtast venligst et domænenavn for at udføre et WHOIS opslag."
 
 #: lib/Module/Rdap/templates/rdap.html:4 lib/Module/Rdap/templates/rdap.html:9
 msgid "RDAP Lookup"
-msgstr "RDAP Lookup"
+msgstr "RDAP-opslag"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"

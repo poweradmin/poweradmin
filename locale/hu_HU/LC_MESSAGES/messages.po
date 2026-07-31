@@ -795,7 +795,7 @@ msgstr "Szabványos tanúsítványok kibocsátásának engedélyezése"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Issue Wildcard"
-msgstr "Issue Wildcard"
+msgstr "Helyettesítő kiadása"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"

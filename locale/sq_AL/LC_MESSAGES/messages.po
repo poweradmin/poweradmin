@@ -375,7 +375,7 @@ msgstr "Asnjë veprim i ndërmarrë, vetëm mblidh raportet për analizë."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Quarantine"
-msgstr "Quarantine"
+msgstr "Karantinë"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:69
 msgid "Treat suspicious emails as spam/junk"
@@ -845,7 +845,7 @@ msgstr "Opsione të avancuara"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:130
 msgid "Flags"
-msgstr "Flags"
+msgstr "Flamujt"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Non-critical"
@@ -1104,7 +1104,7 @@ msgstr "Protokolli i transportit për shërbimin"
 #: lib/Module/DnsWizard/Service/SRVWizard.php:127
 #: templates/modern/dnssec_delete_key.html:32
 msgid "Domain"
-msgstr "Domain"
+msgstr "Domeni"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:131
 msgid ""
@@ -2893,7 +2893,7 @@ msgstr "Modeli i zonës është shtuar me sukses."
 
 #: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr "Paneli"
 
 #: lib/Application/Controller/EditUserController.php:505
 msgid "You do not have permission to manage group memberships."
@@ -10832,7 +10832,7 @@ msgstr "Preferimet"
 
 #: templates/modern/header.html:453
 msgid "Logout"
-msgstr "Logout"
+msgstr "Dilni"
 
 #: templates/modern/record_type_defaults.html:9
 msgid "Current global defaults"
@@ -10984,7 +10984,7 @@ msgstr "Të gjitha ngjarjet"
 
 #: templates/modern/list_log_zones.html:6 templates/modern/edit.html:592
 msgid "Logs"
-msgstr "Logs"
+msgstr "Regjistrat"
 
 #: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
@@ -11497,7 +11497,7 @@ msgstr "Zonat e drejta shoqëruese"
 
 #: templates/modern/list_forward_zones.html:123
 msgid "Serial"
-msgstr "Serial"
+msgstr "Seriali"
 
 #: templates/modern/bulk_registration.html:34
 msgid "Template"
@@ -12028,7 +12028,7 @@ msgstr "Ke harruar emrin tënd të përdoruesit?"
 
 #: templates/modern/batch_ptr_record.html:23
 msgid "IP Version"
-msgstr "IP Version"
+msgstr "Versioni IP"
 
 #: templates/modern/batch_ptr_record.html:25
 msgid "IPv4 network"
@@ -13034,7 +13034,7 @@ msgstr "Të gjitha zonat janë sinkronizuar"
 
 #: templates/modern/list_zone_templ.html:97
 msgid "Synced"
-msgstr "Synced"
+msgstr "Sinkronizuar"
 
 #: templates/modern/list_zone_templ.html:112
 msgid "Unset as default"
@@ -13316,7 +13316,7 @@ msgstr "Lloji i zonës"
 
 #: templates/modern/bulk_registration.html:44
 msgid "Domains"
-msgstr "Domains"
+msgstr "Domenet"
 
 #: templates/modern/bulk_registration.html:47
 msgid "Provide a domain name(s)"
@@ -13851,7 +13851,7 @@ msgstr ""
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
-msgstr "Wildcards"
+msgstr "Shkronjat e gjera"
 
 #: templates/default/search.html:80 templates/modern/search.html:80
 msgid "Reverse"
@@ -14236,7 +14236,7 @@ msgstr "Kërkesat UDP"
 
 #: templates/default/pdns_status.html:256 templates/modern/pdns_status.html:256
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "Kërkesa TCP"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
@@ -14244,7 +14244,7 @@ msgstr "Cache hits"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Humbje Cache"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
@@ -14823,7 +14823,7 @@ msgstr "Paralajmërime:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "File:"
-msgstr "File:"
+msgstr "Skedari:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "Zone:"

@@ -2717,7 +2717,7 @@ msgstr "Unbekannte Aktion."
 #: lib/Application/Controller/ListViewsController.php:104
 #: templates/modern/list_views.html:2 templates/modern/list_views.html:5
 msgid "Views"
-msgstr "Views"
+msgstr "Ansichten"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
@@ -10441,7 +10441,7 @@ msgstr "Netzwerk"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "View"
+msgstr "Ansicht"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"

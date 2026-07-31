@@ -10424,7 +10424,7 @@ msgstr "Rete"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "View"
+msgstr "Vista"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"

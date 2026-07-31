@@ -2672,7 +2672,7 @@ msgstr "Onbekende actie."
 #: lib/Application/Controller/ListViewsController.php:104
 #: templates/modern/list_views.html:2 templates/modern/list_views.html:5
 msgid "Views"
-msgstr "Views"
+msgstr "Weergaven"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
@@ -10317,7 +10317,7 @@ msgstr "Netwerk"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "View"
+msgstr "Weergave"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"

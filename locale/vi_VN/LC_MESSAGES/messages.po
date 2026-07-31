@@ -9589,7 +9589,7 @@ msgstr "Kích hoạt khóa DNSSEC"
 
 #: templates/modern/dnssec_delete_key.html:13
 msgid "Warning"
-msgstr "Warning"
+msgstr "Cảnh báo"
 
 #: templates/modern/dnssec_edit_key.html:23
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -10123,7 +10123,7 @@ msgstr "Mạng"
 
 #: templates/modern/list_networks.html:62
 msgid "View"
-msgstr "View"
+msgstr "Xem"
 
 #: templates/modern/list_networks.html:37
 msgid "Remove mapping"
@@ -11250,7 +11250,7 @@ msgstr "Số bit khuyến nghị cho"
 #: lib/Module/ZoneImportExport/templates/import.html:31
 #: install/helpers/InstallStepHandler.php:193
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Cảnh báo:"
 
 #: templates/modern/dnssec_add_key.html:136
 msgid "bits is not recommended for"
@@ -13833,7 +13833,7 @@ msgstr "Không thể truy cập"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
 msgid "Error"
-msgstr "Error"
+msgstr "Lỗi"
 
 #: templates/default/pdns_status.html:156 templates/modern/pdns_status.html:156
 msgid "Server Statistics"

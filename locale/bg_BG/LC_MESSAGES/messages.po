@@ -72,7 +72,7 @@ msgstr "Записът е създаден успешно"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
-msgstr "TLSA Record"
+msgstr "TLSA запис"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
@@ -347,7 +347,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
-msgstr "DMARC Record"
+msgstr "DMARC запис"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
@@ -757,7 +757,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
-msgstr "CAA Record"
+msgstr "CAA запис"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:44
 msgid "Certificate authority authorization"
@@ -10703,7 +10703,7 @@ msgstr "Подчинена зона"
 
 #: templates/modern/index.html:190 templates/modern/index.html:494
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR записи"
 
 #: templates/default/index.html:205 templates/modern/index.html:205
 msgid "Administration"
@@ -11021,7 +11021,7 @@ msgstr "остарял"
 
 #: templates/modern/dns_wizard_select.html:5
 msgid "DNS Wizard"
-msgstr "DNS Wizard"
+msgstr "DNS помощник"
 
 #: templates/modern/dns_wizard_form.html:13
 msgid "Wizard"
@@ -11422,7 +11422,7 @@ msgstr "Зоната няма SOA запис"
 
 #: templates/modern/list_forward_zones.html:159
 msgid "No SOA"
-msgstr "No SOA"
+msgstr "Няма SOA"
 
 #: templates/modern/list_forward_zones.html:162
 msgid ""
@@ -12695,7 +12695,7 @@ msgstr "Подчинени зони без Master IP адреси"
 
 #: templates/modern/database_consistency.html:117
 msgid "Master IP"
-msgstr "Master IP"
+msgstr "IP на главния сървър"
 
 #: templates/modern/database_consistency.html:135
 msgid "Delete slave zone"
@@ -13757,7 +13757,7 @@ msgstr ""
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
-msgstr "Wildcards"
+msgstr "Заместващи символи"
 
 #: templates/default/search.html:80 templates/modern/search.html:80
 msgid "Reverse"
@@ -14119,7 +14119,7 @@ msgstr "Статистика на сървъра"
 
 #: templates/default/pdns_status.html:166 templates/modern/pdns_status.html:166
 msgid "Server Health"
-msgstr "Server Health"
+msgstr "Състояние на сървъра"
 
 #: templates/default/pdns_status.html:194 templates/modern/pdns_status.html:194
 msgid "Latency"
@@ -14242,7 +14242,7 @@ msgstr "Обратно към DNSSEC ключове"
 
 #: templates/modern/dnssec_ds_dnskey.html:38
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "DNSKEY записи"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Copy all DNSKEY records to clipboard"
@@ -14254,7 +14254,7 @@ msgstr "Копиране на запис"
 
 #: templates/modern/dnssec_ds_dnskey.html:53
 msgid "DS Records"
-msgstr "DS Records"
+msgstr "DS записи"
 
 #: templates/modern/dnssec_ds_dnskey.html:56
 msgid "Copy all DS records to clipboard"
@@ -14810,7 +14810,7 @@ msgstr "Имена на домейн IDN"
 
 #: lib/Module/Whois/templates/whois.html:9
 msgid "WHOIS Lookup"
-msgstr "WHOIS Lookup"
+msgstr "WHOIS справка"
 
 #: lib/Module/Rdap/templates/rdap.html:19
 msgid "Enter domain name"
