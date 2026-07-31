@@ -1008,7 +1008,7 @@ msgstr "Liitit YKSITYISEN avaimen. DNS:ssä saa olla vain JULKINEN avain. Älä 
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "Julkinen avain sisältää PEM-otsikot. Vain base64-sisältö tarvitaan."
+msgstr "Julkinen avain näyttää sisältävän PEM-otsikot (BEGIN/END). Vain otsikoiden välinen base64-sisältö tarvitaan."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -4176,7 +4176,7 @@ msgstr "TLSA-tarkan vastaavuuden tiedot vaikuttavat liian lyhyiltä."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM-tietueiden TULEE olla vain alueen juuressa."
+msgstr "NSEC3PARAM-tietueiden TULEE olla vain alueen juuressa (juuriverkkotunnus, ei aliverkkotunnus)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4297,7 +4297,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM-suolan on oltava - tai heksa-arvo."
+msgstr "NSEC3PARAM-suolan on oltava - (tyhjää varten) tai heksadesimaaliarvo."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
@@ -4323,7 +4323,7 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "LP-tietueita käytetään vain ILNP-protokollan kanssa."
+msgstr "LP-tietueita tulee käyttää vain Identifier-Locator Network Protocol -protokollan (ILNP) kanssa."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
@@ -4379,7 +4379,7 @@ msgstr "Virheellinen AFSDB-palvelimen nimi."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB-palvelimen nimen on oltava FQDN."
+msgstr "AFSDB-palvelimen isäntänimen on oltava täysin määritelty verkkotunnus (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -5251,7 +5251,7 @@ msgstr "ZONEMD-tietueen sarjanumeron on vastattava alueen SOA-sarjanumeroa."
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD-skeemat 240-255 on varattu yksityiskäyttöön."
+msgstr "ZONEMD-skeema-arvot 240-255 on varattu yksityiskäyttöön eivätkä välttämättä ole yhteentoimivia."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5268,7 +5268,7 @@ msgstr "SHA-512 (algoritmi 2) vahvempi turva, enemmän resursseja."
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr "ZONEMD-tiivistealgoritmiarvot 240-255 yksityiskäyttöön."
+msgstr "ZONEMD-tiivistealgoritmin arvot 240-255 on varattu yksityiskäyttöön eivätkä välttämättä ole yhteentoimivia."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5404,7 +5404,7 @@ msgstr "Varmenteen tiedot ovat "
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr "CERT-tiedot saavat sisältää vain kelvollisia base64-merkkejä."
+msgstr "CERT-varmennetiedot saavat sisältää vain kelvollisia base64-merkkejä (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -6107,13 +6107,13 @@ msgstr "Tämä ei ole kelvollinen tietue. Tällä nimellä on jo CNAME."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME-kohteen on oltava FQDN. Yhden tunnisteen nimiä ei sallita."
+msgstr "CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN). Yhden tunnisteen nimiä ei sallita."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME-kohteen on oltava FQDN kelvollisella TLD:llä."
+msgstr "CNAME-kohteen on oltava täysin määritelty verkkotunnus (FQDN), jolla on kelvollinen ylätason verkkotunnus."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -6145,7 +6145,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID saa sisältää vain kelvollisia base64-merkkejä."
+msgstr "DHCID-tietue saa sisältää vain kelvollisia base64-merkkejä (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6169,7 +6169,7 @@ msgstr "DHCID-tietueen on sisällettävä kelvollista base64-dataa."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DHCID liian lyhyt. Dekoodatun datan vähintään 3 tavua."
+msgstr "DHCID-tietue on liian lyhyt. Dekoodatun datan on sisällettävä vähintään 3 tavua (tyyppikoodit ja tiiviste)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
@@ -6490,7 +6490,7 @@ msgstr "RP-tietue sisältää virheellisiä merkkejä."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP-tietue sisältää mailbox-domain ja txt-record-domain."
+msgstr "RP-tietueen on sisällettävä mailbox-domain (mbox-dname) ja txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6732,9 +6732,7 @@ msgstr "DNAME-tietueiden prioriteettikentän on oltava 0 tai tyhjä."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"RFC 6672:n mukaan DNAME-tietueiden on oltava yksilöllisiä omistajanimeä "
-"kohden."
+msgstr "RFC 6672:n mukaan DNAME-tietueiden on oltava yksilöllisiä omistajanimeä kohden (singleton-sääntö)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -6930,7 +6928,7 @@ msgstr "Virheellinen arvo prioriteettikentässä. CSYNC-tietueilla on oltava pri
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Virheellinen SOA Serial CSYNC-tietueessa. 32-bittinen etumerkitön."
+msgstr "Virheellinen SOA Serial CSYNC-tietueessa. Sen on oltava 32-bittinen etumerkitön kokonaisluku (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -7028,14 +7026,13 @@ msgstr "EUI48 Cisco-muodossa. Muoto: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr ""
-"EUI48-tietueen on oltava kelvollinen MAC-osoite muodossa xx-xx-xx-xx-xx-xx."
+msgstr "EUI48-tietueen on oltava kelvollinen MAC-osoite muodossa xx-xx-xx-xx-xx-xx (jossa x on heksadesimaalinumero)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Tämä on yleislähetysosoite, ei välttämättä kelvollinen kaikkialla."
+msgstr "Tämä on yleislähetysosoite (kaikki ykkösiä), joka ei välttämättä ole kelvollinen kaikissa yhteyksissä."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
@@ -7110,7 +7107,7 @@ msgstr "Virheellinen porttinumero: %d (on oltava 1-65535)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Virheellinen palvelimen muoto: %s"
+msgstr "Virheellinen palvelimen muoto: %s (odotettiin IP:portti tai [IPv6]:portti)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
@@ -7239,7 +7236,7 @@ msgstr "Virheellinen aliverkon numero RFC 2317 -notaatiossa. IPv4: 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Virheellinen aliverkko RFC 2317 -notaatiossa. IPv6 heksana."
+msgstr "Virheellinen aliverkko RFC 2317 -notaatiossa. Sen on oltava heksadesimaalinen (0-9, a-f) IPv6:lle."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7253,7 +7250,7 @@ msgstr "Virheellinen etuliitteen pituus RFC 2317 -notaatiossa. Sen on oltava num
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Virheellinen IPv4-etuliitteen pituus RFC 2317. Yleensä 24-32."
+msgstr "Virheellinen IPv4-etuliitteen pituus RFC 2317:lle. Yleensä 24-32 (luokaton delegointi tavallisesti 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7371,7 +7368,7 @@ msgstr ""
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA minimum (negatiivinen cache) ylittää 24h (86400) (RFC 2308)."
+msgstr "SOA-minimin (negatiivinen välimuistitus) arvo ylittää 24 tuntia (86400), mikä voi olla liiallinen RFC 2308:n mukaan."
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7406,7 +7403,7 @@ msgstr "SVCB-kohteen on oltava \".\" tai kelvollinen palvelinnimi."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "Alias-tilassa kohde ei voi olla \".\"."
+msgstr "Alias-tilassa (prioriteetti = 0) kohde ei voi olla \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7553,7 +7550,7 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA-valitsinkentän on oltava 0 tai 1."
+msgstr "SMIMEA-valitsinkentän on oltava 0 (Full certificate) tai 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7741,7 +7738,7 @@ msgstr "Prioriteetin on oltava 0 WALLET-tietueille."
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "CDNSKEY-tietueet julkaistaan yleensä alueen juureen."
+msgstr "CDNSKEY-tietueet julkaistaan yleensä alueen juureen, ei aliverkkotunnuksiin."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -7877,8 +7874,7 @@ msgstr "LUA-tietueessa on epäsopivat aaltosulkeet. Tarkista syntaksi."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr ""
-"LUA-tietueen explicit return -tilassa on oltava vähintään yksi \"return\"."
+msgstr "Eksplisiittisessä return-tilassa (alkaa puolipisteellä) LUA-tietueen on sisällettävä vähintään yksi \"return\"-lause."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -8185,11 +8181,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM -linjaustunnisteen (adkim) on oltava r tai s"
+msgstr "DMARC DKIM -linjaustunnisteen (adkim) on oltava r (relaxed) tai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF -linjaustunnisteen (aspf) on oltava r tai s"
+msgstr "DMARC SPF -linjaustunnisteen (aspf) on oltava r (relaxed) tai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8420,7 +8416,7 @@ msgstr "L32-paikantimen on oltava täysin määritelty IPv4-osoite."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 ei voi käyttää broadcast- tai määrittämättömiä osoitteita."
+msgstr "L32-paikannin ei voi käyttää yleislähetys- tai määrittämättömiä osoitteita (0.0.0.0 tai 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8752,7 +8748,7 @@ msgstr "NAPTR regexp -muoto: erotin+kuvio+erotin+korvaus+erotin+liput."
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR regexp -liput kolmannen erottimen jälkeen vain \"i\" tai tyhjä."
+msgstr "NAPTR regexp -lippujen (kolmannen erottimen jälkeen) tulisi sisältää vain \"i\" tai olla tyhjiä."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -8973,7 +8969,7 @@ msgstr "SOA-muoto: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Alueella ei ole NS-tietueita juuressa. Vähintään yksi DNSSEC:lle."
+msgstr "Alueella ei ole NS (Name Server) -tietueita juuressa. DNSSEC vaatii vähintään yhden juuren NS-tietueen."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -12536,7 +12532,7 @@ msgstr "Varoitus: SOA-tietue puuttuu"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Tällä aluemallilla ei ole SOA-tietuetta."
+msgstr "Tällä aluemallilla ei ole SOA (Start of Authority) -tietuetta."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""

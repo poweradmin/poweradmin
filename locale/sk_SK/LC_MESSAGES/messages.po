@@ -208,7 +208,7 @@ msgstr "Použiť iba Subject Public Key Info (SPKI)"
 msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
-msgstr "Ktorá časť certifikátu sa má zhodovať. Typ 1 prežije obnovu."
+msgstr "Ktorá časť certifikátu sa má zhodovať. Typ 1 (verejný kľúč) prežije obnovu certifikátu."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:138
 msgid "Matching Type"
@@ -646,7 +646,7 @@ msgstr "Ďalší A/AAAA hostitelia"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "Autorizovať záznamy A/AAAA špecifických hostiteľov"
+msgstr "Autorizovať záznamy A/AAAA konkrétnych hostiteľov (jeden na riadok)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -680,7 +680,7 @@ msgstr "Zlyhanie (odmietnuť neautorizované e-maily)"
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr "Politika pre neodpovedajúce e-maily. Začnite s ~all."
+msgstr "Politika pre e-maily, ktoré nezodpovedajú žiadnemu mechanizmu. Na testovanie začnite s ~all (softfail)."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -807,7 +807,7 @@ msgstr "URL hlásenia"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr "URL alebo e-mail pre hlásenia incidentov"
+msgstr "URL alebo e-mail pre hlásenia incidentov (mailto: alebo https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
@@ -4347,7 +4347,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "Soľ NSEC3PARAM musí byť - alebo hex."
+msgstr "Soľ NSEC3PARAM musí byť - (pre prázdnu) alebo hexadecimálna hodnota."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
@@ -5403,7 +5403,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "Schéma ZONEMD 0 je rezervovaná."
+msgstr "Schéma ZONEMD 0 je rezervovaná a nie je určená na štandardné použitie."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -7607,7 +7607,7 @@ msgstr "Cieľ SVCB musí byť \".\" alebo platný hostiteľ."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "V režime Alias cieľ nemôže byť \".\"."
+msgstr "V režime Alias (priorita = 0) cieľ nemôže byť \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7617,7 +7617,7 @@ msgstr "V režime Alias (priorita = 0) nie sú SvcParams."
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
-msgstr "V Service režime s \".\" cieľom musí byť aspoň jeden SvcParam."
+msgstr "V režime Service (priorita > 0) s cieľom \".\" je potrebný aspoň jeden SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -7944,7 +7944,7 @@ msgstr "Priorita musí byť 0 pre záznamy WALLET."
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "CDNSKEY záznamy sa typicky publikujú na vrchole zóny."
+msgstr "Záznamy CDNSKEY sa typicky publikujú na vrchole zóny, nie v subdoménach."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -8294,7 +8294,7 @@ msgstr "Záznamy KEY nemusia byť podporované všetkými DNS servermi."
 msgid ""
 "Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
 "used."
-msgstr "Algoritmus 1 (RSA/MD5) je kryptograficky slabý."
+msgstr "Algoritmus 1 (RSA/MD5) sa považuje za kryptograficky slabý a nemal by sa používať."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
 msgid ""
@@ -8408,7 +8408,7 @@ msgstr "DMARC sp: none, quarantine alebo reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM adkim musí byť r alebo s"
+msgstr "Značka zarovnania DMARC DKIM (adkim) musí byť r (relaxed) alebo s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
@@ -8763,7 +8763,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr "Site-local IPv6 (fec0::/10) sú zastarané."
+msgstr "Site-local IPv6 adresy (fec0::/10) sú zastarané a nemali by sa používať."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
@@ -9007,7 +9007,7 @@ msgstr "NAPTR formát: delim+pattern+delim+replace+delim+flags."
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr "NAPTR regexp príznaky \"i\" alebo prázdne."
+msgstr "Príznaky NAPTR regexp (za tretím oddeľovačom) by mali obsahovať iba \"i\" alebo byť prázdne."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -12805,7 +12805,7 @@ msgstr "Upozornenie: chýba záznam SOA"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Táto šablóna zóny nemá záznam SOA."
+msgstr "Táto šablóna zóny nemá záznam SOA (Start of Authority)."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""

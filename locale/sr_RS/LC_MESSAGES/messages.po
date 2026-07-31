@@ -4336,7 +4336,7 @@ msgstr "NSEC3PARAM итерације морају бити између 0 и 25
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 препоручује 0 итерација. Више итерација само повећава трошак."
+msgstr "RFC 9276 препоручује коришћење 0 итерација. Додатне итерације повећавају рачунарске трошкове без повећања безбедности."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
@@ -6029,8 +6029,7 @@ msgstr ""
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr ""
-"Коришћење \".\" за RMAILBX значи да је власник MINFO одговоран за себе."
+msgstr "Коришћење \".\" (корен) за RMAILBX значи да је власник MINFO записа одговоран за себе."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6177,7 +6176,7 @@ msgstr "Ово није важећи запис. Већ постоји CNAME с�
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME циљ мора бити FQDN. Имена са једном ознаком нису дозвољена."
+msgstr "CNAME циљ мора бити потпуно квалификовано име домена (FQDN). Имена са једном ознаком нису дозвољена."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6814,7 +6813,7 @@ msgstr "Поље приоритета за DNAME записе мора бити 
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr "По RFC 6672, DNAME морају бити јединствени по имену власника."
+msgstr "Према RFC 6672, DNAME записи морају бити јединствени за дато име власника (правило једног записа)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -7106,7 +7105,7 @@ msgstr "EUI48 изгледа у Cisco формату. Формат мора би
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 мора бити важећа MAC адреса у xx-xx-xx-xx-xx-xx формату."
+msgstr "EUI48 запис мора бити важећа MAC адреса у формату xx-xx-xx-xx-xx-xx (где је x хексадецимална цифра)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -9110,8 +9109,7 @@ msgstr "SOA формат: primary-ns hostmaster serial refresh retry expire mini
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr ""
-"Зона нема NS записа на врху. Бар један NS на апексу је обавезан за DNSSEC."
+msgstr "Зона нема NS (Name Server) записа на апексу. Бар један NS запис на апексу је обавезан за DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."

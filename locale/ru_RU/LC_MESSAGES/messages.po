@@ -3362,7 +3362,7 @@ msgstr ""
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
-msgstr "Группа успешно удалена."
+msgstr "Группа удалена из этой зоны."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add another owner or a group first."

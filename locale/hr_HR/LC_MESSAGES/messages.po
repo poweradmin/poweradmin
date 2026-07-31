@@ -4400,9 +4400,7 @@ msgstr "NSEC3PARAM sol mora biti - (za prazno) ili heksadecimalna vrijednost."
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr ""
-"RFC 9276 preporučuje NE koristiti sol (\"-\") za jednostavnost bez gubitka "
-"sigurnosti."
+msgstr "RFC 9276 preporučuje da se sol NE koristi (označeno s \"-\") radi jednostavnijeg rada bez smanjenja sigurnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -6309,7 +6307,7 @@ msgstr "Ovo nije valjan zapis. Već postoji CNAME s ovim imenom."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME cilj mora biti FQDN. Imena s jednom oznakom nisu dopuštena."
+msgstr "CNAME cilj mora biti potpuno kvalificirano ime domene (FQDN). Imena s jednom oznakom nisu dopuštena."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""

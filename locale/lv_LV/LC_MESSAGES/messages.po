@@ -641,7 +641,7 @@ msgstr "Papildu A/AAAA saimnieki"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "Atļaut konkrētu saimniekdatoru A/AAAA ierakstus"
+msgstr "Atļaut konkrētu saimniekdatoru A/AAAA ierakstus (pa vienam rindā)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -675,7 +675,7 @@ msgstr "Kļūme (noraidīt neautorizētus e-pastus)"
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr "Politika e-pastiem, kas neatbilst. Sāciet ar ~all testēšanai."
+msgstr "Politika e-pastiem, kas neatbilst nevienam mehānismam. Testēšanai sāciet ar ~all (softfail)."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -1001,7 +1001,7 @@ msgstr "Jūs ielīmējāt PRIVĀTU atslēgu. DNS drīkst būt tikai PUBLISKĀ at
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "Publiskā atslēga satur PEM galvenes. Nepieciešams tikai base64 saturs."
+msgstr "Šķiet, ka publiskā atslēga satur PEM galvenes (BEGIN/END). Nepieciešams tikai base64 saturs starp galvenēm."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -3924,7 +3924,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "Vārtejas veidam 0 (Nav), vārtejai jābūt \".\"."
+msgstr "Vārtejas veidam 0 (No gateway) vārtejai jābūt \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -4185,7 +4185,7 @@ msgstr "TLSA precīzas atbilstības dati šķiet par īsiem."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM ierakstiem JĀBŪT tikai zonas virsotnē."
+msgstr "NSEC3PARAM ierakstiem JĀBŪT tikai zonas virsotnē (saknes domēnā, nevis apakšdomēnā)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4299,7 +4299,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM sālij jābūt - vai hex vērtībai."
+msgstr "NSEC3PARAM sālij jābūt - (tukšai vērtībai) vai heksadecimālai vērtībai."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
@@ -4386,7 +4386,7 @@ msgstr "Nederīgs AFSDB resursdatora vārds."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB servera nosaukumam jābūt FQDN."
+msgstr "AFSDB servera resursdatora nosaukumam jābūt pilnībā kvalificētam domēna vārdam (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -5265,7 +5265,7 @@ msgstr "Sērijas numuram ZONEMD ierakstā jāatbilst zonas SOA sērijas numuram.
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD shēmas 240-255 ir rezervētas privātai lietošanai."
+msgstr "ZONEMD shēmas vērtības 240-255 ir rezervētas privātai lietošanai un var nebūt savstarpēji izmantojamas."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5283,8 +5283,7 @@ msgstr ""
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"ZONEMD jaucēja algoritma vērtības 240-255 ir rezervētas privātai lietošanai."
+msgstr "ZONEMD jaucēja algoritma vērtības 240-255 ir rezervētas privātai lietošanai un var nebūt savstarpēji izmantojamas."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5314,7 +5313,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD shēma 0 ir rezervēta."
+msgstr "ZONEMD shēma 0 ir rezervēta un nav paredzēta standarta lietošanai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -5322,7 +5321,7 @@ msgstr "ZONEMD jaucēja algoritmam jābūt skaitlim no 0 līdz 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD jaucēja algoritms 0 ir rezervēts."
+msgstr "ZONEMD jaucēja algoritms 0 ir rezervēts un nav paredzēts standarta lietošanai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5971,7 +5970,7 @@ msgstr ""
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "\".\" RMAILBX nozīmē, ka MINFO īpašnieks ir atbildīgs par sevi."
+msgstr "Vērtības \".\" (sakne) izmantošana RMAILBX laukā nozīmē, ka MINFO ieraksta īpašnieks ir atbildīgs par sevi."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6119,7 +6118,7 @@ msgstr "Šis nav derīgs ieraksts. Jau pastāv CNAME ar šo nosaukumu."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME mērķim jābūt FQDN. Vienas iezīmes vārdi nav atļauti."
+msgstr "CNAME mērķim jābūt pilnībā kvalificētam domēna vārdam (FQDN). Vienas iezīmes vārdi nav atļauti."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6157,7 +6156,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID drīkst saturēt tikai derīgus base64 simbolus."
+msgstr "DHCID ierakstā drīkst būt tikai derīgas base64 rakstzīmes (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6179,7 +6178,7 @@ msgstr "DHCID ierakstam jāsatur derīgi base64 dati."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr "DHCID ir par īsu. Dekodētiem datiem jābūt vismaz 3 baiti."
+msgstr "DHCID ieraksts ir par īsu. Dekodētajiem datiem jāsatur vismaz 3 baiti (tipa kodi un jaucējvērtība)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
@@ -6217,7 +6216,7 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "Apsveriet DNSSEC vai TSIG (RFC 3007) drošiem DHCID atjauninājumiem."
+msgstr "Apsveriet DNSSEC vai TSIG autentifikācijas (RFC 3007) izmantošanu drošiem DHCID atjauninājumiem, kā iesaka RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6469,9 +6468,7 @@ msgstr "RP ierakstu prioritātes laukam jābūt 0 vai tukšam"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr ""
-"RP ir definēts RFC 1183 (1990), tiek reti izmantots mūsdienu DNS "
-"konfigurācijās."
+msgstr "RP ieraksti tika definēti RFC 1183 (1990) un mūsdienu DNS konfigurācijās netiek plaši izmantoti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6496,7 +6493,7 @@ msgstr "RP ieraksts satur nederīgas rakstzīmes."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP ierakstam jāsatur mailbox-domain un txt-record-domain."
+msgstr "RP ierakstam jāsatur mailbox-domain (mbox-dname) un txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6735,8 +6732,7 @@ msgstr "DNAME ierakstu prioritātes laukam jābūt 0 vai tukšam."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"Saskaņā ar RFC 6672, DNAME ieraksti jābūt unikāliem pēc īpašnieka vārda."
+msgstr "Saskaņā ar RFC 6672 DNAME ierakstiem jābūt unikāliem pie dotā īpašnieka vārda (viena ieraksta noteikums)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -6931,7 +6927,7 @@ msgstr ""
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Nederīgs SOA Serial CSYNC ierakstā. Jābūt 32-bit unsigned."
+msgstr "Nederīgs SOA Serial CSYNC ierakstā. Tam jābūt 32 bitu veselam skaitlim bez zīmes (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -7027,7 +7023,7 @@ msgstr "EUI48 izskatās Cisco formātā. Formāts: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 ierakstam jābūt derīgai MAC adresei formātā xx-xx-xx-xx-xx-xx."
+msgstr "EUI48 ierakstam jābūt derīgai MAC adresei formātā xx-xx-xx-xx-xx-xx (kur x ir heksadecimāls cipars)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -7237,7 +7233,7 @@ msgstr "Nederīgs apakštīkla numurs RFC 2317. IPv4 - 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Nederīgs apakštīkls RFC 2317. IPv6 - hex."
+msgstr "Nederīgs apakštīkls RFC 2317 notācijā. IPv6 gadījumā tam jābūt heksadecimālam (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7251,7 +7247,7 @@ msgstr "Nederīgs prefiksa garums RFC 2317 notācijā. Tam jābūt skaitliskam."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Nederīgs IPv4 prefiksa garums RFC 2317. Parasti 24-32."
+msgstr "Nederīgs IPv4 prefiksa garums RFC 2317. Parasti 24-32 (bezklases deleģēšana parasti 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7370,7 +7366,7 @@ msgstr ""
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA minimum (negatīva kešošana) pārsniedz 24h (86400) (RFC 2308)."
+msgstr "SOA minimum (negatīvā kešošana) vērtība pārsniedz 24 stundas (86400), kas saskaņā ar RFC 2308 var būt pārmērīgi."
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7406,7 +7402,7 @@ msgstr "SVCB mērķim jābūt \".\" vai derīgam resursdatoram."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "Alias režīmā mērķis nevar būt \".\"."
+msgstr "Alias režīmā (prioritāte = 0) mērķis nevar būt \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7416,7 +7412,7 @@ msgstr "Alias režīmā (prioritāte = 0) SvcParams nav atļauti."
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
-msgstr "Service režīmā ar \".\" mērķi nepieciešams vismaz viens SvcParam."
+msgstr "Service režīmā (prioritāte > 0) ar \".\" mērķi nepieciešams vismaz viens SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -7469,7 +7465,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA nosaukuma formāts: SHA256._smimecert.domain.tld (%s)."
+msgstr "SMIMEA ieraksta nosaukums ir formātā SHA256(local-part)._smimecert.domain.tld e-pasta adresēm, piemēram, %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7872,7 +7868,7 @@ msgstr "LUA ierakstā nesakrīt figūriekavas. Pārbaudiet sintaksi."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr "LUA ierakstam explicit return režīmā jābūt vismaz vienam \"return\"."
+msgstr "LUA ierakstam eksplicītā return režīmā (sākas ar semikolu) jāsatur vismaz viens \"return\" priekšraksts."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -8180,11 +8176,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM izlīdzināšanas tagam (adkim) jābūt r vai s"
+msgstr "DMARC DKIM izlīdzināšanas tagam (adkim) jābūt r (relaxed) vai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF izlīdzināšanas tagam (aspf) jābūt r vai s"
+msgstr "DMARC SPF izlīdzināšanas tagam (aspf) jābūt r (relaxed) vai s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8417,7 +8413,7 @@ msgstr "L32 lokatoram jābūt pilnīgi norādītai IPv4 adresei."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 lokators nevar izmantot broadcast vai nenoteiktas adreses."
+msgstr "L32 lokators nevar izmantot broadcast vai nenoteiktas adreses (0.0.0.0 vai 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8827,8 +8823,7 @@ msgstr "DNSKEY algoritmam jābūt skaitlim no 1 līdz 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
-"ECDSAP256SHA256 (13) ir IETEICAMS DNSSEC parakstīšanai saskaņā ar RFC 8624."
+msgstr "ECDSAP256SHA256 (algoritms 13) ir IETEICAMAIS algoritms DNSSEC parakstīšanai saskaņā ar RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8964,7 +8959,7 @@ msgstr "SOA formāts: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Zonai nav NS ierakstu virsotnē. Nepieciešams vismaz viens NS DNSSEC."
+msgstr "Zonai virsotnē nav NS (Name Server) ierakstu. DNSSEC nepieciešams vismaz viens virsotnes NS ieraksts."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -12522,7 +12517,7 @@ msgstr "Brīdinājums: trūkst SOA ieraksta"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Šai zonas veidnei nav SOA ieraksta."
+msgstr "Šai zonas veidnei nav SOA (Start of Authority) ieraksta."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""
@@ -12599,8 +12594,7 @@ msgstr "SVARĪGI: Saglabājiet API atslēgu tagad!"
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
-msgstr ""
-"Šī ir vienīgā reize, kad API atslēga tiks parādīta. Saglabājiet to tagad."
+msgstr "Šī ir vienīgā reize, kad API atslēga tiks parādīta. Saglabājiet to tagad, jo vairs nevarēsiet to redzēt."
 
 #: templates/modern/api_key_created.html:26
 msgid "API Key:"

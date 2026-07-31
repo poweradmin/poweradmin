@@ -475,7 +475,7 @@ msgstr "Jelentések generálása, ha az SPF ellenőrzés sikertelen"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr "Mikor generáljon forenzikus jelentést"
+msgstr "Mikor generáljon forenzikus jelentést (csak akkor érvényes, ha a forenzikus e-mail cím be van állítva)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
@@ -647,7 +647,7 @@ msgstr "További A/AAAA gazdák"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "Adott gazdák A/AAAA rekordjainak engedélyezése"
+msgstr "Adott gazdanevek A/AAAA rekordjainak engedélyezése (soronként egy)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -681,7 +681,7 @@ msgstr "Hiba (nem engedélyezett e-mailek elutasítása)"
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr "Házirend nem egyező mechanizmusokhoz. ~all teszthez."
+msgstr "Házirend az egyetlen mechanizmusnak sem megfelelő e-mailekhez. Teszteléshez kezdje a ~all (softfail) értékkel."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -5461,7 +5461,7 @@ msgstr "A ZONEMD hash algoritmus 0-255 közötti szám."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "A ZONEMD hash algoritmus 0 fenntartott."
+msgstr "A ZONEMD hash algoritmus 0 fenntartott, és nem szabványos használatra való."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5685,7 +5685,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "A digestnek csak hexadecimális karaktereket kell tartalmaznia."
+msgstr "A digestnek csak hexadecimális karaktereket (0-9, a-f) szabad tartalmaznia."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
@@ -7702,7 +7702,7 @@ msgstr "Az SVCB cél \".\" vagy érvényes gazdanév."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "Alias módban a cél nem lehet \".\"."
+msgstr "Alias módban (prioritás = 0) a cél nem lehet \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -8528,7 +8528,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM adkim r (rugalmas) vagy s (szigorú)"
+msgstr "A DMARC DKIM igazítási címke (adkim) értéke r (rugalmas) vagy s (szigorú) lehet"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
@@ -8878,7 +8878,7 @@ msgstr "Az SRV cél nem lehet üres."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr "\".\" cél esetén a port és súly legyen 0."
+msgstr "Ha a cél \".\" (nincs szolgáltatás), a portnak és a súlynak is 0-nak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -12960,7 +12960,7 @@ msgstr "Figyelmeztetés: hiányzó SOA rekord"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "A zóna sablonnak nincs SOA rekordja."
+msgstr "A zóna sablonnak nincs SOA (Start of Authority) rekordja."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""

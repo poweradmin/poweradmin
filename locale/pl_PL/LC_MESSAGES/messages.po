@@ -3367,7 +3367,7 @@ msgstr ""
 
 #: lib/Application/Controller/ZoneOwnershipController.php:313
 msgid "Group has been removed successfully."
-msgstr "Grupa została usunięta."
+msgstr "Grupa została usunięta z tej strefy."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add another owner or a group first."

@@ -634,7 +634,7 @@ msgstr "Dodatni A/AAAA serveri"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "Ovlasti A/AAAA zapise specifičnih servera"
+msgstr "Ovlasti A/AAAA zapise određenih hostova (jedan po redu)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -987,8 +987,7 @@ msgstr "Zalijepili ste PRIVATNI ključ. U DNS ide samo JAVNI ključ. Nikada ne d
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr ""
-"Javni ključ izgleda da sadrži PEM zaglavlja. Potreban je samo base64 sadržaj."
+msgstr "Izgleda da javni ključ sadrži PEM zaglavlja (BEGIN/END). Potreban je samo base64 sadržaj između zaglavlja."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -3897,7 +3896,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "Za tip pristupnika 0 (Bez), pristupnik mora biti \".\"."
+msgstr "Za tip pristupnika 0 (No gateway) pristupnik mora biti \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -4159,7 +4158,7 @@ msgstr "TLSA tačno podudaranje izgleda prekratko da bude valjano."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM zapisi MORAJU biti samo na vrhu zone."
+msgstr "NSEC3PARAM zapisi MORAJU biti samo na vrhu zone (korijenska domena, ne poddomena)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4254,7 +4253,7 @@ msgstr "NSEC3PARAM iteracije moraju biti između 0 i 2500."
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 preporučuje 0 iteracija. Više iteracija samo povećava trošak."
+msgstr "RFC 9276 preporučuje korištenje 0 iteracija. Dodatne iteracije povećavaju računski trošak bez povećanja sigurnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
@@ -4272,15 +4271,13 @@ msgstr "Iteracije >10 stvaraju nepotrebno opterećenje. RFC 9276 preporučuje 0.
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM sol mora biti - ili hex vrijednost."
+msgstr "NSEC3PARAM sol mora biti - (za praznu) ili heksadecimalna vrijednost."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr ""
-"RFC 9276 preporučuje NE koristiti sol (\"-\") za jednostavnost bez gubitka "
-"sigurnosti."
+msgstr "RFC 9276 preporučuje da se sol NE koristi (označeno s \"-\") radi jednostavnijeg rada bez smanjenja sigurnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -4720,7 +4717,7 @@ msgstr ""
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
-msgstr "u/l bit je postavljen na universal (0), NID je globalno jedinstven."
+msgstr "Univerzalni/lokalni bit (u/l bit) postavljen je na univerzalni (0), što znači da se ovaj NID temelji na globalno jedinstvenom identifikatoru."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
@@ -4947,8 +4944,7 @@ msgstr ""
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
-msgstr ""
-"Dekodirani sadržaj ne sadrži public key packet (tag 6) ili subkey (14)."
+msgstr "Izgleda da dekodirani sadržaj kao prvi paket ne sadrži paket javnog ključa (tag 6) niti paket javnog podključa (tag 14)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
@@ -5204,7 +5200,7 @@ msgstr ""
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD shema 240-255 je rezervirana za privatnu upotrebu."
+msgstr "ZONEMD vrijednosti sheme 240-255 rezervirane su za privatnu upotrebu i možda neće biti interoperabilne."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5221,8 +5217,7 @@ msgstr "SHA-512 (algoritam 2) pruža jaču sigurnost ali zahtijeva više resursa
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
-"ZONEMD hash algoritam vrijednosti 240-255 rezervirane za privatnu upotrebu."
+msgstr "ZONEMD vrijednosti hash algoritma 240-255 rezervirane su za privatnu upotrebu i možda neće biti interoperabilne."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5358,7 +5353,7 @@ msgstr "Podaci certifikata su "
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr "CERT podaci smiju sadržavati samo valjane base64 znakove."
+msgstr "CERT podaci certifikata smiju sadržavati samo valjane base64 znakove (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -5900,9 +5895,7 @@ msgstr "RFC 1035 navodi da mnoge mailing liste koriste \"list-name-request\"."
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr ""
-"Korištenje \".\" za RMAILBX znači da je vlasnik MINFO zapisa odgovoran za "
-"sebe."
+msgstr "Korištenje \".\" (korijen) za RMAILBX znači da je vlasnik MINFO zapisa odgovoran za sebe."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6051,7 +6044,7 @@ msgstr "Ovo nije valjan zapis. Već postoji CNAME s ovim imenom."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME cilj mora biti FQDN. Imena s jednom oznakom nisu dopuštena."
+msgstr "CNAME cilj mora biti potpuno kvalificirano ime domene (FQDN). Imena s jednom oznakom nisu dopuštena."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6087,7 +6080,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID smije sadržavati samo valjane base64 znakove."
+msgstr "DHCID zapis smije sadržavati samo valjane base64 znakove (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6099,7 +6092,7 @@ msgstr "DHCID ima nevažeći base64 padding. Znakovi \"=\" samo na kraju."
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "DHCID ima nevažeću base64 dužinu. Mora biti višekratnik od 4."
+msgstr "DHCID zapis ima nevažeću base64 dužinu. Base64 podaci moraju biti višekratnik od 4 znaka (s dopunom)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6109,15 +6102,14 @@ msgstr "DHCID zapis mora sadržavati valjane base64 podatke."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr ""
-"DHCID zapis je prekratak. Dekodirani podaci moraju imati najmanje 3 bajta."
+msgstr "DHCID zapis je prekratak. Dekodirani podaci moraju imati najmanje 3 bajta (kodovi tipa i sažetak)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID tip identifikatora 0x%04X nije standardan (RFC 4701)."
+msgstr "DHCID tip identifikatora 0x%04X nije jedan od standardnih tipova definiranih u RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
@@ -6397,9 +6389,7 @@ msgstr "Polje prioriteta za RP zapise mora biti 0 ili prazno"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr ""
-"RP zapisi definirani u RFC 1183 (1990), rijetko se koriste u modernim DNS "
-"konfiguracijama."
+msgstr "RP zapisi definirani su u RFC 1183 (1990) i ne koriste se široko u modernim DNS konfiguracijama."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6423,7 +6413,7 @@ msgstr "RP zapis sadrži nevažeće znakove."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP zapis mora sadržavati mailbox-domain i txt-record-domain."
+msgstr "RP zapis mora sadržavati mailbox-domain (mbox-dname) i txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6595,9 +6585,7 @@ msgstr "EUI64 izgleda u dotted formatu. Mora biti xx-xx-xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr ""
-"EUI64 zapis mora biti valjana EUI-64 adresa u xx-xx-xx-xx-xx-xx-xx-xx "
-"formatu."
+msgstr "EUI64 zapis mora biti valjana EUI-64 adresa u formatu xx-xx-xx-xx-xx-xx-xx-xx (gdje je x heksadecimalna znamenka)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6653,8 +6641,7 @@ msgstr "Polje prioriteta za DNAME zapise mora biti 0 ili prazno."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"Prema RFC 6672, DNAME zapisi moraju biti jedinstveni po vlasničkom imenu."
+msgstr "Prema RFC 6672, DNAME zapisi moraju biti jedinstveni za dano vlasničko ime (pravilo jednog zapisa)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -6938,7 +6925,7 @@ msgstr "EUI48 izgleda u Cisco formatu. Format mora biti xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 zapis mora biti valjana MAC adresa u xx-xx-xx-xx-xx-xx formatu."
+msgstr "EUI48 zapis mora biti valjana MAC adresa u formatu xx-xx-xx-xx-xx-xx (gdje je x heksadecimalna znamenka)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -6964,7 +6951,7 @@ msgstr "PTR prioritet treba biti 0 ili prazan. Vrijednost će biti zanemarena."
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr "PTR zapisi trebaju imati odgovarajuće A/AAAA zapise zbog reverse DNS."
+msgstr "PTR zapisi trebaju imati odgovarajuće forward (A/AAAA) zapise kako bi se izbjegli problemi sa servisima koji provjeravaju reverzni DNS."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
@@ -7149,7 +7136,7 @@ msgstr "Nevažeći broj podmreže u RFC 2317. Mora biti 0-255 za IPv4."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Nevažeća podmreža u RFC 2317. Mora biti heksadecimalno za IPv6."
+msgstr "Nevažeća podmreža u RFC 2317 notaciji. Za IPv6 mora biti heksadecimalna (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7163,7 +7150,7 @@ msgstr "Nevažeća dužina prefiksa u RFC 2317 notaciji. Mora biti brojčano."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Nevažeća IPv4 dužina prefiksa za RFC 2317. Obično 24-32."
+msgstr "Nevažeća IPv4 dužina prefiksa za RFC 2317. Obično 24-32 (bezklasna delegacija obično 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7315,7 +7302,7 @@ msgstr "SVCB cilj mora biti \".\" ili valjano ime servera."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "U Alias načinu, cilj ne može biti \".\"."
+msgstr "U Alias načinu (prioritet = 0) cilj ne može biti \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7454,7 +7441,7 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA polje selektora mora biti 0 ili 1."
+msgstr "SMIMEA polje selektora mora biti 0 (Full certificate) ili 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7485,8 +7472,7 @@ msgstr ""
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr ""
-"Vrsta 0 koristi sirove podatke. SHA-256 (tip 1) je preporučen za performanse."
+msgstr "Vrsta podudaranja 0 (Exact match) koristi sirove podatke certifikata. Za bolje performanse i kompatibilnost preporučuje se SHA-256 (tip 1)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -7739,9 +7725,7 @@ msgstr ""
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr ""
-"Ovaj LUA zapis koristi explicit return mod. Osigurajte da Lua skripta vraća "
-"vrijednost."
+msgstr "Ovaj LUA zapis koristi eksplicitni return način (počinje točkom-zarezom). Osigurajte da vaša Lua skripta eksplicitno vraća odgovarajuću vrijednost."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
@@ -8071,11 +8055,11 @@ msgstr "DMARC pravilo poddomena (sp) mora biti: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM oznaka usklađivanja (adkim) mora biti r ili s"
+msgstr "DMARC DKIM oznaka usklađivanja (adkim) mora biti r (relaxed) ili s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF oznaka usklađivanja (aspf) mora biti r ili s"
+msgstr "DMARC SPF oznaka usklađivanja (aspf) mora biti r (relaxed) ili s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8306,7 +8290,7 @@ msgstr "L32 lokator mora biti potpuno specificirana IPv4 adresa."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 lokator ne može koristiti broadcast ili unspecified adrese."
+msgstr "L32 lokator ne može koristiti broadcast ni neodređene adrese (0.0.0.0 ili 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8854,9 +8838,7 @@ msgstr "SOA format: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr ""
-"Zona nema NS zapisa na vrhu. Barem jedan NS zapis na apexu je potreban za "
-"DNSSEC."
+msgstr "Zona nema NS (Name Server) zapisa na vrhu. Barem jedan NS zapis na apexu je potreban za DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -9012,7 +8994,7 @@ msgstr "VAŽNO: Spremite novi API ključ sada!"
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr "Ovo je jedini put da se novi API ključ prikazuje. Spremite ga sada."
+msgstr "Ovo je jedini put da se novi API ključ prikazuje. Spremite ga sada jer ga više nećete moći vidjeti."
 
 #: templates/modern/api_key_created.html:21
 msgid "Name:"
@@ -10128,7 +10110,7 @@ msgstr "Savjeti i primjeri"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Stvorite različite predloške za različite vrste web stranica"
+msgstr "Stvorite različite predloške za različite vrste web stranica (npr. \"Basic Website\", \"Email Server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -10802,9 +10784,7 @@ msgstr "Preporučene postavke"
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
-msgstr ""
-"Za moderne implementacije, ECDSA (13, ECDSAP256SHA256) pruža jaku sigurnost "
-"i performanse."
+msgstr "Za moderne implementacije, ECDSA (algoritam 13, ECDSAP256SHA256) s 256 bita pruža jaku sigurnost uz bolje performanse."
 
 #: templates/modern/edit_user.html:3 templates/modern/header.html:383
 msgid "Edit profile"
@@ -11374,8 +11354,7 @@ msgstr "Koristite polje Host Prefix za dodavanje prefiksa svim imenima servera"
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
-"Označite \"Create forward A/AAAA\" za automatsko stvaranje forward zapisa."
+msgstr "Označite \"Create forward A/AAAA records\" za automatsko stvaranje odgovarajućih forward zapisa (onemogućeno pri korištenju načina podudaranja)"
 
 #: templates/modern/bulk_registration.html:69
 msgid "Ownership"
@@ -12489,7 +12468,7 @@ msgstr "VAŽNO: Spremite API ključ sada!"
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
-msgstr "Ovo je jedini put da se API ključ prikazuje. Spremite ga sada."
+msgstr "Ovo je jedini put da se API ključ prikazuje. Spremite ga sada jer ga više nećete moći vidjeti."
 
 #: templates/modern/api_key_created.html:26
 msgid "API Key:"

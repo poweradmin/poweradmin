@@ -1004,7 +1004,7 @@ msgstr "Liimisite PRIVAATSE võtme. DNS-is peab olema ainult AVALIK võti. Ärge
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr "Avalik võti tundub sisaldavat PEM päiseid. Vaja on ainult base64 sisu."
+msgstr "Avalik võti tundub sisaldavat PEM päiseid (BEGIN/END). Vaja on ainult päiste vahel olevat base64 sisu."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -1704,7 +1704,7 @@ msgstr "MFA on lubatud e-posti kontrolliga."
 msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
-msgstr "MFA on teie organisatsiooni turvapoliitika järgi kohustuslik."
+msgstr "MFA on teie organisatsiooni turvapoliitika järgi kohustuslik ja seda ei saa välja lülitada."
 
 #: lib/Application/Controller/MfaSetupController.php:314
 msgid "MFA is not enabled."
@@ -4110,7 +4110,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr "TLSA selektori väli peab olema 0 või 1."
+msgstr "TLSA selektori väli peab olema 0 (Full certificate) või 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
@@ -4155,7 +4155,7 @@ msgstr "TLSA täpse vaste andmed tunduvad liiga lühikesed."
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr "NSEC3PARAM kirjed PEAVAD olema ainult tsooni tipus."
+msgstr "NSEC3PARAM kirjed PEAVAD olema ainult tsooni tipus (juurdomeenis, mitte alamdomeenis)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -4270,13 +4270,13 @@ msgstr "Iteratsioonide väärtused >10 tekitavad tarbetut arvutuskoormust ilma t
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM sool peab olema - või kuueteistkümnendväärtus."
+msgstr "NSEC3PARAM sool peab olema - (tühja väärtuse jaoks) või kuueteistkümnendväärtus."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr "RFC 9276 soovitab MITTE kasutada soola (\"-\") lihtsuse huvides."
+msgstr "RFC 9276 soovitab soola MITTE kasutada (tähistatud märgiga \"-\"), et lihtsustada tööd turvalisust vähendamata."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -4297,7 +4297,7 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "LP kirjeid kasutatakse ainult ILNP protokolliga."
+msgstr "LP kirjeid tuleks kasutada ainult koos Identifier-Locator Network Protocol'iga (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
@@ -4353,7 +4353,7 @@ msgstr "Vigane AFSDB hostinimi."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB serveri hostinimi peab olema FQDN."
+msgstr "AFSDB serveri hostinimi peab olema täielikult kvalifitseeritud domeeninimi (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -4530,7 +4530,7 @@ msgstr "RKEY algoritmi väli peab olema kehtiv DNSSEC algoritmi number (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algoritm 1 (RSA/MD5) on aegunud (RFC 6725), ÄRGE kasutage."
+msgstr "Algoritm 1 (RSA/MD5) on aegunud (RFC 6725) ja seda EI TOHIKS kasutada."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
@@ -5228,7 +5228,7 @@ msgstr "ZONEMD kirje seerianumber peab vastama tsooni SOA seerianumbrile."
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr "ZONEMD skeemid 240-255 on privaatseks kasutamiseks."
+msgstr "ZONEMD skeemi väärtused 240-255 on reserveeritud privaatseks kasutamiseks ja ei pruugi olla koostalitlusvõimelised."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -5246,7 +5246,7 @@ msgstr ""
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr "ZONEMD räsi algoritmi väärtused 240-255 on privaatseks kasutamiseks."
+msgstr "ZONEMD räsialgoritmi väärtused 240-255 on reserveeritud privaatseks kasutamiseks ja ei pruugi olla koostalitlusvõimelised."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -5274,7 +5274,7 @@ msgstr "ZONEMD skeem peab standardseks kasutamiseks olema 1 (Simple ZONEMD schem
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD skeem 0 on reserveeritud."
+msgstr "ZONEMD skeem 0 on reserveeritud ega ole mõeldud standardseks kasutamiseks."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -5282,7 +5282,7 @@ msgstr "ZONEMD räsi algoritm peab olema number vahemikus 0 kuni 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD räsi algoritm 0 on reserveeritud."
+msgstr "ZONEMD räsialgoritm 0 on reserveeritud ega ole mõeldud standardseks kasutamiseks."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5384,7 +5384,7 @@ msgstr "Sertifikaadi andmed on "
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr "CERT andmed peavad sisaldama ainult kehtivaid base64 märke."
+msgstr "CERT sertifikaadi andmed peavad sisaldama ainult kehtivaid base64 märke (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -5941,7 +5941,7 @@ msgstr ""
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr "\".\" RMAILBX tähendab, et MINFO omanik vastutab enda eest."
+msgstr "Väärtuse \".\" (juur) kasutamine RMAILBX väljal tähendab, et MINFO kirje omanik vastutab enda eest."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -6088,7 +6088,7 @@ msgstr "See pole kehtiv kirje. Selle nimega CNAME on juba olemas."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr "CNAME sihtmärk peab olema FQDN. Ühe sildiga nimed pole lubatud."
+msgstr "CNAME sihtmärk peab olema täielikult kvalifitseeritud domeeninimi (FQDN). Ühe sildiga nimed pole lubatud."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6126,7 +6126,7 @@ msgstr ""
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr "DHCID tohib sisaldada ainult kehtivaid base64 märke."
+msgstr "DHCID kirje tohib sisaldada ainult kehtivaid base64 märke (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
@@ -6152,15 +6152,14 @@ msgstr "DHCID-kirje peab sisaldama kehtivaid base64 andmeid."
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr ""
-"DHCID on liiga lühike. Dekodeeritud andmed peavad olema vähemalt 3 baiti."
+msgstr "DHCID kirje on liiga lühike. Dekodeeritud andmed peavad sisaldama vähemalt 3 baiti (tüübikoodid ja räsi)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID identifikaatori tüüp 0x%04X pole standardne (RFC 4701)."
+msgstr "DHCID identifikaatori tüüp 0x%04X ei ole üks RFC 4701 määratletud standardtüüpidest (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
@@ -6192,7 +6191,7 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr "Kaaluge DNSSEC või TSIG (RFC 3007) kasutamist DHCID uuendusteks."
+msgstr "Kaaluge DNSSEC või TSIG autentimise (RFC 3007) kasutamist turvalisteks DHCID uuendusteks, nagu soovitab RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6471,7 +6470,7 @@ msgstr "RP-kirje sisaldab vigaseid märke."
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr "RP kirje peab sisaldama mailbox-domain ja txt-record-domain."
+msgstr "RP kirje peab sisaldama välju mailbox-domain (mbox-dname) ja txt-record-domain (txt-dname)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -6708,15 +6707,13 @@ msgstr "DNAME kirjete prioriteedi väli peab olema 0 või tühi."
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"RFC 6672 järgi peavad DNAME kirjed olema antud omanikunimel unikaalsed."
+msgstr "RFC 6672 järgi peavad DNAME kirjed olema antud omanikunimel unikaalsed (ühe kirje reegel)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr ""
-"DNAME ja CNAME EI TOHI samal omanikunimel koos eksisteerida (RFC 6672)."
+msgstr "DNAME ja CNAME kirjed EI TOHI samal omanikunimel koos eksisteerida (RFC 6672 jaotis 2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -6904,7 +6901,7 @@ msgstr "Vigane prioriteedivälja väärtus. CSYNC-kirjetel peab olema prioriteet
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr "Vigane SOA Serial CSYNC kirjes. Peab olema 32-bit unsigned."
+msgstr "Vigane SOA Serial CSYNC kirjes. See peab olema 32-bitine märgita täisarv (0-4294967295)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
@@ -6998,7 +6995,7 @@ msgstr "EUI48 tundub Cisco vormingus. Vorming: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 kirje peab olema kehtiv MAC-aadress vormingus xx-xx-xx-xx-xx-xx."
+msgstr "EUI48 kirje peab olema kehtiv MAC-aadress vormingus xx-xx-xx-xx-xx-xx (kus x on kuueteistkümnendnumber)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -7212,7 +7209,7 @@ msgstr "Vigane alamvõrgu number RFC 2317-s. IPv4 puhul 0-255."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:160
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
-msgstr "Vigane alamvõrk RFC 2317-s. IPv6 - hex."
+msgstr "Vigane alamvõrk RFC 2317 notatsioonis. IPv6 puhul peab see olema kuueteistkümnendsüsteemis (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:165
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
@@ -7226,7 +7223,7 @@ msgstr "Vigane eesliite pikkus RFC 2317 notatsioonis. See peab olema numbriline.
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr "Vigane IPv4 eesliite pikkus RFC 2317. Tavaliselt 24-32."
+msgstr "Vigane IPv4 eesliite pikkus RFC 2317 jaoks. Tavaliselt 24-32 (klassideta delegeerimine tavaliselt 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:194
 #, php-format
@@ -7345,7 +7342,7 @@ msgstr ""
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA miinimum (negatiivne vahemälu) ületab 24h (86400) (RFC 2308)."
+msgstr "SOA miinimumi (negatiivne vahemälu) väärtus ületab 24 tundi (86400), mis võib RFC 2308 järgi olla liigne."
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -7381,7 +7378,7 @@ msgstr "SVCB sihtmärk peab olema \".\" või kehtiv hostinimi."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr "Alias režiimis sihtmärk ei tohi olla \".\"."
+msgstr "Alias režiimis (prioriteet = 0) ei tohi sihtmärk olla \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7528,7 +7525,7 @@ msgstr ""
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr "SMIMEA selektori väli peab olema 0 või 1."
+msgstr "SMIMEA selektori väli peab olema 0 (Full certificate) või 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
@@ -7625,7 +7622,7 @@ msgstr ""
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L64 kirjeid kasutatakse ainult ILNP protokolliga."
+msgstr "L64 kirjeid tuleks kasutada ainult koos Identifier-Locator Network Protocol'iga (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
@@ -7846,8 +7843,7 @@ msgstr "LUA-kirjel on sobimatud loogsulud. Kontrollige süntaksit."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr ""
-"LUA kirje explicit return režiimis peab sisaldama vähemalt ühte \"return\"."
+msgstr "LUA kirje eksplitsiitses return režiimis (algab semikooloniga) peab sisaldama vähemalt ühte \"return\" lauset."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -8042,7 +8038,7 @@ msgstr "Algoritm 1 (RSA/MD5) on krüptograafiliselt nõrk, ära kasuta."
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr "DNSSEC tsooni võtmete jaoks kasutage DNSKEY, mitte KEY."
+msgstr "DNSSEC tsooni võtmete jaoks (flags=257, protocol=3) tuleks KEY kirjete asemel kasutada DNSKEY kirjeid."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
@@ -8151,11 +8147,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM joondamise silt (adkim) peab olema r või s"
+msgstr "DMARC DKIM joondamise silt (adkim) peab olema r (relaxed) või s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF joondamise silt (aspf) peab olema r või s"
+msgstr "DMARC SPF joondamise silt (aspf) peab olema r (relaxed) või s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8348,7 +8344,7 @@ msgstr ""
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "L32 kirjeid kasutatakse ainult ILNP protokolliga."
+msgstr "L32 kirjeid tuleks kasutada ainult koos Identifier-Locator Network Protocol'iga (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
@@ -8386,7 +8382,7 @@ msgstr "L32 lokaator peab olema täielikult määratletud IPv4 aadress."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 lokaator ei saa kasutada broadcast või määramata aadresse."
+msgstr "L32 lokaator ei saa kasutada broadcast- ega määramata aadresse (0.0.0.0 või 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8800,8 +8796,7 @@ msgstr "DNSKEY algoritm peab olema number vahemikus 1 kuni 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
-"ECDSAP256SHA256 (13) on SOOVITATUD DNSSEC allkirjastamiseks RFC 8624 järgi."
+msgstr "ECDSAP256SHA256 (algoritm 13) on RFC 8624 järgi SOOVITATUD algoritm DNSSEC allkirjastamiseks."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8938,7 +8933,7 @@ msgstr "SOA vorming: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr "Tsoonil pole NS kirjeid tipus. Vähemalt üks NS DNSSEC jaoks."
+msgstr "Tsoonil pole tipus NS (Name Server) kirjeid. DNSSEC jaoks on vaja vähemalt üht tipu NS kirjet."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
@@ -12490,7 +12485,7 @@ msgstr "Hoiatus: SOA-kirje puudub"
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "Sellel tsooni mallil pole SOA-kirjet."
+msgstr "Sellel tsooni mallil pole SOA (Start of Authority) kirjet."
 
 #: templates/modern/edit_zone_templ.html:319
 msgid ""
@@ -12566,7 +12561,7 @@ msgstr "TÄHTIS: Salvestage oma API võti nüüd!"
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
-msgstr "See on ainus kord, mil API võtit kuvatakse. Salvestage see nüüd."
+msgstr "See on ainus kord, mil API võtit kuvatakse. Salvestage see nüüd, sest te ei saa seda enam näha."
 
 #: templates/modern/api_key_created.html:26
 msgid "API Key:"
