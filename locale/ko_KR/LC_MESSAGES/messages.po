@@ -1747,7 +1747,7 @@ msgstr "API 로그"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "슈퍼마스터를 볼 권한이 없습니다."
+msgstr "supermasters를 볼 권한이 없습니다."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3457,7 +3457,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "슈퍼마스터"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3513,7 +3513,7 @@ msgstr "Autoprimaries 검색..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "슈퍼마스터 검색..."
+msgstr "supermasters 검색..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3545,7 +3545,7 @@ msgstr "Autoprimary 편집 정보"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "슈퍼마스터 편집 정보"
+msgstr "Supermasters 편집 정보"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

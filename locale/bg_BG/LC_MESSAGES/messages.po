@@ -1731,7 +1731,7 @@ msgstr "Дневници на API"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "Нямате разрешение да преглеждате супермастъри."
+msgstr "Нямате разрешение да преглеждате supermasters."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3468,7 +3468,7 @@ msgstr "Автоматични първични сървъри"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Супермастъри"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3508,7 +3508,7 @@ msgstr "За автоматичните първични сървъри"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "За супермастърите"
+msgstr "За supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3524,7 +3524,7 @@ msgstr "Търсене на автоматични първични сървър
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "Търсене на супермастъри..."
+msgstr "Търсене на supermasters..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3532,7 +3532,7 @@ msgstr "В този списък няма автоматични първичн�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Няма супермастъри за показване в този списък."
+msgstr "Няма supermasters за показване в този списък."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3556,7 +3556,7 @@ msgstr "За редактирането на автоматичните първ
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "За редактирането на супермастърите"
+msgstr "За редактирането на supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
@@ -3610,9 +3610,7 @@ msgstr "Показване на състоянието на свързаност
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"Показване на статуса на свързаност за супермастърите, конфигурирани в "
-"таблицата по-долу."
+msgstr "Показване на статуса на свързаност за supermasters, конфигурирани в таблицата по-долу."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""

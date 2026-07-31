@@ -3588,7 +3588,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Supermestres"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3628,7 +3628,7 @@ msgstr "Sobre os Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "Acerca dos Supermestres"
+msgstr "Acerca dos Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3652,7 +3652,7 @@ msgstr "Não existem autoprimaries para mostrar nesta listagem."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Não existem supermestres para mostrar nesta listagem."
+msgstr "Não existem supermasters para mostrar nesta listagem."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"

@@ -6001,7 +6001,7 @@ msgstr "يجب أن يتضمّن URI بهذا البروتوكول \"://\" بع�
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr "يجب أن تتضمن عناوين HTTP/HTTPS اسم مضيف."
+msgstr "يجب أن تتضمن عناوين URI الخاصة بـ HTTP/HTTPS اسم مضيف."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."

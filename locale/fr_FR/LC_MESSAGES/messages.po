@@ -3652,7 +3652,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Serveurs Maîtres Secondaires"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3716,7 +3716,7 @@ msgstr "Aucun autoprimary à afficher dans cette liste."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Il n'y a aucun serveur maître secondaire à afficher dans cette liste."
+msgstr "Il n'y a aucun supermaster à afficher dans cette liste."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"

@@ -1782,7 +1782,7 @@ msgstr "API Günlükleri"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "Üst sunucuları görüntüleme yetkiniz yok."
+msgstr "Supermaster'ları görüntüleme yetkiniz yok."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3525,7 +3525,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Süper Master'lar"
+msgstr "Supermaster'lar"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3613,7 +3613,7 @@ msgstr "Autoprimary Düzenleme Hakkında"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Süper Master'ları Düzenleme Hakkında"
+msgstr "Supermaster'ları Düzenleme Hakkında"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

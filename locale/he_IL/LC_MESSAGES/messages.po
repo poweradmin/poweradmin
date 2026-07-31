@@ -3378,7 +3378,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "סופר-מאסטרים"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3520,7 +3520,7 @@ msgstr "הצגת מצב קישוריות עבור שרתי ה-autoprimary המו
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr "מציג מצב קישוריות עבור סופרמאסטרים המוגדר בטבלה למטה."
+msgstr "מציג מצב קישוריות עבור ה-supermasters המוגדרים בטבלה למטה."
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""

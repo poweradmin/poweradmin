@@ -1703,7 +1703,7 @@ msgstr "API žurnāli"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "Jums nav atļaujas skatīt galvenos."
+msgstr "Jums nav atļaujas skatīt supermasterus."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3476,7 +3476,7 @@ msgstr "Par Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "Par galvenajiem"
+msgstr "Par supermasteriem"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3492,7 +3492,7 @@ msgstr "Meklēt autoprimaries..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "Meklēt galvenos..."
+msgstr "Meklēt supermasterus..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3500,7 +3500,7 @@ msgstr "Šajā sarakstā nav autoprimaries ierakstu."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Šajā sarakstā nav galveno, ko parādīt."
+msgstr "Šajā sarakstā nav supermasteru, ko parādīt."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3524,7 +3524,7 @@ msgstr "Par Autoprimary rediģēšanu"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Par galveno rediģēšanu"
+msgstr "Par supermasteru rediģēšanu"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

@@ -1701,7 +1701,7 @@ msgstr "API लॉग"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "आपको सुपरमास्टर देखने की अनुमति नहीं है।"
+msgstr "आपको supermasters देखने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3385,7 +3385,7 @@ msgstr "ऑटोप्राइमरी"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "सुपरमास्टर"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3425,7 +3425,7 @@ msgstr "ऑटोप्राइमरी के बारे में"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "सुपरमास्टर के बारे में"
+msgstr "Supermasters के बारे में"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3441,7 +3441,7 @@ msgstr "ऑटोप्राइमरी खोजें..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "सुपरमास्टर खोजें..."
+msgstr "supermasters खोजें..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3449,7 +3449,7 @@ msgstr "इस सूची में दिखाने के लिए को
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "इस सूची में दिखाने के लिए कोई सुपरमास्टर नहीं हैं।"
+msgstr "इस सूची में दिखाने के लिए कोई supermasters नहीं हैं।"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3473,7 +3473,7 @@ msgstr "ऑटोप्राइमरी संपादित करने क
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "संपादन सुपरमास्टर के बारे में"
+msgstr "संपादन Supermasters के बारे में"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
@@ -3527,8 +3527,7 @@ msgstr "नीचे की तालिका में कॉन्फ़ि�
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
-"नीचे तालिका में कॉन्फ़िगर किए गए सुपरमास्टर्स के लिए कनेक्टिविटी की स्थिति दिखा रहा है।"
+msgstr "नीचे तालिका में कॉन्फ़िगर किए गए supermasters के लिए कनेक्टिविटी की स्थिति दिखा रहा है।"
 
 #: lib/Infrastructure/Web/PageRenderer.php:191
 msgid ""

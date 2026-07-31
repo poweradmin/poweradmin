@@ -1704,7 +1704,7 @@ msgstr "گزارش‌های API"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "شما اجازه مشاهده سوپرمسترها را ندارید."
+msgstr "شما اجازه مشاهده supermasters را ندارید."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3407,7 +3407,7 @@ msgstr "اتوپرایمری‌ها"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "سوپرمسترها"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3463,7 +3463,7 @@ msgstr "Search autoprimaries ..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "جستجوی سوپرمسترها..."
+msgstr "جستجوی supermasters..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3471,7 +3471,7 @@ msgstr "هیچ اتوپرایمری برای نمایش در این لیست و�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "هیچ سوپرمستری برای نمایش در این لیست وجود ندارد."
+msgstr "هیچ supermasterی برای نمایش در این لیست وجود ندارد."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"

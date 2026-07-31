@@ -1802,7 +1802,7 @@ msgstr "Журналы API"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "У вас нет разрешения на просмотр суперсерверов."
+msgstr "У вас нет разрешения на просмотр supermasters."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3568,7 +3568,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Суперсерверы"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3608,7 +3608,7 @@ msgstr "Об Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "О суперсерверах"
+msgstr "О supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3624,7 +3624,7 @@ msgstr "Поиск autoprimaries..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "Поиск суперсерверов..."
+msgstr "Поиск supermasters..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3632,7 +3632,7 @@ msgstr "В этом списке нет autoprimaries."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "В этом списке нет супермастеров для отображения."
+msgstr "В этом списке нет supermasters для отображения."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3656,7 +3656,7 @@ msgstr "О редактировании Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "О редактировании суперсерверов"
+msgstr "О редактировании supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

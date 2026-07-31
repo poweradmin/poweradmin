@@ -1772,7 +1772,7 @@ msgstr "APIログ"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "スーパーマスターを表示する権限がありません。"
+msgstr "supermasters を表示する権限がありません。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3509,7 +3509,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "スーパーマスター"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3549,7 +3549,7 @@ msgstr "Autoprimaries について"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "スーパーマスターについて"
+msgstr "Supermasters について"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3565,7 +3565,7 @@ msgstr "Autoprimaries を検索..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "スーパーマスターを検索..."
+msgstr "supermasters を検索..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3573,7 +3573,7 @@ msgstr "このリストには表示できる autoprimaries がありません。
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "この一覧に表示するスーパーマスターがありません。"
+msgstr "この一覧に表示する supermasters がありません。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3597,7 +3597,7 @@ msgstr "Autoprimary の編集について"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "スーパーマスターの編集について"
+msgstr "Supermasters の編集について"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

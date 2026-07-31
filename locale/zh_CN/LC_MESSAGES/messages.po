@@ -1684,7 +1684,7 @@ msgstr "API 日志"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "您没有查看超级主机的权限。"
+msgstr "您没有查看 supermasters 的权限。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3370,7 +3370,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "超级主服务器"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3410,7 +3410,7 @@ msgstr "关于 Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "关于超级主服务器"
+msgstr "关于 Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3426,7 +3426,7 @@ msgstr "搜索 autoprimaries..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "搜索超级主服务器..."
+msgstr "搜索 supermasters..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3434,7 +3434,7 @@ msgstr "此列表中没有要显示的 autoprimaries。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "此列表中没有超级主服务器可显示。"
+msgstr "此列表中没有 supermasters 可显示。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3458,7 +3458,7 @@ msgstr "关于编辑 Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "关于编辑超级主服务器"
+msgstr "关于编辑 Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

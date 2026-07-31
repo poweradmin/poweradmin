@@ -1718,7 +1718,7 @@ msgstr "API naplók"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "Nincs jogosultsága szuper elsődlegesek megtekintésére."
+msgstr "Nincs jogosultsága supermasterek megtekintésére."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3443,7 +3443,7 @@ msgstr "Autoprimaries"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "Szuper elsődlegesek"
+msgstr "Supermasterek"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3483,7 +3483,7 @@ msgstr "Az Autoprimaries-ról"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "Szuper elsődlegesekről"
+msgstr "Supermasterekről"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3499,7 +3499,7 @@ msgstr "Autoprimaries keresése..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "Szuper elsődlegesek keresése..."
+msgstr "Supermasterek keresése..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3507,7 +3507,7 @@ msgstr "Nincsenek megjeleníthető autoprimaries a listában."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "Nincsenek szuper elsődlegesek a listában."
+msgstr "Nincsenek supermasterek a listában."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3532,7 +3532,7 @@ msgstr "Autoprimary szerkesztéséről"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "Szuper elsődlegesek szerkesztéséről"
+msgstr "Supermasterek szerkesztéséről"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""

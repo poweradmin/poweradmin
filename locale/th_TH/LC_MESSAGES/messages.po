@@ -1678,7 +1678,7 @@ msgstr "ปูมบันทึกของ API"
 
 #: lib/Application/Controller/ListSupermastersController.php:42
 msgid "You do not have the permission to view supermasters."
-msgstr "คุณไม่ได้รับอนุญาตให้ดูซูเปอร์มาสเตอร์"
+msgstr "คุณไม่ได้รับอนุญาตให้ดู supermasters"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
@@ -3351,7 +3351,7 @@ msgstr "ออโตไพรมารี"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:160
 msgid "Supermasters"
-msgstr "ซูเปอร์มาสเตอร์"
+msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
@@ -3391,7 +3391,7 @@ msgstr "เกี่ยวกับออโตไพรมารี"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Supermasters"
-msgstr "เกี่ยวกับซูเปอร์มาสเตอร์"
+msgstr "เกี่ยวกับ Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
@@ -3407,7 +3407,7 @@ msgstr "ค้นหาออโตไพรมารี..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
-msgstr "ค้นหาซูเปอร์มาสเตอร์..."
+msgstr "ค้นหา supermasters..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:141
 msgid "There are no autoprimaries to show in this listing."
@@ -3415,7 +3415,7 @@ msgstr "ไม่มีออโตไพรมารีที่จะแสด
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:142
 msgid "There are no supermasters to show in this listing."
-msgstr "ไม่มีซูเปอร์มาสเตอร์ที่จะแสดงในรายการนี้"
+msgstr "ไม่มี supermasters ที่จะแสดงในรายการนี้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
@@ -3439,7 +3439,7 @@ msgstr "เกี่ยวกับการแก้ไข Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Supermasters"
-msgstr "เกี่ยวกับการแก้ไขซูเปอร์มาสเตอร์"
+msgstr "เกี่ยวกับการแก้ไข Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
