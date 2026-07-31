@@ -1564,25 +1564,25 @@ msgstr "Sila pilih sekurang-kurangnya satu pengguna."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "Pengguna %d ditambahkan ke grup."
+msgstr[0] "%d pengguna telah ditambah ke kumpulan."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "Pengguna %d tidak dapat ditambahkan."
+msgstr[0] "%d pengguna tidak dapat ditambah."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] "Pengguna %d dipadam dari grup."
+msgstr[0] "%d pengguna telah dibuang daripada kumpulan."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:258
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] "Pengguna %d tidak dapat dibuang."
+msgstr[0] "%d pengguna tidak dapat dibuang."
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
@@ -2043,13 +2043,13 @@ msgstr "Tiada zon dipilih."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "Zona %d telah tidak terhubung dari template dengan sukses."
+msgstr[0] "%d zon telah berjaya dinyahpaut daripada templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "Zona %d tidak boleh dibuka."
+msgstr[0] "%d zon tidak dapat dinyahpaut."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:126
 msgid "Failed to unlink zones from template."
@@ -2583,25 +2583,25 @@ msgstr "Sila pilih sekurang-kurangnya satu zon."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "Zona %d ditambahkan ke grup."
+msgstr[0] "%d zon telah ditambah ke kumpulan."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "Zona %d tidak dapat ditambahkan."
+msgstr[0] "%d zon tidak dapat ditambah."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] "Zona %d dipadam dari grup."
+msgstr[0] "%d zon telah dibuang daripada kumpulan."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] "Zona %d tidak dapat dipadam."
+msgstr[0] "%d zon tidak dapat dibuang."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "You do not have the permission to add permission templates."
@@ -2854,16 +2854,14 @@ msgstr "Sila pilih sekurang-kurangnya satu kumpulan."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "Pengguna berhasil ditambahkan ke %d kumpulan."
+msgstr[0] "Pengguna telah berjaya ditambah ke %d kumpulan."
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-"Gagal untuk menambahkan pengguna ke grup %d (already a member atau group "
-"tidak dijumpai)."
+msgstr[0] "Gagal menambah pengguna ke %d kumpulan (sudah menjadi ahli atau kumpulan tidak dijumpai)."
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
@@ -5754,7 +5752,7 @@ msgstr "Nilai yang tidak sah untuk medan keutamaan. Rekod CNAME mesti mempunyai 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr "Ini bukan CNAME yang sah. Ada rekod dengan nama ini."
+msgstr "Ini bukan CNAME yang sah. Sudah ada rekod dengan nama ini."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
@@ -5768,7 +5766,7 @@ msgstr "Rekod CNAME Kosong tidak diizinkan."
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr "Ini bukan rekod yang sah. Ada CNAME dengan nama ini."
+msgstr "Ini bukan rekod yang sah. Sudah ada CNAME dengan nama ini."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
@@ -10439,15 +10437,15 @@ msgstr "Nyahpaut zon"
 
 #: templates/modern/confirm_unlink_zones_templ.html:9
 msgid "Unlink Zones from Template"
-msgstr "Zon Unlink dari Templat"
+msgstr "Nyahpaut Zon daripada Templat"
 
 #: templates/modern/confirm_unlink_zones_templ.html:15
 msgid "You are about to unlink 1 zone from template"
-msgstr "Anda akan unlink 1 zon dari templat"
+msgstr "Anda akan menyahpaut 1 zon daripada templat"
 
 #: templates/modern/confirm_unlink_zones_templ.html:17
 msgid "You are about to unlink multiple zones from template"
-msgstr "Anda akan unlink beberapa zon dari templat"
+msgstr "Anda akan menyahpaut beberapa zon daripada templat"
 
 #: templates/modern/confirm_unlink_zones_templ.html:19
 msgid "zones total"
@@ -10461,7 +10459,7 @@ msgstr "Ini akan memutuskan zon ini dari templat mereka. Anda yakin ingin meneru
 
 #: templates/modern/confirm_unlink_zones_templ.html:26
 msgid "Zones to be unlinked"
-msgstr "Zon untuk tidak bersambung"
+msgstr "Zon yang akan dinyahpaut"
 
 #: templates/modern/confirm_unlink_zones_templ.html:52
 msgid ""
@@ -10471,11 +10469,11 @@ msgstr "Menyahpaut zon daripada templatnya tidak akan memadam sebarang rekod. Zo
 
 #: templates/modern/confirm_unlink_zones_templ.html:66
 msgid "Yes, unlink this zone"
-msgstr "Ya, unlink zon ini"
+msgstr "Ya, nyahpaut zon ini"
 
 #: templates/modern/confirm_unlink_zones_templ.html:68
 msgid "Yes, unlink these zones"
-msgstr "Ya, unlink zon-zon ini"
+msgstr "Ya, nyahpaut zon-zon ini"
 
 #: templates/modern/list_perm_templ.html:2
 msgid "Permission templates"
@@ -10545,7 +10543,7 @@ msgstr "Cara Gunakan Templat"
 msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
-msgstr "Selepas membuat sebuah templat, anda dapat menentukannya kepada pengguna atau kumpulan. Ini memastikan kebenaran yang konsisten di seluruh pengguna dan kumpulan dengan peranan yang sama."
+msgstr "Selepas membuat templat, anda boleh menetapkannya kepada pengguna atau kumpulan. Ini memastikan kebenaran yang konsisten merentas pengguna dan kumpulan yang mempunyai peranan serupa."
 
 #: templates/modern/edit_perm_templ.html:93
 msgid "Available Permissions"
@@ -10569,7 +10567,7 @@ msgstr "Kebenaran Lain"
 
 #: templates/default/404.html:15 templates/modern/404.html:15
 msgid "The page you are looking for does not exist."
-msgstr "Halaman yang anda cari tidak ada."
+msgstr "Halaman yang anda cari tidak wujud."
 
 #: templates/default/404.html:18 templates/modern/404.html:18
 msgid "This could be because:"
@@ -10577,7 +10575,7 @@ msgstr "Ini mungkin kerana:"
 
 #: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
-msgstr "URL tidak benar atau salah taip"
+msgstr "URL tidak betul atau tersalah taip"
 
 #: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
@@ -14004,7 +14002,7 @@ msgstr "Login ke <a href=\"../index.php\">Poweradmin</a> menggunakan nama penggu
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Konfigurasi zon dan rekod DNS anda"
+msgstr "Mula mengkonfigurasi zon dan rekod DNS anda"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
