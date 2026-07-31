@@ -7483,11 +7483,11 @@ msgstr "VAROITUS: LUA-tietueessa tasapainottomat lainausmerkit."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA-tietueessa on epäsopivat sulut. Tarkista syntaksi."
+msgstr "LUA-tietueessa on epäsopivat kaarisulkeet. Tarkista syntaksi."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA-tietueessa on epäsopivat sulut. Tarkista syntaksi."
+msgstr "LUA-tietueessa on epäsopivat aaltosulkeet. Tarkista syntaksi."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""

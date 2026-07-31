@@ -3367,7 +3367,7 @@ msgstr "Neizdevās pieslēgties LDAP serverim!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to bind to LDAP server!"
-msgstr "Neizdevās pieslēgties LDAP serverim!"
+msgstr "Neizdevās sasaistīties ar LDAP serveri!"
 
 #: lib/Application/Service/LdapAuthenticator.php:219
 msgid "Failed to search LDAP."
@@ -7494,11 +7494,11 @@ msgstr "BRĪDINĀJUMS: LUA ierakstam šķiet nelīdzsvarotas pēdiņas."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA ierakstā nesakrīt iekavas. Pārbaudiet sintaksi."
+msgstr "LUA ierakstā nesakrīt apaļās iekavas. Pārbaudiet sintaksi."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA ierakstā nesakrīt iekavas. Pārbaudiet sintaksi."
+msgstr "LUA ierakstā nesakrīt figūriekavas. Pārbaudiet sintaksi."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""

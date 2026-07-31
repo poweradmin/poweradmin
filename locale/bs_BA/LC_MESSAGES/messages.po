@@ -7559,11 +7559,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA zapis ima nepoklapajuće zagrade. Provjerite sintaksu."
+msgstr "LUA zapis ima nepoklapajuće okrugle zagrade. Provjerite sintaksu."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA zapis ima nepoklapajuće zagrade. Provjerite sintaksu."
+msgstr "LUA zapis ima nepoklapajuće vitičaste zagrade. Provjerite sintaksu."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""

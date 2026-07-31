@@ -7826,11 +7826,11 @@ msgstr "FIGYELEM: úgy tűnik, ebben a LUA rekordban páratlanul állnak az idé
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "A LUA rekordban nem illeszkedő zárójelek. Ellenőrizze."
+msgstr "A LUA rekordban nem illeszkedő kerek zárójelek. Ellenőrizze a szintaxist."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "A LUA rekordban nem illeszkedő zárójelek. Ellenőrizze."
+msgstr "A LUA rekordban nem illeszkedő kapcsos zárójelek. Ellenőrizze a szintaxist."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""

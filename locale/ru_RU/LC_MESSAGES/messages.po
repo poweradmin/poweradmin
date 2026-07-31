@@ -9923,7 +9923,7 @@ msgstr "Информация об API Ключе"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
-msgstr "Создан"
+msgstr "Кем создан"
 
 #: templates/modern/api_keys.html:48
 msgid "Unknown"

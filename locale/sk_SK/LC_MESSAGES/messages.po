@@ -1849,7 +1849,7 @@ msgstr "Neplatný formát dátumu vypršania."
 
 #: lib/Domain/Service/ApiKeyService.php:356
 msgid "API key not found or you do not have permission to edit it."
-msgstr "API kľúč sa nenašiel alebo nemáte oprávnenie."
+msgstr "API kľúč sa nenašiel alebo nemáte oprávnenie ho upraviť."
 
 #: lib/Application/Controller/ApiKeysController.php:290
 msgid "API key updated successfully."
@@ -1861,7 +1861,7 @@ msgstr "API kľúč úspešne odstránený."
 
 #: lib/Domain/Service/ApiKeyService.php:298
 msgid "API key not found or you do not have permission to delete it."
-msgstr "API kľúč sa nenašiel alebo nemáte oprávnenie."
+msgstr "API kľúč sa nenašiel alebo nemáte oprávnenie ho odstrániť."
 
 #: lib/Application/Controller/ApiKeysController.php:428
 msgid "disabled"
@@ -8085,11 +8085,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "Záznam LUA má nezhodné zátvorky. Skontrolujte syntax."
+msgstr "Záznam LUA má nezhodné okrúhle zátvorky. Skontrolujte syntax."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "Záznam LUA má nezhodné zátvorky. Skontrolujte syntax."
+msgstr "Záznam LUA má nezhodné zložené zátvorky. Skontrolujte syntax."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""

@@ -3486,7 +3486,7 @@ msgstr "Nepavyko prisijungti prie LDAP serverio!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to bind to LDAP server!"
-msgstr "Nepavyko prisijungti prie LDAP serverio!"
+msgstr "Nepavyko susieti su LDAP serveriu!"
 
 #: lib/Application/Service/LdapAuthenticator.php:219
 msgid "Failed to search LDAP."

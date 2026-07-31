@@ -9877,7 +9877,7 @@ msgstr "Інформація про ключ API"
 
 #: templates/modern/api_key_edit.html:94 templates/modern/api_keys.html:28
 msgid "Created by"
-msgstr "Створено"
+msgstr "Ким створено"
 
 #: templates/modern/api_keys.html:48
 msgid "Unknown"

@@ -3346,7 +3346,7 @@ msgstr "LDAP-serveriga ühendumine ebaõnnestus!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to bind to LDAP server!"
-msgstr "LDAP-serveriga ühendumine ebaõnnestus!"
+msgstr "LDAP-serveriga sidumine ebaõnnestus!"
 
 #: lib/Application/Service/LdapAuthenticator.php:219
 msgid "Failed to search LDAP."
@@ -7502,11 +7502,11 @@ msgstr "HOIATUS: LUA kirjel on tasakaalustamata jutumärgid."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA-kirjel on sobimatud sulud. Kontrollige süntaksit."
+msgstr "LUA-kirjel on sobimatud ümarsulud. Kontrollige süntaksit."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA-kirjel on sobimatud sulud. Kontrollige süntaksit."
+msgstr "LUA-kirjel on sobimatud loogsulud. Kontrollige süntaksit."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
