@@ -203,6 +203,12 @@ For feature sponsorship, to speed up development of specific features, or to dis
 * [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Poweradmin to synchronize Kubernetes DNS records
 * [cert-manager-webhook-poweradmin](https://github.com/poweradmin/cert-manager-webhook-poweradmin) - cert-manager webhook solver for Poweradmin to automate DNS-01 challenge validation
 
+## Community Projects
+
+* [poweradmin-cli](https://github.com/Contentways/poweradmin-cli) - Command-line interface for managing zones, records, users and groups through the Poweradmin REST API
+* [poweradmin-go](https://github.com/Contentways/poweradmin-go) - Go SDK for the Poweradmin REST API
+* [poweradmin-operator](https://github.com/Contentways/poweradmin-operator) - Kubernetes operator for managing DNS zones and records via the Poweradmin API
+
 ## Note
 
 Poweradmin is an independent community project, not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html) or [Open-Xchange](https://www.open-xchange.com).
