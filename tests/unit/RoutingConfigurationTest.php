@@ -3,8 +3,11 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -137,6 +140,24 @@ class RoutingConfigurationTest extends TestCase
         $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('id'));
         // record_id accepts both numeric IDs (SQL mode) and encoded strings (API mode)
         $this->assertEquals('[\w\-=.]+', $zoneRecordRoute->getRequirement('record_id'));
+    }
+
+    /**
+     * Record IDs are integers with the SQL backend and encoded composite keys
+     * with the API backend. Narrowing these routes to digits makes every
+     * API-mode record unreachable, which is what broke in #1415.
+     */
+    public function testRecordRoutesMatchBothIdFormats(): void
+    {
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+
+        $encoded = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        foreach ([$encoded, '42'] as $recordId) {
+            $this->assertEquals('record_edit', $matcher->match("/zones/1/records/$recordId/edit")['_route']);
+            $this->assertEquals('record_delete', $matcher->match("/zones/1/records/$recordId/delete")['_route']);
+            $this->assertEquals('api_v2_zone_record', $matcher->match("/api/v2/zones/1/records/$recordId")['_route']);
+        }
     }
 
     public function testRouteMethodRestrictions(): void

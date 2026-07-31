@@ -52,6 +52,30 @@ function toggleEditRecordCheckboxes() {
         checkboxes[index].checked = select_state.checked;
     }
     updateDeleteButtonState("delete-selected-records", checkboxes);
+    updateEditButtonState(checkboxes);
+}
+
+// Editing works on exactly one record, so any other selection count disables it
+function updateEditButtonState(checkboxes) {
+    const editButton = document.getElementById("edit-selected-record");
+    if (!editButton) return;
+
+    let checkedCount = 0;
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            checkedCount++;
+        }
+    }
+    editButton.disabled = checkedCount !== 1;
+}
+
+// The row carries its own edit URL so the client never parses a record ID,
+// which differ between the SQL and API backends
+function editSelectedRecord() {
+    const checked = document.querySelector('input[name="record_id[]"]:checked');
+    if (checked && checked.dataset.editUrl) {
+        window.location.href = checked.dataset.editUrl;
+    }
 }
 
 // Posts selected row IDs as one field to stay under PHP's max_input_vars limit

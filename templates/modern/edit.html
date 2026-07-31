@@ -399,6 +399,7 @@
                     </thead>
                     <tbody>
         {% for r in records %}
+        {% set record_url_base = base_url_prefix ~ '/zones/' ~ zone_id ~ '/records/' ~ r['id'] %}
         {% if not r['record_locked'] %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
@@ -406,7 +407,8 @@
         <tr style="font-size: 14px;">
             <td class="text-center">
                 {% if not r['record_locked'] %}
-                <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}" onclick="updateRecordSelectionButtons()">
+                <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}"
+                       {% if not iface_show_record_edit_button %}data-edit-url="{{ record_url_base }}/edit"{% endif %}>
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
@@ -493,11 +495,11 @@
                 <td class="text-center" style="width: 100px;">
                     <div class="d-flex gap-1 justify-content-center">
                         {% if iface_show_record_edit_button %}
-                        <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ record_url_base }}/edit">
                             <i class="bi bi-pencil-square text-primary"></i></a>
                         {% endif %}
                         {% if iface_show_record_delete_button %}
-                        <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
+                        <a class="btn btn-outline-danger btn-sm" href="{{ record_url_base }}/delete">
                             <i class="bi bi-trash text-danger"></i></a>
                         {% endif %}
                     </div>
@@ -1072,6 +1074,7 @@
         for (let i = 0; i < recordCheckboxes.length; i++) {
             recordCheckboxes[i].addEventListener('change', function() {
                 updateDeleteButtonState('delete-selected-records', recordCheckboxes);
+                updateEditButtonState(recordCheckboxes);
                 updateSelectedCount(recordCheckboxes);
             });
         }
@@ -1156,83 +1159,8 @@
         }
     }
     
-    // Function to update delete button state
-    function updateDeleteButtonState(buttonId, checkboxes) {
-        const button = document.getElementById(buttonId);
-        if (!button) return;
-
-        let hasChecked = false;
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                hasChecked = true;
-                break;
-            }
-        }
-
-        button.disabled = !hasChecked;
-    }
-
-    function updateEditButtonState(checkboxes) {
-        const editButton = document.getElementById('edit-selected-record');
-        if (!editButton) return;
-
-        let checkedCount = 0;
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                checkedCount++;
-            }
-        }
-
-        // Enable only when exactly one record is selected
-        editButton.disabled = checkedCount !== 1;
-    }
-
-    function editSelectedRecord() {
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        let selectedRecordId = null;
-
-        for (let i = 0; i < recordCheckboxes.length; i++) {
-            if (recordCheckboxes[i].checked) {
-                selectedRecordId = recordCheckboxes[i].value;
-                break;
-            }
-        }
-
-        if (selectedRecordId) {
-            // Numeric in SQL mode, url-safe base64 in API mode
-            if (!/^[A-Za-z0-9_-]+$/.test(selectedRecordId)) {
-                console.error('Invalid record ID format');
-                return;
-            }
-
-            // Encode the record ID for safe URL construction
-            const encodedRecordId = encodeURIComponent(selectedRecordId);
-            window.location.href = '{{ base_url_prefix }}/zones/{{ zone_id }}/records/' + encodedRecordId + '/edit';
-        }
-    }
-
-    function updateRecordSelectionButtons() {
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-        updateEditButtonState(recordCheckboxes);
-    }
-
-    // Function to toggle all record checkboxes
-    function toggleEditRecordCheckboxes() {
-        const selectAllCheckbox = document.getElementById('select_edit_records');
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        const checked = selectAllCheckbox.checked;
-
-        for (let i = 0; i < recordCheckboxes.length; i++) {
-            recordCheckboxes[i].checked = checked;
-        }
-
-        updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-        updateEditButtonState(recordCheckboxes);
-    }
-
-
 </script>
+{# Record selection and edit handlers live in assets/helper.js #}
 
 <script>
     // Submit only the rows the operator actually changed. Unchanged rows are

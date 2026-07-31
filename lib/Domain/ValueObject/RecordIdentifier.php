@@ -32,6 +32,9 @@ namespace Poweradmin\Domain\ValueObject;
  */
 class RecordIdentifier
 {
+    /** Alphabet produced by encode(): url-safe base64 with the padding stripped. */
+    public const ID_PATTERN = '/^[A-Za-z0-9_-]+$/';
+
     public static function encode(string $zoneName, string $name, string $type, string $content, int $prio): string
     {
         $data = json_encode([
@@ -73,6 +76,10 @@ class RecordIdentifier
         }
 
         if (ctype_digit($id) || strlen($id) <= 10) {
+            return false;
+        }
+
+        if (!preg_match(self::ID_PATTERN, $id)) {
             return false;
         }
 
