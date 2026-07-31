@@ -4194,9 +4194,7 @@ msgstr ""
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
-msgstr ""
-"Usage 1 (PKIX-EE) ovisi o DANE i PKIX validaciji. Može se pokvariti pri "
-"isteku."
+msgstr "Usage 1 (PKIX-EE) ovisi i o DANE i o tradicionalnoj PKIX validaciji. Može prestati raditi kada certifikati isteknu."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
@@ -4791,7 +4789,7 @@ msgstr ""
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr "RFC 3123 napominje sigurnosne aspekte za APL zapise u ACL-ima."
+msgstr "RFC 3123 navodi sigurnosne aspekte pri korištenju APL zapisa za popise kontrole pristupa."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -4807,7 +4805,7 @@ msgstr "Nevažeći format APL elementa. Očekivano: [!]afi:address/prefix."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr "Nevažeći AFI. Mora biti 1 za IPv4 ili 2 za IPv6."
+msgstr "Nevažeći identifikator obitelji adresa (AFI). Mora biti 1 za IPv4 ili 2 za IPv6."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
@@ -5738,7 +5736,7 @@ msgstr "HTTPS prioritet zapisa mora biti broj 0-65535."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS cilj mora biti \".\" ili valjani FQDN."
+msgstr "Cilj HTTPS zapisa mora biti ili \".\" ili valjano potpuno kvalificirano ime domene."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5928,9 +5926,7 @@ msgstr "Otkriven je zastarjeli algoritam. Preporučen je HMAC-SHA256 ili jači."
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr ""
-"Otkriven nestandardni algoritam. Preporuka je \"hmac-sha256.\" za "
-"kompatibilnost."
+msgstr "Otkriveno je prilagođeno ime algoritma. Standardna imena algoritama poput \"hmac-sha256.\" preporučuju se radi bolje kompatibilnosti."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -6038,7 +6034,7 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI koristi neuobičajeni protokol. Razmotrite standardnu URI shemu."
+msgstr "URI koristi neuobičajeni protokol. Razmotrite standardnu URI shemu radi bolje kompatibilnosti."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -6246,7 +6242,7 @@ msgstr "ptr mehanizam nije preporučen zbog performansi (RFC 7208 §5.5)."
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\" mehanizam treba biti posljednji (RFC 7208 §5.1)."
+msgstr "Mehanizam \"all\" treba biti posljednji mehanizam u zapisu (RFC 7208, odjeljak 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -6335,7 +6331,7 @@ msgstr "Nevažeći znakovi u sadržaju DHCID zapisa."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "Prema RFC 4701/4703, DHCID zapisi se stavljaju na isto ime kao A/AAAA."
+msgstr "Prema RFC 4701 i RFC 4703, DHCID zapisi trebaju se postaviti na isto ime kao A ili AAAA zapisi kojima odgovaraju."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -6425,8 +6421,7 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr ""
-"Razmotrite DNSSEC ili TSIG (RFC 3007) za sigurna DHCID ažuriranja (RFC 4701)."
+msgstr "Razmotrite korištenje DNSSEC-a ili TSIG autentifikacije (RFC 3007) za sigurna DHCID ažuriranja, kako preporučuje RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -6648,7 +6643,7 @@ msgstr "RRSIG oznaka ključa mora biti valjana vrijednost 0-65535."
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr "Ime potpisnika RRSIG mora biti FQDN (završava točkom)."
+msgstr "Ime potpisnika RRSIG zapisa mora biti potpuno kvalificirano ime domene (završava točkom)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
@@ -6752,7 +6747,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP domena sandučića mora biti FQDN (završava točkom)."
+msgstr "Domena poštanskog sandučića RP mora biti potpuno kvalificirano ime domene (završava točkom)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -6801,8 +6796,7 @@ msgstr "Dio domene RP sandučića nije valjan naziv domene."
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr ""
-"Mailbox domena treba koristiti RNAME format iz SOA, @ zamijenjen točkom."
+msgstr "Domena poštanskog sandučića treba koristiti isti format kao polje RNAME u SOA zapisima, s @ zamijenjenim točkom."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
@@ -6812,7 +6806,7 @@ msgstr "Korištenje \".\" za TXT domenu znači da nema dodatnog TXT zapisa."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT domena mora biti FQDN (završava točkom)."
+msgstr "RP TXT domena mora biti potpuno kvalificirano ime domene (završava točkom)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6824,7 +6818,7 @@ msgstr "RP TXT domena sadrži praznu oznaku."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "Oznaka RP TXT domene prelazi 63 znakova."
+msgstr "Oznaka RP TXT domene prelazi najveću dopuštenu duljinu od 63 znaka."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
@@ -6975,8 +6969,7 @@ msgstr ""
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr ""
-"DNAME zapisi NE SMIJU biti s NS zapisima na istom imenu, osim na apexu."
+msgstr "DNAME zapisi NE SMIJU se pojaviti na istom vlasničkom imenu kao NS zapisi, osim ako je to ime vrh zone."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -8302,7 +8295,7 @@ msgstr "Sadržaj MR zapisa mora biti valjan naziv domene."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "MR sadržaj (novi sandučić) treba biti FQDN (završava točkom)."
+msgstr "Sadržaj MR zapisa (novi poštanski sandučić) treba biti potpuno kvalificirano ime domene (završava točkom)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""

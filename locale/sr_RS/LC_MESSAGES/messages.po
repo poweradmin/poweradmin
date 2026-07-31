@@ -879,8 +879,7 @@ msgstr "Неважећи формат CA домена"
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr ""
-"\";\" дозвољава СВИМ CA да издају сертификате, што поништава сврху CAA."
+msgstr "Коришћење \";\" дозвољава СВИМ сертификационим телима да издају сертификате. То поништава сврху CAA записа."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
@@ -2351,7 +2350,7 @@ msgstr "Молимо користите код за опоравак."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Није могуће послати код на имејл. Користите код за опоравак."
+msgstr "Није могуће послати верификациони код на вашу имејл адресу. Уместо тога користите код за опоравак."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -3945,9 +3944,7 @@ msgstr "Јавни кључ у IPSECKEY треба редовно ротират
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
-msgstr ""
-"При коришћењу gateway имена домена осигурајте forward и reverse DNS са "
-"DNSSEC."
+msgstr "При коришћењу мрежних пролаза са именима домена, обезбедите да постоје и директни и обрнути DNS записи и да су правилно заштићени DNSSEC-ом."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -4081,7 +4078,7 @@ msgstr "TLSA користи нестандардни протокол. Уоби�
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr "Ово изгледа као TLSA за SMTP. Осигурајте правилне MX записе."
+msgstr "Изгледа да је ово TLSA запис за SMTP. Обезбедите да су и MX записи исправно подешени."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -4103,8 +4100,7 @@ msgstr ""
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
-msgstr ""
-"КРИТИЧНО: TLSA захтевају DNSSEC. Осигурајте да је домен DNSSEC потписан."
+msgstr "КРИТИЧНО: TLSA записима је ПОТРЕБАН DNSSEC да би пружили било какву безбедносну корист. Обезбедите да је ваш домен потписан DNSSEC-ом."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
@@ -4144,7 +4140,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
-msgstr "Неважећи приоритет. TLSA записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. TLSA записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
@@ -4186,8 +4182,7 @@ msgstr ""
 msgid ""
 "Usage 3 (DANE-EE) is recommended by RFC 7671 as it is not affected by "
 "certificate expiration or CA validation issues."
-msgstr ""
-"Usage 3 (DANE-EE) је препоручен (RFC 7671) јер не зависи од истека или CA."
+msgstr "Usage 3 (DANE-EE) препоручује RFC 7671 јер на њега не утичу истек сертификата ни проблеми са CA провером."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:277
 msgid ""
@@ -4318,7 +4313,7 @@ msgstr "NSEC3PARAM заставице морају бити између 0 и 25
 msgid ""
 "Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
 "unsigned delegations."
-msgstr "Заставица 1 значи Opt-Out. NSEC3 може покрити непотписане делегације."
+msgstr "Вредност заставице 1 означава да се користи Opt-Out. То значи да NSEC3 записи могу обухватити непотписане делегације."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
@@ -4444,7 +4439,7 @@ msgstr "LP FQDN мора бити важеће пуно квалификован
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "AFSDB су застарели (RFC 5864) у корист SRV за AFS."
+msgstr "AFSDB записи су застарели према RFC 5864 у корист SRV записа за проналажење AFS услуга."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4458,7 +4453,7 @@ msgstr "Име AFSDB сервера мора бити потпуно квали�
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
-msgstr "AFSDB име сервера мора бити FQDN са бар два дела."
+msgstr "Име AFSDB сервера мора бити потпуно квалификовано име домена са најмање два дела."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:160
 msgid ""
@@ -4634,13 +4629,13 @@ msgstr "Алгоритам 1 (RSA/MD5) је застарео (RFC 6725) и НЕ 
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "Алгоритам 3 (DSA/SHA1) није сигуран и треба га заменити."
+msgstr "Алгоритам 3 (DSA/SHA1) се сматра небезбедним и треба га заменити јачим алгоритмом."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr "Алгоритам 5 (RSA/SHA-1) није сигуран и треба га заменити."
+msgstr "Алгоритам 5 (RSA/SHA-1) се сматра небезбедним и треба га заменити јачим алгоритмом."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -4739,7 +4734,7 @@ msgstr "RFC 3123 напомиње безбедносне факторе за APL
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr "Неважећи приоритет. APL записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. APL записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
@@ -4748,7 +4743,7 @@ msgstr "Неважећи формат APL елемента. Очекивано: 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr "Неважећи AFI. Мора бити 1 за IPv4 или 2 за IPv6."
+msgstr "Неважећи идентификатор фамилије адреса (AFI). Мора бити 1 за IPv4 или 2 за IPv6."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
@@ -4778,7 +4773,7 @@ msgstr ""
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr "Напомена: NID су за ILNP (експериментално RFC 6740, 6742)."
+msgstr "Напомена: NID записи се користе за ILNP протокол, који је експерименталан (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -4867,7 +4862,7 @@ msgstr "ALIAS циљ не може показивати на себе, то би
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
-msgstr "Неважећи приоритет. ALIAS записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. ALIAS записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
@@ -4987,7 +4982,7 @@ msgstr "RRSIG тип треба да буде у NSEC type bit maps за DNSSEC 
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "NSEC запис садржи SOA и NS, вероватно за врх зоне."
+msgstr "Овај NSEC запис садржи и SOA и NS типове, што указује да се можда односи на врх зоне."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -5097,7 +5092,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:132
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr "Неважећи приоритет. NS записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. NS записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
@@ -5170,13 +5165,13 @@ msgstr "TSIG кључеви треба да се периодично ротир
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr "TSIG пружа аутентификацију, не интегритет. Комбинујте са DNSSEC."
+msgstr "TSIG пружа аутентификацију трансакције, али не и интегритет података. Размотрите коришћење DNSSEC-а поред TSIG-а."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr "Тачни часовници клијента и сервера су обавезни за TSIG."
+msgstr "Тачни системски часовници су обавезни и на клијенту и на серверу да би TSIG исправно радио."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -5190,7 +5185,7 @@ msgstr ""
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TSIG име алгоритма мора бити FQDN (нпр. hmac-sha256.)."
+msgstr "Име TSIG алгоритма мора бити важеће име домена које се завршава тачком (нпр. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
@@ -5246,8 +5241,7 @@ msgstr ""
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
-"TSIG грешка 22 (BADTRUNC) - неважећи truncated MAC. Проверите MAC size."
+msgstr "TSIG грешка 22 (BADTRUNC) означава да је скраћени MAC у TSIG запису неважећи. Проверите подешавање величине MAC-а."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
@@ -5604,7 +5598,7 @@ msgstr "Нулти MX запис (.) мора имати приоритет 0 (R
 msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
-msgstr "Ово је null MX (RFC 7505), домен не прихвата имејл."
+msgstr "Ово је null MX запис (RFC 7505) који означава да овај домен не прихвата имејл."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
@@ -5644,7 +5638,7 @@ msgstr "HTTPS приоритет записа мора бити број 0-65535
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS циљ мора бити \".\" или важеће FQDN."
+msgstr "Циљ HTTPS записа мора бити или \".\" или важеће потпуно квалификовано име домена."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5661,7 +5655,7 @@ msgstr "HTTPS параметри морају бити у key=value формат
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Непознат HTTPS кључ: \"%s\". Погледајте RFC 9460."
+msgstr "Непознат кључ HTTPS параметра: \"%s\". Погледајте RFC 9460 за важеће кључеве."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
@@ -5737,7 +5731,7 @@ msgstr ""
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TKEY име алгоритма мора бити FQDN (нпр. hmac-sha256.)."
+msgstr "Име TKEY алгоритма мора бити важеће име домена које се завршава тачком (нпр. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
@@ -5932,7 +5926,7 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI користи неуобичајени протокол. Размотрите стандардну шему."
+msgstr "URI користи неуобичајени протокол. Размотрите коришћење стандардне URI шеме ради боље компатибилности."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -5987,14 +5981,13 @@ msgstr ""
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr ""
-"ВАЖНО: RFC 2230 захтева DNSSEC за KX. Непотписани МОРАЈУ бити игнорисани."
+msgstr "ВАЖНО: RFC 2230 захтева да KX записи буду потписани помоћу DNSSEC-а. Непотписани KX записи МОРАЈУ бити игнорисани из безбедносних разлога."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "Системи без Secure DNS треба да игноришу KX по RFC 2230."
+msgstr "Системи који не подржавају Secure DNS треба у потпуности да игноришу KX записе, према RFC 2230."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
@@ -6019,7 +6012,7 @@ msgstr "Неважећа вредност KX предности. Мора бит
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "НАПОМЕНА: MINFO је EXPERIMENTAL (RFC 1035). Можда није свуда подржан."
+msgstr "НАПОМЕНА: Тип записа MINFO означен је као EXPERIMENTAL у RFC 1035. Можда није свуда подржан."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -6177,7 +6170,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr "Неважећи приоритет. CNAME записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. CNAME записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
@@ -6328,8 +6321,7 @@ msgstr "Поље приоритета за RRSIG записе мора бити 
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr ""
-"RRSIG треба да креира DNS сервер при потписивању. Ручно није препоручено."
+msgstr "RRSIG записе би требало да креира само ваш DNS сервер при потписивању зоне. Ручно мењање није препоручено."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
@@ -6368,7 +6360,7 @@ msgstr "RRSIG поље алгоритма мора бити нумеричко."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr "Алгоритам 1 (RSA/MD5) је застарео и НЕ треба га користити."
+msgstr "Алгоритам 1 (RSA/MD5) је застарео и НЕ треба га користити због криптографских слабости."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -6614,8 +6606,7 @@ msgstr ""
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr ""
-"RP записи се ретко користе данас. Размотрите WHOIS или друге механизме."
+msgstr "RP запис се данас ређе користи. Уместо њега размотрите WHOIS записе или друге механизме за контакт."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
@@ -6634,7 +6625,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP домен сандучета мора бити FQDN (завршава тачком)."
+msgstr "RP домен сандучета мора бити потпуно квалификовано име домена (завршава тачком)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -6697,7 +6688,7 @@ msgstr "Коришћење \".\" за TXT домен значи да нема д
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT домен мора бити FQDN (завршава тачком)."
+msgstr "RP TXT домен мора бити потпуно квалификовано име домена (завршава тачком)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6709,7 +6700,7 @@ msgstr "RP TXT домен садржи празну ознаку."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "Ознака RP TXT домена прелази 63 знака."
+msgstr "Ознака RP TXT домена прелази највећу дозвољену дужину од 63 знака."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
@@ -6754,7 +6745,7 @@ msgstr "Поље приоритета за EUI64 записе мора бити 
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 не препоручује објављивање EUI-64 у јавном DNS (приватност)."
+msgstr "RFC 7043 не препоручује објављивање EUI-64 адреса у јавном DNS-у због могућих последица по приватност."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
@@ -6911,7 +6902,7 @@ msgstr "Алгоритам мора бити: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 1
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "%s (алгоритам %d) је ПРЕПОРУЧЕН по RFC 8624."
+msgstr "%s (алгоритам %d) је ПРЕПОРУЧЕН алгоритам за употребу према RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
@@ -7015,7 +7006,7 @@ msgstr ""
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr "Нема заставица у CSYNC. Запис можда неће бити одмах обрађен."
+msgstr "У овом CSYNC запису нису постављене заставице. Родитељски агенти можда неће одмах обрадити запис."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
@@ -7037,7 +7028,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr "Неважећи приоритет. CSYNC записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. CSYNC записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
@@ -7115,7 +7106,7 @@ msgstr "Приоритет мора бити 0 за EUI48 записе."
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 не препоручује објављивање EUI-48 у јавном DNS (приватност)."
+msgstr "RFC 7043 не препоручује објављивање EUI-48 адреса у јавном DNS-у због могућих последица по приватност."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
@@ -7624,7 +7615,7 @@ msgstr ""
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA чини имејл адресе видљивим у DNS. Размислите о приватности."
+msgstr "SMIMEA чини имејл адресе видљивим у DNS-у. Размотрите последице по приватност при објављивању SMIMEA записа."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -8292,7 +8283,7 @@ msgstr "DMARC записи морају бити постављени на _dmar
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr "Неважећи приоритет. DMARC записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. DMARC записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -8302,7 +8293,7 @@ msgstr "DMARC запис мора почети са \"v=DMARC1\""
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "DMARC прелази 255 знакова. Поједноставите или користите URI референце."
+msgstr "DMARC запис прелази ограничење од 255 знакова. За сложене политике размотрите поједностављивање или коришћење URI референци."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -8430,12 +8421,12 @@ msgstr "Сваки TXT стринг мора бити ≤255 бајтова. П�
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Укупан TXT садржај прелази %d бајта. Смањите величину."
+msgstr "Укупан садржај TXT записа прелази највећу дозвољену дужину од %d бајтова. Смањите величину садржаја."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr "Неважећи приоритет. TXT записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. TXT записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -8444,13 +8435,13 @@ msgstr "Неважећи формат IPv4 адресе."
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Неважећи приоритет. A записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. A записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr "CDS се стављају само на врх зоне, не на поддомене (RFC 7344)."
+msgstr "CDS записе треба постављати само на врх зоне, а не на поддомене, како захтева RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -8516,7 +8507,7 @@ msgstr ""
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "CDS морају имати одговарајуће CDNSKEY (RFC 7344)."
+msgstr "CDS записе морају пратити одговарајући CDNSKEY записи, како препоручује RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -8681,7 +8672,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr "Неважећи приоритет. AAAA записи морају имати 0."
+msgstr "Неважећа вредност поља приоритета. AAAA записи морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -8787,13 +8778,13 @@ msgstr "RRSIG тип треба да буде у NSEC3 type bit maps за DNSSEC
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "NSEC3 запис садржи SOA и NS, вероватно за врх зоне."
+msgstr "Овај NSEC3 запис садржи и SOA и NS типове, што указује да се можда односи на врх зоне."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "За врх зоне са NSEC3, NSEC3PARAM треба да буде уз DNSKEY."
+msgstr "За врх зоне који користи NSEC3, тип NSEC3PARAM би обично требало да буде присутан заједно са DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8839,7 +8830,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr "Неважећи приоритет. NAPTR има приоритет у садржају, поље мора бити 0."
+msgstr "Неважећа вредност поља приоритета. NAPTR записи имају приоритет унутар поља садржаја и морају имати вредност приоритета 0."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
@@ -13061,7 +13052,7 @@ msgstr "Код за верификацију је послат на вашу и�
 msgid ""
 "Please enter the 6-digit code to verify and enable Multi-Factor "
 "Authentication."
-msgstr "Унесите 6-цифрени код за проверу и омогућавање MFA."
+msgstr "Унесите шестоцифрени код да бисте проверили и омогућили вишефакторску аутентификацију."
 
 #: templates/modern/mfa_verify_email.html:32
 msgid "Enter the 6-digit code from your email"

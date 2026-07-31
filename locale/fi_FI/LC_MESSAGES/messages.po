@@ -181,7 +181,7 @@ msgstr "Varmenteen on vastattava täsmälleen, PKI ohittaen (DANE-EE)"
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "Kuinka varmenne vahvistetaan. Tyyppi 3 itse allekirjoitetuille."
+msgstr "Kuinka varmenne tulisi varmentaa. Tyyppi 3 on yleisin itse allekirjoitetuille tai omille CA:ille."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -445,7 +445,7 @@ msgstr "Forensisen raportin sähköposti"
 msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
-msgstr "Sähköposti virheraporteille (valinnainen, suuri määrä)"
+msgstr "Sähköpostiosoite, johon yksityiskohtaiset virheraportit lähetetään (valinnainen, viestejä voi tulla paljon)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
@@ -999,7 +999,7 @@ msgstr "Julkisen avaimen on oltava kelvollista base64-koodattua dataa"
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr "Julkinen avain vaikuttaa lyhyeltä. Varmista täysi avain."
+msgstr "Julkinen avain vaikuttaa epätavallisen lyhyeltä. Varmista, että kopioit koko avaimen sähköpostipalvelimeltasi."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
@@ -1700,7 +1700,7 @@ msgstr "Sähköpostiosoitetta ei ole. Päivitä se profiilissasi."
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr "Sähköpostivahvistus ei käytössä, postipalvelu ei päällä."
+msgstr "Sähköpostivahvistusmenetelmä ei ole käytettävissä, koska sähköpostipalvelua ei ole otettu käyttöön tässä järjestelmässä."
 
 #: lib/Application/Controller/MfaSetupController.php:206
 msgid "Email verification method is not enabled on this system."
@@ -2317,7 +2317,7 @@ msgstr "Käytä sen sijaan palautuskoodia."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Vahvistuskoodia ei voitu lähettää. Käytä palautuskoodia."
+msgstr "Vahvistuskoodin lähettäminen sähköpostiisi ei onnistunut. Käytä sen sijaan palautuskoodia."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -3025,13 +3025,13 @@ msgstr "PowerDNS-tilan toiminto on poistettu käytöstä määrityksissä."
 msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
-msgstr "Sinulla ei ole oikeutta PowerDNS-tilaan. Vain ylläpitäjille."
+msgstr "Sinulla ei ole oikeutta tarkastella PowerDNS-palvelimen tilaa. Vain ylläpitäjät voivat käyttää tätä ominaisuutta."
 
 #: lib/Application/Controller/PdnsStatusController.php:70
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr "PowerDNS API -ominaisuutta ei ole määritetty. Aseta URL ja avain."
+msgstr "PowerDNS API -ominaisuutta ei ole määritetty. Aseta API:n URL ja avain järjestelmän asetuksiin."
 
 #: lib/Application/Controller/ExampleController.php:129
 msgid "You do not have the permission to access this feature."
@@ -3622,7 +3622,7 @@ msgstr ""
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr "Käytössä oletusistuntoavain, määritä se asetustiedostossa."
+msgstr "Käytössä on oletusarvoinen istunnon salausavain, määritä se asetustiedostossasi."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3641,7 +3641,7 @@ msgstr "LDAP-todennus on poistettu käytöstä"
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
-msgstr "Tietokantavirhe: Todennusta ei voi vahvistaa. Tarkista määritys."
+msgstr "Tietokantavirhe: Käyttäjän todennusta ei voida varmistaa. Tarkista tietokannan määritykset."
 
 #: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
 msgid "You do not have the permission to change the permission template."
@@ -3886,7 +3886,7 @@ msgstr ""
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr "IPSECKEY-julkinen avain on vaihdettava säännöllisesti."
+msgstr "IPSECKEY-tietueiden julkinen avain tulisi vaihtaa säännöllisesti turvallisuuden parantamiseksi."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
@@ -4339,7 +4339,7 @@ msgstr ""
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
-msgstr "Pitkä suola ei paranna turvaa. Käytä lyhyttä tai ei suolaa (-)."
+msgstr "Pitkät suolat eivät tuo lisäturvaa. Harkitse lyhyemmän suolan käyttöä tai suolan jättämistä pois (-)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
@@ -4361,7 +4361,7 @@ msgstr ""
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr "LP-tietueita EI SAA olla ei-ILNP-solmuilla (RFC 6742 §3.4)."
+msgstr "LP-tietueita EI SAA olla solmuilla, jotka eivät tue ILNP:tä (RFC 6742, kohta 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
@@ -4403,7 +4403,7 @@ msgstr "LP FQDN:n on oltava kelvollinen täysin kvalifioitu toimialuenimi."
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr "AFSDB on vanhentunut (RFC 5864), käytä SRV:tä AFS-palvelulle."
+msgstr "AFSDB-tietueet on vanhennettu RFC 5864:ssä SRV-tietueiden hyväksi AFS-palvelun paikantamisessa."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
@@ -4563,13 +4563,13 @@ msgstr ""
 msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
-msgstr "Bitti 7 (Zone Key -lippu) on asetettu, tämä on alueen avain."
+msgstr "Bitti 7 (Zone Key -lippu) on asetettu lippukentässä, mikä osoittaa tämän olevan alueen avain."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr "Bitti 0 (SEP-lippu) on asetettu, turvallinen sisääntulopiste."
+msgstr "Bitti 0 (SEP-lippu) on asetettu lippukentässä, mikä osoittaa tämän olevan turvallinen sisääntulopiste."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
@@ -4678,7 +4678,7 @@ msgstr "Julkisen avaimen tiedot Base64-koodattuna (RFC 4034)."
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr "RKEY ei koskaan virallisesti standardoitu RFC:nä - vain luonnos."
+msgstr "RKEY-tietueita ei koskaan virallisesti standardoitu RFC:nä, vaan ne ehdotettiin ainoastaan luonnoksessa draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -4719,7 +4719,7 @@ msgstr "Virheellinen APL-elementin muoto."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr "Virheellinen AFI. On oltava 1 (IPv4) tai 2 (IPv6)."
+msgstr "Virheellinen osoiteperheen tunniste (AFI). On oltava 1 IPv4:lle tai 2 IPv6:lle."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
@@ -4761,7 +4761,7 @@ msgstr "NID-tietueen sisältö ei voi olla tyhjä."
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "NID-sisältö muodossa xxxx:xxxx:xxxx:xxxx (4 ryhmää 4 heksaa)."
+msgstr "NID-tietueen sisällön on oltava muodossa xxxx:xxxx:xxxx:xxxx, jossa on 4 ryhmää 4 heksadesimaalinumeroa."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4858,13 +4858,13 @@ msgstr "NSEC-tietue sisältää virheellisiä merkkejä."
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr "RFC 4034:n mukaan NSEC:n TTL on sama kuin SOA minimum."
+msgstr "RFC 4034:n mukaan NSEC-tietueilla tulisi olla sama TTL kuin SOA-tietueen minimum TTL -kentässä."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
-msgstr "NSEC mahdollistaa \"zone walking\" - kaikkien nimien listauksen."
+msgstr "NSEC-tietueet mahdollistavat \"zone walking\" -menettelyn, jolla voidaan luetella kaikki alueen nimet, mikä voi olla tietosuojaongelma."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
@@ -4953,7 +4953,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr "RRSIG-tyyppi kuuluu NSEC-bittikarttaan DNSSEC-alueilla."
+msgstr "RRSIG-tyypin tulisi yleensä olla mukana NSEC-tyyppibittikartoissa DNSSEC-allekirjoitetuilla alueilla."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
@@ -5153,7 +5153,7 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr "TSIG vaatii tarkat kellot sekä asiakkaalla että palvelimella."
+msgstr "TSIG:n oikea toiminta edellyttää tarkkoja järjestelmäkelloja sekä asiakkaalla että palvelimella."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -5249,7 +5249,7 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr "HMAC-SHA256 suositellaan (RFC 8945) TSIG-algoritmiksi."
+msgstr "RFC 8945 suosittelee HMAC-SHA256:ta ensisijaiseksi TSIG-algoritmiksi useimmissa käyttöönotoissa."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -5311,7 +5311,7 @@ msgstr "SHA-384 (algoritmi 1) on ZONEMD:n suositeltu tiivistealgoritmi."
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr "SHA-512 (algoritmi 2) vahvempi turva, enemmän resursseja."
+msgstr "SHA-512 (algoritmi 2) tarjoaa vahvemman turvallisuuden, mutta vaatii enemmän laskentaresursseja kuin SHA-384."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -5372,7 +5372,7 @@ msgstr "ZONEMD-tiivisteen on oltava vähintään 24 heksamerkkiä (12 oktettia).
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr "ZONEMD SHA-384 (algoritmi 1) täsmälleen 96 heksaa (48 oktettia)."
+msgstr "ZONEMD-tiivisteen on oltava SHA-384:lle (algoritmi 1) täsmälleen 96 heksadesimaalimerkkiä (48 oktettia)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -5564,11 +5564,11 @@ msgstr "Virheellinen SHA-1-tiivisteen pituus. 40 heksamerkkiä."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr "Virheellinen SHA-256-pituus. 64 heksamerkkiä."
+msgstr "Virheellinen tiivisteen pituus SHA-256:lle. Sen tulisi olla 64 heksadesimaalimerkkiä."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr "Virheellinen SHA-384-pituus. 96 heksamerkkiä."
+msgstr "Virheellinen tiivisteen pituus SHA-384:lle. Sen tulisi olla 96 heksadesimaalimerkkiä."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
@@ -5623,7 +5623,7 @@ msgstr "HTTPS-tietueen prioriteetin on oltava numero välillä 0-65535."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS-kohteen on oltava \".\" tai kelvollinen FQDN."
+msgstr "HTTPS-tietueen kohteen on oltava joko \".\" tai kelvollinen täysin määritelty verkkotunnus."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5695,7 +5695,7 @@ msgstr "TKEY-tietueiden prioriteettikentän on oltava 0 tai tyhjä"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY ei ole DNS-tietojen todennukseen, vaan avainten muodostukseen."
+msgstr "TKEY-tietueet eivät ole tarkoitettu DNS-tietojen todennukseen, vaan avainten muodostamiseen DNS-palvelinten ja -resolvereiden välillä."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5718,12 +5718,12 @@ msgstr "TKEY-algoritmin nimen on oltava FQDN (esim. hmac-sha256.)."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY-alun on oltava Unix-aikaleima tai YYYYMMDDHHmmSS."
+msgstr "TKEY-voimaantuloajan on oltava kelvollinen Unix-aikaleima tai YYYYMMDDHHmmSS-muodossa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY-vanhentuminen Unix-aikaleima tai YYYYMMDDHHmmSS."
+msgstr "TKEY-vanhentumisajan on oltava kelvollinen Unix-aikaleima tai YYYYMMDDHHmmSS-muodossa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
@@ -5737,7 +5737,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API-tila (3) ohittaa ajat (RFC 3645)."
+msgstr "GSS-API-tila (3) sivuuttaa voimaantulo- ja vanhentumisajat RFC 3645:n mukaisesti."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
@@ -5776,13 +5776,13 @@ msgstr "TKEY-avaimet on liitetty DNS-palvelimiin, ei alueisiin."
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr "TKEY-vaihdot on suojattava - todennus riippuu tilasta."
+msgstr "TKEY-tietueiden vaihdot tulisi suojata - todennus riippuu käytetystä tilasta."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "HMAC-MD5 on heikko. HMAC-SHA256 tai vahvempi suositeltu."
+msgstr "HMAC-MD5:tä pidetään nykyisten standardien mukaan heikkona. HMAC-SHA256 tai vahvempi on suositeltava."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5802,7 +5802,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr "Virheellinen oletus-TTL. On oltava 0-2147483647."
+msgstr "Virheellinen arvo oletus-TTL:lle. Sen on oltava luku väliltä 0-2147483647."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
@@ -5817,7 +5817,7 @@ msgstr "TTL-arvo ei voi olla negatiivinen. Sen on oltava 0 tai suurempi."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "TTL ylittää enimmäisarvon (%d). RFC 2181 rajoittaa 32-bit:iin."
+msgstr "TTL-arvo ylittää suurimman sallitun (%d). RFC 2181 rajoittaa sen etumerkilliseen 32-bittiseen kokonaislukuun."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -5847,7 +5847,7 @@ msgstr "SOA-tietueen TTL (%d) alle suositellun %d sekunnin (1 tunti)."
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr "URI-tietueet on suojattava DNSSEC:llä manipuloinnilta."
+msgstr "URI-tietueet tulisi suojata DNSSEC:llä, jotta hyökkääjät eivät voi muokata niitä."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -5900,7 +5900,7 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr "URI käyttää epätavallista protokollaa. Harkitse vakio-URI-kaavaa."
+msgstr "URI käyttää epätavallista protokollaa. Harkitse vakiomuotoisen URI-kaavan käyttöä paremman yhteensopivuuden vuoksi."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -5919,7 +5919,7 @@ msgstr "URI ei saa sisältää ohjausmerkkejä."
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr "URI sisältää kenoviivoja, joita tulkitaan eri tavoin."
+msgstr "URI sisältää kenoviivoja, joita eri järjestelmät voivat tulkita eri tavoin."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
@@ -5932,13 +5932,13 @@ msgstr ""
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "URI sisältää prosenttimerkkejä, joita ei ole koodattu oikein."
+msgstr "URI sisältää prosenttimerkkejä, jotka eivät kuulu oikein muotoiltuun prosenttikoodaukseen."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "URI sisältää ei-ASCII-merkkejä. Käytä Punycode:a IDN:lle."
+msgstr "URI sisältää isäntänimessä ei-ASCII-merkkejä. Harkitse Punycoden käyttöä kansainvälisille verkkotunnuksille."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
@@ -5958,13 +5958,13 @@ msgstr ""
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr "Ei-Secure DNS -järjestelmät ohittakoot KX:n (RFC 2230)."
+msgstr "Järjestelmien, jotka eivät toteuta Secure DNS:ää, tulisi sivuuttaa KX-tietueet kokonaan RFC 2230:n mukaisesti."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr "Varmista, että exchanger-palvelimella on oikeat DNS-tietueet."
+msgstr "Varmista, että avaintenvaihtopalvelimelle on määritetty asianmukaiset suorat ja käänteiset DNS-tietueet."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -6466,7 +6466,7 @@ msgstr ""
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr "VAROITUS: Allekirjoitus vanhenee 7 päivässä. Uusi pian."
+msgstr "VAROITUS: Tämä allekirjoitus vanhenee seuraavien 7 päivän kuluessa. Harkitse sen uusimista pian."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
@@ -6521,7 +6521,7 @@ msgstr "RRSIG-allekirjoitus ei voi olla tyhjä."
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr "Allekirjoitus ei vaikuta kelvolliselta base64. RRSIG on base64."
+msgstr "Allekirjoitus ei vaikuta kelvolliselta base64-koodatulta datalta. RRSIG-allekirjoitusten tulisi olla base64-koodattuja."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
@@ -6583,7 +6583,7 @@ msgstr ""
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr "RP-tietueet paljastavat yhteystietoja DNS:ssä, tietosuojariski."
+msgstr "RP-tietueet paljastavat yhteystietoja DNS:ssä, mikä voi aiheuttaa tietosuoja- ja turvallisuusongelmia."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -6672,7 +6672,7 @@ msgstr "\".\" TXT-toimialueessa tarkoittaa, ettei lisä-TXT-tietuetta ole."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT on oltava FQDN (päättyy pisteeseen)."
+msgstr "RP TXT -toimialueen on oltava FQDN (päättyy pisteeseen)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6756,7 +6756,7 @@ msgstr ""
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64 pistevärillä. Muoto: xx-xx-xx-xx-xx-xx-xx-xx."
+msgstr "EUI64-tietue näyttää olevan pisteillä eroteltua muotoa. Muodon on oltava xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
@@ -6837,8 +6837,7 @@ msgstr "DNAME ja CNAME EIVÄT saa esiintyä samanaikaisesti (RFC 6672 §2.3)."
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr ""
-"DNAME EI saa olla samalla omistajanimellä NS:n kanssa, paitsi juuressa."
+msgstr "DNAME-tietueita EI SAA esiintyä samalla omistajanimellä kuin NS-tietueita, ellei omistajanimi ole alueen juuri."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -6861,7 +6860,7 @@ msgstr ""
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr "Erityinen CDS-poistotietue (RFC 8078) DS-tietueen poistoon."
+msgstr "Tämä on erityinen CDS-poistotietue (RFC 8078), joka ilmoittaa ylemmälle alueelle DS-tietueen poistamisesta."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
@@ -7034,7 +7033,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Virheelliset CSYNC-liput. On oltava 0-65535."
+msgstr "Virheelliset liput CSYNC-tietueessa. Lippujen on oltava välillä 0-65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -7113,12 +7112,12 @@ msgstr ""
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "EUI48 ilman erottimia. Muoto: xx-xx-xx-xx-xx-xx yhdysviivoilla."
+msgstr "EUI48-tietueesta puuttuvat erottimet. Muodon on oltava xx-xx-xx-xx-xx-xx, jossa oktettien välissä on yhdysmerkit."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr "EUI48 Cisco-muodossa. Muoto: xx-xx-xx-xx-xx-xx."
+msgstr "EUI48-tietue näyttää olevan Cisco-muodossa. Muodon on oltava xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
@@ -7148,7 +7147,7 @@ msgstr ""
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr "PTR-prioriteetin on oltava 0 tai tyhjä. Arvo ohitetaan."
+msgstr "PTR-tietueiden prioriteettikentän tulisi olla 0 tai tyhjä. Annettu arvo sivuutetaan."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
@@ -7162,7 +7161,7 @@ msgstr ""
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "Sähköpostipalvelimet vaativat yleensä käänteis-DNS:n toimiakseen."
+msgstr "Sähköpostipalvelimet vaativat usein oikein määritetyn käänteisen DNS:n hyväksyäkseen postia palvelimeltasi."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -7387,7 +7386,7 @@ msgstr "Käytät virheellistä ylimmän tason toimialuetta."
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr "SOA-parametrit puuttuvat. Kutsu setSOAParams() ensin."
+msgstr "SOA-tarkistusparametreja ei ole asetettu. Kutsu ensin setSOAParams() tai anna ne argumentteina."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
 #, php-format
@@ -7607,7 +7606,7 @@ msgstr ""
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA tekee sähköpostit näkyviksi DNS:ssä. Mieti tietosuojaa."
+msgstr "SMIMEA tekee sähköpostiosoitteet näkyviksi DNS:ssä. Ota tietosuojavaikutukset huomioon, kun julkaiset SMIMEA-tietueita."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -7928,13 +7927,13 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "Algoritmi 10 (RSASHA512) EI SUOSITELLA allekirjoitukseen."
+msgstr "Algoritmi 10 (RSASHA512) EI OLE SUOSITELTAVA allekirjoitukseen, vaikka sitä on tuettava varmennuksessa."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr "Base64-datan on oltava 4 tavun kerrannainen \"=\"-merkeillä."
+msgstr "Base64-koodattu data tulisi täydentää 4 tavun kerrannaiseksi \"=\"-merkeillä."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
@@ -7985,7 +7984,7 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "VAROITUS: LUA-tietueessa tasapainottomat lainausmerkit."
+msgstr "VAROITUS: Tämän LUA-tietueen lainausmerkit eivät näytä olevan tasapainossa, mikä voi aiheuttaa syntaksivirheitä."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -8122,7 +8121,7 @@ msgstr ""
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr "Määritä SSH-asiakkaat \"VerifyHostKeyDNS yes\" SSHFP-tietueille."
+msgstr "Määritä SSH-asiakasohjelmiin \"VerifyHostKeyDNS yes\", jotta SSHFP-tietueita voidaan käyttää palvelimen varmentamiseen."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -8144,7 +8143,7 @@ msgstr "MR-tietueen sisällön on oltava kelvollinen toimialuenimi."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "MR-sisällön (uusi postilaatikko) on oltava FQDN (pisteellä)."
+msgstr "MR-tietueen sisällön (uusi postilaatikko) tulisi olla FQDN (päättyy pisteeseen)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -8162,7 +8161,7 @@ msgstr "MR-tietueiden prioriteettikentän on oltava 0 tai tyhjä."
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "MR-tietueet KOKEELLISIA (RFC 1035), käytetään harvoin."
+msgstr "MR-tietueet merkittiin RFC 1035:ssä KOKEELLISIKSI, ja niitä käytetään harvoin nykyaikaisissa sähköpostijärjestelmissä."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -8344,7 +8343,7 @@ msgstr ""
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DMARC fo saa olla vain 0, 1, d, s tai kaksoispisteellä eroteltuna."
+msgstr "DMARC:n virheraportointiasetusten tunniste (fo) saa sisältää vain arvot 0, 1, d, s tai kaksoispistein erotettuja yhdistelmiä"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8406,14 +8405,14 @@ msgstr "TXT-sisältö ylittää enimmäispituuden %d tavua. Pienennä sisältö�
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "Jokainen TXT-merkkijono enintään 255 tavua. Jaa pitkät."
+msgstr "Jokaisen TXT-tietueen merkkijonon on oltava enintään 255 tavua. Jaa pitkä sisältö useaan merkkijonoon."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "TXT-sisältö kokonaisuudessaan ylittää %d tavua. Pienennä."
+msgstr "TXT-tietueen kokonaissisältö ylittää enimmäispituuden %d tavua. Pienennä sisällön kokoa."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -8429,13 +8428,13 @@ msgstr "Virheellinen IPv4-osoitteen muoto."
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Virheellinen prioriteetti. A-tietueilla on oltava 0."
+msgstr "Virheellinen arvo prioriteettikentässä. A-tietueiden prioriteettiarvon on oltava 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr "CDS-tietueet vain alueen juureen, ei aliverkkoihin (RFC 7344)."
+msgstr "CDS-tietueet tulisi sijoittaa vain alueen juureen, ei aliverkkotunnuksiin, kuten RFC 7344 edellyttää."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -8445,7 +8444,7 @@ msgstr "CDS-tietueiden prioriteettikentän on oltava 0 tai tyhjä"
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr "RFC 8078:n mukaan CDS:n on oltava vakaita ennen hyväksymistä."
+msgstr "RFC 8078:n mukaan CDS-tietueiden tulisi pysyä muuttumattomina jonkin aikaa, ennen kuin ylemmät alueet hyväksyvät ne."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -8498,7 +8497,7 @@ msgstr "CDS-tiivisteen on oltava kelvollinen hex-merkkijono pituudeltaan %d."
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr "CDS-tietueiden kanssa vastaavat CDNSKEY-tietueet (RFC 7344)."
+msgstr "CDS-tietueiden mukana on oltava vastaavat CDNSKEY-tietueet, kuten RFC 7344 suosittelee."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -8616,7 +8615,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Virheellinen SRV-painoarvo. 0-65535."
+msgstr "Virheellinen arvo SRV-tietueen painokentässä. On oltava 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -8766,7 +8765,7 @@ msgstr "NSEC3-tietue sisältää virheellisen tietuetyypin: %s"
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr "RRSIG-tyyppi kuuluu NSEC3-bittikarttaan DNSSEC-alueilla."
+msgstr "RRSIG-tyypin tulisi yleensä olla mukana NSEC3-tyyppibittikartoissa DNSSEC-allekirjoitetuilla alueilla."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -8778,7 +8777,7 @@ msgstr "NSEC3-tietue sisältää SOA ja NS, todennäköisesti alueen juuressa."
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr "NSEC3-alueen juuressa NSEC3PARAM tulisi olla DNSKEY:n kanssa."
+msgstr "NSEC3:a käyttävän alueen juuressa NSEC3PARAM-tyypin tulisi yleensä olla mukana DNSKEY:n ohella."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -8861,7 +8860,7 @@ msgstr "NAPTR regexp -on oltava lainausmerkeissä merkkijono."
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR-korvauksen on oltava \".\" tai kelvollinen FQDN."
+msgstr "NAPTR-tietueen korvausarvon on oltava joko \".\" tai kelvollinen täysin määritelty verkkotunnus."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
@@ -9384,7 +9383,7 @@ msgstr "Olet aktivoimassa DNSSEC-avainta (tunnus"
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr "Avaimen aktivointi liittää sen aktiiviseen DNSSEC-ketjuun."
+msgstr "Tämän avaimen aktivointi liittää sen tämän alueen aktiiviseen DNSSEC-allekirjoitusketjuun."
 
 #: templates/modern/dnssec_delete_key.html:27
 msgid "Key Details"
@@ -10677,7 +10676,7 @@ msgstr "Tietosuoja"
 msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
-msgstr "Kirjautumisesi ja DNS-toimintosi voidaan kirjata lokiin turvasyistä"
+msgstr "Kirjautumistoimintasi ja DNS-hallintatoimesi voidaan kirjata lokiin turvallisuus- ja tarkastustarkoituksiin"
 
 #: templates/modern/user_agreement_content.html:15
 msgid ""
@@ -10763,7 +10762,7 @@ msgstr ""
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr "Uusi avain näytetään vain kerran, ole valmis tallentamaan."
+msgstr "Uusi avain näytetään uudelleenluonnin jälkeen vain kerran, joten varaudu tallentamaan se."
 
 #: templates/modern/api_key_delete.html:20
 msgid "API Key Details"
@@ -11085,7 +11084,7 @@ msgstr "Jätä tyhjäksi säilyttääksesi nykyisen salasanan"
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
-msgstr "Mallin oikeudet ovat globaaleja tälle käyttäjälle"
+msgstr "Tämän mallin käyttöoikeudet ovat voimassa yleisesti koko järjestelmässä tälle käyttäjälle"
 
 #: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
 msgid "Optional information about this user"
@@ -11236,7 +11235,7 @@ msgstr "aluetta yhteensä"
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
-msgstr "Tämä irrottaa alueet mallistaan. Haluatko jatkaa?"
+msgstr "Tämä irrottaa nämä alueet mallistaan. Haluatko varmasti jatkaa?"
 
 #: templates/modern/confirm_unlink_zones_templ.html:26
 msgid "Zones to be unlinked"
@@ -11286,7 +11285,7 @@ msgstr "Ryhmämalli"
 msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
-msgstr "Käyttäjämallit kaikille; ryhmämallit vain ryhmän alueille"
+msgstr "Käyttäjämallit ovat voimassa yleisesti; ryhmämallit koskevat vain ryhmän omistamia alueita"
 
 #: templates/modern/edit_perm_templ.html:41
 msgid "Please select a template type"
@@ -11547,7 +11546,7 @@ msgstr "Vaatimukset"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr "Vastaavan käänteisen alueen on oltava PowerDNS:ssä valmiina."
+msgstr "Asianmukaisen käänteisen alueen on oltava jo luotuna PowerDNS:ään, ennen kuin voit käyttää tätä ominaisuutta."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -11751,7 +11750,7 @@ msgstr "DNS-tietueen ohjattu toiminto"
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr "Valitse ohjattu toiminto monimutkaisten DNS-tietueiden luomiseen."
+msgstr "Valitse ohjattu toiminto, joka auttaa luomaan monimutkaisia DNS-tietueita ohjatuilla lomakkeilla käsin kirjoittamisen sijaan."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
@@ -12917,7 +12916,7 @@ msgstr ""
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
 "Multi-factor authentication adds an extra layer of security to your account."
-msgstr "Monivaiheinen todennus lisää tilisi suojausta."
+msgstr "Monivaiheinen todennus lisää tilillesi ylimääräisen suojauskerroksen."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid "MFA is currently enabled"
@@ -12937,7 +12936,7 @@ msgstr "MFA on tällä hetkellä pois käytöstä"
 
 #: templates/default/mfa_setup.html:57 templates/modern/mfa_setup.html:57
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Tiliäsi ei ole suojattu MFA:lla."
+msgstr "Tiliäsi ei ole suojattu monivaiheisella todennuksella."
 
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
@@ -12994,7 +12993,7 @@ msgstr "Sähköpostivahvistus ei ole käytössä, postipalvelu ei ole päällä.
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
-msgstr "Aseta sähköpostiosoite profiiliisi ennen vahvistusta."
+msgstr "Sinun on asetettava sähköpostiosoitteesi profiiliisi, ennen kuin voit käyttää sähköpostivahvistusta."
 
 #: templates/default/mfa_setup.html:113 templates/modern/mfa_setup.html:113
 msgid "Set up email verification"
@@ -13426,7 +13425,7 @@ msgstr "Mallin ohittamistiedot"
 msgid ""
 "The following standard templates are currently overridden by custom "
 "templates:"
-msgstr "Seuraavat vakiomallit on korvattu mukautetuilla:"
+msgstr "Seuraavat vakiomallit on tällä hetkellä korvattu mukautetuilla malleilla:"
 
 #: templates/modern/email_previews.html:77
 msgid "using custom template"
@@ -13469,7 +13468,7 @@ msgstr "Vaalea tila on useimpien sähköpostiohjelmien oletus"
 #: templates/modern/email_previews.html:94
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
-msgstr "Tumma-tilan esikatselu näyttää sähköpostien ulkoasun"
+msgstr "Tumman tilan esikatselu näyttää, miltä sähköpostit näyttävät, kun käyttäjällä on tumma tila käytössä"
 
 #: templates/modern/email_previews.html:95
 msgid "These previews reflect the actual templates used in production"
@@ -13487,7 +13486,7 @@ msgstr "Päivitä tila"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "PowerDNS API:a ei ole määritetty. Määritä URL ja avain."
+msgstr "PowerDNS API:a ei ole määritetty. Määritä PowerDNS API:n URL ja avain asetuksissasi."
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13912,7 +13911,7 @@ msgstr "Olet poistamassa aktiivista DNSSEC-avainta (tunnus"
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "Aktiivisen avaimen poisto vaikuttaa alueen turvallisuuteen."
+msgstr "Aktiivisen avaimen poistaminen vaikuttaa alueesi turvallisuuteen ja voi aiheuttaa varmennusvirheitä."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"

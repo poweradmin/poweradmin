@@ -181,7 +181,7 @@ msgstr "Sertifikaat peab täpselt sobima, mööduma PKI-st (DANE-EE)"
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "Kuidas sertifikaati valideerida. Tüüp 3 ise-allkirjastatud."
+msgstr "Kuidas sertifikaati tuleks valideerida. Tüüp 3 on kõige levinum ise allkirjastatud või kohandatud CA-de puhul."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -728,7 +728,7 @@ msgstr "Mehhanisme pole valitud. SPF-kirje sisaldab ainult vaiketoimingut."
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr "\"+all\" lubab kõigil teie domeenilt saata. Väga ei soovitata."
+msgstr "\"+all\" kasutamine lubab kõigil saata e-kirju teie domeeni nimel. See on tungivalt ebasoovitatav."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -1001,7 +1001,7 @@ msgstr "Avalik võti peab olema kehtiv base64 andmetega"
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr "Avalik võti tundub liiga lühike. Tagage täielik võti."
+msgstr "Avalik võti tundub ebatavaliselt lühike. Veenduge, et kopeerisite oma e-posti serverist täieliku võtme."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
@@ -1092,7 +1092,7 @@ msgstr "Siht-hostinimi"
 msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
-msgstr "Teenust pakkuva serveri hostinimi (A/AAAA kirjega, mitte IP)"
+msgstr "Teenust pakkuva serveri hostinimi (peab olema A/AAAA-kirjega hostinimi, mitte IP-aadress)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:154
 msgid ""
@@ -3977,7 +3977,7 @@ msgstr "Prioriteet peab HHIT-kirjete puhul olema 0."
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr "NS või MX ei saa viidata CNAME kirjele. Eemaldage või nimetage ümber."
+msgstr "NS- või MX-kirje ei saa osutada CNAME-kirjele. Eemaldage või nimetage CNAME-kirje esmalt ümber või valige teine nimi."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
@@ -4031,7 +4031,7 @@ msgstr "See tundub TLSA kirjeks SMTP jaoks. Tagage MX kirjete õige seadistus."
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr "See tundub TLSA kirjeks HTTPS jaoks. Tagage sertifikaadi sobivus."
+msgstr "See paistab olevat HTTPS-i jaoks mõeldud TLSA-kirje. Veenduge, et sertifikaat vastaks TLSA-kirjes olevale domeenile."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
@@ -4045,7 +4045,7 @@ msgstr ""
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
-msgstr "KRIITILINE: TLSA NÕUAB DNSSEC-i. Tagage DNSSEC allkirjastamine."
+msgstr "KRIITILINE: TLSA-kirjed NÕUAVAD DNSSEC-i, et pakkuda üldse mingit turvalisust. Veenduge, et teie domeen on DNSSEC-iga allkirjastatud."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
@@ -4286,15 +4286,13 @@ msgstr "NSEC3PARAM iteratsioonid peavad olema 0 kuni 2500."
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 soovitab 0 iteratsiooni. Rohkem ei paranda turvalisust."
+msgstr "RFC 9276 soovitab kasutada 0 iteratsiooni. Lisaiteratsioonid suurendavad arvutuskoormust, parandamata turvalisust."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr ""
-"Kõrged iteratsioonid (>100) võivad tekitada tagasilükkamisi. RFC 9276 "
-"soovitab 0."
+msgstr "Suured iteratsioonide väärtused (>100) võivad panna valideerivad lahendajad teie tsoone tagasi lükkama. RFC 9276 soovitab TUNGIVALT kasutada 0 iteratsiooni."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -4706,7 +4704,7 @@ msgstr "Vigane APL elementi vorming."
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr "Vigane AFI. Peab olema 1 (IPv4) või 2 (IPv6)."
+msgstr "Vigane aadressiperekonna identifikaator (AFI). Peab olema 1 IPv4 või 2 IPv6 puhul."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
@@ -4748,7 +4746,7 @@ msgstr "NID-kirje sisu ei tohi olla tühi."
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "NID sisu vormingus xxxx:xxxx:xxxx:xxxx (4 gruppi 4 heksamärki)."
+msgstr "NID-kirje sisu peab olema vormingus xxxx:xxxx:xxxx:xxxx, milles on 4 rühma ja igas rühmas 4 heksadetsimaalset numbrit."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4766,7 +4764,7 @@ msgstr ""
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr "NID kirjed peaksid kasutama RFC 6742 vormingut (xxxx:xxxx:xxxx:xxxx)."
+msgstr "NID-kirjed peaksid parema loetavuse huvides kasutama RFC 6742 esitusvormingut (xxxx:xxxx:xxxx:xxxx) koolonitega."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
@@ -4850,13 +4848,13 @@ msgstr ""
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
-msgstr "NSEC kirjed võimaldavad \"zone walking\" - kõigi nimede loetlemist."
+msgstr "NSEC-kirjed võimaldavad \"zone walking\" ehk tsooni läbikäimist, mis lubab loetleda kõik tsoonis olevad nimed ja võib olla privaatsusprobleem."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr "Kui tsooni loetlemine on mureks, kaaluge NSEC3 kasutamist (RFC 5155)."
+msgstr "Kui tsooni loetlemine on mureks, kaaluge selle asemel NSEC3-kirjete (RFC 5155) kasutamist, mis kasutavad räsitud omanikunimesid."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
@@ -5148,7 +5146,7 @@ msgstr ""
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TSIG algoritmi nimi peab olema FQDN (nt hmac-sha256.)."
+msgstr "TSIG algoritmi nimi peab olema kehtiv domeeninimi, mis lõpeb punktiga (nt hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
@@ -5229,7 +5227,7 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr "HMAC-SHA256 on RFC 8945 järgi eelistatud TSIG algoritm."
+msgstr "RFC 8945 soovitab HMAC-SHA256 kui eelistatud TSIG algoritmi enamiku juurutuste jaoks."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -5551,11 +5549,11 @@ msgstr "Vigane SHA-1 kokkuvõtte pikkus. 40 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr "Vigane SHA-256 pikkus. 64 heksamärki."
+msgstr "Vigane SHA-256 kokkuvõtte pikkus. Peaks olema 64 heksadetsimaalset märki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr "Vigane SHA-384 pikkus. 96 heksamärki."
+msgstr "Vigane SHA-384 kokkuvõtte pikkus. Peaks olema 96 heksadetsimaalset märki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
@@ -5609,7 +5607,7 @@ msgstr "HTTPS-kirje prioriteet peab olema number 0 kuni 65535."
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr "HTTPS sihtmärk peab olema \".\" või kehtiv FQDN."
+msgstr "HTTPS-kirje sihtmärk peab olema kas \".\" või kehtiv täielikult kvalifitseeritud domeeninimi."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
@@ -5704,7 +5702,7 @@ msgstr ""
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr "TKEY algoritmi nimi peab olema FQDN (nt hmac-sha256.)."
+msgstr "TKEY algoritmi nimi peab olema kehtiv domeeninimi, mis lõpeb punktiga (nt hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
@@ -5771,7 +5769,7 @@ msgstr ""
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr "HMAC-MD5 on nõrk. Soovitatav HMAC-SHA256 või tugevam."
+msgstr "HMAC-MD5 loetakse nüüdisaegsete standardite järgi nõrgaks. Soovitatav on HMAC-SHA256 või tugevam."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5790,7 +5788,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr "Vigane vaikimisi TTL. Peab olema 0-2147483647."
+msgstr "Vigane vaikimisi TTL väärtus. See peab olema arv vahemikus 0 kuni 2147483647."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
@@ -5928,7 +5926,7 @@ msgstr "URI sisaldab protsendi märke, mis pole korrektselt kodeeritud."
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "URI sisaldab mitte-ASCII märke. Kasutage Punycode IDN jaoks."
+msgstr "URI hostinimi sisaldab mitte-ASCII märke. Kaaluge rahvusvaheliste domeeninimede jaoks Punycode'i kasutamist."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
@@ -6090,7 +6088,7 @@ msgstr "ptr mehhanism pole jõudluse tõttu soovitatud (RFC 7208 §5.5)."
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\" mehhanism peab olema viimane (RFC 7208 §5.1)."
+msgstr "\"all\" mehhanism peaks olema kirje viimane mehhanism (RFC 7208 jaotis 5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -6294,7 +6292,7 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr "Regulaarne võtme vahetus: ZSK 1-3 kuud, KSK 1-2 aastat."
+msgstr "Regulaarne võtmevahetus on soovitatav turvatava: ZSK iga 1-3 kuu ja KSK iga 1-2 aasta tagant."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
@@ -6333,13 +6331,13 @@ msgstr ""
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritm 3 (DSA/SHA1) pole turvaline ja tuleb asendada."
+msgstr "Algoritmi 3 (DSA/SHA1) peetakse ebaturvaliseks ja see tuleks asendada tugevamate algoritmidega."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr "Algoritm 5 (RSA/SHA-1) pole turvaline ja tuleb asendada."
+msgstr "Algoritmi 5 (RSA/SHA-1) peetakse ebaturvaliseks ja see tuleks asendada tugevamate algoritmidega."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -6620,7 +6618,7 @@ msgstr "RP postkasti domeen sisaldab tühja silti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP postkasti silt ületab 63 märki."
+msgstr "RP postkasti domeeni silt ületab suurimat lubatud pikkust, milleks on 63 märki."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -6646,11 +6644,11 @@ msgstr ""
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr "\".\" TXT domeenis tähendab, et täiendavat TXT kirjet pole."
+msgstr "\".\" kasutamine TXT domeenina tähendab, et täiendava teabe TXT-kirjet ei ole saadaval."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT peab olema FQDN (lõppeb punktiga)."
+msgstr "RP TXT domeen peab olema täielikult kvalifitseeritud domeeninimi (lõppeb punktiga)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6662,7 +6660,7 @@ msgstr "RP TXT domeen sisaldab tühja silti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "RP TXT domeeni silt ületab 63 märki."
+msgstr "RP TXT domeeni silt ületab suurimat lubatud pikkust, milleks on 63 märki."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
@@ -6709,7 +6707,7 @@ msgstr "EUI64 kirjete prioriteedi väli peab olema 0 või tühi."
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 soovitab mitte avaldada EUI-64 aadresse avalikus DNS-is."
+msgstr "RFC 7043 soovitab võimalike privaatsusmõjude tõttu mitte avaldada EUI-64 aadresse avalikus DNS-is."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
@@ -6723,7 +6721,7 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64 eraldajad puuduvad. Vorming: xx-xx-xx-xx-xx-xx-xx-xx."
+msgstr "EUI64-kirjel puuduvad eraldajad. Vorming peab olema xx-xx-xx-xx-xx-xx-xx-xx, kus oktettide vahel on sidekriipsud."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -7066,7 +7064,7 @@ msgstr "Prioriteet peab olema 0 EUI48 kirjete jaoks."
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr "RFC 7043 soovitab mitte avaldada EUI-48 aadresse avalikus DNS-is."
+msgstr "RFC 7043 soovitab võimalike privaatsusmõjude tõttu mitte avaldada EUI-48 aadresse avalikus DNS-is."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
@@ -7129,7 +7127,7 @@ msgstr ""
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr "E-posti serverid nõuavad sageli pöörd-DNS-i õiget seadistust."
+msgstr "E-posti serverid nõuavad sageli korrektselt seadistatud pöörd-DNS-i, et teie serverist saadetud kirju vastu võtta."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -7525,7 +7523,7 @@ msgstr ""
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "CNAME ei saa koos eksisteerida teiste tüüpidega. Leitud %s kirje."
+msgstr "CNAME-kirje ei saa sama nime all koos eksisteerida teiste kirjetüüpidega. Leiti olemasolev %s kirje."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:131
 msgid ""
@@ -7572,7 +7570,7 @@ msgstr ""
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA muudab e-posti DNS-is nähtavaks. Kaaluge privaatsust."
+msgstr "SMIMEA muudab e-posti aadressid DNS-is nähtavaks. Kaaluge SMIMEA-kirjete avaldamisel privaatsusmõjusid."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -7721,7 +7719,7 @@ msgstr ""
 msgid ""
 "CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
 "SMIMEA offers NO security benefit."
-msgstr "KRIITILINE: SMIMEA NÕUAB DNSSEC-i. Ilma DNSSEC-ita pole turvalisust."
+msgstr "KRIITILINE: SMIMEA-kirjed NÕUAVAD turvalisuse tagamiseks DNSSEC-i. Ilma DNSSEC-ita ei anna SMIMEA MITTE MINGIT turvalisust juurde."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
 msgid ""
@@ -7845,7 +7843,7 @@ msgstr "Vigased märgid CDNSKEY-kirje sisus."
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr "\"0 3 0 0\" vorming (RFC 8078), kaaluge \"0 3 0 AA==\" kasutamist."
+msgstr "Kasutusel on RFC 8078 erratum'ist pärit vorming \"0 3 0 0\"; kaaluge standardse vormingu \"0 3 0 AA==\" kasutamist."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
@@ -7888,7 +7886,7 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "Algoritm 10 (RSASHA512) POLE SOOVITATUD allkirjastamiseks."
+msgstr "Algoritm 10 (RSASHA512) EI OLE SOOVITATAV allkirjastamiseks, kuigi seda peab valideerimiseks toetama."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -7944,7 +7942,7 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr "HOIATUS: LUA kirjel on tasakaalustamata jutumärgid."
+msgstr "HOIATUS: Sellel LUA-kirjel paistavad olevat tasakaalustamata jutumärgid, mis võivad põhjustada süntaksivigu."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
@@ -8045,7 +8043,7 @@ msgstr "SSHFP sõrmejälje tüüp peab olema 1 (SHA-1) või 2 (SHA-256)."
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr "SHA-1 sõrmejäljed on aegunud. RFC 6594 soovitab SHA-256 (tüüp 2)."
+msgstr "SHA-1 sõrmejäljed on aegunud. RFC 6594 soovitab parema turvalisuse huvides kasutada SHA-256 sõrmejälgi (tüüp 2)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
@@ -8102,7 +8100,7 @@ msgstr "MR-kirje sisu peab olema kehtiv domeeninimi."
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr "MR sisu (uus postkast) peab olema FQDN (punktiga)."
+msgstr "MR-kirje sisu (uus postkast) peaks olema täielikult kvalifitseeritud domeeninimi (lõppeb punktiga)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -8120,7 +8118,7 @@ msgstr "MR kirjete prioriteedi väli peab olema 0 või tühi."
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr "MR kirjed on EKSPERIMENTAALSED (RFC 1035), kasutatakse harva."
+msgstr "MR-kirjed märgiti RFC 1035-s EKSPERIMENTAALSEKS ja neid kasutatakse nüüdisaegsetes e-posti süsteemides harva."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -8241,7 +8239,7 @@ msgstr "DMARC-kirje peab algama \"v=DMARC1\"-ga"
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr "DMARC ületab 255 märki. Lihtsustage või kasutage URI viiteid."
+msgstr "DMARC-kirje ületab 255 märgi piirangut. Keerukate poliitikate puhul kaaluge nende lihtsustamist või URI-viidete kasutamist."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -8296,7 +8294,7 @@ msgstr "DMARC aruandluse intervalli silt (ri) peab olema positiivne täisarv"
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr "DMARC fo peab sisaldama ainult 0, 1, d, s või kooloniga eraldatud."
+msgstr "DMARC tõrgetest teatamise valikute silt (fo) peab sisaldama ainult väärtusi 0, 1, d, s või nende kooloniga eraldatud kombinatsioone"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -8357,14 +8355,14 @@ msgstr "TXT sisu ületab maksimumi %d baiti. Vähendage sisu suurust."
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr "Iga TXT string peab olema 255 baiti või vähem. Jagage pikad."
+msgstr "Iga TXT-kirje string peab olema 255 baiti või vähem. Jagage pikk sisu mitmeks stringiks."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Kogu TXT sisu ületab maksimumi %d baiti. Vähendage sisu."
+msgstr "Kogu TXT-kirje sisu ületab suurimat lubatud pikkust, milleks on %d baiti. Palun vähendage sisu mahtu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
@@ -8380,7 +8378,7 @@ msgstr "Vigane IPv4 aadressi vorming."
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr "Vigane prioriteet. A-kirjetel peab olema 0."
+msgstr "Vigane väärtus prioriteedi väljal. A-kirjete prioriteedi väärtus peab olema 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
@@ -8551,7 +8549,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Protokoll \"%s\" pole tuntud. Tavalised on _tcp ja _udp."
+msgstr "Protokolli \"%s\" ei ole tuntud protokollide loendis. Tavalised protokollid on _tcp ja _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -8697,13 +8695,13 @@ msgstr "NSEC3 sool peab olema - (tühi) või kuueteistkümnendväärtus."
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr "NSEC3 järgmine räsitud nimi peab olema kehtiv Base32hex (0-9, A-V)."
+msgstr "NSEC3 järgmine räsitud omanikunimi peab olema kehtiv Base32hex-kodeeritud väärtus (kasutades märke 0-9 ja A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "Type bit mapid peavad näitama olemasolevaid RR tüüpe."
+msgstr "Tüübibitikaardid peaksid olema olemas, et näidata, millised RR-tüübid esinevad algse omanikunime juures."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8720,7 +8718,7 @@ msgstr "RRSIG tüüp peaks olema NSEC3 bitikaardis DNSSEC tsoonide jaoks."
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr "NSEC3 kirje sisaldab SOA ja NS, tõenäoliselt tsooni tipus."
+msgstr "See NSEC3-kirje sisaldab nii SOA- kui ka NS-tüüpi, mis viitab sellele, et see võib olla tsooni tipu jaoks."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
@@ -8943,7 +8941,7 @@ msgstr "%s (algoritm %d) on MUST algoritm vastavalt RFC 8624."
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "%s (algoritm %d) on valikuline RFC 8624 järgi."
+msgstr "%s (algoritm %d) on RFC 8624-s määratud teostamiseks valikuliseks."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
@@ -9033,7 +9031,7 @@ msgstr "Teil pole õigust API võtmeid uuesti luua."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "Tsoonis pole SOA-kirjet. Vajalik DNSSEC jaoks."
+msgstr "Tsoonis ei ole SOA-kirjet või see ei ole aktiivne. DNSSEC-i jaoks on see nõutav."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -10290,7 +10288,7 @@ msgstr "Mallidest"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Tsooni mallid võimaldavad luua eelmääratletud DNS-kirjete komplekte."
+msgstr "Tsooni mallid võimaldavad luua eelmääratletud DNS-kirjete komplekte, mida saab uute tsoonide loomisel kiiresti rakendada."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -10707,7 +10705,7 @@ msgstr ""
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr "Uus võti kuvatakse pärast uuendamist ainult üks kord."
+msgstr "Uus võti kuvatakse pärast uuesti loomist ainult üks kord, seega valmistuge selle salvestamiseks."
 
 #: templates/modern/api_key_delete.html:20
 msgid "API Key Details"
@@ -11694,7 +11692,7 @@ msgstr "DNS-kirje viisard"
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr "Valige viisard keeruliste DNS kirjete loomiseks juhendatud vormidega."
+msgstr "Valige viisard, mis aitab teil luua keerukaid DNS-kirjeid juhendatud vormide abil käsitsi teksti sisestamise asemel."
 
 #: templates/modern/dns_wizard_select.html:25
 msgid ""
@@ -12551,7 +12549,7 @@ msgstr "Sellel tsooni mallil pole SOA (Start of Authority) kirjet."
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr "DNS tsoonid vajavad tavaliselt SOA-kirjet, DNSSEC ebaõnnestub ilma."
+msgstr "DNS-tsoonid vajavad nõuetekohaseks toimimiseks tavaliselt SOA-kirjet ja ilma selleta võib DNSSEC-iga allkirjastamine ebaõnnestuda."
 
 #: templates/modern/edit_zone_templ.html:320
 msgid "Do you want to continue without adding an SOA record?"
@@ -12781,7 +12779,7 @@ msgstr "Mitme teguri autentimine on nüüd lubatud"
 
 #: templates/modern/mfa_recovery_codes.html:17
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Teie konto on nüüd MFA-ga kaitstud."
+msgstr "Teie konto on nüüd kaitstud mitme teguri autentimisega."
 
 #: templates/modern/mfa_setup.html:28 templates/modern/mfa_setup.html:30
 msgid "Authentication method:"
@@ -12855,7 +12853,7 @@ msgstr "MFA seadistus vajalik"
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr "Teie organisatsioon nõuab MFA-d. Seadistage MFA jätkamiseks."
+msgstr "Teie organisatsioon nõuab mitme teguri autentimist. Seadistage MFA, et süsteemi kasutamist jätkata."
 
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
@@ -12880,7 +12878,7 @@ msgstr "MFA on hetkel keelatud"
 
 #: templates/default/mfa_setup.html:57 templates/modern/mfa_setup.html:57
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Teie konto pole kaitstud MFA-ga."
+msgstr "Teie konto ei ole kaitstud mitme teguri autentimisega."
 
 #: templates/default/mfa_setup.html:71 templates/modern/mfa_setup.html:71
 msgid ""
@@ -13431,7 +13429,7 @@ msgstr "Värskenda olekut"
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
-msgstr "PowerDNS API pole seadistatud. Palun seadistage URL ja võti."
+msgstr "PowerDNS API ei ole seadistatud. Palun seadistage oma seadetes PowerDNS API URL ja võti."
 
 #: templates/default/pdns_status.html:28 templates/modern/pdns_status.html:28
 msgid "Server Running"
@@ -13857,7 +13855,7 @@ msgstr "Kavatsete kustutada aktiivse DNSSEC võtme (ID"
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "Aktiivse võtme kustutamine mõjutab tsooni turvalisust."
+msgstr "Aktiivse võtme kustutamine mõjutab teie tsooni turvalisust ja võib põhjustada valideerimistõrkeid."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"
