@@ -2996,15 +2996,15 @@ msgstr "Le modèle de zone a été supprimé avec succès."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "Vous n'avez pas l'autorisation de modifier un supermaître."
+msgstr "Vous n'avez pas l'autorisation de modifier un supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Le supermaître que vous essayez de modifier n'existe pas."
+msgstr "Le supermaster que vous essayez de modifier n'existe pas."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "Le supermaître a été mis à jour avec succès."
+msgstr "Le supermaster a été mis à jour avec succès."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -3046,11 +3046,11 @@ msgstr "La synchronisation des zones a échoué : %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "Vous n'avez pas l'autorisation d'ajouter un nouveau supermaître."
+msgstr "Vous n'avez pas l'autorisation d'ajouter un nouveau supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "Le supermaître a été ajouté avec succès."
+msgstr "Le supermaster a été ajouté avec succès."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3329,7 +3329,7 @@ msgstr "Le groupe a été mis à jour avec succès."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Vous n'avez pas l'autorisation de supprimer un supermaître."
+msgstr "Vous n'avez pas l'autorisation de supprimer un supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3345,7 +3345,7 @@ msgstr "Le supermaître n'existe pas."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Le supermaître a été supprimé avec succès."
+msgstr "Le supermaster a été supprimé avec succès."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3660,7 +3660,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Serveur Maître Secondaire"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3684,7 +3684,7 @@ msgstr "Supprimer l'autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "Supprimer le serveur maître secondaire"
+msgstr "Supprimer le supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3762,7 +3762,7 @@ msgstr "Détails de l'Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "Détails du Serveur Maître Secondaire"
+msgstr "Détails du supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3770,7 +3770,7 @@ msgstr "Vous êtes sur le point de supprimer l'autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "Vous êtes sur le point de supprimer le serveur maître secondaire"
+msgstr "Vous êtes sur le point de supprimer le supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3778,7 +3778,7 @@ msgstr "Oui, supprimer cet autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "Oui, supprimer ce serveur maître secondaire"
+msgstr "Oui, supprimer ce supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3786,7 +3786,7 @@ msgstr "Non, conserver cet autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "Non, conserver ce serveur maître secondaire"
+msgstr "Non, conserver ce supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -4339,9 +4339,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"L'enregistrement TLSA doit contenir usage, sélecteur, type-correspondance et "
-"données-certificat séparés par des espaces."
+msgstr "L'enregistrement TLSA doit contenir usage, selector, matching-type et certificate-data séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4383,9 +4381,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 recommande usage=3 (DANE-EE), sélecteur=1 (SPKI), type-"
-"correspondance=1 (SHA-256) comme configuration la plus robuste."
+msgstr "RFC 7671 recommande usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) comme configuration la plus robuste."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4414,9 +4410,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Le type de correspondance 0 (Correspondance exacte) n'est pas recommandé. "
-"SHA-256 (1) offre une meilleure compatibilité et sécurité."
+msgstr "Le matching-type 0 (Correspondance exacte) n'est pas recommandé. SHA-256 (1) offre une meilleure compatibilité et sécurité."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5670,9 +5664,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"L'enregistrement ZONEMD doit contenir le série, schéma, algorithme-hachage "
-"et digest séparés par des espaces."
+msgstr "L'enregistrement ZONEMD doit contenir serial, scheme, hash-algorithm et digest séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5749,9 +5741,7 @@ msgstr "Caractères invalides dans le contenu de l'enregistrement CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"L'enregistrement CERT doit contenir le type, key-tag, algorithme et données-"
-"certificat séparés par des espaces."
+msgstr "L'enregistrement CERT doit contenir type, key-tag, algorithm et certificate-data séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5882,9 +5872,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Format d'enregistrement DLV invalide. Attendu : <key-tag> <algorithme> <type-"
-"digest> <digest>."
+msgstr "Format d'enregistrement DLV invalide. Attendu : <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -6022,9 +6010,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Les paramètres de l'enregistrement HTTPS doivent être au format clé=valeur "
-"séparés par des espaces."
+msgstr "Les paramètres de l'enregistrement HTTPS doivent être au format key=value séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -6104,10 +6090,7 @@ msgstr "Caractères invalides dans le contenu de l'enregistrement TKEY."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"L'enregistrement TKEY doit contenir le nom d'algorithme, l'heure de début, "
-"l'heure d'expiration, le mode, l'erreur et les données de clé séparés par "
-"des espaces."
+msgstr "L'enregistrement TKEY doit contenir algorithm-name, inception-time, expiration-time, mode, error et key-data séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7811,7 +7794,7 @@ msgstr "Domaine CA invalide dans l'étiquette issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Les paramètres de l'étiquette issue doivent être au format clé=valeur."
+msgstr "Les paramètres de l'étiquette issue doivent être au format key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -8101,9 +8084,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"Les paramètres SVCB doivent être au format clé=valeur séparés par des "
-"espaces."
+msgstr "Les paramètres SVCB doivent être au format key=value séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -8199,9 +8180,7 @@ msgstr "L'enregistrement SMIMEA contient des caractères invalides."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"L'enregistrement SMIMEA doit contenir usage, sélecteur, type-correspondance "
-"et données-certificat séparés par des espaces."
+msgstr "L'enregistrement SMIMEA doit contenir usage, selector, matching-type et certificate-data séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8321,9 +8300,7 @@ msgstr "Les données de certificat SMIMEA SHA-512 doivent avoir 128 caractères.
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"La configuration SMIMEA recommandée est usage=3 (DANE-EE), sélecteur=1 "
-"(SubjectPublicKeyInfo) et type-correspondance=1 (SHA-256)."
+msgstr "La configuration SMIMEA recommandée est usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) et matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -9117,9 +9094,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"L'enregistrement CDS doit contenir étiquette-clé, algorithme, type-résumé et "
-"résumé séparés par des espaces."
+msgstr "L'enregistrement CDS doit contenir key-tag, algorithm, digest-type et digest séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9838,9 +9813,7 @@ msgstr "L'enregistrement SOA a un format de contenu invalide."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr ""
-"Le format SOA devrait être : ns-primaire hostmaster série actualisation "
-"réessai expiration minimum"
+msgstr "Le format SOA devrait être : primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9875,7 +9848,7 @@ msgstr "Ligne vide."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Format invalide. Attendu au minimum : nom,type,contenu"
+msgstr "Format invalide. Attendu au minimum : name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10449,7 +10422,7 @@ msgstr "Enregistrement A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>cible.[ZONE]</code> ou <code>exemple.com.</code>"
+msgstr "CNAME: <code>cible.[ZONE]</code> ou <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -11267,9 +11240,7 @@ msgstr "Fournir au moins un enregistrement"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Format: nom,type,contenu,priorité,ttl,commentaire (un enregistrement par "
-"ligne)"
+msgstr "Format: name,type,content,priority,ttl,comment (un enregistrement par ligne)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -13217,7 +13188,7 @@ msgstr ""
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
-msgstr "Exemple: exemple.com"
+msgstr "Exemple: example.com"
 
 #: templates/modern/add_zone_master.html:41
 msgid "Zone type (usually NATIVE)"
@@ -14189,9 +14160,7 @@ msgstr "Recherche DNS"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr ""
-"Entrez le nom de domaine, nom d'hôte ou IP (ex: exemple.com type:txt "
-"content:spf)"
+msgstr "Entrez le nom de domaine, nom d'hôte ou IP (ex: example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -15333,9 +15302,7 @@ msgstr "Recherche RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr ""
-"Entrez un nom de domaine (ex: exemple.com) pour rechercher ses informations "
-"RDAP"
+msgstr "Entrez un nom de domaine (ex: example.com) pour rechercher ses informations RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"

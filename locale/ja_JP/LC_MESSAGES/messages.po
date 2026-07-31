@@ -1684,7 +1684,7 @@ msgstr[0] "%d人のユーザーを削除できませんでした。"
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
-msgstr "このシステムでは多要素認証が有効になっていません。"
+msgstr "このシステムではMFAが有効になっていません。"
 
 #: lib/Application/Controller/MfaSetupController.php:72
 msgid "MFA Setup"
@@ -1692,11 +1692,11 @@ msgstr "MFA設定"
 
 #: lib/Application/Controller/MfaSetupController.php:215
 msgid "Failed to create MFA record."
-msgstr "多要素認証レコードの作成ができませんでした。"
+msgstr "MFAレコードの作成ができませんでした。"
 
 #: lib/Application/Controller/MfaSetupController.php:222
 msgid "MFA is already enabled."
-msgstr "多要素認証は既に有効になっています。"
+msgstr "MFAは既に有効になっています。"
 
 #: lib/Application/Controller/MfaSetupController.php:267
 msgid "Verification code is required."
@@ -1704,7 +1704,7 @@ msgstr "確認コードが必要です。"
 
 #: lib/Application/Controller/MfaSetupController.php:176
 msgid "MFA has been enabled successfully."
-msgstr "多要素認証が正常に有効になりました。"
+msgstr "MFAが正常に有効になりました。"
 
 #: lib/Application/Controller/MfaVerifyController.php:321
 msgid "Invalid verification code. Please try again."
@@ -1740,7 +1740,7 @@ msgstr ""
 
 #: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been enabled with email verification."
-msgstr "メール認証により多要素認証が有効になりました。"
+msgstr "メール認証によりMFAが有効になりました。"
 
 #: lib/Application/Controller/MfaSetupController.php:305
 #: templates/default/mfa_setup.html:34 templates/modern/mfa_setup.html:34
@@ -1751,15 +1751,15 @@ msgstr "MFAは組織のセキュリティポリシーで必須であり、無効
 
 #: lib/Application/Controller/MfaSetupController.php:314
 msgid "MFA is not enabled."
-msgstr "多要素認証が有効になっていません。"
+msgstr "MFAが有効になっていません。"
 
 #: lib/Application/Controller/MfaSetupController.php:328
 msgid "MFA has been disabled."
-msgstr "多要素認証が無効になりました。"
+msgstr "MFAが無効になりました。"
 
 #: lib/Application/Controller/MfaSetupController.php:343
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "復旧コードを再生成するには多要素認証を有効にする必要があります。"
+msgstr "復旧コードを再生成するにはMFAを有効にする必要があります。"
 
 #: lib/Application/Controller/MfaSetupController.php:357
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
@@ -2321,7 +2321,7 @@ msgstr "失敗した試行が多すぎます。後でもう一度お試しくだ
 
 #: lib/Application/Controller/MfaVerifyController.php:167
 msgid "No MFA record found. Please contact administrator."
-msgstr "多要素認証レコードが見つかりません。管理者にお問い合わせください。"
+msgstr "MFAレコードが見つかりません。管理者にお問い合わせください。"
 
 #: lib/Application/Controller/MfaVerifyController.php:172
 msgid "An error occurred. Please try again."
@@ -2878,15 +2878,15 @@ msgstr "ゾーンテンプレートが正常に削除されました。"
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "スーパーマスターを編集する権限がありません。"
+msgstr "supermasterを編集する権限がありません。"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "編集しようとしているスーパーマスターは存在しません。"
+msgstr "編集しようとしているsupermasterは存在しません。"
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "スーパーマスターが正常に更新されました。"
+msgstr "supermasterが正常に更新されました。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2926,11 +2926,11 @@ msgstr "ゾーンの同期に失敗しました: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "新しいスーパーマスターを追加する権限がありません。"
+msgstr "新しいsupermasterを追加する権限がありません。"
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "スーパーマスターが正常に追加されました。"
+msgstr "supermasterが正常に追加されました。"
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3198,7 +3198,7 @@ msgstr "グループが正常に更新されました。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "スーパーマスターを削除する権限がありません。"
+msgstr "supermasterを削除する権限がありません。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3214,7 +3214,7 @@ msgstr "スーパーマスターが存在しません。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "スーパーマスターが正常に削除されました。"
+msgstr "supermasterが正常に削除されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3517,7 +3517,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "スーパーマスター"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3525,7 +3525,7 @@ msgstr "Autoprimary を追加"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "スーパーマスターを追加"
+msgstr "supermasterを追加"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3533,7 +3533,7 @@ msgstr "Autoprimary を編集"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "スーパーマスターを編集"
+msgstr "supermasterを編集"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3541,7 +3541,7 @@ msgstr "Autoprimary を削除"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "スーパーマスターを削除"
+msgstr "supermasterを削除"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3557,7 +3557,7 @@ msgstr "Autoprimary とは何ですか?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "スーパーマスターとは何ですか？"
+msgstr "Supermasterとは何ですか？"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3581,7 +3581,7 @@ msgstr "Autoprimary の IP アドレス"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "スーパーマスターのIPアドレス"
+msgstr "supermasterのIPアドレス"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3589,7 +3589,7 @@ msgstr "この autoprimary を所有するアカウントを選択してくだ�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "このスーパーマスターを所有するアカウントを選択してください"
+msgstr "このsupermasterを所有するアカウントを選択してください"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3608,8 +3608,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"このスーパーマスターのIPアドレス、ホスト名、またはアカウントを変更できます。"
+msgstr "このsupermasterのIPアドレス、ホスト名、またはアカウントを変更できます。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3617,7 +3616,7 @@ msgstr "Autoprimary の詳細"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "スーパーマスターの詳細"
+msgstr "Supermasterの詳細"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3625,7 +3624,7 @@ msgstr "次の autoprimary を削除しようとしています"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "スーパーマスターの削除を実行しようとしています"
+msgstr "supermasterの削除を実行しようとしています"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3633,7 +3632,7 @@ msgstr "はい、この autoprimary を削除"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "はい、このスーパーマスターを削除します"
+msgstr "はい、このsupermasterを削除します"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3641,7 +3640,7 @@ msgstr "いいえ、この autoprimary を保持"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "いいえ、このスーパーマスターを保持します"
+msgstr "いいえ、このsupermasterを保持します"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -4172,9 +4171,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSAレコードには、スペースで区切られた使用法、セレクタ、マッチングタイプ、証"
-"明書データが含まれている必要があります。"
+msgstr "TLSAレコードには、スペースで区切られたusage、selector、matching-type、certificate-dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4216,9 +4213,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671では、最も堅牢な設定として使用法=3（DANE-EE）、セレクタ=1（SPKI）、"
-"マッチングタイプ=1（SHA-256）を推奨しています。"
+msgstr "RFC 7671では、最も堅牢な設定としてusage=3（DANE-EE）、selector=1（SPKI）、matching-type=1（SHA-256）を推奨しています。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4247,9 +4242,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"マッチングタイプ0（完全一致）は推奨されません。SHA-256（1）がより良い互換性と"
-"セキュリティを提供します。"
+msgstr "Matching-type 0（完全一致）は推奨されません。SHA-256（1）がより良い互換性とセキュリティを提供します。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5270,10 +5263,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIGレコードには少なくとも、スペースで区切られたアルゴリズム名、タイムスタン"
-"プ、ファッジ、MAC、オリジナルID、エラー、その他の長さが含まれている必要があり"
-"ます。"
+msgstr "TSIGレコードには少なくとも、スペースで区切られたalgorithm-name、timestamp、fudge、mac、original-id、error、other-lenが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5289,7 +5279,7 @@ msgstr "TSIGタイムスタンプは非負の整数である必要がありま�
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIGファッジは非負の整数である必要があります。"
+msgstr "TSIGのfudgeは非負の整数である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
@@ -5348,7 +5338,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIGその他の長さは非負の整数である必要があります。"
+msgstr "TSIGのother-lenは非負の整数である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -5458,9 +5448,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"ZONEMDレコードには、スペースで区切られたシリアル、スキーム、ハッシュアルゴリ"
-"ズム、ダイジェストが含まれている必要があります。"
+msgstr "ZONEMDレコードには、スペースで区切られたserial、scheme、hash-algorithm、digestが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5536,9 +5524,7 @@ msgstr "CERTレコードの内容に無効な文字があります。"
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERTレコードには、スペースで区切られたタイプ、キータグ、アルゴリズム、証明書"
-"データが含まれている必要があります。"
+msgstr "CERTレコードには、スペースで区切られたtype、key-tag、algorithm、certificate-dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5866,9 +5852,7 @@ msgstr "TKEYレコードの内容に無効な文字があります。"
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEYレコードには、スペースで区切られたアルゴリズム名、開始時刻、満了時刻、"
-"モード、エラー、キーデータが含まれている必要があります。"
+msgstr "TKEYレコードには、スペースで区切られたalgorithm-name、inception-time、expiration-time、mode、error、key-dataが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7089,9 +7073,7 @@ msgstr "DSレコードの優先度フィールドは0または空である必要
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"DSレコードは次の形式である必要があります：<キータグ> <アルゴリズム> <ダイジェ"
-"ストタイプ> <ダイジェスト>"
+msgstr "DSレコードは次の形式である必要があります：<key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7866,9 +7848,7 @@ msgstr "SMIMEAレコードに無効な文字が含まれています。"
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"SMIMEAレコードはスペースで区切られた使用法、セレクタ、マッチングタイプ、証明"
-"書データを含む必要があります。"
+msgstr "SMIMEAレコードはスペースで区切られたusage、selector、matching-type、certificate-dataを含む必要があります。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8742,9 +8722,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDSレコードには、スペースで区切られたキータグ、アルゴリズム、ダイジェストタイ"
-"プ、およびダイジェストを含める必要があります。"
+msgstr "CDSレコードには、スペースで区切られたkey-tag、algorithm、digest-type、およびdigestを含める必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9531,7 +9509,7 @@ msgstr "関数%s %sに無効な引数が渡されました"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "このIPアドレスとホスト名のスーパーマスターが既に存在します。"
+msgstr "このIPアドレスとホスト名のsupermasterが既に存在します。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -11776,9 +11754,7 @@ msgstr "戻る"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
-"スーパーマスターは、新しいゾーンを自動的にスレーブサーバーにプッシュする"
-"PowerDNS権威サーバーです。"
+msgstr "supermasterは、新しいゾーンを自動的にスレーブサーバーにプッシュするPowerDNS権威サーバーです。"
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11788,9 +11764,7 @@ msgstr "動作原理"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"スレーブがスーパーマスターから通知を受信すると、ドメインを追加し、スーパーマ"
-"スターのIPアドレスをマスターアドレスとして設定します。"
+msgstr "スレーブがsupermasterから通知を受信すると、ドメインを追加し、supermasterのIPアドレスをマスターアドレスとして設定します。"
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -13386,7 +13360,7 @@ msgstr ""
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid "MFA is currently enabled"
-msgstr "多要素認証は現在有効になっています"
+msgstr "MFAは現在有効になっています"
 
 #: templates/default/mfa_setup.html:25 templates/modern/mfa_setup.html:25
 msgid "Your account is protected with multi-factor authentication."
@@ -13398,7 +13372,7 @@ msgstr "リカバリコードを再生成"
 
 #: templates/default/mfa_setup.html:56 templates/modern/mfa_setup.html:56
 msgid "MFA is currently disabled"
-msgstr "多要素認証は現在無効になっています"
+msgstr "MFAは現在無効になっています"
 
 #: templates/default/mfa_setup.html:57 templates/modern/mfa_setup.html:57
 msgid "Your account is not protected with multi-factor authentication."
@@ -13529,10 +13503,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"マスターネームサーバーがスーパーマスターであるスレーブゾーンを削除しようとし"
-"ています。今ゾーンを削除すると、一時的な削除のみになります。スーパーマスター"
-"がこのゾーンの通知を送信するたびに、再び追加されます！"
+msgstr "マスターネームサーバーがsupermasterであるスレーブゾーンを削除しようとしています。今ゾーンを削除すると、一時的な削除のみになります。supermasterがこのゾーンの通知を送信するたびに、再び追加されます！"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"

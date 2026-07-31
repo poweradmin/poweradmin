@@ -2927,15 +2927,15 @@ msgstr "Шаблон зоны успешно удален."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "У вас нет разрешения на редактирование суперсервера."
+msgstr "У вас нет разрешения на редактирование сервера supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Суперсервер, который вы пытаетесь редактировать, не существует."
+msgstr "Сервер supermaster, который вы пытаетесь редактировать, не существует."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "Суперсервер успешно обновлен."
+msgstr "Сервер supermaster успешно обновлен."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2975,11 +2975,11 @@ msgstr "Не удалось синхронизировать зоны: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "У вас нет разрешения на добавление нового суперсервера."
+msgstr "У вас нет разрешения на добавление нового сервера supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "Суперсервер успешно добавлен."
+msgstr "Сервер supermaster успешно добавлен."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3257,7 +3257,7 @@ msgstr "Группа успешно обновлена."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "У вас нет разрешения для удаления суперсервера."
+msgstr "У вас нет разрешения для удаления сервера supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3273,7 +3273,7 @@ msgstr "Суперсервер не существует."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Суперсервер был успешно удален."
+msgstr "Сервер supermaster был успешно удален."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3576,7 +3576,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Суперсервер"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3584,7 +3584,7 @@ msgstr "Добавить autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Добавить суперсервер"
+msgstr "Добавить supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3592,7 +3592,7 @@ msgstr "Редактировать autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Редактировать суперсервер"
+msgstr "Редактировать supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3600,7 +3600,7 @@ msgstr "Удалить autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "Удалить супермастер"
+msgstr "Удалить supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3616,7 +3616,7 @@ msgstr "Что такое Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "Что такое суперсервер?"
+msgstr "Что такое Supermaster?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3640,7 +3640,7 @@ msgstr "IP-адрес autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "IP адрес суперсервера"
+msgstr "IP адрес сервера supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3648,7 +3648,7 @@ msgstr "Выберите учётную запись, владеющую эти�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Выберите аккаунт, который будет владеть этим суперсервером"
+msgstr "Выберите аккаунт, который будет владеть этим сервером supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3667,8 +3667,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Вы можете изменить IP адрес, имя хоста или аккаунт для этого суперсервера."
+msgstr "Вы можете изменить IP адрес, имя хоста или аккаунт для этого сервера supermaster."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3676,7 +3675,7 @@ msgstr "Сведения об Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "Сведения о супермастере"
+msgstr "Сведения о сервере Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3684,7 +3683,7 @@ msgstr "Вы собираетесь удалить autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "Вы собираетесь удалить супермастер"
+msgstr "Вы собираетесь удалить supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3692,7 +3691,7 @@ msgstr "Да, удалить этот autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "Да, удалить этот супермастер"
+msgstr "Да, удалить этот supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3700,7 +3699,7 @@ msgstr "Нет, оставить этот autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "Нет, оставить этот супермастер"
+msgstr "Нет, оставить этот supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -4224,9 +4223,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA запись должна содержать использование, селектор, тип соответствия и "
-"данные сертификата, разделенные пробелами."
+msgstr "TLSA запись должна содержать usage, selector, matching-type и certificate-data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4299,9 +4296,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Тип соответствия 0 (Точное соответствие) не рекомендуется. SHA-256 (1) "
-"обеспечивает лучшую совместимость и безопасность."
+msgstr "Matching-type 0 (Точное соответствие) не рекомендуется. SHA-256 (1) обеспечивает лучшую совместимость и безопасность."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5530,9 +5525,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Запись ZONEMD должна содержать серийный номер, схему, алгоритм хеширования и "
-"дайджест, разделенные пробелами."
+msgstr "Запись ZONEMD должна содержать serial, scheme, hash-algorithm и digest, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5613,9 +5606,7 @@ msgstr "Недопустимые символы в содержимом запи
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Запись CERT должна содержать тип, метку ключа, алгоритм и данные "
-"сертификата, разделенные пробелами."
+msgstr "Запись CERT должна содержать type, key-tag, algorithm и certificate-data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5744,9 +5735,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Недопустимый формат записи DLV. Ожидается: <метка ключа> <алгоритм> <тип "
-"дайджеста> <дайджест>."
+msgstr "Недопустимый формат записи DLV. Ожидается: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5875,9 +5864,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Параметры записи HTTPS должны быть в формате ключ=значение, разделенными "
-"пробелами."
+msgstr "Параметры записи HTTPS должны быть в формате key=value, разделенными пробелами."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5954,9 +5941,7 @@ msgstr "Недопустимые символы в содержимом запи
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"Запись TKEY должна содержать имя алгоритма, время начала, время истечения, "
-"режим, ошибку и данные ключа, разделенные пробелами."
+msgstr "Запись TKEY должна содержать algorithm-name, inception-time, expiration-time, mode, error и key-data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7210,9 +7195,7 @@ msgstr "Поле приоритета для DS записей должно бы
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"DS запись должна быть в формате: <тег-ключа> <алгоритм> <тип-дайджеста> "
-"<дайджест>"
+msgstr "DS запись должна быть в формате: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7621,7 +7604,7 @@ msgstr "Недопустимый домен центра сертификаци�
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Параметры тега issue должны быть в формате ключ=значение."
+msgstr "Параметры тега issue должны быть в формате key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7905,8 +7888,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"Параметры SVCB должны быть в формате ключ=значение, разделенные пробелами."
+msgstr "Параметры SVCB должны быть в формате key=value, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7998,9 +7980,7 @@ msgstr "Запись SMIMEA содержит недопустимые симво
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Запись SMIMEA должна содержать использование, селектор, тип соответствия и "
-"данные сертификата, разделенные пробелами."
+msgstr "Запись SMIMEA должна содержать usage, selector, matching-type и certificate-data, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8119,9 +8099,7 @@ msgstr "Данные сертификата SMIMEA SHA-512 должны соде
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Рекомендуемая конфигурация SMIMEA: использование=3 (DANE-EE), селектор=1 "
-"(SubjectPublicKeyInfo) и тип соответствия=1 (SHA-256)."
+msgstr "Рекомендуемая конфигурация SMIMEA: usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) и matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8881,9 +8859,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDS запись должна содержать key-tag, алгоритм, тип дайджеста и дайджест, "
-"разделенные пробелами."
+msgstr "CDS запись должна содержать key-tag, algorithm, digest-type и digest, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9604,7 +9580,7 @@ msgstr "Pustaya stroka."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Неверный формат. Ожидается как минимум: имя,тип,содержимое"
+msgstr "Неверный формат. Ожидается как минимум: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -9665,7 +9641,7 @@ msgstr "Недопустимый аргумент(ы) переданы функ�
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Уже существует суперсервер с этим IP-адресом и именем хоста."
+msgstr "Уже существует сервер supermaster с этим IP-адресом и именем хоста."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -10971,8 +10947,7 @@ msgstr "Укажите хотя бы одну запись"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Формат: имя,тип,содержимое,приоритет,ttl,комментарий (одна запись на строку)"
+msgstr "Формат: name,type,content,priority,ttl,comment (одна запись на строку)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11929,9 +11904,7 @@ msgstr "Вернуться Назад"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
-"Суперсервер - это авторитативный сервер PowerDNS, который автоматически "
-"передает новые зоны своим подчиненным серверам."
+msgstr "Supermaster - это авторитативный сервер PowerDNS, который автоматически передает новые зоны своим подчиненным серверам."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11941,9 +11914,7 @@ msgstr "Как это работает"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"Когда подчиненный сервер получает уведомление от суперсервера, он добавляет "
-"домен и устанавливает IP-адрес суперсервера в качестве главного адреса."
+msgstr "Когда подчиненный сервер получает уведомление от сервера supermaster, он добавляет домен и устанавливает IP-адрес этого сервера supermaster в качестве главного адреса."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -13694,11 +13665,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"Вы собираетесь удалить вторичную зону, основной сервер имен которой является "
-"супермастером. Удаление зоны сейчас приведет только к временному удалению. "
-"Всякий раз, когда супермастер отправляет уведомление для этой зоны, она "
-"будет добавлена снова!"
+msgstr "Вы собираетесь удалить вторичную зону, основной сервер имен которой является сервером supermaster. Удаление зоны сейчас приведет только к временному удалению. Всякий раз, когда сервер supermaster отправляет уведомление для этой зоны, она будет добавлена снова!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13990,13 +13957,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Views отдают разные варианты зон разным клиентам в зависимости от сети, из "
-"которой пришёл запрос. Каждый вариант называется зона..variant (например, "
-"example.com..trusted) и должен существовать в PowerDNS как отдельная зона, "
-"прежде чем его можно назначить здесь. Варианты используют общее имя, но "
-"разрешаются по-разному в каждом view: один и тот же hostname может отвечать "
-"разными IP в зависимости от сети клиента."
+msgstr "Views отдают разные варианты зон разным клиентам в зависимости от сети, из которой пришёл запрос. Каждый вариант называется zone..variant (например, example.com..trusted) и должен существовать в PowerDNS как отдельная зона, прежде чем его можно назначить здесь. Варианты используют общее имя, но разрешаются по-разному в каждом view: один и тот же hostname может отвечать разными IP в зависимости от сети клиента."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

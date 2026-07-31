@@ -2144,9 +2144,7 @@ msgstr "Tsooni allkirjastamise taotlus õnnestus, aga kontroll ebaõnnestus. Kon
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr ""
-"Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga API tagastas "
-"vea."
+msgstr "Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga PowerDNS API tagastas vea."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -2162,7 +2160,7 @@ msgstr "Allkirja eemaldamise taotlus õnnestus, aga kontroll ebaõnnestus."
 
 #: lib/Application/Controller/DnssecController.php:128
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Tsooni allkirja eemaldamine ebaõnnestus. Kontrollige logisid."
+msgstr "Tsooni allkirja eemaldamine ebaõnnestus. Kontrollige PowerDNS-i logisid."
 
 #: lib/Application/Controller/EditController.php:585
 msgid "Zone type has been changed successfully."
@@ -3988,7 +3986,7 @@ msgstr "See tundub TLSA kirjeks HTTPS jaoks. Tagage sertifikaadi sobivus."
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr "See tundub TLSA kirjeks DoT jaoks. Tagage DoT seadistus."
+msgstr "See tundub TLSA kirjeks DNS over TLS jaoks. Tagage DNS-serveri korrektne seadistus DoT jaoks."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -4089,7 +4087,7 @@ msgstr "Valija 0 (kogu sertifikaat) võib sertifikaadi atribuutide muutumisel ka
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "TLSA sobitamise tüüp peab olema 0, 1 või 2."
+msgstr "TLSA sobitamise tüüp peab olema 0 (täpne vaste), 1 (SHA-256) või 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -4157,7 +4155,7 @@ msgstr "NSEC3PARAM-kirjed näitavad autoriteetsetele serveritele, milliseid para
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr "NSEC3 parameetrite uuendamisel tuleb mõlemad kirjed uuesti luua."
+msgstr "NSEC3 parameetrite uuendamisel tuleb nii NSEC3 kui ka NSEC3PARAM kirjed samade parameetritega uuesti luua."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
@@ -4237,7 +4235,7 @@ msgstr ""
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
-msgstr "MÄRKUS: LP on määratletud RFC 6742-s kui eksperimentaalne protokoll."
+msgstr "MÄRKUS: LP on määratletud RFC 6742-s kui eksperimentaalne protokoll, mitte ametlik IETF standard."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -4318,7 +4316,7 @@ msgstr "LOC kirjete prioriteedi väli peab olema 0 või tühi."
 msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "MÄRKUS: LOC on määratletud RFC 1876-s kui eksperimentaalne."
+msgstr "MÄRKUS: LOC on määratletud RFC 1876-s kui eksperimentaalne protokoll, mitte ametlik IETF standard."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
@@ -4402,7 +4400,7 @@ msgstr "RKEY kirjete prioriteedi väli peab olema 0 või tühi."
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr "RKEY kirjeid tuleks kasutada ettevaatusega - pole laialt toetatud."
+msgstr "RKEY kirjeid tuleks kasutada ettevaatusega - DNS-serverid ja resolverid ei toeta neid laialdaselt."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4422,7 +4420,7 @@ msgstr "RKEY lippude väli peab olema arvuline."
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr "Ebatavaline lippude väärtus. Tavalised on 0, 256 või 257."
+msgstr "Ebatavaline lippude väärtus. Tavalised on 0, 256 (Zone Key) või 257 (Zone Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
@@ -4490,13 +4488,13 @@ msgstr "Algoritm 10 (RSA/SHA-512) pakub tugevat turvalisust."
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr "Algoritm 13 (ECDSA Curve P-256 SHA-256) pakub head turvalisust."
+msgstr "Algoritm 13 (ECDSA Curve P-256 SHA-256) pakub head turvalisust väiksemate allkirjadega kui RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Algoritm 14 (ECDSA P-384 SHA-384) pakub tugevat turvalisust."
+msgstr "Algoritm 14 (ECDSA P-384 SHA-384) pakub tugevat turvalisust väiksemate allkirjadega kui RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
@@ -4516,8 +4514,7 @@ msgstr "Algoritm 16 (Ed448) pakub tugevat nüüdisaegset turvalisust, kuid vanem
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr ""
-"KRIITILINE: See algoritm pole turvaline. Kasutage algoritmi 8 või uuemat."
+msgstr "KRIITILINE: See algoritm pole turvaline. Kasutage algoritmi 8 (RSA/SHA-256) või uuemat."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -4531,7 +4528,7 @@ msgstr "Avaliku võtme andmed peaksid olema Base64 kodeeritud (RFC 4034)."
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr "RKEY pole kunagi formaalselt standardiseeritud - ainult draft."
+msgstr "RKEY pole kunagi formaalselt RFC-na standardiseeritud - ainult mustand."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -4594,15 +4591,13 @@ msgstr "IPv6 eesliide peab olema vahemikus 0 kuni 128."
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
-msgstr ""
-"APL kirjete kasutamist AXFR kontrolliks tuleks ühendada muude "
-"turvameetmetega."
+msgstr "APL kirjete kasutamist AXFR kontrolliks tuleks ühendada muude turvameetmetega, nagu on märgitud RFC 3123-s."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr "Märkus: NID kirjeid kasutatakse ILNP jaoks (eksperimentaalne)."
+msgstr "Märkus: NID kirjeid kasutatakse ILNP jaoks (eksperimentaalne, RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -4628,7 +4623,7 @@ msgstr "NID-kirje sisu peab olema 64-bitine kuueteistkümnendväärtus (16 hex-m
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr "NID kirjed peaksid kasutama xxxx:xxxx:xxxx:xxxx vormingut."
+msgstr "NID kirjed peaksid kasutama RFC 6742 vormingut (xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
@@ -5063,7 +5058,7 @@ msgstr "RFC 8945 soovitab HMAC-SHA256 standardseks TSIG algoritmiks."
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "ZONEMD on määratletud RFC 8976-s (2021), pole kõikjal toetatud."
+msgstr "ZONEMD on määratletud RFC 8976-s (2021) ja kõik DNS-serverid ei pruugi seda toetada."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -5196,7 +5191,7 @@ msgstr "CERT tüübi väärtus "
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr "CERT tüüp peab olema number 0-65535 või kehtiv mnemoonik."
+msgstr "CERT tüüp peab olema number 0-65535 või kehtiv mnemoonik (PKIX, SPKI, PGP jne)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -5216,7 +5211,7 @@ msgstr "CERT algoritm peab olema 0-255 või kehtiv mnemoonik."
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr "CERT algoritm peab olema number 0-255 või kehtiv mnemoonik."
+msgstr "CERT algoritm peab olema number 0-255 või kehtiv mnemoonik (RSASHA1, DSA jne)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5310,7 +5305,7 @@ msgstr "Vigane algoritm. Peab olema DNSSEC algoritm (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Vigane kokkuvõtte tüüp. Peab olema 1, 2 või 4."
+msgstr "Vigane kokkuvõtte tüüp. Peab olema 1 (SHA-1), 2 (SHA-256) või 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5457,7 +5452,7 @@ msgstr "TKEY kirjete prioriteedi väli peab olema 0 või tühi"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY kirjed pole andmete autentimiseks, vaid võtmete loomiseks."
+msgstr "TKEY kirjed pole DNS-andmete autentimiseks, vaid võtmete loomiseks DNS-serverite/resolverite vahel."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5586,7 +5581,7 @@ msgstr "TTL väärtus (%d) on alla soovitatud miinimumi, milleks on %d sekundit 
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL (%d) üle soovitatud maksimumi %d sekundit (1 nädal)."
+msgstr "TTL (%d) üle soovitatud maksimumi %d sekundit (1 nädal). Kõrged TTL väärtused aeglustavad DNS-i uuendusi."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -5970,7 +5965,7 @@ msgstr "DHCID identifikaatori tüüp 0x%04X pole standardne (RFC 4701)."
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID kokkuvõtte tüüp %d pole standardne (RFC 4701)."
+msgstr "DHCID kokkuvõtte tüüp %d pole standardne tüüp (1 SHA-256 jaoks), mis on määratletud RFC 4701-s."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6074,13 +6069,13 @@ msgstr "Algoritm 10 (RSA/SHA-512) pakub tugevat turvalisust, kuid mõne valideer
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "Algoritm 13 (ECDSA P-256 koos SHA-256) pakub head turvalisust."
+msgstr "Algoritm 13 (ECDSA P-256 koos SHA-256) pakub head turvalisust väiksemate allkirjadega kui RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Algoritm 14 (ECDSA P-384 koos SHA-384) pakub tugevat turvalisust."
+msgstr "Algoritm 14 (ECDSA P-384 koos SHA-384) pakub tugevat turvalisust väiksemate allkirjadega kui RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -6219,7 +6214,7 @@ msgstr "RP kirjete prioriteedi väli peab olema 0 või tühi"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "RP on määratletud RFC 1183-s (1990), kasutatakse harva."
+msgstr "RP on määratletud RFC 1183-s (1990) ja seda kasutatakse tänapäevastes DNS-seadistustes harva."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6542,11 +6537,11 @@ msgstr "%s (algoritm %d) on valikuline vastavalt RFC 8624."
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "%s (algoritm %d) POLE SOOVITATUD (RFC 8624). Kasutage 13 või 15."
+msgstr "%s (algoritm %d) POLE SOOVITATUD (RFC 8624). Kasutage ECDSAP256SHA256 (13) või ED25519 (15)."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Kokkuvõtte tüüp peab olema: 1, 2 või 4"
+msgstr "Kokkuvõtte tüüp peab olema: 1 (SHA-1), 2 (SHA-256) või 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -7258,7 +7253,7 @@ msgstr ""
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "SMIMEA sobitamise tüüp peab olema 0, 1 või 2."
+msgstr "SMIMEA sobitamise tüüp peab olema 0 (täpne vaste), 1 (SHA-256) või 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -7313,7 +7308,7 @@ msgstr "KRIITILINE: SMIMEA NÕUAB DNSSEC-i. Ilma DNSSEC-ita pole turvalisust."
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "MÄRKUS: L64 on määratletud RFC 6742-s kui eksperimentaalne."
+msgstr "MÄRKUS: L64 on määratletud RFC 6742-s kui eksperimentaalne protokoll, mitte ametlik IETF standard."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
@@ -7325,7 +7320,7 @@ msgstr "L64 kirjeid kasutatakse ainult ILNP protokolliga."
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr "Mitte-ILNPv6 host EI TOHI omada L64 kirjeid (RFC 6742 §3.2)."
+msgstr "Mitte-ILNPv6 host EI TOHI omada L64 kirjeid oma DNS-kirjetes (RFC 6742 §3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
@@ -7542,7 +7537,7 @@ msgstr "SSHFP kirjete prioriteedi väli peab olema 0 või tühi"
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr "SSHFP kirjeid saab genereerida käsuga \"ssh-keygen -r hostname\"."
+msgstr "SSHFP kirjeid saab genereerida käsuga \"ssh-keygen -r hostname\" süsteemides, kus on OpenSSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -7562,7 +7557,7 @@ msgstr ""
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "SSHFP algoritm peab olema 1, 2, 3, 4 või 6."
+msgstr "SSHFP algoritm peab olema 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) või 6 (Ed448)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
@@ -7574,7 +7569,7 @@ msgstr "DSA võtmeid peetakse nõrgaks ja paljudes SSH teostustes on need aegunu
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Ed25519 võtmeid soovitatakse hea turvalisuse ja jõudluse jaoks."
+msgstr "Ed25519 võtmeid soovitatakse hea turvalisuse ja jõudluse jaoks tänapäevaste SSH implementatsioonidega."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -7741,7 +7736,7 @@ msgstr "KEY algoritm peab olema number vahemikus 0 kuni 255."
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr "Ebatavaline algoritmi väärtus. Tavalised on 1, 2, 3, 5, 8."
+msgstr "Ebatavaline algoritmi väärtus. Tavalised on 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
@@ -7954,7 +7949,7 @@ msgstr "CDS algoritm peab olema number vahemikus 1 kuni 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS kokkuvõtte tüüp peab olema 1, 2 või 4."
+msgstr "CDS kokkuvõtte tüüp peab olema 1 (SHA-1), 2 (SHA-256) või 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -7983,7 +7978,7 @@ msgstr "CDS-kirjed peavad olema ainult tsooni tipus (mitte alamdomeenides)."
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "MÄRKUS: L32 on määratletud RFC 6742-s kui eksperimentaalne."
+msgstr "MÄRKUS: L32 on määratletud RFC 6742-s kui eksperimentaalne protokoll, mitte ametlik IETF standard."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
@@ -7995,8 +7990,7 @@ msgstr "L32 kirjeid kasutatakse ainult ILNP protokolliga."
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr ""
-"Privaat IP-d (RFC 1918) L32 lokaatoritena võivad piirata kättesaadavust."
+msgstr "Privaat IP-d (RFC 1918) L32 lokaatoritena võivad piirata kättesaadavust ILNP juurutustes."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
@@ -8415,7 +8409,7 @@ msgstr "DNSKEY algoritm peab olema number vahemikus 1 kuni 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "ECDSAP256SHA256 (13) on SOOVITATUD DNSSEC allkirjastamiseks."
+msgstr "ECDSAP256SHA256 (13) on SOOVITATUD DNSSEC allkirjastamiseks RFC 8624 järgi."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8574,13 +8568,13 @@ msgstr "Tühi rida."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Vigane vorming. Oodatakse vähemalt: nimi,tüüp,sisu"
+msgstr "Vigane vorming. Oodatakse vähemalt: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Vigane SRV vorming. Kasutage: name,SRV,\"weight port target\"."
+msgstr "Vigane SRV vorming. Kasutage: name,SRV,\"weight port target\",priority,ttl või name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -9788,7 +9782,7 @@ msgstr "Mallidest"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Tsooni mallid võimaldavad luua eelmääratletud kirjete komplekte."
+msgstr "Tsooni mallid võimaldavad luua eelmääratletud DNS-kirjete komplekte."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -9911,8 +9905,7 @@ msgstr "Andke vähemalt üks kirje"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Vorming: nimi,tüüp,sisu,prioriteet,ttl,kommentaar (üks kirje rea kohta)"
+msgstr "Vorming: name,type,content,priority,ttl,comment (üks kirje rea kohta)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -12822,13 +12815,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Vaated pakuvad erinevatele klientidele erinevaid tsoonivariante sõltuvalt "
-"võrgust, millest resolverile päring tehti. Iga variandi nimi on kujul "
-"tsoon..variant (näiteks example.com..trusted) ja see peab PowerDNS-is olemas "
-"olema eraldi tsoonina, enne kui seda saab siin määrata. Variantidel on sama "
-"nimi, kuid need lahenevad igas vaates erinevalt, nii et sama hostinimi võib "
-"sõltuvalt kliendi võrgust vastata erineva IP-ga."
+msgstr "Vaated pakuvad erinevatele klientidele erinevaid tsoonivariante sõltuvalt võrgust, millest resolverile päring tehti. Iga variandi nimi on kujul zone..variant (näiteks example.com..trusted) ja see peab PowerDNS-is olemas olema eraldi tsoonina, enne kui seda saab siin määrata. Variantidel on sama nimi, kuid need lahenevad igas vaates erinevalt, nii et sama hostinimi võib sõltuvalt kliendi võrgust vastata erineva IP-ga."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

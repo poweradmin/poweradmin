@@ -4163,9 +4163,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Bản ghi TLSA phải chứa mục đích sử dụng, bộ chọn, loại so khớp và dữ liệu "
-"chứng chỉ được phân tách bằng khoảng trắng."
+msgstr "Bản ghi TLSA phải chứa usage, selector, matching-type và certificate-data được phân tách bằng khoảng trắng."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4238,9 +4236,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Loại so khớp 0 (So khớp chính xác) không được khuyến nghị. SHA-256 (1) cung "
-"cấp khả năng tương thích và bảo mật tốt hơn."
+msgstr "Matching-type 0 (So khớp chính xác) không được khuyến nghị. SHA-256 (1) cung cấp khả năng tương thích và bảo mật tốt hơn."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5244,9 +5240,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"Bản ghi TSIG phải chứa ít nhất tên thuật toán, dấu thời gian, độ lệch, MAC, "
-"ID gốc, lỗi và độ dài khác phân tách bằng khoảng trắng."
+msgstr "Bản ghi TSIG phải chứa ít nhất algorithm-name, timestamp, fudge, mac, original-id, error và other-len phân tách bằng khoảng trắng."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5262,7 +5256,7 @@ msgstr "Dấu thời gian TSIG phải là số nguyên không âm."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "Độ lệch TSIG phải là số nguyên không âm."
+msgstr "TSIG fudge phải là số nguyên không âm."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
@@ -5318,7 +5312,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "Độ dài khác TSIG phải là số nguyên không âm."
+msgstr "TSIG other-len phải là số nguyên không âm."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -5424,9 +5418,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Bản ghi ZONEMD phải chứa serial, lược đồ, thuật toán băm và mã hash phân "
-"tách bằng khoảng trắng."
+msgstr "Bản ghi ZONEMD phải chứa serial, scheme, hash-algorithm và digest phân tách bằng khoảng trắng."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5502,9 +5494,7 @@ msgstr "Ký tự không hợp lệ trong nội dung bản ghi CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Bản ghi CERT phải chứa loại, thẻ khóa, thuật toán và dữ liệu chứng chỉ phân "
-"tách bằng khoảng trắng."
+msgstr "Bản ghi CERT phải chứa type, key-tag, algorithm và certificate-data phân tách bằng khoảng trắng."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5624,9 +5614,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Định dạng bản ghi DLV không hợp lệ. Mong đợi: <thẻ-khóa> <thuật-toán> <loại-"
-"mã-hash> <mã-hash>."
+msgstr "Định dạng bản ghi DLV không hợp lệ. Mong đợi: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -9400,7 +9388,7 @@ msgstr "Dòng trống."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Định dạng không hợp lệ. Yêu cầu tối thiểu: tên,loại,nội dung"
+msgstr "Định dạng không hợp lệ. Yêu cầu tối thiểu: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""

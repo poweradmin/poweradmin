@@ -4265,9 +4265,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Il record TLSA deve contenere uso, selettore, tipo di corrispondenza e dati "
-"del certificato separati da spazi."
+msgstr "Il record TLSA deve contenere usage, selector, matching-type e certificate-data separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4309,9 +4307,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"L'RFC 7671 raccomanda uso=3 (DANE-EE), selettore=1 (SPKI), tipo-"
-"corrispondenza=1 (SHA-256) come configurazione più robusta."
+msgstr "L'RFC 7671 raccomanda usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) come configurazione più robusta."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4340,9 +4336,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Il tipo di corrispondenza 0 (Corrispondenza esatta) non è raccomandato. "
-"SHA-256 (1) fornisce migliore compatibilità e sicurezza."
+msgstr "Il matching-type 0 (Corrispondenza esatta) non è raccomandato. SHA-256 (1) fornisce migliore compatibilità e sicurezza."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5581,9 +5575,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Il record ZONEMD deve contenere seriale, schema, algoritmo-hash e digest "
-"separati da spazi."
+msgstr "Il record ZONEMD deve contenere serial, scheme, hash-algorithm e digest separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5659,9 +5651,7 @@ msgstr "Caratteri non validi nel contenuto del record CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Il record CERT deve contenere tipo, key-tag, algoritmo e dati-certificato "
-"separati da spazi."
+msgstr "Il record CERT deve contenere type, key-tag, algorithm e certificate-data separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5790,9 +5780,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Formato record DLV non valido. Previsto: <key-tag> <algoritmo> <tipo-digest> "
-"<digest>."
+msgstr "Formato record DLV non valido. Previsto: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5920,9 +5908,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"I parametri del record HTTPS devono essere nel formato chiave=valore "
-"separati da spazi."
+msgstr "I parametri del record HTTPS devono essere nel formato key=value separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -6002,9 +5988,7 @@ msgstr "Caratteri non validi nel contenuto del record TKEY."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"Il record TKEY deve contenere nome-algoritmo, tempo-inizio, tempo-scadenza, "
-"modalità, errore e dati-chiave separati da spazi."
+msgstr "Il record TKEY deve contenere algorithm-name, inception-time, expiration-time, mode, error e key-data separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7272,9 +7256,7 @@ msgstr "Il campo priorità per i record DS deve essere 0 o vuoto."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"Il record DS deve essere nel formato: <tag-chiave> <algoritmo> <tipo-digest> "
-"<digest>"
+msgstr "Il record DS deve essere nel formato: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7677,7 +7659,7 @@ msgstr "Dominio CA non valido nel tag issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "I parametri del tag issue devono essere nel formato chiave=valore."
+msgstr "I parametri del tag issue devono essere nel formato key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7965,8 +7947,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"I parametri SVCB devono essere nel formato chiave=valore separati da spazi."
+msgstr "I parametri SVCB devono essere nel formato key=value separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -8059,9 +8040,7 @@ msgstr "Il record SMIMEA contiene caratteri non validi."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Il record SMIMEA deve contenere utilizzo, selettore, tipo-corrispondenza e "
-"dati-certificato separati da spazi."
+msgstr "Il record SMIMEA deve contenere usage, selector, matching-type e certificate-data separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8181,9 +8160,7 @@ msgstr ""
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"La configurazione SMIMEA raccomandata è utilizzo=3 (DANE-EE), selettore=1 "
-"(SubjectPublicKeyInfo) e tipo-corrispondenza=1 (SHA-256)."
+msgstr "La configurazione SMIMEA raccomandata è usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) e matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8957,9 +8934,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"Il record CDS deve contenere key-tag, algoritmo, tipo-digest e digest "
-"separati da spazi."
+msgstr "Il record CDS deve contenere key-tag, algorithm, digest-type e digest separati da spazi."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9658,9 +9633,7 @@ msgstr "Il record SOA ha un formato contenuto non valido."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr ""
-"Il formato SOA dovrebbe essere: ns-primario hostmaster seriale refresh retry "
-"expire minimo"
+msgstr "Il formato SOA dovrebbe essere: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9693,7 +9666,7 @@ msgstr "Riga vuota."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Formato non valido. Previsto almeno: nome,tipo,contenuto"
+msgstr "Formato non valido. Previsto almeno: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -11068,8 +11041,7 @@ msgstr "Fornisci almeno un record"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formato: nome,tipo,contenuto,priorità,ttl,commento (un record per riga)"
+msgstr "Formato: name,type,content,priority,ttl,comment (un record per riga)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -14097,13 +14069,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Le view servono varianti di zona diverse a client diversi in base alla rete "
-"che ha interrogato il resolver. Ogni variante si chiama zona..variant (ad "
-"es. example.com..trusted) e deve esistere come zona separata in PowerDNS "
-"prima di poter essere assegnata qui. Le varianti condividono il nome ma si "
-"risolvono diversamente per ciascuna view: lo stesso hostname può rispondere "
-"con IP diversi in base alla rete del client."
+msgstr "Le view servono varianti di zona diverse a client diversi in base alla rete che ha interrogato il resolver. Ogni variante si chiama zone..variant (ad es. example.com..trusted) e deve esistere come zona separata in PowerDNS prima di poter essere assegnata qui. Le varianti condividono il nome ma si risolvono diversamente per ciascuna view: lo stesso hostname può rispondere con IP diversi in base alla rete del client."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

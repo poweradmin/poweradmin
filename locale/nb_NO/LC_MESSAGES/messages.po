@@ -3552,7 +3552,7 @@ msgstr "Rediger autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Rediger overordnet server"
+msgstr "Rediger supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3600,7 +3600,7 @@ msgstr "IP-adresse for autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "IP-adresse til overordnet server"
+msgstr "IP-adresse til supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3608,7 +3608,7 @@ msgstr "Velg kontoen som skal eie denne autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Velg kontoen som skal eie denne overordnede serveren"
+msgstr "Velg kontoen som skal eie denne supermasteren"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3626,9 +3626,7 @@ msgstr "Du kan endre IP-adresse, vertsnavn eller konto for denne autoprimary."
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Du kan endre IP-adresse, vertsnavn eller konto for denne overordnede "
-"serveren."
+msgstr "Du kan endre IP-adresse, vertsnavn eller konto for denne supermasteren."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -4183,9 +4181,7 @@ msgstr "Ugyldig verdi for prioritetsfelt. TLSA-poster må ha prioritetsverdi 0."
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA-post må inneholde bruk, velger, matchingstype og sertifikatdata "
-"separert med mellomrom."
+msgstr "TLSA-post må inneholde usage, selector, matching-type og certificate-data separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4227,9 +4223,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 anbefaler bruk=3 (DANE-EE), velger=1 (SPKI), matchingstype=1 "
-"(SHA-256) som den mest robuste konfigurasjonen."
+msgstr "RFC 7671 anbefaler usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) som den mest robuste konfigurasjonen."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4258,9 +4252,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Matchingstype 0 (Eksakt match) anbefales ikke. SHA-256 (1) gir bedre "
-"kompatibilitet og sikkerhet."
+msgstr "Matching-type 0 (Eksakt match) anbefales ikke. SHA-256 (1) gir bedre kompatibilitet og sikkerhet."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5267,9 +5259,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG-post må inneholde minst algoritme-navn, tidsstempel, fudge, mac, "
-"original-id, feil, og other-len separert med mellomrom."
+msgstr "TSIG-post må inneholde minst algorithm-name, timestamp, fudge, mac, original-id, error og other-len separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5443,9 +5433,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"ZONEMD-post må inneholde serienummer, skjema, hash-algoritme og sammendrag "
-"separert med mellomrom."
+msgstr "ZONEMD-post må inneholde serial, scheme, hash-algorithm og digest separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5519,9 +5507,7 @@ msgstr "Ugyldige tegn i CERT-postinnhold."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERT-post må inneholde type, nøkkel-tag, algoritme og sertifikatdata adskilt "
-"med mellomrom."
+msgstr "CERT-post må inneholde type, key-tag, algorithm og certificate-data adskilt med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5644,9 +5630,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Ugyldig DLV-postformat. Forventet: <nøkkel-tag> <algoritme> <sammendrag-"
-"type> <sammendrag>."
+msgstr "Ugyldig DLV-postformat. Forventet: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5764,8 +5748,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"HTTPS-post parametere må være i nøkkel=verdi format adskilt med mellomrom."
+msgstr "HTTPS-postparametere må være i key=value-format adskilt med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5840,9 +5823,7 @@ msgstr "Ugyldige tegn i TKEY-postinnhold."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY-post må inneholde algoritmenavn, oppstartstid, utløpstid, modus, feil "
-"og nøkkeldata adskilt med mellomrom."
+msgstr "TKEY-post må inneholde algorithm-name, inception-time, expiration-time, mode, error og key-data adskilt med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7467,7 +7448,7 @@ msgstr "Ugyldig CA-domene i issue-tag."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Issue-tag-parametere må være i nøkkel=verdi-format."
+msgstr "Issue-tag-parametere må være i key=value-format."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7742,7 +7723,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB-parametere må være i nøkkel=verdi-format separert med mellomrom."
+msgstr "SVCB-parametere må være i key=value-format separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7833,9 +7814,7 @@ msgstr "SMIMEA-post inneholder ugyldige tegn."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"SMIMEA-post må inneholde bruk, velger, samsvartype og sertifikatdata "
-"separert med mellomrom."
+msgstr "SMIMEA-post må inneholde usage, selector, matching-type og certificate-data separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7950,9 +7929,7 @@ msgstr "SMIMEA SHA-512 sertifikatdata må være 128 tegn lang."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Anbefalt SMIMEA-konfigurasjon er bruk=3 (DANE-EE), velger=1 "
-"(SubjectPublicKeyInfo), og samsvartype=1 (SHA-256)."
+msgstr "Anbefalt SMIMEA-konfigurasjon er usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) og matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8691,9 +8668,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDS-post må inneholde nøkkel-merke, algoritme, digest-type og digest "
-"separert med mellomrom."
+msgstr "CDS-post må inneholde key-tag, algorithm, digest-type og digest separert med mellomrom."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9368,9 +9343,7 @@ msgstr "SOA-post har ugyldig innholdsformat."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr ""
-"SOA-format skal være: primær-ns vertsmester serie oppdater gjenta utløp "
-"minimum"
+msgstr "SOA-format skal være: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9403,7 +9376,7 @@ msgstr "Tom linje."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Ugyldig format. Forventet minst: navn,type,innhold"
+msgstr "Ugyldig format. Forventet minst: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -9969,7 +9942,7 @@ msgstr "A-post: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>mal.[ZONE]</code> eller <code>eksempel.com.</code>"
+msgstr "CNAME: <code>target.[ZONE]</code> eller <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -10776,7 +10749,7 @@ msgstr "Oppgi minst én post"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: navn,type,innhold,prioritet,ttl,kommentar (én post per linje)"
+msgstr "Format: name,type,content,priority,ttl,comment (én post per linje)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -12682,7 +12655,7 @@ msgstr ""
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
-msgstr "Eksempel: eksempel.no"
+msgstr "Eksempel: example.com"
 
 #: templates/modern/add_zone_master.html:41
 msgid "Zone type (usually NATIVE)"
@@ -13776,13 +13749,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Visninger leverer ulike sonevarianter til ulike klienter, basert på hvilket "
-"nettverk oppslaget kom fra. Hver variant navngis som sone..variant (for "
-"eksempel example.com..trusted) og må finnes som en egen sone i PowerDNS før "
-"den kan tildeles her. Variantene deler navn, men slår opp forskjellig per "
-"visning, så det samme vertsnavnet kan svare med ulike IP-adresser avhengig "
-"av klientens nettverk."
+msgstr "Visninger leverer ulike sonevarianter til ulike klienter, basert på hvilket nettverk oppslaget kom fra. Hver variant navngis som zone..variant (for eksempel example.com..trusted) og må finnes som en egen sone i PowerDNS før den kan tildeles her. Variantene deler navn, men slår opp forskjellig per visning, så det samme vertsnavnet kan svare med ulike IP-adresser avhengig av klientens nettverk."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

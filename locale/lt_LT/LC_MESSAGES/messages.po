@@ -3652,7 +3652,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Galite keisti šio supermasteio IP adresą, serverio vardą arba paskyrą."
+msgstr "Galite keisti šio supermaster IP adresą, serverio vardą arba paskyrą."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -4215,9 +4215,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA įrašas turi turėti naudojimą, selektorių, atitikimo tipą ir sertifikato "
-"duomenis, atskirtus tarpais."
+msgstr "TLSA įrašas turi turėti usage, selector, matching-type ir certificate-data laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4259,9 +4257,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 rekomenduoja naudojimas=3 (DANE-EE), selektorius=1 (SPKI), "
-"atitikimo-tipas=1 (SHA-256) kaip patikimiausią konfigūraciją."
+msgstr "RFC 7671 rekomenduoja usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) kaip patikimiausią konfigūraciją."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4290,9 +4286,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Atitikimo tipas 0 (tikslus atitikimas) nerekomenduojamas. SHA-256 (1) teikia "
-"geresnį suderinamumą ir saugumą."
+msgstr "Reikšmė matching-type 0 (tikslus atitikimas) nerekomenduojama. SHA-256 (1) teikia geresnį suderinamumą ir saugumą."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5317,9 +5311,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG įrašas turi turėti bent algoritmo pavadinimą, laiko žymą, nuokrypį, "
-"mac, originalų-id, klaidą ir kitus-ilgius, atskirtus tarpais."
+msgstr "TSIG įrašas turi turėti bent algorithm-name, timestamp, fudge, mac, original-id, error ir other-len laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5335,7 +5327,7 @@ msgstr "TSIG laiko žyma turi būti neneigiamas sveikasis skaičius."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIG nuokrypis turi būti neneigiamas sveikasis skaičius."
+msgstr "TSIG fudge turi būti neneigiamas sveikasis skaičius."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
@@ -5392,7 +5384,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG kitas-ilgis turi būti neneigiamas sveikasis skaičius."
+msgstr "TSIG other-len turi būti neneigiamas sveikasis skaičius."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -5501,9 +5493,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"ZONEMD įrašas turi turėti seriją, schemą, hash-algoritmą ir santrauką, "
-"atskirtus tarpais."
+msgstr "ZONEMD įrašas turi turėti serial, scheme, hash-algorithm ir digest laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5580,9 +5570,7 @@ msgstr "CERT įrašo turinyje yra neteisingi simboliai."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERT įrašas turi turėti tipą, rakto žymę, algoritmą ir sertifikato duomenis, "
-"atskirtus tarpais."
+msgstr "CERT įrašas turi turėti type, key-tag, algorithm ir certificate-data laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5704,9 +5692,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Neteisingas DLV įrašo formatas. Tikėtasi: <rakto-žymė> <algoritmas> "
-"<santraukos-tipas> <santrauka>."
+msgstr "Neteisingas DLV įrašo formatas. Tikėtasi: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5831,8 +5817,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"HTTPS įrašo parametrai turi būti raktas=reikšmė formatu, atskirti tarpais."
+msgstr "HTTPS įrašo parametrai turi būti key=value formatu, atskirti tarpais."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5910,9 +5895,7 @@ msgstr "TKEY įrašo turinyje yra neteisingi simboliai."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY įrašas turi turėti algoritmo pavadinimą, pradžios laiką, galiojimo "
-"pabaigos laiką, režimą, klaidą ir rakto duomenis, atskirtus tarpais."
+msgstr "TKEY įrašas turi turėti algorithm-name, inception-time, expiration-time, mode, error ir key-data laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7144,9 +7127,7 @@ msgstr "DS įrašų prioriteto laukas turi būti 0 arba tuščias."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"DS įrašas turi būti formatu: <rakto-žymė> <algoritmas> <santraukos-tipas> "
-"<santrauka>"
+msgstr "DS įrašas turi būti formatu: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7546,7 +7527,7 @@ msgstr "Neteisingas CA domenas issue žymėje."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Issue žymės parametrai turi būti raktas=reikšmė formatu."
+msgstr "Issue žymės parametrai turi būti key=value formatu."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7828,7 +7809,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parametrai turi būti raktas=reikšmė formatu, atskirti tarpais."
+msgstr "SVCB parametrai turi būti key=value formatu, atskirti tarpais."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7919,9 +7900,7 @@ msgstr "SMIMEA įrašas turi neteisingų simbolių."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"SMIMEA įrašas turi turėti naudojimą, selektorių, atitikimo tipą ir "
-"sertifikato duomenis, atskirtus tarpais."
+msgstr "SMIMEA įrašas turi turėti usage, selector, matching-type ir certificate-data laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8037,9 +8016,7 @@ msgstr "SMIMEA SHA-512 sertifikato duomenys turi būti 128 simbolių ilgio."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Rekomenduojama SMIMEA konfigūracija yra naudojimas=3 (DANE-EE), "
-"selektorius=1 (SubjectPublicKeyInfo), ir atitikimo-tipas=1 (SHA-256)."
+msgstr "Rekomenduojama SMIMEA konfigūracija yra usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) ir matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8794,9 +8771,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDS įrašas turi turėti rakto žymę, algoritmą, santraukos tipą ir santrauką, "
-"atskirtus tarpais."
+msgstr "CDS įrašas turi turėti key-tag, algorithm, digest-type ir digest laukus, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9479,9 +9454,7 @@ msgstr "SOA įrašas turi netinkamą turinio formatą."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr ""
-"SOA formatas turėtų būti: pirminis-ns hostmaster serijos atnaujinimas "
-"pakartojimas galiojimas minimumas"
+msgstr "SOA formatas turėtų būti: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9514,7 +9487,7 @@ msgstr "Tuscia eilute."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Neteisingas formatas. Tikėtasi bent: pavadinimas,tipas,turinys"
+msgstr "Neteisingas formatas. Tikėtasi bent: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10882,9 +10855,7 @@ msgstr "Pateikite bent vieną įrašą"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formatas: vardas,tipas,turinys,prioritetas,ttl,komentaras (vienas įrašas "
-"eilutėje)"
+msgstr "Formatas: name,type,content,priority,ttl,comment (vienas įrašas eilutėje)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -13881,14 +13852,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal "
-"tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas "
-"vadinamas zona..variantas (pavyzdžiui, example.com..trusted) ir prieš "
-"priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą "
-"patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats "
-"kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento "
-"tinklą."
+msgstr "Vaizdai skirtingiems klientams pateikia skirtingus zonos variantus pagal tinklą, iš kurio buvo pateikta užklausa skyrikliui. Kiekvienas variantas vadinamas zone..variant (pavyzdžiui, example.com..trusted) ir prieš priskyrimą čia turi egzistuoti PowerDNS kaip atskira zona. Variantai turi tą patį vardą, bet kiekviename vaizde išsprendžiami skirtingai, todėl tas pats kompiuterio vardas gali atsakyti skirtingais IP adresais pagal kliento tinklą."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

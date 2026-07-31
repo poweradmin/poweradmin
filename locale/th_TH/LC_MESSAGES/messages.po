@@ -2748,15 +2748,15 @@ msgstr "ลบแม่แบบโซนเรียบร้อยแล้ว
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "คุณไม่มีสิทธิ์แก้ไขซูเปอร์มาสเตอร์"
+msgstr "คุณไม่มีสิทธิ์แก้ไข supermaster"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "ซูเปอร์มาสเตอร์ที่ท่านพยายามจะแก้ไขยังไม่มีอยู่"
+msgstr "Supermaster ที่ท่านพยายามจะแก้ไขยังไม่มีอยู่"
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "ซูเปอร์มาสเตอร์ได้ปรับปรุงแล้ว"
+msgstr "Supermaster ได้ปรับปรุงแล้ว"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2795,11 +2795,11 @@ msgstr "การซิงค์โซนล้มเหลว: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "คุณไม่ได้รับอนุญาตให้เพิ่มซูเปอร์มาสเตอร์คนใหม่"
+msgstr "คุณไม่ได้รับอนุญาตให้เพิ่ม supermaster ใหม่"
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "เพิ่มซูเปอร์มาสเตอร์เรียบร้อยแล้ว"
+msgstr "เพิ่ม supermaster เรียบร้อยแล้ว"
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3049,7 +3049,7 @@ msgstr "การปรับปรุงกลุ่มเรียบร้อ
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "คุณไม่ได้รับอนุญาตให้ลบซูเปอร์มาสเตอร์"
+msgstr "คุณไม่ได้รับอนุญาตให้ลบ supermaster"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3065,7 +3065,7 @@ msgstr "ไม่มีซูเปอร์มาสเตอร์นี้อ
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "ซูเปอร์มาสเตอร์ถูกลบเรียบร้อยแล้ว"
+msgstr "Supermaster ถูกลบเรียบร้อยแล้ว"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3355,35 +3355,35 @@ msgstr "ซูเปอร์มาสเตอร์"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "ออโตไพรมารี"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "ซูเปอร์มาสเตอร์"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "เพิ่มออโตไพรมารี"
+msgstr "เพิ่ม autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "เพิ่มซูเปอร์มาสเตอร์"
+msgstr "เพิ่ม supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "แก้ไขออโตไพรมารี"
+msgstr "แก้ไข autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "แก้ไขซูเปอร์มาสเตอร์"
+msgstr "แก้ไข supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "ลบออโตไพรมารี"
+msgstr "ลบ autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "ลบซูเปอร์มาสเตอร์"
+msgstr "ลบ supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3395,11 +3395,11 @@ msgstr "เกี่ยวกับซูเปอร์มาสเตอร์
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
-msgstr "ออโตไพรมารีคืออะไร?"
+msgstr "Autoprimary คืออะไร?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "ซูเปอร์มาสเตอร์คืออะไร"
+msgstr "Supermaster คืออะไร?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3419,11 +3419,11 @@ msgstr "ไม่มีซูเปอร์มาสเตอร์ที่จ
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "ที่อยู่ IP ของออโตไพรมารี"
+msgstr "ที่อยู่ IP ของ autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "ที่อยู่ IP ของซูเปอร์มาสเตอร์"
+msgstr "ที่อยู่ IP ของ supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3431,7 +3431,7 @@ msgstr "เลือกบัญชีผู้ใช้ที่จะเป็
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "เลือกบัญชีผู้ใช้ที่จะเป็นเจ้าของซูเปอร์มาสเตอร์นี้"
+msgstr "เลือกบัญชีผู้ใช้ที่จะเป็นเจ้าของ supermaster นี้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3449,7 +3449,7 @@ msgstr "คุณสามารถแก้ไขที่อยู่ IP, ช�
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "คุณสามารถแก้ไขที่อยู่ IP, ชื่อโฮสต์ หรือบัญชีของซูเปอร์มาสเตอร์นี้ได้"
+msgstr "คุณสามารถแก้ไขที่อยู่ IP, ชื่อโฮสต์ หรือบัญชีของ supermaster นี้ได้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3457,7 +3457,7 @@ msgstr "รายละเอียด Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "รายละเอียดของซูเปอร์มาสเตอร์"
+msgstr "รายละเอียดของ Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3465,7 +3465,7 @@ msgstr "คุณกำลังจะลบ autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "คุณกำลังจะลบซูเปอร์มาสเตอร์"
+msgstr "คุณกำลังจะลบ supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3473,7 +3473,7 @@ msgstr "ใช่ ลบ autoprimary นี้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "ใช่, ลบซูเปอร์มาสเตอร์นี้"
+msgstr "ใช่, ลบ supermaster นี้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3481,7 +3481,7 @@ msgstr "ไม่ เก็บ autoprimary นี้ไว้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "ไม่ เก็บซูเปอร์มาสเตอร์นี่ไว้"
+msgstr "ไม่ เก็บ supermaster นี้ไว้"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -5423,7 +5423,7 @@ msgstr "อักขระไม่ถูกต้องในเนื้อห
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "เรกคอร์ด TKEY ต้องประกอบด้วยชื่ออัลกอริทึม, เวลาเริ่มต้น, เวลาหมดอายุ, โหมด, ข้อผิดพลาด และข้อมูลกุญแจ คั่นด้วยช่องว่าง"
+msgstr "เรกคอร์ด TKEY ต้องประกอบด้วย algorithm-name, inception-time, expiration-time, mode, error และ key-data คั่นด้วยช่องว่าง"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7419,7 +7419,7 @@ msgstr "ข้อมูลที่เข้ารหัส Base64 ควรถ�
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "กุญแจสาธารณะ CDNSKEY จะต้องบรรจุเฉพาะตัวอักษรฐาน64 ที่ถูกต้อง"
+msgstr "กุญแจสาธารณะ CDNSKEY จะต้องบรรจุเฉพาะตัวอักษร base64 ที่ถูกต้อง"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
@@ -8588,7 +8588,7 @@ msgstr "อาร์กิวเมนต์ที่ไม่ถูกต้อ
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "มีซูเปอร์มาสเตอร์ที่ใช้ IP address และชื่อโฮสต์นี้อยู่แล้ว"
+msgstr "มี supermaster ที่ใช้ IP address และชื่อโฮสต์นี้อยู่แล้ว"
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -10759,7 +10759,7 @@ msgstr "กลับไป"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "ซูเปอร์มาสเตอร์คือเซิร์ฟเวอร์ PowerDNS แบบ authoritative ที่ส่งโซนใหม่ไปยังเซิร์ฟเวอร์ทาสโดยอัตโนมัติ"
+msgstr "Supermaster คือเซิร์ฟเวอร์ PowerDNS แบบ authoritative ที่ส่งโซนใหม่ไปยังเซิร์ฟเวอร์ทาสโดยอัตโนมัติ"
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10769,9 +10769,7 @@ msgstr "มันทำงานอย่างไร"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"เมื่อทาสได้รับการแจ้งเตือนจากซูเปอร์มาสเตอร์ มันจะเพิ่มโดเมน และตั้งค่าที่อยู่ IP "
-"ของซูเปอร์มาสเตอร์เป็นที่อยู่หลัก"
+msgstr "เมื่อทาสได้รับการแจ้งเตือนจาก supermaster มันจะเพิ่มโดเมน และตั้งค่าที่อยู่ IP ของ supermaster เป็นที่อยู่หลัก"
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12451,7 +12449,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "คุณกำลังจะลบโซนแบบ slave ที่เนมเซิร์ฟเวอร์หลักเป็นซูเปอร์มาสเตอร์ การลบโซนตอนนี้จะเป็นการลบชั่วคราวเท่านั้น เมื่อใดก็ตามที่ซูเปอร์มาสเตอร์ส่งการแจ้งเตือนสำหรับโซนนี้ โซนจะถูกเพิ่มกลับมาอีกครั้ง!"
+msgstr "คุณกำลังจะลบโซนแบบ slave ที่เนมเซิร์ฟเวอร์หลักเป็น supermaster การลบโซนตอนนี้จะเป็นการลบชั่วคราวเท่านั้น เมื่อใดก็ตามที่ supermaster ส่งการแจ้งเตือนสำหรับโซนนี้ โซนจะถูกเพิ่มกลับมาอีกครั้ง!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"

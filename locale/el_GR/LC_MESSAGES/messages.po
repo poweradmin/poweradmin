@@ -3527,7 +3527,7 @@ msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "Αυτόματο πρωτεύον"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
@@ -3535,7 +3535,7 @@ msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "Προσθήκη αυτόματου πρωτεύοντος"
+msgstr "Προσθήκη autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
@@ -3543,7 +3543,7 @@ msgstr "Προσθήκη supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Επεξεργασία αυτόματου πρωτεύοντος"
+msgstr "Επεξεργασία autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
@@ -3551,7 +3551,7 @@ msgstr "Επεξεργασία supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "Διαγραφή αυτόματου πρωτεύοντος"
+msgstr "Διαγραφή autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
@@ -3567,7 +3567,7 @@ msgstr "Σχετικά με τους Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
-msgstr "Τι είναι το αυτόματο πρωτεύον;"
+msgstr "Τι είναι το Autoprimary;"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
@@ -3591,7 +3591,7 @@ msgstr "Δεν υπάρχουν supermasters για να εμφανιστούν 
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "Διεύθυνση IP του αυτόματου πρωτεύοντος"
+msgstr "Διεύθυνση IP του autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
@@ -3599,7 +3599,7 @@ msgstr "Διεύθυνση IP του supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "Επιλέξτε το λογαριασμό που θα κατέχει αυτό το αυτόματο πρωτεύον"
+msgstr "Επιλέξτε το λογαριασμό που θα κατέχει αυτό το autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
@@ -3616,9 +3616,7 @@ msgstr "Σχετικά με την επεξεργασία των Supermasters"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr ""
-"Μπορείτε να τροποποιήσετε τη διεύθυνση IP, hostname, ή λογαριασμό για αυτό "
-"το αυτόματο πρωτεύον."
+msgstr "Μπορείτε να τροποποιήσετε τη διεύθυνση IP, hostname, ή λογαριασμό για αυτό το autoprimary."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
@@ -3629,7 +3627,7 @@ msgstr ""
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
-msgstr "Λεπτομέρειες αυτόματου πρωτεύοντος"
+msgstr "Λεπτομέρειες autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
@@ -3637,7 +3635,7 @@ msgstr "Λεπτομέρειες Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "Πρόκειται να διαγράψετε το αυτόματο πρωτεύον"
+msgstr "Πρόκειται να διαγράψετε το autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
@@ -3645,7 +3643,7 @@ msgstr "Είστε έτοιμοι να διαγράψετε το supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "Ναι, διαγραφή αυτού του αυτόματου πρωτεύοντος"
+msgstr "Ναι, διαγραφή αυτού του autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
@@ -3653,7 +3651,7 @@ msgstr "Ναι, διαγραφή αυτού του supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "Όχι, κράτα αυτό το αυτόματο πρωτεύον"
+msgstr "Όχι, κράτα αυτό το autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
@@ -3663,9 +3661,7 @@ msgstr "Όχι, κράτα αυτό το supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"Εμφάνιση κατάστασης συνδεσιμότητας για τους αυτόματους πρωτεύοντες "
-"διακομιστές που έχουν ρυθμιστεί στον παρακάτω πίνακα."
+msgstr "Εμφάνιση κατάστασης συνδεσιμότητας για τους διακομιστές autoprimary που έχουν ρυθμιστεί στον παρακάτω πίνακα."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
@@ -4164,7 +4160,7 @@ msgstr "Μη έγκυρη τιμή για το πεδίο προτεραιότη
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Η εγγραφή TLSA πρέπει να περιέχει τη χρήση, τον επιλογέα, τον τύπο αντιστοίχισης και τα δεδομένα πιστοποιητικού, διαχωρισμένα με κενά."
+msgstr "Η εγγραφή TLSA πρέπει να περιέχει usage, selector, matching-type και certificate-data, διαχωρισμένα με κενά."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4206,9 +4202,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 συνιστά χρήση=3 (DANE-EE), επιλογέας=1 (SPKI), ταίριασμα-τύπος=1 "
-"(SHA-256) ως η πιο στιβαρή διαμόρφωση."
+msgstr "Το RFC 7671 συνιστά usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) ως την πιο στιβαρή διαμόρφωση."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4235,9 +4229,7 @@ msgstr "Το πεδίο τύπου αντιστοίχισης TLSA πρέπει 
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Ταίριασμα τύπου 0 (ακριβής ταύτιση) δεν συνιστάται. Η SHA-256 (1) παρέχει "
-"καλύτερη συμβατότητα και ασφάλεια."
+msgstr "Το matching-type 0 (ακριβής ταύτιση) δεν συνιστάται. Η SHA-256 (1) παρέχει καλύτερη συμβατότητα και ασφάλεια."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5387,9 +5379,7 @@ msgstr "Μη έγκυροι χαρακτήρες σε περιεχόμενο ε�
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Η εγγραφή CERT πρέπει να περιέχει τύπο, ετικέτα κλειδιού, αλγόριθμο και "
-"δεδομένα πιστοποιητικού χωρισμένα με κενά."
+msgstr "Η εγγραφή CERT πρέπει να περιέχει type, key-tag, algorithm και certificate-data, χωρισμένα με κενά."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5700,10 +5690,7 @@ msgstr "Μη έγκυροι χαρακτήρες σε περιεχόμενο ε�
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"Η εγγραφή TKEY πρέπει να περιέχει το όνομα αλγορίθμου, το χρόνο έναρξης, το "
-"χρόνο λήξης, τη λειτουργία, το σφάλμα και τα δεδομένα κλειδιού που "
-"χωρίζονται από κενά."
+msgstr "Η εγγραφή TKEY πρέπει να περιέχει algorithm-name, inception-time, expiration-time, mode, error και key-data, που χωρίζονται με κενά."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7537,9 +7524,7 @@ msgstr "Η εγγραφή SMIMEA περιέχει μη έγκυρους χαρα
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Η εγγραφή SMIMEA πρέπει να περιέχει τη χρήση, τον επιλογέα, τον τύπο "
-"αντιστοίχισης και τα δεδομένα πιστοποιητικού-διαχωρισμένα με κενά."
+msgstr "Η εγγραφή SMIMEA πρέπει να περιέχει usage, selector, matching-type και certificate-data, διαχωρισμένα με κενά."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7659,9 +7644,7 @@ msgstr ""
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Συνιστώμενη διαμόρφωση SMIMEA είναι η χρήση=3 (DANE-EE), επιλογέας=1 "
-"(SubjectPublicKeyInfo), και ταίριασμα-τύπος=1 (SHA-256)."
+msgstr "Η συνιστώμενη διαμόρφωση SMIMEA είναι usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) και matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8353,7 +8336,7 @@ msgstr "Αυτή είναι μια εγγραφή διαγραφής CDS όπω�
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "Η εγγραφή CDS πρέπει να περιέχει ετικέτα κλειδιού, αλγόριθμο, τύπο σύνοψης και σύνοψη που διαχωρίζονται με κενά."
+msgstr "Η εγγραφή CDS πρέπει να περιέχει key-tag, algorithm, digest-type και digest, που διαχωρίζονται με κενά."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."

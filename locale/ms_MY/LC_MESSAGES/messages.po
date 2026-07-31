@@ -7162,9 +7162,7 @@ msgstr "Rekod SMIMEA mengandung aksara tidak sah."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"Rekod SMIMEA harus mengandung penggunaan, pemilih, jenis-sepadan, dan data-"
-"sijil yang dipisahkan oleh spasi."
+msgstr "Rekod SMIMEA harus mengandung usage, selector, matching-type, dan certificate-data yang dipisahkan oleh spasi."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7261,9 +7259,7 @@ msgstr "Data sijil SMIMEA SHA-512 harus panjang 128 karakter."
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Konfigurasi SMIMEA yang disarankan adalah penggunaan=3 (DANE-EE), pemilih=1 "
-"(SubjectPublicKeyInfo), dan pencocokan-jenis=1 (SHA-256)."
+msgstr "Konfigurasi SMIMEA yang disarankan adalah usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo), dan matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -7946,7 +7942,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "Rekod CDS harus mengandung key-tag, algoritma, jenis-cerna dan digest yang dipisahkan oleh spasi."
+msgstr "Rekod CDS harus mengandung key-tag, algorithm, digest-type dan digest yang dipisahkan oleh spasi."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9942,7 +9938,7 @@ msgstr "Berikan sekurang-kurangnya satu rekod"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: nama, jenis, isi, keutamaan,ttl,comment (satu rekod per baris)"
+msgstr "Format: name,type,content,priority,ttl,comment (satu rekod per baris)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"

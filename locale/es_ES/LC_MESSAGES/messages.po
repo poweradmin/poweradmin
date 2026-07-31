@@ -3605,7 +3605,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Supermaestro"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -4271,9 +4271,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"El registro TLSA debe contener uso, selector, tipo-de-coincidencia y datos-"
-"de-certificado separados por espacios."
+msgstr "El registro TLSA debe contener usage, selector, matching-type y certificate-data separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4315,9 +4313,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 recomienda uso=3 (DANE-EE), selector=1 (SPKI), tipo-de-"
-"coincidencia=1 (SHA-256) como la configuración más robusta."
+msgstr "RFC 7671 recomienda usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) como la configuración más robusta."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4346,9 +4342,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Tipo-de-coincidencia 0 (Coincidencia exacta) no se recomienda. SHA-256 (1) "
-"proporciona mejor compatibilidad y seguridad."
+msgstr "Matching-type 0 (Coincidencia exacta) no se recomienda. SHA-256 (1) proporciona mejor compatibilidad y seguridad."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5587,9 +5581,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"El registro ZONEMD debe contener serial, esquema, algoritmo-hash y digest "
-"separados por espacios."
+msgstr "El registro ZONEMD debe contener serial, scheme, hash-algorithm y digest separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5794,9 +5786,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Formato de registro DLV inválido. Se esperaba: <key-tag> <algoritmo> <tipo-"
-"digest> <digest>."
+msgstr "Formato de registro DLV inválido. Se esperaba: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5924,9 +5914,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Los parámetros del registro HTTPS deben estar en formato clave=valor "
-"separados por espacios."
+msgstr "Los parámetros del registro HTTPS deben estar en formato key=value separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -7668,7 +7656,7 @@ msgstr "Dominio CA inválido en etiqueta issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Los parámetros de etiqueta issue deben estar en formato clave=valor."
+msgstr "Los parámetros de etiqueta issue deben estar en formato key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7953,9 +7941,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"Los parámetros SVCB deben estar en formato clave=valor separados por "
-"espacios."
+msgstr "Los parámetros SVCB deben estar en formato key=value separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -8049,9 +8035,7 @@ msgstr "El registro SMIMEA contiene caracteres inválidos."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"El registro SMIMEA debe contener uso, selector, tipo de coincidencia y datos "
-"de certificado separados por espacios."
+msgstr "El registro SMIMEA debe contener usage, selector, matching-type y certificate-data separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8173,9 +8157,7 @@ msgstr ""
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"La configuración SMIMEA recomendada es uso=3 (DANE-EE), selector=1 "
-"(SubjectPublicKeyInfo), y tipo-coincidencia=1 (SHA-256)."
+msgstr "La configuración SMIMEA recomendada es usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) y matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8949,9 +8931,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"El registro CDS debe contener key-tag, algoritmo, tipo de resumen y resumen "
-"separados por espacios."
+msgstr "El registro CDS debe contener key-tag, algorithm, digest-type y digest separados por espacios."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9650,9 +9630,7 @@ msgstr "El registro SOA tiene un formato de contenido no válido."
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
-msgstr ""
-"El formato SOA debe ser: ns-primario hostmaster serie actualización "
-"reintento expiración mínimo"
+msgstr "El formato SOA debe ser: primary-ns hostmaster serial refresh retry expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:184
 msgid ""
@@ -9686,7 +9664,7 @@ msgstr "Linea vacia."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Formato inválido. Se esperaba al menos: nombre,tipo,contenido"
+msgstr "Formato inválido. Se esperaba al menos: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -11067,9 +11045,7 @@ msgstr "Proporcione al menos un registro"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formato: nombre,tipo,contenido,prioridad,ttl,comentario (un registro por "
-"línea)"
+msgstr "Formato: name,type,content,priority,ttl,comment (un registro por línea)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -12996,7 +12972,7 @@ msgstr ""
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
-msgstr "Ejemplo: ejemplo.com"
+msgstr "Ejemplo: example.com"
 
 #: templates/modern/add_zone_master.html:41
 msgid "Zone type (usually NATIVE)"
@@ -13954,9 +13930,7 @@ msgstr "Búsqueda DNS"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr ""
-"Introduce nombre de dominio, hostname o IP (ej., ejemplo.com type:txt "
-"content:spf)"
+msgstr "Introduce nombre de dominio, hostname o IP (ej., example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -15073,9 +15047,7 @@ msgstr "Buscar"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr ""
-"Introduce un nombre de dominio (ej., ejemplo.com) para buscar su información "
-"WHOIS"
+msgstr "Introduce un nombre de dominio (ej., example.com) para buscar su información WHOIS"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -15092,9 +15064,7 @@ msgstr "Búsqueda RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr ""
-"Introduce un nombre de dominio (ej., ejemplo.com) para buscar su información "
-"RDAP"
+msgstr "Introduce un nombre de dominio (ej., example.com) para buscar su información RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"

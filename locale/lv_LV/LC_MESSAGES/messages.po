@@ -2154,7 +2154,7 @@ msgstr "Zonas parakstīšana veiksmīga, bet pārbaude neizdevās. Pārbaudiet D
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr "Neizdevās parakstīt zonu. Validācija veiksmīga, bet API kļūda."
+msgstr "Neizdevās parakstīt zonu. Validācija veiksmīga, bet PowerDNS API kļūda."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -2809,15 +2809,15 @@ msgstr "Zonas veidne veiksmīgi dzēsta."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "Jums nav atļaujas rediģēt galveno."
+msgstr "Jums nav atļaujas rediģēt supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Galvenais, ko mēģināt rediģēt, neeksistē."
+msgstr "Supermaster, ko mēģināt rediģēt, neeksistē."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "Galvenais veiksmīgi atjaunināts."
+msgstr "Supermaster veiksmīgi atjaunināts."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2857,11 +2857,11 @@ msgstr "Zonu sinhronizācija neizdevās: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "Jums nav atļaujas pievienot jaunu galveno."
+msgstr "Jums nav atļaujas pievienot jaunu supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "Galvenais veiksmīgi pievienots."
+msgstr "Supermaster veiksmīgi pievienots."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3123,7 +3123,7 @@ msgstr "Grupa veiksmīgi atjaunināta."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Jums nav atļaujas dzēst galveno."
+msgstr "Jums nav atļaujas dzēst supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3139,7 +3139,7 @@ msgstr "Galvenais neeksistē."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Galvenais veiksmīgi dzēsts."
+msgstr "Supermaster veiksmīgi dzēsts."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3444,7 +3444,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Galvenais"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3452,7 +3452,7 @@ msgstr "Pievienot autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Pievienot galveno"
+msgstr "Pievienot supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3460,7 +3460,7 @@ msgstr "Rediģēt autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "rediģēt galveno"
+msgstr "rediģēt supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3468,7 +3468,7 @@ msgstr "Dzēst autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "dzēst galveno"
+msgstr "dzēst supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3508,7 +3508,7 @@ msgstr "Autoprimary IP adrese"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Galvenā IP adrese"
+msgstr "Supermaster IP adrese"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3516,7 +3516,7 @@ msgstr "Atlasiet kontu, kuram piederēs šis autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Atlasiet kontu, kas būs galvenā īpašnieks"
+msgstr "Atlasiet kontu, kas būs šī supermaster īpašnieks"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3535,7 +3535,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Jūs varat mainīt galvenā IP, resursdatoru vai kontu."
+msgstr "Jūs varat mainīt šī supermaster IP, resursdatoru vai kontu."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3543,7 +3543,7 @@ msgstr "Autoprimary detaļas"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "Galvenā detaļas"
+msgstr "Supermaster detaļas"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3551,7 +3551,7 @@ msgstr "Jūs grasāties dzēst autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "Jūs gatavojaties dzēst galveno"
+msgstr "Jūs gatavojaties dzēst supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3559,7 +3559,7 @@ msgstr "Jā, dzēst šo autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "Jā, dzēst šo galveno"
+msgstr "Jā, dzēst šo supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3567,7 +3567,7 @@ msgstr "Nē, saglabāt šo autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "Nē, paturēt šo galveno"
+msgstr "Nē, paturēt šo supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -4010,7 +4010,7 @@ msgstr ""
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr "Šis izskatās pēc TLSA DoT. Pārliecinieties par DoT konfigurāciju."
+msgstr "Šis izskatās pēc TLSA ieraksta DNS over TLS. Pārliecinieties par DNS servera DoT konfigurāciju."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -4111,7 +4111,7 @@ msgstr "Selektors 0 (pilns sertifikāts) var pārstāt darboties, ja mainās ser
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "TLSA saskaņošanas veidam jābūt 0, 1 vai 2."
+msgstr "TLSA saskaņošanas veidam jābūt 0 (precīza atbilstība), 1 (SHA-256) vai 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -4255,7 +4255,7 @@ msgstr "Garas sāls nesniedz papildu drošību. Izmantojiet īsāku vai bez sāl
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
-msgstr "PIEZĪME: LP ir definēts RFC 6742 kā eksperimentāls protokols."
+msgstr "PIEZĪME: LP ir definēts RFC 6742 kā eksperimentāls protokols, nevis formāls IETF standarts."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -4273,8 +4273,7 @@ msgstr "LP ieraksti NEDRĪKST būt mezgliem, kas nav ILNP (RFC 6742 §3.4)."
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr ""
-"Brīdinājums: FQDN LP ierakstā NEVAJADZĒTU būt tādam pašam kā īpašniekam."
+msgstr "Brīdinājums: FQDN LP ierakstā NEVAJADZĒTU būt tādam pašam kā īpašniekam (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
@@ -4419,7 +4418,7 @@ msgstr "RKEY ierakstu prioritātes laukam jābūt 0 vai tukšam."
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr "RKEY ieraksti jālieto piesardzīgi - tie nav plaši atbalstīti."
+msgstr "RKEY ieraksti jālieto piesardzīgi - tos plaši neatbalsta DNS serveri un resolveri."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
@@ -4439,7 +4438,7 @@ msgstr "RKEY karodziņu laukam jābūt skaitliskam."
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr "Neparasta karodziņu vērtība. Parastās ir 0, 256 vai 257."
+msgstr "Neparasta karodziņu vērtība. Parastās ir 0, 256 (Zone Key) vai 257 (Zone Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
@@ -4507,8 +4506,7 @@ msgstr "Algoritms 10 (RSA/SHA-512) nodrošina augstu drošību."
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr ""
-"Algoritms 13 (ECDSA Curve P-256 ar SHA-256) laba drošība un mazāki paraksti."
+msgstr "Algoritms 13 (ECDSA Curve P-256 ar SHA-256) nodrošina labu drošību ar mazākiem parakstiem nekā RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
@@ -4534,7 +4532,7 @@ msgstr "Algoritms 16 (Ed448) piedāvā spēcīgu mūsdienīgu drošību, taču a
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr "KRITISKI: Algoritms nav drošs. Izmantojiet algoritmu 8 vai jaunāku."
+msgstr "KRITISKI: Algoritms nav drošs. Izmantojiet algoritmu 8 (RSA/SHA-256) vai jaunāku."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -4548,7 +4546,7 @@ msgstr "Publiskās atslēgas datiem jābūt Base64 kodētiem (RFC 4034)."
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr "RKEY nekad netika formāli standartizēts - tikai kā drafts."
+msgstr "RKEY nekad netika formāli standartizēts kā RFC - tikai piedāvāts draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -4609,13 +4607,13 @@ msgstr "IPv6 prefiksam jābūt starp 0 un 128."
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
-msgstr "APL izmantošana AXFR kontrolei jāapvieno ar citām drošības mērām."
+msgstr "APL izmantošana AXFR kontrolei jāapvieno ar citiem drošības pasākumiem, kā norādīts RFC 3123."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr "Piezīme: NID ieraksti izmanto ILNP protokolu (eksperimentāls)."
+msgstr "Piezīme: NID ieraksti izmanto ILNP protokolu, kas ir eksperimentāls (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -5077,7 +5075,7 @@ msgstr "RFC 8945 iesaka HMAC-SHA256 kā standarta TSIG algoritmu."
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr "ZONEMD ir definēts RFC 8976 (2021) un var nebūt visur atbalstīts."
+msgstr "ZONEMD ir definēts RFC 8976 (2021) un var nebūt atbalstīts visos DNS serveros."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -5209,7 +5207,7 @@ msgstr "CERT tipa vērtība "
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr "CERT veidam jābūt skaitlim 0-65535 vai derīgam mnemonikam."
+msgstr "CERT veidam jābūt skaitlim 0-65535 vai derīgam mnemonikam (PKIX, SPKI, PGP u.c.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -5229,7 +5227,7 @@ msgstr "CERT algoritmam jābūt 0-255 vai derīgam mnemonikam."
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr "CERT algoritmam jābūt skaitlim 0-255 vai derīgam mnemonikam."
+msgstr "CERT algoritmam jābūt skaitlim 0-255 vai derīgam mnemonikam (RSASHA1, DSA u.c.)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5322,7 +5320,7 @@ msgstr "Nederīgs algoritms. Jābūt DNSSEC (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Nederīgs digesta veids. Jābūt 1, 2 vai 4."
+msgstr "Nederīgs digesta veids. Jābūt 1 (SHA-1), 2 (SHA-256) vai 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5467,7 +5465,7 @@ msgstr "TKEY ierakstu prioritātes laukam jābūt 0 vai tukšam"
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr "TKEY ieraksti nav datu autentifikācijai, bet atslēgu izveidei."
+msgstr "TKEY ieraksti nav DNS datu autentifikācijai, bet atslēgu izveidei starp DNS serveriem/resolveriem."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -5597,7 +5595,7 @@ msgstr "TTL vērtība (%d) ir zemāka par ieteicamo minimumu %d sekundes (5 min�
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL (%d) virs ieteicamā maksimuma %d sekundes (1 nedēļa)."
+msgstr "TTL (%d) virs ieteicamā maksimuma %d sekundes (1 nedēļa). Augstas TTL vērtības aizkavē DNS atjauninājumus."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -5978,7 +5976,7 @@ msgstr "DHCID identifikatora tips 0x%04X nav standarta (RFC 4701)."
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID digesta veids %d nav standarta veids saskaņā ar RFC 4701."
+msgstr "DHCID digesta veids %d nav standarta veids (1 - SHA-256) saskaņā ar RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6080,13 +6078,13 @@ msgstr "Algoritms 10 (RSA/SHA-512) nodrošina augstu drošību, taču ar dažiem
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr "Algoritms 13 (ECDSA P-256 ar SHA-256) nodrošina labu drošību."
+msgstr "Algoritms 13 (ECDSA P-256 ar SHA-256) nodrošina labu drošību ar mazākiem parakstiem nekā RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr "Algoritms 14 (ECDSA P-384 ar SHA-384) nodrošina augstu drošību."
+msgstr "Algoritms 14 (ECDSA P-384 ar SHA-384) nodrošina augstu drošību ar mazākiem parakstiem nekā RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -6224,7 +6222,7 @@ msgstr "RP ierakstu prioritātes laukam jābūt 0 vai tukšam"
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr "RP ir definēts RFC 1183 (1990), tiek reti izmantots."
+msgstr "RP ir definēts RFC 1183 (1990), tiek reti izmantots mūsdienu DNS konfigurācijās."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
@@ -6542,11 +6540,11 @@ msgstr "%s (algoritms %d) ir neobligāts saskaņā ar RFC 8624."
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "%s (algoritms %d) NAV IETEICAMS (RFC 8624). Lietojiet 13 vai 15."
+msgstr "%s (algoritms %d) NAV IETEICAMS (RFC 8624). Lietojiet ECDSAP256SHA256 (13) vai ED25519 (15)."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digesta veidam jābūt: 1, 2 vai 4"
+msgstr "Digesta veidam jābūt: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -7252,7 +7250,7 @@ msgstr ""
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr "SMIMEA saskaņošanas veidam jābūt 0, 1 vai 2."
+msgstr "SMIMEA saskaņošanas veidam jābūt 0 (precīza atbilstība), 1 (SHA-256) vai 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
@@ -7307,7 +7305,7 @@ msgstr "KRITISKI: lai SMIMEA ieraksti nodrošinātu drošību, tiem IR NEPIECIE�
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "PIEZĪME: L64 ir definēts RFC 6742 kā eksperimentāls protokols."
+msgstr "PIEZĪME: L64 ir definēts RFC 6742 kā eksperimentāls protokols, nevis formāls IETF standarts."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
@@ -7319,7 +7317,7 @@ msgstr "L64 ieraksti jāizmanto tikai kopā ar Identifier-Locator Network Protoc
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr "IP, kas nav ILNPv6, NEDRĪKST būt L64 (RFC 6742 §3.2)."
+msgstr "IP, kas nav ILNPv6, NEDRĪKST būt L64 tā DNS ierakstos (RFC 6742 §3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
@@ -7551,7 +7549,7 @@ msgstr ""
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr "SSHFP algoritmam jābūt 1, 2, 3, 4 vai 6."
+msgstr "SSHFP algoritmam jābūt 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519) vai 6 (Ed448)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
@@ -7563,7 +7561,7 @@ msgstr "DSA atslēgas tiek uzskatītas par vājām, un daudzās SSH implementāc
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr "Ed25519 atslēgas ieteicamas labai drošībai un veiktspējai."
+msgstr "Ed25519 atslēgas ieteicamas labai drošībai un veiktspējai ar mūsdienu SSH implementācijām."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -7942,7 +7940,7 @@ msgstr "CDS algoritmam jābūt skaitlim no 1 līdz 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS digesta veidam jābūt 1, 2 vai 4."
+msgstr "CDS digesta veidam jābūt 1 (SHA-1), 2 (SHA-256) vai 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -7971,7 +7969,7 @@ msgstr "CDS ieraksti jāievieto tikai zonas virsotnē (ne apakšdomēnos)."
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr "PIEZĪME: L32 ir definēts RFC 6742 kā eksperimentāls protokols."
+msgstr "PIEZĪME: L32 ir definēts RFC 6742 kā eksperimentāls protokols, nevis formāls IETF standarts."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
@@ -7983,7 +7981,7 @@ msgstr "L32 ieraksti jāizmanto tikai kopā ar Identifier-Locator Network Protoc
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr "Privātu IP (RFC 1918) L32 lokatoros var ierobežot sasniedzamību."
+msgstr "Privātu IP (RFC 1918) izmantošana L32 lokatoros var ierobežot sasniedzamību ILNP vidēs."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
@@ -8398,7 +8396,7 @@ msgstr "DNSKEY algoritmam jābūt skaitlim no 1 līdz 16."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr "ECDSAP256SHA256 (13) ir IETEICAMS DNSSEC parakstīšanai."
+msgstr "ECDSAP256SHA256 (13) ir IETEICAMS DNSSEC parakstīšanai saskaņā ar RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -8559,13 +8557,13 @@ msgstr "Tukša rinda."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Nederīgs formāts. Nepieciešams: nosaukums,veids,saturs"
+msgstr "Nederīgs formāts. Nepieciešams vismaz: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Nederīgs SRV formāts. Lietojiet: name,SRV,\"weight port target\"."
+msgstr "Nederīgs SRV formāts. Lietojiet: name,SRV,\"weight port target\",priority,ttl vai name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -8615,7 +8613,7 @@ msgstr "Nederīgi argumenti funkcijai %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Jau pastāv galvenais ar šo IP un resursdatoru."
+msgstr "Jau pastāv supermaster ar šo IP un resursdatoru."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -9768,7 +9766,7 @@ msgstr "Par veidnēm"
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr "Zonu veidnes ļauj izveidot iepriekšnoteiktus ierakstu kopumus."
+msgstr "Zonu veidnes ļauj izveidot iepriekšnoteiktus DNS ierakstu kopumus."
 
 #: templates/modern/add_zone_templ.html:65
 msgid "After creating a template, you can add record templates to it."
@@ -9892,9 +9890,7 @@ msgstr "Norādiet vismaz vienu ierakstu"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formāts: nosaukums,veids,saturs,prioritāte,ttl,komentārs (viens ieraksts "
-"rindā)"
+msgstr "Formāts: name,type,content,priority,ttl,comment (viens ieraksts rindā)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"

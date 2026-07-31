@@ -3549,7 +3549,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Nadřízený server"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -5473,9 +5473,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Záznam ZONEMD musí obsahovat sériové číslo, schéma, hashovací algoritmus a "
-"digest oddělené mezerami."
+msgstr "Záznam ZONEMD musí obsahovat serial, scheme, hash-algorithm a digest oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5551,9 +5549,7 @@ msgstr "Neplatné znaky v obsahu CERT záznamu."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Záznam CERT musí obsahovat typ, klíčový tag, algoritmus a data certifikátu "
-"oddělené mezerami."
+msgstr "Záznam CERT musí obsahovat type, key-tag, algorithm a certificate-data oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5674,9 +5670,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Neplatný formát záznamu DLV. Očekáváno: <klíčový-tag> <algoritmus> <typ-"
-"digestu> <digest>."
+msgstr "Neplatný formát záznamu DLV. Očekáváno: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5798,8 +5792,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Parametry HTTPS záznamu musí být ve formátu klíč=hodnota oddělené mezerami."
+msgstr "Parametry HTTPS záznamu musí být ve formátu key=value oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -5874,9 +5867,7 @@ msgstr "Neplatné znaky v obsahu TKEY záznamu."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"Záznam TKEY musí obsahovat název algoritmu, čas vytvoření, čas vypršení, "
-"režim, chybu a klíčová data oddělená mezerami."
+msgstr "Záznam TKEY musí obsahovat algorithm-name, inception-time, expiration-time, mode, error a key-data oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7096,9 +7087,7 @@ msgstr "Pole priority pro záznamy DS musí být 0 nebo prázdné."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"DS záznam musí být ve formátu: <klíčový-tag> <algoritmus> <typ-digestu> "
-"<digest>"
+msgstr "DS záznam musí být ve formátu: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7492,7 +7481,7 @@ msgstr "Neplatná CA doména v issue tagu."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Parametry issue tagu musí být ve formátu klíč=hodnota."
+msgstr "Parametry issue tagu musí být ve formátu key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7767,7 +7756,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parametry musí být ve formátu klíč=hodnota oddělené mezerami."
+msgstr "SVCB parametry musí být ve formátu key=value oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7858,9 +7847,7 @@ msgstr "SMIMEA záznam obsahuje neplatné znaky."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"SMIMEA záznam musí obsahovat použití, selektor, typ-porovnání a data-"
-"certifikátu oddělené mezerami."
+msgstr "SMIMEA záznam musí obsahovat usage, selector, matching-type a certificate-data oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8722,9 +8709,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDS záznam musí obsahovat klíčový tag, algoritmus, typ digestu a digest "
-"oddělené mezerami."
+msgstr "CDS záznam musí obsahovat key-tag, algorithm, digest-type a digest oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9440,7 +9425,7 @@ msgstr "Prazdny radek."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
+msgstr "Neplatný formát. Očekáváno minimálně: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10802,7 +10787,7 @@ msgstr "Zadejte alespoň jeden záznam"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formát: název,typ,obsah,priorita,ttl,komentář (jeden záznam na řádek)"
+msgstr "Formát: name,type,content,priority,ttl,comment (jeden záznam na řádek)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"

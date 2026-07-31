@@ -4170,9 +4170,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA-posten måste innehålla användning, väljare, matchningstyp och "
-"certifikatdata separerade med mellanslag."
+msgstr "TLSA-posten måste innehålla usage, selector, matching-type och certificate-data separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4214,9 +4212,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"RFC 7671 rekommenderar användning=3 (DANE-EE), väljare=1 (SPKI), "
-"matchningstyp=1 (SHA-256) som den mest robusta konfigurationen."
+msgstr "RFC 7671 rekommenderar usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) som den mest robusta konfigurationen."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4245,9 +4241,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Matchningstyp 0 (Exakt matchning) rekommenderas inte. SHA-256 (1) ger bättre "
-"kompatibilitet och säkerhet."
+msgstr "Matching-type 0 (Exakt matchning) rekommenderas inte. SHA-256 (1) ger bättre kompatibilitet och säkerhet."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5261,9 +5255,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG-posten måste innehålla minst algoritmnamn, tidsstämpel, fudge, MAC, "
-"original-ID, fel och other-len separerade med mellanslag."
+msgstr "TSIG-posten måste innehålla minst algorithm-name, timestamp, fudge, mac, original-id, error och other-len separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5440,9 +5432,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"ZONEMD-posten måste innehålla serienummer, schema, hashalgoritm och "
-"sammanfattning separerade med mellanslag."
+msgstr "ZONEMD-posten måste innehålla serial, scheme, hash-algorithm och digest separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5518,9 +5508,7 @@ msgstr "Ogiltiga tecken i CERT-postens innehåll."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERT-posten måste innehålla typ, nyckeltagg, algoritm och certifikatdata "
-"separerade med mellanslag."
+msgstr "CERT-posten måste innehålla type, key-tag, algorithm och certificate-data separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5644,9 +5632,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Ogiltigt DLV-postformat. Förväntat: <nyckeltagg> <algoritm> "
-"<sammanfattningstyp> <sammanfattning>."
+msgstr "Ogiltigt DLV-postformat. Förväntat: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5846,9 +5832,7 @@ msgstr "Ogiltiga tecken i TKEY-postens innehåll."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY-posten måste innehålla algoritmnamn, starttid, utgångstid, läge, fel "
-"och nyckeldata separerade med mellanslag."
+msgstr "TKEY-posten måste innehålla algorithm-name, inception-time, expiration-time, mode, error och key-data separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -8615,9 +8599,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"En CDS-post måste innehålla key-tag, algoritm, digest-typ och digest "
-"separerade med mellanslag."
+msgstr "En CDS-post måste innehålla key-tag, algorithm, digest-type och digest separerade med mellanslag."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9313,7 +9295,7 @@ msgstr "Tom rad."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
+msgstr "Ogiltigt format. Förväntat minst: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10670,7 +10652,7 @@ msgstr "Ange minst en post"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: namn,typ,innehåll,prioritet,ttl,kommentar (en post per rad)"
+msgstr "Format: name,type,content,priority,ttl,comment (en post per rad)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -13669,13 +13651,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Vyer levererar olika zonvarianter till olika klienter beroende på vilket "
-"nätverk som frågade resolvern. Varje variant heter zon..variant (till "
-"exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS "
-"innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, "
-"så samma värdnamn kan svara med olika IP-adresser beroende på klientens "
-"nätverk."
+msgstr "Vyer levererar olika zonvarianter till olika klienter beroende på vilket nätverk som frågade resolvern. Varje variant heter zone..variant (till exempel example.com..trusted) och måste finnas som en separat zon i PowerDNS innan den kan tilldelas här. Varianter delar namn men slår upp olika per vy, så samma värdnamn kan svara med olika IP-adresser beroende på klientens nätverk."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

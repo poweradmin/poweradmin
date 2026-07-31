@@ -5423,9 +5423,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG-Eintrag muss mindestens Algorithmus-Name, Zeitstempel, Fudge, MAC, "
-"Original-ID, Error und Other-Len durch Leerzeichen getrennt enthalten."
+msgstr "TSIG-Eintrag muss mindestens algorithm-name, timestamp, fudge, mac, original-id, error und other-len durch Leerzeichen getrennt enthalten."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5693,9 +5691,7 @@ msgstr "Ungültige Zeichen im CERT-Eintragsinhalt."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERT-Eintrag muss Typ, Key-Tag, Algorithmus und Zertifikatsdaten durch "
-"Leerzeichen getrennt enthalten."
+msgstr "CERT-Eintrag muss type, key-tag, algorithm und certificate-data durch Leerzeichen getrennt enthalten."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5822,9 +5818,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Ungültiges DLV-Eintragsformat. Erwartet: <key-tag> <algorithmus> <digest-"
-"typ> <digest>."
+msgstr "Ungültiges DLV-Eintragsformat. Erwartet: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -6029,9 +6023,7 @@ msgstr "Ungültige Zeichen im TKEY-Eintragsinhalt."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY-Eintrag muss Algorithmus-Name, Inception-Time, Expiration-Time, Mode, "
-"Error und Key-Data durch Leerzeichen getrennt enthalten."
+msgstr "TKEY-Eintrag muss algorithm-name, inception-time, expiration-time, mode, error und key-data durch Leerzeichen getrennt enthalten."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7288,8 +7280,7 @@ msgstr "Prioritätsfeld für DS-Einträge muss 0 oder leer sein."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"DS-Eintrag muss im Format sein: <key-tag> <algorithmus> <digest-typ> <digest>"
+msgstr "DS-Eintrag muss im Format vorliegen: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -8967,9 +8958,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"CDS-Eintrag muss Key-Tag, Algorithmus, Digest-Typ und Digest durch "
-"Leerzeichen getrennt enthalten."
+msgstr "CDS-Eintrag muss key-tag, algorithm, digest-type und digest durch Leerzeichen getrennt enthalten."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9701,7 +9690,7 @@ msgstr "Leere Zeile."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Ungültiges Format. Mindestens erwartet: Name,Typ,Inhalt"
+msgstr "Ungültiges Format. Mindestens erwartet: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""

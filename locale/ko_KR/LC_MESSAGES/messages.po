@@ -2847,15 +2847,15 @@ msgstr "존 템플릿이 성공적으로 삭제되었습니다."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "슈퍼마스터를 편집할 권한이 없습니다."
+msgstr "supermaster를 편집할 권한이 없습니다."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "편집하려는 슈퍼마스터가 존재하지 않습니다."
+msgstr "편집하려는 supermaster가 존재하지 않습니다."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "슈퍼마스터가 성공적으로 업데이트되었습니다."
+msgstr "supermaster가 성공적으로 업데이트되었습니다."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2894,11 +2894,11 @@ msgstr "존 동기화에 실패했습니다: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "새 슈퍼마스터를 추가할 권한이 없습니다."
+msgstr "새 supermaster를 추가할 권한이 없습니다."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "슈퍼마스터가 성공적으로 추가되었습니다."
+msgstr "supermaster가 성공적으로 추가되었습니다."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3161,7 +3161,7 @@ msgstr "그룹이 성공적으로 업데이트되었습니다."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "슈퍼마스터를 삭제할 권한이 없습니다."
+msgstr "supermaster를 삭제할 권한이 없습니다."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3177,7 +3177,7 @@ msgstr "슈퍼마스터가 존재하지 않습니다."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "슈퍼마스터가 성공적으로 삭제되었습니다."
+msgstr "supermaster가 성공적으로 삭제되었습니다."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3465,7 +3465,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "슈퍼마스터"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3473,7 +3473,7 @@ msgstr "Autoprimary 추가"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "슈퍼마스터 추가"
+msgstr "supermaster 추가"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3481,7 +3481,7 @@ msgstr "Autoprimary 편집"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "슈퍼마스터 편집"
+msgstr "supermaster 편집"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3529,7 +3529,7 @@ msgstr "Autoprimary IP 주소"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "슈퍼마스터의 IP 주소"
+msgstr "supermaster의 IP 주소"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3537,7 +3537,7 @@ msgstr "이 autoprimary를 소유할 계정을 선택하세요"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "이 슈퍼마스터를 소유할 계정을 선택하세요"
+msgstr "이 supermaster를 소유할 계정을 선택하세요"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3555,7 +3555,7 @@ msgstr "이 autoprimary의 IP 주소, 호스트 이름 또는 계정을 수정�
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "이 슈퍼마스터의 IP 주소, 호스트 이름 또는 계정을 수정할 수 있습니다."
+msgstr "이 supermaster의 IP 주소, 호스트 이름 또는 계정을 수정할 수 있습니다."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -4101,9 +4101,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA 레코드는 공백으로 구분된 사용, 선택자, 일치 유형 및 인증서 데이터를 포함"
-"해야 합니다."
+msgstr "TLSA 레코드는 공백으로 구분된 usage, selector, matching-type 및 certificate-data를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4176,9 +4174,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"일치 유형 0 (정확히 일치)은 권장되지 않습니다. SHA-256 (1)이 더 나은 호환성"
-"과 보안을 제공합니다."
+msgstr "Matching-type 0 (정확히 일치)은 권장되지 않습니다. SHA-256 (1)이 더 나은 호환성과 보안을 제공합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5178,9 +5174,7 @@ msgstr ""
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG 레코드는 공백으로 구분된 알고리즘 이름, 타임스탬프, 퓨즈, mac, 원본 ID, "
-"오류 및 기타 길이를 최소한 포함해야 합니다."
+msgstr "TSIG 레코드는 공백으로 구분된 algorithm-name, timestamp, fudge, mac, original-id, error 및 other-len을 최소한 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -5196,7 +5190,7 @@ msgstr "TSIG 타임스탬프는 음수가 아닌 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIG 퓨즈는 음수가 아닌 정수여야 합니다."
+msgstr "TSIG fudge는 음수가 아닌 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
@@ -5252,7 +5246,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG 기타 길이는 음수가 아닌 정수여야 합니다."
+msgstr "TSIG other-len은 음수가 아닌 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -5353,9 +5347,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"ZONEMD 레코드는 공백으로 구분된 일련 번호, 스키마, 해시 알고리즘 및 다이제스"
-"트를 포함해야 합니다."
+msgstr "ZONEMD 레코드는 공백으로 구분된 serial, scheme, hash-algorithm 및 digest를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5429,9 +5421,7 @@ msgstr "CERT 레코드 콘텐츠에 유효하지 않은 문자가 있습니다."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"CERT 레코드는 공백으로 구분된 유형, 키 태그, 알고리즘 및 인증서 데이터를 포함"
-"해야 합니다."
+msgstr "CERT 레코드는 공백으로 구분된 type, key-tag, algorithm 및 certificate-data를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5747,9 +5737,7 @@ msgstr "TKEY 레코드 콘텐츠에 유효하지 않은 문자가 있습니다."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY 레코드는 공백으로 구분된 알고리즘 이름, 시작 시간, 만료 시간, 모드, 오"
-"류 및 키 데이터를 포함해야 합니다."
+msgstr "TKEY 레코드는 공백으로 구분된 algorithm-name, inception-time, expiration-time, mode, error 및 key-data를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -8963,7 +8951,7 @@ msgstr "빈 줄."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "유효하지 않은 형식입니다. 최소한 이름,유형,내용이 필요합니다."
+msgstr "유효하지 않은 형식입니다. 최소한 name,type,content가 필요합니다."
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""

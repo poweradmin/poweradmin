@@ -2916,15 +2916,15 @@ msgstr "Шаблон зони було успішно видалено."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "У вас немає дозволу на редагування суперсервера."
+msgstr "У вас немає дозволу на редагування сервера supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "Суперсервер, який ви намагаєтесь редагувати, не існує."
+msgstr "Сервер supermaster, який ви намагаєтесь редагувати, не існує."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "Суперсервер було успішно оновлено."
+msgstr "Сервер supermaster було успішно оновлено."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2963,11 +2963,11 @@ msgstr "Не вдалося синхронізувати зони: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "У вас немає дозволу на додавання нового суперсервера."
+msgstr "У вас немає дозволу на додавання нового сервера supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "Суперсервер було успішно додано."
+msgstr "Сервер supermaster було успішно додано."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3239,7 +3239,7 @@ msgstr "Групу було успішно оновлено."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "У вас немає дозволу на видалення суперсервера."
+msgstr "У вас немає дозволу на видалення сервера supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3255,7 +3255,7 @@ msgstr "Суперсервер не існує."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Суперсервер було успішно видалено."
+msgstr "Сервер supermaster було успішно видалено."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3558,7 +3558,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Суперсервер"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3566,7 +3566,7 @@ msgstr "Додати autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Додати суперсервер"
+msgstr "Додати supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3574,7 +3574,7 @@ msgstr "Редагувати autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Редагувати суперсервер"
+msgstr "Редагувати supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3622,7 +3622,7 @@ msgstr "IP-адреса autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "IP-адреса суперсервера"
+msgstr "IP-адреса сервера supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3630,7 +3630,7 @@ msgstr "Виберіть обліковий запис, який володіт�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Виберіть обліковий запис, який буде власником цього суперсервера"
+msgstr "Виберіть обліковий запис, який буде власником цього сервера supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3650,9 +3650,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Ви можете змінити IP-адресу, ім'я хоста або обліковий запис для цього "
-"суперсервера."
+msgstr "Ви можете змінити IP-адресу, ім'я хоста або обліковий запис для цього сервера supermaster."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -5506,9 +5504,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Запис ZONEMD повинен містити серійний номер, схему, алгоритм хешування та "
-"дайджест, розділені пробілами."
+msgstr "Запис ZONEMD повинен містити serial, scheme, hash-algorithm та digest, розділені пробілами."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5588,9 +5584,7 @@ msgstr "Недійсні символи у вмісті запису CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Запис CERT повинен містити тип, key-tag, алгоритм та дані сертифіката, "
-"розділені пробілами."
+msgstr "Запис CERT повинен містити type, key-tag, algorithm та certificate-data, розділені пробілами."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5841,9 +5835,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Параметри HTTPS запису повинні бути у форматі ключ=значення, розділені "
-"пробілами."
+msgstr "Параметри HTTPS запису повинні бути у форматі key=value, розділені пробілами."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -9542,7 +9534,7 @@ msgstr "Porozhniy ryadok."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Недійсний формат. Очікується щонайменше: ім'я,тип,вміст"
+msgstr "Недійсний формат. Очікується щонайменше: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -9603,7 +9595,7 @@ msgstr "Недійсні аргументи передано до функції
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Суперсервер із такою IP-адресою та іменем хоста вже існує."
+msgstr "Сервер supermaster із такою IP-адресою та іменем хоста вже існує."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -10907,7 +10899,7 @@ msgstr "Надайте принаймні один запис"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Формат: ім'я,тип,вміст,пріоритет,ttl,коментар (один запис на рядок)"
+msgstr "Формат: name,type,content,priority,ttl,comment (один запис на рядок)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"

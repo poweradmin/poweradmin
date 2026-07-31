@@ -3158,7 +3158,7 @@ msgstr "Групата беше актуализирана успешно."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Нямате разрешение да изтриете супермастър."
+msgstr "Нямате разрешение да изтриете supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3174,7 +3174,7 @@ msgstr "Супермастърът не съществува."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "Супермастърът беше изтрит успешно."
+msgstr "Supermaster беше изтрит успешно."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3472,35 +3472,35 @@ msgstr "Супермастъри"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "Автоматичен първичен сървър"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Супермастър"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "Добавяне на автоматичен първичен сървър"
+msgstr "Добавяне на autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Добавяне на супермастър"
+msgstr "Добавяне на supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Редактиране на автоматичен първичен сървър"
+msgstr "Редактиране на autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Редактиране на супермастър"
+msgstr "Редактиране на supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "Изтриване на автоматичен първичен сървър"
+msgstr "Изтриване на autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "Изтриване на супермастър"
+msgstr "Изтриване на supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3512,11 +3512,11 @@ msgstr "За супермастърите"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
-msgstr "Какво представлява автоматичният първичен сървър?"
+msgstr "Какво представлява Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "Какво е супермастър?"
+msgstr "Какво е Supermaster?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3536,19 +3536,19 @@ msgstr "Няма супермастъри за показване в този с
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "IP адрес на автоматичния първичен сървър"
+msgstr "IP адрес на autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "IP адрес на супермастъра"
+msgstr "IP адрес на supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "Изберете акаунта, който ще притежава този автоматичен първичен сървър"
+msgstr "Изберете акаунта, който ще притежава този autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Изберете акаунта, който ще притежава този супермастър"
+msgstr "Изберете акаунта, който ще притежава този supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3561,12 +3561,12 @@ msgstr "За редактирането на супермастърите"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr "Можете да промените IP адреса, името на хоста или акаунта за този автоматичен първичен сървър."
+msgstr "Можете да промените IP адреса, името на хоста или акаунта за този autoprimary."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Можете да промените IP адреса, името на хоста или акаунта за този супермастър."
+msgstr "Можете да промените IP адреса, името на хоста или акаунта за този supermaster."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -4100,7 +4100,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Записът TLSA трябва да съдържа употреба, селектор, тип на съвпадение и данни за сертификата, разделени с интервали."
+msgstr "Записът TLSA трябва да съдържа usage, selector, matching-type и certificate-data, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4170,9 +4170,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Не се препоръчва съвпадение тип 0 (Exact match). SHA-256 (1) осигурява по-"
-"добра съвместимост и сигурност."
+msgstr "Не се препоръчва matching-type 0 (Exact match). SHA-256 (1) осигурява по-добра съвместимост и сигурност."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5340,9 +5338,7 @@ msgstr "Невалидни знаци в съдържанието на запи�
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"Записът на CERT трябва да съдържа тип, етикет с ключ, алгоритъм и данни за "
-"сертификат, разделени от интервали."
+msgstr "Записът CERT трябва да съдържа type, key-tag, algorithm и certificate-data, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5634,7 +5630,7 @@ msgstr "Невалидни знаци в съдържанието на TKEY."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "Записът TKEY трябва да съдържа име на алгоритъм, начално време, време на изтичане, режим, грешка и ключови данни, разделени с интервали."
+msgstr "Записът TKEY трябва да съдържа algorithm-name, inception-time, expiration-time, mode, error и key-data, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7452,7 +7448,7 @@ msgstr "Записът SMIMEA съдържа невалидни символи."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Записът SMIMEA трябва да съдържа използване, селектор, тип на съвпадение и данни за сертификата, разделени с интервали."
+msgstr "Записът SMIMEA трябва да съдържа usage, selector, matching-type и certificate-data, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7569,9 +7565,7 @@ msgstr "Данните от сертификата SMIMEA SHA-512 трябва �
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"Препоръчителната конфигурация SMIMEA е използване=3 (DANE-EE), селектор=1 "
-"(SubjectPublicKeyInfo) и съвпадение тип=1 (SHA-256)."
+msgstr "Препоръчителната конфигурация за SMIMEA е usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) и matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8255,7 +8249,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS записът трябва да съдържа ключов етикет, алгоритъм, тип на дайджеста и дайджест, разделени с интервали."
+msgstr "Записът CDS трябва да съдържа key-tag, algorithm, digest-type и digest, разделени с интервали."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -11178,7 +11172,7 @@ msgstr "Върни се."
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "Супермастърът е авторитетен PowerDNS сървър, който автоматично изпраща нови зони към подчинените си сървъри."
+msgstr "Supermaster е авторитетен PowerDNS сървър, който автоматично изпраща нови зони към подчинените си сървъри."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11188,7 +11182,7 @@ msgstr "Как работи?"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "Когато подчинен сървър получи уведомление от супермастър, той добавя домейна и задава IP адреса на супермастъра като адрес на главния сървър."
+msgstr "Когато подчинен сървър получи уведомление от supermaster, той добавя домейна и задава IP адреса на supermaster като адрес на главния сървър."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -13192,7 +13186,7 @@ msgstr "Име на изгледа"
 
 #: templates/default/list_views.html:59 templates/modern/list_views.html:59
 msgid "Zone (zone..variant)"
-msgstr "Зона (зона..вариант)"
+msgstr "Зона (zone..variant)"
 
 #: templates/modern/email_previews.html:8
 msgid "Email Template Previews"

@@ -3092,7 +3092,7 @@ msgstr "סופר-מאסטר לא קיים."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "הסופר-מאסטר נמחק בהצלחה."
+msgstr "ה-supermaster נמחק בהצלחה."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3386,7 +3386,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "סופר-מאסטר"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3458,7 +3458,7 @@ msgstr "בחר את החשבון אשר יהיה הבעלים של Autoprimary �
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "בחר את החשבון אשר יהיה הבעלים של סופר-מאסטר זה"
+msgstr "בחר את החשבון אשר יהיה הבעלים של supermaster זה"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3471,12 +3471,12 @@ msgstr "אודות עריכת Supermasters"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr "אתה יכול לשנות את כתובת ה-IP, שם המארח או החשבון עבור אוטופריימרי זה."
+msgstr "אתה יכול לשנות את כתובת ה-IP, שם המארח או החשבון עבור autoprimary זה."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "אתה יכול לשנות את כתובת ה-IP, שם המארח או החשבון עבור סופר-מאסטר זה."
+msgstr "אתה יכול לשנות את כתובת ה-IP, שם המארח או החשבון עבור supermaster זה."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3488,33 +3488,33 @@ msgstr "פרטי Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "אתה עומד למחוק את האוטופריימרי"
+msgstr "אתה עומד למחוק את ה-autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "אתה עומד למחוק את הסופר-מאסטר"
+msgstr "אתה עומד למחוק את ה-supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "כן, למחוק את האוטופריימרי הזה"
+msgstr "כן, למחוק את ה-autoprimary הזה"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "כן, למחוק את הסופר-מאסטר הזה"
+msgstr "כן, למחוק את ה-supermaster הזה"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "לא, שמור על האוטופריימרי הזה"
+msgstr "לא, שמור על ה-autoprimary הזה"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "לא, שמור על הסופר-מאסטר הזה"
+msgstr "לא, שמור על ה-supermaster הזה"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr "הצגת מצב קישוריות עבור שרתי האוטופריימרי המוגדרים בטבלה שמתחת."
+msgstr "הצגת מצב קישוריות עבור שרתי ה-autoprimary המוגדרים בטבלה שמתחת."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
@@ -3992,7 +3992,7 @@ msgstr "ערך לא חוקי בשדה העדיפות. רשומות TLSA חייב
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "רשומת TLSA חייבת להכיל שימוש, בורר, סוג התאמה ונתוני תעודה מופרדים ברווחים."
+msgstr "רשומת TLSA חייבת להכיל usage, selector, matching-type ו-certificate-data מופרדים ברווחים."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4051,7 +4051,7 @@ msgstr "שדה סוג ההתאמה של TLSA חייב להיות 0 (התאמה �
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "סוג התאמה 0 (התאמה מדויקת) אינו מומלץ. SHA-256 (1) מספק תאימות ואבטחה טובות יותר."
+msgstr "matching-type 0 (התאמה מדויקת) אינו מומלץ. SHA-256 (1) מספק תאימות ואבטחה טובות יותר."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5418,7 +5418,7 @@ msgstr "תווים לא חוקיים בתוכן רשומת TKEY."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "רשומת TKEY חייבת להכיל שם אלגוריתם, זמן התחלה, זמן תפוגה, מצב, שגיאה ונתוני מפתח, מופרדים ברווחים."
+msgstr "רשומת TKEY חייבת להכיל algorithm-name, inception-time, expiration-time, mode, error ו-key-data, מופרדים ברווחים."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -10717,9 +10717,7 @@ msgstr "חזור"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
-"סופר-מאסטר הוא שרת סמכותי של PowerDNS אשר דוחפת באופן אוטומטי אזורים חדשים "
-"לעבדיה."
+msgstr "supermaster הוא שרת סמכותי של PowerDNS אשר דוחף באופן אוטומטי אזורים חדשים לעבדיו."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10729,7 +10727,7 @@ msgstr "איך זה עובד"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "כאשר עבד מקבל הודעה מסופר-מאסטר, הוא מוסיף את התחום ומגדיר את כתובת ה-IP של הסופר-מאסטר ככתובת המאסטר."
+msgstr "כאשר עבד מקבל הודעה מ-supermaster, הוא מוסיף את התחום ומגדיר את כתובת ה-IP של ה-supermaster ככתובת המאסטר."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"

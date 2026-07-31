@@ -1806,7 +1806,7 @@ msgstr "Druh metadát %s môže zmeniť iba administrátor."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "Vlastné metadáta uložené priamo v tabuľke domainmetadata."
+msgstr "Vlastné metadáta uložené priamo v tabuľke domainmetadata v PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -2226,7 +2226,7 @@ msgstr "Odstránenie podpisu úspešné, ale overenie zlyhalo."
 
 #: lib/Application/Controller/DnssecController.php:128
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Nepodarilo sa zrušiť podpis zóny. Skontrolujte logy."
+msgstr "Nepodarilo sa zrušiť podpis zóny. Skontrolujte logy PowerDNS."
 
 #: lib/Application/Controller/EditController.php:585
 msgid "Zone type has been changed successfully."
@@ -4112,7 +4112,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr "Vyzerá ako SMIMEA záznam (RFC 8162)."
+msgstr "Vyzerá ako SMIMEA záznam (RFC 8162) pre certifikáty S/MIME."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -4600,7 +4600,7 @@ msgstr "Pole príznakov RKEY musí byť číselná hodnota."
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr "Neobvyklé príznaky. Obvykle 0, 256 alebo 257."
+msgstr "Neobvyklé príznaky. Obvykle 0, 256 (Zone Key) alebo 257 (Zone Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
@@ -4709,7 +4709,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr "KRITICKÉ: Nebezpečný algoritmus. Použite 8+."
+msgstr "KRITICKÉ: Nebezpečný algoritmus. Použite algoritmus 8 (RSA/SHA-256) alebo novší."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -5553,7 +5553,7 @@ msgstr "Údaje certifikátu CERT musia byť platný base64."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "Údaje certifikátu CERT nesmú byť prázdne po dekódovaní."
+msgstr "Údaje certifikátu CERT nesmú byť prázdne po dekódovaní base64."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -5613,7 +5613,7 @@ msgstr "Neplatný algoritmus. DNSSEC (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Neplatný typ digestu. Musí byť 1, 2 alebo 4."
+msgstr "Neplatný typ digestu. Musí byť 1 (SHA-1), 2 (SHA-256) alebo 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5844,7 +5844,7 @@ msgstr "Údaje TKEY musia byť platné base64 alebo hex."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr "TKEY kľúče sú viazané na servery, nie zóny."
+msgstr "TKEY kľúče sú viazané na DNS servery/resolvery, nie zóny."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -5940,7 +5940,7 @@ msgstr "FTP je menej bezpečný ako SFTP alebo HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "Zvážte LDAPS pre zabezpečenie LDAP spojení."
+msgstr "Zvážte LDAPS (LDAP cez SSL/TLS) pre zabezpečenie LDAP spojení."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -8174,7 +8174,7 @@ msgstr ""
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr "Ed448 vysoká bezpečnosť, nie všade podporovaný."
+msgstr "Kľúče Ed448 ponúkajú veľmi vysokú bezpečnosť, ale nemusia byť podporované všetkými implementáciami SSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
@@ -8583,7 +8583,7 @@ msgstr "Algoritmus CDS musí byť číslo medzi 1 a 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Typ digestu CDS musí byť 1, 2 alebo 4."
+msgstr "Typ digestu CDS musí byť 1 (SHA-1), 2 (SHA-256) alebo 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -9263,7 +9263,7 @@ msgstr "Prázdny riadok."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Neplatný formát. Očakávané aspoň: názov,typ,obsah"
+msgstr "Neplatný formát. Očakávané aspoň: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10623,7 +10623,7 @@ msgstr "Zadajte aspoň jeden záznam"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formát: názov,typ,obsah,priorita,ttl,komentár (jeden na riadok)"
+msgstr "Formát: name,type,content,priority,ttl,comment (jeden na riadok)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11571,9 +11571,7 @@ msgstr "ako to funguje"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"Keď sekundárny server dostane notifikáciu od supermastra, pridá doménu a "
-"nastaví IP adresu supermastra ako adresu hlavného servera."
+msgstr "Keď sekundárny server dostane notifikáciu od servera supermaster, pridá doménu a nastaví IP adresu servera supermaster ako adresu hlavného servera."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -13588,13 +13586,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"Pohľady poskytujú rôznym klientom rôzne varianty zón podľa siete, z ktorej "
-"bola na resolver poslaná požiadavka. Každý variant má názov v tvare "
-"zóna..variant (napríklad example.com..trusted) a skôr než ho tu možno "
-"priradiť, musí v PowerDNS existovať ako samostatná zóna. Varianty majú "
-"rovnaký názov, ale v každom pohľade sa prekladajú inak, takže ten istý názov "
-"hostiteľa môže podľa siete klienta odpovedať rôznymi IP adresami."
+msgstr "Pohľady poskytujú rôznym klientom rôzne varianty zón podľa siete, z ktorej bola na resolver poslaná požiadavka. Každý variant má názov v tvare zone..variant (napríklad example.com..trusted) a skôr než ho tu možno priradiť, musí v PowerDNS existovať ako samostatná zóna. Varianty majú rovnaký názov, ale v každom pohľade sa prekladajú inak, takže ten istý názov hostiteľa môže podľa siete klienta odpovedať rôznymi IP adresami."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -14538,7 +14530,7 @@ msgstr "Vyhľadať"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr "Zadajte názov domény pre WHOIS informácie"
+msgstr "Zadajte názov domény (napr. example.com) pre WHOIS informácie"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"

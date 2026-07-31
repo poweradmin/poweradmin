@@ -985,9 +985,7 @@ msgstr "شما یک کلید PRIVATE را جای‌گذاری کرده‌اید.
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr ""
-"به نظر می رسد کلید عمومی شامل هدرهای PEM (BEGIN/END) است. فقط محتوای پایه ۶۴ "
-"بین هدرها مورد نیاز است."
+msgstr "به نظر می رسد کلید عمومی شامل هدرهای PEM (BEGIN/END) است. فقط محتوای base64 بین هدرها مورد نیاز است."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -2793,15 +2791,15 @@ msgstr "قالب منطقه با موفقیت حذف شده است."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "شما اجازه ویرایش یک سوپرمستر را ندارید."
+msgstr "شما اجازه ویرایش یک supermaster را ندارید."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "سوپرمستری که سعی می‌کنید ویرایش کنید وجود ندارد."
+msgstr "supermaster مورد نظر برای ویرایش وجود ندارد."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "سوپرمستر با موفقیت به‌روز شده است."
+msgstr "supermaster با موفقیت به‌روز شده است."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2840,11 +2838,11 @@ msgstr "همگام‌سازی منطقه ناموفق بود: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "شما اجازه ندارید یک سوپرمستر جدید اضافه کنید."
+msgstr "شما اجازه ندارید یک supermaster جدید اضافه کنید."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "سوپرمستر با موفقیت اضافه شده است."
+msgstr "supermaster با موفقیت اضافه شده است."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3105,7 +3103,7 @@ msgstr "گروه با موفقیت به روز شده است."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "شما اجازه حذف یک سوپرمستر را ندارید."
+msgstr "شما اجازه حذف یک supermaster را ندارید."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3121,7 +3119,7 @@ msgstr "سوپرمستر وجود ندارد."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "سوپرمستر با موفقیت حذف شده است."
+msgstr "supermaster با موفقیت حذف شده است."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3413,23 +3411,23 @@ msgstr "سوپرمسترها"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "اتوپرایمری"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "سوپرمستر"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "افزودن اتوپرایمری"
+msgstr "افزودن autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "افزودن سوپرمستر"
+msgstr "افزودن supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "ویرایش اتوپرایمری"
+msgstr "ویرایش autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
@@ -3437,7 +3435,7 @@ msgstr "ویرایش Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "حذف اتوپرایمری"
+msgstr "حذف autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
@@ -3453,11 +3451,11 @@ msgstr "درباره Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is an Autoprimary?"
-msgstr "اتوپرایمری چیست؟"
+msgstr "Autoprimary چیست؟"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "سوپرمستر چیست؟"
+msgstr "Supermaster چیست؟"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3477,7 +3475,7 @@ msgstr "هیچ سوپرمستری برای نمایش در این لیست وج�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of autoprimary"
-msgstr "آدرس IP اتوپرایمری"
+msgstr "آدرس IP autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
@@ -3485,7 +3483,7 @@ msgstr "آدرس IP supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "حساب کاربری را انتخاب کنید که مالک این اتوپرایمری خواهد بود"
+msgstr "حساب کاربری را انتخاب کنید که مالک این autoprimary خواهد بود"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
@@ -3502,8 +3500,7 @@ msgstr "درباره Editing Supermasters"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr ""
-"شما می توانید آدرس IP، Hostname یا حساب برای این خودکار اولیه را تغییر دهید."
+msgstr "شما می توانید آدرس IP، Hostname یا حساب برای این autoprimary را تغییر دهید."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
@@ -3512,7 +3509,7 @@ msgstr "شما می توانید آدرس IP، Hostname یا حساب برای �
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
-msgstr "جزئیات خودکار اولیه"
+msgstr "جزئیات Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
@@ -3520,7 +3517,7 @@ msgstr "جزئیات Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "شما در حال حذف خودکار اولیه هستید"
+msgstr "شما در حال حذف autoprimary هستید"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
@@ -3528,7 +3525,7 @@ msgstr "شما در حال حذف supermaster هستید"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "بله، این خودکار اولیه را حذف کنید"
+msgstr "بله، این autoprimary را حذف کنید"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
@@ -3536,7 +3533,7 @@ msgstr "بله، این supermaster را حذف کنید"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "نه، این خودکار اولیه را نگه دارید"
+msgstr "نه، این autoprimary را نگه دارید"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
@@ -3546,9 +3543,7 @@ msgstr "نه، این supermaster را نگه دارید"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
-"نشان دادن وضعیت اتصال برای سرورهای اولیه خودکار که در جدول زیر پیکربندی شده "
-"اند."
+msgstr "نشان دادن وضعیت اتصال برای سرورهای autoprimary که در جدول زیر پیکربندی شده اند."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:159
 msgid ""
@@ -5482,7 +5477,7 @@ msgstr "کاراکترهای نامعتبر در محتوای رکورد TKEY."
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr "رکورد TKEY باید شامل نام الگوریتم، زمان شروع، زمان انقضا، حالت، خطا و داده‌های کلید باشد که با فاصله از هم جدا شده‌اند."
+msgstr "رکورد TKEY باید شامل algorithm-name، inception-time، expiration-time، mode، error و key-data باشد که با فاصله از هم جدا شده‌اند."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7955,7 +7950,7 @@ msgstr "این یک رکورد حذف CDS است که در RFC 8078 تعریف �
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "رکورد CDS باید شامل تگ کلید، الگوریتم، نوع چکیده و چکیده باشد که با فاصله از هم جدا شده‌اند."
+msgstr "رکورد CDS باید شامل key-tag، algorithm، digest-type و digest باشد که با فاصله از هم جدا شده‌اند."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -10837,7 +10832,7 @@ msgstr "بازگشت به عقب"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr "سوپرمستر یک سرور معتبر PowerDNS است که به طور خودکار مناطق جدید را به سرورهای slave خود منتقل می‌کند."
+msgstr "supermaster یک سرور معتبر PowerDNS است که به طور خودکار مناطق جدید را به سرورهای slave خود منتقل می‌کند."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10847,7 +10842,7 @@ msgstr "چگونه کار می کند"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr "هنگامی که یک سرور slave اعلانی از یک سوپرمستر دریافت می‌کند، دامنه را اضافه می‌کند و آدرس IP سوپرمستر را به عنوان آدرس master تنظیم می‌کند."
+msgstr "هنگامی که یک سرور slave اعلانی از یک supermaster دریافت می‌کند، دامنه را اضافه می‌کند و آدرس IP آن supermaster را به عنوان آدرس master تنظیم می‌کند."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12540,7 +12535,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr "شما قصد دارید یک منطقه برده را حذف کنید که سرور نام اصلی آن یک سوپرمستر است. حذف منطقه در حال حاضر تنها منجر به حذف موقت خواهد شد. هر زمان که سوپرمستر یک اعلان برای این منطقه ارسال کند، دوباره اضافه می‌شود!"
+msgstr "شما قصد دارید یک منطقه برده را حذف کنید که سرور نام اصلی آن یک supermaster است. حذف منطقه در حال حاضر تنها منجر به حذف موقت خواهد شد. هر زمان که supermaster یک اعلان برای این منطقه ارسال کند، دوباره اضافه می‌شود!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"

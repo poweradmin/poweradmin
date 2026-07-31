@@ -1601,7 +1601,7 @@ msgstr[1] "%d 個使用者無法移除。"
 
 #: lib/Application/Controller/MfaSetupController.php:64
 msgid "MFA is not enabled on this system."
-msgstr "此系統未啟用多因素認證。"
+msgstr "此系統未啟用 MFA。"
 
 #: lib/Application/Controller/MfaSetupController.php:72
 msgid "MFA Setup"
@@ -1609,11 +1609,11 @@ msgstr "MFA 設定"
 
 #: lib/Application/Controller/MfaSetupController.php:215
 msgid "Failed to create MFA record."
-msgstr "建立多因素認證記錄失敗。"
+msgstr "建立 MFA 記錄失敗。"
 
 #: lib/Application/Controller/MfaSetupController.php:222
 msgid "MFA is already enabled."
-msgstr "多因素認證已啟用。"
+msgstr "MFA 已啟用。"
 
 #: lib/Application/Controller/MfaSetupController.php:267
 msgid "Verification code is required."
@@ -1621,7 +1621,7 @@ msgstr "驗證碼是必需的。"
 
 #: lib/Application/Controller/MfaSetupController.php:176
 msgid "MFA has been enabled successfully."
-msgstr "多因素認證已成功啟用。"
+msgstr "MFA 已成功啟用。"
 
 #: lib/Application/Controller/MfaVerifyController.php:321
 msgid "Invalid verification code. Please try again."
@@ -1651,7 +1651,7 @@ msgstr "發送驗證碼失敗。請稍後重試或使用基於應用的認證。
 
 #: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been enabled with email verification."
-msgstr "多因素認證已通過電子郵件驗證啟用。"
+msgstr "MFA 已通過電子郵件驗證啟用。"
 
 #: lib/Application/Controller/MfaSetupController.php:305
 #: templates/default/mfa_setup.html:34 templates/modern/mfa_setup.html:34
@@ -1662,15 +1662,15 @@ msgstr "您組織的安全策略要求啟用MFA，無法禁用。"
 
 #: lib/Application/Controller/MfaSetupController.php:314
 msgid "MFA is not enabled."
-msgstr "多因素認證未啟用。"
+msgstr "MFA 未啟用。"
 
 #: lib/Application/Controller/MfaSetupController.php:328
 msgid "MFA has been disabled."
-msgstr "多因素認證已禁用。"
+msgstr "MFA 已禁用。"
 
 #: lib/Application/Controller/MfaSetupController.php:343
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "必須啟用多因素認證才能重新生成恢復代碼。"
+msgstr "必須啟用 MFA 才能重新生成恢復代碼。"
 
 #: lib/Application/Controller/MfaSetupController.php:357
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
@@ -2221,7 +2221,7 @@ msgstr "失敗嘗試次數過多。請稍後重試。"
 
 #: lib/Application/Controller/MfaVerifyController.php:167
 msgid "No MFA record found. Please contact administrator."
-msgstr "找不到多因素認證記錄。請聯繫管理員。"
+msgstr "找不到 MFA 記錄。請聯繫管理員。"
 
 #: lib/Application/Controller/MfaVerifyController.php:172
 msgid "An error occurred. Please try again."
@@ -2763,15 +2763,15 @@ msgstr "區域模板已成功刪除。"
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "您沒有編輯超級主機的權限。"
+msgstr "您沒有編輯 supermaster 的權限。"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "您嘗試編輯的超級主機不存在。"
+msgstr "您嘗試編輯的 supermaster 不存在。"
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "超級主機已成功更新。"
+msgstr "supermaster 已成功更新。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2810,11 +2810,11 @@ msgstr "區域同步失敗：%s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "您沒有添加新超級主機的權限。"
+msgstr "您沒有添加新 supermaster 的權限。"
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "超級主機已成功添加。"
+msgstr "supermaster 已成功添加。"
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3067,7 +3067,7 @@ msgstr "組已成功更新。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "您沒有刪除超級主機的權限。"
+msgstr "您沒有刪除 supermaster 的權限。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3083,7 +3083,7 @@ msgstr "超級主機不存在。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "超級主機已成功刪除。"
+msgstr "supermaster 已成功刪除。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3377,7 +3377,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "超級主伺服器"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3385,7 +3385,7 @@ msgstr "添加 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "添加超級主伺服器"
+msgstr "添加 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3393,7 +3393,7 @@ msgstr "編輯 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "編輯超級主伺服器"
+msgstr "編輯 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3401,7 +3401,7 @@ msgstr "刪除 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "刪除超級主伺服器"
+msgstr "刪除 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3417,7 +3417,7 @@ msgstr "什麼是 Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "什麼是超級主伺服器？"
+msgstr "什麼是 Supermaster？"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3441,7 +3441,7 @@ msgstr "Autoprimary 的 IP 地址"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "超級主伺服器的 IP 地址"
+msgstr "supermaster 的 IP 地址"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3449,7 +3449,7 @@ msgstr "選擇擁有此 autoprimary 的帳戶"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "選擇將擁有此超級主伺服器的帳戶"
+msgstr "選擇將擁有此 supermaster 的帳戶"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3467,7 +3467,7 @@ msgstr "您可以修改此 autoprimary 的 IP 地址、主機名或帳戶。"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "您可以修改此超級主伺服器的 IP 地址、主機名或帳戶。"
+msgstr "您可以修改此 supermaster 的 IP 地址、主機名或帳戶。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3475,7 +3475,7 @@ msgstr "Autoprimary 詳細資訊"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "超級主伺服器詳情"
+msgstr "Supermaster 詳情"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3483,7 +3483,7 @@ msgstr "您即將刪除 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "您即將刪除超級主伺服器"
+msgstr "您即將刪除 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3491,7 +3491,7 @@ msgstr "是,刪除此 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "是的，刪除此超級主伺服器"
+msgstr "是的，刪除此 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3499,7 +3499,7 @@ msgstr "否,保留此 autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "不，保留此超級主伺服器"
+msgstr "不，保留此 supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -3987,7 +3987,7 @@ msgstr "優先級欄位值無效。TLSA 記錄的優先級值必須為 0。"
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "TLSA 記錄必須包含用法、選擇器、匹配類型和證書資料，以空格分隔。"
+msgstr "TLSA 記錄必須包含 usage、selector、matching-type 和 certificate-data，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4049,7 +4049,7 @@ msgstr "TLSA 匹配類型欄位必須為 0（完全匹配）、1（SHA-256）或
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "不推薦匹配類型 0（完全匹配）。SHA-256（1）提供更好的兼容性和安全性。"
+msgstr "不推薦 matching-type 0（完全匹配）。SHA-256（1）提供更好的兼容性和安全性。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -4942,9 +4942,7 @@ msgstr "客戶端和伺服器都需要準確的系統時鐘，TSIG 才能正常�
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
-"TSIG 記錄必須至少包含算法名稱、時間戳、容錯、MAC、原始 ID、錯誤和其他長度，以"
-"空格分隔。"
+msgstr "TSIG 記錄必須至少包含 algorithm-name、timestamp、fudge、mac、original-id、error 和 other-len，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -4958,7 +4956,7 @@ msgstr "TSIG 時間戳必須是非負整數。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIG 容錯必須是非負整數。"
+msgstr "TSIG fudge 必須是非負整數。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
@@ -5011,7 +5009,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG 其他長度必須是非負整數。"
+msgstr "TSIG other-len 必須是非負整數。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -5098,7 +5096,7 @@ msgstr "ZONEMD 哈希算法值 240-255 保留供私人使用，可能不具有�
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr "ZONEMD 記錄必須包含序列號、模式、哈希算法和摘要，以空格分隔。"
+msgstr "ZONEMD 記錄必須包含 serial、scheme、hash-algorithm 和 digest，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5169,7 +5167,7 @@ msgstr "CERT 記錄內容中包含無效字符。"
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr "CERT 記錄必須包含類型、密鑰標籤、算法和證書資料，以空格分隔。"
+msgstr "CERT 記錄必須包含 type、key-tag、algorithm 和 certificate-data，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5460,9 +5458,7 @@ msgstr "TKEY 記錄內容中包含無效字符。"
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
-"TKEY 記錄必須包含算法名稱、起始時間、過期時間、模式、錯誤和密鑰資料，以空格分"
-"隔。"
+msgstr "TKEY 記錄必須包含 algorithm-name、inception-time、expiration-time、mode、error 和 key-data，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -7210,7 +7206,7 @@ msgstr "SMIMEA 記錄包含無效字符。"
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "SMIMEA 記錄必須包含用空格分隔的用法、選擇器、匹配類型和證書資料。"
+msgstr "SMIMEA 記錄必須包含用空格分隔的 usage、selector、matching-type 和 certificate-data。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -7990,7 +7986,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS 記錄必須包含由空格分隔的密鑰標籤、算法、摘要類型和摘要。"
+msgstr "CDS 記錄必須包含由空格分隔的 key-tag、algorithm、digest-type 和 digest。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -8626,7 +8622,7 @@ msgstr "空行。"
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "格式無效。至少需要：名稱,類型,內容"
+msgstr "格式無效。至少需要：name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -8686,7 +8682,7 @@ msgstr "給函數 %s %s 提供了無效參數"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "已存在具有此 IP 地址和主機名的超級主伺服器。"
+msgstr "已存在具有此 IP 地址和主機名的 supermaster。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -10879,8 +10875,7 @@ msgstr "返回"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
-"超級主伺服器是一個 PowerDNS 權威伺服器，它自動將新區域推送到其從伺服器。"
+msgstr "supermaster 是一個 PowerDNS 權威伺服器，它自動將新區域推送到其從伺服器。"
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -10890,9 +10885,7 @@ msgstr "工作原理"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"當從伺服器收到來自超級主伺服器的通知時，它會添加域名並將超級主伺服器的 IP 地"
-"址設定為主伺服器地址。"
+msgstr "當從伺服器收到來自 supermaster 的通知時，它會添加域名並將 supermaster 的 IP 地址設定為主伺服器地址。"
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12025,11 +12018,11 @@ msgstr "設定身份驗證器應用"
 
 #: templates/modern/mfa_verify_app.html:15
 msgid "Step 1: Scan QR Code"
-msgstr "步驟 1：掃描二維碼"
+msgstr "步驟 1：掃描 QR Code"
 
 #: templates/modern/mfa_verify_app.html:16
 msgid "Scan this QR code with your authenticator app"
-msgstr "使用您的身份驗證器應用掃描此二維碼"
+msgstr "使用您的身份驗證器應用掃描此 QR code"
 
 #: templates/modern/mfa_verify_app.html:22
 msgid "Or manually enter this key in your authenticator app"
@@ -12588,9 +12581,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"您即將刪除主名稱伺服器為超級主伺服器的從區域。現在刪除此區域只會導致臨時刪"
-"除。每當超級主伺服器發送此區域的通知時，它將再次被添加！"
+msgstr "您即將刪除主名稱伺服器為 supermaster 的從區域。現在刪除此區域只會導致臨時刪除。每當 supermaster 發送此區域的通知時，它將再次被添加！"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"

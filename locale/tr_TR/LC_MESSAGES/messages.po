@@ -3533,7 +3533,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Süper Master"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3541,7 +3541,7 @@ msgstr "Autoprimary ekle"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Süper master ekle"
+msgstr "Supermaster ekle"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3549,7 +3549,7 @@ msgstr "Autoprimary'yi düzenle"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "Süper master'ı düzenle"
+msgstr "Supermaster'ı düzenle"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3597,7 +3597,7 @@ msgstr "Autoprimary IP adresi"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Süper master IP adresi"
+msgstr "Supermaster IP adresi"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3605,7 +3605,7 @@ msgstr "Bu autoprimary'nin sahibi olacak hesabı seçin"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Bu süper master'ın sahibi olacak hesabı seçin"
+msgstr "Bu supermaster'ın sahibi olacak hesabı seçin"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3625,8 +3625,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Bu süper master için IP adresi, hostname veya hesabı değiştirebilirsiniz."
+msgstr "Bu supermaster için IP adresi, hostname veya hesabı değiştirebilirsiniz."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -4187,9 +4186,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA kaydı boşluklarla ayrılmış kullanım, seçici, eşleştirme türü ve "
-"sertifika verisi içermelidir."
+msgstr "TLSA kaydı boşluklarla ayrılmış usage, selector, matching-type ve certificate-data içermelidir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4261,9 +4258,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Eşleştirme türü 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve "
-"güvenlik sağlar."
+msgstr "Matching-type 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve güvenlik sağlar."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -7878,9 +7873,7 @@ msgstr "SMIMEA kaydı geçersiz karakterler içeriyor."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"SMIMEA kaydı boşluklarla ayrılmış kullanım, seçici, eşleşme türü ve "
-"sertifika verisi içermelidir."
+msgstr "SMIMEA kaydı boşluklarla ayrılmış usage, selector, matching-type ve certificate-data içermelidir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -9479,7 +9472,7 @@ msgstr "Bos satir."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
+msgstr "Geçersiz format. En az şunlar bekleniyor: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10847,7 +10840,7 @@ msgstr "En az bir kayıt sağlayın"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: ad,tip,içerik,öncelik,ttl,yorum (satır başına bir kayıt)"
+msgstr "Format: name,type,content,priority,ttl,comment (satır başına bir kayıt)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -13887,7 +13880,7 @@ msgstr "Görünüm adı"
 
 #: templates/default/list_views.html:59 templates/modern/list_views.html:59
 msgid "Zone (zone..variant)"
-msgstr "Bölge (zone..varyant)"
+msgstr "Bölge (zone..variant)"
 
 #: templates/modern/email_previews.html:8
 msgid "Email Template Previews"

@@ -5513,9 +5513,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"Rekaman ZONEMD harus berisi serial, skema, algoritma-hash, dan digest yang "
-"dipisahkan oleh spasi."
+msgstr "Rekaman ZONEMD harus berisi serial, scheme, hash-algorithm, dan digest yang dipisahkan oleh spasi."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -9576,7 +9574,7 @@ msgstr "Baris kosong."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Format tidak valid. Minimal diperlukan: nama,tipe,konten"
+msgstr "Format tidak valid. Minimal diperlukan: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10952,8 +10950,7 @@ msgstr "Berikan setidaknya satu rekaman"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Format: nama,tipe,konten,prioritas,ttl,komentar (satu rekaman per baris)"
+msgstr "Format: name,type,content,priority,ttl,comment (satu rekaman per baris)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -13967,14 +13964,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"View menyajikan varian zona yang berbeda kepada klien yang berbeda "
-"berdasarkan jaringan yang mengirim kueri ke resolver. Setiap varian dinamai "
-"zona..varian (misalnya, example.com..trusted) dan harus sudah ada sebagai "
-"zona terpisah di PowerDNS sebelum dapat ditetapkan di sini. Varian berbagi "
-"nama yang sama tetapi diselesaikan secara berbeda pada setiap view, sehingga "
-"nama host yang sama dapat menjawab dengan IP yang berbeda tergantung "
-"jaringan klien."
+msgstr "View menyajikan varian zona yang berbeda kepada klien yang berbeda berdasarkan jaringan yang mengirim kueri ke resolver. Setiap varian dinamai zone..variant (misalnya, example.com..trusted) dan harus sudah ada sebagai zona terpisah di PowerDNS sebelum dapat ditetapkan di sini. Varian berbagi nama yang sama tetapi diselesaikan secara berbeda pada setiap view, sehingga nama host yang sama dapat menjawab dengan IP yang berbeda tergantung jaringan klien."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."

@@ -3593,7 +3593,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Supermestre"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3633,7 +3633,7 @@ msgstr "O que é um Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "O que é um Supermestre?"
+msgstr "O que é um Supermaster?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -4253,9 +4253,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"O registro TLSA deve conter uso, selector, tipo de correspondência e dados "
-"do certificado separados por espaços."
+msgstr "O registro TLSA deve conter usage, selector, matching-type e certificate-data separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4297,9 +4295,7 @@ msgstr ""
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr ""
-"A RFC 7671 recomenda uso=3 (DANE-EE), selector=1 (SPKI), tipo-"
-"correspondência=1 (SHA-256) como a configuração mais robusta."
+msgstr "A RFC 7671 recomenda usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) como a configuração mais robusta."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4328,9 +4324,7 @@ msgstr ""
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Tipo de correspondência 0 (Correspondência exacta) não é recomendado. "
-"SHA-256 (1) fornece melhor compatibilidade e segurança."
+msgstr "Matching-type 0 (Correspondência exacta) não é recomendado. SHA-256 (1) fornece melhor compatibilidade e segurança."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -5554,9 +5548,7 @@ msgstr ""
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
-"O registro ZONEMD deve conter série, esquema, algoritmo-hash e resumo "
-"separados por espaços."
+msgstr "O registro ZONEMD deve conter serial, scheme, hash-algorithm e digest separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -5632,9 +5624,7 @@ msgstr "Caracteres inválidos no conteúdo do registro CERT."
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
-"O registro CERT deve conter tipo, key-tag, algoritmo e dados-certificado "
-"separados por espaços."
+msgstr "O registro CERT deve conter type, key-tag, algorithm e certificate-data separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -5760,9 +5750,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
-"Formato de registro DLV inválido. Esperado: <key-tag> <algoritmo> <tipo-"
-"resumo> <resumo>."
+msgstr "Formato de registro DLV inválido. Esperado: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5889,9 +5877,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"Os parâmetros do registro HTTPS devem estar no formato chave=valor separados "
-"por espaços."
+msgstr "Os parâmetros do registro HTTPS devem estar no formato key=value separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -7229,9 +7215,7 @@ msgstr "O campo de prioridade para registros DS deve ser 0 ou vazio."
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
-"O registro DS deve estar no formato: <key-tag> <algoritmo> <tipo-resumo> "
-"<resumo>"
+msgstr "O registro DS deve estar no formato: <key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
@@ -7634,7 +7618,7 @@ msgstr "Domínio CA inválido na etiqueta issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Os parâmetros da etiqueta issue devem estar no formato chave=valor."
+msgstr "Os parâmetros da etiqueta issue devem estar no formato key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7915,8 +7899,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"Os parâmetros SVCB devem estar no formato chave=valor separados por espaços."
+msgstr "Os parâmetros SVCB devem estar no formato key=value separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -8009,9 +7992,7 @@ msgstr "O registro SMIMEA contém caracteres inválidos."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"O registro SMIMEA deve conter uso, selector, tipo de correspondência e dados "
-"de certificado separados por espaços."
+msgstr "O registro SMIMEA deve conter usage, selector, matching-type e certificate-data separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8133,9 +8114,7 @@ msgstr ""
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
-msgstr ""
-"A configuração SMIMEA recomendada é uso=3 (DANE-EE), selector=1 "
-"(SubjectPublicKeyInfo) e tipo-de-correspondência=1 (SHA-256)."
+msgstr "A configuração SMIMEA recomendada é usage=3 (DANE-EE), selector=1 (SubjectPublicKeyInfo) e matching-type=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -8907,9 +8886,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
-"O registro CDS deve conter key-tag, algoritmo, tipo de resumo e resumo "
-"separados por espaços."
+msgstr "O registro CDS deve conter key-tag, algorithm, digest-type e digest separados por espaços."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -9136,10 +9113,7 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr ""
-"Os nomes de proprietário de registro NSEC3 devem tipicamente ser um hash "
-"codificado em Base32hex seguido do nome da zona (ex: "
-"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.exemplo.com\")."
+msgstr "Os nomes de proprietário de registro NSEC3 devem tipicamente ser um hash codificado em Base32hex seguido do nome da zona (ex: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -9646,7 +9620,7 @@ msgstr "Linha vazia."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Formato inválido. Esperado pelo menos: nome,tipo,conteúdo"
+msgstr "Formato inválido. Esperado pelo menos: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10211,7 +10185,7 @@ msgstr "Registro A: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>destino.[ZONE]</code> ou <code>exemplo.com.</code>"
+msgstr "CNAME: <code>destino.[ZONE]</code> ou <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -11022,8 +10996,7 @@ msgstr "Forneça pelo menos um registro"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formato: nome,tipo,conteúdo,prioridade,ttl,comentário (um registro por linha)"
+msgstr "Formato: name,type,content,priority,ttl,comment (um registro por linha)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11978,9 +11951,7 @@ msgstr "Voltar"
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
-"Um supermestre é um servidor autoritativo PowerDNS que envia automaticamente "
-"novas zonas para os seus secundários."
+msgstr "Um supermaster é um servidor autoritativo PowerDNS que envia automaticamente novas zonas para os seus secundários."
 
 #: templates/modern/add_supermaster.html:73
 msgid "How it works"
@@ -11990,9 +11961,7 @@ msgstr "Como funciona"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"Quando um secundário recebe uma notificação de um supermestre, adiciona o "
-"domínio e define o endereço IP do supermestre como o endereço mestre."
+msgstr "Quando um secundário recebe uma notificação de um supermaster, adiciona o domínio e define o endereço IP do supermaster como o endereço mestre."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12944,7 +12913,7 @@ msgstr ""
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
-msgstr "Exemplo: exemplo.com"
+msgstr "Exemplo: example.com"
 
 #: templates/modern/add_zone_master.html:41
 msgid "Zone type (usually NATIVE)"
@@ -13752,11 +13721,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"Está prestes a excluir uma zona secundária cujo servidor de nomes mestre é "
-"um supermestre. Excluir a zona agora resultará apenas numa remoção "
-"temporária. Sempre que o supermestre enviar uma notificação para esta zona, "
-"ela será adicionada novamente!"
+msgstr "Está prestes a excluir uma zona secundária cujo servidor de nomes mestre é um supermaster. Excluir a zona agora resultará apenas numa remoção temporária. Sempre que o supermaster enviar uma notificação para esta zona, ela será adicionada novamente!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -14048,13 +14013,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
-"As views servem variantes de zona diferentes a clientes diferentes consoante "
-"a rede que consultou o resolver. Cada variante chama-se zona..variant (por "
-"exemplo, example.com..trusted) e tem de existir como zona separada no "
-"PowerDNS antes de poder ser atribuída aqui. As variantes partilham nome mas "
-"resolvem de forma diferente por view: o mesmo hostname pode responder com "
-"IPs diferentes consoante a rede do cliente."
+msgstr "As views servem variantes de zona diferentes a clientes diferentes consoante a rede que consultou o resolver. Cada variante chama-se zone..variant (por exemplo, example.com..trusted) e tem de existir como zona separada no PowerDNS antes de poder ser atribuída aqui. As variantes partilham nome mas resolvem de forma diferente por view: o mesmo hostname pode responder com IPs diferentes consoante a rede do cliente."
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid "No views configured yet. Add a zone variant below."
@@ -15016,9 +14975,7 @@ msgstr "Consultar"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr ""
-"Introduza um nome de domínio (por exemplo, exemplo.com) para consultar as "
-"suas informações WHOIS"
+msgstr "Introduza um nome de domínio (por exemplo, example.com) para consultar as suas informações WHOIS"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -15035,9 +14992,7 @@ msgstr "Consulta RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr ""
-"Introduza um nome de domínio (por exemplo, exemplo.com) para consultar a sua "
-"informação RDAP"
+msgstr "Introduza um nome de domínio (por exemplo, example.com) para consultar a sua informação RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"

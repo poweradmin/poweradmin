@@ -3461,7 +3461,7 @@ msgstr "Supermasters"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Autoprimary"
-msgstr "Uathphríomhach"
+msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
@@ -3469,7 +3469,7 @@ msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
-msgstr "Cuir uathphríomhach leis"
+msgstr "Cuir autoprimary leis"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
@@ -3477,7 +3477,7 @@ msgstr "Cuir supermaster leis"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
-msgstr "Cuir uathphríomhach in eagar"
+msgstr "Cuir autoprimary in eagar"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
@@ -3485,7 +3485,7 @@ msgstr "Cuir supermaster in eagar"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
-msgstr "Scrios uathphríomhach"
+msgstr "Scrios autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
@@ -3533,7 +3533,7 @@ msgstr "Seoladh IP supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
-msgstr "Roghnaigh an cuntas a mbeidh an t-uathphríomhach seo faoina úinéireacht"
+msgstr "Roghnaigh an cuntas a mbeidh an t-autoprimary seo faoina úinéireacht"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
@@ -3550,7 +3550,7 @@ msgstr "Maidir le Supermasters a chur in eagar"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
-msgstr "Is féidir leat an seoladh IP, an t-óstainm, nó an cuntas don uathphríomhach seo a mhodhnú."
+msgstr "Is féidir leat an seoladh IP, an t-óstainm, nó an cuntas don autoprimary seo a mhodhnú."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
@@ -3559,7 +3559,7 @@ msgstr "Is féidir leat an seoladh IP, an t-óstainm, nó an cuntas don supermas
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
-msgstr "Sonraí an Uathphríomhaigh"
+msgstr "Sonraí an Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
@@ -3567,7 +3567,7 @@ msgstr "Mionsonraí Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
-msgstr "Tá tú ar tí an t-uathphríomhach a scriosadh"
+msgstr "Tá tú ar tí an t-autoprimary a scriosadh"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
@@ -3575,7 +3575,7 @@ msgstr "Tá tú ar tí an supermaster a scriosadh"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
-msgstr "Tá, scrios an t-uathphríomhach seo"
+msgstr "Tá, scrios an t-autoprimary seo"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
@@ -3583,7 +3583,7 @@ msgstr "Sea, scrios an supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
-msgstr "Níl, coinnigh an t-uathphríomhach seo"
+msgstr "Níl, coinnigh an t-autoprimary seo"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
@@ -4096,7 +4096,7 @@ msgstr "Luach neamhbhailí don réimse tosaíochta. Ní mór luach tosaíochta 0
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Ní mór úsáid, roghnóir, meaitseáil-cineál, agus deimhniú-sonraí atá scartha le spásanna a bheith i dtaifead TLSA."
+msgstr "Ní mór usage, selector, matching-type, agus certificate-data atá scartha le spásanna a bheith i dtaifead TLSA."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -4136,7 +4136,7 @@ msgstr "Molann RFC 7671 úsáid 3 (DANE-EE) toisc nach mbíonn tionchar uirthi a
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
-msgstr "Molann RFC 7671 úsáid=3 (DANE-EE), roghnóir=1 (SPKI), meaitseáil-cineál=1 (SHA-256) mar an chumraíocht is láidre."
+msgstr "Molann RFC 7671 usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) mar an chumraíocht is láidre."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
@@ -4159,7 +4159,7 @@ msgstr "Ní mór réimse cineál meaitseála TLSA a bheith 0 (Meaitseáil bheach
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr "Ní mholtar meaitseáil-cineál 0 (Meaitseáil bheacht). Soláthraíonn SHA-256 (1) comhoiriúnacht agus slándáil níos fearr."
+msgstr "Ní mholtar matching-type 0 (Meaitseáil bheacht). Soláthraíonn SHA-256 (1) comhoiriúnacht agus slándáil níos fearr."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -7006,8 +7006,7 @@ msgstr "Fearann CA neamhbhailí sa chlib issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr ""
-"Ní mór paraiméadair chlib eisiúna a bheith i bhformáid eochair = luach."
+msgstr "Ní mór paraiméadair chlib eisiúna a bheith i bhformáid key=value."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7342,7 +7341,7 @@ msgstr "Tá carachtair neamhbhailí sa taifead SMIMEA."
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr "Ní mór go mbeadh úsáid, roghnóir, cineál meaitseála, agus sonraí deimhnithe scartha ag spásanna i dtaifead SMIMEA."
+msgstr "Ní mór go mbeadh usage, selector, matching-type, agus certificate-data scartha ag spásanna i dtaifead SMIMEA."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
@@ -8101,7 +8100,7 @@ msgstr "Is taifead scriosta CDS é seo mar a shainmhínítear in RFC 8078. Comha
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "Ní mór eochairchlib, algartam, cineál díleá agus díleá scartha le spásanna a bheith i dtaifead CDS."
+msgstr "Ní mór key-tag, algorithm, digest-type agus digest scartha le spásanna a bheith i dtaifead CDS."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."

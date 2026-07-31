@@ -4232,9 +4232,7 @@ msgstr ""
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
-"TLSA-record moet gebruik, selector, matching-type en certificaatgegevens "
-"gescheiden door spaties bevatten."
+msgstr "TLSA-record moet usage, selector, matching-type en certificate-data gescheiden door spaties bevatten."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -5860,9 +5858,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"HTTPS record parameters moeten in key=waarde formaat zijn gescheiden door "
-"spaties."
+msgstr "HTTPS record parameters moeten in key=value formaat zijn gescheiden door spaties."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -7602,7 +7598,7 @@ msgstr "Ongeldig CA domein in issue tag."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:217
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Issue tag parameters moeten in key=waarde formaat zijn."
+msgstr "Issue tag parameters moeten in key=value formaat zijn."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:222
 msgid "accounturi parameter cannot be empty."
@@ -7884,8 +7880,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"SVCB parameters moeten in key=waarde formaat zijn gescheiden door spaties."
+msgstr "SVCB parameters moeten in key=value formaat zijn gescheiden door spaties."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -9585,7 +9580,7 @@ msgstr "Lege regel."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Ongeldig formaat. Verwacht ten minste: naam,type,inhoud"
+msgstr "Ongeldig formaat. Verwacht ten minste: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -10151,7 +10146,7 @@ msgstr "A-record: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:174
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>doel.[ZONE]</code> of <code>voorbeeld.com.</code>"
+msgstr "CNAME: <code>target.[ZONE]</code> of <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -10963,8 +10958,7 @@ msgstr "Geef minstens één record op"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Formaat: naam,type,inhoud,prioriteit,ttl,opmerking (één record per regel)"
+msgstr "Formaat: name,type,content,priority,ttl,comment (één record per regel)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -12892,7 +12886,7 @@ msgstr ""
 
 #: lib/Module/SecondaryZoneImport/templates/import.html:122
 msgid "Example: example.com"
-msgstr "Voorbeeld: voorbeeld.com"
+msgstr "Voorbeeld: example.com"
 
 #: templates/modern/add_zone_master.html:41
 msgid "Zone type (usually NATIVE)"
@@ -13850,8 +13844,7 @@ msgstr "DNS Zoeken"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr ""
-"Voer domeinnaam, hostnaam of IP in (bijv. voorbeeld.com type:txt content:spf)"
+msgstr "Voer domeinnaam, hostnaam of IP in (bijv. example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -14967,9 +14960,7 @@ msgstr "Opzoeken"
 
 #: lib/Module/Whois/templates/whois.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr ""
-"Voer een domeinnaam in (bijv. voorbeeld.com) om de WHOIS informatie op te "
-"zoeken"
+msgstr "Voer een domeinnaam in (bijv. example.com) om de WHOIS informatie op te zoeken"
 
 #: lib/Module/Whois/templates/whois.html:33
 msgid "WHOIS results for"
@@ -14985,9 +14976,7 @@ msgstr "RDAP Opzoeken"
 
 #: lib/Module/Rdap/templates/rdap.html:25
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr ""
-"Voer een domeinnaam in (bijv. voorbeeld.com) om de RDAP informatie op te "
-"zoeken"
+msgstr "Voer een domeinnaam in (bijv. example.com) om de RDAP informatie op te zoeken"
 
 #: lib/Module/Rdap/templates/rdap.html:33
 msgid "RDAP results for"

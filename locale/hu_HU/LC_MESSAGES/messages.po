@@ -2181,7 +2181,7 @@ msgstr "Aláírás eltávolítás kérve, de ellenőrzés sikertelen."
 
 #: lib/Application/Controller/DnssecController.php:128
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "A zóna aláírás eltávolítás sikertelen. Ellenőrizze a logokat."
+msgstr "A zóna aláírás eltávolítás sikertelen. Ellenőrizze a PowerDNS logokat."
 
 #: lib/Application/Controller/EditController.php:585
 msgid "Zone type has been changed successfully."
@@ -2814,15 +2814,15 @@ msgstr "A zóna sablon sikeresen törölve."
 
 #: lib/Application/Controller/EditSupermasterController.php:53
 msgid "You do not have the permission to edit a supermaster."
-msgstr "Nincs jogosultsága szuper elsődleges szerkesztésére."
+msgstr "Nincs jogosultsága supermaster szerkesztésére."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "A szerkeszteni kívánt szuper elsődleges nem létezik."
+msgstr "A szerkeszteni kívánt supermaster nem létezik."
 
 #: lib/Application/Controller/EditSupermasterController.php:106
 msgid "The supermaster has been updated successfully."
-msgstr "A szuper elsődleges sikeresen frissítve."
+msgstr "A supermaster sikeresen frissítve."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:63
 msgid "You do not have permission to manage group zones."
@@ -2863,11 +2863,11 @@ msgstr "A zónaszinkronizálás nem sikerült: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:52
 msgid "You do not have the permission to add a new supermaster."
-msgstr "Nincs jogosultsága új szuper elsődleges hozzáadására."
+msgstr "Nincs jogosultsága új supermaster hozzáadására."
 
 #: lib/Application/Controller/AddSupermasterController.php:73
 msgid "The supermaster has been added successfully."
-msgstr "A szuper elsődleges sikeresen hozzáadva."
+msgstr "A supermaster sikeresen hozzáadva."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:79
 msgid "PEM key import requires PowerDNS 4.7 or newer."
@@ -3129,7 +3129,7 @@ msgstr "A csoport sikeresen frissítve."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:52
 msgid "You do not have the permission to delete a supermaster."
-msgstr "Nincs jogosultsága szuper elsődleges törlésére."
+msgstr "Nincs jogosultsága supermaster törlésére."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid IP address."
@@ -3145,7 +3145,7 @@ msgstr "A szuper elsődleges nem létezik."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:103
 msgid "The supermaster has been deleted successfully."
-msgstr "A szuper elsődleges sikeresen törölve."
+msgstr "A supermaster sikeresen törölve."
 
 #: lib/Application/Controller/BulkRegistrationController.php:70
 #: templates/modern/index.html:484 templates/modern/bulk_registration.html:17
@@ -3451,7 +3451,7 @@ msgstr "Autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:133
 msgid "Supermaster"
-msgstr "Szuper elsődleges"
+msgstr "Supermaster"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add autoprimary"
@@ -3459,7 +3459,7 @@ msgstr "Autoprimary hozzáadása"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:134
 msgid "Add supermaster"
-msgstr "Szuper elsődleges hozzáadása"
+msgstr "Supermaster hozzáadása"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit autoprimary"
@@ -3467,7 +3467,7 @@ msgstr "Autoprimary szerkesztése"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Edit supermaster"
-msgstr "szuper elsődleges szerkesztése"
+msgstr "Supermaster szerkesztése"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete autoprimary"
@@ -3475,7 +3475,7 @@ msgstr "Autoprimary törlése"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "Delete supermaster"
-msgstr "szuper elsődleges törlése"
+msgstr "Supermaster törlése"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:137
 msgid "About Autoprimaries"
@@ -3491,7 +3491,7 @@ msgstr "Mi az Autoprimary?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:138
 msgid "What is a Supermaster?"
-msgstr "Mi az a szuper elsődleges?"
+msgstr "Mi az a Supermaster?"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
@@ -3515,7 +3515,7 @@ msgstr "Autoprimary IP-címe"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:143
 msgid "IP address of supermaster"
-msgstr "Szuper elsődleges IP címe"
+msgstr "A supermaster IP címe"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "Select the account that will own this autoprimary"
@@ -3524,7 +3524,7 @@ msgstr ""
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:146
 msgid "Select the account that will own this supermaster"
-msgstr "Válasszon fiókot a szuper elsődlegeshez"
+msgstr "Válasszon fiókot ehhez a supermasterhez"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
 msgid "About Editing Autoprimaries"
@@ -3544,7 +3544,7 @@ msgstr ""
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:150
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Módosíthatja a szuper elsődleges IP-t, nevet, fiókot."
+msgstr "Módosíthatja a supermaster IP-jét, nevét, fiókját."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Autoprimary Details"
@@ -3552,7 +3552,7 @@ msgstr "Autoprimary részletei"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:151
 msgid "Supermaster Details"
-msgstr "Szuper elsődleges részletei"
+msgstr "Supermaster részletei"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:153
 msgid "You are about to delete the autoprimary"
@@ -3560,7 +3560,7 @@ msgstr "Az alábbi autoprimary törlésére készül"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:154
 msgid "You are about to delete the supermaster"
-msgstr "Hamarosan törli a szuper elsődlegest"
+msgstr "Hamarosan törli a supermastert"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this autoprimary"
@@ -3568,7 +3568,7 @@ msgstr "Igen, ezt az autoprimary-t törlöm"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:155
 msgid "Yes, delete this supermaster"
-msgstr "Igen, töröljem a szuper elsődlegest"
+msgstr "Igen, töröljem a supermastert"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this autoprimary"
@@ -3576,7 +3576,7 @@ msgstr "Nem, ezt az autoprimary-t megtartom"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:156
 msgid "No, keep this supermaster"
-msgstr "Nem, szuper elsődleges megtartása"
+msgstr "Nem, supermaster megtartása"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:158
 msgid ""
@@ -4043,7 +4043,7 @@ msgstr "Ha CNAME rekordokat használ, a TLSA helyes működéséhez a teljes CNA
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr "Ez SMIMEA rekordnak tűnik (RFC 8162)."
+msgstr "Ez SMIMEA rekordnak tűnik (RFC 8162) S/MIME tanúsítványokhoz."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -4603,7 +4603,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr "KRITIKUS: Nem biztonságos algoritmus. 8+ használjon."
+msgstr "KRITIKUS: Nem biztonságos algoritmus. Használjon 8-as (RSA/SHA-256) vagy újabb algoritmust."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -5420,7 +5420,7 @@ msgstr "A CERT tanúsítvány érvényes base64 kódolt legyen."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "A CERT adatoknak nem szabad üresnek lenni dekódolás után."
+msgstr "A CERT adatoknak nem szabad üresnek lenni base64 dekódolás után."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -5701,7 +5701,7 @@ msgstr "A TKEY kulcsadatnak érvényes base64 kódolású adatnak vagy hexadecim
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr "TKEY kulcsok szerverekhez, nem zónákhoz."
+msgstr "TKEY kulcsok DNS szerverekhez, nem zónákhoz."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -5789,7 +5789,7 @@ msgstr "FTP kevésbé biztonságos, mint SFTP vagy HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "LDAPS használata ajánlott az LDAP biztonságához."
+msgstr "LDAPS (LDAP SSL/TLS felett) használata ajánlott az LDAP biztonságához."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -6448,7 +6448,7 @@ msgstr "Az RP rekordokat az RFC 1183 (1990) definiálta, és a mai DNS beállít
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr "Más kontakt módok is legyenek kritikus domainekhez."
+msgstr "Kritikus domainekhez az RP rekordok mellett más kontakt módok is legyenek."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -7907,7 +7907,7 @@ msgstr "A modern SSH implementációkhoz az Ed25519 kulcsok ajánlottak, mert j�
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr "Ed448 magas biztonság, nem mindenhol támogatott."
+msgstr "Ed448 magas biztonság, nem minden SSH implementáció támogatja."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
@@ -8946,7 +8946,7 @@ msgstr "Üres sor."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Érvénytelen formátum. Minimum: név,típus,tartalom"
+msgstr "Érvénytelen formátum. Minimum: name,type,content"
 
 #: lib/Domain/Service/BulkRecordParser.php:91
 msgid ""
@@ -9007,7 +9007,7 @@ msgstr "Érvénytelen argumentum(ok) a %s %s függvénynek"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "Már létezik szuper elsődleges ezzel az IP-vel és gazdanévvel."
+msgstr "Már létezik supermaster ezzel az IP-vel és gazdanévvel."
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create zone in DNS backend."
@@ -9056,7 +9056,7 @@ msgstr "Nem sikerült frissíteni a zóna típust a DNS backendben."
 
 #: lib/Domain/Service/Dns/DomainManager.php:805
 msgid "Failed to update zone master in DNS backend."
-msgstr "Nem sikerült frissíteni a zóna elsődlegesét."
+msgstr "Nem sikerült frissíteni a zóna elsődlegesét a DNS backendben."
 
 #: lib/Domain/Service/Dns/DomainManager.php:851
 msgid "The selected user already owns the zone."
@@ -10301,7 +10301,7 @@ msgstr "Adjon meg legalább egy rekordot"
 
 #: templates/modern/bulk_record_add.html:29
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Formátum: név,típus,tartalom,prioritás,ttl,megjegyzés"
+msgstr "Formátum: name,type,content,priority,ttl,comment (soronként egy rekord)"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -11242,10 +11242,7 @@ msgstr "hogyan működik"
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
-"Amikor egy másodlagos szerver értesítést kap egy szuper elsődlegestől, "
-"felveszi a tartományt, és a szuper elsődleges IP címét állítja be elsődleges "
-"címként."
+msgstr "Amikor egy másodlagos szerver értesítést kap egy supermastertől, felveszi a tartományt, és a supermaster IP címét állítja be elsődleges címként."
 
 #: templates/modern/add_supermaster.html:77
 msgid "Important Notes"
@@ -12946,11 +12943,7 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"Olyan másodlagos zónát készül törölni, amelynek elsődleges névszervere "
-"szuper elsődleges. A zóna törlése most csak ideiglenes eltávolítást jelent. "
-"Amint a szuper elsődleges értesítést küld erről a zónáról, a zóna újra "
-"létrejön!"
+msgstr "Olyan másodlagos zónát készül törölni, amelynek elsődleges névszervere supermaster. A zóna törlése most csak ideiglenes eltávolítást jelent. Amint a supermaster értesítést küld erről a zónáról, a zóna újra létrejön!"
 
 #: templates/modern/delete_domain.html:58
 msgid "Yes, delete this zone"
@@ -13096,7 +13089,7 @@ msgstr "DNS keresés"
 #: templates/default/search.html:30 templates/modern/search.html:30
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr "Adjon meg tartományt, gazdanevet vagy IP-t"
+msgstr "Adjon meg tartományt, gazdanevet vagy IP-t (pl. example.com type:txt content:spf)"
 
 #: templates/default/search.html:72 templates/modern/search.html:72
 msgid "Wildcards"
@@ -13266,7 +13259,7 @@ msgstr "Nézet neve"
 
 #: templates/default/list_views.html:59 templates/modern/list_views.html:59
 msgid "Zone (zone..variant)"
-msgstr "Zóna (zone..variáns)"
+msgstr "Zóna (zone..variant)"
 
 #: templates/modern/email_previews.html:8
 msgid "Email Template Previews"
