@@ -58,6 +58,7 @@ class PageRenderer
 
     private bool $twigEnvironmentReady = false;
     private ?array $languageVars = null;
+    private ?int $assetMtime = null;
 
     public function __construct(
         AppManager $app,
@@ -110,9 +111,10 @@ class PageRenderer
     }
 
     /**
-     * Opaque cache-busting token for static asset URLs: stable within a
-     * release so browsers can cache, changes on upgrade, and does not
-     * reveal the release number to unauthenticated visitors.
+     * Opaque cache-busting token for static asset URLs: stable while the
+     * assets are unchanged so browsers can cache, changes on upgrade or
+     * whenever an asset is edited, and does not reveal the release number
+     * to unauthenticated visitors.
      */
     private function getAssetVersion(): string
     {
@@ -123,7 +125,32 @@ class PageRenderer
             $configFile = getenv('PA_CONFIG_PATH') ?: dirname(__DIR__, 3) . '/config/settings.php';
             $key .= (string)@filemtime($configFile);
         }
-        return substr(hash_hmac('sha256', Version::VERSION, $key), 0, 12);
+        $message = Version::VERSION . '|' . $this->getAssetMtime();
+        return substr(hash_hmac('sha256', $message, $key), 0, 12);
+    }
+
+    /**
+     * Newest mtime across the assets the token versions, so editing one during
+     * development or patching one in place busts the cache without a release.
+     */
+    private function getAssetMtime(): int
+    {
+        if ($this->assetMtime !== null) {
+            return $this->assetMtime;
+        }
+
+        $root = dirname(__DIR__, 3);
+        $newest = 0;
+        foreach (['/assets/*.js', '/templates/*/style/*.css'] as $pattern) {
+            foreach (glob($root . $pattern) ?: [] as $file) {
+                $mtime = @filemtime($file);
+                if ($mtime !== false && $mtime > $newest) {
+                    $newest = $mtime;
+                }
+            }
+        }
+
+        return $this->assetMtime = $newest;
     }
 
     /**
