@@ -304,14 +304,14 @@ msgstr "Sertifikāta datiem jābūt heksadecimāliem (0-9, a-f)"
 msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
-msgstr "SHA-256 hash jābūt 64 hex rakstzīmēm, ir %d."
+msgstr "SHA-256 jaucējvērtībai jābūt 64 heksadecimālām rakstzīmēm, saņemts %d. Pārbaudiet, vai jaucējvērtība ir pareiza."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
 #, php-format
 msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
-msgstr "SHA-512 hash jābūt 128 hex rakstzīmēm, ir %d."
+msgstr "SHA-512 jaucējvērtībai jābūt 128 heksadecimālām rakstzīmēm, saņemts %d. Pārbaudiet, vai jaucējvērtība ir pareiza."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:267
 msgid ""
@@ -955,7 +955,7 @@ msgstr "Testēšanas režīms"
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr "Iespējot testēšanas režīmu (t=y). DKIM nebūs piespiests."
+msgstr "Iespējot testēšanas režīmu (t=y). DKIM paraksti būs klāt, bet netiks piespiesti. Izmantojiet sākotnējās izvietošanas laikā."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
@@ -995,7 +995,7 @@ msgstr "Publiskā atslēga šķiet par īsa. Pārliecinieties par pilno atslēgu
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr "Jūs ielīmējāt PRIVĀTU atslēgu. DNS drīkst tikai PUBLISKĀ atslēga!"
+msgstr "Jūs ielīmējāt PRIVĀTU atslēgu. DNS drīkst būt tikai PUBLISKĀ atslēga. Nekad nedaliet savu privāto atslēgu!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
@@ -1007,7 +1007,7 @@ msgstr "Publiskā atslēga satur PEM galvenes. Nepieciešams tikai base64 saturs
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
-msgstr "Testēšanas režīms aktīvs (t=y). DKIM netiks piespiests."
+msgstr "Testēšanas režīms ir iespējots (t=y). DKIM paraksti netiks piespiesti. Atspējojiet to, kad testēšana ir pabeigta."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:68
 msgid "SRV Record"
@@ -1097,7 +1097,7 @@ msgstr "Prioritāte"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "Zemākas vērtības ir augstāka prioritāte (10 ir laba)."
+msgstr "Zemākas vērtības nozīmē augstāku prioritāti (10 ir laba noklusējuma vērtība). Klienti izmēģina serverus prioritātes secībā."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:173
 msgid "Weight"
@@ -1107,8 +1107,7 @@ msgstr "Svars"
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
-msgstr ""
-"Slodzes līdzsvarošanai ar vienādu prioritāti. Lielāks svars = vairāk trafika."
+msgstr "Slodzes līdzsvarošanai starp vienādas prioritātes serveriem. Lielāks svars = vairāk trafika. 0 = bez slodzes līdzsvarošanas."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:261
 msgid "Service is required"
@@ -2181,8 +2180,7 @@ msgstr ""
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr ""
-"Neizdevās parakstīt zonu. Validācija veiksmīga, bet PowerDNS API kļūda."
+msgstr "Neizdevās parakstīt zonu. Zonas validācija izdevās, bet PowerDNS API atgrieza kļūdu. Sīkāku informāciju skatiet PowerDNS žurnālos."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone is not currently signed with DNSSEC."
@@ -3088,7 +3086,7 @@ msgstr ""
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
-msgstr "Ārējās autentifikācijas lietotāji nevar mainīt paroli šeit."
+msgstr "Ārējās autentifikācijas lietotāji šeit nevar mainīt savu paroli. Lūdzu, sazinieties ar savu administratoru."
 
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:11
@@ -3890,7 +3888,7 @@ msgstr "IPSECKEY publiskā atslēga regulāri jārotē drošībai."
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
-msgstr "Izmantojot domēna vārdu vārtejas, nodrošiniet abus DNS ar DNSSEC."
+msgstr "Izmantojot domēna vārdu vārtejas, nodrošiniet, ka pastāv gan tiešie, gan reversie DNS ieraksti un ka tie ir pienācīgi aizsargāti ar DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -4101,7 +4099,7 @@ msgstr "TLSA lietojuma laukam jābūt skaitlim no 0 līdz 3."
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr "Usage 0 (PKIX-TA) prasa CA sertifikātu pārvaldību."
+msgstr "Lietojums 0 (PKIX-TA) prasa pareizu CA sertifikātu pārvaldību un var pārstāt darboties, kad sertifikāti beidzas."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
@@ -4283,13 +4281,13 @@ msgstr "NSEC3PARAM iterācijām jābūt 0 līdz 2500."
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr "RFC 9276 iesaka 0 iterāciju. Vairāk tikai palielina izmaksas."
+msgstr "RFC 9276 iesaka izmantot 0 iterāciju. Papildu iterācijas palielina skaitļošanas izmaksas, neuzlabojot drošību."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr "Augstas iterācijas (>100) var izraisīt atteikumu. RFC 9276 IESAKA 0."
+msgstr "Augstas iterāciju vērtības (>100) var likt validējošiem atrisinātājiem noraidīt jūsu zonas. RFC 9276 STINGRI iesaka izmantot 0 iterāciju."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -4480,7 +4478,7 @@ msgstr "Augstumam jābūt starp -100000 un 42849672.95 metri."
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr "Nederīgs izmērs vai precizitāte. Jābūt 0-90000000 metru."
+msgstr "Nederīga izmēra, horizontālās precizitātes vai vertikālās precizitātes vērtība. Tām jābūt no 0 līdz 90000000 metriem."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
@@ -5300,7 +5298,7 @@ msgstr ""
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr "ZONEMD sērijas numuram jābūt 0-4294967295."
+msgstr "ZONEMD sērijas numuram jābūt skaitlim no 0 līdz 4294967295 (32 bitu vesels skaitlis bez zīmes)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -5426,13 +5424,13 @@ msgstr "Sertifikāta dati ir "
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr "CERT datiem jāsatur tikai derīgi base64 simboli."
+msgstr "CERT sertifikāta datiem jāsatur tikai derīgas base64 rakstzīmes (A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
 "CERT certificate data has invalid base64 padding. Equals signs (=) should "
 "only appear at the end of the data."
-msgstr "CERT datiem nederīgs base64 pildījums. \"=\" tikai beigās."
+msgstr "CERT sertifikāta datiem ir nederīgs base64 papildinājums. Vienādības zīmēm (=) jāparādās tikai datu beigās."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:293
 msgid ""
@@ -5898,7 +5896,7 @@ msgstr "URI satur procentu zīmes, kas nav pareizi kodētas."
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr "URI satur ne-ASCII rakstzīmes. Izmantojiet Punycode IDN."
+msgstr "URI resursdatora nosaukumā ir rakstzīmes, kas nav ASCII. Starptautiskiem domēna vārdiem apsveriet Punycode izmantošanu."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
@@ -5943,7 +5941,7 @@ msgstr "Nederīga KX preferences vērtība. Jābūt 0-65535."
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr "PIEZĪME: MINFO ieraksts ir EKSPERIMENTĀLS (RFC 1035)."
+msgstr "PIEZĪME: MINFO ieraksta tips RFC 1035 ir atzīmēts kā EKSPERIMENTĀLS. Tas var nebūt vispārēji atbalstīts."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -5989,13 +5987,13 @@ msgstr "\".\" (sakne) EMAILBX nozīmē, ka kļūdas tiek atgrieztas sūtītājam
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr "Atbildīgā un kļūdu pastkaste vienāda. Apsveriet atšķirīgas."
+msgstr "Atbildīgā pastkaste un kļūdu pastkaste ir vienādas. Apsveriet iespēju šīm funkcijām izmantot atšķirīgas pastkastes."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr "MINFO prioritātes laukam jābūt 0 vai tukšam (RFC 1035)."
+msgstr "MINFO ierakstu prioritātes laukam jābūt 0 vai tukšam. MINFO neizmanto prioritātes vērtības saskaņā ar RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
@@ -6053,7 +6051,7 @@ msgstr "ptr mehānisms netiek ieteikts veiktspējas dēļ (RFC 7208 §5.5)."
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr "\"all\" mehānismam jābūt pēdējam (RFC 7208 §5.1)."
+msgstr "Mehānismam \"all\" jābūt pēdējam mehānismam ierakstā (RFC 7208, 5.1. sadaļa)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
@@ -6139,7 +6137,7 @@ msgstr "Nederīgas rakstzīmes DHCID ierakstā."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr "Saskaņā ar RFC 4701/4703, DHCID tajā pašā nosaukumā kā A/AAAA."
+msgstr "Saskaņā ar RFC 4701 un RFC 4703 DHCID ieraksti jāievieto tajā pašā nosaukumā, kur atrodas tiem atbilstošie A vai AAAA ieraksti."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -6165,13 +6163,13 @@ msgstr "DHCID drīkst saturēt tikai derīgus base64 simbolus."
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID nederīgs base64 pildījums. \"=\" tikai beigās."
+msgstr "DHCID ierakstā ir nederīgs base64 papildinājums. Vienādības zīmēm (=) jāparādās tikai datu beigās."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr "DHCID nederīgs base64 garums. Jābūt 4 reizinātājam."
+msgstr "DHCID ierakstā ir nederīgs base64 garums. Base64 datiem jābūt 4 rakstzīmju daudzkārtnim (ar papildinājumu)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -6188,7 +6186,7 @@ msgstr "DHCID ir par īsu. Dekodētiem datiem jābūt vismaz 3 baiti."
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID identifikatora tips 0x%04X nav standarta (RFC 4701)."
+msgstr "DHCID identifikatora tips 0x%04X nav viens no standarta tipiem, kas definēti RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
@@ -6380,7 +6378,7 @@ msgstr "RRSIG sākumam jābūt YYYYMMDDHHmmSS formātā."
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr "Beigām jābūt pēc sākuma. Paraksts beidzās pirms kļuva derīgs."
+msgstr "Beigu laikam jābūt vēlākam par sākuma laiku. Šķiet, ka šis paraksts beidzās, pirms kļuva derīgs."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
@@ -6772,7 +6770,7 @@ msgstr ""
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr "Šis ir speciāls CDS dzēšanas ieraksts (RFC 8078)."
+msgstr "Šis ir īpašs CDS dzēšanas ieraksts (RFC 8078), kas signalizē vecākzonai noņemt DS ierakstu."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
@@ -6937,7 +6935,7 @@ msgstr "Nederīgs SOA Serial CSYNC ierakstā. Jābūt 32-bit unsigned."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Nederīgi CSYNC ieraksta karodziņi."
+msgstr "Nederīgi karodziņi CSYNC ierakstā. Karodziņiem jābūt skaitliskai vērtībai."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
@@ -7247,7 +7245,7 @@ msgstr "Nederīgs apakštīkls RFC 2317. Jābūt skaitliskam vai hex."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:173
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr "Nederīgs prefiksa garums RFC 2317 notācijā."
+msgstr "Nederīgs prefiksa garums RFC 2317 notācijā. Tam jābūt skaitliskam."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:185
 msgid ""
@@ -7440,7 +7438,7 @@ msgstr ""
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr "Vairāki CNAME ar vienādu vārdu nav atļauti - DNS pārkāpums."
+msgstr "Vairāki CNAME ieraksti ar vienādu nosaukumu nav atļauti. Tas radītu DNS pārkāpumu."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
@@ -7493,7 +7491,7 @@ msgstr ""
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr "SMIMEA padara e-pastu redzamu DNS. Apsveriet privātumu."
+msgstr "SMIMEA padara e-pasta adreses redzamas DNS. Publicējot SMIMEA ierakstus, apsveriet ietekmi uz privātumu."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -7589,7 +7587,7 @@ msgstr ""
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr "Matching-type 0 izmanto neapstrādātus datus. SHA-256 (1) ieteicams."
+msgstr "Atbilstības tips 0 (Exact match) izmanto neapstrādātus sertifikāta datus. Labākai veiktspējai un saderībai ieteicams SHA-256 (tips 1)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -7630,7 +7628,7 @@ msgstr ""
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr "BRĪDINĀJUMS: SMIMEA (RFC 8162) ir EKSPERIMENTĀLS."
+msgstr "BRĪDINĀJUMS: SMIMEA (RFC 8162) pašlaik ir EKSPERIMENTĀLS protokols un var nebūt plaši atbalstīts."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
@@ -7804,7 +7802,7 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr "Algoritms 10 (RSASHA512) NAV IETEICAMS parakstīšanai."
+msgstr "Algoritms 10 (RSASHA512) NAV IETEICAMS parakstīšanai, lai gan tam jābūt atbalstītam validācijai."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -8197,7 +8195,7 @@ msgstr "DMARC procentu tagam (pct) jābūt starp 0 un 100"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "DMARC politika piemērota %d%% ziņojumu - tikai izvietošanas laikā."
+msgstr "DMARC politika tiek piemērota tikai %d%% ziņojumu. To vajadzētu izmantot tikai politikas ieviešanas laikā."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -8608,7 +8606,7 @@ msgstr "NSEC3 nākamajam jauktajam vārdam jābūt derīgam Base32hex (0-9, A-V)
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr "Type bit maps jāiekļauj, lai norādītu RR veidus."
+msgstr "Tipu bitu kartēm jābūt klāt, lai norādītu, kuri RR tipi pastāv sākotnējā īpašnieka nosaukumā."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -8801,7 +8799,7 @@ msgstr "DNSKEY karodziņiem jābūt 0, 256 vai 257."
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
-msgstr "Karodziņš 0 norāda, ka šī atslēga NAV zonas atslēga DNSSEC."
+msgstr "Karodziņa vērtība 0 norāda, ka šī atslēga NAV paredzēta lietošanai kā zonas atslēga DNSSEC. Pārliecinieties, ka tas ir apzināti."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
@@ -8848,14 +8846,14 @@ msgstr "%s (algoritms %d) ir neobligāts saskaņā ar RFC 8624."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s (algoritms %d) ir NOVECOJIS saskaņā ar RFC 8624."
+msgstr "%s (algoritms %d) ir NOVECOJIS saskaņā ar RFC 8624. Neizmantojiet šo algoritmu jaunās izvietošanās."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Algoritms %d NEDRĪKST tikt implementēts saskaņā ar RFC 8624."
+msgstr "Algoritmu %d NEDRĪKST implementēt saskaņā ar RFC 8624. Šo vērtību nevajadzētu izmantot."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -9124,7 +9122,7 @@ msgstr "SVARĪGI: Saglabājiet jauno API atslēgu tagad!"
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr "Šī ir vienīgā reize, kad tiks parādīta jaunā API atslēga."
+msgstr "Šī ir vienīgā reize, kad tiks parādīta jaunā API atslēga. Saglabājiet to tagad, jo vairs nevarēsiet to redzēt."
 
 #: templates/modern/api_key_created.html:21
 msgid "Name:"
@@ -10244,7 +10242,7 @@ msgstr "Padomi un piemēri"
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr "Izveidojiet dažādas veidnes dažādiem vietņu veidiem"
+msgstr "Izveidojiet dažādas veidnes dažāda veida vietnēm (piemēram, \"Basic Website\", \"Email Server\")"
 
 #: templates/modern/add_zone_templ.html:86
 msgid ""
@@ -10917,7 +10915,7 @@ msgstr "Ieteicamie iestatījumi"
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
-msgstr "Mūsdienīgām izvietošanām ECDSA (13) nodrošina drošību un veiktspēju."
+msgstr "Mūsdienīgām izvietošanām ECDSA (algoritms 13, ECDSAP256SHA256) ar 256 bitiem nodrošina spēcīgu drošību un labāku veiktspēju."
 
 #: templates/modern/edit_user.html:3 templates/modern/header.html:383
 msgid "Edit profile"
@@ -11390,7 +11388,7 @@ msgstr "Izveidot PTR tikai esošiem A/AAAA ierakstiem turpzonā"
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A/AAAA records in the specified domain"
-msgstr "Kad atzīmēts, PTR tiks izveidoti tikai IP ar A/AAAA ierakstiem."
+msgstr "Kad atzīmēts, PTR ieraksti tiks izveidoti tikai tām IP adresēm, kurām norādītajā domēnā ir atbilstoši A/AAAA ieraksti"
 
 #: templates/modern/batch_ptr_record.html:98
 msgid "Create PTR Records"
@@ -11438,7 +11436,7 @@ msgstr "Prasības"
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr "Atbilstošai reversai zonai jābūt izveidotai PowerDNS."
+msgstr "Pirms šīs funkcijas izmantošanas atbilstošajai reversajai zonai jau jābūt izveidotai PowerDNS."
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For example:"
@@ -11592,7 +11590,7 @@ msgstr "Eksportēt žurnālus"
 
 #: templates/modern/list_record_changes.html:172
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Eksportēt filtrētus žurnāla ierakstus."
+msgstr "Eksportēt filtrētus žurnāla ierakstus. Tiks piemēroti pašreizējie filtri."
 
 #: templates/modern/list_record_changes.html:173
 msgid "records to export"
@@ -11656,7 +11654,7 @@ msgstr "Atlasiet vedni sarežģītu DNS ierakstu izveidei ar vadītām veidlapā
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr "DNS vedņi ir paredzēti turpzonām, ne reversām."
+msgstr "DNS vedņi ir paredzēti tiešajām zonām un var nebūt piemēroti reversajām zonām."
 
 #: templates/modern/dns_wizard_select.html:57
 msgid "Recommended"
@@ -11762,7 +11760,7 @@ msgstr "Norādiet TTL"
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
-msgstr "Padoms: ievadiet tikai hostname (piem. 'www'), '@' zonas virsotnei."
+msgstr "Padoms: ievadiet tikai resursdatora nosaukumu (piem., 'www') un zonas nosaukums tiks pievienots automātiski. Zonas virsotnei/saknei izmantojiet '@'."
 
 #: lib/Module/ZoneImportExport/templates/import.html:40
 msgid "Edit zone"
@@ -12839,7 +12837,7 @@ msgstr "Nepieciešama MFA iestatīšana"
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr "Organizācija prasa MFA. Iestatiet MFA lai turpinātu."
+msgstr "Jūsu organizācija pieprasa daudzfaktoru autentifikāciju. Iestatiet MFA, lai turpinātu lietot sistēmu."
 
 #: templates/default/mfa_setup.html:20 templates/modern/mfa_setup.html:20
 msgid ""
@@ -13871,7 +13869,7 @@ msgstr "Jūs gatavojaties dzēst aktīvu DNSSEC atslēgu (ID"
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr "Aktīvas atslēgas dzēšana ietekmēs zonas drošību."
+msgstr "Aktīvas atslēgas dzēšana ietekmēs jūsu zonas drošību un var izraisīt validācijas kļūmes."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "You are about to delete a DNSSEC key (ID"

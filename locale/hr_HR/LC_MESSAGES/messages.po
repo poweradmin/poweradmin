@@ -6026,7 +6026,7 @@ msgstr "URI ne smije biti prazan."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI mora početi valjanom shemom (slovo + slova/brojevi/+/./-)."
+msgstr "URI mora početi valjanom shemom koja počinje slovom, iza kojeg slijede slova, brojevi, plus, točka ili crtica."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
@@ -6315,7 +6315,7 @@ msgstr "CNAME cilj mora biti FQDN. Imena s jednom oznakom nisu dopuštena."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr "CNAME cilj mora biti FQDN s valjanim TLD-om."
+msgstr "CNAME cilj mora biti potpuno kvalificirano ime domene (FQDN) s valjanom vršnom domenom."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -7051,8 +7051,7 @@ msgstr "Vrsta sažetka mora biti jedna od: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr ""
-"SHA-1 (tip 1) NIJE preporučen (RFC 8624). SHA-256 (tip 2) je preporučen."
+msgstr "SHA-1 (tip sažetka 1) NIJE PREPORUČEN za uporabu prema RFC 8624. SHA-256 (tip sažetka 2) je preporučeni algoritam sažetka."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
@@ -9032,7 +9031,7 @@ msgstr "NAPTR regexp mora biti niz u navodnicima."
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr "NAPTR zamjena mora biti \".\" ili valjani FQDN."
+msgstr "Zamjena u NAPTR zapisu mora biti \".\" ili valjano potpuno kvalificirano ime domene."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."

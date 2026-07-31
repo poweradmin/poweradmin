@@ -4118,7 +4118,7 @@ msgstr "Ово изгледа као SMIMEA запис (RFC 8162) за S/MIME с
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr "SMIMEA користи TLSA формат, али за S/MIME и имејл."
+msgstr "SMIMEA записи користе исти формат као TLSA, али повезују S/MIME сертификате са имејл адресама."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
@@ -4326,7 +4326,7 @@ msgstr ""
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr "Flag вредности > 1 су резервисане. Могу бити неправилно обрађене."
+msgstr "Вредности заставица веће од 1 резервисане су за будућу употребу. Тренутне имплементације можда неће исправно обрадити те вредности."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
@@ -4386,7 +4386,7 @@ msgstr ""
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr "LP записи се користе само са ILNP протоколом."
+msgstr "LP записи треба да се користе само уз Identifier-Locator Network Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
@@ -4412,8 +4412,7 @@ msgstr ""
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr ""
-"Користите дуже TTL за LP. За разлику од L32/L64, LP су стабилни (RFC 6742)."
+msgstr "Размотрите дуже TTL вредности за LP записе. За разлику од L32/L64 записа, LP записи су стабилни и имају користи од дужег кеширања (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -4819,7 +4818,7 @@ msgstr ""
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
-msgstr "u/l бит је локални (1), значи да NID није глобално јединствен."
+msgstr "Универзални/локални бит (u/l бит) постављен је на локални (1), што значи да је овај NID локално додељен и није глобално јединствен."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
@@ -5247,7 +5246,7 @@ msgstr "TSIG other-data мора бити важећи base64 или хекс с
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
-msgstr "HMAC-MD5 је слаб. RFC 8945 препоручује HMAC-SHA256 или јаче."
+msgstr "HMAC-MD5 се сматра слабим по савременим стандардима. RFC 8945 препоручује коришћење HMAC-SHA256 или јачих алгоритама."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
@@ -5907,7 +5906,7 @@ msgstr "URI не сме бити празан."
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr "URI мора почети важећом шемом: слово + слова/цифре/+/./-."
+msgstr "URI мора почети важећом шемом која почиње словом, иза кога следе слова, цифре, плус, тачка или цртица."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
@@ -6140,16 +6139,14 @@ msgstr "Непознат механизам: %s"
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr "SPF треба да има \"all\" или \"redirect\" (RFC 7208 §4.6.2)."
+msgstr "SPF запис треба да има или завршни \"all\" механизам или \"redirect\" модификатор (RFC 7208, одељак 4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
 "SPF record has both \"all\" mechanism and \"redirect\" modifier. The "
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
-msgstr ""
-"SPF има и \"all\" и \"redirect\". \"redirect\" се игнорише кад има \"all\" "
-"(RFC 7208)."
+msgstr "SPF запис има и \"all\" механизам и \"redirect\" модификатор. Модификатор \"redirect\" биће игнорисан када је присутан \"all\" (RFC 7208, одељак 6.1)."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
@@ -6227,7 +6224,7 @@ msgstr ""
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr "DHCID има неважеће base64 padding. \"=\" само на крају."
+msgstr "DHCID запис има неважећу base64 допуну. Знаци једнакости (=) треба да се појављују само на крају података."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
@@ -6829,7 +6826,7 @@ msgstr "DNAME и CNAME НЕ СМЕЈУ коегзистирати на исто�
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr "DNAME НЕ СМЕ бити са NS на истом имену, осим на апексу."
+msgstr "DNAME записи НЕ СМЕЈУ да се појаве на истом имену власника као NS записи, осим ако је то име апекс зоне."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -6922,7 +6919,7 @@ msgstr ""
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr "SHA-256 (тип 2) је ПРЕПОРУЧЕН по RFC 8624."
+msgstr "SHA-256 (тип сажетка 2) је ПРЕПОРУЧЕНИ алгоритам сажетка према RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -7072,8 +7069,7 @@ msgstr ""
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr ""
-"RFC 7477: CSYNC \"all or nothing\". Ако један тип не успе, ништа се не мења."
+msgstr "RFC 7477 захтева приступ \"све или ништа\" при обради CSYNC-а. Ако неки тип не може да се синхронизује, родитељ неће извршити никакве измене."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."

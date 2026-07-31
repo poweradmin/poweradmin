@@ -182,7 +182,7 @@ msgstr "Certifikát sa musí presne zhodovať, obídením PKI (DANE-EE)"
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
-msgstr "Ako validovať certifikát. Typ 3 pre self-signed."
+msgstr "Ako sa má certifikát overovať. Typ 3 je najbežnejší pre self-signed alebo vlastné certifikačné autority."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -727,7 +727,7 @@ msgstr "Žiadne mechanizmy. SPF obsahuje len predvolenú akciu."
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr "\"+all\" dovolí komukoľvek odosielať - neodporúčané."
+msgstr "Použitie \"+all\" umožňuje komukoľvek odosielať e-maily v mene vašej domény. Dôrazne sa to neodporúča."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -1790,7 +1790,7 @@ msgstr "Metadáta zóny"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "Typ metadát %s akceptuje len jednu hodnotu."
+msgstr "Typ metadát %s akceptuje len jednu hodnotu. Pridajte pre tento typ iba jeden riadok."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -2329,7 +2329,7 @@ msgstr "Použite radšej obnovovací kód."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Nepodarilo sa odoslať kód, použite obnovovací."
+msgstr "Nepodarilo sa odoslať overovací kód na váš e-mail. Použite namiesto toho obnovovací kód."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -3099,7 +3099,7 @@ msgstr "Záznam bol úspešne aktualizovaný."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr "LDAP používatelia tu nemôžu meniť heslo."
+msgstr "LDAP používatelia si tu nemôžu zmeniť heslo. Obráťte sa na svojho administrátora."
 
 #: lib/Application/Controller/ChangePasswordController.php:94
 msgid ""
@@ -4109,7 +4109,7 @@ msgstr ""
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr "Lokálna časť e-mailu SHA-256, _smimecert.<domain>."
+msgstr "Lokálna časť e-mailovej adresy sa zahashuje pomocou SHA-256 a umiestni sa pred _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -5333,7 +5333,7 @@ msgstr "Záznamy ZONEMD musia byť na vrchole zóny (ako SOA)."
 msgid ""
 "For proper security, zones with ZONEMD records should also be signed with "
 "DNSSEC."
-msgstr "Zóny s ZONEMD by mali byť podpísané DNSSEC."
+msgstr "Pre správne zabezpečenie by zóny so záznamami ZONEMD mali byť podpísané aj pomocou DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:113
 msgid ""
@@ -5577,7 +5577,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "DLV: <key-tag> <algoritmus> <digest-type> <digest>."
+msgstr "Neplatný formát záznamu DLV. Očakávané: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5819,7 +5819,7 @@ msgstr ""
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr "Mazanie kľúča musí byť TSIG autentifikované."
+msgstr "Operácie mazania kľúča MUSIA byť autentifikované pomocou TSIG s kľúčom, ktorý sa maže."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -6005,7 +6005,7 @@ msgstr "URI \"..\" sekvencie, directory traversal."
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr "URI obsahuje % ktoré nie sú percent-encoded."
+msgstr "URI obsahuje znaky percenta, ktoré nie sú použité na správne formátované percent-encoding kódovanie."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
@@ -6143,7 +6143,7 @@ msgstr "SPF prekračuje 255 znakov. Rozdeľte na viacero TXT."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
 "Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr "Viacero \"all\" mechanizmov, iba prvý je platný."
+msgstr "Nájdených viacero mechanizmov \"all\". Účinný bude iba prvý z nich."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -6677,7 +6677,7 @@ msgstr ""
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr "TXT záznamy pre txt-dname ak nepoužívate bodku."
+msgstr "Ak nepoužívate bodku (.), zabezpečte, aby pre pole txt-dname existovali zodpovedajúce TXT záznamy."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
@@ -6711,7 +6711,7 @@ msgstr "Doména mailboxu predstavuje e-mailovú adresu: %s"
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr "RP mailbox obsahuje _ ktoré nie sú povolené."
+msgstr "Doménová časť RP mailboxu obsahuje podčiarkovníky, ktoré nie sú v doménových menách povolené."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
@@ -7223,7 +7223,7 @@ msgstr ""
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr "Toto je broadcast adresa (všetky jednotky)."
+msgstr "Toto je broadcast adresa (všetky jednotky), ktorá nemusí byť platná vo všetkých kontextoch."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
@@ -8564,7 +8564,7 @@ msgstr ""
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr "CDS: key-tag, algoritmus, digest-type, digest."
+msgstr "Záznam CDS musí obsahovať key-tag, algoritmus, digest-type a digest oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
@@ -8659,7 +8659,7 @@ msgstr "L32 lokátor musí byť úplne špecifikovaná IPv4."
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr "L32 nemôže byť 0.0.0.0 alebo 255.255.255.255."
+msgstr "Lokátor L32 nemôže používať broadcast ani nešpecifikované adresy (0.0.0.0 alebo 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -8917,7 +8917,7 @@ msgstr ""
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr "Zložité regexp v NAPTR sú ťažké na údržbu."
+msgstr "Zložité regexp vzory v záznamoch NAPTR môžu byť ťažko odladiteľné a udržiavateľné."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
@@ -9118,7 +9118,7 @@ msgstr ""
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Algoritmus %d NESMIE byť implementovaný (RFC 8624)."
+msgstr "Algoritmus %d NESMIE byť implementovaný podľa RFC 8624. Táto hodnota by sa nemala používať."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -11746,7 +11746,7 @@ msgstr "Rýchle tipy"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr "Použite rozbaľovacie vedľa Network Prefix."
+msgstr "Na výber z existujúcich reverzných zón použite rozbaľovacie tlačidlo vedľa Network Prefix"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
@@ -12959,7 +12959,7 @@ msgstr "Delete records"
 msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
-msgstr "Ste si istý, že chcete vymazať tieto záznamy?"
+msgstr "Naozaj chcete odstrániť nasledujúce záznamy? Túto akciu nie je možné vrátiť späť."
 
 #: templates/modern/delete_records.html:60
 msgid "Also delete corresponding PTR records (if they exist)"
@@ -13161,7 +13161,7 @@ msgstr "Overovacia aplikácia"
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
-msgstr "Použite aplikáciu (Google, Microsoft, Authy)."
+msgstr "Použite autentifikačnú aplikáciu ako Google Authenticator, Microsoft Authenticator alebo Authy."
 
 #: templates/default/mfa_setup.html:73 templates/modern/mfa_setup.html:73
 msgid "Works offline"
@@ -13203,7 +13203,7 @@ msgstr "Závisí od doručenia e-mailu"
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr "Overenie e-mailu je zakázané administrátorom."
+msgstr "Overenie e-mailu nie je dostupné, pretože ho administrátor zakázal."
 
 #: templates/default/mfa_setup.html:104 templates/modern/mfa_setup.html:104
 msgid ""
@@ -14120,13 +14120,13 @@ msgstr "Používatelia vs skupiny"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr "Pri <strong>používateľoch</strong>: globálne."
+msgstr "Pri priradení <strong>používateľom</strong>: Oprávnenia platia globálne v celom systéme."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "Pri <strong>skupinách</strong>: iba zóny skupiny."
+msgstr "Pri priradení <strong>skupinám</strong>: Oprávnenia platia iba pre zóny vlastnené danou skupinou."
 
 #: templates/modern/edit_perm_templ.html:80
 msgid "Permission Groups"

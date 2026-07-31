@@ -551,7 +551,7 @@ msgstr "Érvénytelen forenzikus jelentés e-mail cím"
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:292
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
-msgstr "Nincs jelentés e-mail cím, DMARC-ot nem kap."
+msgstr "Nincsenek beállítva jelentési e-mail címek. Nem fog DMARC jelentéseket kapni."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:305
 msgid ""
@@ -1711,7 +1711,7 @@ msgstr "Érvénytelen ellenőrző kód. Próbálja újra."
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
-msgstr "E-mail nem elérhető. Frissítse a profilban."
+msgstr "Az e-mail cím nem érhető el. Frissítse az e-mail címét a profiljában."
 
 #: lib/Application/Controller/MfaSetupController.php:199
 msgid ""
@@ -2339,7 +2339,7 @@ msgstr "Kérjük használjon helyreállítási kódot."
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
-msgstr "Nem sikerült e-mailt küldeni, használjon helyreállítási kódot."
+msgstr "Nem sikerült elküldeni az ellenőrző kódot az e-mail címére. Használjon helyette helyreállítási kódot."
 
 #: lib/Domain/Service/Dns/RecordManager.php:285
 msgid "You do not have the permission to add a record to this zone."
@@ -3106,7 +3106,7 @@ msgstr "A rekord sikeresen frissítve."
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
-msgstr "LDAP felhasználók itt nem válthatnak jelszót."
+msgstr "Az LDAP felhasználók itt nem tudják megváltoztatni a jelszavukat. Forduljon a rendszergazdához."
 
 #: lib/Application/Controller/ChangePasswordController.php:94
 msgid ""
@@ -4005,7 +4005,7 @@ msgstr "A DSA kulcsok az RFC 2536 formátumát kövessék."
 msgid ""
 "When algorithm is 0 (No key), the public key field is typically empty or "
 "ignored."
-msgstr "0 (No key) esetén a nyilvános kulcs üres."
+msgstr "Ha az algoritmus 0 (No key), a nyilvános kulcs mezője általában üres vagy figyelmen kívül marad."
 
 #: lib/Domain/Service/DnsValidation/HHITRecordValidator.php:54
 msgid "HHIT record content must be a non-empty base64-encoded blob."
@@ -4306,7 +4306,7 @@ msgstr ""
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
-msgstr "NSEC3PARAM = hash, flags, iterations, salt."
+msgstr "Az NSEC3PARAM rekordnak pontosan a hash algoritmust, a flageket, az iterációk számát és a saltot kell tartalmaznia."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -5630,7 +5630,7 @@ msgstr ""
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr "DLV formátum: <key-tag> <alg> <digest-type> <digest>."
+msgstr "Érvénytelen DLV rekord formátum. Elvárt: <key-tag> <algorithm> <digest-type> <digest>."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
@@ -5923,7 +5923,7 @@ msgstr ""
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr "Régi algoritmus, HMAC-SHA256 vagy erősebb ajánlott."
+msgstr "Elavult algoritmus észlelve. A jobb biztonság érdekében HMAC-SHA256 vagy erősebb ajánlott."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -6214,7 +6214,7 @@ msgstr "SPF > 255 karakter. Szétbontás több TXT-re."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
 "Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr "Több \"all\" mechanizmus, csak az első érvényes."
+msgstr "Több \"all\" mechanizmus található. Csak az első lesz érvényes."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -9339,7 +9339,7 @@ msgstr "Nincs jogosultsága API-kulcsok újragenerálására."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "Nincs SOA a zónában, pedig DNSSEC-hez kell."
+msgstr "Nincs SOA rekord a zónában, vagy nem aktív. Ez szükséges a DNSSEC-hez."
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -11854,7 +11854,7 @@ msgstr "Csak egyezés"
 msgid ""
 "Creates PTR records only for IPs that have existing A/AAAA records in the "
 "forward zone"
-msgstr "PTR csak meglévő A/AAAA-val rendelkező IP-khez."
+msgstr "PTR rekordokat csak azokhoz az IP-címekhez hoz létre, amelyekhez már tartozik A/AAAA rekord az előre irányuló zónában"
 
 #: templates/modern/batch_ptr_record.html:129
 msgid "For IPv4, supported networks are:"
@@ -11898,7 +11898,7 @@ msgstr "Gyors tippek"
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr "Használja a legördülőt Network Prefix mellett."
+msgstr "A Network Prefix melletti legördülő gombbal választhat a meglévő fordított zónák közül"
 
 #: templates/modern/batch_ptr_record.html:164
 msgid ""
@@ -12021,7 +12021,7 @@ msgstr "Naplók exportálása"
 
 #: templates/modern/list_record_changes.html:172
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Szűrt naplóbejegyzések exportálása."
+msgstr "Szűrt naplóbejegyzések exportálása. A jelenlegi szűrők érvényesek lesznek."
 
 #: templates/modern/list_record_changes.html:173
 msgid "records to export"
@@ -13823,7 +13823,7 @@ msgstr "egyéni sablon használatával"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Custom sablonok törlése <code>templates/emails/custom/</code>."
+msgstr "A normál sablonokhoz való visszatéréshez törölje vagy nevezze át az egyéni sablonfájlokat a <code>templates/emails/custom/</code> könyvtárban."
 
 #: templates/modern/email_previews.html:84
 msgid "Custom Templates"
