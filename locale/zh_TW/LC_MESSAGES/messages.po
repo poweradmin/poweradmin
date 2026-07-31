@@ -263,7 +263,7 @@ msgstr "TTL（秒）"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr "生存時間 - DNS解析器應緩存此記錄的時長"
+msgstr "生存時間 - DNS 解析器應快取此記錄的時長"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
@@ -1558,15 +1558,15 @@ msgstr "請至少選擇一個使用者。"
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] "%d 個使用者已添加到組。"
-msgstr[1] "%d 個使用者已添加到組。"
+msgstr[0] "%d 個使用者已新增到組。"
+msgstr[1] "%d 個使用者已新增到組。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:189
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] "%d 個使用者無法添加。"
-msgstr[1] "%d 個使用者無法添加。"
+msgstr[0] "%d 個使用者無法新增。"
+msgstr[1] "%d 個使用者無法新增。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:231
 #, php-format
@@ -2038,8 +2038,8 @@ msgstr "未選擇區域。"
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d 個區域已成功從模板中取消連結。"
-msgstr[1] "%d 個區域已成功從模板中取消連結。"
+msgstr[0] "%d 個區域已成功從範本中取消連結。"
+msgstr[1] "%d 個區域已成功從範本中取消連結。"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, php-format
@@ -2572,15 +2572,15 @@ msgstr "請至少選擇一個區域。"
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] "%d 個區域已添加到組。"
-msgstr[1] "%d 個區域已添加到組。"
+msgstr[0] "%d 個區域已新增到組。"
+msgstr[1] "%d 個區域已新增到組。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:209
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] "%d 個區域無法添加。"
-msgstr[1] "%d 個區域無法添加。"
+msgstr[0] "%d 個區域無法新增。"
+msgstr[1] "%d 個區域無法新增。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:251
 #, php-format
@@ -2846,16 +2846,16 @@ msgstr "請至少選擇一個組。"
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] "使用者已成功添加到 %d 個組。"
-msgstr[1] "使用者已成功添加到 %d 個組。"
+msgstr[0] "使用者已成功新增到 %d 個組。"
+msgstr[1] "使用者已成功新增到 %d 個組。"
 
 #: lib/Application/Controller/EditUserController.php:579
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] "無法將使用者添加到 %d 個組（已是成員或找不到組）。"
-msgstr[1] "無法將使用者添加到 %d 個組（已是成員或找不到組）。"
+msgstr[0] "無法將使用者新增到 %d 個組（已是成員或找不到組）。"
+msgstr[1] "無法將使用者新增到 %d 個組（已是成員或找不到組）。"
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
@@ -4173,9 +4173,7 @@ msgstr "建議以尾隨點結束 FQDN 值，以確保它們被視為絕對網域
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
-msgstr ""
-"考慮為 LP 記錄使用更長的 TTL 值。與 L32/L64 記錄不同，LP 記錄是穩定的，可以從"
-"更長的緩存時間中受益（RFC 6742）。"
+msgstr "考慮為 LP 記錄使用更長的 TTL 值。與 L32/L64 記錄不同，LP 記錄是穩定的，可以從更長的快取時間中受益（RFC 6742）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -6890,7 +6888,7 @@ msgstr "序列號似乎使用 YYYYMMDDnn 格式，但包含無效日期。這是
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr "SOA 記錄必須恰好有 7 個欄位（主 NS、信箱、序列號、刷新、重試、過期、最小值）。"
+msgstr "SOA 記錄必須恰好有 7 個欄位（主 NS、信箱、序列號、重新整理、重試、過期、最小值）。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
@@ -6913,13 +6911,13 @@ msgstr "SOA %s 值 (%d) 低於 RFC 2308 推薦的最小值 (%d)。這是允許�
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr "根據 RFC 2308，SOA 重試值應小於刷新值。這是允許的，但不建議。"
+msgstr "根據 RFC 2308，SOA 重試值應小於重新整理值。這是允許的，但不建議。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:310
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr "SOA 最小值（負緩存）值超過 24 小時 (86400)，根據 RFC 2308 這可能過多。"
+msgstr "SOA 最小值（負快取）值超過 24 小時 (86400)，根據 RFC 2308 這可能過多。"
 
 #: lib/Domain/Service/DnsValidation/RESINFORecordValidator.php:88
 msgid "RESINFO record content must not be empty."
@@ -8147,7 +8145,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "NAPTR 服務必須遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs 以字母開頭並且只包含字母數字字元（每個最多 32 個字元）。"
+msgstr "NAPTR 服務必須遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs 以字母開頭，並包含字母數字字元、連字號、冒號或加號（每個最多 32 個字元）。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8340,7 +8338,7 @@ msgstr "您沒有重新產生 API 金鑰的權限。"
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr "區域中沒有SOA記錄或SOA記錄未激活。這是DNSSEC所必需的。"
+msgstr "區域中沒有 SOA 記錄，或 SOA 記錄未啟用。這是 DNSSEC 所必需的。"
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
@@ -9079,7 +9077,7 @@ msgstr "停用"
 
 #: templates/default/dnssec.html:121 templates/modern/dnssec.html:121
 msgid "Activate"
-msgstr "激活"
+msgstr "啟用"
 
 #: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
 msgid "Download this key as PEM"
@@ -10568,7 +10566,7 @@ msgstr "如何使用範本"
 msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
-msgstr "建立範本後，您可以在建立或編輯使用者帳戶時將其分配給使用者。這確保了具有相似角色的使用者組之間權限的一致性。"
+msgstr "建立範本後，您可以將其分配給使用者或組。這確保了具有相似角色的使用者和組之間權限的一致性。"
 
 #: templates/modern/edit_perm_templ.html:93
 msgid "Available Permissions"
@@ -12700,7 +12698,7 @@ msgstr "PowerDNS 伺服器狀態"
 
 #: templates/default/pdns_status.html:12 templates/modern/pdns_status.html:12
 msgid "Refresh Status"
-msgstr "刷新狀態"
+msgstr "重新整理狀態"
 
 #: templates/default/pdns_status.html:21 templates/modern/pdns_status.html:21
 msgid ""
@@ -12738,7 +12736,7 @@ msgstr "PowerDNS 版本"
 
 #: templates/default/pdns_status.html:72 templates/modern/pdns_status.html:72
 msgid "Daemon Type"
-msgstr "守護進程類型"
+msgstr "常駐程式類型"
 
 #: templates/modern/pdns_status.html:77 templates/modern/pdns_status.html:178
 msgid "Uptime"
@@ -12799,11 +12797,11 @@ msgstr "TCP 查詢"
 
 #: templates/default/pdns_status.html:275 templates/modern/pdns_status.html:275
 msgid "Cache Hits"
-msgstr "緩存命中"
+msgstr "快取命中"
 
 #: templates/default/pdns_status.html:292 templates/modern/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "緩存未命中"
+msgstr "快取未命中"
 
 #: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:327
 msgid "Toggle View"
@@ -12811,7 +12809,7 @@ msgstr "切換檢視"
 
 #: templates/default/pdns_status.html:332 templates/modern/pdns_status.html:332
 msgid "Refresh"
-msgstr "刷新"
+msgstr "重新整理"
 
 #: templates/modern/pdns_status.html:437
 msgid "Bytes"
@@ -13087,7 +13085,7 @@ msgid ""
 "This template can be assigned to users and groups to quickly apply its set "
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
-msgstr "此範本可以分配給使用者以快速應用其權限集。此處所做的更改將影響所有已分配此範本的使用者。"
+msgstr "此範本可以分配給使用者和組，以快速應用其權限集。此處所做的更改將影響所有已分配此範本的使用者和組。"
 
 #: templates/modern/edit_perm_templ.html:75
 msgid "Users vs Groups"
