@@ -5563,7 +5563,7 @@ msgstr "FTP נחשב פחות בטוח מאשר חלופות כגון SFTP או 
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr "שקול באמצעות LDAPS (LDAP על SSL / TLS) לאבטחת חיבורי LDAP."
+msgstr "שקול באמצעות LDAPS (LDAP על SSL/TLS) לאבטחת חיבורי LDAP."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -5989,8 +5989,7 @@ msgstr "שדה אלגוריתם RRSIG חייב להיות ערך מספרי."
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr ""
-"Algorithm 1 (RSA /MD5) הוא deprecated ולא צריך לשמש בשל חולשות קריפטוגרפיים."
+msgstr "Algorithm 1 (RSA/MD5) הוא deprecated ולא צריך לשמש בשל חולשות קריפטוגרפיים."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -9305,7 +9304,7 @@ msgstr "ניהול אזורים"
 
 #: templates/modern/list_groups.html:66 templates/modern/edit_group.html:4
 msgid "Edit group"
-msgstr "Edit Group"
+msgstr "ערוך קבוצה"
 
 #: templates/modern/list_groups.html:69 templates/modern/delete_group.html:4
 msgid "Delete group"
@@ -9525,7 +9524,7 @@ msgstr "לא ניתן לזהות את גרסת PowerDNS. תכונות חדשות
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS: unknown"
-msgstr "PowerDNS: Unknown"
+msgstr "PowerDNS: לא ידוע"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid ""
@@ -10380,7 +10379,7 @@ msgstr "עריכת פרופיל"
 
 #: templates/default/edit_user.html:7 templates/modern/edit_user.html:7
 msgid "Edit user"
-msgstr "Edit User"
+msgstr "ערוך משתמש"
 
 #: templates/modern/manage_group_members.html:96
 #: install/templates/step5.html.twig:61
@@ -11204,7 +11203,7 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:40
 msgid "Edit zone"
-msgstr "Edit Zone"
+msgstr "ערוך אזור"
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
@@ -12934,7 +12933,7 @@ msgstr "בתים"
 
 #: templates/default/pdns_status.html:406 templates/modern/pdns_status.html:406
 msgid "Metric"
-msgstr "metric"
+msgstr "מדד"
 
 #: templates/default/pdns_status.html:461 templates/modern/pdns_status.html:461
 msgid "No detailed metrics available."

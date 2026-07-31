@@ -100,9 +100,7 @@ msgstr "شماره پورت"
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:72
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
-msgstr ""
-"شماره پورت TCP /UDP (443 برای HTTPS، 25 برای SMTP، 853 برای DNS-over-TLS و "
-"غیره)"
+msgstr "شماره پورت TCP/UDP (443 برای HTTPS، 25 برای SMTP، 853 برای DNS-over-TLS و غیره)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:113
 msgid "Protocol"
@@ -3459,7 +3457,7 @@ msgstr "Supermaster چیست؟"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search autoprimaries..."
-msgstr "Search autoprimaries ..."
+msgstr "جستجوی autoprimaries..."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid "Search supermasters..."
@@ -3997,16 +3995,13 @@ msgstr "اگر از CNAME استفاده می‌کنید، اطمینان حاص
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
-"به نظر می رسد این یک رکورد SMIMEA (RFC 8162) برای گواهینامه های S / MIME است."
+msgstr "به نظر می رسد این یک رکورد SMIMEA (RFC 8162) برای گواهینامه های S/MIME است."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr ""
-"رکورد SMIMEA از همان فرمت TLSA استفاده می کند اما گواهینامه های S / MIME را "
-"با آدرس های ایمیل مرتبط می کند."
+msgstr "رکورد SMIMEA از همان فرمت TLSA استفاده می کند اما گواهینامه های S/MIME را با آدرس های ایمیل مرتبط می کند."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
@@ -11088,7 +11083,7 @@ msgstr "افزودن مالکیت گروه"
 
 #: templates/modern/edit_zone_templ.html:94 templates/modern/add_record.html:5
 msgid "Add record"
-msgstr "Add Record"
+msgstr "افزودن رکورد"
 
 #: templates/modern/add_zone_templ_record.html:13
 msgid ""
@@ -11444,7 +11439,7 @@ msgstr "گزارش‌های کاربر"
 
 #: templates/modern/add_user.html:4 templates/modern/header.html:223
 msgid "Add user"
-msgstr "Add User"
+msgstr "افزودن کاربر"
 
 #: templates/default/users.html:48 templates/modern/users.html:48
 msgid "Auth Type"
@@ -11974,7 +11969,7 @@ msgstr "استفاده از یک مدیر رمز عبور را در نظر بگ�
 
 #: templates/modern/header.html:402
 msgid "Multi-Factor Authentication"
-msgstr "MultiFactor Authentication"
+msgstr "احراز هویت چند عاملی"
 
 #: templates/modern/mfa_verify_app.html:11
 msgid "Set Up Authenticator App"
@@ -13197,7 +13192,7 @@ msgstr "اضافه کردن رکورد دیگر"
 
 #: templates/default/add_record.html:197 templates/modern/add_record.html:197
 msgid "Add records"
-msgstr "Add Record"
+msgstr "افزودن رکوردها"
 
 #: templates/modern/manage_group_members.html:10
 msgid "Back to Group"
