@@ -47,6 +47,8 @@ class EchoLegacyLogger implements LegacyLoggerInterface
     private function output(string $level, string $message): void
     {
         $date = date('Y-m-d H:i:s');
-        echo "<div class=\"container\"><pre>[$date] [$level] $message</pre></div>";
+        // Log messages carry zone names and record content, so escape before echoing
+        $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+        echo "<div class=\"container\"><pre>[$date] [$level] $safeMessage</pre></div>";
     }
 }
