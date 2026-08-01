@@ -54,14 +54,19 @@ class LoginAttemptService
      */
     public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD): void
     {
-        if (!$this->configManager->get('security', 'account_lockout.enable_lockout')) {
+        if ($this->stageLimits($attemptType) === null) {
             return;
         }
 
         $userId = $this->getUserId($username);
         $hasAttemptType = $this->hasAttemptTypeColumn();
 
-        if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success')) {
+        // A clean second factor always clears its own counter; the opt-in
+        // clear_attempts_on_success only governs the password stage.
+        $clearOnSuccess = $attemptType === self::STAGE_MFA
+            || $this->configManager->get('security', 'account_lockout.clear_attempts_on_success');
+
+        if ($successful && $clearOnSuccess) {
             $this->clearFailedAttempts($userId, $ipAddress, $attemptType, $hasAttemptType);
         }
 
@@ -93,16 +98,20 @@ class LoginAttemptService
 
     public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD): bool
     {
-        // Use the updated ConfigurationManager with dot notation support
-        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
-        if (!$lockoutEnabled) {
+        $limits = $this->stageLimits($attemptType);
+        if ($limits === null) {
             return false;
         }
 
-        // Check IP whitelist first (whitelist takes priority over blacklist)
-        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
-        if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
-            return false; // This IP is whitelisted, never lock it
+        // The whitelist exempts trusted networks from password lockout so a bot
+        // cannot lock staff out, and it takes priority over the blacklist. It is
+        // skipped for the second factor, where the counter is the only barrier
+        // left once the password is known.
+        if ($attemptType !== self::STAGE_MFA) {
+            $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+            if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
+                return false; // This IP is whitelisted, never lock it
+            }
         }
 
         // Check IP blacklist next - if blacklisted, ALWAYS return locked (true)
@@ -116,10 +125,13 @@ class LoginAttemptService
             return false;
         }
 
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60;
-        $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
-        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
+        $cutoffTime = time() - $limits['duration'];
+        $maxAttempts = $limits['attempts'];
+
+        // MFA failures count per user across every source address: an attacker
+        // rotating IPs would otherwise reset the counter on each request.
+        $trackIpAddress = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $db_type = $this->configManager->get('database', 'type');
         $sql = "SELECT COUNT(*) as attempts
@@ -255,8 +267,14 @@ class LoginAttemptService
 
     private function cleanupOldAttempts(): void
     {
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration') * 60;
-        $cutoffTime = time() - $lockoutDuration;
+        // Retain until the longest stage window has passed. Pruning on the
+        // password window alone would drop MFA rows that are still inside the
+        // MFA window and reset that counter mid-attack.
+        $retention = max(
+            (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 30),
+            (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)
+        ) * 60;
+        $cutoffTime = time() - $retention;
 
         $stmt = $this->connection->prepare("
             DELETE FROM login_attempts
@@ -283,13 +301,48 @@ class LoginAttemptService
             $params['attempt_type'] = $attemptType;
         }
 
-        if ($this->configManager->get('security', 'account_lockout.track_ip_address')) {
+        // Clearing must match how the stage counts. MFA counts every address, so
+        // filtering the clear by IP would strand failures from an earlier address
+        // and lock a roaming user who just verified correctly.
+        $clearPerIp = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address');
+
+        if ($clearPerIp) {
             $sql .= " AND ip_address = :ip_address";
             $params['ip_address'] = $ipAddress;
         }
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
+    }
+
+    /**
+     * Resolves the attempt ceiling and window for an authentication stage, or
+     * null when that stage is not throttled at all.
+     *
+     * The second factor is always throttled. It is the last barrier once the
+     * password is known, so it cannot depend on account_lockout.enable_lockout,
+     * which ships disabled.
+     *
+     * @return array{attempts:int,duration:int}|null Duration is in seconds
+     */
+    private function stageLimits(string $attemptType): ?array
+    {
+        if ($attemptType === self::STAGE_MFA) {
+            return [
+                'attempts' => max(1, (int)$this->configManager->get('security', 'mfa.max_verify_attempts', 5)),
+                'duration' => max(1, (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)) * 60,
+            ];
+        }
+
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+            return null;
+        }
+
+        return [
+            'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
+            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60,
+        ];
     }
 
     /**

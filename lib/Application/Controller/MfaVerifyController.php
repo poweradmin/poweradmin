@@ -146,13 +146,8 @@ class MfaVerifyController extends BaseController
             return;
         }
 
-        // Brute-force defense: reuses the account_lockout config but tracks the
-        // MFA stage separately so second-factor failures cannot block a future
-        // password login, and a fresh first-factor success cannot reset the MFA
-        // counter mid-attack.
         $username = $this->userContextService->getLoggedInUsername() ?? '';
-        $clientIp = $this->ipAddressRetriever->getClientIp();
-        if ($username !== '' && $this->loginAttemptService->isAccountLocked($username, $clientIp, LoginAttemptService::STAGE_MFA)) {
+        if ($this->isMfaThrottled($username)) {
             $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
             return;
@@ -177,11 +172,7 @@ class MfaVerifyController extends BaseController
         $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
         $isValid = $this->mfaService->verifyCode($userId, $code);
 
-        // Record the attempt under the MFA stage so it accrues toward the MFA
-        // lockout only; first-factor (password) success/failure stays untouched.
-        if ($username !== '') {
-            $this->loginAttemptService->recordAttempt($username, $clientIp, $isValid, LoginAttemptService::STAGE_MFA);
-        }
+        $justLocked = $this->recordMfaAttempt($username, $userId, $isValid);
 
         // Log the verification result
         if ($isValid) {
@@ -318,8 +309,60 @@ class MfaVerifyController extends BaseController
             exit;
         } else {
             // MFA verification failed
-            $this->displayMfaForm(_('Invalid verification code. Please try again.'), 'danger');
+            $this->displayMfaForm(
+                $justLocked
+                    ? _('Too many failed attempts. Please try again later.')
+                    : _('Invalid verification code. Please try again.'),
+                'danger'
+            );
         }
+    }
+
+    /**
+     * Whether the second factor is currently refusing attempts for this account.
+     *
+     * The MFA stage is counted separately from the password stage, so second-factor
+     * failures never block a later password login and a fresh first-factor success
+     * cannot reset the MFA counter mid-attack.
+     */
+    private function isMfaThrottled(string $username): bool
+    {
+        if ($username === '') {
+            return false;
+        }
+
+        return $this->loginAttemptService->isAccountLocked(
+            $username,
+            $this->ipAddressRetriever->getClientIp(),
+            LoginAttemptService::STAGE_MFA
+        );
+    }
+
+    /**
+     * Counts one second-factor attempt and reports whether it tripped the limit.
+     *
+     * On tripping, the pending email code is burned so it stays dead even when the
+     * lockout window is configured shorter than the code lifetime.
+     */
+    private function recordMfaAttempt(string $username, int $userId, bool $isValid): bool
+    {
+        if ($username === '') {
+            return false;
+        }
+
+        $this->loginAttemptService->recordAttempt(
+            $username,
+            $this->ipAddressRetriever->getClientIp(),
+            $isValid,
+            LoginAttemptService::STAGE_MFA
+        );
+
+        if ($isValid || !$this->isMfaThrottled($username)) {
+            return false;
+        }
+
+        $this->mfaService->invalidatePendingEmailCode($userId);
+        return true;
     }
 
     private function displayMfaForm(?string $message = null, ?string $type = null): void
@@ -336,8 +379,14 @@ class MfaVerifyController extends BaseController
         // Get MFA type
         $mfaType = $this->mfaService->getMfaType($userId) ?? 'app';
 
+        // A locked account must not trigger the refresh below: the code was just
+        // invalidated on hitting the limit, and refresh treats a used code as a
+        // reason to mail a new one, which would turn the lockout page into a
+        // mail flood aimed at the account owner.
+        $mfaLocked = $this->isMfaThrottled($username);
+
         // For email-based MFA, check if we need to refresh the code
-        if ($mfaType === 'email' && !empty($email)) {
+        if ($mfaType === 'email' && !empty($email) && !$mfaLocked) {
             // First check if mail service is enabled - only required for email verification
             if (!$this->config->get('mail', 'enabled', false)) {
                 // Force user to use recovery codes since email is not available

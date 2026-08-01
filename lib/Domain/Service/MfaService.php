@@ -374,6 +374,33 @@ class MfaService
     }
 
     /**
+     * Burn the pending email code so it cannot be guessed any further.
+     *
+     * Called when a user trips the second-factor attempt limit: the lockout
+     * window can be configured shorter than the code lifetime, and without this
+     * the same code would still be live when the lockout lifts.
+     */
+    public function invalidatePendingEmailCode(int $userId): void
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        if (!$userMfa || $userMfa->getType() !== UserMfa::TYPE_EMAIL) {
+            return;
+        }
+
+        $metadata = $userMfa->getVerificationDataAsArray();
+        if ($metadata === []) {
+            return;
+        }
+
+        $metadata['used'] = true;
+        $userMfa->setVerificationData($metadata);
+        $this->userMfaRepository->save($userMfa);
+
+        $this->logger->warning('Pending email code invalidated after too many failed attempts for user ID: {userId}', ['userId' => $userId]);
+    }
+
+    /**
      * Generate a QR code SVG for MFA setup
      */
     public function generateQrCodeSvg(string $email, string $secret): string

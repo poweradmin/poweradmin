@@ -835,7 +835,7 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/URIRecordValidator.php
 
 		-
-			message: '#^Class cognitive complexity is 72, keep it under 60$#'
+			message: '#^Class cognitive complexity is 74, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Domain/Service/MfaService.php
