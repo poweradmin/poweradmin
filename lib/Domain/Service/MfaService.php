@@ -46,6 +46,12 @@ use Twig\Error\SyntaxError;
 
 class MfaService
 {
+    // Wrong second-factor guesses tolerated before verification is refused, and
+    // how long it stays refused. Without this a caller holding the password can
+    // walk the whole six-digit space while one code is live.
+    private const MAX_VERIFY_ATTEMPTS = 5;
+    private const VERIFY_LOCKOUT_SECONDS = 900;
+
     private Google2FA $google2fa;
     private UserMfaRepositoryInterface $userMfaRepository;
     private ConfigurationManager $configManager;
@@ -196,10 +202,9 @@ class MfaService
      */
     public function generateEmailVerificationCode(): string
     {
-        // Generate a simple numeric verification code (6 digits)
-        $numericCode = mt_rand(100000, 999999);
-        // Convert to string explicitly
-        return (string)$numericCode;
+        // A second factor must not come from a predictable generator: mt_rand()
+        // state is recoverable from codes an attacker mints on their own account.
+        return (string)random_int(100000, 999999);
     }
 
     /**
@@ -258,6 +263,73 @@ class MfaService
      * @return bool True if the code is valid, false otherwise
      */
     public function verifyCode(int $userId, string $code): bool
+    {
+        if ($this->isVerificationLocked($userId)) {
+            $this->logger->warning('Verification refused - too many failed attempts for user ID: {userId}', ['userId' => $userId]);
+            return false;
+        }
+
+        $isValid = $this->checkCode($userId, $code);
+        $this->recordVerificationOutcome($userId, $isValid);
+
+        return $isValid;
+    }
+
+    /**
+     * Whether verification is currently refused for this user because the
+     * failed-attempt ceiling was reached.
+     */
+    private function isVerificationLocked(int $userId): bool
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        if (!$userMfa) {
+            return false;
+        }
+
+        return (int)($userMfa->getVerificationDataAsArray()['locked_until'] ?? 0) > time();
+    }
+
+    /**
+     * Count the attempt and start refusing once the ceiling is reached.
+     *
+     * Re-reads the record because checkCode() saves its own changes (recovery
+     * code consumed, code marked used); writing a stale copy would undo them.
+     */
+    private function recordVerificationOutcome(int $userId, bool $isValid): void
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        if (!$userMfa) {
+            return;
+        }
+
+        $metadata = $userMfa->getVerificationDataAsArray();
+
+        if ($isValid) {
+            // Nothing accrued, so skip the write a clean verification would add.
+            if (empty($metadata['failed_attempts']) && empty($metadata['locked_until'])) {
+                return;
+            }
+
+            unset($metadata['failed_attempts'], $metadata['locked_until']);
+        } else {
+            $failed = (int)($metadata['failed_attempts'] ?? 0) + 1;
+
+            if ($failed >= self::MAX_VERIFY_ATTEMPTS) {
+                $metadata['failed_attempts'] = 0;
+                $metadata['locked_until'] = time() + self::VERIFY_LOCKOUT_SECONDS;
+                $this->logger->warning('Second factor locked after repeated failures for user ID: {userId}', ['userId' => $userId]);
+            } else {
+                $metadata['failed_attempts'] = $failed;
+            }
+        }
+
+        $userMfa->setVerificationData($metadata);
+        $this->userMfaRepository->save($userMfa);
+    }
+
+    private function checkCode(int $userId, string $code): bool
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
 
@@ -448,12 +520,17 @@ class MfaService
         // Add expiration timestamp (10 minutes from now)
         $expiresAt = time() + 600; // 10 minutes
 
-        // Store metadata about this verification code
+        // Carry the attempt counters across regeneration, otherwise requesting a
+        // fresh code would clear the lockout and hand back unlimited guesses.
+        $previous = $userMfa->getVerificationDataAsArray();
+
         $verificationMeta = json_encode([
             'code' => $verificationCode,
             'generated_at' => time(),
             'expires_at' => $expiresAt,
-            'used' => false
+            'used' => false,
+            'failed_attempts' => (int)($previous['failed_attempts'] ?? 0),
+            'locked_until' => (int)($previous['locked_until'] ?? 0),
         ]);
 
         // Log the code generation but not the actual code for security
@@ -518,6 +595,12 @@ class MfaService
 
         // Only proceed if this is email-based MFA
         if ($userMfa->getType() !== UserMfa::TYPE_EMAIL) {
+            return null;
+        }
+
+        // While locked, sending a replacement would mail the account owner on
+        // every refused attempt without letting the caller verify anyway.
+        if ($this->isVerificationLocked($userId)) {
             return null;
         }
 
