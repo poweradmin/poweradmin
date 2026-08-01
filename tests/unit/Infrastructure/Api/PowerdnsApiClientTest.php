@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
@@ -9,6 +10,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 class PowerdnsApiClientTest extends TestCase
 {
+    /** @var HttpClient&MockObject */
     private $mockHttpClient;
     private PowerdnsApiClient $apiClient;
 
