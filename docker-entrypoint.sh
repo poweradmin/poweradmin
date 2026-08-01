@@ -146,20 +146,38 @@ build_mysql_ssl_opts() {
     fi
 }
 
+# Write MySQL credentials to a private temporary file so the password is never passed
+# on the command line, where it is readable until the client scrubs its own arguments.
+# Option-file values interpret backslash escapes, so the value is quoted and escaped.
+make_mysql_defaults_file() {
+    local tmpfile
+    tmpfile=$(mktemp)
+    chmod 600 "${tmpfile}"
+    printf '[client]\npassword="%s"\n' \
+        "$(printf '%s' "${DB_PASS:-}" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')" > "${tmpfile}"
+    printf '%s' "${tmpfile}"
+}
+
 # Load the Poweradmin schema into an empty MySQL database (parity with SQLite init).
 # Idempotent: skips when the users table already exists, so existing data is never touched.
 init_mysql_db() {
     [ "${DB_TYPE}" = "mysql" ] || return 0
 
-    local ssl_opts
-    ssl_opts=$(build_mysql_ssl_opts)
-    local port_opt=""
-    [ -n "${DB_PORT:-}" ] && port_opt="-P${DB_PORT}"
+    local -a ssl_opts
+    mapfile -t ssl_opts < <(build_mysql_ssl_opts)
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
+
+    local mycnf
+    mycnf=$(make_mysql_defaults_file)
+    # shellcheck disable=SC2064
+    trap "rm -f '${mycnf}'" RETURN
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+    table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='users';" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -175,13 +193,15 @@ init_mysql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe \
+        pdns_table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='domains';" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "0" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.mysql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS MySQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < "${pdns_schema}"; then
+            elif mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" < "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in MySQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in MySQL database '${DB_NAME}'"
@@ -200,7 +220,9 @@ init_mysql_db() {
         log "WARNING: Poweradmin MySQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if mysql ${ssl_opts} -h"${DB_HOST}" ${port_opt} -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" < /app/sql/poweradmin-mysql-db-structure.sql; then
+    if mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
+            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" \
+            < /app/sql/poweradmin-mysql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in MySQL database '${DB_NAME}'"
     else
         log "ERROR: Failed to initialize Poweradmin schema in MySQL database '${DB_NAME}'"
@@ -560,14 +582,20 @@ create_admin_user() {
             debug_log "Creating admin user in MySQL database"
 
             # Build MySQL SSL options based on environment variables
-            local mysql_ssl_opts
-            mysql_ssl_opts=$(build_mysql_ssl_opts)
+            local -a mysql_ssl_opts
+            mapfile -t mysql_ssl_opts < <(build_mysql_ssl_opts)
 
-            debug_log "MySQL SSL options: ${mysql_ssl_opts:-none}"
+            debug_log "MySQL SSL options: ${mysql_ssl_opts[*]:-none}"
+
+            local mycnf
+            mycnf=$(make_mysql_defaults_file)
+            # shellcheck disable=SC2064
+            trap "rm -f '${mycnf}'" RETURN
 
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
+                -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -575,7 +603,8 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
+                    -h"${DB_HOST}" -u"${DB_USER}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
