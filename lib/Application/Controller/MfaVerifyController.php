@@ -147,7 +147,7 @@ class MfaVerifyController extends BaseController
         }
 
         $username = $this->userContextService->getLoggedInUsername() ?? '';
-        if ($this->isMfaThrottled($username)) {
+        if ($this->isMfaThrottled($username, (int)$userId)) {
             $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
             return;
@@ -325,16 +325,13 @@ class MfaVerifyController extends BaseController
      * failures never block a later password login and a fresh first-factor success
      * cannot reset the MFA counter mid-attack.
      */
-    private function isMfaThrottled(string $username): bool
+    private function isMfaThrottled(string $username, int $userId): bool
     {
-        if ($username === '') {
-            return false;
-        }
-
         return $this->loginAttemptService->isAccountLocked(
             $username,
             $this->ipAddressRetriever->getClientIp(),
-            LoginAttemptService::STAGE_MFA
+            LoginAttemptService::STAGE_MFA,
+            $userId
         );
     }
 
@@ -346,18 +343,15 @@ class MfaVerifyController extends BaseController
      */
     private function recordMfaAttempt(string $username, int $userId, bool $isValid): bool
     {
-        if ($username === '') {
-            return false;
-        }
-
         $this->loginAttemptService->recordAttempt(
             $username,
             $this->ipAddressRetriever->getClientIp(),
             $isValid,
-            LoginAttemptService::STAGE_MFA
+            LoginAttemptService::STAGE_MFA,
+            $userId
         );
 
-        if ($isValid || !$this->isMfaThrottled($username)) {
+        if ($isValid || !$this->isMfaThrottled($username, $userId)) {
             return false;
         }
 
@@ -383,7 +377,7 @@ class MfaVerifyController extends BaseController
         // invalidated on hitting the limit, and refresh treats a used code as a
         // reason to mail a new one, which would turn the lockout page into a
         // mail flood aimed at the account owner.
-        $mfaLocked = $this->isMfaThrottled($username);
+        $mfaLocked = $this->isMfaThrottled($username, (int)$userId);
 
         // For email-based MFA, check if we need to refresh the code
         if ($mfaType === 'email' && !empty($email) && !$mfaLocked) {

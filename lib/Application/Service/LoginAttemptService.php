@@ -51,14 +51,19 @@ class LoginAttemptService
      *                            Pass STAGE_MFA from the MFA verify path to keep
      *                            second-factor failures from polluting the
      *                            first-factor counter.
+     * @param int|null $userId Account the attempt belongs to. Pass it whenever the
+     *                         caller already knows it, rather than relying on the
+     *                         username to resolve: the MFA stage verifies against
+     *                         the pending user id, and keying the counter on a
+     *                         separately held session name would let the two drift.
      */
-    public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD): void
+    public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): void
     {
         if ($this->stageLimits($attemptType) === null) {
             return;
         }
 
-        $userId = $this->getUserId($username);
+        $userId ??= $this->getUserId($username);
         $hasAttemptType = $this->hasAttemptTypeColumn();
 
         // A clean second factor always clears its own counter; the opt-in
@@ -96,7 +101,7 @@ class LoginAttemptService
         $this->cleanupOldAttempts();
     }
 
-    public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD): bool
+    public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): bool
     {
         $limits = $this->stageLimits($attemptType);
         if ($limits === null) {
@@ -120,9 +125,12 @@ class LoginAttemptService
             return true; // This IP is blacklisted, consider it locked
         }
 
-        $userId = $this->getUserId($username);
+        $userId ??= $this->getUserId($username);
         if ($userId === null) {
-            return false;
+            // An unattributable attempt cannot be counted. The password stage
+            // stays open so unknown usernames still reach the authenticator,
+            // but the second factor refuses rather than dropping its only limit.
+            return $attemptType === self::STAGE_MFA;
         }
 
         $cutoffTime = time() - $limits['duration'];
@@ -267,13 +275,14 @@ class LoginAttemptService
 
     private function cleanupOldAttempts(): void
     {
-        // Retain until the longest stage window has passed. Pruning on the
-        // password window alone would drop MFA rows that are still inside the
-        // MFA window and reset that counter mid-attack.
+        // Retain until the longest stage window has passed, read from the same
+        // resolver the windows use. Pruning on the password window alone would
+        // drop MFA rows still inside the MFA window and reset that counter
+        // mid-attack; computing it separately let the two silently diverge.
         $retention = max(
-            (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 30),
-            (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)
-        ) * 60;
+            $this->stageLimits(self::STAGE_PASSWORD)['duration'] ?? 0,
+            $this->stageLimits(self::STAGE_MFA)['duration'] ?? 0
+        );
         $cutoffTime = time() - $retention;
 
         $stmt = $this->connection->prepare("
@@ -294,8 +303,12 @@ class LoginAttemptService
         $params = ['user_id' => $userId];
 
         // Scope clearing to the matching stage so a fresh first-factor success
-        // cannot reset MFA failures. Falls back to the pre-4.5.0 behavior
-        // (clear-all-for-user) when the column is not present yet.
+        // cannot reset MFA failures. Before the 4.5.0 SQL update the column is
+        // absent and the stages are indistinguishable, so clearing stays
+        // all-for-user: password success also clears MFA failures until the
+        // update runs. Keeping clear_attempts_on_success working for password
+        // logins wins over closing that window, which needs account lockout
+        // switched on to reach at all.
         if ($hasAttemptType) {
             $sql .= " AND attempt_type = :attempt_type";
             $params['attempt_type'] = $attemptType;
@@ -329,6 +342,9 @@ class LoginAttemptService
     private function stageLimits(string $attemptType): ?array
     {
         if ($attemptType === self::STAGE_MFA) {
+            // Floors, not "off" switches. A misconfigured 0 must not read as
+            // "unlimited guesses" on the one control standing between a known
+            // password and the account.
             return [
                 'attempts' => max(1, (int)$this->configManager->get('security', 'mfa.max_verify_attempts', 5)),
                 'duration' => max(1, (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)) * 60,
@@ -341,7 +357,7 @@ class LoginAttemptService
 
         return [
             'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
-            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60,
+            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60,
         ];
     }
 
