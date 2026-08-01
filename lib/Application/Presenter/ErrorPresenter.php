@@ -29,13 +29,9 @@ class ErrorPresenter
     public function present(ErrorMessage $error): void
     {
         $msg = $this->sanitizeMessage($error->getMessage(), $error->allowsHtml());
-        $name = $error->getName();
 
-        if (!empty($name)) {
-            $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-        }
-
-        $this->renderError($msg, $name);
+        // renderError() escapes the name; doing it here too would double-encode it
+        $this->renderError($msg, $error->getName() ?? '');
     }
 
     /**
