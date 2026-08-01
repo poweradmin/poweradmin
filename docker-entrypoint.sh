@@ -1281,8 +1281,10 @@ main() {
     # Ensure settings.defaults.php exists in config directory
     # When /app/config is a volume mount, the image's defaults file is hidden
     config_dir=$(dirname "${CONFIG_FILE}")
+    # A custom PA_CONFIG_PATH may name a directory that does not exist yet
+    mkdir -p "${config_dir}" 2>/dev/null || true
     defaults_file="${config_dir}/settings.defaults.php"
-    if [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
+    if [ -d "${config_dir}" ] && [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
         log "Restoring settings.defaults.php into config directory..."
         if [ "$IS_ROOT" = true ]; then
             cp /usr/local/share/settings.defaults.php "${defaults_file}"
