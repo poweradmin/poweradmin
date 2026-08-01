@@ -1,0 +1,14 @@
+# Commits deliberately not backported, so the report stops flagging them.
+#
+# Format, one per line:
+#   <subject>                  ignore for every target branch
+#   <target-branch>::<subject> ignore for one target branch only
+#
+# Subjects are matched exactly, so paste the commit title verbatim.
+# Blank lines and lines starting with # are ignored.
+
+# 4.2.x has no init_mysql_db/init_pgsql_db, so these cannot apply there.
+release/4.2.x::fix(docker): pass MySQL password via defaults file instead of command line (refs #1318)
+release/4.2.x::fix(docker): build psql port argument as an array
+release/4.2.x::fix(docker): optionally initialize PowerDNS schema for empty MySQL/PostgreSQL databases
+release/4.2.x::fix(docker): initialize MySQL/PostgreSQL schema on fresh container start (closes #1307)
