@@ -73,7 +73,9 @@ test.describe('Record Change Log', () => {
     const nameInput = page.locator(`input[value^="${recordName}."]`).first();
     await expect(nameInput).toBeVisible();
     const nameAttr = await nameInput.getAttribute('name');
-    const recordIdMatch = nameAttr.match(/record\[(\d+)\]/);
+    // API backend mode identifies records by an encoded composite key, not a
+    // numeric id, so accept anything the form actually carries.
+    const recordIdMatch = nameAttr.match(/record\[([^\]]+)\]/);
     expect(recordIdMatch, 'record input name should embed record id').not.toBeNull();
     const recordId = recordIdMatch[1];
 
@@ -89,7 +91,15 @@ test.describe('Record Change Log', () => {
     const editTrs = page.locator('tr.table-danger, tr.table-success');
     await expect(editTrs.first()).toBeVisible();
 
-    await page.goto(`/zones/${zoneId}/records/${recordId}/delete?confirm=1`);
+    // The edit changed the content, and in API backend mode a record id encodes
+    // it, so the id captured before the edit no longer resolves. Re-read it.
+    await page.goto(`/zones/${zoneId}/edit`);
+    await page.waitForLoadState('networkidle');
+    const freshNameInput = page.locator(`input[value^="${recordName}."]`).first();
+    await expect(freshNameInput).toBeVisible();
+    const freshRecordId = (await freshNameInput.getAttribute('name')).match(/record\[([^\]]+)\]/)[1];
+
+    await page.goto(`/zones/${zoneId}/records/${freshRecordId}/delete?confirm=1`);
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: /Yes, delete this record/i }).click();
     await page.waitForLoadState('networkidle');
