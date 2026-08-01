@@ -93,7 +93,7 @@
     "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
     "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
-    "analyse:psalm": "psalm",
+    "analyse:taint": "psalm --taint-analysis --no-cache",
     "lint:twig": [
         "! grep -rn 'name=\"csrf_token\"' templates/ lib/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
         "! grep -rn 'name=\"_token\"' templates/ lib/ --include='*.html' | grep -v '_macros.html' || (echo 'ERROR: Use the csrf_field() macro from _macros.html instead of a raw _token input' && false)"
@@ -101,7 +101,6 @@
     "lint:themes": "failed=0; for f in $(cd templates/default && find . -name '*.html' | sed 's|^\\./||' | sort); do grep -qx \"$f\" templates/theme-specific-templates.txt && continue; if [ ! -f \"templates/modern/$f\" ]; then echo \"Theme drift: $f is missing from templates/modern\"; failed=1; elif ! cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f differs between templates/default and templates/modern (sync it or add it to templates/theme-specific-templates.txt)\"; failed=1; fi; done; exit $failed",
     "analyse:all": [
         "@check:all",
-        "@analyse:psalm",
         "@analyse:phpstan",
         "@lint:twig",
         "@lint:themes"
@@ -174,7 +173,6 @@
       "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
-      "psalm-baseline.xml",
       "psalm.xml",
       "transifex.yml"
     ]

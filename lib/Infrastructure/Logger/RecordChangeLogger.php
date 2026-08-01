@@ -420,6 +420,12 @@ class RecordChangeLogger
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * The WHERE clause is assembled from literals only; filter values travel
+     * separately in the bind list.
+     *
+     * @return array{0: string, 1: array<string, array{0: mixed, 1: int}>}
+     */
     private function buildWhere(array $filters): array
     {
         $conditions = [];

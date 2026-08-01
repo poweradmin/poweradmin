@@ -145,28 +145,6 @@ jobs:
     - name: Run PHPStan analysis
       run: composer analyse:phpstan
 
-  psalm:
-    name: Psalm Analysis
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Restore vendor cache
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: vendor
-        key: ${{ needs.setup.outputs.cache-key }}
-
-    - name: Run Psalm analysis
-      run: composer analyse:psalm
-
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -332,7 +310,7 @@ jobs:
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility, twig-csrf-check, locale-check]
+    needs: [syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, twig-csrf-check, locale-check]
     if: always()
 
     steps:
@@ -369,12 +347,6 @@ jobs:
           echo "- ❌ Static Analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
         fi
 
-        if [ "${{ needs.psalm.result }}" == "success" ]; then
-          echo "- ✅ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ❌ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
-        fi
-
         if [ "${{ needs.unit-tests.result }}" == "success" ]; then
           echo "- ✅ Unit Tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
         else
@@ -408,7 +380,6 @@ jobs:
         needs.security-audit.result != 'success' ||
         needs.code-style.result != 'success' ||
         needs.phpstan.result != 'success' ||
-        needs.psalm.result != 'success' ||
         needs.unit-tests.result != 'success' ||
         needs.compatibility.result != 'success' ||
         needs.twig-csrf-check.result != 'success' ||

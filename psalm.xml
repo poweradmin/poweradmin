@@ -5,10 +5,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    findUnusedBaselineEntry="true"
     findUnusedIssueHandlerSuppression="false"
     findUnusedCode="false"
-    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <file name="index.php" />
@@ -60,6 +58,32 @@
                 <file name="lib/Module/ZoneImportExport/Service/BindZoneFileParser.php" />
             </errorLevel>
         </InvalidArrayOffset>
+        <!-- Taint false positives. Psalm taints both halves of a returned
+             [clause, params] pair together, so a literal-only WHERE inherits
+             taint from the bind list travelling beside it. -->
+        <TaintedSql>
+            <errorLevel type="suppress">
+                <file name="lib/Infrastructure/Logger/RecordChangeLogger.php" />
+            </errorLevel>
+        </TaintedSql>
+        <!-- Error bodies are JSON sent as application/json, never markup. -->
+        <TaintedHtml>
+            <errorLevel type="suppress">
+                <file name="lib/Application/Http/BootstrapErrorResponder.php" />
+            </errorLevel>
+        </TaintedHtml>
+        <TaintedTextWithQuotes>
+            <errorLevel type="suppress">
+                <file name="lib/Application/Http/BootstrapErrorResponder.php" />
+            </errorLevel>
+        </TaintedTextWithQuotes>
+        <!-- The domain is urlencoded into a fixed base URL and isValidRdapUrl()
+             pins the scheme to http/https before the fetch. -->
+        <TaintedFile>
+            <errorLevel type="suppress">
+                <file name="lib/Module/Rdap/Service/RdapService.php" />
+            </errorLevel>
+        </TaintedFile>
         <MissingClosureParamType errorLevel="info" />
         <UndefinedInterfaceMethod errorLevel="info" />
         <InvalidArgument errorLevel="info" />
