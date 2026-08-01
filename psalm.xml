@@ -17,6 +17,14 @@
                 <file name="lib/Domain/Service/DnsRecord.php" />
             </errorLevel>
         </TaintedSql>
+        <!-- ErrorPresenter::sanitizeMessage() escapes with htmlspecialchars unless
+             the caller opted in for a hardcoded message; Psalm does not track that
+             through the ErrorMessage object. -->
+        <TaintedTextWithQuotes>
+            <errorLevel type="suppress">
+                <file name="lib/Application/Presenter/ErrorPresenter.php" />
+            </errorLevel>
+        </TaintedTextWithQuotes>
         <!-- Every argument is passed through escapeshellarg() and the command
              itself is a literal, but Psalm loses that across the array. -->
         <TaintedShell>

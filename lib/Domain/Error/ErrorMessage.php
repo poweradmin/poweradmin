@@ -26,11 +26,22 @@ class ErrorMessage
 {
     private string $message;
     private string $name;
+    private bool $allowHtml;
 
-    public function __construct(string $message, string $name = '')
+    /**
+     * @param bool $allowHtml Opt in only for hardcoded messages that carry markup.
+     *                        Anything built from user input must leave this false.
+     */
+    public function __construct(string $message, string $name = '', bool $allowHtml = false)
     {
         $this->message = $message;
         $this->name = $name;
+        $this->allowHtml = $allowHtml;
+    }
+
+    public function allowsHtml(): bool
+    {
+        return $this->allowHtml;
     }
 
     public function getMessage(): string

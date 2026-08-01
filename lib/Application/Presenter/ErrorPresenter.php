@@ -28,7 +28,7 @@ class ErrorPresenter
 {
     public function present(ErrorMessage $error): void
     {
-        $msg = $this->sanitizeMessage($error->getMessage());
+        $msg = $this->sanitizeMessage($error->getMessage(), $error->allowsHtml());
         $name = $error->getName();
 
         if (!empty($name)) {
@@ -38,10 +38,18 @@ class ErrorPresenter
         $this->renderError($msg, $name);
     }
 
-    private function sanitizeMessage(string $message): string
+    /**
+     * Messages are escaped unless the caller opted in. strip_tags() is not enough
+     * on its own - it keeps the attributes of any tag it allows through, so the
+     * opt-in branch is reserved for hardcoded messages.
+     */
+    private function sanitizeMessage(string $message, bool $allowHtml): string
     {
-        $allowedTags = '<a>';
-        return strip_tags($message, $allowedTags);
+        if (!$allowHtml) {
+            return htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+        }
+
+        return strip_tags($message, '<a>');
     }
 
     private function renderError(string $msg, string $name): void

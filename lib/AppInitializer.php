@@ -68,7 +68,7 @@ class AppInitializer
     private function checkConfigurationFile(): void
     {
         if (!file_exists('inc/config.inc.php')) {
-            $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'));
+            $error = new ErrorMessage(_('The configuration file (config.inc.php) does not exist. Please use the <a href="install/">installer</a> to create it.'), '', true);
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
             exit();
