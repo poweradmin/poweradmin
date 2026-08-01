@@ -17,7 +17,6 @@ phpstan.neon export-ignore
 phpunit.xml.dist export-ignore
 playwright.config.js export-ignore
 playwright/ export-ignore
-psalm-baseline.xml export-ignore
 psalm.xml export-ignore
 renovate.json export-ignore
 test-results/ export-ignore

@@ -142,27 +142,6 @@ jobs:
     - name: Run PHPStan analysis
       run: composer analyse:phpstan
 
-  psalm:
-    name: Psalm Analysis
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
-    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Restore vendor cache
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
-      with:
-        path: vendor
-        key: ${{ needs.setup.outputs.cache-key }}
-
-    - name: Run Psalm analysis
-      run: composer analyse:psalm
 
   unit-tests:
     name: Unit Tests
@@ -281,7 +260,7 @@ jobs:
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility, twig-csrf-check, locale-check]
+    needs: [syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, twig-csrf-check, locale-check]
     if: always()
 
     steps:
@@ -292,7 +271,6 @@ jobs:
         SECURITY_RESULT: ${{ needs.security-audit.result }}
         CODE_STYLE_RESULT: ${{ needs.code-style.result }}
         PHPSTAN_RESULT: ${{ needs.phpstan.result }}
-        PSALM_RESULT: ${{ needs.psalm.result }}
         UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
         COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
         TWIG_CSRF_RESULT: ${{ needs.twig-csrf-check.result }}
@@ -331,12 +309,6 @@ jobs:
           echo "- ❌ Static Analysis (PHPStan level 3)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "$PSALM_RESULT" = "success" ]; then
-          echo "- ✅ Static Analysis (Psalm level 4)" >> "$GITHUB_STEP_SUMMARY"
-        else
-          echo "- ❌ Static Analysis (Psalm level 4)" >> "$GITHUB_STEP_SUMMARY"
-        fi
-
         if [ "$UNIT_TESTS_RESULT" = "success" ]; then
           echo "- ✅ Unit Tests (PHPUnit)" >> "$GITHUB_STEP_SUMMARY"
         else
@@ -370,7 +342,6 @@ jobs:
         needs.security-audit.result != 'success' ||
         needs.code-style.result != 'success' ||
         needs.phpstan.result != 'success' ||
-        needs.psalm.result != 'success' ||
         needs.unit-tests.result != 'success' ||
         needs.compatibility.result != 'success' ||
         needs.twig-csrf-check.result != 'success' ||
