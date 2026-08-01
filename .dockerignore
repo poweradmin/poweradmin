@@ -62,7 +62,6 @@ phpcs.xml
 phpdoc.dist.xml
 phpstan.neon
 phpunit.xml.dist
-psalm-baseline.xml
 psalm.xml
 .php-cs-fixer.cache
 .php-cs-fixer.php

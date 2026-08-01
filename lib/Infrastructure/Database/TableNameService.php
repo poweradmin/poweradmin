@@ -59,6 +59,12 @@ class TableNameService
         );
     }
 
+    /**
+     * Only ever returns a value present in $allowedColumns, so the result is safe
+     * to interpolate into ORDER BY.
+     *
+     * @psalm-taint-escape sql
+     */
     public function validateOrderBy(string $column, array $allowedColumns): string
     {
         if (!in_array($column, $allowedColumns, true)) {
@@ -68,6 +74,11 @@ class TableNameService
         return $column;
     }
 
+    /**
+     * Only ever returns 'ASC' or 'DESC', so the result is safe to interpolate.
+     *
+     * @psalm-taint-escape sql
+     */
     public function validateDirection(string $direction): string
     {
         $allowedDirections = ['ASC', 'DESC'];
