@@ -665,6 +665,8 @@ generate_config() {
     local smtp_password_esc; smtp_password_esc=$(php_sq_escape "${PA_SMTP_PASSWORD:-}")
     local pdns_webserver_password_esc; pdns_webserver_password_esc=$(php_sq_escape "${PA_PDNS_WEBSERVER_PASSWORD:-}")
     local ldap_bind_password_esc; ldap_bind_password_esc=$(php_sq_escape "${PA_LDAP_BIND_PASSWORD:-}")
+    local pdns_api_key_esc; pdns_api_key_esc=$(php_sq_escape "${PA_PDNS_API_KEY:-}")
+    local session_key_esc; session_key_esc=$(php_sq_escape "${session_key}")
     local oidc_azure_secret_esc; oidc_azure_secret_esc=$(php_sq_escape "${PA_OIDC_AZURE_CLIENT_SECRET:-}")
     local oidc_google_secret_esc; oidc_google_secret_esc=$(php_sq_escape "${PA_OIDC_GOOGLE_CLIENT_SECRET:-}")
     local oidc_generic_secret_esc; oidc_generic_secret_esc=$(php_sq_escape "${PA_OIDC_GENERIC_CLIENT_SECRET:-}")
@@ -715,7 +717,7 @@ return [
         'debug' => ${dnssec_debug},
     ],
     'security' => [
-        'session_key' => '${session_key}',
+        'session_key' => '${session_key_esc}',
         'password_encryption' => '${PA_PASSWORD_ENCRYPTION:-bcrypt}',
         'password_cost' => ${PA_PASSWORD_COST:-12},
         'login_token_validation' => ${login_token_validation},
@@ -828,7 +830,7 @@ return [
     'pdns_api' => [
         'display_name' => '${PA_PDNS_DISPLAY_NAME:-PowerDNS}',
         'url' => '${PA_PDNS_API_URL:-}',
-        'key' => '${PA_PDNS_API_KEY:-}',
+        'key' => '${pdns_api_key_esc}',
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${pdns_webserver_password_esc}',
