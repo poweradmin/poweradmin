@@ -1,0 +1,40 @@
+name: Backport Check
+
+# Flags fixes to shared infrastructure files that landed on one branch and never
+# reached the branches that should also carry them. Scheduled runs only fire from
+# the default branch, so this workflow has to live on master to run on a timer.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'How far back to look (git --since syntax)'
+        required: false
+        default: '12 months ago'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Unbackported fixes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Fetch branches under comparison
+        run: |
+          for b in develop master release/4.3.x release/4.2.x; do
+            git fetch --quiet origin "$b:refs/remotes/origin/$b" 2>/dev/null \
+              || echo "note: branch $b not found on origin, it will be skipped"
+          done
+
+      - name: Check for unbackported fixes
+        env:
+          BACKPORT_CHECK_SINCE: ${{ inputs.since || '12 months ago' }}
+        run: ./.github/scripts/check-backports.sh
