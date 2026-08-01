@@ -167,6 +167,12 @@ class SearchController extends BaseController
         ]);
     }
 
+    /**
+     * Both values are checked against a literal allowlist before assignment,
+     * so the result is safe to interpolate into ORDER BY.
+     *
+     * @psalm-taint-escape sql
+     */
     private function getSortOrder(string $name, array $allowedValues): array
     {
         $sortOrder = 'name';

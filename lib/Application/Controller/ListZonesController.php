@@ -152,6 +152,12 @@ class ListZonesController extends BaseController
         return $presenter->present();
     }
 
+    /**
+     * Values are checked against a literal allowlist before assignment, so the
+     * result is safe to interpolate into ORDER BY.
+     *
+     * @psalm-taint-escape sql
+     */
     public function getZoneSortOrder(string $name, array $allowedValues): array
     {
         $zone_sort_by = 'name';

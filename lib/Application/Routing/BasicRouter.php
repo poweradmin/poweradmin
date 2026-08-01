@@ -64,6 +64,11 @@ class BasicRouter
      *
      * @return string The page name.
      */
+    /**
+     * Only ever returns a page name present in $this->pages, or the default.
+     *
+     * @psalm-taint-escape callable
+     */
     public function getPageName(): string
     {
         $page = $this->request['page'] ?? $this->defaultPage;

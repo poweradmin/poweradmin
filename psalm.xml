@@ -7,4 +7,22 @@
         <directory name="lib" />
         <directory name="tests" />
     </projectFiles>
+    <issueHandlers>
+        <!-- Psalm 5 treats the value passed to PDOStatement::bindValue/bindParam
+             as a SQL sink, so correctly parameterised queries are reported.
+             Fixed in Psalm 6, which the 4.x branches use. -->
+        <TaintedSql>
+            <errorLevel type="suppress">
+                <file name="lib/Domain/Model/UserManager.php" />
+                <file name="lib/Domain/Service/DnsRecord.php" />
+            </errorLevel>
+        </TaintedSql>
+        <!-- Every argument is passed through escapeshellarg() and the command
+             itself is a literal, but Psalm loses that across the array. -->
+        <TaintedShell>
+            <errorLevel type="suppress">
+                <file name="lib/Infrastructure/Service/PdnsUtilProvider.php" />
+            </errorLevel>
+        </TaintedShell>
+    </issueHandlers>
 </psalm>

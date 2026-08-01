@@ -310,6 +310,12 @@ class EditController extends BaseController
         return $rowAmount;
     }
 
+    /**
+     * Values are checked against a literal allowlist before assignment, so the
+     * result is safe to interpolate into ORDER BY.
+     *
+     * @psalm-taint-escape sql
+     */
     public function getSortBy(string $name, array $allowedValues): string
     {
         $sortOrder = 'name';
@@ -326,6 +332,12 @@ class EditController extends BaseController
     }
 
 
+    /**
+     * Values are checked against a literal allowlist before assignment, so the
+     * result is safe to interpolate into ORDER BY.
+     *
+     * @psalm-taint-escape sql
+     */
     private function getSortDirection(string $name): string
     {
         $sortDirection = 'ASC';
