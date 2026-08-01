@@ -436,6 +436,70 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testVerifyCodeRefusesCorrectCodeWhileLockedOut(): void
+    {
+        $userId = 1;
+        $verificationCode = '123456';
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn($verificationCode);
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationDataAsArray')->willReturn([
+            'expires_at' => time() + 600,
+            'used' => false,
+            'locked_until' => time() + 300,
+        ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->userMfaRepository->expects($this->never())->method('save');
+
+        $result = $this->service->verifyCode($userId, $verificationCode);
+        $this->assertFalse($result, 'A locked out account must not verify even with the right code');
+    }
+
+    #[Test]
+    public function testVerifyCodeLocksOutAfterRepeatedFailures(): void
+    {
+        $userId = 1;
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn('123456');
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationData')->willReturn(json_encode([
+            'expires_at' => time() + 600,
+            'used' => false,
+        ]));
+        $userMfa->method('getVerificationDataAsArray')->willReturn([
+            'expires_at' => time() + 600,
+            'used' => false,
+            'failed_attempts' => 4, // the guess below is the fifth
+        ]);
+
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['mail', 'enabled', false, true],
+            ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $userMfa->expects($this->once())
+            ->method('setVerificationData')
+            ->with($this->callback(static function (array $metadata): bool {
+                return isset($metadata['locked_until']) && $metadata['locked_until'] > time();
+            }));
+
+        $result = $this->service->verifyCode($userId, '999999');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testVerifyCodeReturnsFalseForExpiredEmailCode(): void
     {
         $userId = 1;
