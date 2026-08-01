@@ -97,9 +97,9 @@ class PdnsUtilProvider implements DnssecProvider
 
         if ($pdnssec_debug) {
             echo "<div class=\"container\"><pre>";
-            echo sprintf("Command: %s\n", $full_command);
-            echo sprintf("Return code: %s\n", $return_code);
-            echo sprintf("Output: %s", implode("\n", $output));
+            echo sprintf("Command: %s\n", htmlspecialchars($full_command, ENT_QUOTES, 'UTF-8'));
+            echo sprintf("Return code: %s\n", htmlspecialchars((string)$return_code, ENT_QUOTES, 'UTF-8'));
+            echo sprintf("Output: %s", htmlspecialchars(implode("\n", $output), ENT_QUOTES, 'UTF-8'));
             echo "</pre></div>";
         }
 
