@@ -238,13 +238,13 @@ init_mysql_db() {
 init_pgsql_db() {
     [ "${DB_TYPE}" = "pgsql" ] || return 0
 
-    local port_opt=""
-    [ -n "${DB_PORT:-}" ] && port_opt="-p ${DB_PORT}"
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+    table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
         "SELECT to_regclass('public.users') IS NOT NULL;" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -261,13 +261,13 @@ init_pgsql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+        pdns_table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
             "SELECT to_regclass('public.domains') IS NOT NULL;" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "f" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.pgsql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS PostgreSQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
+            elif PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in PostgreSQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in PostgreSQL database '${DB_NAME}'"
@@ -286,7 +286,7 @@ init_pgsql_db() {
         log "WARNING: Poweradmin PostgreSQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" ${port_opt} -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
+    if PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in PostgreSQL database '${DB_NAME}'"
     else
         log "ERROR: Failed to initialize Poweradmin schema in PostgreSQL database '${DB_NAME}'"
