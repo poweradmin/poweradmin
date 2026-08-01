@@ -40,6 +40,9 @@
 
 FROM dunglas/frankenphp:1.12.6-php8.4-alpine@sha256:023709d5a92f22540b01353538275ef6b641b2f12f8f8c8325c177d66783bce2
 
+LABEL org.opencontainers.image.source="https://github.com/poweradmin/poweradmin"
+LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
+
 # Update base packages and install required packages and PHP extensions
 RUN apk upgrade --no-cache \
     && apk add --no-cache --virtual .build-deps \
@@ -63,6 +66,7 @@ RUN apk upgrade --no-cache \
     libpq \
     libldap \
     libxml2 \
+    su-exec \
     && install-php-extensions \
     gettext \
     intl \
@@ -163,7 +167,7 @@ CADDYEOF
 ENV XDG_CONFIG_HOME=/var/caddy
 ENV XDG_DATA_HOME=/var/caddy
 
-# Set proper ownership and install su-exec for dropping privileges
+# Set proper ownership for writable volumes
 # Group set to root (GID 0) + group-writable supports both:
 #   - K8s with fsGroup (overrides group at mount time)
 #   - OpenShift arbitrary UIDs (which always run as GID 0)
@@ -173,7 +177,6 @@ RUN chown -R www-data:0 /app /db \
     && mkdir -p /var/caddy/caddy \
     && chown -R www-data:0 /var/caddy \
     && chmod -R g+w /var/caddy \
-    && apk add --no-cache su-exec \
     && setcap -r /usr/local/bin/frankenphp
 
 # Run as root initially, entrypoint will drop to www-data
