@@ -132,9 +132,6 @@ msgstr "Standartiniai BIND zonų failai"
 msgid "Supported formats"
 msgstr "Palaikomi formatai"
 
-msgid "Success:"
-msgstr "Sėkmė:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Tipas"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Įkelti ir peržiūrėti"
-
-msgid "Warning:"
-msgstr "Įspėjimas:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

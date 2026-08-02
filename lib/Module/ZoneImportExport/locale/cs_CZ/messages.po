@@ -132,9 +132,6 @@ msgstr "Standardní soubory zón BIND"
 msgid "Supported formats"
 msgstr "Podporované formáty"
 
-msgid "Success:"
-msgstr "Úspěch:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Typ"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Nahrát a zobrazit náhled"
-
-msgid "Warning:"
-msgstr "Varování:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

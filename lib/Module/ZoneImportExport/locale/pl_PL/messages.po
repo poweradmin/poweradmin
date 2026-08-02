@@ -132,9 +132,6 @@ msgstr "Standardowe pliki stref BIND"
 msgid "Supported formats"
 msgstr "Obsługiwane formaty"
 
-msgid "Success:"
-msgstr "Sukces:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Typ"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Prześlij i podgląd"
-
-msgid "Warning:"
-msgstr "Ostrzeżenie:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

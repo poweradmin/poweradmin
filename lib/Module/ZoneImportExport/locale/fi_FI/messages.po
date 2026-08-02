@@ -133,9 +133,6 @@ msgstr "Vakio BIND-aluetiedostot"
 msgid "Supported formats"
 msgstr "Tuetut muodot"
 
-msgid "Success:"
-msgstr "Onnistui:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -163,9 +160,6 @@ msgstr "Tyyppi"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Lähetä ja esikatsele"
-
-msgid "Warning:"
-msgstr "Varoitus:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

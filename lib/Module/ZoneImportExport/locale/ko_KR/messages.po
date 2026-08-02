@@ -132,9 +132,6 @@ msgstr "표준 BIND 영역 파일"
 msgid "Supported formats"
 msgstr "지원 형식"
 
-msgid "Success:"
-msgstr "성공:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "유형"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "업로드 및 미리보기"
-
-msgid "Warning:"
-msgstr "경고:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

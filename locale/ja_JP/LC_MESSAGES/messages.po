@@ -14433,7 +14433,7 @@ msgstr "インポート結果"
 
 #: lib/Module/ZoneImportExport/templates/import.html:24
 msgid "Success:"
-msgstr "成功:"
+msgstr "成功："
 
 #: lib/Module/ZoneImportExport/templates/import.html:18
 msgid "Import completed successfully."

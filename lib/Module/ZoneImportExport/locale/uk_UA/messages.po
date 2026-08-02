@@ -132,9 +132,6 @@ msgstr "Стандартні файли зон BIND"
 msgid "Supported formats"
 msgstr "Підтримувані формати"
 
-msgid "Success:"
-msgstr "Успіх:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Тип"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Завантажити та переглянути"
-
-msgid "Warning:"
-msgstr "Попередження:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

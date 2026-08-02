@@ -133,9 +133,6 @@ msgstr "Стандардне BIND датотеке зоне"
 msgid "Supported formats"
 msgstr "Подржани формати"
 
-msgid "Success:"
-msgstr "Успех:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -163,9 +160,6 @@ msgstr "Тип"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Отпреми и прегледај"
-
-msgid "Warning:"
-msgstr "Упозорење:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

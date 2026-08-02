@@ -132,9 +132,6 @@ msgstr "File zona BIND standar"
 msgid "Supported formats"
 msgstr "Format yang didukung"
 
-msgid "Success:"
-msgstr "Berhasil:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Tipe"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Unggah dan pratinjau"
-
-msgid "Warning:"
-msgstr "Peringatan:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"

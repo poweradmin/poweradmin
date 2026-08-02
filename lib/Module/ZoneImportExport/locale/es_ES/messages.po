@@ -132,9 +132,6 @@ msgstr "Archivos de zona BIND estándar"
 msgid "Supported formats"
 msgstr "Formatos compatibles"
 
-msgid "Success:"
-msgstr "Éxito:"
-
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
 msgstr "TTL"
@@ -162,9 +159,6 @@ msgstr "Tipo"
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
 msgstr "Subir y previsualizar"
-
-msgid "Warning:"
-msgstr "Advertencia:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
