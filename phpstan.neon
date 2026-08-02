@@ -42,7 +42,6 @@ parameters:
       allowIn:
         # Reading the superglobal is the job of these files.
         - lib/Application/Http/Request.php
-        - lib/Application/Service/SamlService.php  # IdP posts to the ACS URL
         - tests/*
         # Not yet migrated to Request. Delete each entry as its file is done.
         - lib/Application/Presenter/PaginationPresenter.php

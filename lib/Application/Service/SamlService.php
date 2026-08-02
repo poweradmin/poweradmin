@@ -203,9 +203,10 @@ class SamlService extends LoggingService
         $providerId = $this->getSessionValue('saml_provider', '');
 
         // If provider ID not in session, try to get it from RelayState
-        if (empty($providerId) && !empty($_POST['RelayState'])) {
+        $relayStateParam = $this->request->getPostParam('RelayState');
+        if (empty($providerId) && !empty($relayStateParam)) {
             try {
-                $relayState = json_decode(base64_decode($_POST['RelayState']), true);
+                $relayState = json_decode(base64_decode($relayStateParam), true);
                 if (isset($relayState['provider'])) {
                     $providerId = $relayState['provider'];
                     $this->logInfo('Retrieved provider ID from RelayState: {provider}', ['provider' => $providerId]);
@@ -252,8 +253,8 @@ class SamlService extends LoggingService
             }
 
             // Debug SAML response
-            $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($_POST)]);
-            $this->logInfo('SAML Response length: {length}', ['length' => strlen($_POST['SAMLResponse'] ?? '')]);
+            $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
+            $this->logInfo('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
             // Process the SAML response
             $auth->processResponse();
