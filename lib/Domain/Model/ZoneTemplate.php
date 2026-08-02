@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Model;
 use Exception;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\PermissionService;
@@ -57,7 +56,6 @@ class ZoneTemplate
     private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
-    private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
@@ -71,7 +69,6 @@ class ZoneTemplate
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
-        $this->dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;

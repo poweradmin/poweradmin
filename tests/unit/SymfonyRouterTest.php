@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SymfonyRouterTest extends TestCase
 {
-    private SymfonyRouter $router;
 
     protected function setUp(): void
     {
@@ -21,8 +20,6 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['HTTPS'] = '';
-
-        $this->router = new SymfonyRouter();
     }
 
     public function testHomeRouteMatching(): void

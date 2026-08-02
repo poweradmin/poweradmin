@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
@@ -33,14 +32,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class DynamicDnsValidationService
 {
     private HostnameValidator $hostnameValidator;
-    private IPAddressValidator $ipValidator;
     private ConfigurationManager $config;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
-        $this->ipValidator = new IPAddressValidator();
     }
 
     public function validateRequest(DynamicDnsRequest $request): ValidationResult

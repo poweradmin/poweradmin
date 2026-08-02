@@ -32,17 +32,12 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Utility\NaturalSorting;
-use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
     private object $db;
     private string $db_type;
-    private ?string $pdns_db_name;
-    private NaturalSorting $naturalSorting;
-    private ReverseDomainNaturalSorting $reverseDomainNaturalSorting;
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
     private TableNameService $tableNameService;
@@ -53,9 +48,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $config->get('database', 'type');
-        $this->pdns_db_name = $config->get('database', 'pdns_db_name');
-        $this->naturalSorting = new NaturalSorting();
-        $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;

@@ -26,7 +26,6 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -42,14 +41,12 @@ class DnsCommonValidator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private ?DnsBackendProvider $backendProvider;
 
     public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->backendProvider = $backendProvider;
     }
 

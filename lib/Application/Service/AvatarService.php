@@ -27,7 +27,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class AvatarService
 {
     private ConfigurationManager $configManager;
-    private array $cache = [];
 
     public function __construct(ConfigurationManager $configManager)
     {
@@ -197,10 +196,5 @@ class AvatarService
         }
 
         return $url;
-    }
-
-    public function clearCache(): void
-    {
-        $this->cache = [];
     }
 }

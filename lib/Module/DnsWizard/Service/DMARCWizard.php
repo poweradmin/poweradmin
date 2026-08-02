@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Domain\Service\DnsValidation\DMARCRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
@@ -36,7 +35,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
  */
 class DMARCWizard extends AbstractDnsWizard
 {
-    private DMARCRecordValidator $validator;
 
     public function __construct(ConfigurationInterface $config)
     {
@@ -45,7 +43,6 @@ class DMARCWizard extends AbstractDnsWizard
         $this->wizardType = 'DMARC';
         $this->displayName = _('DMARC Record');
         $this->description = _('Email authentication policy and reporting configuration');
-        $this->validator = new DMARCRecordValidator($config);
     }
 
     /**
