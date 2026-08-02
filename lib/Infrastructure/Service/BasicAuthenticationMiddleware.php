@@ -23,17 +23,12 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\NullLogHandler;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,8 +45,6 @@ class BasicAuthenticationMiddleware
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private MessageService $messageService;
-    private SqlAuthenticator $sqlAuthenticator;
     private LoginAttemptService $loginAttemptService;
 
     /**
@@ -64,34 +57,7 @@ class BasicAuthenticationMiddleware
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
-
-        // Initialize authenticators
-        $authService = new UserAuthenticationService(
-            $this->config->get('security', 'password_encryption', 'bcrypt'),
-            $this->config->get('security', 'password_cost', 12)
-        );
-
-        // Create minimal dependencies required for authenticators
-        $userEventLogger = new UserEventLogger($db);
-        $csrfTokenService = new CsrfTokenService();
-
-        // Create a simple NullLogHandler and Logger
-        $logHandler = new NullLogHandler();
-        $logger = new Logger($logHandler, 'info');
-
         $this->loginAttemptService = new LoginAttemptService($db, $this->config);
-
-        // Initialize SQL authenticator with all required dependencies
-        $this->sqlAuthenticator = new SqlAuthenticator(
-            $db,
-            $this->config,
-            $userEventLogger,
-            $authService,
-            $csrfTokenService,
-            $logger,
-            $this->loginAttemptService
-        );
     }
 
     /**
