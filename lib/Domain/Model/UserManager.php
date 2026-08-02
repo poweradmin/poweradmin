@@ -236,7 +236,7 @@ class UserManager
             $newAuthMethod = self::resolveAuthMethod((bool)$useLdap, $usercheck['auth_method'] ?? null);
             $isIdpManagedEmail = in_array($newAuthMethod, ['oidc', 'saml'], true)
                 || ($newAuthMethod === 'ldap' && $this->config->get('ldap', 'sync_user_info', false));
-            $validation = new Validator($this->db, $this->config);
+            $validation = new Validator($this->config);
             if (!$isIdpManagedEmail && !$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
@@ -374,7 +374,7 @@ class UserManager
         $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION[SessionKeys::USERID] && $perm_edit_own) || ($details['uid'] != $_SESSION[SessionKeys::USERID] && $perm_edit_others)) {
-            $validation = new Validator($this->db, $this->config);
+            $validation = new Validator($this->config);
             if (!$validation->isValidEmail($details['email'])) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
@@ -512,7 +512,7 @@ class UserManager
     public function addNewUser(array $details): int|false
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
-        $validation = new Validator($this->db, $this->config);
+        $validation = new Validator($this->config);
 
         if (!$this->hasPermission('user_add_new')) {
             $this->messageService->addSystemError(_("You do not have the permission to add a new user."));

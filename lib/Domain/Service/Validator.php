@@ -22,20 +22,16 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 class Validator
 {
     private ConfigurationManager $config;
-    private DnsValidatorRegistry $validatorRegistry;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->validatorRegistry = new DnsValidatorRegistry($config, $db);
     }
 
     /** Validate email address string

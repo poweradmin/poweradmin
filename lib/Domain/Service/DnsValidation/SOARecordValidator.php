@@ -26,7 +26,6 @@ use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 /**
  * SOA record validator
@@ -49,16 +48,14 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private PDO $db;
 
     // SOA-specific parameters
     private ?string $dns_hostmaster = null;
     private ?string $zone = null;
 
-    public function __construct(ConfigurationManager $config, PDO $db)
+    public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->db = $db;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -210,7 +207,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             $addr_to_check = $addr_input;
         }
 
-        $validation = new Validator($this->db, $this->config);
+        $validation = new Validator($this->config);
         if (!$validation->isValidEmail($addr_to_check)) {
             $errors[] = _('Invalid email address in SOA record. Use the form "hostmaster.example.net" (the first unescaped dot represents @).');
             return ['isValid' => false, 'errors' => $errors];

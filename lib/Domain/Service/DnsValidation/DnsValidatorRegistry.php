@@ -98,7 +98,7 @@ class DnsValidatorRegistry
             RecordType::RP => new RPRecordValidator($this->config),
             RecordType::RRSIG => new RRSIGRecordValidator($this->config),
             RecordType::SMIMEA => new SMIMEARecordValidator($this->config),
-            RecordType::SOA => new SOARecordValidator($this->config, $this->db),
+            RecordType::SOA => new SOARecordValidator($this->config),
             RecordType::SPF => new SPFRecordValidator($this->config),
             RecordType::SRV => new SRVRecordValidator($this->config),
             RecordType::SSHFP => new SSHFPRecordValidator($this->config),

@@ -52,7 +52,7 @@ class SOARecordValidatorTest extends TestCase
                 return "'$value'";
             });
 
-        $this->validator = new SOARecordValidator($this->configMock, $this->dbMock);
+        $this->validator = new SOARecordValidator($this->configMock);
     }
 
     public function testValidateWithValidData()
