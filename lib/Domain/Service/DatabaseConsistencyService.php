@@ -484,7 +484,7 @@ class DatabaseConsistencyService
      */
     public function fixAllZonesWithoutOwner(int $currentUserId): array
     {
-        $orphans = $this->checkZonesHaveOwners()['data'] ?? [];
+        $orphans = $this->checkZonesHaveOwners()['data'];
 
         $assigned = 0;
         $failed = 0;

@@ -96,7 +96,7 @@ class DnsCommonValidator
     {
         if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($target, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['name'] === $target && $r['type'] === 'CNAME') {
                     return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
                 }

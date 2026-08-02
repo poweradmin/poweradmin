@@ -659,7 +659,7 @@ class ZoneTemplate
         }
 
         // Check if priority is valid for this record type
-        if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
+        if ($prio < 0 || $prio > 65535) {
             if ($type == 'MX' || $type == 'SRV') {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;

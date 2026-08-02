@@ -67,7 +67,7 @@ class PdnsVersionService
         }
 
         $info = [
-            'version' => (string) ($serverInfo['version'] ?? ''),
+            'version' => (string) $serverInfo['version'],
             'daemon_type' => (string) ($serverInfo['daemon_type'] ?? ''),
             'id' => (string) ($serverInfo['id'] ?? ''),
         ];

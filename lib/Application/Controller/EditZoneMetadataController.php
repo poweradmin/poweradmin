@@ -314,7 +314,7 @@ class EditZoneMetadataController extends BaseController
         $zoneData = null;
         foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
             if (isset($grouped[$kind])) {
-                $properties[$property] = $grouped[$kind][0] ?? '';
+                $properties[$property] = $grouped[$kind][0];
                 unset($grouped[$kind]);
             } else {
                 $zoneData ??= $this->apiClient->getZone($zoneName);

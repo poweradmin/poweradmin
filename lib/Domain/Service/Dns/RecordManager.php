@@ -339,7 +339,7 @@ class RecordManager implements RecordManagerInterface
         $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $this->changeLogger->logRecordCreate([
-                'id' => is_int($recordId) ? $recordId : (is_string($recordId) ? $recordId : null),
+                'id' => $recordId,
                 'name' => $name,
                 'type' => $type,
                 'content' => $content,

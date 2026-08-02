@@ -154,7 +154,7 @@ class DomainManager implements DomainManagerInterface
 
         return [
             'id' => $zoneId,
-            'name' => $zone['name'] ?? null,
+            'name' => $zone['name'],
             'type' => $zone['type'] ?? null,
             'master' => $zone['master'] ?? null,
         ];
@@ -402,7 +402,7 @@ class DomainManager implements DomainManagerInterface
                                     'id' => $domain_id,
                                     'name' => $domain,
                                     'type' => $type,
-                                    'template_id' => is_numeric($zone_template) ? (int) $zone_template : null,
+                                    'template_id' => (int) $zone_template,
                                     'owner' => $owner,
                                 ]);
                             });

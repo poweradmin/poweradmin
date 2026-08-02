@@ -349,12 +349,6 @@ parameters:
 			path: lib/Application/Controller/EditZoneMetadataController.php
 
 		-
-			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Application/Controller/EditZoneMetadataController.php
-
-		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\IndexController\:\:showIndex\(\)" is 17, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -511,18 +505,6 @@ parameters:
 			path: lib/Application/Service/DnsDataService.php
 
 		-
-			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 2
-			path: lib/Application/Service/DnsDataService.php
-
-		-
-			message: '#^Offset ''zones'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 2
-			path: lib/Application/Service/DnsDataService.php
-
-		-
 			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$groupRepository is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -557,12 +539,6 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Service/OidcService.php
-
-		-
-			message: '#^Offset ''version'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Application/Service/PdnsVersionService.php
 
 		-
 			message: '#^Class cognitive complexity is 79, keep it under 60$#'
@@ -673,12 +649,6 @@ parameters:
 			path: lib/Domain/Model/UserManager.php
 
 		-
-			message: '#^Call to function is_numeric\(\) with int will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Class cognitive complexity is 138, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -739,12 +709,6 @@ parameters:
 			path: lib/Domain/Service/DatabaseConsistencyService.php
 
 		-
-			message: '#^Offset ''data'' on array\{status\: string, message\: string, data\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DatabaseConsistencyService\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -769,19 +733,13 @@ parameters:
 			path: lib/Domain/Service/DatabaseSchemaService.php
 
 		-
-			message: '#^Call to function is_numeric\(\) with int\|numeric\-string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Class cognitive complexity is 305, keep it under 60$#'
+			message: '#^Class cognitive complexity is 299, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:addDomain\(\)" is 101, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:addDomain\(\)" is 95, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
@@ -805,12 +763,6 @@ parameters:
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
-			message: '#^Offset ''name'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
 			message: '#^Right side of && is always false\.$#'
 			identifier: booleanAnd.rightAlwaysFalse
 			count: 1
@@ -823,20 +775,8 @@ parameters:
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
-			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
-			message: '#^Class cognitive complexity is 67, keep it under 60$#'
+			message: '#^Class cognitive complexity is 63, keep it under 60$#'
 			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\RecordManager\:\:addRecordGetId\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/Dns/RecordManager.php
 
@@ -943,12 +883,6 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/CERTRecordValidator.php
 
 		-
-			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 3
-			path: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\DHCIDRecordValidator\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -983,12 +917,6 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/DnsValidation/DSRecordValidator.php
-
-		-
-			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Domain/Service/DnsValidation/DnsCommonValidator.php
 
 		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\DnsCommonValidator\:\:\$messageService is never read, only written\.$#'
@@ -1435,12 +1363,6 @@ parameters:
 			path: lib/Domain/Service/ReverseRecordCreator.php
 
 		-
-			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
 			message: '#^Class cognitive complexity is 73, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -1769,12 +1691,6 @@ parameters:
 			identifier: isset.offset
 			count: 2
 			path: lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php
-
-		-
-			message: '#^Offset 1 on array\{non\-falsy\-string, non\-empty\-string\} on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: lib/Infrastructure/Utility/UserAgentService.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Web\\BadgeTwigExtension\:\:getAutoprimariesLabel\(\)" is 19, keep it under 15$#'

@@ -229,7 +229,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
@@ -270,7 +270,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
                 }
@@ -321,7 +321,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if (strcasecmp($r['name'], $name) === 0 && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }

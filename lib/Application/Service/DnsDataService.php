@@ -665,13 +665,13 @@ class DnsDataService
         $query = $parameters['query'];
 
         $results = $this->backendProvider->searchDnsData($query, 'zone', 10000);
-        $zones = $results['zones'] ?? [];
+        $zones = $results['zones'];
 
         // If reverse query exists, issue second search and merge unique results
         $reverseQuery = $parameters['reverse_query'] ?? '';
         if (!empty($reverseQuery)) {
             $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'zone', 10000);
-            $reverseZones = $reverseResults['zones'] ?? [];
+            $reverseZones = $reverseResults['zones'];
             if (!empty($reverseZones)) {
                 $seenNames = array_flip(array_column($zones, 'name'));
                 foreach ($reverseZones as $rz) {
@@ -778,13 +778,13 @@ class DnsDataService
         $query = $parameters['query'];
 
         $results = $this->backendProvider->searchDnsData($query, 'record', 10000);
-        $records = $results['records'] ?? [];
+        $records = $results['records'];
 
         // If reverse query exists, issue second search and merge unique results
         $reverseQuery = $parameters['reverse_query'] ?? '';
         if (!empty($reverseQuery)) {
             $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'record', 10000);
-            $reverseRecords = $reverseResults['records'] ?? [];
+            $reverseRecords = $reverseResults['records'];
             if (!empty($reverseRecords)) {
                 $seenKeys = [];
                 foreach ($records as $r) {
