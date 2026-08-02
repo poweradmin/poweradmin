@@ -4,7 +4,7 @@
     {% set title = 'Error:' %}
 {% elseif message.type in ['warn', 'warning'] %}
     {% set color = 'warning' %}
-    {% set icon = message.type == 'warning' ? 'exclamation-triangle' : 'exclamation-circle' %}
+    {% set icon = 'exclamation-triangle' %}
     {% set title = 'Warning:' %}
 {% elseif message.type == 'success' %}
     {% set color = 'success' %}

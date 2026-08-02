@@ -46,7 +46,7 @@ class SetDefaultZoneTemplController extends BaseController
                 if ($remaining !== null) {
                     $this->setMessage(
                         'list_zone_templ',
-                        'warn',
+                        'warning',
                         _('Default flag cleared, but the dns.default_zone_template config setting is still active.')
                     );
                 } else {

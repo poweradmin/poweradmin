@@ -124,11 +124,11 @@ class MessageServiceTest extends TestCase
     // ========== addWarning tests ==========
 
     #[Test]
-    public function testAddWarningAddsWarnTypeMessage(): void
+    public function testAddWarningAddsWarningTypeMessage(): void
     {
         $this->service->addWarning('test_script', 'Warning message');
 
-        $this->assertEquals('warn', $_SESSION['messages']['test_script'][0]['type']);
+        $this->assertEquals('warning', $_SESSION['messages']['test_script'][0]['type']);
     }
 
     // ========== addSuccess tests ==========

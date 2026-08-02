@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\UserContextService;
 class MessageService
 {
     private const TYPE_ERROR = 'error';
-    private const TYPE_WARN = 'warn';
+    private const TYPE_WARNING = 'warning';
     private const TYPE_SUCCESS = 'success';
     private const TYPE_INFO = 'info';
 
@@ -95,7 +95,7 @@ class MessageService
      */
     public function addWarning(string $script, string $content): void
     {
-        $this->addMessage($script, self::TYPE_WARN, $content);
+        $this->addMessage($script, self::TYPE_WARNING, $content);
     }
 
     /**

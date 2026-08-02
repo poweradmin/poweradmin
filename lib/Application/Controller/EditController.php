@@ -774,7 +774,7 @@ class EditController extends BaseController
                 }
 
                 if ($records_truncated) {
-                    $this->setMessage('edit', 'warn', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
+                    $this->setMessage('edit', 'warning', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
                 }
             }
         }
@@ -881,7 +881,7 @@ class EditController extends BaseController
         if ($error === false) {
             $experimental_edit_conflict_resolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
             if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
-                $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
+                $this->setMessage('edit', 'warning', (_('Request has expired, please try again.')));
             } else {
                 $this->soaRecordManager->updateSOASerial($zone_id);
 
