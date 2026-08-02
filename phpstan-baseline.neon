@@ -571,12 +571,6 @@ parameters:
 			path: lib/Application/Service/SamlService.php
 
 		-
-			message: '#^Property Poweradmin\\Application\\Service\\SamlService\:\:\$request is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Application/Service/SamlService.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 4
@@ -1129,12 +1123,6 @@ parameters:
 			path: lib/Domain/Service/UserManagementService.php
 
 		-
-			message: '#^Property Poweradmin\\Domain\\Service\\Validator\:\:\$validatorRegistry is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Domain/Service/Validator.php
-
-		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneCountService\:\:countZones\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -1381,18 +1369,6 @@ parameters:
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
-			message: '#^Property Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware\:\:\$messageService is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Infrastructure/Service/BasicAuthenticationMiddleware.php
-
-		-
-			message: '#^Property Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware\:\:\$sqlAuthenticator is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Infrastructure/Service/BasicAuthenticationMiddleware.php
-
-		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:authenticate\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -1589,12 +1565,6 @@ parameters:
 			identifier: if.alwaysTrue
 			count: 1
 			path: tests/integration/NaturalSortingIntegrationTest.php
-
-		-
-			message: '#^Property integration\\RecordRepositoryApexSortingIntegrationTest\:\:\$createdRecordIds is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: tests/integration/RecordRepositoryApexSortingIntegrationTest.php
 
 		-
 			message: '#^Call to function assert\(\) with false will always evaluate to false\.$#'

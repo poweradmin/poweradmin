@@ -40,7 +40,6 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
 {
     private ?PDO $db = null;
     private int $domainId = 0;
-    private array $createdRecordIds = [];
 
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
@@ -85,7 +84,6 @@ class RecordRepositoryApexSortingIntegrationTest extends TestCase
                 ':type' => $type,
                 ':content' => $content,
             ]);
-            $this->createdRecordIds[] = (int)$this->db->lastInsertId();
         }
     }
 
