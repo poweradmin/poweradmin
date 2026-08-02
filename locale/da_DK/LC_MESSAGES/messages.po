@@ -1542,39 +1542,6 @@ msgstr "Du har ikke tilladelse til at slette optegnelser i denne zone."
 msgid "Record not found."
 msgstr "Record ikke fundet."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Registreringen og de tilsvarende PTR og A / AAAA-registreringer blev "
-"slettet, men kommentaren blev bevaret, fordi der findes tilsvarende "
-"registreringer."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Record og tilsvarende PTR record blev slettet, men kommentaren blev bevaret, "
-"fordi lignende records findes."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Record og tilsvarende A / AAAA record blev slettet, men kommentaren blev "
-"bevaret, fordi lignende records findes."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Record blev slettet, men kommentaren blev bevaret, fordi lignende records "
-"findes."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15395,6 +15362,3 @@ msgid ""
 msgstr ""
 "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes "
 "muligvis ikke på dette system. Kontakt din administrator."
-
-
-

@@ -1475,36 +1475,6 @@ msgstr "คุณไม่ได้รับอนุญาตให้ลบเ
 msgid "Record not found."
 msgstr "ไม่พบบันทึก"
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"เรกคอร์ดและเรกคอร์ด PTR และ A/AAAA ที่เกี่ยวข้องถูกลบแล้ว "
-"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"เรกคอร์ดและเรกคอร์ด PTR ที่เกี่ยวข้องถูกลบแล้ว "
-"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"เรกคอร์ดและเรกคอร์ด A/AAAA ที่เกี่ยวข้องถูกลบแล้ว "
-"แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "เรกคอร์ดถูกลบแล้ว แต่ยังคงเก็บหมายเหตุไว้เนื่องจากมีเรกคอร์ดที่คล้ายกันอยู่"
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -14676,6 +14646,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
-
-
-

@@ -1447,30 +1447,6 @@ msgstr "您没有权限删除此区域中的记录。"
 msgid "Record not found."
 msgstr "未找到记录。"
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr "记录及其对应的PTR和A/AAAA记录已删除，但因存在相似记录，注释得以保留。"
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr "记录及其对应的 PTR 记录已删除，但由于存在类似记录，注释被保留。"
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr "记录及其对应的A/AAAA记录已删除，但因存在相似记录，注释得以保留。"
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "记录已删除，但由于存在类似记录，注释被保留。"
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -14331,6 +14307,3 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
-
-
-

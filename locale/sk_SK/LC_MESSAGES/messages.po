@@ -1513,38 +1513,6 @@ msgstr "Nemáte oprávnenie mazať záznamy v tejto zóne."
 msgid "Record not found."
 msgstr "Záznam sa nenašiel."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Záznam a jemu príslušné záznamy PTR a A/AAAA boli vymazané, ale komentár bol "
-"zachovaný, pretože existujú podobné záznamy."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Záznam a jemu príslušný záznam PTR boli vymazané, ale komentár bol "
-"zachovaný, pretože existujú podobné záznamy."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Záznam a jemu príslušný záznam A/AAAA boli vymazané, ale komentár bol "
-"zachovaný, pretože existujú podobné záznamy."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Záznam bol vymazaný, ale komentár bol zachovaný, pretože existujú podobné "
-"záznamy."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15191,6 +15159,3 @@ msgstr ""
 "Nepodarilo sa nastaviť národné prostredie. Vybrané národné prostredie "
 "(locale) nemusí byť v tomto systéme podporované. Kontaktujte svojho "
 "administrátora."
-
-
-

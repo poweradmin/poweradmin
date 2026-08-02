@@ -1487,35 +1487,6 @@ msgstr "Nemate dozvolu za brisanje zapisa u ovoj zoni."
 msgid "Record not found."
 msgstr "Zapis nije pronađen."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Zapis i njegovi odgovarajući PTR i A/AAAA zapisi su obrisani, ali je "
-"komentar sačuvan jer postoje slični zapisi."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Zapis i odgovarajući PTR su obrisani ali komentar sačuvan zbog sličnih "
-"zapisa."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Zapis i odgovarajući A/AAAA su obrisani ali komentar sačuvan zbog sličnih."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "Zapis je obrisan ali komentar je sačuvan jer postoje slični zapisi."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -14859,6 +14830,3 @@ msgid ""
 msgstr ""
 "Postavljanje lokalizacije nije uspjelo. Odabrana lokalizacija možda nije "
 "podržana na ovom sistemu. Kontaktirajte svog administratora."
-
-
-

@@ -1530,38 +1530,6 @@ msgstr "Nimate dovoljenja za brisanje zapisov v tej coni."
 msgid "Record not found."
 msgstr "Zapis ni najden."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Zapis in njegovi ustrezni zapisi PTR in A/AAAA so bili izbrisani, vendar se "
-"je komentar ohranil, ker obstajajo podobni zapisi."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Zapis in njegov ustrezni zapis PTR sta bila izbrisana, vendar se je komentar "
-"ohranil, ker podobni zapisi obstajajo."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Zapis in njegov ustrezni zapis A/AAAA sta bila izbrisana, vendar se je "
-"komentar ohranil, ker obstajajo podobni zapisi."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Zapis je bil izbrisan, vendar se je komentar ohranil, ker obstajajo podobni "
-"zapisi."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15411,6 +15379,3 @@ msgid ""
 msgstr ""
 "Nastavitev jezikovnega okolja ni uspela. Izbrano jezikovno okolje v tem "
 "sistemu morda ni podprto. Obrnite se na skrbnika."
-
-
-

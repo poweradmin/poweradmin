@@ -1511,36 +1511,6 @@ msgstr "ليس لديك إذن لحذف السجلات في هذه المنطق�
 msgid "Record not found."
 msgstr "لم يتم العثور على السجل."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"تم حذف السجل وسجلات PTR و A/AAAA المقابلة له، ولكن تم الاحتفاظ بالتعليق "
-"لوجود سجلات مماثلة."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"تم حذف السجل وسجل PTR المقابل له، ولكن تم الاحتفاظ بالتعليق لوجود سجلات "
-"مماثلة."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"تم حذف السجل وسجل A/AAAA المقابل له، ولكن تم الاحتفاظ بالتعليق لوجود سجلات "
-"مماثلة."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "تم حذف السجل ولكن تم الاحتفاظ بالتعليق لوجود سجلات مماثلة."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15084,6 +15054,3 @@ msgid ""
 msgstr ""
 "تعذر تعيين الإعدادات المحلية. قد تكون الإعدادات المحلية المحددة غير مدعومة "
 "على هذا النظام. يُرجى الاتصال بالمسؤول."
-
-
-

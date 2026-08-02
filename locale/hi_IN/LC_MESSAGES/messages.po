@@ -1509,38 +1509,6 @@ msgstr "आपको इस ज़ोन में रिकॉर्ड हट�
 msgid "Record not found."
 msgstr "रिकॉर्ड नहीं मिला।"
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"रिकॉर्ड और इसके संबंधित PTR और A/AAAA रिकॉर्ड को हटा दिया गया लेकिन टिप्पणी को "
-"संरक्षित किया गया क्योंकि समान रिकॉर्ड मौजूद हैं।"
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"रिकॉर्ड और इसके संबंधित PTR रिकॉर्ड को हटा दिया गया था लेकिन टिप्पणी को संरक्षित किया "
-"गया क्योंकि समान रिकॉर्ड मौजूद हैं।"
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"रिकॉर्ड और इसके संबंधित A/AAAA रिकॉर्ड को हटा दिया गया लेकिन टिप्पणी को संरक्षित किया "
-"गया क्योंकि समान रिकॉर्ड मौजूद हैं।"
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"रिकॉर्ड को हटा दिया गया था लेकिन टिप्पणी को संरक्षित किया गया क्योंकि समान रिकॉर्ड "
-"मौजूद हैं।"
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15109,6 +15077,3 @@ msgid ""
 msgstr ""
 "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
 "प्रशासक से संपर्क करें।"
-
-
-

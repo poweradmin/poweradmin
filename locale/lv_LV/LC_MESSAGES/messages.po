@@ -1502,36 +1502,6 @@ msgstr "Jums nav atļaujas dzēst ierakstus šajā zonā."
 msgid "Record not found."
 msgstr "Ieraksts nav atrasts."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Ieraksts un tam atbilstošie PTR un A/AAAA ieraksti tika dzēsti, taču "
-"komentārs tika saglabāts, jo pastāv līdzīgi ieraksti."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Ieraksts un tam atbilstošais PTR ieraksts tika dzēsti, taču komentārs tika "
-"saglabāts, jo pastāv līdzīgi ieraksti."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Ieraksts un tam atbilstošais A/AAAA ieraksts tika dzēsti, taču komentārs "
-"tika saglabāts, jo pastāv līdzīgi ieraksti."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "Ieraksts dzēsts, bet komentārs saglabāts, jo pastāv līdzīgi ieraksti."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -14980,6 +14950,3 @@ msgid ""
 msgstr ""
 "Neizdevās iestatīt lokalizāciju. Izvēlētā lokalizācija, iespējams, nav "
 "atbalstīta šajā sistēmā. Lūdzu, sazinieties ar savu administratoru."
-
-
-

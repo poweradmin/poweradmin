@@ -1544,38 +1544,6 @@ msgstr "Non hai il permesso di eliminare i record in questa zona."
 msgid "Record not found."
 msgstr "Record non trovato."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Il record e i suoi record PTR e A/AAAA corrispondenti sono stati eliminati "
-"ma il commento è stato preservato perché esistono record simili."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Il record e il record PTR corrispondente sono stati eliminati ma il commento "
-"è stato preservato perché esistono record simili."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Il record e il suo record A/AAAA corrispondente sono stati eliminati ma il "
-"commento è stato preservato perché esistono record simili."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Il record è stato eliminato ma il commento è stato conservato perché "
-"esistono record simili."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15663,6 +15631,3 @@ msgid ""
 msgstr ""
 "Impostazione della lingua non riuscita. La lingua selezionata potrebbe non "
 "essere supportata su questo sistema. Contatta il tuo amministratore."
-
-
-

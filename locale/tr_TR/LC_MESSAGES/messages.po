@@ -1528,36 +1528,6 @@ msgstr "Bu bölgedeki kayıtları silme izniniz bulunmamaktadır."
 msgid "Record not found."
 msgstr "Kayıt bulunamadı."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Kayıt ve buna karşılık gelen PTR ile A/AAAA kayıtları silindi ancak benzer "
-"kayıtlar mevcut olduğu için yorum korundu."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Kayıt ve ilgili PTR kaydı silindi ancak benzer kayıtlar mevcut olduğu için "
-"yorum korundu."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Kayıt ve buna karşılık gelen A/AAAA kaydı silindi ancak benzer kayıtlar "
-"mevcut olduğu için yorum korundu."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "Kayıt silindi ancak benzer kayıtlar var olduğu için yorum korundu."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15400,6 +15370,3 @@ msgid ""
 msgstr ""
 "Yerel ayar uygulanamadı. Seçilen yerel ayar bu sistemde desteklenmiyor "
 "olabilir. Lütfen yöneticinizle iletişime geçin."
-
-
-

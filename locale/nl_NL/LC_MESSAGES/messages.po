@@ -1542,38 +1542,6 @@ msgstr "U heeft geen toestemming om records in deze zone te verwijderen."
 msgid "Record not found."
 msgstr "Record niet gevonden."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Het record en de bijbehorende PTR- en A/AAAA-records zijn verwijderd, maar "
-"de opmerking is behouden omdat soortgelijke records bestaan."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Het record en het bijbehorende PTR-record zijn verwijderd, maar de opmerking "
-"is behouden omdat vergelijkbare records bestaan."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Het record en het bijbehorende A/AAAA-record zijn verwijderd, maar de "
-"opmerking is behouden omdat soortgelijke records bestaan."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Het record is verwijderd maar de opmerking is behouden omdat er "
-"vergelijkbare records bestaan."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15556,6 +15524,3 @@ msgid ""
 msgstr ""
 "Het instellen van de locale is mislukt. De geselecteerde locale wordt "
 "mogelijk niet ondersteund op dit systeem. Neem contact op met uw beheerder."
-
-
-

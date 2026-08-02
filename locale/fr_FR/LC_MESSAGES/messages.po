@@ -1577,41 +1577,6 @@ msgstr ""
 msgid "Record not found."
 msgstr "Enregistrement non trouvé."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"L'enregistrement et ses enregistrements PTR et A/AAAA correspondants ont été "
-"supprimés mais le commentaire a été conservé car des enregistrements "
-"similaires existent."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"L'enregistrement et son enregistrement PTR correspondant ont été supprimés "
-"mais le commentaire a été préservé car des enregistrements similaires "
-"existent."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"L'enregistrement et son enregistrement A/AAAA correspondant ont été "
-"supprimés mais le commentaire a été conservé car des enregistrements "
-"similaires existent."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"L'enregistrement a été supprimé mais le commentaire a été préservé car des "
-"enregistrements similaires existent.exist."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15925,6 +15890,3 @@ msgid ""
 msgstr ""
 "Échec de la définition de la locale. La locale sélectionnée n'est peut-être "
 "pas prise en charge sur ce système. Veuillez contacter votre administrateur."
-
-
-

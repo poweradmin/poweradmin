@@ -1557,38 +1557,6 @@ msgstr "Nu aveți permisiunea de a șterge înregistrări în această zonă."
 msgid "Record not found."
 msgstr "Înregistrare negăsită."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Înregistrarea și înregistrările PTR și A/AAAA corespunzătoare au fost "
-"șterse, dar comentariul a fost păstrat deoarece există înregistrări similare."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Înregistrarea și înregistrarea PTR corespunzătoare au fost șterse, dar "
-"comentariul a fost păstrat deoarece există înregistrări similare."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Înregistrarea și înregistrarea A/AAAA corespunzătoare au fost șterse, dar "
-"comentariul a fost păstrat deoarece există înregistrări similare."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Înregistrarea a fost ștearsă, dar comentariul a fost păstrat deoarece există "
-"înregistrări similare."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15848,6 +15816,3 @@ msgid ""
 msgstr ""
 "Setarea localizării a eșuat. Localizarea selectată poate să nu fie acceptată "
 "pe acest sistem. Contactați administratorul."
-
-
-

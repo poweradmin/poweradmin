@@ -1551,37 +1551,6 @@ msgstr "Anda tidak mempunyai kebenaran untuk memadam rekod dalam zon ini."
 msgid "Record not found."
 msgstr "Rekod tidak dijumpai."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Rekod serta rekod PTR dan A/AAAA yang berkaitan telah dipadam tetapi komen "
-"dikekalkan kerana rekod serupa masih wujud."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Rekod serta rekod PTR yang berkaitan telah dipadam tetapi komen dikekalkan "
-"kerana rekod serupa masih wujud."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Rekod serta rekod A/AAAA yang berkaitan telah dipadam tetapi komen "
-"dikekalkan kerana rekod serupa masih wujud."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Rekod telah dipadam tetapi komen dikekalkan kerana rekod serupa masih wujud."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15481,6 +15450,3 @@ msgid ""
 msgstr ""
 "Gagal menetapkan lokal. Lokal yang dipilih mungkin tidak disokong pada "
 "sistem ini. Sila hubungi pentadbir anda."
-
-
-

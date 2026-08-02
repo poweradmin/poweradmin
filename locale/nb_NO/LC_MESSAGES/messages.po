@@ -1533,38 +1533,6 @@ msgstr "Du har ikke tillatelse til å slette poster i denne sonen."
 msgid "Record not found."
 msgstr "Post ikke funnet."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Posten og tilhørende PTR- og A/AAAA-poster ble slettet, men kommentaren ble "
-"bevart fordi lignende poster eksisterer."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Posten og dens tilhørende PTR-post ble slettet, men kommentaren ble bevart "
-"fordi lignende poster eksisterer."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Posten og tilhørende A/AAAA-post ble slettet, men kommentaren ble bevart "
-"fordi lignende poster eksisterer."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Posten ble slettet, men kommentaren ble beholdt fordi det finnes lignende "
-"poster."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15309,6 +15277,3 @@ msgid ""
 msgstr ""
 "Klarte ikke å angi språkinnstilling. Den valgte språkinnstillingen støttes "
 "kanskje ikke på dette systemet. Kontakt administratoren din."
-
-
-

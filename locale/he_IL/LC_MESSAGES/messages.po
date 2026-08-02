@@ -1491,36 +1491,6 @@ msgstr "אין לך רשות למחוק רשומות באזור זה."
 msgid "Record not found."
 msgstr "רשומות לא נמצאו"
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"הרשומה ורשומות ה-PTR וה-A/AAAA התואמות נמחקו אך התגובה נשמרה משום שרשומות "
-"דומות קיימות."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"הרשומה ורשומת ה-PTR התואמת לה נמחקו, אך התגובה נשמרה משום שרשומות דומות "
-"קיימות."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"הרשומה ורשומת ה-A/AAAA התואמת לה נמחקו, אך התגובה נשמרה משום שרשומות דומות "
-"קיימות."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr "הרשומה נמחקה, אך ההערה נשמרה משום שרשומות דומות קיימות."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -14927,6 +14897,3 @@ msgid ""
 msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
-
-
-

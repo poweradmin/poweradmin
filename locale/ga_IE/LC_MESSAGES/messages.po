@@ -1565,38 +1565,6 @@ msgstr "Níl cead agat taifid a scriosadh sa chrios seo."
 msgid "Record not found."
 msgstr "Níor aimsíodh an taifead."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Scriosadh an taifead agus a thaifid PTR agus A/AAAA comhfhreagracha ach "
-"caomhnaíodh an trácht toisc go bhfuil taifid den chineál céanna ann."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Scriosadh an taifead agus a taifead PTR comhfhreagrach ach rinneadh an "
-"trácht a chaomhnú toisc go bhfuil taifid den chineál céanna ann."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Scriosadh an taifead agus a thaifead A/AAAA comhfhreagrach ach caomhnaíodh "
-"an trácht toisc go bhfuil taifid den chineál céanna ann."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Scriosadh an taifead ach rinneadh an trácht a chaomhnú toisc go bhfuil "
-"taifid den chineál céanna ann."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15780,6 +15748,3 @@ msgid ""
 msgstr ""
 "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
 "locale roghnaithe. Déan teagmháil le do riarthóir."
-
-
-

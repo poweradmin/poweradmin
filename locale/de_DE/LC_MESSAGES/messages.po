@@ -1558,39 +1558,6 @@ msgstr "Sie haben keine Berechtigung, Datensätze in dieser Zone zu löschen."
 msgid "Record not found."
 msgstr "Eintrag nicht gefunden."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Der Datensatz und die entsprechenden PTR- und A/AAAA-Datensätze wurden "
-"gelöscht, aber der Kommentar wurde beibehalten, da ähnliche Datensätze "
-"existieren."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Der Eintrag und sein entsprechender PTR-Eintrag wurden gelöscht, aber der "
-"Kommentar wurde beibehalten, da ähnliche Einträge existieren."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Der Datensatz und der entsprechende A/AAAA-Datensatz wurden gelöscht, aber "
-"der Kommentar wurde beibehalten, da ähnliche Datensätze existieren."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Der Datensatz wurde gelöscht, aber der Kommentar wurde beibehalten, da "
-"ähnliche Datensätze existieren."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15717,6 +15684,3 @@ msgstr ""
 "Die Locale konnte nicht gesetzt werden. Die ausgewählte Locale wird auf "
 "diesem System möglicherweise nicht unterstützt. Bitte wenden Sie sich an "
 "Ihren Administrator."
-
-
-

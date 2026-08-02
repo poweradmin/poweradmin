@@ -1570,38 +1570,6 @@ msgstr "Δεν έχετε άδεια να διαγράψετε εγγραφές 
 msgid "Record not found."
 msgstr "Η εγγραφή δε βρέθηκε."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Η εγγραφή και οι αντίστοιχες εγγραφές PTR και A/AAAA διαγράφηκαν αλλά το "
-"σχόλιο διατηρήθηκε επειδή υπάρχουν παρόμοιες εγγραφές."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Η εγγραφή και η αντίστοιχη εγγραφή PTR διαγράφηκαν αλλά το σχόλιο "
-"διατηρήθηκε επειδή υπάρχουν παρόμοιες εγγραφές."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Η εγγραφή και η αντίστοιχη εγγραφή A/AAAA διαγράφηκαν αλλά το σχόλιο "
-"διατηρήθηκε επειδή υπάρχουν παρόμοιες εγγραφές."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Η εγγραφή διαγράφηκε αλλά το σχόλιο διατηρήθηκε επειδή υπάρχουν παρόμοιες "
-"εγγραφές."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15895,6 +15863,3 @@ msgid ""
 msgstr ""
 "Η ρύθμιση του locale απέτυχε. Το επιλεγμένο locale μπορεί να μην "
 "υποστηρίζεται σε αυτό το σύστημα. Επικοινωνήστε με τον διαχειριστή σας."
-
-
-

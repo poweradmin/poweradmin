@@ -1529,37 +1529,6 @@ msgstr "Du har inte behörighet att radera poster i denna zon."
 msgid "Record not found."
 msgstr "Posten hittades inte."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Posten och dess motsvarande PTR- och A/AAAA-poster raderades men kommentaren "
-"bevarades eftersom liknande poster finns."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Posten och dess motsvarande PTR-post raderades men kommentaren bevarades "
-"eftersom liknande poster finns."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Posten och dess motsvarande A/AAAA-post raderades men kommentaren bevarades "
-"eftersom liknande poster finns."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Posten raderades men kommentaren bevarades eftersom liknande poster finns."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15362,6 +15331,3 @@ msgid ""
 msgstr ""
 "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske inte på "
 "detta system. Kontakta din administratör."
-
-
-

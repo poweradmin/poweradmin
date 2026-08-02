@@ -1554,38 +1554,6 @@ msgstr "No tiene permiso para eliminar registros en esta zona."
 msgid "Record not found."
 msgstr "Registro no encontrado."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"El registro y sus correspondientes registros PTR y A/AAAA fueron eliminados, "
-"pero el comentario se conservó porque existen registros similares."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"El registro y su registro PTR correspondiente fueron eliminados pero el "
-"comentario se conservó porque existen registros similares."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"El registro y su correspondiente registro A/AAAA fueron eliminados, pero el "
-"comentario se conservó porque existen registros similares."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"El registro fue eliminado pero el comentario se conservó porque existen "
-"registros similares."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15675,6 +15643,3 @@ msgstr ""
 "No se ha podido establecer la configuración regional. Puede que la "
 "configuración regional seleccionada no esté disponible en este sistema. "
 "Póngase en contacto con su administrador."
-
-
-

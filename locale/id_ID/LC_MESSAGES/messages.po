@@ -1542,38 +1542,6 @@ msgstr "Anda tidak memiliki izin untuk menghapus rekaman di zona ini."
 msgid "Record not found."
 msgstr "Rekaman tidak ditemukan."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Rekaman beserta rekaman PTR dan A/AAAA yang terkait telah dihapus, tetapi "
-"komentar dipertahankan karena rekaman serupa masih ada."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Rekaman beserta rekaman PTR yang terkait telah dihapus, tetapi komentar "
-"dipertahankan karena rekaman serupa masih ada."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Rekaman beserta rekaman A/AAAA yang terkait telah dihapus, tetapi komentar "
-"dipertahankan karena rekaman serupa masih ada."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Rekaman telah dihapus, tetapi komentar dipertahankan karena rekaman serupa "
-"masih ada."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15512,6 +15480,3 @@ msgid ""
 msgstr ""
 "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada "
 "sistem ini. Silakan hubungi administrator Anda."
-
-
-

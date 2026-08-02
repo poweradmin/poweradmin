@@ -1549,37 +1549,6 @@ msgstr "Нямате разрешение да изтривате записи �
 msgid "Record not found."
 msgstr "Записът не е намерен."
 
-#: lib/Application/Controller/DeleteRecordController.php:219
-msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
-msgstr ""
-"Записът и съответните му PTR и A/AAAA записи бяха заличени, но коментарът "
-"беше запазен, тъй като съществуват подобни записи."
-
-#: lib/Application/Controller/DeleteRecordController.php:221
-msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
-msgstr ""
-"Записът и съответният му PTR запис бяха изтрити, но коментарът беше запазен, "
-"защото съществуват подобни записи."
-
-#: lib/Application/Controller/DeleteRecordController.php:223
-msgid ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
-msgstr ""
-"Записът и неговият съответен запис A/AAAA бяха заличени, но коментарът беше "
-"запазен, тъй като съществуват подобни записи."
-
-#: lib/Application/Controller/DeleteRecordController.php:225
-msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"Записът е изтрит, но коментарът е запазен, защото подобни записи съществуват."
-
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
@@ -15599,6 +15568,3 @@ msgid ""
 msgstr ""
 "Задаването на локала не бе успешно. Избраният локал може да не е поддържан "
 "на тази система. Свържете се с вашия администратор."
-
-
-
