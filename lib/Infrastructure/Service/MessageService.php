@@ -28,9 +28,6 @@ use Poweradmin\Domain\Service\UserContextService;
 class MessageService
 {
     private const TYPE_ERROR = 'error';
-    private const TYPE_WARNING = 'warning';
-    private const TYPE_SUCCESS = 'success';
-    private const TYPE_INFO = 'info';
 
     private UserContextService $userContextService;
 
@@ -73,51 +70,6 @@ class MessageService
 
         $messages[$script][] = $newMessage;
         $this->userContextService->setSessionData(SessionKeys::MESSAGES, $messages);
-    }
-
-    /**
-     * Add an error message to be displayed for a specific script
-     *
-     * @param string $script The script to set the message for
-     * @param string $content The content of the message
-     * @param string|null $recordName Optional record name for context
-     */
-    public function addError(string $script, string $content, ?string $recordName = null): void
-    {
-        $this->addMessage($script, self::TYPE_ERROR, $content, $recordName);
-    }
-
-    /**
-     * Add a warning message to be displayed for a specific script
-     *
-     * @param string $script The script to set the message for
-     * @param string $content The content of the message
-     */
-    public function addWarning(string $script, string $content): void
-    {
-        $this->addMessage($script, self::TYPE_WARNING, $content);
-    }
-
-    /**
-     * Add a success message to be displayed for a specific script
-     *
-     * @param string $script The script to set the message for
-     * @param string $content The content of the message
-     */
-    public function addSuccess(string $script, string $content): void
-    {
-        $this->addMessage($script, self::TYPE_SUCCESS, $content);
-    }
-
-    /**
-     * Add an info message to be displayed for a specific script
-     *
-     * @param string $script The script to set the message for
-     * @param string $content The content of the message
-     */
-    public function addInfo(string $script, string $content): void
-    {
-        $this->addMessage($script, self::TYPE_INFO, $content);
     }
 
     /**

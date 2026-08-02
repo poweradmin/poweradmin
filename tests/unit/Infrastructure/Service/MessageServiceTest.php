@@ -103,61 +103,13 @@ class MessageServiceTest extends TestCase
         $this->assertCount(2, $_SESSION['messages']['test_script']);
     }
 
-    // ========== addError tests ==========
-
-    #[Test]
-    public function testAddErrorAddsErrorTypeMessage(): void
-    {
-        $this->service->addError('test_script', 'Error message');
-
-        $this->assertEquals('error', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    #[Test]
-    public function testAddErrorWithRecordName(): void
-    {
-        $this->service->addError('test_script', 'Error message', 'rec1');
-
-        $this->assertStringContainsString('rec1', $_SESSION['messages']['test_script'][0]['content']);
-    }
-
-    // ========== addWarning tests ==========
-
-    #[Test]
-    public function testAddWarningAddsWarningTypeMessage(): void
-    {
-        $this->service->addWarning('test_script', 'Warning message');
-
-        $this->assertEquals('warning', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    // ========== addSuccess tests ==========
-
-    #[Test]
-    public function testAddSuccessAddsSuccessTypeMessage(): void
-    {
-        $this->service->addSuccess('test_script', 'Success message');
-
-        $this->assertEquals('success', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    // ========== addInfo tests ==========
-
-    #[Test]
-    public function testAddInfoAddsInfoTypeMessage(): void
-    {
-        $this->service->addInfo('test_script', 'Info message');
-
-        $this->assertEquals('info', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
     // ========== getMessages tests ==========
 
     #[Test]
     public function testGetMessagesReturnsAndClearsMessages(): void
     {
-        $this->service->addInfo('test_script', 'Message 1');
-        $this->service->addError('test_script', 'Message 2');
+        $this->service->addMessage('test_script', 'info', 'Message 1');
+        $this->service->addMessage('test_script', 'error', 'Message 2');
 
         $messages = $this->service->getMessages('test_script');
 
@@ -345,8 +297,8 @@ class MessageServiceTest extends TestCase
     #[Test]
     public function testMessagesAreSeparatedByScript(): void
     {
-        $this->service->addError('script1', 'Error in script 1');
-        $this->service->addInfo('script2', 'Info in script 2');
+        $this->service->addMessage('script1', 'error', 'Error in script 1');
+        $this->service->addMessage('script2', 'info', 'Info in script 2');
 
         $script1Messages = $this->service->getMessages('script1');
         $script2Messages = $this->service->getMessages('script2');
